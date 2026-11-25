@@ -7,7 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
-SOURCES = ('native_crossing.py', 'native_acquisition.py', 'reviewed_site.py', 'carla_adapter.py', 'saved_measurement.py',
+SOURCES = ('native_crossing.py', 'native_acquisition.py', 'reviewed_site.py', 'carla_adapter.py', 'capture_export.py', 'analysis.py', 'saved_measurement.py',
            'saved_media_audit.py', 'saved_process.py', 'comparison_audit.py', 'delivery_audit.py')
 CASES = {
     'adjacent_no_diagonal_authority': ('adjacent', False),
@@ -40,6 +40,8 @@ from native_acquisition import acquire, save
 from saved_media_audit import inventory_camera_sources
 from reviewed_site import verify as verify_reviewed_site
 from carla_adapter import CarlaCrossingAdapter
+from capture_export import publish as publish_original
+from analysis import analyze as analyze_saved
 
 
 def check():
@@ -53,7 +55,7 @@ def check():
     case = next((row for row in json.loads(plan)['cases'] if row['case_id'] == case_id), None)
     if case is None or case['scenario_parameters'] != expected:
         raise ValueError('C111329 exact case parameters changed')
-    if config['fps'] != 20 or config['frame_count'] != 900 or config['cameras'] != ['front','rear','left','right']:
+    if config['fps'] != 20 or config['frame_count'] != 900 or config['cameras'] != ['overview','approach','reference_corner','driver_reference']:
         raise ValueError('C111329 original capture contract changed')
     if config['required_sources'] != ['original_map', 'intersection_corners', 'official_pedestrian_devices', 'walker_identity', 'original_camera_png']:
         raise ValueError('C111329 required sources changed')
@@ -110,22 +112,39 @@ def main():
     if site.get('cell_id') != 'C111329' or site.get('actor') != 'pedestrian':
         raise ValueError('reviewed original C111329 site identity mismatch')
     verify_reviewed_site(attempt, site, expected['route_kind'], expected['source_backed_diagonal_authorization'])
-    adapter = CarlaCrossingAdapter(world, bindings['sensors'], bindings['device_reader'],
-                                   blueprint_library=world.get_blueprint_library(),
-                                   location_factory=carla.Location, transform_factory=carla.Transform,
-                                   vector_factory=carla.Vector3D, walker_control_factory=carla.WalkerControl,
-                                   spawn_z=bindings['spawn_z'])
+    adapter = None
     try:
+        adapter = CarlaCrossingAdapter(world, bindings['sensors'], bindings['device_reader'],
+                                       blueprint_library=world.get_blueprint_library(),
+                                       location_factory=carla.Location, transform_factory=carla.Transform,
+                                       vector_factory=carla.Vector3D, walker_control_factory=carla.WalkerControl,
+                                       spawn_z=bindings['spawn_z'])
         packet = acquire(adapter, site=site, site_sha256=digest(site), case_id=case_id,
                          route_kind=expected['route_kind'],
                          authorization=expected['source_backed_diagonal_authorization'],
                          blueprint_id=blueprint_id, frames=900, fps=20,
                          capture_root=attempt)
     finally:
-        adapter.close()
+        if adapter is not None:
+            adapter.close()
+        restored = module.restore_original(world=world, bindings=bindings, attempt=attempt)
+    if restored is not True:
+        raise ValueError('original C111329 world restoration not verified')
     save(attempt / 'native-acquisition.json', packet)
     camera = inventory_camera_sources(packet, attempt)
     (attempt / 'camera-manifest.json').write_text(json.dumps(camera, indent=2, sort_keys=True) + '\\n', encoding='utf-8')
+    road_bytes = world.get_map().to_opendrive().encode('utf-8')
+    publish_original(attempt, packet=packet, camera_manifest=camera, site=site,
+                     road_bytes=road_bytes, restoration_verified=True)
+    def ref(name):
+        path = attempt / name
+        return {'path': name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    declaration = {'format': 'c111329-original-source-v1', 'case_id': case_id,
+                   'diagnostic_fixture': False, 'site_ref': site_ref,
+                   'native_acquisition_ref': ref('native-acquisition.json'),
+                   'camera_manifest_ref': ref('camera-manifest.json')}
+    (attempt / 'pedestrian-source.json').write_text(json.dumps(declaration, indent=2) + '\\n', encoding='utf-8')
+    analyze_saved(attempt, attempt / 'analysis-report.json')
     print('sealed original C111329 acquisition: ' + case_id)
 
 
@@ -171,7 +190,7 @@ def build():
                   'selected_case_id': case_id, 'supported_case_ids': [x['case_id'] for x in plan['cases']],
                   'scenario_parameters': expected,
                   'plan_sha256': hashlib.sha256(plan_bytes).hexdigest(),
-                  'fps': 20, 'frame_count': 900, 'cameras': ['front','rear','left','right'],
+                  'fps': 20, 'frame_count': 900, 'cameras': ['overview','approach','reference_corner','driver_reference'],
                   'required_sources': ['original_map', 'intersection_corners', 'official_pedestrian_devices', 'walker_identity', 'original_camera_png'],
                   'required_atoms': [], 'diagnostic_only': True,
                   'case': {'case_id': case_id, 'recording_description': DESCRIPTION}}

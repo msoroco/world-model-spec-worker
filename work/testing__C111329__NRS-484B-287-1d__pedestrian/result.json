@@ -2,54 +2,54 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1d__pedestrian",
   "input_sha256": "08b4c204ffa107222be5348b86f2ade77eeae2a7675089a2aa0a583e6bad036b",
   "status": "partial",
-  "readiness_kind": "partial_saved_source_join",
+  "readiness_kind": "partial_exact_offline_source_audits",
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
+      "command": "TMPDIR=$PWD/.runtime-work/c111329-temp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
       "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "931f14283b53e936af3469a0720482a3c0206593d9d18c5bafb435a5d5cab6f0"
+      "log": "cpu-current-tests.log",
+      "sha256": "14ddfe78070314f8269b5c958c16a96cd00580d326cf4c6090ed7f403748403f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --output .runtime-work/c111329-offline/proof-adjacent_no_diagonal_authority",
+      "exit_code": 0,
+      "log": "cpu-offline-adjacent_no_diagonal_authority.log",
+      "sha256": "28cbaee0b31cf5fa5c40dc0f1a63c5ee8425c9229a3f72a48b609691f4877ecb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --output .runtime-work/c111329-offline/proof-diagonal_no_authority",
+      "exit_code": 0,
+      "log": "cpu-offline-diagonal_no_authority.log",
+      "sha256": "83cce4d6548d7099570235f60fce6df826c1c5840a92f3a9a18517456b2a56a9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --output .runtime-work/c111329-offline/proof-diagonal_authorized",
+      "exit_code": 0,
+      "log": "cpu-offline-diagonal_authorized.log",
+      "sha256": "13645b9f6edce06374c64fd6771e026a0e6dfea63e10b227fc428f50333f3598"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --output .runtime-work/c111329-offline/proof-adjacent_authorized_device",
+      "exit_code": 0,
+      "log": "cpu-offline-adjacent_authorized_device.log",
+      "sha256": "63d3d001a5f82e855d47e0005e2763df2a9e8c509ea24966c91d92a690e4a225"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete",
       "exit_code": 0,
-      "log": "static-check.log",
+      "log": "cpu-current-static.log",
       "sha256": "919f8b6412581054281596ec1e35fb7358841d0580c5df80c3035ab86d498f20"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete --require-delivery-ready",
       "exit_code": 1,
-      "log": "strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
-      "exit_code": 0,
-      "log": "cpu-saved-process-tests.log",
-      "sha256": "f55edb340dfdfc24ec23033239d193eee0f20c73f7ef8c3ecc9066265c787433"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-saved-process-preflight.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete",
-      "exit_code": 0,
-      "log": "cpu-saved-process-static.log",
-      "sha256": "919f8b6412581054281596ec1e35fb7358841d0580c5df80c3035ab86d498f20"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-saved-process-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "log": "cpu-current-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "After CPU delivery package completion, actual CARLA walker motion, device state, four-camera visibility, capture quality and world restoration require local physical review."
   ],
-  "reason": "Four exact cases remain partial. Saved-only processor now reopens hash-bound site, Native acquisition and camera manifest; joins exact case route/authorization measurement to full original PNG decode before writing a receipt. Sixteen focused tests, pinned preflight and scoped static pass; strict still rejects partial. Reviewed site/device, canonical bundles and semantic proposals, compatibility and independent delivery acceptance remain CPU work. No physical or legal finding is claimed."
+  "reason": "All four exact source-gated bundles pass current-runtime offline checks. Original map/device preflight, Native four-camera walker control/readback, saved PNG measurement, independent delivery audit and three comparison audit contrasts have CPU tests. The supplied inputs contain no original C111329 map/corners, official pedestrian-specific diagonal device/instruction survey or NRS 484B.290 exception text. Canonical current-runtime compatibility, execution manifest, video/Core finalizer and full physical preparation remain CPU work; strict assignment gate exits 1 because this result is truthfully partial."
 }

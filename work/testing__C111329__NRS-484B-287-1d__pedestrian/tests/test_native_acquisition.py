@@ -38,8 +38,8 @@ class Adapter:
         if self.problem == "provenance" and self.n == 1: d["official_source"] = "different"
         return [d]
     def camera_frames(self):
-        frames = {name: self.n for name in ("front", "rear", "left", "right")}
-        if self.problem == "camera" and self.n == 1: frames["rear"] += 1
+        frames = {name: self.n for name in ("overview", "approach", "reference_corner", "driver_reference")}
+        if self.problem == "camera" and self.n == 1: frames["approach"] += 1
         return frames
     def stop_walker(self, actor): self.cleaned = True
     def destroy_actor(self, actor): self.cleaned = True
@@ -74,7 +74,7 @@ class NativeAcquisitionTests(unittest.TestCase):
         packet = acquire(Adapter(), site=s, site_sha256=digest(s), case_id="diagnostic-exact-case",
                          route_kind="opposite", authorization=True,
                          blueprint_id="walker.pedestrian.0001", frames=3)
-        packet["rows"][1]["camera_frames"]["front"] = 99
+        packet["rows"][1]["camera_frames"]["overview"] = 99
         with self.assertRaisesRegex(ValueError, "unsealed"):
             measure_acquisition(s, packet, case_id="diagnostic-exact-case", route_kind="opposite",
                                 authorization=True, expected_frames=3, allow_diagnostic=True)
@@ -82,7 +82,7 @@ class NativeAcquisitionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "camera"):
             measure_acquisition(s, packet, case_id="diagnostic-exact-case", route_kind="opposite",
                                 authorization=True, expected_frames=3, allow_diagnostic=True)
-        packet["rows"][1]["camera_frames"]["front"] = 1
+        packet["rows"][1]["camera_frames"]["overview"] = 1
         packet["rows_sha256"] = __import__("native_acquisition")._sha(packet["rows"])
         s["devices"][0]["official_source"] = "changed"
         with self.assertRaisesRegex(ValueError, "site or route"):

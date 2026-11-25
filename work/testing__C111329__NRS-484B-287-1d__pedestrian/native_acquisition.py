@@ -12,7 +12,7 @@ from pathlib import Path
 
 from native_crossing import construct_walker, crossing_plan, digest, point
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(value: object) -> str:

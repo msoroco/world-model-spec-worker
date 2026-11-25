@@ -12,7 +12,7 @@ from queue import Empty, Queue
 
 from PIL import Image
 
-CAMERAS = ('front', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 class CarlaCrossingAdapter:

@@ -24,10 +24,15 @@ CASES = {
 
 
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
-def _native_provenance(provenance: dict, receipt: dict, case_id: str) -> dict:
+def _native_provenance(provenance: dict, receipt: dict, case_id: str,
+                       packet: dict) -> dict:
     """Bind the original observation to a separately sealed Native attempt."""
     if not isinstance(provenance, dict) or provenance.get("kind") != "original_native":
         raise ValueError("sealed original Native provenance required")
@@ -44,6 +49,38 @@ def _native_provenance(provenance: dict, receipt: dict, case_id: str) -> dict:
         raise ValueError("Native seal observation binding mismatch")
     if document.get("restored") is not True or document.get("errors") != []:
         raise ValueError("Native restoration or acquisition failure")
+    source = observation.parent / "effective-site-packet.json"
+    if not source.is_file() or _sha(source) != document.get("effective_site_packet_sha256") or \
+       json.loads(source.read_text()) != packet:
+        raise ValueError("Native effective site packet source differs")
+    for name, key in (("trace.jsonl", "trace_sha256"),
+                      ("video_frames.jsonl", "video_frame_map_sha256")):
+        candidate = observation.parent / name
+        if not candidate.is_file() or _sha(candidate) != document.get(key):
+            raise ValueError("Native original frame join source differs: " + name)
+    videos = document.get("video_sources_sha256")
+    if not isinstance(videos, dict) or set(videos) != set(CAMERAS) or \
+       any(not (observation.parent / (name + ".mkv")).is_file() or
+           _sha(observation.parent / (name + ".mkv")) != videos[name]
+           for name in CAMERAS):
+        raise ValueError("Native four encoded original camera sources differ")
+    observations = json.loads(observation.read_text())["frames"]
+    trace = [json.loads(line) for line in
+             (observation.parent / "trace.jsonl").read_text().splitlines() if line]
+    frame_map = [json.loads(line) for line in
+                 (observation.parent / "video_frames.jsonl").read_text().splitlines() if line]
+    if len(trace) != len(observations) or len(frame_map) != len(observations):
+        raise ValueError("Native original frame join count differs")
+    for index, (observed, body, mapped) in enumerate(zip(observations, trace, frame_map)):
+        frame, time_s = observed["frame"], observed["time_s"]
+        if body.get("frame") != frame or mapped.get("carla_frame") != frame or \
+           mapped.get("native_frame") != frame or mapped.get("video_frame") != index or \
+           abs(body.get("time_s", -1)-time_s) > 1e-6 or \
+           abs(mapped.get("time_s", -1)-time_s) > 1e-6 or \
+           any(abs(a-b) > 1e-4 for a,b in zip(body.get("position_m", []),
+                                               observed["walker_xyz_m"])) or \
+           len(body.get("position_m", [])) != 3:
+            raise ValueError("Native original frame/time/body join differs")
     return {"seal_path": str(seal), "seal_sha256": provenance["seal_sha256"]}
 
 
@@ -71,7 +108,7 @@ def audit_delivery(packet: dict, receipt: dict, *, case_id: str,
             raise ValueError("diagnostic fixture cannot carry Native provenance")
         native = None
     else:
-        native = _native_provenance(native_provenance, receipt, case_id)
+        native = _native_provenance(native_provenance, receipt, case_id, packet)
     return {
         "format": "worker-pedestrian-delivery-audit",
         "case_id": case_id,

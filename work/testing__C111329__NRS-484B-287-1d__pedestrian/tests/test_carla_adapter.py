@@ -66,7 +66,7 @@ class CarlaAdapterTests(unittest.TestCase):
         for camera in CAMERAS:
             self.assertTrue(adapter.camera_png(camera, 1).startswith(b'\x89PNG\r\n\x1a\n'))
         with self.assertRaisesRegex(ValueError, 'unavailable'):
-            adapter.camera_png('front', 2)
+            adapter.camera_png('overview', 2)
         adapter.destroy_actor(actor)
         self.assertTrue(actor.destroyed)
         self.assertTrue(all(s.stopped for s in sensors.values()))
@@ -75,7 +75,7 @@ class CarlaAdapterTests(unittest.TestCase):
         sensors = {name: Sensor() for name in CAMERAS}
         world = World(sensors)
         with self.assertRaisesRegex(ValueError, 'four named'):
-            CarlaCrossingAdapter(world, {'front': sensors['front']}, lambda w, f: [], **self.factories())
+            CarlaCrossingAdapter(world, {'overview': sensors['overview']}, lambda w, f: [], **self.factories())
         world.get_settings = lambda: Obj(synchronous_mode=False, fixed_delta_seconds=0.05)
         with self.assertRaisesRegex(ValueError, 'synchronous'):
             CarlaCrossingAdapter(world, sensors, lambda w, f: [], **self.factories())

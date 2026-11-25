@@ -10,7 +10,8 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 SOURCES = ('runner.py', 'diagonal_crossing.py', 'native_capture.py',
            'camera_media.py', 'crossing_audit.py', 'saved_crossing.py',
-           'reviewed_site.py', 'delivery_audit.py', 'comparison_audit.py')
+           'reviewed_site.py', 'delivery_audit.py', 'comparison_audit.py',
+           'analysis.py')
 CASES = ('permissive_whole_crossing', 'prohibitive_whole_crossing',
          'instruction_changes_during_crossing')
 DESCRIPTION = {
@@ -56,6 +57,9 @@ def build():
     if {case['case_id'].removeprefix(ASSIGNMENT + '__') for case in plan['cases']} != set(CASES):
         raise ValueError('three exact C111329 diagonal instruction cases required')
     entries = []
+    proposals = []
+    requirement = plan['requirement_dispositions'][0]
+    runtime_sha = json.loads((HERE.parents[1] / 'batch.json').read_text())['runtime']['source_manifest_sha256']
     for case in plan['cases']:
         case_id = case['case_id']
         suffix = case_id.removeprefix(ASSIGNMENT + '__')
@@ -90,12 +94,48 @@ def build():
                         'files': [{'path': name, 'content': content} for name, content in files.items()]}
         path = HERE / ('construction-' + suffix + '.json')
         path.write_text(json.dumps(construction, indent=2) + '\n')
+        contract_path = HERE / 'cases' / suffix / 'measurement-contract.json'
+        contract_path.parent.mkdir(parents=True, exist_ok=True)
+        contract_path.write_text(json.dumps({
+            'format': 'worker-measurement-contract', 'case_id': case_id,
+            'requirements': [{'disposition_index': 0,
+                              'requirement': requirement['requirement'],
+                              'source': requirement['source'],
+                              'output_key': 'diagonal_crossing_device_history',
+                              'method': 'measure_diagonal_instruction',
+                              'value_type': 'object', 'kind': 'measured',
+                              'inputs': ['diagonal-source.json',
+                                         'walker-diagonal.jsonl',
+                                         'device-diagonal.jsonl',
+                                         'camera-frame-joins.jsonl']}],
+            'negative': {'remove': ['diagonal-source.json'],
+                         'error_contains': 'Missing required source: diagonal-source.json'}
+        }, indent=2) + '\n')
         entries.append({'case_id': case_id, 'kind': 'diagnostic_source_gated',
                         'construction': path.name,
                         'construction_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-                        'candidate_risk': case['physical_risk_assessment']})
+                        'candidate_risk': case['physical_risk_assessment'],
+                        'measurement_contract': str(contract_path.relative_to(HERE)),
+                        'fixture_recipe': str((HERE / 'cases' / suffix / 'fixture-recipe.json').relative_to(HERE.parents[1])),
+                        'measurement_procedure': {'entrypoint': 'analysis.py'}})
+        proposals.append({'case_id': case_id, 'target_law_id': plan['law_id'],
+                          'target_type': 'boundary_probe', 'rationale': case['purpose'],
+                          'variable_assignments': {'governing_diagonal_instruction': {
+                              'kind': 'world_setup',
+                              'value': case['scenario_parameters']['governing_device_instruction']}},
+                          'deliberate_differences': ['observed governing diagonal instruction'],
+                          'unresolved_judgment_calls': ['NRS 484B.290 exception source status'],
+                          'recording_description': DESCRIPTION})
+    proposal_path = HERE / 'proposals' / 'cases.json'
+    proposal_path.parent.mkdir(parents=True, exist_ok=True)
+    proposal_path.write_text(json.dumps({'cell_id': plan['cell_id'], 'actor': plan['actor'],
+                                         'status': 'diagnostic_source_gated',
+                                         'sweeps_expanded': True, 'sweep_specs': [],
+                                         'cases': proposals}, indent=2) + '\n')
     (HERE / 'execution-manifest.draft.json').write_text(json.dumps({
-        'assignment_id': ASSIGNMENT, 'status': 'diagnostic_original_sources_pending',
+        'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
+        'runtime_manifest_sha256': runtime_sha,
+        'status': 'diagnostic_original_sources_pending',
         'cases': entries}, indent=2) + '\n')
     return entries
 

@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from delivery_audit import CASES, audit_delivery
 from comparison_audit import compare_delivery_audits
 from native_observation import CAMERAS, capture_observation
+from video_sources import encode_original_cameras
 import test_native_observation
 
 
@@ -53,11 +54,27 @@ class ExactDeliveryAuditTests(unittest.TestCase):
         fixture.counter = 20
         return fixture
 
-    def seal(self, receipt, case_id):
+    def seal(self, receipt, case_id, packet):
         path = self.fixture.path.parent / "native-seal.json"
+        source = path.parent / "effective-site-packet.json"
+        source.write_text(json.dumps(packet))
+        frames = json.loads(self.fixture.path.read_text())["frames"]
+        trace = path.parent / "trace.jsonl"
+        trace.write_text("".join(json.dumps({"frame": row["frame"],
+            "time_s": row["time_s"], "position_m": row["walker_xyz_m"]}) + "\n"
+            for row in frames))
+        mapping = path.parent / "video_frames.jsonl"
+        mapping.write_text("".join(json.dumps({"video_frame": index,
+            "carla_frame": row["frame"], "native_frame": row["frame"],
+            "time_s": row["time_s"]}) + "\n" for index, row in enumerate(frames)))
+        videos = encode_original_cameras(self.fixture.path)
         path.write_text(json.dumps({"case_id": case_id,
             "observation_sha256": receipt["sha256"], "frame_count": 5,
-            "restored": True, "errors": []}))
+            "restored": True, "errors": [],
+            "effective_site_packet_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "trace_sha256": hashlib.sha256(trace.read_bytes()).hexdigest(),
+            "video_frame_map_sha256": hashlib.sha256(mapping.read_bytes()).hexdigest(),
+            "video_sources_sha256": {name: row["sha256"] for name, row in videos.items()}}))
         return {"kind": "original_native", "case_id": case_id,
             "observation_sha256": receipt["sha256"], "diagnostic_fixture": False,
             "seal_path": str(path), "seal_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
@@ -67,9 +84,11 @@ class ExactDeliveryAuditTests(unittest.TestCase):
         self.fixture.path.unlink(missing_ok=True)
         for archive in self.fixture.path.parent.glob("original.*.png.zip"):
             archive.unlink()
+        for video in self.fixture.path.parent.glob("*.mkv"):
+            video.unlink()
         packet, receipt = self.capture(case_id, marked=marked, inactive=inactive)
         return audit_delivery(packet, receipt, case_id=case_id,
-            native_provenance=self.seal(receipt, case_id), required_frames=5,
+            native_provenance=self.seal(receipt, case_id, packet), required_frames=5,
             camera_dimensions=self.dimensions)
 
     def test_three_exact_case_diagnostic_differences(self):
@@ -96,7 +115,7 @@ class ExactDeliveryAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "sealed original Native"):
             audit_delivery(packet, receipt, case_id=case_id, required_frames=5,
                            camera_dimensions=self.dimensions)
-        seal = self.seal(receipt, case_id)
+        seal = self.seal(receipt, case_id, packet)
         result = audit_delivery(packet, receipt, case_id=case_id,
             native_provenance=seal, required_frames=5, camera_dimensions=self.dimensions)
         self.assertIsNotNone(result["native_provenance"])

@@ -157,6 +157,50 @@ class NativeCaptureTests(unittest.TestCase):
             audit_attempt_pair('diagonal_instruction_permissive_vs_prohibitive',
                                self.attempt, variant)
 
+    def test_three_original_media_attempts_both_comparisons_and_missing_source(self):
+        walker, device, cameras = self.readers()
+        profile = {name: (2, 2) for name in CAMERAS}
+        def images(snapshot):
+            return {name: SimpleNamespace(frame=snapshot.frame, width=2, height=2,
+                                          raw_data=bytes((snapshot.frame % 251, 25, 40, 255)) * 4)
+                    for name in CAMERAS}
+        attempts = {}
+        for suffix in ('permissive_whole_crossing', 'prohibitive_whole_crossing',
+                       'instruction_changes_during_crossing'):
+            case = ASSIGNMENT + '__' + suffix
+            root = self.root / suffix
+            root.mkdir()
+            def read_instruction(snapshot, identity, selected=suffix):
+                instruction = ('diagonal_dont_walk' if selected == 'prohibitive_whole_crossing'
+                               or (selected == 'instruction_changes_during_crossing'
+                                   and snapshot.frame >= 500) else 'diagonal_walk')
+                return {**device(snapshot, identity), 'instruction': instruction}
+            native_capture.capture(World(), self.site, case, root, walker,
+                                   read_instruction, cameras,
+                                   [[2, 2], [8, 2], [8, 8], [2, 8]], diagnostic=True,
+                                   camera_image_reader=images,
+                                   diagnostic_camera_profile=profile)
+            saved = process_saved(root, case, root / 'saved-only.json',
+                                  allow_diagnostic=True)
+            self.assertTrue(saved['full_video_decode'])
+            self.assertTrue(audit_delivery(root, case,
+                                           allow_diagnostic=True)['software_checks_passed'])
+            attempts[suffix] = root
+        for comparison, variant in (
+            ('diagonal_instruction_permissive_vs_prohibitive', 'prohibitive_whole_crossing'),
+            ('diagonal_instruction_phase_change', 'instruction_changes_during_crossing'),
+        ):
+            receipt = audit_attempt_pair(comparison,
+                                         attempts['permissive_whole_crossing'],
+                                         attempts[variant], allow_diagnostic=True)
+            self.assertTrue(receipt['comparison_verified'])
+            self.assertEqual(receipt['physical_realization'], 'unconfirmed')
+        missing = attempts['instruction_changes_during_crossing']
+        (missing / 'overview.mkv').unlink()
+        with self.assertRaisesRegex(ValueError, 'missing|escapes'):
+            process_saved(missing, ASSIGNMENT + '__instruction_changes_during_crossing',
+                          missing / 'missing-source-result.json', allow_diagnostic=True)
+
 
 if __name__ == '__main__':
     unittest.main()

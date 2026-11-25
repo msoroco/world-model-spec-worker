@@ -13,6 +13,9 @@ from PIL import Image
 
 from native_acquisition import CAMERAS, _sha
 
+PROFILE_DIMENSIONS = {'overview': [1920, 1080], 'approach': [1280, 720],
+                      'reference_corner': [1280, 720], 'driver_reference': [1280, 720]}
+
 
 def inventory_camera_sources(packet: dict, capture_root: Path) -> dict:
     """Describe the four original PNG streams without changing captured bytes.
@@ -97,6 +100,8 @@ def audit_camera_sources(packet: dict, manifest: dict, capture_root: Path,
             raise ValueError("camera PNG full decode failed") from exc
         if width < 2 or height < 2 or not pixels:
             raise ValueError("camera PNG pixels or dimensions invalid")
+        if not allow_diagnostic and [width, height] != PROFILE_DIMENSIONS[camera]:
+            raise ValueError('original camera dimensions differ from capture profile')
         if camera in dimensions and dimensions[camera] != [width, height]:
             raise ValueError("camera PNG dimensions changed")
         dimensions[camera] = [width, height]

@@ -15,7 +15,8 @@ from delivery_audit import CASES
 from site_geometry import assess_site
 
 REQUIRED_REVIEWS = ("topology", "highway", "device_authority",
-                    "device_operation", "marking_survey", "exception_290")
+                    "device_operation", "device_inventory", "camera_placement",
+                    "marking_survey", "exception_290")
 
 
 def _read_ref(ref: dict, *, base: Path) -> Path:
@@ -53,6 +54,9 @@ def load_reviewed_site(path: str | Path, *, expected_case_id: str) -> dict:
     if packet.get("cell_id") != "C111329" or packet.get("case_id") != expected_case_id:
         raise ValueError("source packet exact case or cell differs")
     site = assess_site(packet, require_operating=False)
+    road_junction_ids = {node.attrib.get("id") for node in xml.findall("./junction")}
+    if not set(site["between_junction_ids"]) <= road_junction_ids:
+        raise ValueError("reviewed junction IDs absent from original OpenDRIVE")
     marked, operating = CASES[expected_case_id]
     if site["marked_crosswalk_present"] is not marked or \
        site["device_operation_observed"] is not operating:

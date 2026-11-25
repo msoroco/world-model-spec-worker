@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1e__pedestrian",
   "input_sha256": "a6783ac09cade183f65b2d3d63c367a8543b58c76d0ffbc1f1b472aab2728c79",
   "status": "partial",
-  "readiness_kind": "source_sealed_original_media_and_delivery_audit_probe",
+  "readiness_kind": "current_runtime_diagnostic_compatibility_and_saved_only_passed",
   "applied_update": 0,
   "tests": [
     {
@@ -15,7 +15,67 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1e__pedestrian/tests -v",
       "exit_code": 0,
       "log": "nov25-tests.log",
-      "sha256": "2645808a02a1ad5c16cebfb7f6a21211fb21849c47c4660b16ef5f2dd952e613"
+      "sha256": "5eb6615346f36dbc96a6a9355196681cc37a463fce271453250d68affa6e99c8"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1e__pedestrian/prove_diagnostic.py",
+      "exit_code": 0,
+      "log": "nov25-diagnostic-lifecycle.log",
+      "sha256": "5af1c50aa152f9694bdb868342d885bf594a2ae3cb734f6eb993c446a305b544"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --output .runtime-work/c111329-offline-permissive_whole_crossing-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "nov25-offline-permissive_whole_crossing.log",
+      "sha256": "b5c1e8089529b51f39c724b5842c584de68417749b4ecf1805a45ca03fb79eeb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --output .runtime-work/c111329-compat-permissive_whole_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-compat-finalcheck-permissive_whole_crossing.log",
+      "sha256": "e58278dbcbfd23009bb2ebed3332c9f8ec02f1e03ab20558b265d40197fbd073"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --attempt .runtime-work/c111329-saved-source-permissive_whole_crossing-v3 --output .runtime-work/c111329-saved-permissive_whole_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-saved-finalcheck.log",
+      "sha256": "51f5c6d2d5da20edd968da7114d7877f14550aff150033d0c5a269274b70fd7b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --output .runtime-work/c111329-offline-prohibitive_whole_crossing-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "nov25-offline-prohibitive_whole_crossing.log",
+      "sha256": "e8f64bbe9d7411b58d40ed233c21ed8124647ab5bf3ba3b1313c0be98393ea73"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --output .runtime-work/c111329-compat-prohibitive_whole_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-compat-finalcheck-prohibitive_whole_crossing.log",
+      "sha256": "8f808c1bd41cad010951ab2682d05e50b6ab889ffdcaa0bd96e29950e3ade09c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --attempt .runtime-work/c111329-saved-source-prohibitive_whole_crossing-v3 --output .runtime-work/c111329-saved-prohibitive_whole_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-saved-finalcheck-prohibitive_whole_crossing.log",
+      "sha256": "d3cd06c2c3573e5b4a04c26f1fa04774702ad291945ef148030de6c6e8a008e3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --output .runtime-work/c111329-offline-instruction_changes_during_crossing-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "nov25-offline-instruction_changes_during_crossing.log",
+      "sha256": "999100043ff78d995518dd255d243ce77fe0b0ae82c99b66f9ccd45ce49bffaa"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --output .runtime-work/c111329-compat-instruction_changes_during_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-compat-finalcheck-instruction_changes_during_crossing.log",
+      "sha256": "659801da61b31ca7f1bbbe99b79685655a53eae7a308adcb394d78fd9b275391"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --attempt .runtime-work/c111329-saved-source-instruction_changes_during_crossing-v3 --output .runtime-work/c111329-saved-instruction_changes_during_crossing-finalcheck --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "nov25-saved-finalcheck-instruction_changes_during_crossing.log",
+      "sha256": "2df94f306d9385f18c396844caf9bf97fae122d45140ba4806030ba49ff3bca2"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1e__pedestrian --complete",
@@ -31,7 +91,7 @@
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "After CPU readiness: actual CARLA opposite-corner motion, original four-view visibility and independent physical completion review"
   ],
-  "reason": "Four canonical original camera streams now encode lossless FFV1 at 20 Hz, bind every original frame to the 900-tick walker/device capture, fully decode all frames, and seal source- and auditor-hashed receipts. Saved measurement rejects non-diagnostic attempts without these videos. Independent delivery audit rejects diagnostic attempts and requires original-video review before asserting physical completion. Pinned preflight, 15 focused tests and scoped static pass; exact strict still rejects truthful partial. Source-surveyed official diagonal device and NRS 484B.290 exception, executable exact bundles, semantic proposals/manifest, offline and compatibility receipts, saved-only runtime processing and comparison receipts remain CPU preparation work."
+  "reason": "Three exact source-gated diagnostic constructions pass current-runtime offline, positive/missing-diagonal-source compatibility and recorded-only processing; 19 focused tests, both diagnostic comparisons, independent delivery software paths and missing-original-video negative pass. The source-reviewed official C111329 diagonal device, surveyed site and NRS 484B.290 exception source are absent; canonical semantic stages, selected delivery manifest, justified fallback and selected-package audit receipts remain CPU work. Strict assignment gate truthfully rejects partial."
 }
