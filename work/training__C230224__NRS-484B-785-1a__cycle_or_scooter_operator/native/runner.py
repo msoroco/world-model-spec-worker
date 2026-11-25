@@ -2,6 +2,7 @@
 import argparse
 import json
 import math
+import os
 import queue
 import subprocess
 from pathlib import Path
@@ -9,7 +10,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator'
 CASE = AID + '__controlled_1'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -89,8 +90,10 @@ def capture(survey, output, host, port):
     cfg = config_check()
     survey_check(survey)
     output.mkdir(parents=True, exist_ok=True)
-    if any(output.iterdir()):
-        raise ValueError('Retain prior Native attempt; use an empty output directory')
+    allowed = {'runner.py', 'config.json', 'construction.json', 'candidate-selection.json',
+               'measure_scooter.py', 'tests'}
+    if any(item.name not in allowed for item in output.iterdir()):
+        raise ValueError('Retain prior Native attempt; use a fresh materialized directory')
     client = carla.Client(host, port)
     client.set_timeout(120)
     world = client.get_world()
@@ -130,7 +133,7 @@ def capture(survey, output, host, port):
                 ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                  '-video_size', f"{camera_spec['width']}x{camera_spec['height']}", '-framerate', '20',
                  '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+camera_spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+                 str(output/(camera_spec['name']+'.mkv'))], stdin=subprocess.PIPE)
         first_elapsed = None
         with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_rider_trace.jsonl').open('w') as trace_file:
             for i in range(COUNT):
@@ -197,6 +200,8 @@ if __name__ == '__main__':
         print(json.dumps({'case_id': CASE, 'frames': COUNT, 'cameras': list(CAMERAS),
                           'carla_imported': False, 'physical_acceptance_claimed': False}, sort_keys=True))
     else:
-        if args.survey is None or args.output_dir is None:
-            parser.error('Supply reviewed --survey and --output-dir')
-        print(json.dumps(capture(json.loads(args.survey.read_text()), args.output_dir, args.host, args.port)))
+        survey_path = args.survey or (Path(os.environ['SCENARIO_SCOOTER_SURVEY'])
+                                      if os.environ.get('SCENARIO_SCOOTER_SURVEY') else None)
+        if survey_path is None or args.output_dir is None:
+            parser.error('Supply reviewed --survey or SCENARIO_SCOOTER_SURVEY and --output-dir')
+        print(json.dumps(capture(json.loads(survey_path.read_text()), args.output_dir, args.host, args.port)))

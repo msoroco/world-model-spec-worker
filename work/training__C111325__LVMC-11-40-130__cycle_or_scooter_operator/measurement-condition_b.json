@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111325__LVMC-11-40-130__cycle_or_scooter_operator__selected_01149d06__condition_b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "LVMC 11.40.130",
+      "output_key": "bicycle_speed_conditions",
+      "method": "measure_bicycle_speed",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-bicycle-trace.jsonl",
+        "context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "stop_approach_scope",
+      "method": "measure_stop_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-bicycle-trace.jsonl",
+        "context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-bicycle-trace.jsonl"
+    ],
+    "error_contains": "Missing required source: native-bicycle-trace.jsonl"
+  }
+}

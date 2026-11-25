@@ -25,13 +25,17 @@ class Setup:
     requested_peak_speed_mps: float
 
 
-def plan(condition):
+def plan(condition, candidate='primary'):
     if condition not in SPEED_REQUESTS:
         raise ValueError('unknown speed condition')
+    if candidate not in ('primary', 'fallback1'):
+        raise ValueError('unknown bicycle candidate')
     return {
-        'condition': condition, 'actor_blueprint': BLUEPRINT,
+        'condition': condition, 'candidate_id': candidate,
+        'actor_blueprint': BLUEPRINT,
         'requested_peak_speed_mps': SPEED_REQUESTS[condition],
-        'start_xyz_m': (-50.0, -1.75, 0.7), 'yaw_deg': 0.0,
+        'start_xyz_m': (-50.0 if candidate == 'primary' else -52.0, -1.75, 0.7),
+        'yaw_deg': 0.0,
         'rate_hz': RATE_HZ, 'frames': FRAMES, 'duration_s': 30,
         'camera_profile': 'overview1080-capability',
         'cameras': [
@@ -47,7 +51,7 @@ def plan(condition):
 
 def setup(world, carla, request, survey):
     """Spawn owned actors after the caller's Native map/signal readback."""
-    if request != plan(request.get('condition')):
+    if request != plan(request.get('condition'), request.get('candidate_id', 'primary')):
         raise ValueError('bicycle capture plan changed')
     if not (survey.get('route_lane_verified') is True and
             survey.get('stop_sign_governs_route') is True and

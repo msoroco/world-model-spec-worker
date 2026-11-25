@@ -43,3 +43,7 @@ Implement an actual bicycle Native mechanism rather than substituting a motor ve
 ## 2026-11-25 original capture path
 
 `native/live_capture.py` connects the source-hashed road, original route survey, bicycle setup and readback-driven controller to a prospective exclusive CARLA run. It records 600 original bicycle pose/velocity rows, Native frame identities, four synchronized original camera streams and raw frame/source hashes. It uses the shared frame writer and restores the operator-owned world with cleanup in `finally`. Its CPU construction check passed; no CARLA server was contacted. Saved finalization, physical status assessment, selected execution-manifest binding, public compatibility, recorded-only processing, semantic proposals and independent delivery proofs remain incomplete.
+
+## 2026-11-25 selected proposal checkpoint
+
+`proposals/cases.json` now names the two exact selected bicycle-speed conditions, assigns the statutory text and reviewed stop-sign approach topic to both, and declares the 600-frame measured-source channels. `case-plan.json` maps every original observation term to its proposed channel and retains unverified physical conditions and legal judgment. The unselected offline drafts were rebound to this plan and both passed current-runtime offline again. This is a selected planning checkpoint, not a selected executable delivery manifest; public compatibility, recorded-only saved processing and full delivery checks remain CPU work.

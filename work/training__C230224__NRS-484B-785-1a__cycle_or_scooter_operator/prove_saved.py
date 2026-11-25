@@ -19,9 +19,11 @@ def main():
         rows = [dict(json.loads(line), source_kind='original_native_pose') for line in lines]
         (root / 'native_rider_trace.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
         hashes = {}
-        for name in ('forward', 'rear', 'left', 'right'):
-            path = root / ('camera_'+name+'.mkv')
-            run = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=16x16:r=20',
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+            path = root / (name+'.mkv')
+            dimensions = '1920x1080' if name == 'overview' else '1280x720'
+            run = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-f', 'lavfi', '-i',
+                                  'color=c=black:s='+dimensions+':r=20',
                                   '-frames:v', '600', '-c:v', 'ffv1', str(path)], capture_output=True, text=True)
             if run.returncode:
                 raise AssertionError('Synthetic saved camera creation failed: '+run.stderr[-500:])
@@ -30,7 +32,7 @@ def main():
         context_path.write_text(json.dumps(context)+'\n')
         out = measure(root)
         assert out['samples'] == 600 and len(out['source_sha256']) == 7
-        context['camera_sha256']['camera_left.mkv'] = '0'*64
+        context['camera_sha256']['reference_corner.mkv'] = '0'*64
         context_path.write_text(json.dumps(context)+'\n')
         try:
             measure(root)

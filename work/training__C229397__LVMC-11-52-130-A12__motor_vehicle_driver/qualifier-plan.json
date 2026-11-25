@@ -1,0 +1,80 @@
+{
+  "format": "c229397-qualifier-construction-plan-v1",
+  "assignment_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver",
+  "source_law": "LVMC 11.52.130(A)(12)",
+  "frozen_cell": "C229397 road/park/crosswalk motor_vehicle_driver",
+  "selected_construction_status": "two_exact_unselected_cpu_candidates; four_qualifier_source_roles_unresolved",
+  "rows": [
+    {
+      "qualifier": "traffic_conflict",
+      "exact_variant": "traffic_conflict_near",
+      "controlled_difference": "original second road participant trajectory and conflict timing near the marked crosswalk",
+      "required_original_sources": [
+        "participant actor identity and 600-frame trajectory",
+        "ego pose/control/frame map and four camera videos",
+        "independent traffic necessity review"
+      ],
+      "current_construction_gap": "Second Native actor acquisition and 600-frame motion channel are authored and CPU checked; original actor trajectory, traffic necessity review and physical capture are unavailable."
+    },
+    {
+      "qualifier": "law_compliance",
+      "exact_variant": "law_compliance_near",
+      "controlled_difference": "documented applicable law instruction requiring the observed stop",
+      "required_original_sources": [
+        "exact applicable law text and authority",
+        "time and location applicability record",
+        "ego pose/control/frame map and four camera videos",
+        "independent law-compliance review"
+      ],
+      "current_construction_gap": "Source-gated audit and exact role requirements are authored; no independently established applicable other-law instruction or authority source is supplied."
+    },
+    {
+      "qualifier": "police_direction",
+      "exact_variant": "police_direction_near",
+      "controlled_difference": "authenticated officer direction and its timed relation to the observed stop",
+      "required_original_sources": [
+        "officer identity and authority record",
+        "direction content and timestamp",
+        "ego pose/control/frame map and four camera videos",
+        "independent direction review"
+      ],
+      "current_construction_gap": "Source-gated officer identity, direction and context roles are authored; no authenticated officer direction or timed source is supplied."
+    },
+    {
+      "qualifier": "device_direction",
+      "exact_variant": "device_direction_near",
+      "controlled_difference": "identified traffic control device state and timed direction near the crosswalk",
+      "required_original_sources": [
+        "device identity and placement",
+        "original device state and timing",
+        "ego pose/control/frame map and four camera videos",
+        "independent direction review"
+      ],
+      "current_construction_gap": "Proposed Native signal and 600-frame actual-or-absent state acquisition are authored and CPU checked; Native spawn, original state, device authority and applicability are unverified."
+    }
+  ],
+  "audit_script": "qualifier_source_audit.py",
+  "audit_script_sha256": "524ce63ae40769eea4b00cdca69e4718de32b79771fc95b8ae2db7021da1038e",
+  "diagnostic_proof_log": "crosswalk-qualifier-source-proof.log",
+  "diagnostic_proof_log_sha256": "7a24df11be754fc27c492e85d3963c4a8ef8c1366be287e40b48b29863a7f1d1",
+  "legal_verdict_claimed": false,
+  "physical_acceptance_claimed": false,
+  "native_proof_log": "crosswalk-qualifier-native-proof.log",
+  "native_proof_log_sha256": "e0529ce8d9d9c0469ac71122082a544f66a25d89d04569ac3c075942aab1f865",
+  "finalizer_proof_log": "crosswalk-qualifier-finalizer-proof.log",
+  "finalizer_proof_log_sha256": "65cafc760220402b3e3f063a76c1afd941fd45cb5e96ce11b70caaa650e97b94",
+  "candidate_manifest": "qualifier-execution-manifest.json",
+  "candidate_manifest_sha256": "49afb3112c9c9efc2c09f0bfdd89417edd64cda2187e05d7ceeed9b1e0be3dda",
+  "candidate_constructions": [
+    {
+      "suffix": "traffic_conflict_near",
+      "sha256": "9037e7f13f6cb192d1be6f6ef8fef3636c39c27f5d3d74078197f0f12135063f",
+      "offline_log_sha256": "0cc98cf51938823098689654f8252c0535e9b5e2455f1b6944cf26aa9249af22"
+    },
+    {
+      "suffix": "device_direction_near",
+      "sha256": "3b526116d719a97fb3f217331a467f3f144c9eeac9035591c09852e6b2a66f5b",
+      "offline_log_sha256": "09705569e9bc83fcef473f9cbd0011702462830047344b8574c2afd35ed164aa"
+    }
+  ]
+}

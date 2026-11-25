@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 import subprocess
+import argparse
 from pathlib import Path
 
 AID = 'training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator'
@@ -25,8 +26,9 @@ def inside(point, box):
 def measure(root):
     root = Path(root)
     paths = {key: root / key for key in ('video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json')}
-    if any(not p.is_file() for p in paths.values()):
-        raise ValueError('Missing original frame, trace, or reviewed context')
+    for key, path in paths.items():
+        if not path.is_file():
+            raise ValueError('Missing required source: ' + key)
     frames, trace = records(paths['video_frames.jsonl']), records(paths['native_rider_trace.jsonl'])
     context = json.loads(paths['scooter_context.json'].read_text())
     if len(frames) != COUNT or len(trace) != COUNT or context.get('assignment_id') != AID:
@@ -41,17 +43,20 @@ def measure(root):
         raise ValueError('Unspecified source kind')
     camera_hashes = {}
     if context['review_kind'] == 'original_source_review':
-        for name in ('forward', 'rear', 'left', 'right'):
-            camera = root / ('camera_' + name + '.mkv')
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+            camera = root / (name + '.mkv')
             if not camera.is_file():
                 raise ValueError('Missing original source camera: ' + name)
             probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
-                '-show_entries', 'stream=nb_read_frames,r_frame_rate', '-of', 'json', str(camera)],
+                '-show_entries', 'stream=nb_read_frames,r_frame_rate,width,height', '-of', 'json', str(camera)],
                 capture_output=True, text=True)
             if probe.returncode:
                 raise ValueError('Source camera decode failed: ' + name)
             streams = json.loads(probe.stdout).get('streams', [])
-            if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
+            width, height = (1920, 1080) if name == 'overview' else (1280, 720)
+            if (len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or
+                    streams[0].get('r_frame_rate') != '20/1' or
+                    (streams[0].get('width'), streams[0].get('height')) != (width, height)):
                 raise ValueError('Source camera does not contain 600 20 Hz frames: ' + name)
             camera_hashes[camera.name] = sha(camera)
         if context.get('camera_sha256') != camera_hashes:
@@ -119,3 +124,78 @@ def measure(root):
             'min_speed_mph': min(speeds) / .44704, 'max_speed_mph': max(speeds) / .44704,
             'motor_classification_max_mph': maximum, 'rider_excluded_mass_lb': mass,
             'legal_result': None, 'physical_acceptance_claimed': False}
+
+
+def finalize(attempt, output):
+    """Derive a bounded diagnostic result from saved sources, without legal inference."""
+    root = Path(attempt)
+    output = Path(output)
+    if output.exists() or (root/'result.json').exists():
+        raise ValueError('Fresh saved-only stage required')
+    measurement = measure(root)
+    config = json.loads((root/'config.json').read_text())
+    frames = records(root/'video_frames.jsonl')
+    native = records(root/'native_rider_trace.jsonl')
+    source_names = ('video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json')
+    hashes = {name: sha(root/name) for name in source_names}
+    report = {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],
+              'measurements': {'measure': {'method': 'measure', 'value': measurement,
+                                           'sources': hashes}},
+              'legal_verdict_claimed': False}
+    trace = []
+    speed = []
+    for frame, row in zip(frames, native):
+        point = row['device_center_xy_m']
+        trace.append({'frame': frame['native_frame'], 'time_s': frame['time_s'],
+                      'position': {'x': point[0], 'y': point[1], 'z': 0},
+                      'position_m': [point[0], point[1], 0],
+                      'heading_deg': 0, 'speed_mps': row['device_speed_mps'],
+                      'speed_mph': row['device_speed_mps']/.44704,
+                      'control': {}})
+        speed.append({'time_s': frame['time_s'], 'value': row['device_speed_mps']})
+    trace_path = root/'trace.jsonl'
+    if trace_path.exists():
+        if records(trace_path) != trace:
+            raise ValueError('Original trace differs from Native scooter source')
+    else:
+        trace_path.write_text(''.join(json.dumps(row, allow_nan=False)+'\n' for row in trace))
+    channels = root/'channels'
+    channels.mkdir(exist_ok=True)
+    (channels/'kin.speed.jsonl').write_text(''.join(json.dumps(row, allow_nan=False)+'\n' for row in speed))
+    requested = measurement['requested_speed_mps']
+    observed = sum(row['device_speed_mps'] for row in native)/len(native)
+    tolerance = .2
+    result = {'case_id': config['case_id'], 'measured_values': measurement,
+              'target_checks': [{'target': 'requested scooter operating speed',
+                                 'requested': requested, 'measured': observed,
+                                 'method': 'saved native scooter velocity mean',
+                                 'tolerance': tolerance,
+                                 'matched': abs(requested-observed) <= tolerance,
+                                 'physical_cause_confirmed': False,
+                                 'cause_evidence': list(hashes)}],
+              'setup_confirmed': False, 'behavior_attempted': True,
+              'maneuver_completed': False,
+              'termination_reason': 'physical occupancy and applicable ordinance review pending',
+              'physical_failure_flags': ['independent physical review pending'],
+              'trace_reference': 'trace.jsonl',
+              'video_references': [name+'.mkv' for name in
+                                   ('overview', 'approach', 'reference_corner', 'driver_reference')],
+              'video_frame_map_reference': 'video_frames.jsonl',
+              'recording_description': config['recording_description'],
+              'recording_evidence': [
+                  {'name': 'kin.speed', 'unit': 'm/s', 'reference': 'channels/kin.speed.jsonl'},
+                  {'name': 'device_subtype', 'unit': 'structured', 'reference': 'scooter_context.json'}],
+              'realized_observables': {}, 'provenance_kind': 'synthetic_fixture',
+              'diagnostic_fixture': True, 'accepted': False,
+              'legal_verdict_claimed': False}
+    output.write_text(json.dumps(report, indent=2, allow_nan=False)+'\n')
+    (root/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
+    return report
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', required=True)
+    parser.add_argument('--output', required=True)
+    args = parser.parse_args()
+    print(json.dumps(finalize(args.attempt, args.output), sort_keys=True))

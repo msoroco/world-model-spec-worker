@@ -13,27 +13,57 @@
   "frames": 600,
   "cameras": [
     {
-      "name": "forward",
+      "name": "overview",
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
     },
     {
-      "name": "rear",
+      "name": "approach",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
     },
     {
-      "name": "left",
+      "name": "reference_corner",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
     },
     {
-      "name": "right",
+      "name": "driver_reference",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
     }
   ],
-  "recording_description": "Thirty-second 15-mph boundary electric-scooter operation on a reviewed path with original speed, footprint, rider identity, device classification, ordinance applicability and four source cameras",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.speed",
+        "unit": "m/s",
+        "method": "original Native scooter velocity, saved per frame",
+        "time_window": "full 30 s capture",
+        "reference_frame": "scooter center",
+        "uncertainty": "Native velocity readback",
+        "sampling_rate_hz": 20
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "device_subtype",
+        "unit": "structured",
+        "method": "reviewed electric scooter source context"
+      }
+    ],
+    "limitations": [
+      "Diagnostic fixture does not establish genuine scooter qualification, applicable ordinance, physical occupancy, or legal status"
+    ]
+  },
   "physical_acceptance_claimed": false,
   "legal_verdict": null
 }

@@ -35,7 +35,7 @@ def audit(low, high, original_only=True):
         sources = x.get('source_sha256', {})
         required = {'video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json'}
         if original_only:
-            required |= {'camera_forward.mkv', 'camera_rear.mkv', 'camera_left.mkv', 'camera_right.mkv'}
+            required |= {'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}
         if not required <= set(sources) or any(len(sources[k]) != 64 for k in required):
             raise ValueError('Comparison original source hashes missing')
     return {'format': 'scooter-speed-comparison-audit-v1', 'assignment_id': AID,
@@ -61,7 +61,7 @@ def audit_boundary(low, at_cap, high, original_only=True):
     source = at_cap.get('source_sha256', {})
     required = {'video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json'}
     if original_only:
-        required |= {'camera_forward.mkv', 'camera_rear.mkv', 'camera_left.mkv', 'camera_right.mkv'}
+        required |= {'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}
     if not required <= set(source) or any(len(source[k]) != 64 for k in required):
         raise ValueError('At-cap original source hashes missing')
     return {**pair, 'format': 'scooter-speed-boundary-audit-v1',

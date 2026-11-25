@@ -7,6 +7,7 @@ independent physical/pixel audit and legal review.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import queue
 import subprocess
@@ -41,12 +42,12 @@ def check():
             'legal_prudence_verdict': None}
 
 
-def execute(condition, output_dir, host='127.0.0.1', port=2000):
+def execute(condition, output_dir, host='127.0.0.1', port=2000, candidate='primary'):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     check()
-    request = plan(condition)
+    request = plan(condition, candidate)
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('Original attempt output must be fresh')
@@ -80,6 +81,22 @@ def execute(condition, output_dir, host='127.0.0.1', port=2000):
         (output/'road.xodr').write_text(world.get_map().to_opendrive())
         (output/'route-survey.json').write_text(json.dumps(surveyed, indent=2)+'\n')
         (output/'capture-request.json').write_text(json.dumps(request, indent=2)+'\n')
+        context = {'source_kind': 'original_native_actor_readback',
+                   'cell_id': 'C111325', 'law_id': 'LVMC-11-40-130',
+                   'actor': 'cycle_or_scooter_operator',
+                   'bicycle_blueprint': built.bicycle.type_id,
+                   'stop_sign_governs_route': surveyed['stop_sign_governs_route'],
+                   'approach_lane_verified': surveyed['route_lane_verified'],
+                   'municipal_jurisdiction_review_pending': True,
+                   'fixed_conditions_id': 'c111325-dry-clear-stop-v1',
+                   'legal_prudence_verdict': None,
+                   'pedestrian_count': 0,
+                   'clear_weather': surveyed['precipitation'] == 0,
+                   'wetness': surveyed['wetness']}
+        (output/'context.json').write_text(json.dumps(context, indent=2)+'\n')
+        capture = output/'capture'
+        graph_dir = capture/'native'/'graphs'/'base'
+        graph_dir.mkdir(parents=True)
         cameras = {c['name']: c for c in request['cameras']}
         for name in NAMES:
             sensor = built.cameras[name]
@@ -97,7 +114,10 @@ def execute(condition, output_dir, host='127.0.0.1', port=2000):
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         prior, first_elapsed = None, None
         with FrameMap(output/'video_frames.jsonl') as frame_map, (
-                output/'native-bicycle-trace.jsonl').open('x') as trace:
+                output/'native-bicycle-trace.jsonl').open('x') as source_trace, (
+                output/'trace.jsonl').open('x') as trace, (
+                capture/'evidence.jsonl').open('x') as evidence, (
+                capture/'native'/'frames.jsonl').open('x') as graph_frames:
             for index in range(FRAMES):
                 control = control_bicycle(built.bicycle, carla, condition, prior)
                 native_frame = world.tick()
@@ -110,6 +130,10 @@ def execute(condition, output_dir, host='127.0.0.1', port=2000):
                 time_s = elapsed-first_elapsed
                 pose = built.bicycle.get_transform().location
                 velocity = built.bicycle.get_velocity()
+                speed = math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
+                vertices = built.bicycle.bounding_box.get_world_vertices(
+                    built.bicycle.get_transform())
+                body = [[v.x, v.y, v.z] for v in vertices]
                 row = {'sample_index': index, 'native_frame': native_frame,
                        'time_s': time_s,
                        'source_kind': 'original_native_actor_readback',
@@ -131,15 +155,61 @@ def execute(condition, output_dir, host='127.0.0.1', port=2000):
                     raw_hashes[name] = hashlib.sha256(image.raw_data).hexdigest()
                 frame_map.append(native_frame, time_s,
                     camera_native_frames=frame_ids, source_rgb_sha256=raw_hashes)
-                trace.write(json.dumps(row, allow_nan=False)+'\n')
+                source_trace.write(json.dumps(row, allow_nan=False)+'\n')
+                trace.write(json.dumps({
+                    'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': pose.x, 'y': pose.y, 'z': pose.z},
+                    'position_m': [pose.x, pose.y, pose.z],
+                    'heading_deg': built.bicycle.get_transform().rotation.yaw,
+                    'speed_mps': speed, 'speed_mph': speed/.44704,
+                    'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                    'control': control, 'bicycle_source': {
+                        'sample_index': index, 'native_frame': native_frame}},
+                    allow_nan=False)+'\n')
+                evidence.write(json.dumps({
+                    'original_frame': native_frame, 'replay_frame': native_frame,
+                    'recording_time_s': time_s,
+                    'replay_simulation_time_s': time_s,
+                    'actor_id': built.bicycle.id,
+                    'ego': {'position_m': [pose.x, pose.y, pose.z],
+                            'heading_deg': built.bicycle.get_transform().rotation.yaw,
+                            'speed_mps': speed, 'body_vertices_m': body,
+                            'speed_provenance': 'original_trace_actor_get_velocity'},
+                    'world': {'weather': {'cloudiness': world.get_weather().cloudiness,
+                                          'precipitation': world.get_weather().precipitation,
+                                          'wetness': world.get_weather().wetness,
+                                          'fog_density': world.get_weather().fog_density},
+                              'road_projection': {'road_id': 1, 'section_id': 0,
+                                                  'lane_id': -1, 's_m': pose.x+222}}},
+                    allow_nan=False)+'\n')
+                graph_name = f'graphs/base/{native_frame:08d}.adapter.json'
+                (graph_dir/f'{native_frame:08d}.adapter.json').write_text(
+                    json.dumps({'attributes': {'frame': native_frame},
+                                'nodes': [], 'edges': []})+'\n')
+                graph_frames.write(json.dumps({
+                    'abstract': graph_name, 'adapter_graph': graph_name,
+                    'base': graph_name, 'edges': 0, 'frame': native_frame,
+                    'nodes': 0, 'simulation_time': time_s, 'time_s': time_s})+'\n')
                 prior = {'position_x_m': pose.x}
         for name, encoder in encoders.items():
             encoder.stdin.close()
             error = encoder.stderr.read()
             if encoder.wait(timeout=180):
                 raise RuntimeError('Original camera encode failed '+name+': '+error.decode()[-300:])
+        (capture/'manifest.json').write_text(json.dumps({
+            'frames': FRAMES, 'extraction_confirmed': True,
+            'synthetic_diagnostic': False,
+            'sources': {'road.xodr': sha(output/'road.xodr'),
+                        'trace.jsonl': sha(output/'trace.jsonl')},
+            'required_observations': []}, indent=2)+'\n')
+        (capture/'recorder_info.txt').write_text(
+            'Original CARLA actor readback and synchronized RGB capture.\n'
+            +f'Create {built.bicycle.id}: {built.bicycle.type_id} (0)\n')
         names = ['road.xodr', 'route-survey.json', 'capture-request.json',
-                 'native-bicycle-trace.jsonl', 'video_frames.jsonl',
+                 'context.json', 'native-bicycle-trace.jsonl',
+                 'trace.jsonl', 'capture/evidence.jsonl',
+                 'capture/native/frames.jsonl', 'capture/manifest.json',
+                 'video_frames.jsonl',
                  *(name+'.mkv' for name in NAMES)]
         (output/'source-hashes.json').write_text(json.dumps({
             name: sha(output/name) for name in names}, indent=2)+'\n')
@@ -168,6 +238,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--condition', choices=('condition_a', 'condition_b'))
+    parser.add_argument('--candidate', choices=('primary', 'fallback1'), default='primary')
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
@@ -175,7 +246,8 @@ def main():
     if args.check:
         print(json.dumps(check()))
     elif args.condition and args.output_dir:
-        print(json.dumps(execute(args.condition, args.output_dir, args.host, args.port)))
+        print(json.dumps(execute(args.condition, args.output_dir, args.host, args.port,
+                                 args.candidate)))
     else:
         parser.error('Supply --check or --condition with --output-dir')
 
