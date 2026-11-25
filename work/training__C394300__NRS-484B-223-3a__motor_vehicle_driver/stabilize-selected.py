@@ -26,6 +26,7 @@ def stabilize(case, candidate):
         if item['path'] == 'config.json':
             config = json.loads(item['content'])
             config['status'] = 'selected_cpu_preparation'
+            config['required_atoms'] = ['rel.occupies', 'kin.path_length']
             for camera in config['cameras']:
                 camera['fov_deg'] = CAMERA_FOV[camera['name']]
             item['content'] = json.dumps(config, indent=2, ensure_ascii=False) + '\n'

@@ -1,0 +1,374 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_delivery_prepared",
+  "cases": [
+    {
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "measurement_contract": "current-measurement-controlled_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c394300-3a-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native center-lane design, movement, original pixels and purpose require saved review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/controlled_1/fallback1/construction.json",
+          "construction_sha256": "7b3fd2e1d0f099e9552e6288f09a1d6c4153fea45f7fcf0a5a4f4ebe49f0f315",
+          "trigger": {
+            "metric": "center_lane_approach_span_m",
+            "threshold_m": 10.0,
+            "reason": "Need enough measured center-lane approach to classify use before the first turn opportunity.",
+            "source": "native/trigger_evidence.py and original Native frame/camera evidence",
+            "failure_condition": "measured value below threshold"
+          },
+          "changed_knobs": [
+            "route_start_x_m",
+            "entry_advance_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_1-fallback1-7b3fd2e1d0f0 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7b3fd2e1d0f099e9552e6288f09a1d6c4153fea45f7fcf0a5a4f4ebe49f0f315",
+            "log": "selected-offline/controlled_1-fallback1.log",
+            "log_sha256": "a5c5b0fa6f76e341be2d0a47c5ca347720f39f9220164b18a761fc45edc560d5"
+          },
+          "compatibility": {
+            "receipt": "selected-public-final/controlled_1-fallback1-compatibility.json",
+            "sha256": "efd2373e375ae26c370f99a1384caee78cab10f3a64d5081b314276accac7aa7",
+            "log": "selected-public-final/controlled_1-fallback1-analysis.log",
+            "negative_log": "selected-public-final/controlled_1-fallback1-negative.log"
+          },
+          "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_1-recipe.json"
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/controlled_1/fallback3/construction.json",
+          "construction_sha256": "97c66e0068da2131bb029bddffde79c7cde2a4d89e57b6c99876448b39938823",
+          "trigger": {
+            "metric": "center_lane_and_body_visible_fraction",
+            "threshold": 0.9,
+            "reason": "The center lane and subject body must be visible at the decisive frames.",
+            "source": "native/trigger_evidence.py and original Native frame/camera evidence",
+            "failure_condition": "visible fraction below threshold"
+          },
+          "changed_knobs": [
+            "camera_plan"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_1-fallback3-97c66e0068da --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "97c66e0068da2131bb029bddffde79c7cde2a4d89e57b6c99876448b39938823",
+            "log": "selected-offline/controlled_1-fallback3.log",
+            "log_sha256": "a6c2356b7dafa75409219149a0317e52377e6ebaf87e5718d3548e019cac8441"
+          },
+          "compatibility": {
+            "receipt": "selected-public-final/controlled_1-fallback3-compatibility.json",
+            "sha256": "31006659411f2978fb3f004faf7a00c5ca073d0f5b9a4588dd154b756f226488",
+            "log": "selected-public-final/controlled_1-fallback3-analysis.log",
+            "negative_log": "selected-public-final/controlled_1-fallback3-negative.log"
+          },
+          "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_1-recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/controlled_1/primary/construction.json",
+      "construction_sha256": "c70b19f976f764cd1edb2c6df75de232e459d397be575d52a45378291caac0e5",
+      "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_1-recipe.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_1-primary-c70b19f976f7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c70b19f976f764cd1edb2c6df75de232e459d397be575d52a45378291caac0e5",
+        "log": "selected-offline/controlled_1-primary.log",
+        "log_sha256": "ed7649d851c16505fdd0db4b0f8bc243a55e87e4e7811c705790dba7e450ff53"
+      },
+      "compatibility": {
+        "receipt": "selected-public-final/controlled_1-primary-compatibility.json",
+        "sha256": "727f6f43f684d69f5119347355add72aedeb47b7631e1b331b68e6bb0e7dd618",
+        "log": "selected-public-final/controlled_1-primary-analysis.log",
+        "negative_log": "selected-public-final/controlled_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-public-final/controlled_1-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "5d9b38e619b8adea723aca448d0324da6a0f4ab2320ea30f491bb4f5607e0c71"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "drv.turning": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "st.centre_turn_lane": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/execution-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-public-final/controlled_1-primary-processing.json",
+        "test_log_sha256": "4c15c26d22b97c8a222ead0230525d5687cb6b9762c53e2cd3cc84f37ca3a5e9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "78511c55b443ccf8fc34b1918240f400448722c817a24020813064c8e08de9fd",
+        "command": ".venv-cpu/bin/python work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/delivery_audit.py --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_1-positive.log",
+        "test_log_sha256": "87c080b0e4b02d8bf976fe971d819038319374f2b920b4d8e0c2a161265d72af",
+        "negative_command": ".venv-cpu/bin/python work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/delivery_audit.py --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/controlled_1-negative.log",
+        "negative_log_sha256": "55883fe0c8c9570b065efad8cc58e487347434a9565ec50edf04a6a867535522"
+      }
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "measurement_contract": "current-measurement-controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c394300-3a-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native center-lane design, movement, original pixels and purpose require saved review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/controlled_2/fallback1/construction.json",
+          "construction_sha256": "0eaa34bae5d3eec9c78637a25bec0e4d35609e7939a6e22036f297985c5ec2cf",
+          "trigger": {
+            "metric": "center_lane_approach_span_m",
+            "threshold_m": 10.0,
+            "reason": "Need enough measured center-lane approach to classify use before the first turn opportunity.",
+            "source": "native/trigger_evidence.py and original Native frame/camera evidence",
+            "failure_condition": "measured value below threshold"
+          },
+          "changed_knobs": [
+            "route_start_x_m",
+            "entry_advance_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_2-fallback1-0eaa34bae5d3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0eaa34bae5d3eec9c78637a25bec0e4d35609e7939a6e22036f297985c5ec2cf",
+            "log": "selected-offline/controlled_2-fallback1.log",
+            "log_sha256": "26a786e4d877b9d5f99cdb6b736c893325ceb9833dce121b71f2652a748eb9b9"
+          },
+          "compatibility": {
+            "receipt": "selected-public-final/controlled_2-fallback1-compatibility.json",
+            "sha256": "abe42423e808e08c7882a3966f63d7946a230f90f3804ed8f5d6fb01246a8c11",
+            "log": "selected-public-final/controlled_2-fallback1-analysis.log",
+            "negative_log": "selected-public-final/controlled_2-fallback1-negative.log"
+          },
+          "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_2-recipe.json"
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/controlled_2/fallback3/construction.json",
+          "construction_sha256": "dfb85f6573879138992fb382b4b8fb04251ab7741597154f70bc418d819728ff",
+          "trigger": {
+            "metric": "center_lane_and_body_visible_fraction",
+            "threshold": 0.9,
+            "reason": "The center lane and subject body must be visible at the decisive frames.",
+            "source": "native/trigger_evidence.py and original Native frame/camera evidence",
+            "failure_condition": "visible fraction below threshold"
+          },
+          "changed_knobs": [
+            "camera_plan"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_2-fallback3-dfb85f657387 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "dfb85f6573879138992fb382b4b8fb04251ab7741597154f70bc418d819728ff",
+            "log": "selected-offline/controlled_2-fallback3.log",
+            "log_sha256": "65cdb0239e03f19ba6513799b09f46b961ccc504f2dc1dd794c02e0eaa490209"
+          },
+          "compatibility": {
+            "receipt": "selected-public-final/controlled_2-fallback3-compatibility.json",
+            "sha256": "167eab07cd25cf266f50e26dee89e84d8b75e324caf2300f3a348025241ea333",
+            "log": "selected-public-final/controlled_2-fallback3-analysis.log",
+            "negative_log": "selected-public-final/controlled_2-fallback3-negative.log"
+          },
+          "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_2-recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/controlled_2/primary/construction.json",
+      "construction_sha256": "9d71828291d56fabb67377d978871cdea1c69fd95d3f2bb1ea005021050aec29",
+      "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_2-recipe.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-probe-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394300-selected-offline/controlled_2-primary-9d71828291d5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9d71828291d56fabb67377d978871cdea1c69fd95d3f2bb1ea005021050aec29",
+        "log": "selected-offline/controlled_2-primary.log",
+        "log_sha256": "2bf16e3337d37ac172af21dfd7652af6945d43ea0e114311339a7f6580e6e5f9"
+      },
+      "compatibility": {
+        "receipt": "selected-public-final/controlled_2-primary-compatibility.json",
+        "sha256": "17a5ce056c94d78e80a871498801804af8ee8f4f0142d01aada4fbb1c39ce89b",
+        "log": "selected-public-final/controlled_2-primary-analysis.log",
+        "negative_log": "selected-public-final/controlled_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-public-final/controlled_2-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "60c9d644b79f1e2d247a65e94a4877d4efb218f8550f07ac3616b9e1b2ba4249"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "drv.turning": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "st.centre_turn_lane": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "sample original Native lane, body, route, frame and four camera streams at the shared 20 Hz tick",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and source camera videos; finalizer joins channels"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/execution-manifest.json --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-public-final/controlled_2-primary-processing.json",
+        "test_log_sha256": "6ad5d0c37aab1f0a14283c85584940cf74cc32526e900f7628b07f2bf2cd56d4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "78511c55b443ccf8fc34b1918240f400448722c817a24020813064c8e08de9fd",
+        "command": ".venv-cpu/bin/python work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/delivery_audit.py --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_2-positive.log",
+        "test_log_sha256": "7e771d13b55f05b134a2a8305e1512bd53fa144fa2ab2ac0dd1144917ffda2f7",
+        "negative_command": ".venv-cpu/bin/python work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/delivery_audit.py --case training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/controlled_2-negative.log",
+        "negative_log_sha256": "55883fe0c8c9570b065efad8cc58e487347434a9565ec50edf04a6a867535522"
+      }
+    }
+  ]
+}

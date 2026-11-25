@@ -52,6 +52,14 @@ def build():
                      'limitations': ['Controller request is not arrow governance or lawful status.',
                                      'Original source pixels, pedestrian status and cautiousness require independent review.']}
         base['status'] = 'selected_delivery_prepared'
+        base['static_checks'] = [
+            'exact selected case identity and frozen source bindings',
+            '600 synchronized frames and four full-profile camera sources',
+            'source-joined participant and signal-request histories',
+            'lawful status, arrow governance and cautiousness remain review pending']
+        base['termination_rules'] = [
+            'complete 600 synchronized Native frames and close all encoders',
+            'otherwise report explicit capture failure and restore original world state']
         base['recording_description'] = recording
         base['measurement_plan'] = ('Join original 600-frame ego/other motion, requested signal '
                                     'state and four source videos; retain lawful status and '

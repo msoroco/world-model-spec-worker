@@ -65,7 +65,7 @@ def check_join(frame_map, trace):
 
 
 def audit(args):
-    from worker_exchange import media
+    from scenario_pipeline.worker_exchange import media
     attempt = Path(args.attempt).resolve()
     operations = Path(args.operations).resolve()
     output = Path(args.output).resolve()

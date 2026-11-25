@@ -9,7 +9,7 @@ def camera_plan(candidate):
         {'name':'overview','width':1920,'height':1080,'fov_deg':80,
          'attachment':'world','xyz_m':[10,-30,48],'pitch_deg':-65,
          'purpose':'both left-turn opportunities and intervening center lane'},
-        {'name':'approach','width':1280,'height':720,'fov_deg':110 if wide else 90,
+        {'name':'approach','width':1280,'height':720,'fov_deg':110,
          'attachment':'world','xyz_m':[-15,-15,10 if wide else 8],'pitch_deg':-28,
          'purpose':'center lane entry, first opportunity and body movement'},
         {'name':'reference_corner','width':1280,'height':720,'fov_deg':105,
