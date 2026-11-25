@@ -14,7 +14,8 @@ SPEC.loader.exec_module(BUILDER)
 
 class ReferenceFixtureBuilderTests(unittest.TestCase):
     def test_three_reference_fixtures_bind_600_frames_under_return_cap(self):
-        for suffix in BUILDER.SITES:
+        for suffix in ('stop_line_reference', 'crosswalk_reference',
+                       'nearest_view_reference'):
             with self.subTest(suffix=suffix):
                 source, recipe_path = BUILDER.build(suffix)
                 spec = json.loads(source.read_text())

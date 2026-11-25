@@ -7,6 +7,8 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import subprocess
+import tempfile
 
 from stopping_reference import from_authored_site
 
@@ -14,11 +16,31 @@ from stopping_reference import from_authored_site
 ROOT = Path(__file__).resolve().parent
 PREFIX = 'testing__C158196__NRS-484B-257-2__motor_vehicle_driver__'
 SITES = {
+    'officer_controls_go': 'line-reference-site.xodr',
+    'officer_controls_hold': 'line-reference-site.xodr',
+    'officer_present_inactive': 'line-reference-site.xodr',
     'stop_line_reference': 'line-reference-site.xodr',
     'crosswalk_reference': 'crosswalk-reference-site.xodr',
     'nearest_view_reference': 'nearest-view-reference-site.xodr',
 }
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+
+
+def _generated_video_hashes(videos):
+    """Hash the same bitexact flat-color specimens the fixture generator makes."""
+    result = {}
+    with tempfile.TemporaryDirectory(prefix='c158196-diagnostic-camera-') as folder:
+        for video in videos:
+            path = Path(folder) / video['path']
+            subprocess.run([
+                'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
+                '-f', 'lavfi', '-i',
+                f"color=c={video['color']}:s={video['width']}x{video['height']}:r={video['fps']}",
+                '-frames:v', str(video['frames']), '-an', '-c:v', 'ffv1',
+                '-threads', '1', '-fflags', '+bitexact', '-flags:v', '+bitexact',
+                str(path)], check=True, timeout=120)
+            result[path.stem] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return result
 
 
 def _lines(rows):
@@ -28,7 +50,7 @@ def _lines(rows):
 
 def build(suffix):
     if suffix not in SITES:
-        raise ValueError('Select a reference-only case')
+        raise ValueError('Select an officer/reference case')
     case_id = PREFIX + suffix
     site = ROOT / SITES[suffix]
     reference = from_authored_site(site)
@@ -49,10 +71,17 @@ def build(suffix):
         refs = {name: {'carla_frame': frame, 'video_frame': index,
                        'raw_source': name + '.mkv#frame-' + str(index)}
                 for name in CAMERAS}
-        capture['rows'].append({'frame_index': index, 'carla_frame': frame,
+        captured = {'frame_index': index, 'carla_frame': frame,
                                 'time_s': time_s, 'stopping_reference': reference,
                                 'ego_body_vertices_xy_m': body, 'ego_front_x_m': -14.0,
-                                'ego_speed_mps': 0.0, 'camera_raw_sources': refs})
+                                'ego_speed_mps': 0.0, 'camera_raw_sources': refs}
+        if suffix.startswith('officer_'):
+            captured['officer_program'] = {
+                'officer_actor_id': 303,
+                'programmed_direction': 'go' if suffix == 'officer_controls_go'
+                and index >= 300 else 'stop' if suffix != 'officer_present_inactive'
+                else 'none'}
+        capture['rows'].append(captured)
         history.append({'frame': frame, 'time_s': time_s,
                         'ego_body_vertices_xy_m': body, 'ego_speed_mps': 0.0})
         trace = copy.deepcopy(trace_example)
@@ -67,7 +96,9 @@ def build(suffix):
         evidence.append(event)
         frames.append({'video_frame': index, 'carla_frame': frame, 'time_s': time_s,
                        'camera_frames': {name: frame for name in CAMERAS}})
-        native = copy.deepcopy(native_example)
+        native = ({'frame': frame, 'simulation_time': time_s,
+                   'nodes': 0, 'edges': 0} if suffix.startswith('officer_')
+                  else copy.deepcopy(native_example))
         native.update(frame=frame, simulation_time=time_s)
         for kind in ('base', 'abstract'):
             path = f'capture/native/graphs/{kind}/{frame:08d}.adapter.json'
@@ -96,9 +127,28 @@ def build(suffix):
     files['capture/manifest.json'] = json.dumps(manifest, sort_keys=True) + '\n'
     spec = {'files': files, 'graphs': graphs,
             'videos': [dict(video, frames=600) for video in base['videos']]}
+    if suffix.startswith('officer_'):
+        source_hashes = _generated_video_hashes(spec['videos'])
+        review = {
+            'format': 'worker-subsection-2-officer-original-frame-review',
+            'case_id': case_id, 'capture_sha256':
+            hashlib.sha256(files['officer-reference-capture.json'].encode()).hexdigest(),
+            'reviewer': 'synthetic-flat-color-fixture-no-officer-visible',
+            'camera_sha256': source_hashes,
+            'frames': [{
+                'carla_frame': 100 + i, 'officer_actor_id': 303,
+                'direction_frame_source': f'approach.mkv#frame-{i}',
+                'authority_frame_source': f'overview.mkv#frame-{i}',
+                'control_frame_source': f'driver_reference.mkv#frame-{i}',
+                'officer_direction_observed': 'none',
+                'police_authority_observed': False,
+                'traffic_control_observed': False} for i in range(600)]}
+        files['officer-original-frame-review.json'] = json.dumps(
+            review, separators=(',', ':'), sort_keys=True) + '\n'
     path = ROOT / 'cases' / (suffix + '-officer-reference-diagnostic-sources.json')
     path.write_text(json.dumps(spec, separators=(',', ':'), sort_keys=True) + '\n')
     if path.stat().st_size > 2 * 1024 * 1024:
+        print('Generated specimen size:', path.stat().st_size)
         path.unlink()
         raise ValueError('Returned diagnostic source exceeds 2 MiB')
     recipe = {'format': 'worker-fixture-recipe',
