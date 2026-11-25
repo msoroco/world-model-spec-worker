@@ -19,7 +19,10 @@ def sha(raw):
 def measure(trace_raw, review_raw):
     rows = [json.loads(line) for line in trace_raw.splitlines() if line.strip()]
     require(len(rows) == 600, 'Original parked-branch trace needs 600 frames')
-    require(all(row.get('source_kind') == 'native_saved_sample' and
+    kind = rows[0].get('source_kind') if rows else None
+    require(kind in ('native_saved_sample', 'synthetic_diagnostic'),
+            'Parked source kind missing')
+    require(all(row.get('source_kind') == kind and
                 row.get('video_frame') == i and
                 type(row.get('speed_mps')) in (int, float) and
                 row.get('road_id') for i, row in enumerate(rows)),
@@ -28,7 +31,9 @@ def measure(trace_raw, review_raw):
     require(len(parked) >= 100 and parked[-100:] == list(range(500, 600)),
             'Parked/stopped phase not sustained in final 100 frames')
     review = json.loads(review_raw)
-    require(review.get('source_kind') == 'independent_original_review' and
+    expected_review = ('independent_original_review' if kind == 'native_saved_sample'
+                       else 'synthetic_diagnostic')
+    require(review.get('source_kind') == expected_review and
             review.get('trace_sha256') == sha(trace_raw) and
             review.get('reviewer_id') and
             review.get('highway_and_shoulder_source_sha256') and
@@ -44,7 +49,7 @@ def measure(trace_raw, review_raw):
         require(type(review.get(field)) is bool,
                 'Original parked exception finding missing: '+field)
     return {'format': 'c179824-parked-exception-measurement-v1',
-            'source_kind': 'native_saved_sample',
+            'source_kind': kind,
             'parked_final_frames': len(parked[-100:]),
             'observed': {field: review[field] for field in
                          ('on_traveled_portion_or_adjacent_shoulder',

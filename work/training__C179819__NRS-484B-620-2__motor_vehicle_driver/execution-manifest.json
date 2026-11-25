@@ -1,0 +1,401 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_zone_and_sign_review",
+  "cases": [
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_01/primary/construction.json",
+      "construction_sha256": "d2f14d0633f7091e2e0af4c616c9cc2b8d84495c01557716ee2d60e9c8630fff",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original speed controller may undershoot on the signed-zone approach; local Native trace must verify a complete entry/exit and stable speed"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_01/fallback1/construction.json",
+          "construction_sha256": "1feca5f3f740fc3fbb3ea615d979115c446323dbc7af4acf2173914844a04562",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1feca5f3f740fc3fbb3ea615d979115c446323dbc7af4acf2173914844a04562",
+            "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01 --candidate fallback1",
+            "log": "proofs/probe_01/fallback1-offline.log",
+            "log_sha256": "55b83aeba18e6f6648dd2e50a0d6643133403660c9ade24cda2d8cdd125f595c"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_01/fallback1-compatibility.json",
+            "sha256": "5daa545c50e10e439fca66845e2383e2cdaa177b59762f6e4bb5a55a1cc2f279",
+            "log": "proofs/probe_01/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_01/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_01/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/diagnostic-probe_01-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "d2f14d0633f7091e2e0af4c616c9cc2b8d84495c01557716ee2d60e9c8630fff",
+        "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01 --candidate primary",
+        "log": "proofs/probe_01/offline.log",
+        "log_sha256": "55b83aeba18e6f6648dd2e50a0d6643133403660c9ade24cda2d8cdd125f595c"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_01/compatibility.json",
+        "sha256": "2379acf7977db211785cb4055e7a836fb49b9871371dd5c02ac113b5a534ec92",
+        "log": "proofs/probe_01/public-analysis.log",
+        "negative_log": "proofs/probe_01/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_01/negative-analysis.log",
+        "log_sha256": "3618cfeeca213c52fd746567f0bf8eb0a4904f26deeec78eafb69c27b87d9010"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_01/physical-preparation.json",
+        "sha256": "653d3e1cc9c5428d5ea9f18dc93b7c18a123e41c6e90b78f0d30c36b4afe9b1c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native velocity magnitude at each frame",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "runner.py",
+          "method": "original RGB and separate installed sign review",
+          "evidence": [
+            "reference_corner.mkv",
+            "installed-sign-review.json"
+          ]
+        },
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "authored zone landmarks plus administrative establishment review",
+          "evidence": [
+            "road.xodr",
+            "zone-establishment.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original actor pose joined to reviewed bounds",
+          "evidence": [
+            "actor-poses.jsonl",
+            "zone-establishment.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "reviewed road and direction join",
+          "evidence": [
+            "installed-sign-review.json",
+            "zone-establishment.json"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original route position",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native subject blueprint and independent class review",
+          "evidence": [
+            "sign-survey-native.json",
+            "zone-establishment.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/execution-manifest.json --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01"
+      }
+    },
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_02/primary/construction.json",
+      "construction_sha256": "c588edc81f7faa10d8b0c821dcf7f42ab64807e7aa4c5a1797aa9ecae4d846f9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original speed controller may undershoot on the signed-zone approach; local Native trace must verify a complete entry/exit and stable speed"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_02/fallback1/construction.json",
+          "construction_sha256": "dd61a561e50a255eae64a5acda8829a617411f7dde20ae80b5e5259c4e0a0373",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "dd61a561e50a255eae64a5acda8829a617411f7dde20ae80b5e5259c4e0a0373",
+            "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02 --candidate fallback1",
+            "log": "proofs/probe_02/fallback1-offline.log",
+            "log_sha256": "216767e4a2f8b75cf29d805604045151079e3202ccd3e332ae4166f5a53eac11"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_02/fallback1-compatibility.json",
+            "sha256": "d2a9d0756674765403283e5d4aeb33aede88af16877985f4fcfbe617de6cb8a3",
+            "log": "proofs/probe_02/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_02/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_02/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/diagnostic-probe_02-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "c588edc81f7faa10d8b0c821dcf7f42ab64807e7aa4c5a1797aa9ecae4d846f9",
+        "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02 --candidate primary",
+        "log": "proofs/probe_02/offline.log",
+        "log_sha256": "216767e4a2f8b75cf29d805604045151079e3202ccd3e332ae4166f5a53eac11"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_02/compatibility.json",
+        "sha256": "70a8595c98e75980e3df27c42374f92bd56b1e62a775980bdfc20758fb056b90",
+        "log": "proofs/probe_02/public-analysis.log",
+        "negative_log": "proofs/probe_02/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_02/negative-analysis.log",
+        "log_sha256": "52ed65f2e0725161e6833d83c212cd114b133d4bc50b77d8cd2c8beb2aa64e5a"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_02/physical-preparation.json",
+        "sha256": "a7d20afabd86accc148310c636d4af509523334ef2d6ef7c5c4de322e3fb2c98"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native velocity magnitude at each frame",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "runner.py",
+          "method": "original RGB and separate installed sign review",
+          "evidence": [
+            "reference_corner.mkv",
+            "installed-sign-review.json"
+          ]
+        },
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "authored zone landmarks plus administrative establishment review",
+          "evidence": [
+            "road.xodr",
+            "zone-establishment.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original actor pose joined to reviewed bounds",
+          "evidence": [
+            "actor-poses.jsonl",
+            "zone-establishment.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "reviewed road and direction join",
+          "evidence": [
+            "installed-sign-review.json",
+            "zone-establishment.json"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original route position",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native subject blueprint and independent class review",
+          "evidence": [
+            "sign-survey-native.json",
+            "zone-establishment.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/execution-manifest.json --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02"
+      }
+    },
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_03/primary/construction.json",
+      "construction_sha256": "95ba33476bfae748d8ad27a6c7e5926c155e763f1a616652cfe0993ca92f8867",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original speed controller may undershoot on the signed-zone approach; local Native trace must verify a complete entry/exit and stable speed"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_03/fallback1/construction.json",
+          "construction_sha256": "0e9ade10f75d2cff56f2a91fd33c28daceab430ab301f79afa076c0ecb574a27",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0e9ade10f75d2cff56f2a91fd33c28daceab430ab301f79afa076c0ecb574a27",
+            "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03 --candidate fallback1",
+            "log": "proofs/probe_03/fallback1-offline.log",
+            "log_sha256": "eb8b80b00efa6ce26498e09abb915c7e31e865d7946d5186a0307b0f1c92c4e7"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_03/fallback1-compatibility.json",
+            "sha256": "24e0ec2cd16e0a20e01b7b306c88f213fe5f9490ad1074601be1d5911e8c7eb1",
+            "log": "proofs/probe_03/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_03/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_03/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/diagnostic-probe_03-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "95ba33476bfae748d8ad27a6c7e5926c155e763f1a616652cfe0993ca92f8867",
+        "command": "runtime.py offline --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03 --candidate primary",
+        "log": "proofs/probe_03/offline.log",
+        "log_sha256": "eb8b80b00efa6ce26498e09abb915c7e31e865d7946d5186a0307b0f1c92c4e7"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_03/compatibility.json",
+        "sha256": "1a86bddae680ab2138bd9205cb903aa38f03950e68a11e3cd110f11d751e87b8",
+        "log": "proofs/probe_03/public-analysis.log",
+        "negative_log": "proofs/probe_03/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_03/negative-analysis.log",
+        "log_sha256": "698b7d4b9e6e46e09b79e114d7319ec9df07b354c147869d7a011effd773efa4"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_03/physical-preparation.json",
+        "sha256": "e9872a90b72f6ac3393fcad4b23092c4fd6c375006116dc686fe3f038de6d301"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native velocity magnitude at each frame",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "dev.speed_limit_sign": {
+          "entrypoint": "runner.py",
+          "method": "original RGB and separate installed sign review",
+          "evidence": [
+            "reference_corner.mkv",
+            "installed-sign-review.json"
+          ]
+        },
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "authored zone landmarks plus administrative establishment review",
+          "evidence": [
+            "road.xodr",
+            "zone-establishment.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original actor pose joined to reviewed bounds",
+          "evidence": [
+            "actor-poses.jsonl",
+            "zone-establishment.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "reviewed road and direction join",
+          "evidence": [
+            "installed-sign-review.json",
+            "zone-establishment.json"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original route position",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Native subject blueprint and independent class review",
+          "evidence": [
+            "sign-survey-native.json",
+            "zone-establishment.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/execution-manifest.json --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03"
+      }
+    }
+  ]
+}

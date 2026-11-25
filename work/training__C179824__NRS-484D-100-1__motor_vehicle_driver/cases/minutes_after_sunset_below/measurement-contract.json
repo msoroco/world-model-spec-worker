@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "NRS-484D-100-1",
+      "source": "NRS 484D.100(1)",
+      "output_key": "civil_visibility_measurement",
+      "method": "reviewed_measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "visibility-trace.jsonl",
+        "video_frames.jsonl",
+        "road.xodr",
+        "visibility-context.json",
+        "visibility-pixel-review.json",
+        "civil-clock.json",
+        "civil-time-review.json",
+        "sun-event-source.json",
+        "location-source.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "sun-event-source.json"
+    ],
+    "error_contains": "Missing required source: sun-event-source.json"
+  }
+}

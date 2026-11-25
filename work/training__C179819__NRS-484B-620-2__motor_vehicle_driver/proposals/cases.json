@@ -2,23 +2,163 @@
   "cell_id": "C179819",
   "actor": "motor_vehicle_driver",
   "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "signed-zone-authority-review",
+      "target_law_id": "NRS-484B-620-2",
+      "judgment_refs": [
+        {
+          "phrase": "establishment of a speed zone",
+          "note": "Prior administrative establishment must come from an independent source."
+        },
+        {
+          "phrase": "installation of appropriate signs to control speed",
+          "note": "Installed sign face, appropriateness and direction require independent original review."
+        },
+        {
+          "phrase": "speed therein authorized",
+          "note": "Applicable authorized value is source-read; measured excess is not a synthetic legal verdict."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Synthetic diagnostics preserve data joins while official authority and legal outcome remain open.",
+      "missing_inputs": [
+        "Independent administrative establishment and installed sign review from original sources."
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
+    {
+      "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Observe frozen paved road and sign context without targeting excess speed.",
+      "variable_assignments": {
+        "observed_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "controller_speed_request_mps": {
+          "kind": "controller",
+          "value": null
+        },
+        "authorized_mph": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "establishment of a speed zone",
+        "installation of appropriate signs to control speed",
+        "speed therein authorized"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original Native velocity",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/kin.speed.jsonl"
+          },
+          {
+            "name": "dev.speed_limit_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/dev.speed_limit_sign.jsonl"
+          },
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/dev.zone_sign.jsonl"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/drv.within_signed_zone.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original route and separately reviewed zone/sign source",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and signed zone road axis",
+            "uncertainty": "50 ms sampling; administrative and sign authority require independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Administrative zone establishment and installed-sign appropriateness require separate original source reviews"
+        ]
+      }
+    },
     {
       "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-620-2",
       "target_type": "boundary_probe",
-      "rationale": "Observe original velocity inside separately reviewed established and signed zone without assigning a legal label",
+      "paired_probe_id": "signed_zone_25",
+      "rationale": "Request below authorized speed and measure original in-zone speed without a legal label.",
+      "deliberate_differences": [
+        "controller_speed_request_mps"
+      ],
       "variable_assignments": {
+        "observed_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "controller_speed_request_mps": {
           "kind": "controller",
           "value": 8.9408
+        },
+        "authorized_mph": {
+          "kind": "world_setup",
+          "value": 25
         }
       },
       "unresolved_judgment_calls": [
-        "prior administrative establishment",
-        "appropriate installed signs",
-        "legal outcome"
+        "establishment of a speed zone",
+        "installation of appropriate signs to control speed",
+        "speed therein authorized"
       ],
       "recording_description": {
         "channels": [
@@ -99,26 +239,43 @@
         ]
       },
       "probe": {
-        "primary_variable": "measured_speed_mph_in_zone",
-        "comparison_or_standard": "source-reviewed authorized speed",
+        "primary_variable": "observed_speed_mph",
+        "comparison_or_standard": "source-reviewed authorized sign value",
         "target_value_or_branch": "below"
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Controlled request separation, not a legal tolerance."
       }
     },
     {
       "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-620-2",
       "target_type": "boundary_probe",
-      "rationale": "Observe original velocity inside separately reviewed established and signed zone without assigning a legal label",
+      "paired_probe_id": "signed_zone_25",
+      "rationale": "Request at authorized speed and measure original in-zone speed without a legal label.",
+      "deliberate_differences": [
+        "controller_speed_request_mps"
+      ],
       "variable_assignments": {
+        "observed_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "controller_speed_request_mps": {
           "kind": "controller",
           "value": 11.176
+        },
+        "authorized_mph": {
+          "kind": "world_setup",
+          "value": 25
         }
       },
       "unresolved_judgment_calls": [
-        "prior administrative establishment",
-        "appropriate installed signs",
-        "legal outcome"
+        "establishment of a speed zone",
+        "installation of appropriate signs to control speed",
+        "speed therein authorized"
       ],
       "recording_description": {
         "channels": [
@@ -199,26 +356,43 @@
         ]
       },
       "probe": {
-        "primary_variable": "measured_speed_mph_in_zone",
-        "comparison_or_standard": "source-reviewed authorized speed",
+        "primary_variable": "observed_speed_mph",
+        "comparison_or_standard": "source-reviewed authorized sign value",
         "target_value_or_branch": "at"
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Controlled request separation, not a legal tolerance."
       }
     },
     {
       "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-620-2",
       "target_type": "boundary_probe",
-      "rationale": "Observe original velocity inside separately reviewed established and signed zone without assigning a legal label",
+      "paired_probe_id": "signed_zone_25",
+      "rationale": "Request above authorized speed and measure original in-zone speed without a legal label.",
+      "deliberate_differences": [
+        "controller_speed_request_mps"
+      ],
       "variable_assignments": {
+        "observed_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "controller_speed_request_mps": {
           "kind": "controller",
           "value": 13.4112
+        },
+        "authorized_mph": {
+          "kind": "world_setup",
+          "value": 25
         }
       },
       "unresolved_judgment_calls": [
-        "prior administrative establishment",
-        "appropriate installed signs",
-        "legal outcome"
+        "establishment of a speed zone",
+        "installation of appropriate signs to control speed",
+        "speed therein authorized"
       ],
       "recording_description": {
         "channels": [
@@ -299,9 +473,14 @@
         ]
       },
       "probe": {
-        "primary_variable": "measured_speed_mph_in_zone",
-        "comparison_or_standard": "source-reviewed authorized speed",
+        "primary_variable": "observed_speed_mph",
+        "comparison_or_standard": "source-reviewed authorized sign value",
         "target_value_or_branch": "above"
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Controlled request separation, not a legal tolerance."
       }
     }
   ]

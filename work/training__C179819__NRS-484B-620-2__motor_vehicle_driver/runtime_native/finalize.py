@@ -72,17 +72,63 @@ def statutory_context(root):
             'legal_outcome': 'reserved', 'synthetic_diagnostic_is_not_authority': True}
 
 
+def administrative_establishment_observation(root):
+    value = source_bound_zone_measurement(root)
+    return {'established': value['administrative_zone_establishment'],
+            'administrative_source_separate_from_sign': True,
+            'legal_authority': 'requires_original_review'}
+
+
+def installed_sign_observation(root):
+    value = source_bound_zone_measurement(root)
+    return {'appropriate_sign_installed': value['appropriate_installed_sign'],
+            'sign_governs_route': value['sign_governs_route'],
+            'original_pixels_review_required': True}
+
+
+def governed_zone_occupancy_observation(root):
+    value = source_bound_zone_measurement(root)
+    return {key: value[key] for key in ('first_zone_frame', 'last_zone_frame', 'zone_frame_count')}
+
+
+def authorized_value_observation(root):
+    value = source_bound_zone_measurement(root)
+    return {'authorized_mph_from_installed_sign': value['authorized_mph'],
+            'legal_authority': 'requires_original_review'}
+
+
+def speed_boundary_observation(root):
+    value = source_bound_zone_measurement(root)
+    return {key: value[key] for key in ('observed_speed_mph_range_in_zone',
+        'frames_below_authorized_in_zone', 'frames_at_authorized_in_zone',
+        'frames_above_authorized_in_zone')}
+
+
+def motor_vehicle_class_observation(root):
+    source_bound_zone_measurement(root)
+    establishment = json.loads(required(root, 'zone-establishment.json').read_text())
+    return {'class_source': establishment['vehicle_class_source'],
+            'original_blueprint_and_personal_driving_review_required': True}
+
+
 def report(root):
     root = Path(root)
     config = json.loads(required(root, 'config.json').read_text())
     value = source_bound_zone_measurement(root)
+    source_hashes = {name: sha(required(root, name)) for name in SOURCES}
+    methods = {'source_bound_signed_zone_speed': ('source_bound_zone_measurement', value),
+        'administrative_establishment': ('administrative_establishment_observation', administrative_establishment_observation(root)),
+        'installed_sign': ('installed_sign_observation', installed_sign_observation(root)),
+        'governed_road_direction_and_occupancy': ('governed_zone_occupancy_observation', governed_zone_occupancy_observation(root)),
+        'authorized_posted_value': ('authorized_value_observation', authorized_value_observation(root)),
+        'measured_speed_boundary': ('speed_boundary_observation', speed_boundary_observation(root)),
+        'motor_vehicle_class': ('motor_vehicle_class_observation', motor_vehicle_class_observation(root))}
+    measurements = {key: {'method': method, 'value': observed, 'sources': source_hashes}
+                    for key, (method, observed) in methods.items()}
+    measurements['statutory_context'] = {'method': 'statutory_context',
+        'value': statutory_context(root), 'sources': {'law-text.json': sha(required(root, 'law-text.json'))}}
     return {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],
-        'measurements': {'source_bound_signed_zone_speed': {
-            'method': 'source_bound_zone_measurement', 'value': value,
-            'sources': {name: sha(required(root, name)) for name in SOURCES}},
-            'statutory_context': {'method': 'statutory_context',
-                'value': statutory_context(root),
-                'sources': {'law-text.json': sha(required(root, 'law-text.json'))}}},
+        'measurements': measurements,
         'scope': 'Original velocity and separately reviewed zone establishment and installed sign; legal outcome unassessed'}
 
 

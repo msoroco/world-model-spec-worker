@@ -36,6 +36,7 @@ def description():
 
 def main():
     batch = json.loads((ROOT / 'batch.json').read_text())
+    dispositions = json.loads((HERE / 'case-plan.json').read_text())['requirement_dispositions']
     desc = description()
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': AID,
         'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
@@ -72,13 +73,21 @@ def main():
             'status': 'cpu_draft_authority_unverified'}
         path = HERE / 'draft-exact' / suffix / 'primary/construction.json'
         write(path, construction)
+        output_methods = (
+            ('source_bound_signed_zone_speed', 'source_bound_zone_measurement'),
+            ('administrative_establishment', 'administrative_establishment_observation'),
+            ('installed_sign', 'installed_sign_observation'),
+            ('governed_road_direction_and_occupancy', 'governed_zone_occupancy_observation'),
+            ('authorized_posted_value', 'authorized_value_observation'),
+            ('measured_speed_boundary', 'speed_boundary_observation'),
+            ('motor_vehicle_class', 'motor_vehicle_class_observation'))
         contract = {'format': 'worker-measurement-contract', 'case_id': case_id,
-            'requirements': [{'disposition_index': 0, 'requirement': 'NRS-484B-620-2',
-                'source': 'inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json',
-                'output_key': 'source_bound_signed_zone_speed', 'method': 'source_bound_zone_measurement',
-                'value_type': 'object', 'kind': 'measured', 'inputs': [
-                    'road.xodr', 'zone-establishment.json', 'installed-sign-review.json',
-                    'actor-poses.jsonl', 'reference_corner.mkv']}],
+            'requirements': [{'disposition_index': i, 'requirement': dispositions[i]['requirement'],
+                'source': dispositions[i]['source'], 'output_key': key, 'method': method,
+                'value_type': 'object', 'kind': 'measured' if i in (0, 3, 5) else 'sourced_context',
+                'inputs': ['road.xodr', 'zone-establishment.json', 'installed-sign-review.json',
+                           'actor-poses.jsonl', 'reference_corner.mkv']}
+                for i, (key, method) in enumerate(output_methods)],
             'negative': {'remove': ['zone-establishment.json'],
                 'error_contains': 'Missing required source: zone-establishment.json'}}
         write(path.parent.parent / 'measurement-contract.json', contract)
