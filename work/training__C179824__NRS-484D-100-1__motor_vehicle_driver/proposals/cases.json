@@ -5,28 +5,49 @@
   "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484D-100-1",
-      "target_type": "compliant_attempt",
-      "rationale": "Official device directs lamp use; compare original lamp-state readback",
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared paved-road travel and source-reviewed device context without selected lamp behavior.",
       "variable_assignments": {
-        "frozen_cell": {
+        "minutes_after_sunset": {
           "kind": "world_setup",
-          "value": "C179824 paved_road/travel/traffic_control_device"
+          "value": null,
+          "unit": "min"
         },
-        "device_instruction": {
+        "minutes_before_sunrise": {
           "kind": "world_setup",
-          "value": "HEADLAMPS ON"
+          "value": null,
+          "unit": "min"
         },
-        "lamp_setting_on": {
+        "official_device_directs_lamps": {
+          "kind": "world_setup",
+          "value": "requested_use_lamps_pending_official_review",
+          "unit": "structured"
+        },
+        "requested_lamp_setting_on": {
           "kind": "controller",
-          "value": true
+          "value": null,
+          "unit": "boolean"
+        },
+        "observed_class_lamp_display": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "parked_vehicle_status": {
+          "kind": "world_setup",
+          "value": "moving_travel_requested_original_motion_pending",
+          "unit": "structured"
+        },
+        "target_reference_distance_ft": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "ft"
         }
       },
       "unresolved_judgment_calls": [
-        "official device authority",
-        "actual emitted light",
-        "class-specific equipment sufficiency"
+        "clearly discernible"
       ],
       "recording_description": {
         "channels": [
@@ -58,28 +79,49 @@
       }
     },
     {
-      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484D-100-1",
-      "target_type": "violating_attempt",
+      "target_type": "compliant_attempt",
       "rationale": "Official device directs lamp use; compare original lamp-state readback",
       "variable_assignments": {
-        "frozen_cell": {
+        "minutes_after_sunset": {
           "kind": "world_setup",
-          "value": "C179824 paved_road/travel/traffic_control_device"
+          "value": null,
+          "unit": "min"
         },
-        "device_instruction": {
+        "minutes_before_sunrise": {
           "kind": "world_setup",
-          "value": "HEADLAMPS ON"
+          "value": null,
+          "unit": "min"
         },
-        "lamp_setting_on": {
+        "official_device_directs_lamps": {
+          "kind": "world_setup",
+          "value": "requested_use_lamps_pending_official_review",
+          "unit": "structured"
+        },
+        "requested_lamp_setting_on": {
           "kind": "controller",
-          "value": false
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_class_lamp_display": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "parked_vehicle_status": {
+          "kind": "world_setup",
+          "value": "moving_travel_requested_original_motion_pending",
+          "unit": "structured"
+        },
+        "target_reference_distance_ft": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "ft"
         }
       },
       "unresolved_judgment_calls": [
-        "official device authority",
-        "actual emitted light",
-        "class-specific equipment sufficiency"
+        "clearly discernible"
       ],
       "recording_description": {
         "channels": [
@@ -108,8 +150,141 @@
           "Civil time and 1000-foot visibility branches remain separate",
           "Parked vehicle exceptions unresolved"
         ]
+      },
+      "paired_probe_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__lamp_setting_pair",
+      "deliberate_differences": [
+        "requested_lamp_setting_on"
+      ],
+      "probe": {
+        "primary_variable": "requested_lamp_setting_on",
+        "comparison_or_standard": "paired lamp request on the same governed road",
+        "target_value_or_branch": true
+      },
+      "deterministic_branch": {
+        "source_clause": "When directed by an official traffic control device.",
+        "judgment_context": [
+          {
+            "phrase": "clearly discernible",
+            "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff.",
+            "status": "not_exercised",
+            "reason": "This selected pair isolates subsection (c) device direction; subsection (b) is separately sampled.",
+            "world_setup_refs": []
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
+      "target_law_id": "NRS-484D-100-1",
+      "target_type": "violating_attempt",
+      "rationale": "Official device directs lamp use; compare original lamp-state readback",
+      "variable_assignments": {
+        "minutes_after_sunset": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "minutes_before_sunrise": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "official_device_directs_lamps": {
+          "kind": "world_setup",
+          "value": "requested_use_lamps_pending_official_review",
+          "unit": "structured"
+        },
+        "requested_lamp_setting_on": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "observed_class_lamp_display": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "parked_vehicle_status": {
+          "kind": "world_setup",
+          "value": "moving_travel_requested_original_motion_pending",
+          "unit": "structured"
+        },
+        "target_reference_distance_ft": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "ft"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "clearly discernible"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lamp_setting",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original CARLA VehicleLightState readback",
+            "time_window": "600 frames",
+            "reference_frame": "governed roadway",
+            "uncertainty": "actual emitted light and class sufficiency unverified"
+          },
+          {
+            "name": "device_and_highway_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE sign/lane readback plus independently sourced authority",
+            "time_window": "600 frames",
+            "reference_frame": "signed paved road",
+            "uncertainty": "official status and actual pixels unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Class-specific chapter 484D lamp requirements not yet supplied",
+          "Civil time and 1000-foot visibility branches remain separate",
+          "Parked vehicle exceptions unresolved"
+        ]
+      },
+      "paired_probe_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__lamp_setting_pair",
+      "deliberate_differences": [
+        "requested_lamp_setting_on"
+      ],
+      "probe": {
+        "primary_variable": "requested_lamp_setting_on",
+        "comparison_or_standard": "paired lamp request on the same governed road",
+        "target_value_or_branch": false
+      },
+      "deterministic_branch": {
+        "source_clause": "When directed by an official traffic control device.",
+        "judgment_context": [
+          {
+            "phrase": "clearly discernible",
+            "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff.",
+            "status": "not_exercised",
+            "reason": "This selected pair isolates subsection (c) device direction; subsection (b) is separately sampled.",
+            "world_setup_refs": []
+          }
+        ]
       }
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "c179824_visibility_1000ft",
+      "target_law_id": "NRS-484D-100-1",
+      "judgment_refs": [
+        {
+          "phrase": "clearly discernible",
+          "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original person and vehicle pixel review at the statutory reference distance requires source-grounded weather variation.",
+      "missing_inputs": [
+        "Original Native 304.8 m person-and-vehicle videos with independently reviewed pixel findings",
+        "Source-grounded weather conditions and fixed physical sampling ranges before deterministic expansion"
+      ]
+    }
+  ]
 }

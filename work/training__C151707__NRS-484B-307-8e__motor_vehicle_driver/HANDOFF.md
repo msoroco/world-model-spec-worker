@@ -1,6 +1,6 @@
 # training__C151707__NRS-484B-307-8e__motor_vehicle_driver
 
-Status: **partial**. One exact property-route case is selected for CPU preparation. No CARLA execution, Native pixels, legal result or accepted recording is claimed.
+Status: **ready for GPU delivery** after the exact scoped strict CPU gate passed. No CARLA execution, Native pixels, legal result or accepted recording is claimed.
 
 Exact sources: `inputs/training__C151707__NRS-484B-307-8e__motor_vehicle_driver/assignment.json` SHA-256 `8c5ac6b6cfba329e4f933ebb5286c802fbc7abbb89c79cc0cb53a0db532b043d`; `witnesses.json` SHA-256 `e0d290f07c0d6c4a196500cbfede67a5f1d34b7adece923f7e4a4f3ca534c072`. Exact subsection 8(e) requires a steady red signal alone on the approach, traversal through private or public property, entry to an intersecting street where traffic is not facing red, and avoidance purpose. There are no accepted recording IDs in this assignment.
 
@@ -33,3 +33,9 @@ Current proof refresh: `native/manifest.json` SHA-256 `83fe9aef2226c48572f993b91
 Statutory timing review added `steady_red_alone_before_property_entry` as a separate source-derived observation, since red only at the property boundary does not establish a red-facing approach before the detour. The comparison audit rejects an entry-only red sample. The refreshed 16-test `comparison-cpu.log` exits 0; scoped partial check exits 0.
 
 Latest offline proof after adding complete measurement, termination and source-separation construction metadata: `native/manifest.json` SHA-256 `88e8f3ecea108de1139527b9d7584e6596ea1d824ab4ac0372ae3873d3693b5c`; both exact primary offline commands exit 0 in the `pinned-offline-current-probe_01.log` and `pinned-offline-current-probe_02.log` files. These replace earlier manifest hashes in this handoff.
+
+## 2026-11-25 strict CPU delivery handoff
+
+The prior remaining-work notes are superseded. Both selected cases (`probe_01` road-only and `probe_02` property route) pass current-runtime public compatibility, selected measurement checks, missing-property-survey negatives, and recorded-only saved processing. The source-isolation comparison passes. Each case has an exact offline receipt, a synthetic three-outcome physical diagnostic, a half-speed waypoint fallback with offline and positive/negative public compatibility proofs, and an independent delivery audit: diagnostic sources pass source joins but are explicitly unaccepted; original-Native mode rejects the synthetic fixture. The six-stage semantic chain validates with the purpose judgment left unresolved. The selected comparison ID is `training__C151707__NRS-484B-307-8e__motor_vehicle_driver__planned_comparison`.
+
+`tests-current.log` records 23 passing CPU tests. `.venv-cpu/bin/python worker_check.py --assignment training__C151707__NRS-484B-307-8e__motor_vehicle_driver --complete --require-delivery-ready` exited 0 on the final execution manifest and ready result bytes. Diagnostic fixture outcomes establish preparation only. Original property ownership, governing red lens/facing, route purpose, actual Native pixels, physical completion, and any legal judgment remain for local capture and acceptance.

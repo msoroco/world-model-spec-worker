@@ -1,0 +1,93 @@
+{
+  "template_id": "NRS-484D-100-1@motor_vehicle_driver",
+  "law_id": "NRS-484D-100-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Every vehicle upon a highway of this State, subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS, must display lighted lamps and illuminating devices as respectively required in this chapter for different classes of vehicles: (a) At any time from one-half hour after sunset to one-half hour before sunrise; (b) At any other time when, because of insufficient light or unfavorable atmospheric conditions, persons and vehicles on the highway are not clearly discernible at a distance of 1,000 feet ahead; and (c) When directed by an official traffic control device.",
+  "structure": {
+    "law_id": "NRS-484D-100-1",
+    "activation": {
+      "condition": "A vehicle upon a Nevada highway while any one of the civil-night interval, 1,000-foot person-and-vehicle discernibility, or official-device direction holds.",
+      "numeric_conditions": [
+        {
+          "variable": "minutes_after_sunset",
+          "operator": ">=",
+          "value": 30,
+          "unit": "min"
+        },
+        {
+          "variable": "minutes_before_sunrise",
+          "operator": ">=",
+          "value": 30,
+          "unit": "min"
+        },
+        {
+          "variable": "target_reference_distance_ft",
+          "operator": "=",
+          "value": 1000,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "Display the lighted lamps and illuminating devices required for the vehicle class in chapter 484D throughout the active trigger.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "vehicle is parked and a referenced chapter 484A to 484E exception applies",
+        "effect": "general traveling-vehicle lamp rule yields to the specifically applicable parked-vehicle requirements",
+        "replacement_obligation": "Apply source-reviewed NRS 484D.165 and any other applicable parked-vehicle provision.",
+        "source_clause": "subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS"
+      }
+    ],
+    "timing": {
+      "description": "Continuous while a source-grounded trigger holds; civil-night branch starts 30 minutes after sunset and ends 30 minutes before sunrise.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "clearly discernible",
+        "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "minutes_after_sunset",
+      "kind": "world_setup",
+      "range_or_domain": "civil minutes after independently sourced local sunset"
+    },
+    {
+      "name": "minutes_before_sunrise",
+      "kind": "world_setup",
+      "range_or_domain": "civil minutes before independently sourced following sunrise"
+    },
+    {
+      "name": "target_reference_distance_ft",
+      "kind": "world_setup",
+      "range_or_domain": "999, 1000, 1001 feet requested target geometry; original transforms and pixels measured"
+    },
+    {
+      "name": "official_device_directs_lamps",
+      "kind": "world_setup",
+      "range_or_domain": "official, placed and operative device instruction or unknown"
+    },
+    {
+      "name": "requested_lamp_setting_on",
+      "kind": "controller",
+      "range_or_domain": "on or off Native VehicleLightState setting"
+    },
+    {
+      "name": "observed_class_lamp_display",
+      "kind": "subject_behavior",
+      "range_or_domain": "original emitted pixels and class-specific lamp sufficiency or unknown"
+    },
+    {
+      "name": "parked_vehicle_status",
+      "kind": "world_setup",
+      "range_or_domain": "independent moving/parked status and referenced exception source"
+    }
+  ]
+}

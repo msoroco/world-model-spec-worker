@@ -3,19 +3,197 @@
   "law_id": "NRS-484B-440-1",
   "cell_id": "C178965",
   "actor": "motor_vehicle_driver",
-  "frozen_cell": {"layout": "paved_road", "maneuver": "park", "control": "other_vehicle"},
+  "frozen_cell": {
+    "layout": "paved_road",
+    "maneuver": "park",
+    "control": "other_vehicle"
+  },
   "status": "selected_native_capture_proposal",
   "rate_hz": 20,
   "duration_s": 30,
   "frames": 600,
   "vehicle_blueprint": "vehicle.tesla.model3",
-  "required_atoms": ["kin.position", "kin.speed"],
+  "required_atoms": [
+    "kin.position",
+    "kin.speed"
+  ],
   "physical_completion": false,
   "legal_verdict": null,
   "cameras": [
-    {"name": "overview", "width": 1920, "height": 1080, "fps": 20, "fov_deg": 95, "location_xyz_m": [-7, 0, 5], "rotation_pyr_deg": [-20, 0, 0]},
-    {"name": "ego_front", "width": 1280, "height": 720, "fps": 20, "fov_deg": 85, "location_xyz_m": [3, 0, 2], "rotation_pyr_deg": [-4, 0, 0]},
-    {"name": "roadside", "width": 1280, "height": 720, "fps": 20, "fov_deg": 90, "location_xyz_m": [-3, 3, 2], "rotation_pyr_deg": [-5, -35, 0]},
-    {"name": "opposite_approach", "width": 1280, "height": 720, "fps": 20, "fov_deg": 95, "location_xyz_m": [-7, 0, 2], "rotation_pyr_deg": [0, 180, 0]}
-  ]
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        5
+      ],
+      "rotation_pyr_deg": [
+        -20,
+        0,
+        0
+      ],
+      "pose_strategy": "elevated fixed overview of both pavement edges and traffic"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "location_xyz_m": [
+        3,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -4,
+        0,
+        0
+      ],
+      "pose_strategy": "upstream road approach showing 200 foot line of sight"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -3,
+        3,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -5,
+        -35,
+        0
+      ],
+      "pose_strategy": "roadside corner covering stopped footprint, shoulder and opposite width"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        0,
+        180,
+        0
+      ],
+      "pose_strategy": "driver reference showing stop motion and disabled lighting"
+    }
+  ],
+  "stop_mode": "on_pavement",
+  "selected_case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02",
+  "source_packets": [],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "st.roadway",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "st.shoulder",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "st.lane_width",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "st.sight_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "rel.visible",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "sig.hazard",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "kin.velocity",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      },
+      {
+        "name": "st.road_edge",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 original Native frames",
+        "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+        "reference_frame": "original Native frame and surveyed highway station",
+        "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+      }
+    ],
+    "context_inputs": [
+      "original-highway-survey.json"
+    ],
+    "limitations": [
+      "Actual highway/district classification, free passage, off-part practicability, disability exception and legal verdict remain independently reviewed."
+    ]
+  }
 }

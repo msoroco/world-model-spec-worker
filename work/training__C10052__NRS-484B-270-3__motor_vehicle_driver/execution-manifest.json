@@ -260,6 +260,31 @@
       },
       "construction": "selected-rider-bicycle-conflict/primary/construction.json",
       "construction_sha256": "321958ccb9c5c456bce6d6e9c1bdc1fccda7f70b35fb979e0e4a17c3ab800075",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native rider source",
+        "negative_log": "selected-rider-bicycle-conflict/delivery-negative.log",
+        "negative_log_sha256": "6f2122b6ebfc3685a790aa98e8c6f7604705691c9e71cb988b54b8f132d97b06",
+        "script": "selected-rider-bicycle-conflict/delivery-audit.py",
+        "script_sha256": "1872aeb143a73845e32dfc2ee872464424525e3ac3cb03c7912f0fee3f6cd521",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-rider-bicycle-conflict/delivery-positive.log",
+        "test_log_sha256": "43c707864ff1ea98f9ad2cc0c1b8349aa9f71000d5f2b0a562dabc03d0f5a1a4"
+      },
       "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-bicycle-conflict/fixture-recipe.json",
       "id": "primary",
       "kind": "delivery",
@@ -286,12 +311,113 @@
       "physical_preparation": {
         "receipt": "selected-rider-bicycle-conflict/physical-proof/proof.json",
         "sha256": "971406c36cdaa7fd2d710de372d996813548c9309ed0a1eadc58609d6d002888"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
       },
+      "candidate_risk": {
+        "reason": "Original Native rider asset class, physical turn, view and facility designation need saved readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-rider-electric-bicycle-clear/fallback1/construction.json",
+          "construction_sha256": "5de8e48a345cc2a69d90416543190e53d2a989a1e632172070d9490c69315021",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "under 35 m",
+            "metric": "approach_runway_m",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-rider-electric-bicycle-clear/fallback2/construction.json",
+          "construction_sha256": "6fad94d632a224c71546608259f138ee4f9705922d802f3b72b3bc813ef73df7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "over 5 frames",
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_clear",
+      "compatibility": {
+        "log": "selected-rider-electric-bicycle-clear/analysis.log",
+        "receipt": "selected-rider-electric-bicycle-clear/compatibility.json",
+        "sha256": "8fc397ca62e4548743154c0b7ad26432965ea775e6e658ed5492613434fca760"
+      },
+      "construction": "selected-rider-electric-bicycle-clear/primary/construction.json",
+      "construction_sha256": "0a02807ed36049e4f97c30c95343a83d075f0215d23e82d1fa394f19719c0f3e",
       "delivery_acceptance": {
-        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict",
-        "sets": [
-          "full-train"
-        ],
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_clear",
         "checks": [
           "native_source",
           "all_participants",
@@ -300,17 +426,515 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "test_exit_code": 0,
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_clear --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_clear --self-test --negative",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original Native rider source",
-        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict --self-test",
-        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_bicycle_conflict --self-test --negative",
-        "script": "selected-rider-bicycle-conflict/delivery-audit.py",
-        "script_sha256": "1872aeb143a73845e32dfc2ee872464424525e3ac3cb03c7912f0fee3f6cd521",
-        "test_log": "selected-rider-bicycle-conflict/delivery-positive.log",
-        "test_log_sha256": "43c707864ff1ea98f9ad2cc0c1b8349aa9f71000d5f2b0a562dabc03d0f5a1a4",
-        "negative_log": "selected-rider-bicycle-conflict/delivery-negative.log",
-        "negative_log_sha256": "6f2122b6ebfc3685a790aa98e8c6f7604705691c9e71cb988b54b8f132d97b06"
+        "negative_log": "selected-rider-electric-bicycle-clear/delivery-negative.log",
+        "negative_log_sha256": "08897c50d60207ae222b228e1b7ab6c5cc08a41d9a61fc75b9fdb76876dc8db2",
+        "script": "selected-rider-electric-bicycle-clear/delivery-audit.py",
+        "script_sha256": "b68c71a79f8b666e96e4d4eb4a10cd5c9354d94efa008290b8f00c1bd9dd6fcf",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-rider-electric-bicycle-clear/delivery-positive.log",
+        "test_log_sha256": "a5d2797bb6aaaaa34f4779653059dc9dabeb60636334854cfbd18c8c99f579d3"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-clear/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-rider-electric-bicycle-clear/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_rider.py",
+        "output_schema": "c10052-saved-rider-conflict-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-rider-electric-bicycle-clear/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/execution-manifest.json --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_clear --output .runtime-work/c10052-electric-clear-offline",
+        "construction_sha256": "0a02807ed36049e4f97c30c95343a83d075f0215d23e82d1fa394f19719c0f3e",
+        "exit_code": 0,
+        "log": "selected-rider-electric-bicycle-clear/primary-offline.log",
+        "log_sha256": "e27d6758a782578ec15eecabbadc024fe8fd37c1f6b8c9da73c712b4c077d61c"
+      },
+      "physical_preparation": {
+        "receipt": "selected-rider-electric-bicycle-clear/physical-proof/proof.json",
+        "sha256": "23ea5c75f4a414586eaf8f81e6b94410cfe340f59a38553bd4c938cd26322c19"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original Native rider asset class, physical turn, view and facility designation need saved readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-rider-electric-bicycle-conflict/fallback1/construction.json",
+          "construction_sha256": "6e514e3e9c0725677f82f91f3a40690d18eb77c9dc0908a50e1630672fd8c343",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "under 35 m",
+            "metric": "approach_runway_m",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-rider-electric-bicycle-conflict/fallback2/construction.json",
+          "construction_sha256": "0686f32a5b249f8dbdec1a3b910343f7bb78eb4b40fb8b355b4e35390b767ca8",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "over 5 frames",
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_conflict",
+      "compatibility": {
+        "log": "selected-rider-electric-bicycle-conflict/analysis.log",
+        "receipt": "selected-rider-electric-bicycle-conflict/compatibility.json",
+        "sha256": "aeb159297f41e62514595f8f7740f25bf9c1ff867d62afc9f4e75eee6efa9686"
+      },
+      "construction": "selected-rider-electric-bicycle-conflict/primary/construction.json",
+      "construction_sha256": "566f0c692c0531ffb284085b2cd5212f3015a8251faf98683d172aa20d1c535f",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_conflict",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_conflict --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_conflict --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native rider source",
+        "negative_log": "selected-rider-electric-bicycle-conflict/delivery-negative.log",
+        "negative_log_sha256": "55213799cbe0ce8c60bec47c6e4bd33213d7404daa0cd5f257f7be87b16ebf6c",
+        "script": "selected-rider-electric-bicycle-conflict/delivery-audit.py",
+        "script_sha256": "b500a63c9664b2fcbd90d514c7c44fa15b999207a2112bf8141f84fc1ae42b41",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-rider-electric-bicycle-conflict/delivery-positive.log",
+        "test_log_sha256": "8cf81bb90c6c6a7b7c9c5fd482fdab520c119f2ab594b59e145b15d9db1da2a0"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-bicycle-conflict/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-rider-electric-bicycle-conflict/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_rider.py",
+        "output_schema": "c10052-saved-rider-conflict-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-rider-electric-bicycle-conflict/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/execution-manifest.json --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_bicycle_conflict --output .runtime-work/c10052-electric-conflict-offline",
+        "construction_sha256": "566f0c692c0531ffb284085b2cd5212f3015a8251faf98683d172aa20d1c535f",
+        "exit_code": 0,
+        "log": "selected-rider-electric-bicycle-conflict/primary-offline.log",
+        "log_sha256": "33039e321585b473682c84feaa976276640cb5234881cdfe0af682d0fac9a653"
+      },
+      "physical_preparation": {
+        "receipt": "selected-rider-electric-bicycle-conflict/physical-proof/proof.json",
+        "sha256": "44b6d34a72e44d1e69b296228f545b3fb7169ed3383778eb929515c9e41b3e28"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original Native rider asset class, physical turn, view and facility designation need saved readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-rider-electric-scooter-clear/fallback1/construction.json",
+          "construction_sha256": "e0be93ff51169d498ce38133ebb0c50183ab062100d3dfd902641ad8bbee4879",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "under 35 m",
+            "metric": "approach_runway_m",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-rider-electric-scooter-clear/fallback2/construction.json",
+          "construction_sha256": "27f9ae572458063f92478649dbad7f2dd3be03727fdad294d606b5ca98f617b7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "over 5 frames",
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_clear",
+      "compatibility": {
+        "log": "selected-rider-electric-scooter-clear/analysis.log",
+        "receipt": "selected-rider-electric-scooter-clear/compatibility.json",
+        "sha256": "e991ebc2a7932cedcc1d29aabe5afad4c94c119858acf85e397bec32a01bc8b2"
+      },
+      "construction": "selected-rider-electric-scooter-clear/primary/construction.json",
+      "construction_sha256": "fa99464e40eb3192d755e1bebc71f52836035a6da6908b7ce1ff150f9eada4b3",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_clear",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_clear --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_clear --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native rider source",
+        "negative_log": "selected-rider-electric-scooter-clear/delivery-negative.log",
+        "negative_log_sha256": "ccff5a331c2bf0e38a4462ed1dde319bc1a41b58b7932ecf030c943f190f598c",
+        "script": "selected-rider-electric-scooter-clear/delivery-audit.py",
+        "script_sha256": "8e1d7951f47b4832c1b2683525500e8415f7b91a68877d13f7a13b202b1e17bd",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-rider-electric-scooter-clear/delivery-positive.log",
+        "test_log_sha256": "c72cf7dd76e7f5012e6447af358c33498e1ac98279959e6fdcfe0f4fb56ac316"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-clear/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-rider-electric-scooter-clear/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_rider.py",
+        "output_schema": "c10052-saved-rider-conflict-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-rider-electric-scooter-clear/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/execution-manifest.json --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_clear --candidate primary --output .runtime-work/c10052-scooter-clear-primary-offline",
+        "construction_sha256": "fa99464e40eb3192d755e1bebc71f52836035a6da6908b7ce1ff150f9eada4b3",
+        "exit_code": 0,
+        "log": "selected-rider-electric-scooter-clear/primary-offline.log",
+        "log_sha256": "33fbd6aff08e23a8fbbd2259c9ae62207e80e2b5fb27c75ecaee520b5104d7d8"
+      },
+      "physical_preparation": {
+        "receipt": "selected-rider-electric-scooter-clear/physical-proof/proof.json",
+        "sha256": "564254e410d118b280a2de2335c85a0f3ae5e4825359f1c2e5c69a238c3b979d"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original Native rider asset class, physical turn, view and facility designation need saved readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-rider-electric-scooter-conflict/fallback1/construction.json",
+          "construction_sha256": "041bbaf5d0a907404cabc064a11b61776407f9b202f000e836db285f6cdb09e5",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "under 35 m",
+            "metric": "approach_runway_m",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-rider-electric-scooter-conflict/fallback2/construction.json",
+          "construction_sha256": "27ee4879423319cb89a202767c066aa7f4fbde42dd7e0498d58c2a087b69f77f",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "over 5 frames",
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed original Native body and camera frames"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_conflict",
+      "compatibility": {
+        "log": "selected-rider-electric-scooter-conflict/analysis.log",
+        "receipt": "selected-rider-electric-scooter-conflict/compatibility.json",
+        "sha256": "2a2cdcbcc2485f851079bed1f1478026c6835c7994bdeddf745a3e3d7bb201d2"
+      },
+      "construction": "selected-rider-electric-scooter-conflict/primary/construction.json",
+      "construction_sha256": "cb351c5a6032df66f5babd446e4e8c795f4aadc6f8820f8fe50ecee7cd6b1bad",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_conflict",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_conflict --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_conflict --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native rider source",
+        "negative_log": "selected-rider-electric-scooter-conflict/delivery-negative.log",
+        "negative_log_sha256": "cc6ef46db6bbe53e903b2aa8c6e948950c20c19fa5b5359663b3dabe0d7b86fa",
+        "script": "selected-rider-electric-scooter-conflict/delivery-audit.py",
+        "script_sha256": "14237534991d7ee45256464852cde75bb230fff2b3924b17a24b353636b8e7d5",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-rider-electric-scooter-conflict/delivery-positive.log",
+        "test_log_sha256": "a10aba776cbc2bb452f04fbdba07a28f2fc074d1fb4e67eb05ade25c4bacef97"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-rider-electric-scooter-conflict/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-rider-electric-scooter-conflict/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_rider.py",
+        "output_schema": "c10052-saved-rider-conflict-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-rider-electric-scooter-conflict/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/execution-manifest.json --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__rider_electric_scooter_conflict --candidate primary --output .runtime-work/c10052-scooter-conflict-primary-offline",
+        "construction_sha256": "cb351c5a6032df66f5babd446e4e8c795f4aadc6f8820f8fe50ecee7cd6b1bad",
+        "exit_code": 0,
+        "log": "selected-rider-electric-scooter-conflict/primary-offline.log",
+        "log_sha256": "d70243cf900191c4ccb870cce9b08ff77d8f772298d0e08ccf71417d9bdddd13"
+      },
+      "physical_preparation": {
+        "receipt": "selected-rider-electric-scooter-conflict/physical-proof/proof.json",
+        "sha256": "edd27d40a880b0da9ccb81b1a4aeb5adb77a9d39c4f198ce556e701a55bed828"
       }
     }
   ],

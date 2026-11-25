@@ -1,0 +1,79 @@
+{
+  "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+  "selected_case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+  "supported_case_ids": [
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2"
+  ],
+  "candidate_id": "primary",
+  "law_id": "NRS-484D-100-1",
+  "cell_id": "C179824",
+  "actor": "motor_vehicle_driver",
+  "lamp_setting_on": true,
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "elevated full-road survey",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "front approach sign and subject",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "roadside sign and lamp context",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "driver forward lamp and road",
+      "fov_deg": 90
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "native_lamp_setting",
+        "unit": "boolean",
+        "sampling_rate_hz": 20,
+        "method": "original CARLA VehicleLightState readback",
+        "time_window": "600 frames",
+        "reference_frame": "governed roadway",
+        "uncertainty": "actual emitted light and class sufficiency unverified"
+      },
+      {
+        "name": "device_and_highway_context",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "OpenDRIVE sign/lane readback plus independently sourced authority",
+        "time_window": "600 frames",
+        "reference_frame": "signed paved road",
+        "uncertainty": "official status and actual pixels unverified"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Class-specific chapter 484D lamp requirements not yet supplied",
+      "Civil time and 1000-foot visibility branches remain separate",
+      "Parked vehicle exceptions unresolved"
+    ]
+  },
+  "status": "partial_cpu_draft"
+}

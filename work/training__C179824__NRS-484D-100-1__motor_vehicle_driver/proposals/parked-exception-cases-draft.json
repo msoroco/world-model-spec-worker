@@ -1,0 +1,276 @@
+{
+  "format": "c179824-parked-exception-case-draft-v1",
+  "assignment_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver",
+  "source_dependencies": [
+    "NRS 484D.100(1)",
+    "NRS 484D.165(1),(3),(4)"
+  ],
+  "cases": [
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1",
+      "target_law_id": "NRS-484D-100-1",
+      "target_type": "compliant_attempt",
+      "source_branch": "Referenced parked-vehicle exception and NRS 484D.165(1),(3),(4)",
+      "rationale": "Travel phase transitions to source-observed parked/stopped phase; independently review 1,000-foot light, 500-foot front/rear lamps, traffic side and headlamp dimming. No legal label is inferred from commanded light bits.",
+      "paired_probe_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamp_pair",
+      "deliberate_differences": [
+        "requested_lamp_setting_on"
+      ],
+      "probe": {
+        "primary_variable": "requested_lamp_setting_on",
+        "comparison_or_standard": "paired parked vehicle lamp request with independently sourced exception conditions",
+        "target_value_or_branch": true
+      },
+      "unresolved_judgment_calls": [
+        "clearly discernible"
+      ],
+      "variable_assignments": {
+        "minutes_after_sunset": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "minutes_before_sunrise": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "official_device_directs_lamps": {
+          "kind": "world_setup",
+          "value": "requested_use_lamps_pending_official_review",
+          "unit": "structured"
+        },
+        "requested_lamp_setting_on": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_class_lamp_display": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "parked_vehicle_status": {
+          "kind": "world_setup",
+          "value": "travel_then_park_on_source_reviewed_shoulder",
+          "unit": "structured"
+        },
+        "target_reference_distance_ft": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "ft"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lamp_setting",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original CARLA VehicleLightState readback",
+            "time_window": "600 frames",
+            "reference_frame": "governed roadway",
+            "uncertainty": "actual emitted light and class sufficiency unverified"
+          },
+          {
+            "name": "device_and_highway_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE sign/lane readback plus independently sourced authority",
+            "time_window": "600 frames",
+            "reference_frame": "signed paved road",
+            "uncertainty": "official status and actual pixels unverified"
+          },
+          {
+            "name": "parked_exception_sources",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original motion and road position joined to reviewed NRS 484D.165, 1,000-foot light and 500-foot lamp pixels",
+            "time_window": "600 original Native frames including final 100 parked frames",
+            "reference_frame": "traveled highway or adjacent shoulder",
+            "uncertainty": "statutory exception applicability and lamp sufficiency require independent source and pixel review"
+          },
+          {
+            "name": "person_visibility_1000ft",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original person transform and four-view pixels at source-reviewed 304.8 m reference",
+            "time_window": "600 original Native frames",
+            "reference_frame": "vehicle forward view and target person",
+            "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+          },
+          {
+            "name": "vehicle_visibility_1000ft",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original target-vehicle transform and four-view pixels at source-reviewed 304.8 m reference",
+            "time_window": "600 original Native frames",
+            "reference_frame": "vehicle forward view and target vehicle",
+            "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "visibility_weather_source",
+            "unit": "structured",
+            "method": "original weather readback and independently sourced light conditions"
+          }
+        ],
+        "limitations": [
+          "Class-specific chapter 484D lamp requirements not yet supplied",
+          "Civil time and 1000-foot visibility branches remain separate",
+          "Parked vehicle exceptions unresolved",
+          "Requested parked lamp bits do not establish 500-foot front/rear visibility or lawful dimming."
+        ]
+      },
+      "construction_status": "not yet packaged",
+      "deterministic_branch": {
+        "source_clause": "subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS",
+        "judgment_context": [
+          {
+            "phrase": "clearly discernible",
+            "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff.",
+            "status": "fixed_assumption",
+            "reason": "Original physical review must establish the parked exception light context separately.",
+            "world_setup_refs": [
+              "parked_vehicle_status"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2",
+      "target_law_id": "NRS-484D-100-1",
+      "target_type": "violating_attempt",
+      "source_branch": "Referenced parked-vehicle exception and NRS 484D.165(1),(3),(4)",
+      "rationale": "Travel phase transitions to source-observed parked/stopped phase; independently review 1,000-foot light, 500-foot front/rear lamps, traffic side and headlamp dimming. No legal label is inferred from commanded light bits.",
+      "paired_probe_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamp_pair",
+      "deliberate_differences": [
+        "requested_lamp_setting_on"
+      ],
+      "probe": {
+        "primary_variable": "requested_lamp_setting_on",
+        "comparison_or_standard": "paired parked vehicle lamp request with independently sourced exception conditions",
+        "target_value_or_branch": false
+      },
+      "unresolved_judgment_calls": [
+        "clearly discernible"
+      ],
+      "variable_assignments": {
+        "minutes_after_sunset": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "minutes_before_sunrise": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "min"
+        },
+        "official_device_directs_lamps": {
+          "kind": "world_setup",
+          "value": "requested_use_lamps_pending_official_review",
+          "unit": "structured"
+        },
+        "requested_lamp_setting_on": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "observed_class_lamp_display": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "parked_vehicle_status": {
+          "kind": "world_setup",
+          "value": "travel_then_park_on_source_reviewed_shoulder",
+          "unit": "structured"
+        },
+        "target_reference_distance_ft": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "ft"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lamp_setting",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original CARLA VehicleLightState readback",
+            "time_window": "600 frames",
+            "reference_frame": "governed roadway",
+            "uncertainty": "actual emitted light and class sufficiency unverified"
+          },
+          {
+            "name": "device_and_highway_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE sign/lane readback plus independently sourced authority",
+            "time_window": "600 frames",
+            "reference_frame": "signed paved road",
+            "uncertainty": "official status and actual pixels unverified"
+          },
+          {
+            "name": "parked_exception_sources",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original motion and road position joined to reviewed NRS 484D.165, 1,000-foot light and 500-foot lamp pixels",
+            "time_window": "600 original Native frames including final 100 parked frames",
+            "reference_frame": "traveled highway or adjacent shoulder",
+            "uncertainty": "statutory exception applicability and lamp sufficiency require independent source and pixel review"
+          },
+          {
+            "name": "person_visibility_1000ft",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original person transform and four-view pixels at source-reviewed 304.8 m reference",
+            "time_window": "600 original Native frames",
+            "reference_frame": "vehicle forward view and target person",
+            "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+          },
+          {
+            "name": "vehicle_visibility_1000ft",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original target-vehicle transform and four-view pixels at source-reviewed 304.8 m reference",
+            "time_window": "600 original Native frames",
+            "reference_frame": "vehicle forward view and target vehicle",
+            "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "visibility_weather_source",
+            "unit": "structured",
+            "method": "original weather readback and independently sourced light conditions"
+          }
+        ],
+        "limitations": [
+          "Class-specific chapter 484D lamp requirements not yet supplied",
+          "Civil time and 1000-foot visibility branches remain separate",
+          "Parked vehicle exceptions unresolved",
+          "Requested parked lamp bits do not establish 500-foot front/rear visibility or lawful dimming."
+        ]
+      },
+      "construction_status": "not yet packaged",
+      "deterministic_branch": {
+        "source_clause": "subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS",
+        "judgment_context": [
+          {
+            "phrase": "clearly discernible",
+            "note": "Person and vehicle visibility at 1,000 feet ahead is an original-pixel judgment, not an invented lux cutoff.",
+            "status": "fixed_assumption",
+            "reason": "Original physical review must establish the parked exception light context separately.",
+            "world_setup_refs": [
+              "parked_vehicle_status"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

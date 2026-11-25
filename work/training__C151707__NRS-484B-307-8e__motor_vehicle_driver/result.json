@@ -37,10 +37,10 @@
     "probe_02_offline_log_sha256": "238757f5b27b1b65537ca098fdfde1ad3fbf7d49da5b3c8300af21b73a8e9672",
     "road-native-cpu-tests.log_sha256": "01ed541c4a723a90d16349a9b29cb292ad72e72a6ea9a8beec636be4cf03b7fb"
   },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C151707__NRS-484B-307-8e__motor_vehicle_driver --case training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "8c5ac6b6cfba329e4f933ebb5286c802fbc7abbb89c79cc0cb53a0db532b043d",
   "planned_case_count": 2,
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Both exact controlled Native constructions pass current-runtime offline checks, and 16 source-normalization/comparison positive and negative CPU tests pass. Public compatibility, recorded-only processing, canonical semantic proposals, physical triads, delivery audits, comparison acceptance, and physical fallbacks if risk warrants remain unfinished worker-owned CPU work; no original survey or CARLA execution is claimed.",
+  "readiness_kind": "delivery_prepared",
   "reuse_count": 0,
   "scoped_check": {
     "command": ".venv-cpu/bin/python worker_check.py --assignment training__C151707__NRS-484B-307-8e__motor_vehicle_driver --complete",
@@ -50,5 +50,13 @@
   },
   "selected_delivery_case_count": 2,
   "source_law_review": "Exact statutory text retained; recovered summary remains unreviewed; witness and membership are contextual only.",
-  "status": "partial"
+  "status": "ready",
+  "tests": [
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c151707-output TMPDIR=$PWD/.runtime-work/c151707-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/training__C151707__NRS-484B-307-8e__motor_vehicle_driver/tests -p 'test_*.py' -q",
+      "exit_code": 0,
+      "log": "tests-current.log",
+      "sha256": "8167db12783402f10e17c7527410fd061d2e50f4f49db7f43ce088cf48676de9"
+    }
+  ]
 }

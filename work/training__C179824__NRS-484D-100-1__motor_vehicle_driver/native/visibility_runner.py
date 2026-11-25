@@ -27,26 +27,29 @@ CAMERAS = (
 )
 
 
-def check():
-    geometry = geometry_check()
+def check(target_distance_ft=1000):
+    distance_m = target_distance_ft * .3048
+    geometry = geometry_check(distance_m)
     if FRAMES / RATE_HZ != 30 or len(CAMERAS) != 4:
         raise ValueError('30-second four-view acquisition required')
     if [c[0] for c in CAMERAS] != ['overview', 'approach', 'reference_corner', 'driver_reference']:
         raise ValueError('capture camera profile changed')
-    if TARGET_REFERENCE_X_M - EGO_REFERENCE_X_M != STATUTORY_DISTANCE_M:
-        raise ValueError('1,000-foot reference changed')
+    if target_distance_ft not in (999, 1000, 1001):
+        raise ValueError('visibility probe must be below, at, or above 1,000 feet')
     return {'passed': True, 'geometry': geometry, 'frames': FRAMES,
             'rate_hz': RATE_HZ, 'camera_names': [c[0] for c in CAMERAS],
             'person_and_vehicle_pixels_verified': False,
             'physical_acceptance_claimed': False}
 
 
-def execute(output_dir: str, host: str, port: int, weather_name: str):
+def execute(output_dir: str, host: str, port: int, weather_name: str,
+            target_distance_ft: int = 1000):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
-    check()
+    check(target_distance_ft)
+    target_x_m = EGO_REFERENCE_X_M + target_distance_ft * .3048
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -75,7 +78,7 @@ def execute(output_dir: str, host: str, port: int, weather_name: str):
         weather = getattr(carla.WeatherParameters, weather_name)
         world.set_weather(weather)
         mapping = world.get_map()
-        for x in (EGO_REFERENCE_X_M, TARGET_REFERENCE_X_M):
+        for x in (EGO_REFERENCE_X_M, target_x_m):
             waypoint = mapping.get_waypoint(carla.Location(x=x, y=-1.75, z=1),
                                             project_to_road=True,
                                             lane_type=carla.LaneType.Driving)
@@ -88,7 +91,9 @@ def execute(output_dir: str, host: str, port: int, weather_name: str):
             'assignment_id': 'training__C179824__NRS-484D-100-1__motor_vehicle_driver',
             'source_kind': 'native_saved_sample',
             'map_source_sha256': hashlib.sha256(source_map).hexdigest(),
-            'reference_distance_m': STATUTORY_DISTANCE_M,
+            'reference_distance_m': target_distance_ft * .3048,
+            'statutory_reference_distance_m': STATUTORY_DISTANCE_M,
+            'requested_boundary_distance_ft': target_distance_ft,
             'weather_request': weather_name,
             'person_pixels_reviewed': False,
             'vehicle_pixels_reviewed': False,
@@ -104,11 +109,11 @@ def execute(output_dir: str, host: str, port: int, weather_name: str):
         target_bp = blueprints.find('vehicle.audi.a2')
         target_bp.set_attribute('role_name', 'c179824_visibility_target')
         target = world.spawn_actor(target_bp, carla.Transform(
-            carla.Location(x=TARGET_REFERENCE_X_M, y=-1.75, z=1)))
+            carla.Location(x=target_x_m, y=-1.75, z=1)))
         owned.append(target)
         walker_bp = blueprints.filter('walker.pedestrian.*')[0]
         person = world.spawn_actor(walker_bp, carla.Transform(
-            carla.Location(x=TARGET_REFERENCE_X_M, y=-5.0, z=1)))
+            carla.Location(x=target_x_m, y=-5.0, z=1)))
         owned.append(person)
         for name, width, height, x, y, z, pitch in CAMERAS:
             bp = blueprints.find('sensor.camera.rgb')
@@ -201,13 +206,16 @@ if __name__ == '__main__':
     parser.add_argument('--port', type=int, default=2000)
     parser.add_argument('--weather', choices=('ClearNoon', 'SoftRainSunset',
                                              'HardRainNoon'), default='ClearNoon')
+    parser.add_argument('--target-distance-ft', type=int, choices=(999, 1000, 1001),
+                        default=1000)
     args = parser.parse_args()
     if args.check:
         if args.output_dir:
             raise SystemExit('--check cannot create a Native attempt')
-        print(json.dumps(check(), sort_keys=True))
+        print(json.dumps(check(args.target_distance_ft), sort_keys=True))
     else:
         if not args.output_dir:
             raise SystemExit('--output-dir required for Native execution')
-        print(json.dumps(execute(args.output_dir, args.host, args.port, args.weather),
+        print(json.dumps(execute(args.output_dir, args.host, args.port, args.weather,
+                                 args.target_distance_ft),
                          sort_keys=True))

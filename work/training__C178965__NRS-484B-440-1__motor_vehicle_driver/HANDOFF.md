@@ -1,3 +1,13 @@
+# C178965 current construction checkpoint (2026-11-25)
+
+Status: **partial**. All three exact planned cases are now selected and have separate source-hashed primary Native constructions under `native/cases/`. The current runtime offline check exited 0 for `probe_01`, `probe_02`, and `probe_03`; bound logs are `probe-01-primary-offline.log`, `probe-02-primary-offline.log`, and `probe-03-primary-offline.log`. The assignment-scoped static `worker_check.py --assignment training__C178965__NRS-484B-440-1__motor_vehicle_driver --complete` exited 0 after this update. None is delivery-ready yet.
+
+`probe_01` requests a stopped footprint entirely off the traveled pavement. `probe_02` requests an on-pavement stop despite surveyed off-part space. `probe_03` requests an on-pavement stop with an injected engine-command failure and hazard indication. The runner validates all three target footprints against surveyed pavement edges and requires independent forward/backward visibility source IDs. The exact original highway/district/shoulder and 200-foot sight survey remains a local acquisition prerequisite. The failure injection is a construction feature, not evidence that leaving the disabled vehicle was impossible. The triple comparison varies stop position and the requested failure mechanism; legal outcome remains null.
+
+The primary offline proof is only a construction/unit-test proof. Remaining worker-owned CPU work: source-joined original Native finalizer and all four-camera saved processing; current-runtime positive/missing-source negative compatibility for every primary and risk-justified fallback; canonical semantic stages; physical diagnostic triads; independent delivery and comparison audits; exact execution manifest. Actual CARLA behavior, sight, passage width, pixels, disability exception, and acceptance remain unverified. Keep `result.json` partial until the exact scoped strict gate exits 0.
+
+## Earlier checkpoint history
+
 # training__C178965__NRS-484B-440-1__motor_vehicle_driver
 
 Status: **partial**. One on-pavement exact case is selected for CPU preparation. No CARLA run, physical sight measurement, legal verdict or accepted recording is claimed.

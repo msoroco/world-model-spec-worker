@@ -49,7 +49,7 @@ def open_drive():
     return ET.tostring(root, encoding='unicode')
 
 
-def check():
+def check(distance_m=STATUTORY_DISTANCE_M):
     root = ET.fromstring(open_drive())
     road = root.find('road')
     if road is None:
@@ -57,9 +57,9 @@ def check():
     geometry = road.find('planView/geometry')
     if geometry is None:
         raise ValueError('visibility roadway geometry missing')
-    target = TARGET_REFERENCE_X_M
-    if abs(target - EGO_REFERENCE_X_M - STATUTORY_DISTANCE_M) > 1e-9:
-        raise ValueError('1,000-foot reference spacing changed')
+    target = EGO_REFERENCE_X_M + distance_m
+    if abs(distance_m - STATUTORY_DISTANCE_M) > 0.304800001:
+        raise ValueError('boundary reference must be within one foot of 1,000 feet')
     if not ROAD_START_M < EGO_REFERENCE_X_M < target < ROAD_START_M + ROAD_LENGTH_M:
         raise ValueError('reference targets outside road')
     if float(geometry.attrib['length']) != ROAD_LENGTH_M:
@@ -68,8 +68,8 @@ def check():
         raise ValueError('visibility lane layout changed')
     return {'passed': True, 'road_length_m': ROAD_LENGTH_M,
             'ego_reference_x_m': EGO_REFERENCE_X_M,
-            'target_reference_x_m': TARGET_REFERENCE_X_M,
-            'reference_distance_m': STATUTORY_DISTANCE_M,
+            'target_reference_x_m': target,
+            'reference_distance_m': distance_m,
             'person_and_vehicle_pixels_verified': False}
 
 

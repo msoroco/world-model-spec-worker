@@ -9,11 +9,14 @@ import math
 import os
 from pathlib import Path
 import queue
+import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parent
-CASE = "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02"
-VIEWS = ("overview", "ego_front", "roadside", "opposite_approach")
+ASSIGNMENT = "training__C178965__NRS-484B-440-1__motor_vehicle_driver"
+CASES = {ASSIGNMENT + "__probe_0" + str(i): mode for i, mode in
+         ((1, "off_pavement"), (2, "on_pavement"), (3, "disabled_on_pavement"))}
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def require(ok, message):
@@ -22,7 +25,8 @@ def require(ok, message):
 
 
 def check(config):
-    require(config["case_id"] == CASE, "case identity changed")
+    require(config["case_id"] in CASES and config["stop_mode"] == CASES[config["case_id"]],
+            "case identity changed")
     require(config["law_id"] == "NRS-484B-440-1" and config["cell_id"] == "C178965"
             and config["actor"] == "motor_vehicle_driver", "assignment identity changed")
     require(config["frozen_cell"] == {"layout": "paved_road", "maneuver": "park", "control": "other_vehicle"}, "frozen cell changed")
@@ -32,12 +36,11 @@ def check(config):
                 and len(c["location_xyz_m"]) == 3 and len(c["rotation_pyr_deg"]) == 3
                 for c in config["cameras"]), "camera source configuration incomplete")
     require(config["physical_completion"] is False and config["legal_verdict"] is None, "unproved outcome claimed")
-    return {"case_id": CASE, "frame_count": 600, "rate_hz": 20,
+    return {"case_id": config["case_id"], "frame_count": 600, "rate_hz": 20,
             "views": list(VIEWS), "carla_contacted": False, "physical_completion": False}
 
 
-def read_survey(path):
-    survey = json.loads(Path(path).read_text())
+def validate_survey(survey):
     require(survey["source_kind"] == "original_native_highway_survey", "original highway survey required")
     require(survey["map_name"] and survey["highway_source_id"] and survey["district_source_id"]
             and survey["pavement_edge_source_id"] and survey["offroad_area_source_id"]
@@ -45,8 +48,58 @@ def read_survey(path):
     require(len(survey["spawn_xyz_yaw_deg"]) == 4 and len(survey["stop_target_xyz_m"]) == 3,
             "surveyed spawn or stop target missing")
     require(len(survey["other_spawn_xyz_yaw_deg"]) == 4, "other-vehicle spawn missing")
+    require(set(survey.get("stop_targets_xyz_m", {})) == set(CASES.values()),
+            "all three surveyed stop targets required")
+    require(all(len(target) == 3 for target in survey["stop_targets_xyz_m"].values()),
+            "surveyed stop target coordinate missing")
+    require(survey.get("disabled_failure_source_id"), "disabled failure source missing")
     require(survey["district"] == "outside", "survey is inside a business/residence district")
+    require(survey.get("public_highway_reviewed") is True,
+            "public highway classification remains unreviewed")
+    require(survey.get("pavement_left_y_m") < survey.get("pavement_right_y_m"),
+            "pavement edge coordinates missing")
+    require(survey.get("vehicle_half_width_m", 0) > 0,
+            "vehicle footprint width missing")
+    require(set(survey.get("approach_visibility_sources", {})) == {"forward", "backward"},
+            "both approach visibility sources required")
+    require(all(isinstance(item, dict) and item.get("source_id") and
+                item.get("path_distance_m", 0) >= 60.96 and
+                len(item.get("location_xyz_m", [])) == 3
+                for item in survey["approach_visibility_sources"].values()),
+            "both approach visibility sources required")
+    half = survey["vehicle_half_width_m"]
+    left, right = survey["pavement_left_y_m"], survey["pavement_right_y_m"]
+    off_y = survey["stop_targets_xyz_m"]["off_pavement"][1]
+    on_y = survey["stop_targets_xyz_m"]["on_pavement"][1]
+    disabled_y = survey["stop_targets_xyz_m"]["disabled_on_pavement"][1]
+    require(off_y - half >= right or off_y + half <= left,
+            "off-pavement stop target overlaps traveled pavement")
+    require(left < on_y + half and on_y - half < right and
+            left < disabled_y + half and disabled_y - half < right,
+            "on-pavement stop targets miss traveled pavement")
     return survey
+
+
+def read_survey(path):
+    return validate_survey(json.loads(Path(path).read_text()))
+
+
+def approach_rays(world, ego, survey, carla):
+    """Nine original geometric rays from each surveyed 200-foot station."""
+    targets = [ego.get_transform().location, *ego.bounding_box.get_world_vertices(ego.get_transform())]
+    rays = {}
+    for direction, source in survey["approach_visibility_sources"].items():
+        x, y, z = source["location_xyz_m"]
+        origin = carla.Location(x=x, y=y, z=z)
+        clear = []
+        for target in targets:
+            hits = world.cast_ray(origin, target)
+            # A hit at the target body is not an intervening obstruction.
+            clear.append(not hits or hits[0].location.distance(target) <= 1.0)
+        rays[direction] = {"source_id": source["source_id"],
+                           "path_distance_m": source["path_distance_m"],
+                           "ray_clear": clear}
+    return rays
 
 
 def execute(config, output_dir, survey_path, host, port):
@@ -56,8 +109,8 @@ def execute(config, output_dir, survey_path, host, port):
     require(".runtime-work" in os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""),
             "set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     repo = ROOT.parents[2]
-    sys.path.insert(0, str(repo / "runtime" / "pipeline" / "scenario_pipeline"))
-    sys.path.insert(1, str(repo / "runtime" / "pipeline" / "python"))
+    sys.path.insert(0, str(repo / "runtime" / "scenario_pipeline"))
+    sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -68,6 +121,7 @@ def execute(config, output_dir, survey_path, host, port):
         require((output / "config.json").is_file(), "existing output lacks materialized config")
     else:
         output.mkdir(parents=True)
+    shutil.copyfile(survey_path, output / "original-highway-survey.json")
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()
@@ -104,13 +158,14 @@ def execute(config, output_dir, survey_path, host, port):
             sensors.append(sensor)
             (output / camera["name"]).mkdir()
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
-        with PipelineCapture(client, ego, output, CASE, required_observations=config["required_atoms"]) as capture, \
+        with PipelineCapture(client, ego, output, config["case_id"], required_observations=config["required_atoms"]) as capture, \
                 FrameMap(output / "video_frames.jsonl") as frame_map, \
-                (output / "roadside-native.jsonl").open("x", buffering=1) as trace:
+                (output / "roadside-native.jsonl").open("x", buffering=1) as trace, \
+                (output / "visibility-native.jsonl").open("x", buffering=1) as visibility:
             for frame in range(600):
                 pose, velocity = ego.get_transform(), ego.get_velocity()
                 speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
-                target = survey["stop_target_xyz_m"]
+                target = survey["stop_targets_xyz_m"][config["stop_mode"]]
                 dx, dy = target[0] - pose.location.x, target[1] - pose.location.y
                 distance = math.hypot(dx, dy)
                 heading = math.atan2(dy, dx) - math.radians(pose.rotation.yaw)
@@ -119,6 +174,13 @@ def execute(config, output_dir, survey_path, host, port):
                 target_speed = min(5.0, max(0.0, 0.5 * distance))
                 throttle = max(0.0, min(0.5, 0.18 + 0.12 * (target_speed - speed))) if distance > 1 else 0.0
                 brake = max(0.0, min(1.0, 0.25 * (speed - target_speed))) if distance > 1 else 1.0
+                failure_active = config["stop_mode"] == "disabled_on_pavement" and distance <= 1.0
+                if failure_active:
+                    # Construct an engine-command failure, with the brake held.
+                    # Original trace and geometry still decide whether departure was impossible.
+                    throttle, brake, steer = 0.0, 1.0, 0.0
+                    ego.set_light_state(carla.VehicleLightState(carla.VehicleLightState.LeftBlinker |
+                                                                 carla.VehicleLightState.RightBlinker))
                 ego.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=steer))
                 other.apply_control(carla.VehicleControl(throttle=0.22, brake=0.0, steer=0.0))
                 native_frame = world.tick()
@@ -133,6 +195,12 @@ def execute(config, output_dir, survey_path, host, port):
                                                                "other_vehicle_actor_id": other.id})
                 frame_map.append(native_frame, frame / 20,
                                  native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
+                visibility.write(json.dumps({"source_kind": "original_native_raycast", "frame": frame,
+                                             "native_frame": native_frame, "t_s": frame / 20,
+                                             "approaches": approach_rays(world, ego, survey, carla)}) + "\n")
+                pose, velocity = ego.get_transform(), ego.get_velocity()
+                speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
+                distance = math.hypot(target[0] - pose.location.x, target[1] - pose.location.y)
                 trace.write(json.dumps({"source_kind": "original_native_observation", "frame": frame,
                                         "native_frame": native_frame, "t_s": frame / 20,
                                         "vehicle_id": ego.id, "x_m": pose.location.x, "y_m": pose.location.y,
@@ -140,7 +208,9 @@ def execute(config, output_dir, survey_path, host, port):
                                         "other_x_m": other.get_transform().location.x,
                                         "other_y_m": other.get_transform().location.y,
                                         "speed_mps": speed, "bbox_half_width_m": ego.bounding_box.extent.y,
-                                        "target_distance_m": distance}) + "\n")
+                                        "target_distance_m": distance, "stop_mode": config["stop_mode"],
+                                        "failure_active": failure_active,
+                                        "failure_source_id": survey["disabled_failure_source_id"] if failure_active else None}) + "\n")
     finally:
         for sensor in sensors:
             sensor.stop()
@@ -153,11 +223,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--case", choices=tuple(CASES))
     parser.add_argument("--highway-survey")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     cfg = json.loads((ROOT / "config.json").read_text())
+    require(args.case is None or args.case == cfg["case_id"], "requested case differs from materialized construction")
     if args.check:
         print(json.dumps(check(cfg)))
     else:
