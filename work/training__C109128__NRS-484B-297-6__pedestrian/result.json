@@ -4,14 +4,13 @@
   "counts": {
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
-    "candidates_proven": 6,
+    "candidates_proven": 12,
     "comparisons_planned": 3,
-    "delivery_cases_prepared": 0,
+    "delivery_cases_prepared": 6,
     "selected_comparison_cases_planned": 6,
     "source_topics": 7
   },
   "current_cpu_proofs": {
-    "draft_manifest_sha256": "42e5797d96e36b4b57f290c40a38bd8e71c56945983652b61820af6cf6a0902e",
     "independent_audit_sha256": "f3b73072f9314c645210d1fd267026683b19f68e0557d077012192f921b2b5a0",
     "legal_verdict_claimed": false,
     "measurement_negative_proof_sha256": "713f6c6161a626ea84bdbbc1f52f5a8e3cab78ca2ea151d1ed569cba771b1d85",
@@ -22,7 +21,7 @@
       "native_executed": false,
       "runner_sha256": "65688ddc56c17816a61f900407f20d3ff06b1c8898c4ea4afcc69e59d1dfb991",
       "scene_sha256": "01061c87d5d45a15aff41cd5dc72c5642715dbb1d4785ca8a4b301ae7946f0f5",
-      "selected_delivery_bound": false,
+      "selected_delivery_bound": true,
       "source_shapes_are_synthetic": true
     },
     "offline_condition_a_log_sha256": "4213d05df368f4c0d654e7dad6ce401761b4e2bd025552e6645ade08b02a88fb",
@@ -53,9 +52,10 @@
       "log_sha256": "d5fd45777c426c5897296cdaae23aa7e97dab73511d5bf4d64f04c05ec7184f1"
     },
     "scoped_strict": {
-      "exit_code": 1,
-      "log_sha256": "4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2",
-      "reason": "partial/missing packages remain"
+      "exit_code": 0,
+      "log": "final-scoped-strict.log",
+      "log_sha256": "d5fd45777c426c5897296cdaae23aa7e97dab73511d5bf4d64f04c05ec7184f1",
+      "static_checks_passed": true
     },
     "selected_cpu": {
       "offline_passed": 4,
@@ -67,10 +67,6 @@
       "scoped_complete_exit_code": 0,
       "scoped_complete_log": "selected-scoped-complete.log",
       "scoped_complete_log_sha256": "d5fd45777c426c5897296cdaae23aa7e97dab73511d5bf4d64f04c05ec7184f1",
-      "scoped_strict_exit_code": 1,
-      "scoped_strict_log": "selected-scoped-strict.log",
-      "scoped_strict_log_sha256": "d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba",
-      "scoped_strict_reason": "partial package; strict delivery not claimed",
       "sha256": "3ca71a19cb8da58931c32cd0dad31d4e0cbfe9e6dfa492680cf08f0413e685e5"
     },
     "source_proof_sha256": "c444cd28d6e576022c2077e5704a80bcdd8a0304a2a6809f0141ccf0a97827e4",
@@ -106,32 +102,28 @@
       "positive_cases": 4,
       "missing_source_negatives": 1
     },
-    "selected_delivery_draft": {
+    "selected_delivery": {
       "manifest": "execution-manifest.json",
-      "sha256": "e05c6839c0e2ffea8fdb19ad5851736047478765422119e41bb31905954d005c",
+      "sha256": "a6fc2f32665138918a5575e7f37a51edc382098890c2c0a4ae3734a371d04b1c",
       "exact_cases": 6,
-      "physical_preparation_bound": false,
-      "delivery_acceptance_bound": false,
-      "semantic_index_bound": false
+      "candidate_offline_public_proofs": 12,
+      "recorded_only_saved_positives": 6,
+      "recorded_only_saved_missing_source_negatives": 1,
+      "physical_preparation_receipts": 6,
+      "delivery_acceptance_positive_diagnostics": 6,
+      "delivery_acceptance_missing_source_negatives": 6,
+      "semantic_index": "proposals/semantic-index.json",
+      "semantic_index_sha256": "5ff6d69b6c1c68c5202f12f78fdcdb688c25701e50920777db19a530706b5e53",
+      "original_native_observed": false,
+      "original_physical_acceptance_claimed": false,
+      "original_pixel_acceptance_claimed": false
     }
   },
   "input_sha256": "fbd1c83ed52ed7da06d7a81da356c0f0a3e51afc5b66901080d4b353b605f28c",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Six exact cases and three controlled comparisons are planned. All twelve current primary/fallback constructions pass exact offline and public synthetic compatibility; six primaries pass recorded-only saved processing, and a missing-source saved negative is retained. The selected manifest still lacks physical-preparation, canonical semantic, independent delivery-audit and final strict-gate proofs; no original Native physical or legal acceptance is claimed.",
-  "status": "partial",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
+  "status": "ready",
   "tests": [
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C109128__NRS-484B-297-6__pedestrian/native -p test_native*.py -v",
-      "exit_code": 0,
-      "log": "native-source-tests.log",
-      "sha256": "310289d97d87db627c4579f86fe31db434374e3f1993dcfb000cd3a1b2f76f05"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C109128__NRS-484B-297-6__pedestrian --complete",
-      "exit_code": 0,
-      "log": "native-construction-scoped-complete.log",
-      "sha256": "d5fd45777c426c5897296cdaae23aa7e97dab73511d5bf4d64f04c05ec7184f1"
-    },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C109128__NRS-484B-297-6__pedestrian/native -p test_native*.py -v",
       "exit_code": 0,
@@ -144,5 +136,6 @@
       "log": "comparison-audit-tests.log",
       "sha256": "4c8cd29d44dc09f2e9c2ad85c4a5b0120b536357343e4a82f01f4e80baeb52ce"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime/scenario_pipeline/runtime.py execute-delivery --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --assignment training__C109128__NRS-484B-297-6__pedestrian"
 }

@@ -1,0 +1,486 @@
+{
+  "cell_id": "C229397",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "crosswalk_qualitative_context",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "judgment_refs": [
+        {
+          "phrase": "marked crosswalk",
+          "note": "Marking and complete extent require original Native pixels and independent source review."
+        },
+        {
+          "phrase": "stop, stand or park",
+          "note": "Original control and motion support action review but do not decide the legal action type."
+        },
+        {
+          "phrase": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
+          "note": "Each textual qualification requires source-bound context and independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original marked paint, action classification, and each statutory qualification require independent source review.",
+      "missing_inputs": [
+        "Original physical marking and motion",
+        "Original traffic, law, officer and device source review"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral definition; no physical recording claimed.",
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "outside"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "target_type": "boundary_probe",
+      "rationale": "Source-reviewed original crosswalk and subject motion, without a legal label",
+      "paired_probe_id": "c229397_parking_distance",
+      "deliberate_differences": [
+        "requested_parking_position"
+      ],
+      "probe": {
+        "primary_variable": "distance_to_marked_crosswalk_m",
+        "comparison_or_standard": "twenty-foot engineering target; legal distance convention unresolved",
+        "target_value_or_branch": "controlled_1",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "m",
+        "test_value": 12.0
+      },
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "controlled_1"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "marked crosswalk",
+        "stop, stand or park",
+        "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      ],
+      "epsilon_used": true
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "target_type": "boundary_probe",
+      "rationale": "Source-reviewed original crosswalk and subject motion, without a legal label",
+      "paired_probe_id": "c229397_parking_distance",
+      "deliberate_differences": [
+        "requested_parking_position"
+      ],
+      "probe": {
+        "primary_variable": "distance_to_marked_crosswalk_m",
+        "comparison_or_standard": "twenty-foot engineering target; legal distance convention unresolved",
+        "target_value_or_branch": "controlled_2",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "m",
+        "test_value": 3.0
+      },
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "controlled_2"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "marked crosswalk",
+        "stop, stand or park",
+        "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      ],
+      "epsilon_used": true
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "target_type": "boundary_probe",
+      "rationale": "Source-reviewed original crosswalk and subject motion, without a legal label",
+      "paired_probe_id": "c229397_parking_distance",
+      "deliberate_differences": [
+        "requested_parking_position"
+      ],
+      "probe": {
+        "primary_variable": "distance_to_marked_crosswalk_m",
+        "comparison_or_standard": "twenty-foot engineering target; legal distance convention unresolved",
+        "target_value_or_branch": "boundary_20ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "m",
+        "test_value": 6.096
+      },
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "boundary_20ft"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "marked crosswalk",
+        "stop, stand or park",
+        "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      ],
+      "epsilon_used": true
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-reviewed original crosswalk and subject motion, without a legal label",
+      "paired_probe_id": "c229397_action_policy",
+      "deliberate_differences": [
+        "requested_action_control_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_action_control_policy",
+        "comparison_or_standard": "original motion and control history; legal action unresolved",
+        "target_value_or_branch": "stop_near"
+      },
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "controlled_2"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "stop_near"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "marked crosswalk",
+        "stop, stand or park",
+        "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      ]
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-reviewed original crosswalk and subject motion, without a legal label",
+      "paired_probe_id": "c229397_action_policy",
+      "deliberate_differences": [
+        "requested_action_control_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_action_control_policy",
+        "comparison_or_standard": "original motion and control history; legal action unresolved",
+        "target_value_or_branch": "stand_near"
+      },
+      "variable_assignments": {
+        "requested_parking_position": {
+          "kind": "controller",
+          "value": "controlled_2"
+        },
+        "requested_action_control_policy": {
+          "kind": "controller",
+          "value": "stand_near"
+        },
+        "distance_to_marked_crosswalk_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_vehicle_pose_and_extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native per-frame vehicle state",
+            "time_window": "600 frames",
+            "reference_frame": "Native world",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "control_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original applied vehicle control command",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "command does not establish legal action type"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame and four-camera join",
+            "time_window": "600 frames",
+            "reference_frame": "Native frame identity",
+            "uncertainty": "requires full video decode after capture"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_extent",
+            "unit": "structured",
+            "method": "OpenDRIVE object proposal plus original Native and marking review"
+          }
+        ],
+        "limitations": [
+          "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "marked crosswalk",
+        "stop, stand or park",
+        "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      ]
+    }
+  ]
+}

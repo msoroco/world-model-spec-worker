@@ -32,14 +32,15 @@ def build(suffix, center_x):
                   'crosswalk-inventory.json', 'crosswalk-source-review.json',
                   'synthetic-original-review-source.txt', 'trace.jsonl')}
     controls = [json.loads(row) for row in files['control-intent.jsonl'].splitlines()]
-    for i, control in enumerate(controls):
-        control['engineering_action'] = suffix
-        control['applied_control']['hand_brake'] = suffix in (
-            'controlled_1', 'controlled_2', 'boundary_20ft')
-        if suffix == 'stop_near' and i >= 300:
-            control['applied_control'] = {'throttle': .25, 'brake': 0.0,
-                                          'hand_brake': False}
-    files['control-intent.jsonl'] = ''.join(compact(row) + '\n' for row in controls)
+    if suffix != 'controlled_2':
+        for i, control in enumerate(controls):
+            control['engineering_action'] = suffix
+            control['applied_control']['hand_brake'] = suffix in (
+                'controlled_1', 'boundary_20ft')
+            if suffix == 'stop_near' and i >= 300:
+                control['applied_control'] = {'throttle': .25, 'brake': 0.0,
+                                              'hand_brake': False}
+        files['control-intent.jsonl'] = ''.join(compact(row) + '\n' for row in controls)
     road = open_drive()
     files['road.xodr'] = road
     files['trace.jsonl'] = ''.join(compact({
