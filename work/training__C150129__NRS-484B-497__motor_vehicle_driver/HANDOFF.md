@@ -67,3 +67,21 @@ Accepted membership: 0 membership rows; exact source-hashed equivalence and reus
 Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
 
 Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
+
+## 2026-11-25 selected CPU proofs
+
+- Primary and fallback offline/compatibility: all four exact cases passed; physical diagnostic triads and lifecycle proofs bound in execution-manifest.json.
+- Saved-only process-saved: all four exact cases passed against fresh synthetic scratch attempts, with original sources preserved; proof receipts and logs under proofs/<case>/.
+- Delivery acceptance: four positive source, time join, pixel and physical diagnostic audits pass; four altered-source negatives reject missing original vehicle-pose.jsonl.
+- Semantic delivery: 5-stage canonical proposal chain validates and selects four exact cases.
+- Comparison audits: both exact pairs pass isolated source comparisons and reject an unchanged device branch in negative tests.
+- Native unittest: 2 tests pass. Package compatibility recheck and scoped strict gate remain to be run. Actual Native capture, legal interpretation, physical acceptance and set membership remain local delivery work.
+
+## 2026-11-25 scoped strict acceptance
+
+- Exact command: `.venv-cpu/bin/python worker_check.py --assignment training__C150129__NRS-484B-497__motor_vehicle_driver --complete --require-delivery-ready`
+- Exit: 0; `static_checks_passed: true`; log: `proofs/scoped-strict.log`.
+- Execution manifest SHA-256: `3123698512736a1d5bc5899f9b805e199fa16766db8d11e7335bd9ddf04559fc`.
+- Semantic index SHA-256: `662fc4c892c4b61c2164dd97d89513d2203fc30d7f80d898cdffc7e23792c378`.
+- Result is `ready` / `delivery_prepared` for CPU package handoff only. Actual Native capture, physical/legal acceptance and full-train set membership remain local GPU delivery work.
+- Assignment folder hygiene scan: no files over 2 MiB, binary files, trailing whitespace, blank EOF lines or conflict markers.

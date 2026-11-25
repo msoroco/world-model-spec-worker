@@ -1,0 +1,7 @@
+# Original source review before saved finalization
+
+The selected Native measurers require `source-review.json` in the sealed attempt before `runtime.py process-saved` for an original Native capture. The annotation is a separate post-capture file. Keep `scene-survey.json`, videos, motion, frame map, and `capture-seal.json` unchanged.
+
+Use format `c154537-source-context-review-v1`, a nonempty `reviewer` and `review_method`, and `original_sha256` for every file listed in `review_context.SOURCE_FILES`. Provide exactly the six topics in `review_context.TOPICS`. Each topic needs `status`, nonempty `source_refs`, `observation`, and `reason`; selected measurement requires every status to be `confirmed` and the topic-specific source references in `reviewed_statutory.REQUIRED_REFS`.
+
+The reviewer must inspect original pixels and Native histories to confirm the marked line or its absence, the near-side and sidewalk-derived crosswalk, installed uncovered inoperative official heads, through-highway identity, and driver view. The annotation records source observations. It cannot establish physical completion, cautious proceeding, yielding, or a legal verdict by itself. `reviewed_statutory.apply_review` validates the hashes and joins confirmed observations to an in-memory survey; it never rewrites the sealed survey. The independent `delivery_audit.py` later checks the source review binding and case-specific pixel and law findings.

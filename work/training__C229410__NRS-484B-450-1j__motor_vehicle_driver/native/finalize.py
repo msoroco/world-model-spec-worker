@@ -5,6 +5,7 @@ import json
 import subprocess
 from pathlib import Path
 from measure_entrance import measure
+from source_channels import derive as derive_source_channels
 
 VIDEOS=('overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv')
 JOINS=('trace.jsonl','capture/evidence.jsonl','capture/native/frames.jsonl',
@@ -80,6 +81,12 @@ def finalize(attempt,output):
     channel.write_text('\n'.join(json.dumps({'time_s':row['time_s'],
         'value':{'body_xy_m':row['body_xy_m'],'speed_mps':row['speed_mps']}})
         for row in trace)+'\n')
+    source_views=derive_source_channels(attempt)
+    source_channel=attempt/'channels/source_context.json'
+    source_channel.write_text(json.dumps(source_views,indent=2)+'\n')
+    source_evidence=[{'name':item['name'],'unit':item['unit'],
+        'reference':'channels/source_context.json'}
+        for item in config['recording_description']['context_inputs']]
     provenance=provenance_record(attempt)
     native=provenance['provenance_kind']=='native' and not provenance['diagnostic_fixture']
     initial_motion=any(row['speed_mps']>1 for row in trace[:100])
@@ -104,7 +111,7 @@ def finalize(attempt,output):
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],
         'recording_evidence':[{'name':'parking_geometry','unit':'mixed',
-            'reference':'channels/parking_geometry.jsonl'}],
+            'reference':'channels/parking_geometry.jsonl'},*source_evidence],
         'realized_observables':{'raw_stationary_min_body_edge_gap_m':{'value':value,
             'unit':'m','method':'original vehicle body edge to sourced entrance interval',
             'time_window':'stationary original frames','statistic':'minimum',

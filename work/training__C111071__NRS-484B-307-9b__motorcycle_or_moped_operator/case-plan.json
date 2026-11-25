@@ -33,7 +33,7 @@
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
       ],
-      "evidence_or_gap": "Two unselected exact 600-frame/four-camera Native-shaped construction drafts pass current pinned offline validation; saved source-only synthetic proof rerun passes 2 measurements and 11 negative mutations. Native capture, physical detector causation, source video, selected compatibility/process-saved and audits remain unverified."
+      "evidence_or_gap": "Four exact selected straight cases have current-runtime offline, public positive/missing-source negative and recorded-only saved CPU proofs. Original Native motion, detector causation, pixels, lawful status and local acceptance remain unverified."
     },
     {
       "requirement": "NRS-484B-307-9b",
@@ -70,7 +70,7 @@
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
       ],
-      "evidence_or_gap": "Current-v2 authored 600-frame yield pair selected for source-bound CPU measurement only. Original Native actor/participant capture, lawful status, physical detector causation and pixel review remain unverified."
+      "evidence_or_gap": "The exact selected clear-versus-occupied pair passes synthetic source-bound saved processing and independent fixed-context comparison. Original participant bodies and lawful-status review remain unverified."
     },
     {
       "requirement": "NRS-484B-307-9b",
@@ -89,7 +89,7 @@
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_draft",
+      "kind": "selected_delivery",
       "target_type": "below",
       "physical_target": "stop before hierarchy boundary, wait two complete unchanged cycles, then proceed straight after yielding",
       "comparison_variable": "red_arrow_cycle_wait",
@@ -98,12 +98,12 @@
       "selection_targets": [
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "construction_manifest": "execution-manifest.json"
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_draft",
+      "kind": "selected_delivery",
       "target_type": "controlled_attempt",
       "physical_target": "proceed straight before two complete cycles",
       "comparison_variable": "red_arrow_cycle_wait",
@@ -112,12 +112,12 @@
       "selection_targets": [
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "construction_manifest": "execution-manifest.json"
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_request",
+      "kind": "selected_delivery",
       "target_type": "below",
       "physical_target": "straight movement after pedestrians and lawful traffic clear",
       "comparison_variable": "yield_after_two_cycles",
@@ -126,12 +126,13 @@
       "selection_targets": [
         "full-train"
       ],
-      "native_construction": "native/yield_request.py"
+      "native_construction": "native/yield_request.py",
+      "construction_manifest": "execution-manifest.json"
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_request",
+      "kind": "selected_delivery",
       "target_type": "controlled_attempt",
       "physical_target": "straight movement during occupied crosswalk/conflict traffic",
       "comparison_variable": "yield_after_two_cycles",
@@ -140,7 +141,8 @@
       "selection_targets": [
         "full-train"
       ],
-      "native_construction": "native/yield_request.py"
+      "native_construction": "native/yield_request.py",
+      "construction_manifest": "execution-manifest.json"
     }
   ],
   "comparisons": [
@@ -156,7 +158,10 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
-      ]
+      ],
+      "source_audit_command_template": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/audit-selected-comparisons.py --first-case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1 --first-attempt $FIRST_ATTEMPT --first-processing $FIRST_PROCESSING --second-case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2 --second-attempt $SECOND_ATTEMPT --second-processing $SECOND_PROCESSING --kind cycle_wait --output $COMPARISON_AUDIT_OUTPUT",
+      "source_audit_requires_original_native": true,
+      "cpu_diagnostic_proof": "selected-comparison-cpu-proof.json"
     },
     {
       "comparison_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__comparison_yield",
@@ -169,7 +174,10 @@
       ],
       "fixed_conditions": [
         "motorcycle, nearest-side crosswalk, circular red with green left arrow, two complete unchanged cycles, no prohibiting device, identical pedestrian and traffic occupation schedule"
-      ]
+      ],
+      "source_audit_command_template": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/audit-selected-comparisons.py --first-case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance --first-attempt $FIRST_ATTEMPT --first-processing $FIRST_PROCESSING --second-case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy --second-attempt $SECOND_ATTEMPT --second-processing $SECOND_PROCESSING --kind yield_clearance --output $COMPARISON_AUDIT_OUTPUT",
+      "source_audit_requires_original_native": true,
+      "cpu_diagnostic_proof": "selected-comparison-cpu-proof.json"
     }
   ],
   "mandatory_observation_terms": [
@@ -258,7 +266,7 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "Original Native map/signal/camera acquisition is authored but unexecuted; physical red-plus-green-arrow face, detector malfunction/nondetection cause, stop hierarchy and lawful participant status need original source review. Selected exact compatibility/process-saved, fallbacks, semantic/physical/delivery audits and the separately bound opposite-direction turn alternative remain unfinished."
+    "Original Native signal/detector/stop/participant source review and physical delivery remain unverified; a separate actor-eligible opposite-turn cell or source-backed reuse is still unallocated. The four exact straight selected CPU cases have public/saved proofs and source-bound comparison/delivery diagnostics."
   ],
   "selected_branch": "Failed-detection straight movement",
   "observations": [
@@ -279,7 +287,7 @@
     }
   ],
   "runtime_uncertainties": [
-    "The original Native spawn/tick/four-camera writer and source-map stop, detector and conflict-body measurements are authored and CPU-tested but have not run in CARLA; original physical signal/detector evidence and source video remain absent. Selected exact delivery compatibility/process-saved, fallback, independent audit and statutory branch proofs remain unfinished."
+    "The original Native spawn/tick/four-camera writer, map-derived stop/detector relations, source bridge and saved analysis are authored and CPU-tested; no CARLA attempt has been run here. The selected straight primary/fallback CPU proofs do not establish physical signal face, malfunction or nondetection cause, lawful participant status, actual pixels or opposite-turn coverage."
   ],
   "draft_manifest": "draft-manifest.json",
   "source_observation_mapping": {

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from branch_variants import BRANCHES
+from source_channels import SOURCE_NAMES
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT_ROOT = HERE.parent
@@ -25,7 +26,9 @@ def build():
             "sampling_rate_hz": 20, "method": "original Native full-body corners and speed readback",
             "time_window": "600 frames", "reference_frame": "sourced highway and fire-station entrance",
             "uncertainty": "50 ms interval; statutory distance reference unresolved"}],
-            "context_inputs": [],
+            "context_inputs": [{"name": name, "unit": "structured",
+                "method": "original hash-bound authority and Native actor source; retain unverified state"}
+                for name in SOURCE_NAMES],
             "limitations": ["Raw body-edge gap is not a legal distance verdict",
                 "Actual station, entrance, direction and pixels require independent review"]}
         config = {"case_id": case_id, "case_suffix": suffix, "cell_id": "C229410",
@@ -38,7 +41,7 @@ def build():
             "target": "source-reviewed " + branch.activity + " at " + branch.side + " side"}
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
         for name in ("branch_variants.py", "expanded_layout.py", "expanded_controller.py",
-                     "expanded_measurement.py", "measure_entrance.py", "source_context.py",
+                     "expanded_measurement.py", "measure_entrance.py", "source_context.py", "source_channels.py",
                      "expanded_finalize.py"):
             files.append({"path": name, "content": (HERE / name).read_text()})
         files.append({"path": "runner.py", "content": (HERE / "expanded_runner.py").read_text()})

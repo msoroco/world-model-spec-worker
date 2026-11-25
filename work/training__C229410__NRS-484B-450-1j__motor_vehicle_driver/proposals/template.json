@@ -1,0 +1,122 @@
+{
+  "template_id": "NRS-484B-450-1j@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1j",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 20 feet of a driveway entrance to any fire station and, on the side of a highway opposite the entrance to any fire station, within 75 feet of that entrance.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-450-1j",
+    "activation": {
+      "condition": "A person stops, stands or parks a vehicle at a fire-station driveway entrance, on either highway side as the clause specifies.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park within the applicable fire-station entrance distance unless an exception applies.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "observed_vehicle_entrance_distance_m",
+          "operator": "<",
+          "value": 20,
+          "unit": "ft",
+          "scope": "within 20 feet of a driveway entrance to any fire station"
+        },
+        {
+          "variable": "observed_vehicle_entrance_distance_m",
+          "operator": "<",
+          "value": 75,
+          "unit": "ft",
+          "scope": "on the side of a highway opposite the entrance"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "necessary to avoid conflict with other traffic",
+        "effect": "possible_exception_requires_source_review",
+        "replacement_obligation": "unresolved",
+        "source_clause": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "in compliance with law",
+        "effect": "possible_exception_requires_source_review",
+        "replacement_obligation": "unresolved",
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "the directions of a police officer",
+        "effect": "possible_exception_requires_source_review",
+        "replacement_obligation": "unresolved",
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "official traffic-control device",
+        "effect": "possible_exception_requires_source_review",
+        "replacement_obligation": "unresolved",
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Assess original stop, stand or park interval and contemporaneous exceptions.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Original traffic trajectories and causal necessity require review."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Applicability and compliance with another law require source review."
+      },
+      {
+        "phrase": "the directions of a police officer",
+        "note": "Officer identity, authority, direction and applicability require original evidence."
+      },
+      {
+        "phrase": "official traffic-control device",
+        "note": "Device identity, official status, display and applicability require original evidence."
+      },
+      {
+        "phrase": "driveway entrance to any fire station",
+        "note": "Actual station identity and entrance geometry require source authority; the diagnostic outline is insufficient."
+      },
+      {
+        "phrase": "on the side of a highway opposite the entrance",
+        "note": "Highway boundary, entrance side and vehicle side require original map and geometry review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "commanded_entrance_gap_m",
+      "kind": "controller",
+      "range_or_domain": "authored distance target in m; no legal reference implied"
+    },
+    {
+      "name": "observed_vehicle_entrance_distance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "originally measured distance in m; statutory method unresolved"
+    },
+    {
+      "name": "observed_vehicle_activity",
+      "kind": "subject_behavior",
+      "range_or_domain": "original stop, stand or park activity"
+    },
+    {
+      "name": "station_entrance_source",
+      "kind": "world_setup",
+      "range_or_domain": "source-qualified station and driveway identity"
+    },
+    {
+      "name": "highway_side_source",
+      "kind": "world_setup",
+      "range_or_domain": "source-qualified highway and side geometry"
+    },
+    {
+      "name": "original_exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-qualified traffic, law, officer and official-device context"
+    }
+  ]
+}

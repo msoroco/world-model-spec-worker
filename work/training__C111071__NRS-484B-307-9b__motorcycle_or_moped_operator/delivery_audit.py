@@ -10,6 +10,8 @@ CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('candidate-selection.json', 'capture/manifest.json', 'native_samples.jsonl',
            'road_geometry.json', 'video_frames.jsonl', 'trace.jsonl',
            *(name + '.mkv' for name in CAMERAS))
+NATIVE_REVIEW_SOURCES = ('native_raw_readback.jsonl', 'map-import-survey.json',
+                         'source-review.json')
 CHECKS = ('native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion')
 
@@ -88,6 +90,24 @@ def audit(case, candidate, attempt, processing, diagnostic=False):
                 'original_native_verified': False, 'actual_pixels_verified': False}
     if common['source_kind'] != 'original_native' or selection.get('manifest_sha256') != sha(ROOT / 'execution-manifest.json'):
         raise ValueError('Original Native source required')
+    for source in NATIVE_REVIEW_SOURCES:
+        path = attempt / source
+        if not path.is_file():
+            raise ValueError('Missing original source: ' + source)
+        hashes[source] = sha(path)
+        if receipt.get('original_source_hashes', {}).get(source) != hashes[source]:
+            raise ValueError('Saved original source changed: ' + source)
+    review = read(attempt / 'source-review.json')
+    reviewed_sources = ('native_raw_readback.jsonl', 'video_frames.jsonl',
+                        'map-import-survey.json', *(name + '.mkv' for name in CAMERAS))
+    if (review.get('review_kind') != 'original_source_review'
+            or not isinstance(review.get('reviewer'), str)
+            or not review['reviewer'].strip()
+            or review.get('source_sha256') != {source: hashes[source]
+                                                for source in reviewed_sources}
+            or road.get('original_source_sha256') != review['source_sha256']
+            or road.get('review_sha256') != hashes['source-review.json']):
+        raise ValueError('Original source review missing or stale')
     review_path = attempt / 'independent-physical-review.json'
     if not review_path.is_file():
         raise ValueError('Independent physical and pixel review required')

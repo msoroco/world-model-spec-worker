@@ -26,8 +26,10 @@ class Branch:
 BRANCHES = {
     "controlled_1": Branch("controlled_1", "same", "parked", "none", 17, -40, -1, 0),
     "controlled_2": Branch("controlled_2", "same", "parked", "none", 3, -40, -1, 0),
+    "same_at": Branch("same_at", "same", "parked", "none", 11.096, -40, -1, 0),
     "opposite_far": Branch("opposite_far", "opposite", "parked", "none", -35, 50, 1, 180),
     "opposite_near": Branch("opposite_near", "opposite", "parked", "none", -10, 50, 1, 180),
+    "opposite_at": Branch("opposite_at", "opposite", "parked", "none", -27.86, 50, 1, 180),
     "stopped": Branch("stopped", "same", "stopped", "none", 3, -40, -1, 0),
     "standing": Branch("standing", "same", "standing", "none", 3, -40, -1, 0),
     "traffic_conflict": Branch("traffic_conflict", "same", "stopped", "traffic_conflict", 3, -40, -1, 0, "traffic_vehicle"),

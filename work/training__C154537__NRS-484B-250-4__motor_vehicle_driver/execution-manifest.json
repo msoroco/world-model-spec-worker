@@ -131,7 +131,8 @@
         "test_exit_code": 0,
         "test_log": "native/proofs/1_primary-saved-processing.json",
         "test_log_sha256": "760b02df52275e0b3a21895997991e6e6a139f04969a0a911cb45b0115847477",
-        "diagnostic_fixture": true
+        "diagnostic_fixture": true,
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/feedback.json"
       },
       "negative_log": "native/proofs/1_primary-negative-analysis.log"
     },
@@ -164,7 +165,7 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "d88f29e79c666e7e3dece74d9314a337ab0e7151302cd2a6c153f49b62b2f686",
+            "construction_sha256": "152a5b3480a50b9b9bb1e7a86509cfa278eb6bb720ac5f0d33b4954c540f8321",
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c154537/camera_offline_2_fallback --python $PWD/.venv-cpu/bin/python",
             "log": "native/proofs/2_fallback-offline.log",
             "log_sha256": "d0cc1a7441787b1b778d373457c871429154418e617542575ed39b77929eb861"
@@ -263,7 +264,8 @@
         "test_exit_code": 0,
         "test_log": "native/proofs/2_primary-saved-processing.json",
         "test_log_sha256": "034a4a2195c1b45a7e7379eeb2c6b3332db267bd79d04752a19a1560865ca799",
-        "diagnostic_fixture": true
+        "diagnostic_fixture": true,
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/feedback.json"
       },
       "negative_log": "native/proofs/2_primary-negative-analysis.log"
     },
@@ -276,16 +278,44 @@
       "measurement_contract": "native/controlled_3-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Imported marked-line object may not appear in retained pixels"
+        "reason": "Initial Native actor spawn may fail or overlap imported road surface"
       },
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_3/fallback1.json",
+          "construction_sha256": "7deade567a3dc4ef6cf6a5716c5c239752153032344a146626c879bbe5a3b4f6",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7deade567a3dc4ef6cf6a5716c5c239752153032344a146626c879bbe5a3b4f6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3 --candidate fallback1 --output .runtime-work/c154537/reviewproof/3_fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "log": "native/proofs/3_fallback1-offline.log",
+            "log_sha256": "2a51bd596cf724f24aa8c079f17bf4cee65c95bdfc77a2e20f4f39840c871dad"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/3_fallback1-compatibility.json",
+            "sha256": "e9bfabe55e0c1d3a13d86650486a800c8192be4644b775af897f2c820d686f9a",
+            "log": "native/proofs/3_fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/3_fallback1-negative-analysis.log"
+          },
+          "negative_log": "native/proofs/3_fallback1-negative-analysis.log"
+        }
+      ],
       "delivery_readiness": "incomplete",
       "compatibility": {
         "receipt": "native/proofs/3_primary-compatibility.json",
-        "sha256": "45640f5610690f862c60d96332ef9b055d3e93536a6643755cd4e9c644d6cf12",
+        "sha256": "f618c1fcf7969523dce7f9d8d857f1f927b4ed9c0c3add022def80348fc9574b",
         "log": "native/proofs/3_primary-compatibility-analysis.log",
         "negative_log": "native/proofs/3_primary-negative-analysis.log"
       },
@@ -298,7 +328,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3 --attempt $ATTEMPT --output $POSTPROCESS_OUTPUT --library $LIBRARY --validator $VALIDATOR",
         "test_exit_code": 0,
         "test_log": "native/proofs/3_primary-saved-processing.json",
-        "test_log_sha256": "5b5bdf3df1d0aea5ea9967248c635182eb621896b3cc117bc5de6ee0dd13899e",
+        "test_log_sha256": "1a11083d39911bb7d4653f0a8f12fc3999d9b740514c67732b38dbab89b83851",
         "diagnostic_fixture": true
       },
       "offline": {
@@ -340,6 +370,42 @@
         "test_log_sha256": "c8dba49d4c3e017aaac3cdcd5b645dd42af5c4407fe58209ee810211a4d59c87",
         "negative_log": "native/proofs/delivery_3_negative.log",
         "negative_log_sha256": "7da7fa6348e9437d9db78ee6ea862af1984cf0c8315549a9d95edcce02f7e11d"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3-physical-preparation.json",
+        "sha256": "e342aa3188b8cafae58928eae8b840611b6d5641aef568842bc21f216d96b58c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_front": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original body-vertex sample",
+          "evidence": "native-motion.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original actor velocity",
+          "evidence": "native-motion.jsonl"
+        },
+        "governing_signal": {
+          "entrypoint": "runner.py",
+          "method": "per-frame governing light readback",
+          "evidence": "native-motion.jsonl"
+        },
+        "other_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "per-frame other actor body and motion",
+          "evidence": "native-motion.jsonl"
+        },
+        "driver_view_rays": {
+          "entrypoint": "runner.py",
+          "method": "sampled original world cast rays",
+          "evidence": "scene-survey.json"
+        }
       }
     },
     {
@@ -351,23 +417,51 @@
       "measurement_contract": "native/controlled_4-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Imported crosswalk object may not appear in retained pixels"
+        "reason": "Initial Native actor spawn may fail or overlap imported road surface"
       },
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_4/fallback1.json",
+          "construction_sha256": "2b41c18c031426bf920373617609a1d3a2330a526be41f84644cc9a6290b7541",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "2b41c18c031426bf920373617609a1d3a2330a526be41f84644cc9a6290b7541",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4 --candidate fallback1 --output .runtime-work/c154537/reviewproof/4_fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "log": "native/proofs/4_fallback1-offline.log",
+            "log_sha256": "0ebc164678c5f619cabbf64a3e52c33d4923cc2d4fe83a3009dfddf1f19d8c6a"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/4_fallback1-compatibility.json",
+            "sha256": "2c0ec987ebd24c4d659c83ccc6a56368baae8a5d0aa4e4cef3d278a13b7979cc",
+            "log": "native/proofs/4_fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/4_fallback1-negative-analysis.log"
+          },
+          "negative_log": "native/proofs/4_fallback1-negative-analysis.log"
+        }
+      ],
       "delivery_readiness": "incomplete",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "c58bbf44e198c4042805c2ae1a730e9c2a3fdbfb607fef84199f3982521bb523",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4 --output .runtime-work/c154537/crosswalk/offline --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "95ebf7799d94dc5fe7c2f00eb46bb41b5808667f6b2d75f52be31031c7d077bc",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4 --output .runtime-work/c154537/reviewproof/4_primary-offline --python $PWD/.venv-cpu/bin/python",
         "log": "native/proofs/4_primary-offline.log",
         "log_sha256": "82da32002d74008cbcda3582b6856c26ba049732d3aac2c119875dc13e57ceee"
       },
       "compatibility": {
         "receipt": "native/proofs/4_primary-compatibility.json",
-        "sha256": "2f88bb12aaebcb211b148f929508068210bd2c15c97f8f775bc41fbfd17cdbab",
+        "sha256": "a0327ea666aa2518147d9bd446deab942f1a9407a6e9dcfb425342afbe3e61e9",
         "log": "native/proofs/4_primary-compatibility-analysis.log",
         "negative_log": "native/proofs/4_primary-negative-analysis.log"
       },
@@ -380,7 +474,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4 --attempt $ATTEMPT --output $POSTPROCESS_OUTPUT --library $LIBRARY --validator $VALIDATOR",
         "test_exit_code": 0,
         "test_log": "native/proofs/4_primary-saved-processing.json",
-        "test_log_sha256": "eb996089f6ee93d04454cc8af1203d201a1247181c58867ea5343d802e46f15f",
+        "test_log_sha256": "5fd851ac7424630349605d7b05c4924cb26854461e89015b87def532115dee8d",
         "diagnostic_fixture": true
       },
       "comparison_audit": {
@@ -422,6 +516,42 @@
         "test_log_sha256": "2c02709dd67f9f6c0950b23c8d1478a97f9db5023d8c93769ea62f52ab0e0667",
         "negative_log": "native/proofs/delivery_4_negative.log",
         "negative_log_sha256": "7da7fa6348e9437d9db78ee6ea862af1984cf0c8315549a9d95edcce02f7e11d"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4-physical-preparation.json",
+        "sha256": "34137c8dab0fd16ab9c87f239a35201b64583b57ac96f89f960c24c4a9cf8dbd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_front": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original body-vertex sample",
+          "evidence": "native-motion.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original actor velocity",
+          "evidence": "native-motion.jsonl"
+        },
+        "governing_signal": {
+          "entrypoint": "runner.py",
+          "method": "per-frame governing light readback",
+          "evidence": "native-motion.jsonl"
+        },
+        "other_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "per-frame other actor body and motion",
+          "evidence": "native-motion.jsonl"
+        },
+        "driver_view_rays": {
+          "entrypoint": "runner.py",
+          "method": "sampled original world cast rays",
+          "evidence": "scene-survey.json"
+        }
       }
     },
     {
@@ -433,23 +563,51 @@
       "measurement_contract": "native/controlled_5-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native other-vehicle stop or occupancy may differ from requested track"
+        "reason": "Initial Native actor spawn may fail or overlap imported road surface"
       },
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_5/fallback1.json",
+          "construction_sha256": "1847c0f727f0353228a48ed86fbd372ea3bb9d6de60cbe8228331e9a31435d02",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1847c0f727f0353228a48ed86fbd372ea3bb9d6de60cbe8228331e9a31435d02",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5 --candidate fallback1 --output .runtime-work/c154537/reviewproof/5_fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "log": "native/proofs/5_fallback1-offline.log",
+            "log_sha256": "150ab8192d37a051f792446f4c79b478e8ebee14df8cb1da2b44b51670aa1936"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/5_fallback1-compatibility.json",
+            "sha256": "8c3bfffef76a65f30db659e36a8d37907da601986bfdb6197c372fb7c5f164c2",
+            "log": "native/proofs/5_fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/5_fallback1-negative-analysis.log"
+          },
+          "negative_log": "native/proofs/5_fallback1-negative-analysis.log"
+        }
+      ],
       "delivery_readiness": "incomplete",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "156333c96c933da07c9bb00ee8b1fa27c06326890fd44fd1eefef15e0a277a90",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5 --output .runtime-work/c154537/yield/offline5c --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "ee2342f8549882caceec357071d6733e18311521e1d41b1f92e5e9b7319c2fac",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5 --output .runtime-work/c154537/reviewproof/5_primary-offline --python $PWD/.venv-cpu/bin/python",
         "log": "native/proofs/5_primary-offline.log",
-        "log_sha256": "804c8a5f7ab2c3a1f94f0c44363480cd71615656f01c893a4ea1e73ed13b20c8"
+        "log_sha256": "150ab8192d37a051f792446f4c79b478e8ebee14df8cb1da2b44b51670aa1936"
       },
       "compatibility": {
         "receipt": "native/proofs/5_primary-compatibility.json",
-        "sha256": "d0a7b612691a74e3ef7dd43266730632d0f7c9bc24eaf0eb02befd502fd4031d",
+        "sha256": "74a6f9f91a90fc2c5f27756dd7584d52396da2c1db70a4dc8606ed787cff25e6",
         "log": "native/proofs/5_primary-compatibility-analysis.log",
         "negative_log": "native/proofs/5_primary-negative-analysis.log"
       },
@@ -462,7 +620,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5 --attempt $ATTEMPT --output $POSTPROCESS_OUTPUT --library $LIBRARY --validator $VALIDATOR",
         "test_exit_code": 0,
         "test_log": "native/proofs/5_primary-saved-processing.json",
-        "test_log_sha256": "2da2cc4d55b12eb0e586da27b367a971964339792953a64a9bcd9080762647e4",
+        "test_log_sha256": "bdbdda73880cfa0d081d61ecdb0be97456946faf87370bda6ff04f0e13107c43",
         "diagnostic_fixture": true
       },
       "comparison_audit": {
@@ -497,6 +655,42 @@
         "test_log_sha256": "ca892f081f6d49c3c3692acca3d9ee169005fb92d5c96dd881a458ea8505e5f6",
         "negative_log": "native/proofs/delivery_5_negative.log",
         "negative_log_sha256": "7da7fa6348e9437d9db78ee6ea862af1984cf0c8315549a9d95edcce02f7e11d"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5-physical-preparation.json",
+        "sha256": "ec25b1134ab36fa275f13853fa3efed91d880fe2c6caa6fe732d09f50aa71392"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_front": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original body-vertex sample",
+          "evidence": "native-motion.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original actor velocity",
+          "evidence": "native-motion.jsonl"
+        },
+        "governing_signal": {
+          "entrypoint": "runner.py",
+          "method": "per-frame governing light readback",
+          "evidence": "native-motion.jsonl"
+        },
+        "other_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "per-frame other actor body and motion",
+          "evidence": "native-motion.jsonl"
+        },
+        "driver_view_rays": {
+          "entrypoint": "runner.py",
+          "method": "sampled original world cast rays",
+          "evidence": "scene-survey.json"
+        }
       }
     },
     {
@@ -508,23 +702,51 @@
       "measurement_contract": "native/controlled_6-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native other-vehicle stop or occupancy may differ from requested track"
+        "reason": "Initial Native actor spawn may fail or overlap imported road surface"
       },
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_6/fallback1.json",
+          "construction_sha256": "09c916e6958894bddeb4ad4228e5e4bab8dffd9890445071330ac994a6279fa2",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "09c916e6958894bddeb4ad4228e5e4bab8dffd9890445071330ac994a6279fa2",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6 --candidate fallback1 --output .runtime-work/c154537/reviewproof/6_fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "log": "native/proofs/6_fallback1-offline.log",
+            "log_sha256": "c1c23a90be6a845a37e03ac1a0aed55a8a3796ac04ad5d2e8678013401703af6"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/6_fallback1-compatibility.json",
+            "sha256": "9439a420efe018ed0ab2f96ed5d0575bcab2a45892fd223e76605de60b201cfb",
+            "log": "native/proofs/6_fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/6_fallback1-negative-analysis.log"
+          },
+          "negative_log": "native/proofs/6_fallback1-negative-analysis.log"
+        }
+      ],
       "delivery_readiness": "incomplete",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "e542f3d49fb553bc575813c1117007b8003127b1c30602484c40a5c77ed9ad20",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6 --output .runtime-work/c154537/yield/offline6c --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "0548f6c0a50edbcee25ac4124c7411fdb499fe2fa967da42d83c2957ef150dd5",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6 --output .runtime-work/c154537/reviewproof/6_primary-offline --python $PWD/.venv-cpu/bin/python",
         "log": "native/proofs/6_primary-offline.log",
-        "log_sha256": "c1c23a90be6a845a37e03ac1a0aed55a8a3796ac04ad5d2e8678013401703af6"
+        "log_sha256": "ec57f5b8ca1ebdb31ddad36e69f468659808fd983bb2cba5dbfd91e3dadafa4a"
       },
       "compatibility": {
         "receipt": "native/proofs/6_primary-compatibility.json",
-        "sha256": "0e7e5d0d3dead5642cc1a7dcba917637700ae44e44bf84985ac674c170a44229",
+        "sha256": "c10a5b2f53256256297be2eb7bb7618902c4e4b573e2a48032a6624f1650b712",
         "log": "native/proofs/6_primary-compatibility-analysis.log",
         "negative_log": "native/proofs/6_primary-negative-analysis.log"
       },
@@ -537,7 +759,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6 --attempt $ATTEMPT --output $POSTPROCESS_OUTPUT --library $LIBRARY --validator $VALIDATOR",
         "test_exit_code": 0,
         "test_log": "native/proofs/6_primary-saved-processing.json",
-        "test_log_sha256": "b677ed3fe29cbadae85c4a9ec912dfa4dd580c500c6e6e6de02bdca23c1295e7",
+        "test_log_sha256": "99535690968b664ca49f3503fc41ae9c050ec17e6cdb226b4e3fcb9f8affd098",
         "diagnostic_fixture": true
       },
       "comparison_audit": {
@@ -572,6 +794,42 @@
         "test_log_sha256": "92b267d2bf9aae4dd3964bf5fd8fbf13313ffb825dcb8c50b55b57ee3bf177d8",
         "negative_log": "native/proofs/delivery_6_negative.log",
         "negative_log_sha256": "7da7fa6348e9437d9db78ee6ea862af1984cf0c8315549a9d95edcce02f7e11d"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6-physical-preparation.json",
+        "sha256": "da13be52f13122981c648850d4a85bda7a21e26b150e5c7c1a4ac08dd80a2b6f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_front": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original body-vertex sample",
+          "evidence": "native-motion.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original actor velocity",
+          "evidence": "native-motion.jsonl"
+        },
+        "governing_signal": {
+          "entrypoint": "runner.py",
+          "method": "per-frame governing light readback",
+          "evidence": "native-motion.jsonl"
+        },
+        "other_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "per-frame other actor body and motion",
+          "evidence": "native-motion.jsonl"
+        },
+        "driver_view_rays": {
+          "entrypoint": "runner.py",
+          "method": "sampled original world cast rays",
+          "evidence": "scene-survey.json"
+        }
       }
     },
     {
@@ -583,23 +841,51 @@
       "measurement_contract": "native/controlled_7-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native other-vehicle stop or occupancy may differ from requested track"
+        "reason": "Initial Native actor spawn may fail or overlap imported road surface"
       },
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_7/fallback1.json",
+          "construction_sha256": "c1f1f36c59ab74bf438d9e6488e4083aa3b6d022bd3a940d0cba7247bec6cf41",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c1f1f36c59ab74bf438d9e6488e4083aa3b6d022bd3a940d0cba7247bec6cf41",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7 --candidate fallback1 --output .runtime-work/c154537/reviewproof/7_fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "log": "native/proofs/7_fallback1-offline.log",
+            "log_sha256": "442f8e70f86b08f1268a231a81148bc58eaa08e21d6688960e714428713d656f"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/7_fallback1-compatibility.json",
+            "sha256": "4fe90a965030622f7e9cc234e07c959fd22f46c74d50bd2e5f6ecc755fd45bd4",
+            "log": "native/proofs/7_fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/7_fallback1-negative-analysis.log"
+          },
+          "negative_log": "native/proofs/7_fallback1-negative-analysis.log"
+        }
+      ],
       "delivery_readiness": "incomplete",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "a14ac9d950a766ca012dc3d8de11a4ec340484fefba04220cb2bc4a25fdc2bae",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7 --output .runtime-work/c154537/yield/offline7 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "4be55ba5b9fb963775d72a18a6cb9eda5471c12a01a915ded907f5e22ffa35ce",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/draft-native-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7 --output .runtime-work/c154537/reviewproof/7_primary-offline --python $PWD/.venv-cpu/bin/python",
         "log": "native/proofs/7_primary-offline.log",
-        "log_sha256": "57578f41be06900eca1489dabe2914431615868f0b12b662c0d99504be7c9bd9"
+        "log_sha256": "4b04034215a589a81773caad110a6ecfbe4939618ae408a645614c54bdb7970b"
       },
       "compatibility": {
         "receipt": "native/proofs/7_primary-compatibility.json",
-        "sha256": "9b5dd5b5860e2a1821cee5a90ea71b731472f8f18063fffd4a566760e2c54b6d",
+        "sha256": "583e0f22d71c54e0da66dcfd2aeccdc3441523bd1eadcbca8b0afdfb25001159",
         "log": "native/proofs/7_primary-compatibility-analysis.log",
         "negative_log": "native/proofs/7_primary-negative-analysis.log"
       },
@@ -612,7 +898,7 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7 --attempt $ATTEMPT --output $POSTPROCESS_OUTPUT --library $LIBRARY --validator $VALIDATOR",
         "test_exit_code": 0,
         "test_log": "native/proofs/7_primary-saved-processing.json",
-        "test_log_sha256": "8a4ffca4f5f9068b379197fba539bb5e63b956f64bfa02f6c88e234882d6d24d",
+        "test_log_sha256": "60274cfca2f46e58043192c2625670aea2dbe4324df077dd836d7b4fab41b5ba",
         "diagnostic_fixture": true
       },
       "comparison_audit": {
@@ -647,6 +933,42 @@
         "test_log_sha256": "0e2a88a0844ccef1a5a03d35ed6b48f09de178d56f13d0dd7ba60ccde1725204",
         "negative_log": "native/proofs/delivery_7_negative.log",
         "negative_log_sha256": "7da7fa6348e9437d9db78ee6ea862af1984cf0c8315549a9d95edcce02f7e11d"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7-physical-preparation.json",
+        "sha256": "f6541f270a66b7c9f1b9ec9d250bd7789ab92d465734a9be50de1dba01249e8a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_front": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original body-vertex sample",
+          "evidence": "native-motion.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "per-frame original actor velocity",
+          "evidence": "native-motion.jsonl"
+        },
+        "governing_signal": {
+          "entrypoint": "runner.py",
+          "method": "per-frame governing light readback",
+          "evidence": "native-motion.jsonl"
+        },
+        "other_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "per-frame other actor body and motion",
+          "evidence": "native-motion.jsonl"
+        },
+        "driver_view_rays": {
+          "entrypoint": "runner.py",
+          "method": "sampled original world cast rays",
+          "evidence": "scene-survey.json"
+        }
       }
     }
   ],

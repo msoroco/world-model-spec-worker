@@ -6,9 +6,121 @@
   "sweeps_expanded": true,
   "cases": [
     {
+      "case_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C150129",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Shared one-way road and actor context; unselected recording.",
+      "variable_assignments": {
+        "requested_left_parking_permission_device": {
+          "kind": "controller",
+          "value": null,
+          "unit": "boolean"
+        },
+        "observed_official_governing_permission": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bounding box and transform",
+            "time_window": "600 frames",
+            "reference_frame": "directed road centerline",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "device_and_road_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE readback plus separately sourced official permission and one-way designation",
+            "time_window": "600 frames",
+            "reference_frame": "governed road",
+            "uncertainty": "authority and image review pending"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE lane readback and independent laned-roadway source",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "independent one-way designation joined to original map",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "st.lane_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "sourced permitted direction and original roadway geometry",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original actor speed and footprint at each Native frame",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original footprint projected against directed left curb",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original signal inventory and independently sourced authority",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original signal road ID and independently sourced governance",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed one-way roadway and governed curb",
+            "uncertainty": "original source review and physical camera pixels remain pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "map signal does not prove official status or erection",
+          "one-way legal designation needs independent source",
+          "standing/parking purpose and actual pixels need independent review"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
       "case_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-497",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Request left-side parking with or without an inventoried permission device; official authority and actual motion require review.",
       "paired_probe_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__witness_comparison",
       "deliberate_differences": [
@@ -129,7 +241,7 @@
     {
       "case_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-497",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Request left-side parking with or without an inventoried permission device; official authority and actual motion require review.",
       "paired_probe_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__witness_comparison",
       "deliberate_differences": [
@@ -250,7 +362,7 @@
     {
       "case_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__exception_1_1",
       "target_law_id": "NRS-484B-497",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Request left-side parking with or without an inventoried permission device; official authority and actual motion require review.",
       "paired_probe_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__exception_1_comparison",
       "deliberate_differences": [
@@ -371,7 +483,7 @@
     {
       "case_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__exception_1_2",
       "target_law_id": "NRS-484B-497",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Request left-side parking with or without an inventoried permission device; official authority and actual motion require review.",
       "paired_probe_id": "training__C150129__NRS-484B-497__motor_vehicle_driver__exception_1_comparison",
       "deliberate_differences": [

@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-OUT = REPO / '.runtime-work' / 'c111071-delivery-audit-v1'
+OUT = REPO / '.runtime-work' / 'c111071-delivery-audit-v2'
 OUT.mkdir(parents=True, exist_ok=True)
 MANIFEST = json.loads((ROOT / 'execution-manifest.json').read_text())
 
