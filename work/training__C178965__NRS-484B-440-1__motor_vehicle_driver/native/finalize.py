@@ -32,6 +32,9 @@ def measure_roadside(measurement, attempt):
                       "all_stopped_frames_clear_at_200ft_forward_proxy": all(row["clear_200ft_forward_proxy"] for row in measurement["stopped"]),
                       "all_stopped_frames_clear_at_200ft_backward_proxy": all(row["clear_200ft_backward_proxy"] for row in measurement["stopped"]),
                       "injected_failure_frames": sum(row["failure_active"] for row in measurement["stopped"]),
+                      "parking_brake_commanded_stopped_frames": sum(row["parking_brake_commanded"] for row in measurement["stopped"]),
+                      "parking_brake_observed_stopped_frames": sum(row["parking_brake_observed"] for row in measurement["stopped"]),
+                      "stopped_duration_s": round(len(measurement["stopped"]) / 20, 3),
                       "legal_result": None},
             "method": "measure_roadside",
             "sources": {name: sha(attempt / name) for name in sources}}
@@ -70,6 +73,8 @@ def finalize(attempt, output):
                          "forward_200ft_rays": view["approaches"]["forward"]["ray_clear"],
                          "backward_200ft_rays": view["approaches"]["backward"]["ray_clear"],
                          "failure_active": body.get("failure_active") is True,
+                         "parking_brake_commanded": body["parking_brake_commanded"],
+                         "parking_brake_observed": body["parking_brake_observed"],
                          "diagnostic_fixture": diagnostic}
                 stream.write(json.dumps({"time_s": body["t_s"], "value": value}) + "\n")
     observed = measure_roadside(measurement, attempt)

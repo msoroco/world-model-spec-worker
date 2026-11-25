@@ -181,7 +181,11 @@ def execute(config, output_dir, survey_path, host, port):
                     throttle, brake, steer = 0.0, 1.0, 0.0
                     ego.set_light_state(carla.VehicleLightState(carla.VehicleLightState.LeftBlinker |
                                                                  carla.VehicleLightState.RightBlinker))
-                ego.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=steer))
+                # A held parking brake records the constructed parked/standing
+                # episode; duration and attendance still require source review.
+                parking_brake = distance <= 1.0
+                ego.apply_control(carla.VehicleControl(throttle=throttle, brake=brake,
+                                                       steer=steer, hand_brake=parking_brake))
                 other.apply_control(carla.VehicleControl(throttle=0.22, brake=0.0, steer=0.0))
                 native_frame = world.tick()
                 seen = set()
@@ -209,6 +213,8 @@ def execute(config, output_dir, survey_path, host, port):
                                         "other_y_m": other.get_transform().location.y,
                                         "speed_mps": speed, "bbox_half_width_m": ego.bounding_box.extent.y,
                                         "target_distance_m": distance, "stop_mode": config["stop_mode"],
+                                        "parking_brake_commanded": parking_brake,
+                                        "parking_brake_observed": ego.get_control().hand_brake,
                                         "failure_active": failure_active,
                                         "failure_source_id": survey["disabled_failure_source_id"] if failure_active else None}) + "\n")
     finally:

@@ -54,16 +54,18 @@ def civil_start(value):
 
 def execute(output_dir: str, host: str, port: int, weather_name: str,
             target_distance_ft: int = 1000, civil_start_iso: str | None = None,
-            lamp_setting_on: bool = True):
+            lamp_setting_on: bool = True, target_speed_mps: float = 3.0):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
     check(target_distance_ft)
+    if not 0 < target_speed_mps <= 10:
+        raise ValueError('target speed outside paved-road probe range')
     clock_start = civil_start(civil_start_iso)
     target_x_m = EGO_REFERENCE_X_M + target_distance_ft * .3048
     output = Path(output_dir).resolve()
-    if output.exists():
+    if (output/'road.xodr').exists() or (output/'visibility-trace.jsonl').exists():
         raise ValueError('choose a fresh original Native attempt directory')
     client = carla.Client(host, port)
     client.set_timeout(180)
@@ -96,7 +98,7 @@ def execute(output_dir: str, host: str, port: int, weather_name: str,
                                             lane_type=carla.LaneType.Driving)
             if waypoint is None or waypoint.road_id != 1 or waypoint.lane_id != -1:
                 raise RuntimeError('Native roadway reference readback failed')
-        output.mkdir(parents=True)
+        output.mkdir(parents=True, exist_ok=True)
         source_map = mapping.to_opendrive().encode()
         (output/'road.xodr').write_bytes(source_map)
         (output/'visibility-context.json').write_text(json.dumps({
@@ -107,6 +109,9 @@ def execute(output_dir: str, host: str, port: int, weather_name: str,
             'statutory_reference_distance_m': STATUTORY_DISTANCE_M,
             'requested_boundary_distance_ft': target_distance_ft,
             'weather_request': weather_name,
+            'visibility_weather_source': {
+                'native_weather_request': weather_name,
+                'independent_conditions_reviewed': False},
             'person_pixels_reviewed': False,
             'vehicle_pixels_reviewed': False,
             'civil_time_verified': False,
@@ -153,7 +158,8 @@ def execute(output_dir: str, host: str, port: int, weather_name: str,
                 requested = (carla.VehicleLightState.Position | carla.VehicleLightState.LowBeam
                              if lamp_setting_on else carla.VehicleLightState(0))
                 ego.set_light_state(carla.VehicleLightState(requested))
-                ego.set_target_velocity(carla.Vector3D(x=3 if index else 0, y=0, z=0))
+                ego.set_target_velocity(carla.Vector3D(
+                    x=target_speed_mps if index else 0, y=0, z=0))
                 native_frame = world.tick()
                 state = world.get_snapshot()
                 if state.frame != native_frame:
@@ -186,6 +192,7 @@ def execute(output_dir: str, host: str, port: int, weather_name: str,
                     'target_vehicle_blueprint_id': target.type_id,
                     'person_id': str(person.id), 'person_blueprint_id': person.type_id,
                     'ego_xy_m': [ego_at.x, ego_at.y],
+                    'ego_speed_mps': ego.get_velocity().length(),
                     'target_vehicle_xy_m': [vehicle_at.x, vehicle_at.y],
                     'person_xy_m': [person_at.x, person_at.y],
                     'vehicle_forward_distance_m': vehicle_at.x-ego_at.x,
@@ -239,6 +246,7 @@ if __name__ == '__main__':
                         default=1000)
     parser.add_argument('--civil-start-iso')
     parser.add_argument('--lamp-setting', choices=('on', 'off'), default='on')
+    parser.add_argument('--target-speed-mps', type=float, default=3.0)
     args = parser.parse_args()
     if args.check:
         if args.output_dir:
@@ -250,5 +258,5 @@ if __name__ == '__main__':
             raise SystemExit('--output-dir required for Native execution')
         print(json.dumps(execute(args.output_dir, args.host, args.port, args.weather,
                                  args.target_distance_ft, args.civil_start_iso,
-                                 args.lamp_setting == 'on'),
+                                 args.lamp_setting == 'on', args.target_speed_mps),
                          sort_keys=True))

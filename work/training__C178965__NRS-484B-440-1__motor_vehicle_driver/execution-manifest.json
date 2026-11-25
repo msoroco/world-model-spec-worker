@@ -1,0 +1,407 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_cpu_preparation",
+  "cases": [
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_01",
+      "kind": "delivery",
+      "construction": "native/cases/probe_01-construction.json",
+      "construction_sha256": "2ea58a1187013449bc1075a8f0f07384e6218d188deeb310d13d946f408df660",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native steering or braking may overshoot the surveyed roadside stop target; original target-distance trace determines a retry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/cases/probe_01-fallback1-construction.json",
+          "construction_sha256": "0086c2e744e67896507145923f7d8efc3c5baa29e42dfd7af366b3dcfcb560a9",
+          "trigger": {
+            "source": "original 600-frame roadside-native.jsonl",
+            "metric": "minimum_target_distance_m",
+            "failure_condition": "If the primary original trace never reaches within 1.0 m of the surveyed stop target or has no stationary episode, use the slower-controller alternate; CPU fixture values do not trigger it."
+          },
+          "changed_knobs": [
+            "approach speed cap 5.0 to 3.0 m/s",
+            "target speed gain 0.50 to 0.35",
+            "brake gain 0.25 to 0.40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_01 --candidate fallback1 --output .runtime-work/c178965-probe-01-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0086c2e744e67896507145923f7d8efc3c5baa29e42dfd7af366b3dcfcb560a9",
+            "log": "current-public/probe_01-fallback1-offline.log",
+            "log_sha256": "05271b9ba857049900afdddb1c0422e4f312a52a8195a22d61459ad04aa9fbea"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_01-fallback1-compatibility.json",
+            "sha256": "87a73a1804433cd0fd33f07b45ac7fe35c81cca65927f07c1fdf978f149b9b89",
+            "log": "current-public/probe_01-fallback1-analysis.log",
+            "negative_log": "current-public/probe_01-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/probe_01/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/diagnostic-probe_01-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/native/manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_01 --output .runtime-work/c178965-probe-01-offline-v12 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "2ea58a1187013449bc1075a8f0f07384e6218d188deeb310d13d946f408df660",
+        "log": "current-public/probe_01-offline.log",
+        "log_sha256": "cc76739420a86b3064219e8a407fe520951799053fc578c68299933a03c15b64"
+      },
+      "compatibility": {
+        "receipt": "current-public/probe_01-compatibility.json",
+        "sha256": "92c743aca75d7d94120eff9cfbbdfeac2d205c9d0b10681138f805d4881f362a",
+        "log": "current-public/probe_01-analysis.log",
+        "negative_log": "current-public/probe_01-negative.log"
+      },
+      "physical_preparation": {
+        "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_01",
+        "receipt": "physical-proof/probe_01/proof.json",
+        "sha256": "e758e99d1b26a57f41f99bc4586129aa6f1c9e0a43fb27f7241d898586911e9e"
+      },
+      "negative": {
+        "log": "current-public/probe_01-negative.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "sig.hazard": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02",
+      "kind": "delivery",
+      "construction": "native/cases/probe_02-construction.json",
+      "construction_sha256": "892882c60934427b4c1a8e64097939e0720a5312b90a92d7f4c1d16a70a3f30f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native steering or braking may overshoot the surveyed roadside stop target; original target-distance trace determines a retry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/cases/probe_02-fallback1-construction.json",
+          "construction_sha256": "e244a58a7507458af072761c9c315a496c20d6b3cfc13bab3db029d3ebe22f72",
+          "trigger": {
+            "source": "original 600-frame roadside-native.jsonl",
+            "metric": "minimum_target_distance_m",
+            "failure_condition": "If the primary original trace never reaches within 1.0 m of the surveyed stop target or has no stationary episode, use the slower-controller alternate; CPU fixture values do not trigger it."
+          },
+          "changed_knobs": [
+            "approach speed cap 5.0 to 3.0 m/s",
+            "target speed gain 0.50 to 0.35",
+            "brake gain 0.25 to 0.40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02 --candidate fallback1 --output .runtime-work/c178965-probe-02-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e244a58a7507458af072761c9c315a496c20d6b3cfc13bab3db029d3ebe22f72",
+            "log": "current-public/probe_02-fallback1-offline.log",
+            "log_sha256": "972187106a58cc3df74d425ca1dddc3c1463e6cde308a0beab972652c3122950"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_02-fallback1-compatibility.json",
+            "sha256": "b920fd7a980ff35cff4ecbff90c6734da39793f0b4b82fe239dbd1f24c3fc4f0",
+            "log": "current-public/probe_02-fallback1-analysis.log",
+            "negative_log": "current-public/probe_02-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/probe_02/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/diagnostic-probe_02-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/native/manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02 --output .runtime-work/c178965-probe-02-offline-v12 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "892882c60934427b4c1a8e64097939e0720a5312b90a92d7f4c1d16a70a3f30f",
+        "log": "current-public/probe_02-offline.log",
+        "log_sha256": "675e102d701daca53642a824ec9703b785b1e5eb6089547a91ebbd76e0e2fc6c"
+      },
+      "compatibility": {
+        "receipt": "current-public/probe_02-compatibility.json",
+        "sha256": "3eb9e24072a7ba73ee754cd23771c74ce51359690247fff73c93e7e22da0c5b3",
+        "log": "current-public/probe_02-analysis.log",
+        "negative_log": "current-public/probe_02-negative.log"
+      },
+      "physical_preparation": {
+        "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02",
+        "receipt": "physical-proof/probe_02/proof.json",
+        "sha256": "9e09b26bd87976fcecf712c12095e4b6dedeb1f6e616eaa3085b5c7104b5fb05"
+      },
+      "negative": {
+        "log": "current-public/probe_02-negative.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "sig.hazard": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_03",
+      "kind": "delivery",
+      "construction": "native/cases/probe_03-construction.json",
+      "construction_sha256": "977da80c1fffab222119d6439a87054a2d822eeefe23d05ed08790546f7c881c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native steering or braking may overshoot the surveyed roadside stop target; original target-distance trace determines a retry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/cases/probe_03-fallback1-construction.json",
+          "construction_sha256": "9770b11781895ae2685bc124472e1e1eeaeb4011573060e4d123782531fbb089",
+          "trigger": {
+            "source": "original 600-frame roadside-native.jsonl",
+            "metric": "minimum_target_distance_m",
+            "failure_condition": "If the primary original trace never reaches within 1.0 m of the surveyed stop target or has no stationary episode, use the slower-controller alternate; CPU fixture values do not trigger it."
+          },
+          "changed_knobs": [
+            "approach speed cap 5.0 to 3.0 m/s",
+            "target speed gain 0.50 to 0.35",
+            "brake gain 0.25 to 0.40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c178965-probe-03-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9770b11781895ae2685bc124472e1e1eeaeb4011573060e4d123782531fbb089",
+            "log": "current-public/probe_03-fallback1-offline.log",
+            "log_sha256": "4332e53b531174c4bc52d00ffec8cf9972399861b0ae9eec6315fe71738b174d"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_03-fallback1-compatibility.json",
+            "sha256": "0a95d25e47bdb8246a69cf84e173457ad39568269999b644393e776a353cde8c",
+            "log": "current-public/probe_03-fallback1-analysis.log",
+            "negative_log": "current-public/probe_03-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/probe_03/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/diagnostic-probe_03-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-440-1__motor_vehicle_driver/native/manifest.json --case training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_03 --output .runtime-work/c178965-probe-03-offline-v12 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "977da80c1fffab222119d6439a87054a2d822eeefe23d05ed08790546f7c881c",
+        "log": "current-public/probe_03-offline.log",
+        "log_sha256": "0b8de827bde2e227e8d3a4b4e8936aa5b1366055c734a4d8a9a32faeee326ad6"
+      },
+      "compatibility": {
+        "receipt": "current-public/probe_03-compatibility.json",
+        "sha256": "6f1568c6df383a467aad7d0b049f188b34fa050b9359ddfff95a806ce2d06d0b",
+        "log": "current-public/probe_03-analysis.log",
+        "negative_log": "current-public/probe_03-negative.log"
+      },
+      "physical_preparation": {
+        "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_03",
+        "receipt": "physical-proof/probe_03/proof.json",
+        "sha256": "40049aa0bee084770e115f9047860fa9a2de1515562a8bbdcf20b9c4d8d92bc0"
+      },
+      "negative": {
+        "log": "current-public/probe_03-negative.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "sig.hazard": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 600-frame Native vehicle, pavement survey, bidirectional ray and camera-frame join; no synthetic physical claim",
+          "evidence": "roadside-native.jsonl, visibility-native.jsonl, original-highway-survey.json, video_frames.jsonl, trace.jsonl"
+        }
+      }
+    }
+  ]
+}

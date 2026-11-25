@@ -42,8 +42,7 @@ def build(number):
             participants.append({"actor_id": actor_id, "blueprint": "vehicle.synthetic.cpu",
                                  "body_vertices_m": vertices, "heading_deg": 0,
                                  "velocity_mps": [0, 0, 0],
-                                 "speed_mps": body["speed_mps"] if actor_id == 1 else 0.0,
-                                 "accel_longitudinal_mps2": 0.0})
+                                 "speed_mps": body["speed_mps"] if actor_id == 1 else 0.0})
         observed = {"frame": frame, "time_s": t, "participants": participants,
                     "world_settings": {"no_rendering_mode": False},
                     "rgb_sensors": {view: {"frame": i} for view in CAMERAS}}

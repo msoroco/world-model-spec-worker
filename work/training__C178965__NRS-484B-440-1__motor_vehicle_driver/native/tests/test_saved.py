@@ -33,11 +33,15 @@ def fixture(path, mode):
         common = {"frame": i, "native_frame": 1000 + i, "t_s": i / 20}
         trace.append(dict(common, source_kind="synthetic_native_sample", vehicle_id="ego",
                           other_vehicle_id="other", speed_mps=0.0 if 200 <= i < 400 else 4.0,
-                          y_m=y, bbox_half_width_m=0.9, failure_active=mode == 3 and 200 <= i < 400))
+                          y_m=y, bbox_half_width_m=0.9,
+                          parking_brake_commanded=200 <= i < 400,
+                          parking_brake_observed=200 <= i < 400,
+                          failure_active=mode == 3 and 200 <= i < 400))
         visibility.append(dict(common, source_kind="synthetic_native_sample", approaches={
             direction: {"source_id": direction + "-synthetic", "path_distance_m": 60.96,
                         "ray_clear": [True] * 9} for direction in ("forward", "backward")}))
-        frames.append({"video_frame": i, "native_frame": 1000 + i, "time_s": i / 20})
+        frames.append({"video_frame": i, "native_frame": 1000 + i,
+                       "carla_frame": 1000 + i, "time_s": i / 20})
     write_lines(path / "roadside-native.jsonl", trace)
     write_lines(path / "visibility-native.jsonl", visibility)
     write_lines(path / "video_frames.jsonl", frames)

@@ -77,6 +77,9 @@ def summarize(attempt, case_id, *, diagnostic=False):
         require(body.get("vehicle_id") and body.get("other_vehicle_id") and
                 body.get("speed_mps", -1) >= 0 and body.get("bbox_half_width_m", 0) > 0,
                 "original participants or footprint missing")
+        require(isinstance(body.get("parking_brake_commanded"), bool) and
+                isinstance(body.get("parking_brake_observed"), bool),
+                "parking brake command/observation source missing")
         if body["speed_mps"] > 0.1:
             continue
         half = body["bbox_half_width_m"]
@@ -87,6 +90,8 @@ def summarize(attempt, case_id, *, diagnostic=False):
                         "opposite_unobstructed_width_m": round(right - left - overlap, 5),
                         "clear_200ft_forward_proxy": any(view["approaches"]["forward"]["ray_clear"]),
                         "clear_200ft_backward_proxy": any(view["approaches"]["backward"]["ray_clear"]),
+                        "parking_brake_commanded": body["parking_brake_commanded"],
+                        "parking_brake_observed": body["parking_brake_observed"],
                         "failure_active": body.get("failure_active") is True})
     require(stopped, "no stopped episode measured")
     return {"format": "c178965-original-saved-measurement-v1", "case_id": case_id,
@@ -95,6 +100,7 @@ def summarize(attempt, case_id, *, diagnostic=False):
             "frame_count": 600, "stopped": stopped,
             "district": survey["district"], "legal_result": None,
             "limitations": ["Ray clear is a 200-foot geometric proxy, not recognizability",
+                            "Parking brake and stopped duration do not establish attendance or legal purpose",
                             "Free passage and off-part practicability remain independent judgments",
                             "Disability injection does not prove unavoidable temporary stopping"]}
 

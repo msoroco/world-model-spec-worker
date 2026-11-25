@@ -936,6 +936,284 @@
         "receipt": "selected-rider-electric-scooter-conflict/physical-proof/proof.json",
         "sha256": "edd27d40a880b0da9ccb81b1a4aeb5adb77a9d39c4f198ce556e701a55bed828"
       }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native sidewalk, obstruction actors, pedestrian path, four cameras and yield response require readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-pedestrian-clear/fallback1/construction.json",
+          "construction_sha256": "78b50d406fa66db1d95054351a5ffb4f7ba13b0118cef4706fa0032b6cf28778",
+          "id": "fallback1",
+          "trigger": {
+            "metric": "approach_runway_m",
+            "source": "source-hashed pedestrian CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-pedestrian-clear/fallback2/construction.json",
+          "construction_sha256": "e16c9305716147f9ecd20231d6afd321247567c9481732db0f34afd3529018ca",
+          "id": "fallback2",
+          "trigger": {
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed pedestrian CPU fixture; original Native trigger pending"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear",
+      "compatibility": {
+        "log": "selected-pedestrian-clear/analysis.log",
+        "receipt": "selected-pedestrian-clear/compatibility.json",
+        "sha256": "7e4dc4634ab261bc456a3b657e53a40f8989fcbb7f11cd552841ec744e3915c4"
+      },
+      "construction": "selected-pedestrian-clear/primary/construction.json",
+      "construction_sha256": "74970872e5a4239d7d9da654149f3d4603b7964dbfffa7ae5c0406388c82c067",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-clear/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_clear --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native pedestrian source",
+        "negative_log": "selected-pedestrian-clear/delivery-negative.log",
+        "negative_log_sha256": "57fab91cd83d49b8c5afc15766c75472d3604ad6ecb15451ee51f1361b20a559",
+        "script": "selected-pedestrian-clear/delivery-audit.py",
+        "script_sha256": "6c2850dda41c4f811f643d793989f8a842dfe0388fa9daa92e61f5aca0bdbeee",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-pedestrian-clear/delivery-positive.log",
+        "test_log_sha256": "6044c3fc30582146feb039837ac879f30fb186fda4e85976f9717a05db7ace08"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-clear/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-pedestrian-clear/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_pedestrian.py",
+        "output_schema": "c10052-saved-pedestrian-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "physical_preparation": {
+        "receipt": "selected-pedestrian-clear/physical-proof/proof.json",
+        "sha256": "3a8aa0b5977deafbe7cfb98cf7b34b32a564e160f7fcde68f7fa6a9440a925e1"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native sidewalk, obstruction actors, pedestrian path, four cameras and yield response require readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ],
+          "construction": "selected-pedestrian-conflict/fallback1/construction.json",
+          "construction_sha256": "28661d067a95e6b8aa4b575003ad2aaf03f1cf9890852620eabd9e1ce644312b",
+          "id": "fallback1",
+          "trigger": {
+            "metric": "approach_runway_m",
+            "source": "source-hashed pedestrian CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "release delayed five frames"
+          ],
+          "construction": "selected-pedestrian-conflict/fallback2/construction.json",
+          "construction_sha256": "54235231055f80da3e31f65c8e6e389f5ac2807a98025aa5bfea0df440288da1",
+          "id": "fallback2",
+          "trigger": {
+            "metric": "ego_entry_error_frames",
+            "source": "source-hashed pedestrian CPU fixture; original Native trigger pending"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict",
+      "compatibility": {
+        "log": "selected-pedestrian-conflict/analysis.log",
+        "receipt": "selected-pedestrian-conflict/compatibility.json",
+        "sha256": "1ed06d6e9734126c16ab5f12a6db7b34c5a7058d04d2c9a5e21ad6860817c0f1"
+      },
+      "construction": "selected-pedestrian-conflict/primary/construction.json",
+      "construction_sha256": "6f6a57938b09abae37bb153788413d1278d1da30cf5126a3faa83d4ee015c70b",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native pedestrian source",
+        "negative_log": "selected-pedestrian-conflict/delivery-negative.log",
+        "negative_log_sha256": "f08c66e7afa88feca9b1f421ad3b92466773f49783c66fdf64f61ea7b9cc66db",
+        "script": "selected-pedestrian-conflict/delivery-audit.py",
+        "script_sha256": "7166d8fa4757164c383e300838bf3b79df0bda529d508a86f46f6b16e2131afc",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-pedestrian-conflict/delivery-positive.log",
+        "test_log_sha256": "93cfa19f4de926f8865d82c49cc553c5703a70cf0f130c646198576ac83a6066"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-pedestrian-conflict/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-pedestrian-conflict/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_pedestrian.py",
+        "output_schema": "c10052-saved-pedestrian-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "physical_preparation": {
+        "receipt": "selected-pedestrian-conflict/physical-proof/proof.json",
+        "sha256": "04858aea1410ebb30abbebb2895f15d27e0aa4b540af17c13c4442e0eb503b75"
+      }
     }
   ],
   "format": "worker-execution-manifest",

@@ -1,0 +1,545 @@
+{
+  "cell_id": "C178965",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "c178965_roadside_judgment",
+      "target_law_id": "NRS-484B-440-1",
+      "judgment_refs": [
+        {
+          "phrase": "practicable to stop, park or so leave such vehicle off such part of the highway",
+          "note": "Surveyed off-part target and shoulder geometry are measurable; practical availability remains a contextual judgment."
+        },
+        {
+          "phrase": "unobstructed width of the highway opposite a standing vehicle shall be left for the free passage of other vehicles",
+          "note": "Measure original vehicle footprint, pavement edges and opposing vehicle path; no invented minimum width."
+        },
+        {
+          "phrase": "a clear view of such stopped vehicles shall be available from a distance of 200 feet in each direction",
+          "note": "Separate 60.96 m approach sources and rays are geometric proxies; actual driver recognition remains open."
+        },
+        {
+          "phrase": "disabled while on the paved or main-traveled portion of a highway in such manner and to such extent that it is impossible to avoid stopping and temporarily leaving such disabled vehicle in such position",
+          "note": "Engine failure injection, body position and duration are measured; genuine disability, impossibility and temporary character require source review."
+        }
+      ],
+      "rationale": "Physical target position and disabled context compared while all legal judgments stay unresolved. A numeric sweep requires an original surveyed highway and a separately pinned physical axis.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original surveyed highway geometry and verified numeric target offsets for a continuous position sweep"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "baseline",
+      "rationale": "Neutral fixed-cell reference, not selected for delivery",
+      "paired_probe_id": null,
+      "deliberate_differences": [
+        "stop_mode",
+        "surveyed stop position on or off traveled pavement",
+        "injected engine-command failure and disabled context for probe_03"
+      ],
+      "probe": {
+        "primary_variable": "stop_mode",
+        "comparison_or_standard": "neutral reference",
+        "target_value_or_branch": "off_pavement"
+      },
+      "variable_assignments": {
+        "stop_mode": {
+          "kind": "controller",
+          "value": "off_pavement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "sig.hazard",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual highway/district classification, free passage, off-part practicability, disability exception and legal verdict remain independently reviewed."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "off-part practicability",
+        "free passage",
+        "driver recognizability at 200 feet",
+        "disabled impossibility"
+      ]
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact surveyed roadside stop, width, 200-foot view and disabled branch",
+      "paired_probe_id": "c178965_roadside_position_and_failure",
+      "deliberate_differences": [
+        "stop_mode",
+        "surveyed stop position on or off traveled pavement",
+        "injected engine-command failure and disabled context for probe_03"
+      ],
+      "probe": {
+        "primary_variable": "stop_mode",
+        "comparison_or_standard": "off-pavement position versus on-pavement position and disabled exception",
+        "target_value_or_branch": "off_pavement"
+      },
+      "variable_assignments": {
+        "stop_mode": {
+          "kind": "controller",
+          "value": "off_pavement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "sig.hazard",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual highway/district classification, free passage, off-part practicability, disability exception and legal verdict remain independently reviewed."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "off-part practicability",
+        "free passage",
+        "driver recognizability at 200 feet",
+        "disabled impossibility"
+      ]
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact surveyed roadside stop, width, 200-foot view and disabled branch",
+      "paired_probe_id": "c178965_roadside_position_and_failure",
+      "deliberate_differences": [
+        "stop_mode",
+        "surveyed stop position on or off traveled pavement",
+        "injected engine-command failure and disabled context for probe_03"
+      ],
+      "probe": {
+        "primary_variable": "stop_mode",
+        "comparison_or_standard": "off-pavement position versus on-pavement position and disabled exception",
+        "target_value_or_branch": "on_pavement"
+      },
+      "variable_assignments": {
+        "stop_mode": {
+          "kind": "controller",
+          "value": "on_pavement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "sig.hazard",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual highway/district classification, free passage, off-part practicability, disability exception and legal verdict remain independently reviewed."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "off-part practicability",
+        "free passage",
+        "driver recognizability at 200 feet",
+        "disabled impossibility"
+      ]
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-440-1__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-440-1",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact surveyed roadside stop, width, 200-foot view and disabled branch",
+      "paired_probe_id": "c178965_roadside_position_and_failure",
+      "deliberate_differences": [
+        "stop_mode",
+        "surveyed stop position on or off traveled pavement",
+        "injected engine-command failure and disabled context for probe_03"
+      ],
+      "probe": {
+        "primary_variable": "stop_mode",
+        "comparison_or_standard": "off-pavement position versus on-pavement position and disabled exception",
+        "target_value_or_branch": "disabled_on_pavement"
+      },
+      "variable_assignments": {
+        "stop_mode": {
+          "kind": "controller",
+          "value": "disabled_on_pavement"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "sig.hazard",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "saved original vehicle trace, highway survey, directional ray and frame-map join",
+            "reference_frame": "original Native frame and surveyed highway station",
+            "uncertainty": "50 ms cadence; ray clear is a geometric proxy, not driver recognizability"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Actual highway/district classification, free passage, off-part practicability, disability exception and legal verdict remain independently reviewed."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "off-part practicability",
+        "free passage",
+        "driver recognizability at 200 feet",
+        "disabled impossibility"
+      ]
+    }
+  ]
+}

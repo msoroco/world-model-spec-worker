@@ -22,8 +22,9 @@ def sha(raw):
 
 def measure(trace_raw, map_raw, review_raw, context_raw, frame_map_raw):
     context = json.loads(context_raw)
-    require(context.get('source_kind') == 'native_saved_sample',
-            'Original Native visibility source required')
+    kind = context.get('source_kind')
+    require(kind in ('native_saved_sample', 'synthetic_diagnostic'),
+            'Original Native or explicit synthetic visibility source required')
     require(context.get('map_source_sha256') == sha(map_raw),
             'Visibility map source changed')
     requested_ft = context.get('requested_boundary_distance_ft', 1000)
@@ -62,7 +63,8 @@ def measure(trace_raw, map_raw, review_raw, context_raw, frame_map_raw):
     require(set(person_rows) & set(vehicle_rows),
             'No source frame places both targets at 1,000 feet')
     review = json.loads(review_raw)
-    require(review.get('source_kind') == 'original_pixel_review' and
+    require(review.get('source_kind') == ('original_pixel_review' if
+            kind == 'native_saved_sample' else 'synthetic_diagnostic') and
             review.get('trace_sha256') == sha(trace_raw) and
             review.get('context_sha256') == sha(context_raw) and
             review.get('map_sha256') == sha(map_raw) and
@@ -79,7 +81,7 @@ def measure(trace_raw, map_raw, review_raw, context_raw, frame_map_raw):
         require(type(review.get(key)) is bool,
                 'Independent person and vehicle pixel findings required')
     return {'format': 'c179824-visibility-measurement-v1',
-            'source_kind': 'native_saved_sample',
+            'source_kind': kind,
             'reference_distance_m': reference_m,
             'statutory_reference_distance_m': DISTANCE_M,
             'requested_boundary_distance_ft': requested_ft,

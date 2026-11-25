@@ -27,11 +27,13 @@ def moment(value):
 def measure(clock_raw, review_raw):
     clock = json.loads(clock_raw)
     review = json.loads(review_raw)
-    require(clock.get('source_kind') == 'native_saved_sample' and
+    kind = clock.get('source_kind')
+    require(kind in ('native_saved_sample', 'synthetic_diagnostic') and
             isinstance(clock.get('frame_times'), list) and
             len(clock['frame_times']) == 600,
             'Original 600-frame civil-time source missing')
-    require(review.get('source_kind') == 'independent_civil_time_review' and
+    require(review.get('source_kind') == ('independent_civil_time_review' if
+            kind == 'native_saved_sample' else 'synthetic_diagnostic') and
             review.get('clock_sha256') == digest(clock_raw) and
             review.get('reviewer_id') and review.get('sun_event_source') and
             review.get('sun_event_source_sha256') and review.get('location_source') and
@@ -50,7 +52,7 @@ def measure(clock_raw, review_raw):
     require(all(t.date() in (sunset.date(), sunrise.date()) for t in frame_times),
             'Civil-time frame outside reviewed sun-event dates')
     return {'format': 'c179824-civil-time-measurement-v1',
-            'source_kind': 'native_saved_sample',
+            'source_kind': kind,
             'statutory_offset_minutes': 30,
             'interval_start': begin.isoformat(),
             'interval_end': end.isoformat(),
