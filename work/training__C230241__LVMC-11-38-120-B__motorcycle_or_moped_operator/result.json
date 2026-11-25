@@ -1,14 +1,14 @@
 {
   "assignment_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator",
   "input_sha256": "91d1046a21081ec19be74b4e0e99cbc2a358c3e84489d61ce6473f9001bee941",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Current selected reference and contrast primary constructions each pass explicit 600-frame CPU public positive, missing-source negative, Native validation, Core/video, and recorded-only saved processing. Both remain synthetic diagnostics. Three selected fallback constructions per case, semantic, physical, independent delivery/comparison audits and canonical execution manifest remain worker-owned CPU work; no original lamp visibility or legal conclusion is claimed.",
-  "readiness_kind": null,
+  "reason": "Two exact selected delivery cases and six fallbacks pass pinned offline, current source-bound public positive/missing-source negative, recorded-only saved, canonical semantic, physical preparation, independent diagnostic delivery and comparison CPU checks. Original Native lamp pixels and calibrated visibility remain required before physical or legal acceptance.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
-  "cases_selected": 0,
+  "cases_selected": 2,
   "candidate_plans_proven": 8,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
   "source_measurement_proof": "native/lighting-measurement-proof.json",
@@ -117,8 +117,51 @@
   },
   "selected_primary_public_saved_cpu": {
     "path": "selected-proofs/primary-index.json",
-    "sha256": "51f4f69e8ff704d337e0fc492edf5b3a897fe488715d487f9dbcc34987eaa601",
+    "sha256": "ec44d4971c7f72dc7ad0acf169be2694117904dabb908ac049498b582dd89e54",
     "cases_passed": 2,
     "diagnostic_only": true
-  }
+  },
+  "canonical_semantic_cpu": {
+    "path": "proposals/semantic-index.json",
+    "sha256": "03b34ff95d1e6f493b44f2b2095cb250bebe7acb3049ca5c5b0a33376a0049a7",
+    "selected_cases": 2,
+    "stage_count": 10
+  },
+  "selected_comparison_cpu": {
+    "path": "selected-comparison.json",
+    "sha256": "2baa9dc52400ae1b03b3284a8a69b9ef2a5519f13640b60977aaa723fad2ddd9",
+    "diagnostic_only": true
+  },
+  "selected_fallback_public_saved_cpu": {
+    "path": "selected-proofs/fallback-index.json",
+    "sha256": "9474c7d3b16b7d48ef7685a9ab5e7a00b0e14ec661160c6e21c66b971c36512e",
+    "candidates_passed": 6,
+    "diagnostic_only": true
+  },
+  "execution_manifest": {
+    "path": "execution-manifest.json",
+    "sha256": "936e82b944599968c795cd5188f95b6a93e3a9a495a35705e4f0f660d7462d89",
+    "cases": 2
+  },
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator --case training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "(cd work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator && PYTHONPATH=. ../../.venv-cpu/bin/python -m unittest discover -s tests -p \"test*.py\")",
+      "exit_code": 0,
+      "log": "native/selected-unit.log",
+      "sha256": "d094b1bd2c8318c96097f80c50da282add5b2972970a77046de8db6c8935f6ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/audit_selected_comparison.py",
+      "exit_code": 0,
+      "log": "native/selected-comparison.log",
+      "sha256": "8e9de919882cd9536d250325ff86aa34ada6b0e4c2bc9b997eb49dc9d02f7d56"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/physical_preparation.py --build",
+      "exit_code": 0,
+      "log": "native/physical-preparation.log",
+      "sha256": "5893c7202e7da6bcbe2859201fa7c83b878b0813108dcbf073590e16138fbe61"
+    }
+  ]
 }

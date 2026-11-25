@@ -67,6 +67,54 @@ def _rows(folder,name):
     return [json.loads(line) for line in _required(folder,name).read_text().splitlines() if line.strip()]
 
 
+def derive_selected_channels(attempt, count, description):
+    """Derive selected measurement channels from retained original sources."""
+    attempt=Path(attempt)
+    mapping=_rows(attempt,'video_frames.jsonl')
+    motion=_rows(attempt,'native_samples.jsonl')
+    evidence=_rows(attempt,'capture/evidence.jsonl')
+    if any(len(rows)!=count for rows in (mapping,motion,evidence)):
+        raise ValueError('Cannot derive channels from incomplete original sources')
+    channels=attempt/'channels'
+    channels.mkdir(exist_ok=True)
+    survey=json.loads(_required(attempt,'road_geometry.json').read_text())
+    expected={item['name'] for item in description['channels']}
+    existing={path.stem for path in channels.glob('*.jsonl')}
+    if not existing<=expected:
+        raise ValueError('Unexpected original Native channel')
+    for name in sorted(expected-existing):
+        if name not in ('ego_pose','ego_speed','center_turn_lane_distance_after_left_turn',
+                        'st.centre_turn_lane','drv.turning','kin.path_length','drv.lane_change',
+                        'rel.occupies','native_body_pose_control','camera_frame_join'):
+            raise ValueError('Missing original Native channel: '+name)
+        path=channels/(name+'.jsonl')
+        with path.open('x') as stream:
+            for source,motion_row,evidence_row in zip(mapping,motion,evidence):
+                if source['native_frame']!=motion_row['native_frame'] or source['native_frame']!=evidence_row['original_frame']:
+                    raise ValueError('Original Native channel source join differs')
+                if name=='ego_pose':
+                    value={'native_center_xy_m':motion_row['native_center_xy_m'],
+                           'native_forward_xy':motion_row['native_forward_xy'],
+                           'native_body_xy_m':motion_row['native_body_xy_m']}
+                elif name=='ego_speed':
+                    value={'speed_mps':motion_row['speed_mps'],
+                           'speed_provenance':motion_row.get('speed_provenance','original_native_same_tick')}
+                elif name=='center_turn_lane_distance_after_left_turn':
+                    value={'native_road_id':motion_row['native_road_id'],
+                           'native_lane_id':motion_row['native_lane_id'],
+                           'native_center_xy_m':motion_row['native_center_xy_m'],
+                           'native_body_xy_m':motion_row['native_body_xy_m']}
+                elif name=='st.centre_turn_lane': value=survey
+                elif name=='drv.turning': value={'observed_forward':motion_row['native_forward_xy']}
+                elif name=='kin.path_length': value={'sampled_native_center_xy_m':motion_row['native_center_xy_m']}
+                elif name=='drv.lane_change': value={'native_road_id':motion_row['native_road_id'],
+                                                    'native_lane_id':motion_row['native_lane_id']}
+                elif name=='rel.occupies': value=motion_row['native_body_xy_m']
+                elif name=='native_body_pose_control': value=motion_row
+                else: value=source
+                stream.write(json.dumps({'time_s':source['time_s'],'value':value},allow_nan=False)+'\n')
+
+
 def verify_original_joins(folder,count):
     names=('trace.jsonl','capture/evidence.jsonl','video_frames.jsonl',
            'native_samples.jsonl','body_history.jsonl','capture/native/frames.jsonl')
@@ -161,6 +209,7 @@ def finalize(attempt,output):
     if type(count) is not int or count<2:
         raise ValueError('Recording duration/rate invalid')
     joins=verify_original_joins(attempt,count)
+    derive_selected_channels(attempt,count,config['recording_description'])
     provenance,native=capture_provenance(attempt,count)
     report=analysis_report(attempt)
     relation=report['measurements']['after_left_turn_distance_interval']['value']['threshold_relation']
