@@ -64,17 +64,23 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "No stop line; near-side crosswalk.",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Selected no-stop-line near-side-crosswalk branch requires source-bound physical construction; the historical stop-line commands are not an equivalence receipt.",
+      "case_ids": [
+        "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_a",
+        "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b"
+      ]
     },
     {
       "requirement": "reviewed-scope-1",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "No stop line; near-side crosswalk.",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Selected no-stop-line near-side-crosswalk branch requires source-bound physical construction; the historical stop-line commands are not an equivalence receipt.",
+      "case_ids": [
+        "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_a",
+        "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b"
+      ]
     }
   ],
   "cases": [
@@ -99,7 +105,11 @@
         ]
       },
       "source_text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "No legal outcome or physical execution is asserted.",
+      "gap_ids": [
+        "selected_crosswalk_source",
+        "realized_halt_yield"
+      ]
     },
     {
       "case_id": "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b",
@@ -122,7 +132,11 @@
         ]
       },
       "source_text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "No legal outcome or physical execution is asserted.",
+      "gap_ids": [
+        "selected_crosswalk_source",
+        "realized_halt_yield"
+      ]
     }
   ],
   "comparisons": [
@@ -358,8 +372,50 @@
       ]
     }
   },
-  "legal_analysis_note": "Exact statutory conjunctions and conditional alternatives reviewed for this selected draft scope. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
+  "legal_analysis_note": "Selected branch remains unverified. The law also states stop-line and no-crosswalk nearest-view-point alternatives; those require separate branch coverage under the full branch contract. This plan does not assert them covered.",
   "readiness": "planning_only",
   "physical_prerequisites": "Use an installed uncovered but physically inoperative vehicular signal; verify stop-line, near crosswalk and nearest-view-point hierarchy, actual halt, cautious movement and priority.",
-  "legal_interpretation_limit": "The inoperative-signal branch cannot be replaced with an ordinary functioning red-light stop."
+  "legal_interpretation_limit": "The inoperative-signal branch cannot be replaced with an ordinary functioning red-light stop.",
+  "evidence_review": {
+    "reviewer": "assignment owner",
+    "method": "Read the frozen assignment memberships and both original case entries in review-context/review.json. Compared their commanded stop-line settings with the selected no-stop-line, near-side-crosswalk branch. The entries supply no receipt sources, and labels do not establish physical features or exact equivalence. The two set memberships point to the same two recording IDs, so each original was reviewed once.",
+    "facts": [
+      {
+        "recording_id": "71e2a17317ca3939443478c3b1ad45428c384ce7b7abfe13c3725d2082e19ef0",
+        "demonstrated_fact": "Full halt before an applicable stop line was commanded; saved review records a compliant label.",
+        "limitations": "This is a review-context statement about commanded construction and a recorded label. The same source says stopping attainment and route completion remain unverified; no source-hashed receipt establishes an installed uncovered physically inoperative signal, absence of a stop line, near crosswalk, priority history, or realized yield.",
+        "sources": [
+          {
+            "path": "inputs/training__C111277__NRS-484B-250-4__motor_vehicle_driver/review-context/review.json",
+            "sha256": "ce2b04e86608b50dbfc8798cb7b1c960412ccacee1bbf6762c1861d573155087"
+          }
+        ]
+      },
+      {
+        "recording_id": "bf5ba06672dcf57a53cafeddaeb2a88af996036ca014b35c66178a7a612d0d99",
+        "demonstrated_fact": "No halt through an applicable stop line was commanded; saved review records a violation label.",
+        "limitations": "This is a review-context statement about commanded construction and a recorded label. The same source says stopping attainment and route completion remain unverified; no source-hashed receipt establishes an installed uncovered physically inoperative signal, absence of a stop line, near crosswalk, priority history, or realized yield.",
+        "sources": [
+          {
+            "path": "inputs/training__C111277__NRS-484B-250-4__motor_vehicle_driver/review-context/review.json",
+            "sha256": "ce2b04e86608b50dbfc8798cb7b1c960412ccacee1bbf6762c1861d573155087"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "selected_crosswalk_source",
+        "requirement": "Observe the selected no-stop-line near-side-crosswalk hierarchy and installed uncovered inoperative signal at ego entry.",
+        "source": "NRS 484B.250(4); assignment.json reviewed scope",
+        "why_existing_insufficient": "Both historical case descriptions request behavior at an applicable stop line and supply no equivalent source receipt."
+      },
+      {
+        "id": "realized_halt_yield",
+        "requirement": "Measure a full pre-crosswalk halt contrast, post-stop cautious entry, and priority to vehicles previously stopped or inside the intersection.",
+        "source": "NRS 484B.250(4)",
+        "why_existing_insufficient": "The review context explicitly leaves stopping attainment and route completion unverified; it contains no priority-history or yield receipt."
+      }
+    ]
+  }
 }

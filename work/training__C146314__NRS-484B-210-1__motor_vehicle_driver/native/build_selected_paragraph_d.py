@@ -11,7 +11,7 @@ CAMERAS = [('overview', 1920, 1080), ('approach', 1280, 720),
            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]
 SOURCES = ['native-raw-actors.jsonl', 'video_frames.jsonl',
            'native-map-readback.json', 'native-capture-report.json',
-           'source-review.json', 'one-way-pass.xodr'] + [
+           'review-source.json', 'road-source.xodr'] + [
                name + '.mkv' for name, _, _ in CAMERAS]
 
 
@@ -72,9 +72,9 @@ def build():
                 'output_key': 'paragraph_d_source_observation',
                 'method': 'measure_paragraph_d', 'value_type': 'object',
                 'kind': 'measured', 'inputs': SOURCES}],
-            'negative': {'remove': ['source-review.json'],
-                'error_contains': 'Missing required source: source-review.json'}}
-        files = [{'path': name, 'content': (source / name).read_text()}
+            'negative': {'remove': ['review-source.json'],
+                'error_contains': 'Missing required source: review-source.json'}}
+        files = [{'path': name, 'content': ((source / name).read_text().replace('source-review.json', 'review-source.json') if name == 'capture.py' else (source / name).read_text())}
                  for name in ('one-way-pass.xodr', 'assignment-source.json',
                               'case-plan.json', 'requested-tracks.jsonl',
                               'check.py', 'capture.py', 'saved.py',

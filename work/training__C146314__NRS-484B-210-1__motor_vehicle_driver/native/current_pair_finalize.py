@@ -9,7 +9,7 @@ import saved
 
 REQUIRED = ('native-raw-actors.jsonl', 'video_frames.jsonl',
             'native-map-readback.json', 'native-capture-report.json',
-            'source-review.json', 'one-way-pass.xodr', 'overview.mkv',
+            'review-source.json', 'road-source.xodr', 'overview.mkv',
             'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 
 
@@ -38,15 +38,17 @@ def finalize(attempt, output):
     if output.exists() or (attempt / 'result.json').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config = json.loads((attempt / 'config.json').read_text())
+    if sha(attempt / 'road-source.xodr') != sha(attempt / 'one-way-pass.xodr'):
+        raise ValueError('Independent road source differs from selected construction')
     case_id = config['case_id']
     if not case_id.endswith(('__witness_1', '__witness_2')):
         raise ValueError('Unknown paragraph (d) selected case')
     construction = json.loads((attempt / 'construction.json').read_text())
     if construction['case_id'] != case_id:
         raise ValueError('Selected construction identity differs')
-    review = json.loads((attempt / 'source-review.json').read_text())
+    review = json.loads((attempt / 'review-source.json').read_text())
     diagnostic = review.get('source_kind') == 'synthetic_fixture_review'
-    metric = saved.measure(attempt, attempt, attempt / 'source-review.json',
+    metric = saved.measure(attempt, attempt, attempt / 'review-source.json',
                            synthetic_fixture=diagnostic)
     values = measure_paragraph_d(metric)
     hashes = {name: sha(attempt / name) for name in REQUIRED}
@@ -81,6 +83,9 @@ def finalize(attempt, output):
                     allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'],
                          'reference': 'channels/' + path.name})
+    context_path = channels / 'one_way_designation_source.json'
+    context_path.write_text(json.dumps({'one_way_designation_source': {'reviewed': False, 'native_map_source': 'native-map-readback.json', 'reason': 'Independent designation review pending'}}, allow_nan=False) + '\n')
+    evidence.append({'name': 'one_way_designation_source', 'unit': 'structured', 'reference': 'channels/one_way_designation_source.json'})
     result = {'case_id': case_id, 'measured_values': values,
               'target_checks': [{'target': 'source-measured right-side pass',
                 'requested': True,

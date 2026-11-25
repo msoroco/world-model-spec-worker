@@ -1,8 +1,12 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 88 of 253 assignments are ready and 165 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 89 of 253 assignments are ready and 164 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-25 C111294 current-runtime ready integration
+
+Newly ready: `training__C111294__NRS-484B-203-1__motor_vehicle_driver`, selected exact `__0.45`, `__0.55` and `__1.00` meeting cases. The first two retain measured oncoming paved fractions 0.3625 and 0.3875, while the geometric reference measures 0.5000; all preserve right-passing source observations and leave legal verdicts unassessed. Current-runtime primary/fallback offline, positive/missing-source negative compatibility, recorded-only saved processing, physical complete/incomplete/missing-source fixtures, selected delivery positive/negative audits, semantic stages, receipt and comparison checks are bound. The owner passed the exact scoped strict gate twice on final files, and the lead independently reran `.venv-cpu/bin/python worker_check.py --assignment training__C111294__NRS-484B-203-1__motor_vehicle_driver --complete --require-delivery-ready` with `static_checks_passed: true`. Manifest SHA-256 `335c73a94781d09740f3b26179af082be4daa3c8ce0cf102f0c0d9feb82f7a0f`; semantic index SHA-256 `534775975acd54459e0286a003c7ab0f39be1135cbf17aec0614148e76b7f6d1`. The lead rebuilt and independently audited the nondispatchable queue: 860 planned cases, 415 comparison rows, zero dispatchable, SHA-256 `6556878a6f989fb73be0bbb79c952004f05af2436c87c188078f2c1ddd6a1961`. Independent return audit passed: 89 ready, 164 partial, 436 selected cases, 811 proven candidates, zero errors. Accepted original membership remains unclaimed reuse; actual Native, physical and legal acceptance remain local review. C229410 and C146314 continue as owned partials; C104538's frozen supplemental binding audit is complete and a new owner has started C179819.
 
 ## 2026-11-25 current owner gate progress
 

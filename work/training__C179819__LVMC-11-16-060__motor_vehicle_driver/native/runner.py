@@ -9,7 +9,7 @@ import subprocess
 from controller import FRAMES, RATE_HZ, TARGET_MPH, command
 from geometry import check as geometry_check, open_drive
 
-CAMERAS = ('overview', 'ego_front', 'roadside_sign', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CASES = {'probe_1': 'slow', 'probe_2': 'at_default', 'probe_3': 'fast'}
 
 
@@ -43,6 +43,7 @@ def survey(carla, mapping):
 
 def execute(config, output_dir, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
@@ -58,7 +59,9 @@ def execute(config, output_dir, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in prior_world.get_actors()):
         raise RuntimeError('exclusive idle Native world required')
     owned, encoders, queues = [], {}, {}
+    capture = None
     changed = False
+    complete = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
@@ -73,20 +76,22 @@ def execute(config, output_dir, host, port):
         settings.max_substeps = 10
         world.apply_settings(settings)
         readback = survey(carla, world.get_map())
-        (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         library = world.get_blueprint_library()
         bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
         bp.set_attribute('role_name', 'c179819_subject')
         subject = world.spawn_actor(bp, carla.Transform(
             carla.Location(x=-50, y=-2, z=2), carla.Rotation(yaw=0)))
         owned.append(subject)
+        capture = PipelineCapture(client, subject, output, config['case_id'],
+                                  visibility=False,
+                                  required_observations=config.get('required_atoms', []))
         (output / 'sign-survey.json').write_text(json.dumps({
             'source_kind': 'native_saved_sample', 'lane_survey': readback,
             'street_status': 'unverified', 'survey_complete_both_directions': False,
             'applicable_posted_signs': [], 'sign_authority_source': None,
             'subject_blueprint_id': subject.type_id}, indent=2) + '\n')
-        mounts = {'overview': (-25, -20, 35, -35), 'ego_front': (1.5, 0, 1.8, 0),
-                  'roadside_sign': (90, -9, 9, -15), 'rear': (-6, 0, 3, -5)}
+        mounts = {'overview': (-25, -20, 35, -35), 'approach': (1.5, 0, 1.8, 0),
+                  'reference_corner': (90, -9, 9, -15), 'driver_reference': (-6, 0, 3, -5)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -95,7 +100,7 @@ def execute(config, output_dir, host, port):
             cbp.set_attribute('image_size_y', str(spec['height']))
             cbp.set_attribute('sensor_tick', str(1 / RATE_HZ))
             transform = carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch))
-            camera = world.spawn_actor(cbp, transform, attach_to=subject if name in ('ego_front', 'rear') else None)
+            camera = world.spawn_actor(cbp, transform, attach_to=subject if name in ('approach', 'driver_reference') else None)
             owned.append(camera)
             q = queue.Queue()
             camera.listen(q.put)
@@ -123,6 +128,7 @@ def execute(config, output_dir, host, port):
                 if initial_time is None:
                     initial_time = snap.timestamp.elapsed_seconds
                 time_s = snap.timestamp.elapsed_seconds - initial_time
+                capture.capture(native_frame, time_s)
                 camera_frames = {}
                 for name, q in queues.items():
                     image = q.get(timeout=30)
@@ -140,15 +146,19 @@ def execute(config, output_dir, host, port):
                     'route_position_m': pose.location.x,
                     'subject_xyz_m': [pose.location.x, pose.location.y, pose.location.z],
                     'observed_speed_mps': math.sqrt(observed.x ** 2 + observed.y ** 2 + observed.z ** 2),
-                    'requested_control': request, 'camera_native_frames': camera_frames}) + '\n')
+                    'requested_control': request, 'camera_native_frames': camera_frames,
+                    'source_cameras': {name: index for name in CAMERAS}}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('source video encoding failed: ' + name + ': ' + stderr.decode()[-300:])
+        complete = True
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'sign_authority_sourced': False, 'legal_outcome_claimed': False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=complete)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()

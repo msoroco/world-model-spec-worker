@@ -9,7 +9,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "roadside_sign", "rear"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 MPH_TO_MPS = 0.44704
 DEFAULT_MPH = 25.0
 

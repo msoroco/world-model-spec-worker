@@ -50,6 +50,9 @@ def run():
                 check=True, timeout=300)
             proof.BUNDLE = attempt
             proof.fixture(attempt)
+            (attempt / 'source-review.json').rename(attempt / 'review-source.json')
+            shutil.copyfile(attempt / 'one-way-pass.xodr',
+                            attempt / 'road-source.xodr')
             finalize = [str(ROOT / '.venv-cpu/bin/python'),
                 str(attempt / 'finalize.py'), '--attempt', str(attempt),
                 '--output', str(attempt / 'analysis-report.json')]
@@ -65,7 +68,7 @@ def run():
                 raise ValueError('Diagnostic finalizer overclaimed acceptance')
             negative_attempt = base / (suffix + '-negative')
             shutil.copytree(attempt, negative_attempt)
-            (negative_attempt / 'source-review.json').unlink()
+            (negative_attempt / 'review-source.json').unlink()
             negative = subprocess.run([str(ROOT / '.venv-cpu/bin/python'),
                 str(negative_attempt / 'finalize.py'), '--attempt',
                 str(negative_attempt), '--output',
@@ -73,7 +76,7 @@ def run():
                 cwd=negative_attempt, env=env,
                 capture_output=True, text=True, timeout=300)
             if (negative.returncode == 0 or
-                    'Missing required source: source-review.json' not in negative.stderr):
+                    'Missing required source: review-source.json' not in negative.stderr):
                 raise ValueError('Missing-source negative did not fail')
             log = HERE / (suffix + '-offline.log')
             log.write_text((offline / 'offline.log').read_text().rstrip() + '\n')
@@ -86,7 +89,7 @@ def run():
                 'native_result_sha256': sha(attempt / 'result.json'),
                 'positive_exit_code': positive.returncode,
                 'negative_exit_code': negative.returncode,
-                'negative_error': 'Missing required source: source-review.json',
+                'negative_error': 'Missing required source: review-source.json',
                 'synthetic_diagnostic': True, 'original_native_observed': False,
                 'delivery_ready': False})
     record = {'format': 'c146314-paragraph-d-selected-draft-cpu-proof-v1',
