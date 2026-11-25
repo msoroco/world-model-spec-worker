@@ -76,7 +76,7 @@ class Tests(unittest.TestCase):
                                        "legal_consistency", "display_direction")}},
                   "highway_status": {"source_sha256": "highway"}, "device": device,
                   "duration_s": 45.0, "diagnostic": False, "frames": rows}
-        native_path = self.root / "native.json"
+        native_path = self.root / "device-native.json"
         native_path.write_text(json.dumps(native), encoding="utf-8")
         media = {}
         for name in video.PROFILE:
@@ -99,8 +99,66 @@ class Tests(unittest.TestCase):
         self.assertEqual(complete["format"], "worker-saved-source-and-video-integrity")
         self.assertTrue(complete["full_video_decode"])
         self.assertFalse(complete["physical_completion"])
-        with self.assertRaisesRegex(delivery.AuditError, 'original site review references missing'):
+        with self.assertRaisesRegex(delivery.AuditError, 'acquisition-provenance'):
             delivery.audit(self.root, CASE, profile=profile)
+        provenance_path = self.root / 'acquisition-provenance.json'
+        (self.root / 'capture-seal.json').write_text('{}', encoding='utf-8')
+        provenance = {'provenance_kind': 'synthetic', 'diagnostic_fixture': False,
+                      'case_id': CASE, 'site_sha256': native['site_sha256']}
+        provenance_path.write_text(json.dumps(provenance), encoding='utf-8')
+        with self.assertRaisesRegex(delivery.AuditError, 'synthetic'):
+            delivery.verify_capture_seal(self.root, CASE, manifest, native)
+        provenance['provenance_kind'] = 'native'
+        provenance_path.write_text(json.dumps(provenance), encoding='utf-8')
+        review_root = self.root / 'original-review'
+        source_root = review_root / 'sources'
+        source_root.mkdir(parents=True)
+        reviewed = {'sources': {name: {'path': name + '.txt'} for name in
+                    ('highway', 'placement_authority', 'legal_consistency', 'display_direction')}}
+        (review_root / 'review.json').write_text(json.dumps(reviewed), encoding='utf-8')
+        (review_root / 'site.json').write_text('{}', encoding='utf-8')
+        for ref in reviewed['sources'].values():
+            (source_root / ref['path']).write_text('source', encoding='utf-8')
+        manifest['reviewed_site'] = {'site_path': 'original-review/site.json',
+                                     'site_sha256': native['site_sha256'],
+                                     'review_path': 'original-review/review.json',
+                                     'source_root': 'original-review/sources'}
+        (self.root / 'saved-sources.json').write_text(json.dumps(manifest), encoding='utf-8')
+        (self.root / 'runner.py').write_text('native runner', encoding='utf-8')
+        (self.root / 'construction.json').write_text('{}', encoding='utf-8')
+        capture_root = self.root / 'capture'
+        capture_root.mkdir()
+        (capture_root / 'manifest.json').write_text('{}', encoding='utf-8')
+        (self.root / 'trace.jsonl').write_text(''.join(json.dumps(
+            {'frame': row['frame'], 'time_s': row['time_s']}) + '\n' for row in rows), encoding='utf-8')
+        (self.root / 'video_frames.jsonl').write_text(''.join(json.dumps(
+            {'carla_frame': row['frame'], 'video_frame': i, 'time_s': row['time_s']}) + '\n'
+            for i, row in enumerate(rows)), encoding='utf-8')
+        source_paths = [native_path, self.root / 'saved-sources.json',
+                        self.root / 'trace.jsonl', self.root / 'video_frames.jsonl',
+                        provenance_path, capture_root / 'manifest.json',
+                        review_root / 'site.json', review_root / 'review.json',
+                        *(source_root / ref['path'] for ref in reviewed['sources'].values()),
+                        *(self.root / ref['path'] for ref in media.values())]
+        hashes = {path.relative_to(self.root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                  for path in source_paths}
+        seal = {'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+                'sources': hashes, 'native_revision': {
+                    'construction_sha256': hashlib.sha256((self.root / 'construction.json').read_bytes()).hexdigest(),
+                    'runner_sha256': hashlib.sha256((self.root / 'runner.py').read_bytes()).hexdigest()}}
+        seal_path = self.root / 'capture-seal.json'
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        verified = delivery.verify_capture_seal(self.root, CASE, manifest, native)
+        self.assertEqual(verified['sealed_source_count'], len(hashes))
+        seal['sources']['trace.jsonl'] = '0' * 64
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        with self.assertRaisesRegex(delivery.AuditError, 'sealed source hash changed'):
+            delivery.verify_capture_seal(self.root, CASE, manifest, native)
+        seal['sources']['trace.jsonl'] = hashes['trace.jsonl']
+        seal['events'][-1] = 'restoration_unverified'
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        with self.assertRaisesRegex(delivery.AuditError, 'lifecycle seal incomplete'):
+            delivery.verify_capture_seal(self.root, CASE, manifest, native)
         media["driver_reference"]["sha256"] = "0" * 64
         (self.root / "saved-sources.json").write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "media hash"):

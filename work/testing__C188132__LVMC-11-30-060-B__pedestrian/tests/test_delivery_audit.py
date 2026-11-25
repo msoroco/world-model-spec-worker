@@ -1,4 +1,5 @@
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -71,6 +72,23 @@ def fixture(root):
 
 
 class DeliveryAuditTests(unittest.TestCase):
+    def test_saved_receipt_may_be_outside_original_attempt(self):
+        with tempfile.TemporaryDirectory(dir=SAFE) as tmp:
+            root = Path(tmp) / 'attempt'
+            root.mkdir()
+            original, media, processing_path = fixture(root)
+            outside = Path(tmp) / 'operator-output'
+            shutil.move(str(processing_path.parent), str(outside))
+            relocated = outside / 'processing.json'
+            receipt = json.loads(relocated.read_text())
+            result = outside / 'analysis' / 'result.json'
+            receipt['result'] = str(result)
+            write(relocated, receipt)
+            with patch('delivery_audit.audit_saved', return_value=original), \
+                 patch('delivery_audit.audit_media', return_value=media):
+                self.assertEqual(audit(root, pixel_review=root/'original-pixel-review.json',
+                                       processing_receipt=relocated)['frame_count'], 900)
+
     def test_requires_seal_and_original_provenance(self):
         with tempfile.TemporaryDirectory(dir=SAFE) as tmp:
             root = Path(tmp)

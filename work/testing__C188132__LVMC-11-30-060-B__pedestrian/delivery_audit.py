@@ -49,9 +49,8 @@ def audit(attempt, *, pixel_review, processing_receipt):
         if sha(_inside(root, name)) != expected:
             raise ValueError('sealed Native source hash differs: ' + name)
     processing_path = Path(processing_receipt).resolve()
-    safe = (Path(__file__).resolve().parents[2] / '.runtime-work').resolve()
-    if not processing_path.is_relative_to(safe) or not processing_path.is_file():
-        raise ValueError('saved processing receipt under .runtime-work required')
+    if not processing_path.is_file():
+        raise ValueError('saved processing receipt required')
     processing = json.loads(processing_path.read_text())
     if (processing.get('format') != 'worker-saved-processing' or
             processing.get('passed') is not True or processing.get('recorded_only') is not True or

@@ -19,10 +19,19 @@ def command(variant, candidate):
 
 def main():
     rows = []
+    canonical = 'PYTHONPATH="$PWD/runtime" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root "$LOCAL_ROOT" '
     for variant in VARIANTS:
         case = f'{ASSIGNMENT}__{variant}'
         rows.append({
             'assignment_id': ASSIGNMENT, 'case_id': case,
+            'prepare_command': (canonical + f'prepare-delivery --repo "$PWD" --batch full-test-delivery --db "$DB" '
+                                f'--assignment {ASSIGNMENT} --case {case}'),
+            'execute_command': (canonical + f'execute-delivery --repo "$PWD" --batch full-test-delivery --db "$DB" '
+                                f'--run "$RUN" --assignment {ASSIGNMENT} --case {case} --job "$JOB_ID" '
+                                '--python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"'),
+            'accept_command': (canonical + f'accept-delivery --repo "$PWD" --batch full-test-delivery --db "$DB" '
+                               f'--run "$RUN" --assignment {ASSIGNMENT} --case {case} --job "$JOB_ID" '
+                               '--attempt "$ATTEMPT" --audit "$AUDIT" --review-archive /external/archive'),
             'capture_command': command(variant, 'primary'),
             'candidate_commands': {'fallback1': command(variant, 'fallback1')},
             'owner_release_command': '.venv-cpu/bin/python runtime.py owner-released --attempt "$ATTEMPT" --receipt "$ATTEMPT/owner-release.json" --acknowledge-owner-released',
@@ -44,7 +53,7 @@ def main():
         comparisons.append({
             'assignment_id': ASSIGNMENT, 'comparison_id': comparison,
             'case_ids': [f'{ASSIGNMENT}__{first}', f'{ASSIGNMENT}__{second}'],
-            'audit_command': (f'.venv-cpu/bin/python {PREFIX}/overpass_source.py --comparison {comparison} '
+            'command': (f'.venv-cpu/bin/python {PREFIX}/overpass_source.py --comparison {comparison} '
                 '--first "$FIRST_ATTEMPT" --second "$SECOND_ATTEMPT" '
                 '--first-processing "$FIRST_OUTPUT/v0001/processing.json" '
                 '--second-processing "$SECOND_OUTPUT/v0001/processing.json"'),

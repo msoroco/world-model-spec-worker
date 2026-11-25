@@ -44,8 +44,21 @@ def audit_saved(left_attempt, right_attempt, left_review, right_review, rider_ki
     ids = (by_mode['maintain_clearance'], by_mode['cross_rider_path'])
     receipts = [audit_delivery(path, case, review)
                 for path, case, review in zip(attempts, ids, (left_review, right_review))]
-    sites = [json.loads((path / 'site.json').read_text(encoding='utf-8'))
+    sites = [json.loads((path / 'capture' / 'site.json').read_text(encoding='utf-8'))
              for path in attempts]
+    configs = [json.loads((path / 'config.json').read_text(encoding='utf-8'))
+               for path in attempts]
+    selections = [json.loads((path / 'candidate-selection.json').read_text(encoding='utf-8'))
+                  for path in attempts]
+    if any(config.get('selected_case_id') != case or
+           selection.get('case_id') != case or
+           selection.get('candidate_id') not in ('primary', 'fallback1') or
+           not isinstance(config.get('rider_throttle_scale'), (int, float))
+           for config, selection, case in zip(configs, selections, ids)):
+        raise ComparisonError('selected candidate or rider throttle source differs')
+    if (selections[0]['candidate_id'] != selections[1]['candidate_id'] or
+            configs[0]['rider_throttle_scale'] != configs[1]['rider_throttle_scale']):
+        raise ComparisonError('paired candidate or rider throttle setting differs')
     fixed = ('cell_id', 'layout', 'maneuver', 'control', 'rider_kind',
              'native_map_name', 'jurisdiction', 'ego_blueprint_id',
              'bicycle_blueprint_id', 'bicycle_classification', 'ego_route_xy',
@@ -61,8 +74,9 @@ def audit_saved(left_attempt, right_attempt, left_review, right_review, rider_ki
             relative = site.get(key)
             if not isinstance(relative, str):
                 raise ComparisonError('fixed source missing: ' + key)
-            target = (path / relative).resolve()
-            if not target.is_relative_to(path) or not target.is_file():
+            capture = path / 'capture'
+            target = (capture / relative).resolve()
+            if not target.is_relative_to(capture) or not target.is_file():
                 raise ComparisonError('fixed source unavailable: ' + key)
             values.append(hashlib.sha256(target.read_bytes()).hexdigest())
         if values[0] != values[1]:

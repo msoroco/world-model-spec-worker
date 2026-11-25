@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 
@@ -165,12 +166,24 @@ def main() -> None:
     if args.check:
         print("exact device-duty bundle passed: " + selected)
         return
+    args.adapter_path = args.adapter_path or (Path(os.environ['SCENARIO_DEVICE_ADAPTER'])
+                                              if os.environ.get('SCENARIO_DEVICE_ADAPTER') else None)
+    args.site = args.site or (Path(os.environ['SCENARIO_DEVICE_SITE'])
+                              if os.environ.get('SCENARIO_DEVICE_SITE') else None)
+    args.site_sha256 = args.site_sha256 or os.environ.get('SCENARIO_DEVICE_SITE_SHA256')
+    args.review = args.review or (Path(os.environ['SCENARIO_DEVICE_REVIEW'])
+                                  if os.environ.get('SCENARIO_DEVICE_REVIEW') else None)
+    args.review_source_root = args.review_source_root or (
+        Path(os.environ['SCENARIO_DEVICE_SOURCE_ROOT'])
+        if os.environ.get('SCENARIO_DEVICE_SOURCE_ROOT') else None)
+    args.attempt_id = args.attempt_id or os.environ.get('SCENARIO_DEVICE_ATTEMPT_ID')
+    args.recording_id = args.recording_id or os.environ.get('SCENARIO_DEVICE_RECORDING_ID')
     required = (args.adapter_path, args.output_dir, args.site, args.site_sha256,
                 args.review, args.review_source_root, args.attempt_id, args.recording_id)
     if any(value is None for value in required):
         raise RunnerError("local CARLA adapter and original reviewed source packet required")
     output = args.output_dir.resolve()
-    if output.exists():
+    if (output / 'device-native.json').exists() or (output / 'capture-seal.json').exists():
         raise RunnerError("use a fresh original attempt directory")
     site_review.verify(args.site, args.site_sha256, selected,
                        args.review, args.review_source_root)
@@ -183,19 +196,25 @@ def main() -> None:
     if not callable(getattr(adapter_module, "open_adapter", None)):
         raise RunnerError("adapter open_adapter callback missing")
     config = json.loads((ROOT / "config.json").read_text())
-    output.mkdir(parents=True)
-    handle = adapter_module.open_adapter(config=config, output=output,
-                                         host=args.host or "127.0.0.1", port=args.port or 2000)
+    output.mkdir(parents=True, exist_ok=True)
     try:
-        callbacks = {name: handle[name] for name in ("world", "ego_transform",
-                     "device_transform", "camera_sample", "control_factory",
-                     "snapshot_world", "restore_world")}
-        run(callbacks.pop("world"), args.site, args.site_sha256, selected,
-            output / "device-native.json", review_path=args.review,
-            review_source_root=args.review_source_root,
-            controller_variant=config.get('controller_variant', 'primary'), **callbacks)
-    finally:
-        handle["close"]()
+        handle = adapter_module.open_adapter(config=config, output=output,
+                                             host=args.host or "127.0.0.1", port=args.port or 2000)
+        try:
+            callbacks = {name: handle[name] for name in ("world", "ego_transform",
+                         "device_transform", "camera_sample", "control_factory",
+                         "snapshot_world", "restore_world")}
+            run(callbacks.pop("world"), args.site, args.site_sha256, selected,
+                output / "device-native.json", review_path=args.review,
+                review_source_root=args.review_source_root,
+                controller_variant=config.get('controller_variant', 'primary'), **callbacks)
+        finally:
+            handle["close"]()
+    except Exception as error:
+        (output / 'native-run-status.json').write_text(json.dumps(
+            {'errors': [type(error).__name__ + ': ' + str(error)],
+             'case_id': selected, 'diagnostic_fixture': False}, indent=2) + '\n')
+        raise
     # Seal only after the adapter has flushed its original camera encoders.
     media = {}
     for name in capture.CAMERAS:
@@ -233,6 +252,26 @@ def main() -> None:
                                   "review_path": "original-review/review.json",
                                   "source_root": "original-review/sources"}}
     (output / "saved-sources.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    capture_root = output / 'capture'
+    if not (capture_root / 'manifest.json').is_file():
+        raise RunnerError('original Native graph capture missing')
+    sources = {}
+    for item in [native_path, output / 'saved-sources.json', output / 'trace.jsonl',
+                 output / 'video_frames.jsonl', *(output / (name + '.mkv') for name in capture.CAMERAS),
+                 *review_root.rglob('*'), *capture_root.rglob('*')]:
+        if item.is_file():
+            sources[item.relative_to(output).as_posix()] = hashlib.sha256(item.read_bytes()).hexdigest()
+    provenance = {'provenance_kind': 'native', 'diagnostic_fixture': False,
+                  'case_id': selected, 'site_sha256': args.site_sha256}
+    (output / 'acquisition-provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
+    sources['acquisition-provenance.json'] = hashlib.sha256(
+        (output / 'acquisition-provenance.json').read_bytes()).hexdigest()
+    seal = {'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+            'sources': sources,
+            'native_revision': {'construction_sha256': hashlib.sha256(
+                (output / 'construction.json').read_bytes()).hexdigest(),
+                'runner_sha256': hashlib.sha256((ROOT / 'runner.py').read_bytes()).hexdigest()}}
+    (output / 'capture-seal.json').write_text(json.dumps(seal, indent=2) + '\n')
     print(json.dumps({"case_id": selected, "attempt": str(output),
                       "native_sha256": manifest["native"]["sha256"]}))
 

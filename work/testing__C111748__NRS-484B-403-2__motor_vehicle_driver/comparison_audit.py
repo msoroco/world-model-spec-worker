@@ -95,11 +95,17 @@ def main():
     ap.add_argument("--source", nargs=3, action="append", metavar=("PATH", "CASE", "SHA256"))
     ap.add_argument("--attempt", nargs=2, action="append", metavar=("PATH", "CASE"))
     ap.add_argument("--diagnostic", action="store_true")
+    ap.add_argument("--diagnostic-profile-size", type=int)
     ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
     if args.attempt and not args.source:
+        if args.diagnostic_profile_size and not args.diagnostic:
+            raise ComparisonError('profile override is diagnostic only')
+        profile = ({name: (args.diagnostic_profile_size, args.diagnostic_profile_size)
+                    for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
+                   if args.diagnostic_profile_size else None)
         result = audit_attempts(args.comparison, [(Path(p), c) for p, c in args.attempt],
-                                diagnostic=args.diagnostic)
+                                diagnostic=args.diagnostic, profile=profile)
     elif args.source and not args.attempt and args.diagnostic:
         result = audit(args.comparison, [(Path(p), c, h) for p, c, h in args.source])
     else:

@@ -22,7 +22,8 @@ def sha(path):
 def prepare(case, donor, output):
     if case not in {ASSIGNMENT + '__' + suffix for suffix in CASE_VARIANTS}:
         raise ValueError('foreign exact case')
-    donor = Path(donor).resolve() / 'capture'
+    donor_attempt = Path(donor).resolve()
+    donor = donor_attempt / 'capture'
     output = Path(output).resolve()
     repo = Path(__file__).resolve().parents[2]
     if repo / '.runtime-work' not in output.parents or output.exists():
@@ -31,6 +32,8 @@ def prepare(case, donor, output):
     attempt = output
     output = attempt / 'capture'
     output.mkdir()
+    for name in ('config.json', 'candidate-selection.json'):
+        shutil.copyfile(donor_attempt / name, attempt / name)
     site = json.loads((donor / 'site.json').read_text())
     if site['case_id'] != case:
         raise ValueError('donor case identity differs')
@@ -107,12 +110,13 @@ def main():
     parser.add_argument('--donor', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--mode', choices=('positive', 'negative',
-                                           'negative_native', 'negative_seal'), required=True)
+                                           'negative_native', 'negative_seal',
+                                           'negative_source'), required=True)
     args = parser.parse_args()
     review = prepare(args.case, args.donor, args.output)
     if args.mode == 'negative':
         review['views']['approach']['framemd5_sha256'] = '0' * 64
-    if args.mode == 'negative_seal':
+    if args.mode in ('negative_seal', 'negative_source'):
         (args.output / 'acquisition-provenance.json').write_text(json.dumps({
             'provenance_kind': 'native', 'diagnostic_fixture': False,
             'source_index_sha256': sha(args.output / 'capture' / 'source-index.json')},
@@ -132,6 +136,31 @@ def main():
             indent=2) + '\n')
     path = args.output / 'pixel-review.json'
     path.write_text(json.dumps(review, indent=2) + '\n')
+    if args.mode == 'negative_source':
+        from worker_exchange.common import digest, tree
+        (args.output / 'capture-seal.json').unlink()
+        (args.output / 'runner.py').write_text('# forged diagnostic runner\n')
+        (args.output / 'construction.json').write_text('{"diagnostic": true}\n')
+        for name in ('trace.jsonl', 'video_frames.jsonl'):
+            source = args.output / 'capture' / name
+            if source.is_file():
+                shutil.copyfile(source, args.output / name)
+        if not (args.output / 'trace.jsonl').exists():
+            (args.output / 'trace.jsonl').write_text('{"diagnostic": true}\n')
+        for view in VIEWS:
+            shutil.copyfile(args.output / 'capture' / (view + '.mkv'),
+                            args.output / (view + '.mkv'))
+        sources = tree(args.output)
+        sources['capture/events.json'] = '0' * 64
+        (args.output / 'capture-seal.json').write_text(json.dumps({
+            'format': 'worker-sealed-capture', 'provenance_kind': 'native',
+            'diagnostic_fixture': False, 'frames': 3,
+            'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+            'restoration': {'restored': True},
+            'encoder_exit_codes': {view: 0 for view in VIEWS},
+            'sources': sources, 'source_digest': digest(sources),
+            'native_revision': {'construction_sha256': sources['construction.json'],
+                                'runner_sha256': sources['runner.py']}}, indent=2) + '\n')
     result = audit(args.output, args.case, path, expected_frames=3,
                    diagnostic_fixture=args.mode in ('positive', 'negative'))
     print(json.dumps({'scope': 'synthetic source and pixel diagnostic only',

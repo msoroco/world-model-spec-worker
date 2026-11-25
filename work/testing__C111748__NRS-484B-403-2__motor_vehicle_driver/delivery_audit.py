@@ -24,6 +24,7 @@ def module(name):
 saved = module('saved_delivery')
 review = module('site_review')
 physical = module('physical_audit')
+analysis = module('analysis')
 
 
 class AuditError(ValueError):
@@ -45,6 +46,64 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def verify_capture_seal(attempt: Path, case_id: str, manifest: dict, packet: dict) -> dict:
+    """Bind the independently audited production sources to the closed Native capture."""
+    attempt = Path(attempt).resolve()
+    provenance_path = confined(attempt, 'acquisition-provenance.json')
+    seal_path = confined(attempt, 'capture-seal.json')
+    provenance = json.loads(provenance_path.read_text())
+    require(provenance == {'provenance_kind': 'native', 'diagnostic_fixture': False,
+                           'case_id': case_id, 'site_sha256': packet.get('site_sha256')},
+            'original Native acquisition provenance missing or synthetic')
+    seal = json.loads(seal_path.read_text())
+    require(seal.get('events') == ['capture_finished', 'encoders_closed',
+                                   'restoration_verified'],
+            'original Native capture lifecycle seal incomplete')
+    revision = seal.get('native_revision')
+    require(revision == {'construction_sha256': sha(confined(attempt, 'construction.json')),
+                         'runner_sha256': sha(confined(attempt, 'runner.py'))},
+            'original Native construction or runner revision seal changed')
+    sources = seal.get('sources')
+    require(isinstance(sources, dict) and sources, 'original Native source inventory missing')
+    required = {'device-native.json', 'saved-sources.json', 'trace.jsonl',
+                'video_frames.jsonl', 'acquisition-provenance.json', 'capture/manifest.json'}
+    required.add(manifest['native']['path'])
+    required.update(ref['path'] for ref in manifest['media'].values())
+    descriptor = manifest.get('reviewed_site', {})
+    require(set(descriptor) == {'site_path', 'site_sha256', 'review_path', 'source_root'},
+            'original reviewed source references missing from capture seal')
+    required.update((descriptor['site_path'], descriptor['review_path']))
+    review_packet = json.loads(confined(attempt, descriptor['review_path']).read_text())
+    require(isinstance(review_packet.get('sources'), dict),
+            'original reviewed source list missing')
+    for ref in review_packet['sources'].values():
+        require(isinstance(ref, dict) and isinstance(ref.get('path'), str),
+                'original reviewed source path missing')
+        required.add(str(Path(descriptor['source_root']) / ref['path']))
+    require(required <= set(sources), 'original Native capture inventory omits a bound source')
+    for relative, expected in sources.items():
+        require(isinstance(relative, str) and Path(relative).as_posix() == relative and
+                not Path(relative).is_absolute() and '..' not in Path(relative).parts and
+                isinstance(expected, str) and len(expected) == 64,
+                'invalid original Native sealed source reference')
+        require(sha(confined(attempt, relative)) == expected,
+                'original Native sealed source hash changed: ' + relative)
+    require(sources[manifest['native']['path']] == manifest['native']['sha256'] and
+            all(sources[ref['path']] == ref['sha256'] for ref in manifest['media'].values()) and
+            sources['acquisition-provenance.json'] == sha(provenance_path) and
+            descriptor['site_sha256'] == packet.get('site_sha256'),
+            'original Native seal and saved source manifest disagree')
+    try:
+        _measurement, frames = analysis.measure_device_duty(attempt, case_id)
+    except ValueError as error:
+        raise AuditError('original Native 900-frame trace/video join failed: ' + str(error)) from error
+    require(len(frames) == 900 and packet.get('diagnostic') is False,
+            'original Native seal needs 900 non-diagnostic frames')
+    return {'capture_seal_sha256': sha(seal_path),
+            'acquisition_provenance_sha256': sha(provenance_path),
+            'sealed_source_count': len(sources)}
+
+
 def audit(attempt: Path, case_id: str, *, diagnostic: bool = False,
           profile: dict | None = None) -> dict:
     attempt = Path(attempt).resolve()
@@ -64,6 +123,7 @@ def audit(attempt: Path, case_id: str, *, diagnostic: bool = False,
     if diagnostic:
         receipt['scope'] = 'diagnostic source and full decode only'
         return receipt
+    receipt.update(verify_capture_seal(attempt, case_id, manifest, packet))
     descriptor = manifest.get('reviewed_site', {})
     require(set(descriptor) == {'site_path', 'site_sha256', 'review_path', 'source_root'},
             'original site review references missing')

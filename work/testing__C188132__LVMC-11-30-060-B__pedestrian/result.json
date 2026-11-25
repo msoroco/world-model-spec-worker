@@ -1,97 +1,106 @@
 {
   "assignment_id": "testing__C188132__LVMC-11-30-060-B__pedestrian",
   "input_sha256": "9ac29c5bcb1f54ee777e3b5b12b76f74e7f68deddcc6a72c6d86c636fb6207e1",
-  "status": "partial",
-  "readiness_kind": "construction_partial",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/testing__C188132__LVMC-11-30-060-B__pedestrian .venv-cpu/bin/python -m unittest discover -s work/testing__C188132__LVMC-11-30-060-B__pedestrian/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/testing__C188132__LVMC-11-30-060-B__pedestrian:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C188132__LVMC-11-30-060-B__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "4e56b6482a26009c771060b91d7fa2ffaff0c1533963476ffd6625f5521e55b6"
+      "sha256": "3b1a7256df73397ceea0d8f52e2f66219431d40f6081d8ac7b73a50b8fdc7125"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/runner.py --check --scene work/testing__C188132__LVMC-11-30-060-B__pedestrian/scene-yield_before_vehicle.json --map work/testing__C188132__LVMC-11-30-060-B__pedestrian/candidate-overpass.xodr",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/testing__C188132__LVMC-11-30-060-B__pedestrian:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C188132__LVMC-11-30-060-B__pedestrian/tests -p test_overpass_source.py -v",
       "exit_code": 0,
-      "log": "construction-check-yield_before_vehicle.log",
-      "sha256": "f08c7708da1f5a342db80b3a5e3ecdeaae119fdcc032729922f8ed90d0830cdd"
+      "log": "proof-comparison-cpu.log",
+      "sha256": "cda01711a76ceab06c33a4af932566813d289dda3009ef2a62aee0e84ef4c6a7"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --output .runtime-work/c188132-yield_before_vehicle-media-final-nov23 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --candidate primary --output .runtime-work/c188132-nov25c-offline-yield_before_vehicle-primary --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "construction-yield_before_vehicle-media-final.log",
-      "sha256": "887f3b908080da001c96258c32db52c5cf0563bb098a9a7597c773aef5c96270"
+      "log": "proof-final-offline-yield_before_vehicle-primary.log",
+      "sha256": "452f8a0444e5180b8374af188adc2ad3bf2adc465fdf71168f64ec7d948209fc"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/runner.py --check --scene work/testing__C188132__LVMC-11-30-060-B__pedestrian/scene-enter_ahead_of_vehicle.json --map work/testing__C188132__LVMC-11-30-060-B__pedestrian/candidate-overpass.xodr",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --candidate fallback1 --output .runtime-work/c188132-nov25c-offline-yield_before_vehicle-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "construction-check-enter_ahead_of_vehicle.log",
-      "sha256": "eb8dc00991f8358b56f7571619d31b534afe28e40c824b48e3dc23355c5d6c81"
+      "log": "proof-final-offline-yield_before_vehicle-fallback1.log",
+      "sha256": "6733cb855e0715096a727436677798a575af30b8b0474ce9f8a241b1afda3645"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --output .runtime-work/c188132-enter_ahead_of_vehicle-media-final-nov23 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --attempt .runtime-work/c188132-nov25c-compat-yield_before_vehicle-primary --output .runtime-work/c188132-nov25c-process-saved-yield_before_vehicle --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "construction-enter_ahead_of_vehicle-media-final.log",
-      "sha256": "7923f557c3aa56ec63842639291fa981bc7576113c3fd624f551472b1971878c"
+      "log": "proof-process-saved-yield_before_vehicle.log",
+      "sha256": "e9f0bceace92ca8d93ddbc14bbf42f389151c24fb1cd002d83214f52a228e090"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/runner.py --check --scene work/testing__C188132__LVMC-11-30-060-B__pedestrian/scene-designated_prohibition.json --map work/testing__C188132__LVMC-11-30-060-B__pedestrian/candidate-overpass.xodr",
+      "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --self-test",
       "exit_code": 0,
-      "log": "construction-check-designated_prohibition.log",
-      "sha256": "0014be2c319ac036603ed82a4a396362ffdb1143fc48ce7dc864a15352e4a4b4"
+      "log": "proof-delivery-positive-yield_before_vehicle.log",
+      "sha256": "efb1b2f9ee441f1cb8464bccebd891dab4a29deb6ca32c9bb90559b5bdd26fb6"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --output .runtime-work/c188132-designated_prohibition-media-final-nov23 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --candidate primary --output .runtime-work/c188132-nov25c-offline-enter_ahead_of_vehicle-primary --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "construction-designated_prohibition-media-final.log",
-      "sha256": "c573cc57f01c9bb13e8ace9fa4cb2485fd71cb43b35143d551b0c6827c2ff2ad"
+      "log": "proof-final-offline-enter_ahead_of_vehicle-primary.log",
+      "sha256": "0062415025ec11cea38b7c25b881a963de110c4d646a52126b71105e09a2f729"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --output .runtime-work/c188132-site-v1-yield_before_vehicle --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --candidate fallback1 --output .runtime-work/c188132-nov25c-offline-enter_ahead_of_vehicle-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "proof-site-offline-yield_before_vehicle.log",
-      "sha256": "bde34376ad8c06ae6108bf0daf847a5bcdbd845ecda340db360e0576ca8ac048"
+      "log": "proof-final-offline-enter_ahead_of_vehicle-fallback1.log",
+      "sha256": "7b2b6f1ae66d938790944c8644896feddc6fa252616a7e63a5e8ccbbf3c7df63"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --output .runtime-work/c188132-site-v1-enter_ahead_of_vehicle --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --attempt .runtime-work/c188132-nov25c-compat-enter_ahead_of_vehicle-primary --output .runtime-work/c188132-nov25c-process-saved-enter_ahead_of_vehicle --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "proof-site-offline-enter_ahead_of_vehicle.log",
-      "sha256": "f5775901fbeadbe2c9bccb6379ba247227f299f0d53184b05d7e6519a0db7391"
+      "log": "proof-process-saved-enter_ahead_of_vehicle.log",
+      "sha256": "37f6d7040885e50a6a681ce200b46d3018a63fabc47b7533ee00573b85f349ca"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --output .runtime-work/c188132-site-v1-designated_prohibition --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --self-test",
       "exit_code": 0,
-      "log": "proof-site-offline-designated_prohibition.log",
-      "sha256": "e9911059db522d51cc2ab9a0ea77fecf233b28cd7ac859c1ff66cab6c485e5a1"
+      "log": "proof-delivery-positive-enter_ahead_of_vehicle.log",
+      "sha256": "e278bf8595fccf952cab07b1da7da9eb055b95ce956ec3b29abc9fbb1f700424"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/testing__C188132__LVMC-11-30-060-B__pedestrian .venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C188132__LVMC-11-30-060-B__pedestrian/tests -v",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --candidate primary --output .runtime-work/c188132-nov25c-offline-designated_prohibition-primary --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "cpu-site-review-tests.log",
-      "sha256": "25c4ffecba200244a79ba5089107cee6e281b84277f6c8113735604957dabfe6"
+      "log": "proof-final-offline-designated_prohibition-primary.log",
+      "sha256": "1a14e746ccec5e39297b025a5838596fd7fa46c429f3aa3981832032ed3f3e91"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --output .runtime-work/c188132-finalizer-v1-yield_before_vehicle --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --candidate fallback1 --output .runtime-work/c188132-nov25c-offline-designated_prohibition-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
-      "log": "proof-finalizer-offline-yield_before_vehicle.log",
-      "sha256": "a63eb16393a21c812de0229c51e24b56e68790917bac255c94751fe0afbf8ff9"
+      "log": "proof-final-offline-designated_prohibition-fallback1.log",
+      "sha256": "7de38c00fe6eab023829a1e00c6962ccc37e538bdae424725d42c8750cfbb264"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --output .runtime-work/c188132-finalizer-v1-enter_ahead_of_vehicle --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --attempt .runtime-work/c188132-nov25c-compat-designated_prohibition-primary --output .runtime-work/c188132-nov25c-process-saved-designated_prohibition --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "proof-finalizer-offline-enter_ahead_of_vehicle.log",
-      "sha256": "ad5d70c10984af7f3b2743d16f9d04ef58ed0adbdb53e741fb0fe4ed125ad467"
+      "log": "proof-process-saved-designated_prohibition.log",
+      "sha256": "0b5f2950cef1d5e52dc23bb826a4636d879d6fcab67b5c2d76b13cf7a5d6aa7d"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --output .runtime-work/c188132-finalizer-v1-designated_prohibition --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --self-test",
       "exit_code": 0,
-      "log": "proof-finalizer-offline-designated_prohibition.log",
-      "sha256": "4cdd36b24c2103ae48e1ce19f5eda77e5ff9ca51beb4d9a16e7c90a6c1231d20"
+      "log": "proof-delivery-positive-designated_prohibition.log",
+      "sha256": "150a46218a1debddfa09bcccfb40b196653c4e114e9aa8515b0ef03fadf064c2"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c188132-site-runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_physical.py",
+      "exit_code": 0,
+      "log": "cases/yield_before_vehicle/physical-lifecycle.log",
+      "sha256": "3e2e6e2f37ce076761a29f0630f39d1df62139d646f38458e8ffef25d610f129"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Independent original site packet and designation source review before Native acquisition",
+    "Native realization and accessibility of elevated crossing, complete actor motion and four-view original pixels",
+    "Sealed original saved processing, pixel and physical review, and pairwise comparison acceptance"
   ],
-  "reason": "Three exact overpass constructions and offline checks pass with a production-only original site/municipal designation source gate; fourteen focused tests include missing, stale, wrong-case and designation negatives. Canonical semantic proposals, selected finalizer, compatibility, process-saved, physical preparation and sealed delivery acceptance remain CPU work."
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C188132__LVMC-11-30-060-B__pedestrian --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

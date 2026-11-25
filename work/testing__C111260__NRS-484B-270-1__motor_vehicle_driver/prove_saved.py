@@ -41,7 +41,8 @@ def main():
     shutil.copytree(donor / 'capture', attempt / 'capture')
     for name in ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                  'driver_reference.mkv', 'raw.mkv', 'trace.jsonl',
-                 'video_frames.jsonl', 'acquisition-provenance.json'):
+                 'video_frames.jsonl', 'acquisition-provenance.json',
+                 'road.xodr'):
         shutil.copyfile(donor / name, attempt / name)
     originals = {path.relative_to(attempt).as_posix(): sha(path)
                  for path in attempt.rglob('*') if path.is_file()}

@@ -7,7 +7,7 @@
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey",
       "kind": "delivery",
       "construction": "cases/prohibited_obey/construction.json",
-      "construction_sha256": "26a9067d3ab39e97d75a9b1d3a8ea9c029f327dead4b67f71e4a21733121748f",
+      "construction_sha256": "64df638e4847ee21808b907867deda8324103ae0f11cecd931161d3696d29c39",
       "measurement_contract": "measurement-contract-prohibited_obey.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -36,7 +36,7 @@
         }
       },
       "negative": {
-        "log": "proof-compatibility-negative-prohibited_obey.log"
+        "log": "proof-compatibility-negative-seal-prohibited_obey-primary.log"
       },
       "candidate_risk": {
         "status": "physical",
@@ -46,7 +46,7 @@
         {
           "id": "fallback1",
           "construction": "cases/prohibited_obey/fallback1-construction.json",
-          "construction_sha256": "ad2ef7962531eb4c3419ad1a9af8cd93ef2a350add957e7dbcf9a466c18f4345",
+          "construction_sha256": "cdcf5a340a075d4edd05ff626e9466cd66c65ba783e2f41f35fda7dbf684c27b",
           "trigger": {
             "source": "original Native capture and pixel review",
             "metric": "reviewed device legibility or completed opposite-lane reversal",
@@ -57,31 +57,88 @@
             "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-final-prohibited_obey-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-seal-prohibited_obey-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "ad2ef7962531eb4c3419ad1a9af8cd93ef2a350add957e7dbcf9a466c18f4345",
-            "log": "proof-offline-final-prohibited_obey-fallback1.log",
-            "log_sha256": "e15748bacc772c4fc088fd70eaa23f4b709f1cf3ffce18d2d489ad83be707aae"
+            "construction_sha256": "cdcf5a340a075d4edd05ff626e9466cd66c65ba783e2f41f35fda7dbf684c27b",
+            "log": "proof-offline-seal-prohibited_obey-fallback1.log",
+            "log_sha256": "e95c0b9c46b07593df46ca3e326fa94e861d377383433484d885dc4e808686bf"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/compat-seal-prohibited_obey-fallback1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "proof-compatibility-seal-prohibited_obey-fallback1.json",
+            "sha256": "2e62af1b4257ed57c838a3cffc98387ff3a3355997790153ec0869191664f0b1",
+            "log": "proof-compatibility-analysis-seal-prohibited_obey-fallback1.log",
+            "log_sha256": "b1c580ec2e078098ad6e56cf0900f5cde8ea06d4d2908dea9cad49967eef3326",
+            "negative_log": "proof-compatibility-negative-seal-prohibited_obey-fallback1.log",
+            "negative_log_sha256": "7eff149af6968635049ff0c6c6c4ba36630b6d594d23510a4cf25531ede8738a"
           }
         }
       ],
       "physical_preparation": {
         "receipt": "physical-preparation-prohibited_obey.json",
-        "sha256": "1393e228922ef7fd9edd76526833f0dd31933935609ea83d3976b244eb2669ab"
+        "sha256": "5fac69a8348c302e8d8e51470a53c5062ef81d517ae884f1fbeb14ffe9d7cfd7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "Synthetic CPU source/decode probe only; original pixel/physical acceptance pending",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "9aa6095e611af119cabd6a571211c6882da7433737671f96536937db5872b712",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --kind positive --attempt .runtime-work/c111748-owner/delivery-probe-final-prohibited_obey-positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-prohibited_obey-positive.log",
+        "test_log_sha256": "777e70b96513b9af8720c04bca5b6c15701ce9e5ed51ada70cee7060cfaee353",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --kind negative --attempt .runtime-work/c111748-owner/delivery-probe-final-prohibited_obey-negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "approach media hash mismatch",
+        "negative_log": "proof-delivery-prohibited_obey-negative.log",
+        "negative_log_sha256": "0fd8efaf9338449b3011b826fed2f61b959bfdc4bfb2057295a36d4a9f6bc846"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only diagnostic; original Native release pending",
+        "test_exit_code": 0,
+        "test_log": "proof-process-saved-prohibited_obey.log",
+        "test_log_sha256": "20d0d96b83736f6f2a8b19175a9de10a27fb5c751fe95ed4a010c0b805c664f5"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-final-prohibited_obey-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-seal-prohibited_obey-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "26a9067d3ab39e97d75a9b1d3a8ea9c029f327dead4b67f71e4a21733121748f",
-        "log": "proof-offline-final-prohibited_obey-primary.log",
-        "log_sha256": "1067de5d2441db17a2fcb0cd0ed8a8a58ae5fdf1bb1e343e0a41e33b388bffc4"
+        "construction_sha256": "64df638e4847ee21808b907867deda8324103ae0f11cecd931161d3696d29c39",
+        "log": "proof-offline-seal-prohibited_obey-primary.log",
+        "log_sha256": "a293abf1fd954d7e52e31fd36bf725159f263b2be08eaca3fcdb1ffb6e9c5da0"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/compat-seal-prohibited_obey-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "receipt": "proof-compatibility-seal-prohibited_obey-primary.json",
+        "sha256": "0cceba0a0d64609a9a2b34559b22b64bedbdb2df3af5b396b9ee45baf1c3632a",
+        "log": "proof-compatibility-analysis-seal-prohibited_obey-primary.log",
+        "log_sha256": "b1c580ec2e078098ad6e56cf0900f5cde8ea06d4d2908dea9cad49967eef3326",
+        "negative_log": "proof-compatibility-negative-seal-prohibited_obey-primary.log",
+        "negative_log_sha256": "fbf441a46d531f253e9ca6d78e612d3665f6f9fe7e0be796c4fc304e8e76aa08"
       }
     },
     {
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt",
       "kind": "delivery",
       "construction": "cases/prohibited_attempt/construction.json",
-      "construction_sha256": "714a3832726866dd7ea236a97b38912f77dcb2d637a31099bf473a1a0c4ceb62",
+      "construction_sha256": "e2ccafdaee8f6cce6c91bf800af2682d4b7c749990cf653acf1cb6539a0cb4c2",
       "measurement_contract": "measurement-contract-prohibited_attempt.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -110,7 +167,7 @@
         }
       },
       "negative": {
-        "log": "proof-compatibility-negative-prohibited_attempt.log"
+        "log": "proof-compatibility-negative-seal-prohibited_attempt-primary.log"
       },
       "candidate_risk": {
         "status": "physical",
@@ -120,7 +177,7 @@
         {
           "id": "fallback1",
           "construction": "cases/prohibited_attempt/fallback1-construction.json",
-          "construction_sha256": "a67a96b900ae70fc99d1084a61d71b938ddffd73d5911ac43c8e3e6ada45c774",
+          "construction_sha256": "2c0126706bb671175ad1b933c09ed817fd525287ac34b8e70df8f1ef218a7510",
           "trigger": {
             "source": "original Native capture and pixel review",
             "metric": "reviewed device legibility or completed opposite-lane reversal",
@@ -131,31 +188,88 @@
             "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-final-prohibited_attempt-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-seal-prohibited_attempt-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "a67a96b900ae70fc99d1084a61d71b938ddffd73d5911ac43c8e3e6ada45c774",
-            "log": "proof-offline-final-prohibited_attempt-fallback1.log",
-            "log_sha256": "ba1771f76b2607b3ece623dc9aa4324231675c69b7beef07ccb07c264c5ca732"
+            "construction_sha256": "2c0126706bb671175ad1b933c09ed817fd525287ac34b8e70df8f1ef218a7510",
+            "log": "proof-offline-seal-prohibited_attempt-fallback1.log",
+            "log_sha256": "175b801022adba1d5c91a5c9a0273bc8732cd36ee695d43865467253efc008cb"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/compat-seal-prohibited_attempt-fallback1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "proof-compatibility-seal-prohibited_attempt-fallback1.json",
+            "sha256": "46fdfacc5b12ea800169edb51faa960dba4fda10dc32e1c3b5e428870c3a73fb",
+            "log": "proof-compatibility-analysis-seal-prohibited_attempt-fallback1.log",
+            "log_sha256": "08da9e599c6cc5701644d21c6db10a1543a489ea816b5eba3ab09cfe934adbe8",
+            "negative_log": "proof-compatibility-negative-seal-prohibited_attempt-fallback1.log",
+            "negative_log_sha256": "adc78d3cf0d4093e3b1a27071d059ecdfe3395131c1bc3f8f69b8be1495913ab"
           }
         }
       ],
       "physical_preparation": {
         "receipt": "physical-preparation-prohibited_attempt.json",
-        "sha256": "319a3e1b4e220c1a19e40032ef90938c094c68b44244c60ca78567cc45fed3da"
+        "sha256": "d20af874f601b4cbb5ecef3cb3ef37ef47c162d565f7585310c162fe2fe96de1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "Synthetic CPU source/decode probe only; original pixel/physical acceptance pending",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "9aa6095e611af119cabd6a571211c6882da7433737671f96536937db5872b712",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --kind positive --attempt .runtime-work/c111748-owner/delivery-probe-final-prohibited_attempt-positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-prohibited_attempt-positive.log",
+        "test_log_sha256": "7e12eda12c237765d4ce598221f36058c4e28842fda7804c76e6a0d52e0e305d",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --kind negative --attempt .runtime-work/c111748-owner/delivery-probe-final-prohibited_attempt-negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "approach media hash mismatch",
+        "negative_log": "proof-delivery-prohibited_attempt-negative.log",
+        "negative_log_sha256": "0fd8efaf9338449b3011b826fed2f61b959bfdc4bfb2057295a36d4a9f6bc846"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only diagnostic; original Native release pending",
+        "test_exit_code": 0,
+        "test_log": "proof-process-saved-prohibited_attempt.log",
+        "test_log_sha256": "16b88359fe44053285ed6390f6404b666c16b80f643f41813b9dfbab5128d4d3"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-final-prohibited_attempt-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-seal-prohibited_attempt-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "714a3832726866dd7ea236a97b38912f77dcb2d637a31099bf473a1a0c4ceb62",
-        "log": "proof-offline-final-prohibited_attempt-primary.log",
-        "log_sha256": "0aa8fcf41818fa1052d7c1b460a04e6eedbab6d4b9aa0642a669cebded562003"
+        "construction_sha256": "e2ccafdaee8f6cce6c91bf800af2682d4b7c749990cf653acf1cb6539a0cb4c2",
+        "log": "proof-offline-seal-prohibited_attempt-primary.log",
+        "log_sha256": "1bd4569658b8718c6f3b5c029f985b7e749831037ebfe8fb10457aa177e863aa"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/compat-seal-prohibited_attempt-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "receipt": "proof-compatibility-seal-prohibited_attempt-primary.json",
+        "sha256": "54f1a949c5c1c9905a55b8174b6182a346b6a5aa0f8b22c885aa09782ddb2c3a",
+        "log": "proof-compatibility-analysis-seal-prohibited_attempt-primary.log",
+        "log_sha256": "08da9e599c6cc5701644d21c6db10a1543a489ea816b5eba3ab09cfe934adbe8",
+        "negative_log": "proof-compatibility-negative-seal-prohibited_attempt-primary.log",
+        "negative_log_sha256": "a7148af72660ccd5ee754f30a02017400b896651a93c74b502d75c325ca4864e"
       }
     },
     {
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn",
       "kind": "delivery",
       "construction": "cases/neutral_device_turn/construction.json",
-      "construction_sha256": "97c0cd10b08f0ece7b91a1ef6d36a122bc8498e27a3cf5545c836a7d04917a9e",
+      "construction_sha256": "1bcce4b75fc23b32816474934288749b6142bbcbc229c167737f19fa915f4c43",
       "measurement_contract": "measurement-contract-neutral_device_turn.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -184,7 +298,7 @@
         }
       },
       "negative": {
-        "log": "proof-compatibility-negative-neutral_device_turn.log"
+        "log": "proof-compatibility-negative-seal-neutral_device_turn-primary.log"
       },
       "candidate_risk": {
         "status": "physical",
@@ -194,7 +308,7 @@
         {
           "id": "fallback1",
           "construction": "cases/neutral_device_turn/fallback1-construction.json",
-          "construction_sha256": "e21b0d4948833048be76d68ed92e0b10353779e4ab0f236bd802cdfba0775e95",
+          "construction_sha256": "95dafbc48eeb7406cb55874f80d84eb02f65b5671ba6dd603296d6503f45fa0b",
           "trigger": {
             "source": "original Native capture and pixel review",
             "metric": "reviewed device legibility or completed opposite-lane reversal",
@@ -205,24 +319,81 @@
             "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-final-neutral_device_turn-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-seal-neutral_device_turn-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "e21b0d4948833048be76d68ed92e0b10353779e4ab0f236bd802cdfba0775e95",
-            "log": "proof-offline-final-neutral_device_turn-fallback1.log",
-            "log_sha256": "ef2b3aa067d9c36d2e07b89c240d8e4a0839b18815edb8161ee9f2ccb692a707"
+            "construction_sha256": "95dafbc48eeb7406cb55874f80d84eb02f65b5671ba6dd603296d6503f45fa0b",
+            "log": "proof-offline-seal-neutral_device_turn-fallback1.log",
+            "log_sha256": "d5ee18c9813203c3c31caef36f6c088dc477dc300caec5eebed285b7cee94ef4"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/compat-seal-neutral_device_turn-fallback1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "proof-compatibility-seal-neutral_device_turn-fallback1.json",
+            "sha256": "45a63d80cbac590634224fc99b61a120783f4d7df0fb7f1ee3990c1694881909",
+            "log": "proof-compatibility-analysis-seal-neutral_device_turn-fallback1.log",
+            "log_sha256": "d750aaf46697537f1b2fe00632a6eb7614f8b6df5198c903283e471c58b10b6a",
+            "negative_log": "proof-compatibility-negative-seal-neutral_device_turn-fallback1.log",
+            "negative_log_sha256": "f40177adddb956c4e56b23010d073525f27e8f9cda4a4e5e43858e383fe270f5"
           }
         }
       ],
       "physical_preparation": {
         "receipt": "physical-preparation-neutral_device_turn.json",
-        "sha256": "f28fbb1ff0cc5c8aaf3170bf79486aad6bca56e1fdb5f7d70401ee5073f5f772"
+        "sha256": "eb4b381644a584d49c22ced800a020b9d6b44a9232a671ba26e156b94324f86e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "Synthetic CPU source/decode probe only; original pixel/physical acceptance pending",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "9aa6095e611af119cabd6a571211c6882da7433737671f96536937db5872b712",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --kind positive --attempt .runtime-work/c111748-owner/delivery-probe-final-neutral_device_turn-positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-neutral_device_turn-positive.log",
+        "test_log_sha256": "a5a8286a190c7a0a81d0fc23058dd3b84c0fcc1be2c8ac00b42459663dd67bbc",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/prove_delivery_audit.py --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --kind negative --attempt .runtime-work/c111748-owner/delivery-probe-final-neutral_device_turn-negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "approach media hash mismatch",
+        "negative_log": "proof-delivery-neutral_device_turn-negative.log",
+        "negative_log_sha256": "0fd8efaf9338449b3011b826fed2f61b959bfdc4bfb2057295a36d4a9f6bc846"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only diagnostic; original Native release pending",
+        "test_exit_code": 0,
+        "test_log": "proof-process-saved-neutral_device_turn.log",
+        "test_log_sha256": "81e58de7129e6e42758c37347cc1b91f9f55d2a7b8db0411587a84c613ef91ef"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-final-neutral_device_turn-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-seal-neutral_device_turn-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "97c0cd10b08f0ece7b91a1ef6d36a122bc8498e27a3cf5545c836a7d04917a9e",
-        "log": "proof-offline-final-neutral_device_turn-primary.log",
-        "log_sha256": "cc5bcef29e0b2ea96e41273091dea8b2ae6707ac120c871ae1d841820b11a39c"
+        "construction_sha256": "1bcce4b75fc23b32816474934288749b6142bbcbc229c167737f19fa915f4c43",
+        "log": "proof-offline-seal-neutral_device_turn-primary.log",
+        "log_sha256": "f053c0ab9c324d654fe4dfd6d8c2eeb91f1518f2bbcb10ba8f01906bdd99aed6"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/compat-seal-neutral_device_turn-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "receipt": "proof-compatibility-seal-neutral_device_turn-primary.json",
+        "sha256": "cc57276d62d9abc9f570af077b45b49b6433ad356cc4e9461a21375446b72014",
+        "log": "proof-compatibility-analysis-seal-neutral_device_turn-primary.log",
+        "log_sha256": "d750aaf46697537f1b2fe00632a6eb7614f8b6df5198c903283e471c58b10b6a",
+        "negative_log": "proof-compatibility-negative-seal-neutral_device_turn-primary.log",
+        "negative_log_sha256": "f08b6d628a80f6798e719dcc1df59cabbc92431e52ff07e3736a4774e66ecc9a"
       }
     }
   ]
