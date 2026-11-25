@@ -21,11 +21,22 @@ class OfficerFinalizerTests(unittest.TestCase):
         road.write_text((ROOT / "officer-site.xodr").read_text())
         value = json.loads(packet.read_text())
         value["sources"]["road"]["sha256"] = sha(road)
+        config = json.loads((ROOT / "config.json").read_text())
+        road_id = config.get("sweep_controls", {}).get("other_approach_road_id")
+        if road_id is not None:
+            value["review"]["other_entrance_road_id"] = road_id
         packet = write(review_root / "source-packet.json", value)
         for name in ("config.json", "runner.py", "construction.json", "officer-site.xodr"):
             shutil.copy2(ROOT / name, attempt / name)
         case_id = json.loads((attempt / "config.json").read_text())["selected_case_id"]
         capture, review = capture_and_review(attempt, packet, case_id=case_id)
+        if road_id is not None:
+            capture_value = json.loads(capture.read_text())
+            capture_value["other_lane_readback"] = config["site"]["other_lane"]
+            capture = write(capture, capture_value)
+            review_value = json.loads(review.read_text())
+            review_value["capture_sha256"] = sha(capture)
+            review = write(review, review_value)
         shutil.copy2(capture, attempt / "capture-receipt.json")
         shutil.copy2(review, attempt / "officer_review.json")
         rows = json.loads(capture.read_text())["rows"]

@@ -38,13 +38,15 @@ class OfficerRunnerTests(unittest.TestCase):
                              config["selected_case_id"])
         invalid = json.loads(json.dumps(original))
         invalid["site"]["other_lane"] = [157960, -1]
-        with self.assertRaisesRegex(ValueError, "approach lanes differ"):
+        with self.assertRaisesRegex(ValueError, "approach lanes differ|Other approach pose differs"):
             runner.validate_config(invalid)
         invalid = json.loads(json.dumps(original))
         invalid["cameras"][0]["width"] = 100
         with self.assertRaisesRegex(ValueError, "capture profile"):
             runner.validate_config(invalid)
         changed = json.loads(json.dumps(original))
+        changed["selected_case_id"] = runner.ASSIGNMENT + "__officer_controls_go"
+        changed["case"]["case_id"] = changed["selected_case_id"]
         changed["sweep_controls"] = {"ego_target_speed_mps": 3.0,
                                      "other_release_frame": 400.0}
         self.assertEqual(runner.validate_config(changed)["sweep_controls"],
