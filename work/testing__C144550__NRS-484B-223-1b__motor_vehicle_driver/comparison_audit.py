@@ -7,6 +7,9 @@ import hashlib
 import json
 from pathlib import Path
 
+from camera_capture import SIZES
+from analysis import build_report
+from delivery_audit import audit as audit_delivery
 from native_construction import ASSIGNMENT
 
 
@@ -20,6 +23,70 @@ PAIRS = {
 FIXED = ("reviewed_site_sha256", "source_lane_id", "destination_lane_id",
          "ego_blueprint", "target_vehicle_blueprint", "target_traffic_plan_sha256",
          "camera_plan_sha256", "capture_duration_s", "capture_rate_hz")
+REQUIRED_SOURCES = ("lane-change-capture-receipt.json", "readback-inventory.json",
+                    "frame_map.json", "ego_pose.json", "native_signal.json",
+                    "driver_check.json", "original-driver-input.jsonl",
+                    "target-traffic-history.jsonl",
+                    "original-camera-frames/camera-manifest.json", "reviewed-site.json")
+
+
+def _digest(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True,
+                                     separators=(",", ":")).encode()).hexdigest()
+
+
+def _production_report(attempt, case, owner_receipt):
+    if not owner_receipt:
+        raise ValueError("original owner-release receipt required for comparison")
+    root = Path(attempt).resolve()
+    delivery = audit_delivery(root, case, owner_receipt=owner_receipt)
+    if delivery.get("format") != "worker-delivery-audit" or delivery.get("passed") is not True:
+        raise ValueError("original Native delivery audit required for comparison")
+    report = json.loads((root / "analysis-report.json").read_text())
+    hashes = report.get("original_source_hashes", {})
+    if not set(REQUIRED_SOURCES) <= set(hashes):
+        raise ValueError("saved comparison report omits required original sources")
+    for name in REQUIRED_SOURCES:
+        path = root / name
+        if not path.is_file() or path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != hashes[name]:
+            raise ValueError("saved comparison original source missing or changed: " + name)
+    site_path = root / "reviewed-site.json"
+    site = json.loads(site_path.read_text())
+    config = json.loads((root / "config.json").read_text())
+    expected = {"reviewed_site_sha256": hashes["reviewed-site.json"],
+                "source_lane_id": site["lanes"]["source"]["lane_id"],
+                "destination_lane_id": site["lanes"]["destination"]["lane_id"],
+                "ego_blueprint": site["ego_blueprint"],
+                "target_vehicle_blueprint": site["target_vehicle_blueprint"],
+                "target_traffic_plan_sha256": _digest({
+                    "spawn": site["target_spawn_xyz_yaw"],
+                    "route": site["lanes"]["destination"]["centerline_world_xyz_m"]}),
+                "camera_plan_sha256": _digest({
+                    "poses": site["camera_poses_xyz_pitch_yaw"], "sizes": SIZES}),
+                "capture_duration_s": config["duration_s"],
+                "capture_rate_hz": config["rate_hz"]}
+    if report.get("fixed_context") != expected:
+        raise ValueError("saved comparison fixed context differs from original sources")
+    recomputed = build_report(root)
+    for field in ("case_id", "fixed_context", "measurements", "original_source_hashes"):
+        if report.get(field) != recomputed.get(field):
+            raise ValueError("saved comparison measurement differs from original source recomputation: " + field)
+    return report
+
+
+def audit_original_attempts(comparison_id, attempts, owner_receipts):
+    if comparison_id not in PAIRS:
+        raise ValueError("unknown declared lane-change comparison")
+    baseline, contrast, _, _ = PAIRS[comparison_id]
+    if set(attempts) != {baseline, contrast} or set(owner_receipts) != set(attempts):
+        raise ValueError("exact original attempt and owner receipt pairs required")
+    reports = {variant: _production_report(attempts[variant], ASSIGNMENT + "__" + variant,
+                                           owner_receipts[variant]) for variant in attempts}
+    result = audit(comparison_id, reports)
+    result["production_original_attempts_audited"] = True
+    result["original_attempts"] = {variant: str(Path(attempts[variant]).resolve())
+                                   for variant in attempts}
+    return result
 
 
 def _read_sealed(path, sha256):
@@ -67,16 +134,30 @@ def audit(comparison_id, reports):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--comparison", required=True)
-    parser.add_argument("--baseline", required=True)
-    parser.add_argument("--baseline-sha256", required=True)
-    parser.add_argument("--contrast", required=True)
-    parser.add_argument("--contrast-sha256", required=True)
+    parser.add_argument("--baseline")
+    parser.add_argument("--baseline-sha256")
+    parser.add_argument("--contrast")
+    parser.add_argument("--contrast-sha256")
+    parser.add_argument("--baseline-attempt")
+    parser.add_argument("--baseline-owner-release-receipt")
+    parser.add_argument("--contrast-attempt")
+    parser.add_argument("--contrast-owner-release-receipt")
     args = parser.parse_args()
     baseline, contrast, _, _ = PAIRS[args.comparison]
-    print(json.dumps(audit(args.comparison, {
-        baseline: _read_sealed(args.baseline, args.baseline_sha256),
-        contrast: _read_sealed(args.contrast, args.contrast_sha256)}),
-        indent=2, sort_keys=True))
+    if all((args.baseline_attempt, args.baseline_owner_release_receipt,
+            args.contrast_attempt, args.contrast_owner_release_receipt)):
+        result = audit_original_attempts(args.comparison,
+            {baseline: args.baseline_attempt, contrast: args.contrast_attempt},
+            {baseline: args.baseline_owner_release_receipt,
+             contrast: args.contrast_owner_release_receipt})
+    elif all((args.baseline, args.baseline_sha256, args.contrast, args.contrast_sha256)):
+        result = audit(args.comparison, {
+            baseline: _read_sealed(args.baseline, args.baseline_sha256),
+            contrast: _read_sealed(args.contrast, args.contrast_sha256)})
+        result["production_original_attempts_audited"] = False
+    else:
+        parser.error("supply both original attempts and owner receipts, or both sealed reports")
+    print(json.dumps(result, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":

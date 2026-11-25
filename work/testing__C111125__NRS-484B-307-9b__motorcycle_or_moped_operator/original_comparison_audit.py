@@ -71,6 +71,19 @@ def attempt(root, expected_case, diagnostic=False):
         if (views[name].get("width"), views[name].get("height"), views[name].get("fps")) != (*size, 20):
             raise ValueError("pinned four-view camera profile differs: " + name)
     media = audit_four_views(root, views, 900)
+    manifest = read(HERE / "execution-manifest.json")
+    entry = next((item for item in manifest["cases"] if item["case_id"] == expected_case), None)
+    if entry is None:
+        raise ValueError("selected physical preparation case missing")
+    physical = entry["physical_preparation"]
+    receipt_path = HERE / physical["receipt"]
+    if sha(receipt_path) != physical["sha256"]:
+        raise ValueError("physical preparation receipt changed")
+    receipt = read(receipt_path)
+    if receipt.get("case_id") != expected_case or (
+            {item["kind"] for item in receipt.get("fixtures", [])} !=
+            {"complete_motion", "incomplete_motion", "missing_evidence"}):
+        raise ValueError("physical completion three-outcome proof differs")
     facts = summary(root)
     if facts["duration_frames"] != 900:
         raise ValueError("comparison summary has shortened original capture")

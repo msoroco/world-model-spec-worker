@@ -100,8 +100,14 @@ def inspect(attempt: Path, case_id: str, *, diagnostic: bool) -> dict:
                 "both_devices_operating_during_crossing": motion["both_devices_operating_during_crossing"]},
             "physical_acceptance": False, "legal_verdict": None}
     provenance = json.loads(_required(attempt, "native-provenance.json").read_text())
+    encoded = {name: _decode(_required(attempt, name + ".mkv"),
+        CAMERA_DIMENSIONS[name], 900) for name in CAMERAS}
     result = audit_delivery(packet, receipt, case_id=case_id,
                             native_provenance=provenance)
+    if result["camera_names"] != list(CAMERAS) or result["frame_count"] != 900:
+        raise ValueError("production original camera policy differs")
+    result["encoded_camera_source_sha256"] = encoded
+    result["full_encoded_camera_decodes"] = 4
     return result
 
 

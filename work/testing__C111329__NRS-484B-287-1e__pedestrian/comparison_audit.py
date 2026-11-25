@@ -5,8 +5,8 @@ import argparse
 import json
 from pathlib import Path
 
-from delivery_audit import audit_delivery
-from saved_crossing import ASSIGNMENT, audit_saved_comparison, process_saved
+from delivery_audit import audit_delivery, measure_saved
+from saved_crossing import ASSIGNMENT, audit_saved_comparison
 
 
 PAIRS = {
@@ -29,10 +29,8 @@ def audit_attempt_pair(comparison_id, reference_attempt, variant_attempt,
     right_root = Path(variant_attempt).resolve()
     if left_root == right_root:
         raise ValueError('comparison requires two original attempts')
-    left = process_saved(left_root, left_case, left_root / 'comparison-left-measurement.json',
-                         allow_diagnostic=allow_diagnostic)
-    right = process_saved(right_root, right_case, right_root / 'comparison-right-measurement.json',
-                          allow_diagnostic=allow_diagnostic)
+    left = measure_saved(left_root, left_case, allow_diagnostic=allow_diagnostic)
+    right = measure_saved(right_root, right_case, allow_diagnostic=allow_diagnostic)
     if left['original_frames'] != 900 or right['original_frames'] != 900:
         raise ValueError('comparison requires both complete original 900-frame crossings')
     if not allow_diagnostic:

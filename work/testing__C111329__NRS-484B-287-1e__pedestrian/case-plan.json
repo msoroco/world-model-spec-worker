@@ -1,129 +1,213 @@
 {
-  "assignment_id": "testing__C111329__NRS-484B-287-1e__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C111329",
-  "law_id": "NRS-484B-287-1e",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-287-1e",
-      "cell_id": "C111329",
-      "actor": "pedestrian",
-      "requirement": "NRS-484B-287-1e",
-      "branch": "Authorized crossing during pedestrian travel",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 392,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements.",
-  "law_source": "NRS 484B.287(1)(e)",
-  "topic_inventory": {
-    "exact-text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements."
+  "assignment_id": "testing__C111329__NRS-484B-287-1e__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through opposite-corner arrival",
+        "subject": "diagonal pedestrian route and governing device",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through crossing",
+        "subject": "pedestrian approach and device instruction",
+        "view": "approach"
+      },
+      {
+        "interval": "crossing through arrival",
+        "subject": "opposite corner and destination",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through final observation",
+        "subject": "walker and device sightline reference",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "limitations": "Prospective four-camera plan; original device authority, physical visibility and NRS 484B.290 exception remain source review gates.",
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
-      "target_law_id": "NRS-484B-287-1e",
-      "purpose": "Measured opposite-corner traversal under source-backed diagonal pedestrian instruction throughout crossing",
+      "construction_module": "diagonal_crossing.py",
       "gap_ids": [
         "no_accepted_diagonal_device_recording"
       ],
-      "scenario_parameters": {
-        "crossing_route": "opposite_corner_diagonal",
-        "governing_device_instruction": "diagonal_walk",
-        "exception_484b_290": "unresolved_source_review"
-      },
-      "construction_module": "diagonal_crossing.py",
       "measurement_module": "crossing_audit.py",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls.",
         "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
-      }
+        "status": "physical"
+      },
+      "purpose": "Measured opposite-corner traversal under source-backed diagonal pedestrian instruction throughout crossing",
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "exception_484b_290": "unresolved_source_review",
+        "governing_device_instruction": "diagonal_walk"
+      },
+      "target_law_id": "NRS-484B-287-1e"
     },
     {
       "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing",
-      "target_law_id": "NRS-484B-287-1e",
-      "purpose": "Same opposite-corner traversal while governing diagonal instruction is prohibitive throughout crossing",
+      "construction_module": "diagonal_crossing.py",
       "gap_ids": [
         "no_accepted_diagonal_device_recording"
       ],
-      "scenario_parameters": {
-        "crossing_route": "opposite_corner_diagonal",
-        "governing_device_instruction": "diagonal_dont_walk",
-        "exception_484b_290": "unresolved_source_review"
-      },
-      "construction_module": "diagonal_crossing.py",
       "measurement_module": "crossing_audit.py",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls.",
         "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same opposite-corner traversal while governing diagonal instruction is prohibitive throughout crossing",
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "exception_484b_290": "unresolved_source_review",
+        "governing_device_instruction": "diagonal_dont_walk"
+      },
+      "target_law_id": "NRS-484B-287-1e"
     },
     {
       "case_id": "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing",
-      "target_law_id": "NRS-484B-287-1e",
-      "purpose": "Same opposite-corner traversal with governing diagonal instruction changing during observed crossing",
+      "construction_module": "diagonal_crossing.py",
       "gap_ids": [
         "no_accepted_diagonal_device_recording"
       ],
-      "scenario_parameters": {
-        "crossing_route": "opposite_corner_diagonal",
-        "governing_device_instruction": "diagonal_walk_then_dont_walk",
-        "exception_484b_290": "unresolved_source_review"
-      },
-      "construction_module": "diagonal_crossing.py",
       "measurement_module": "crossing_audit.py",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls.",
         "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same opposite-corner traversal with governing diagonal instruction changing during observed crossing",
+      "scenario_parameters": {
+        "crossing_route": "opposite_corner_diagonal",
+        "exception_484b_290": "unresolved_source_review",
+        "governing_device_instruction": "diagonal_walk_then_dont_walk"
+      },
+      "target_law_id": "NRS-484B-287-1e"
     }
   ],
+  "cell_id": "C111329",
   "comparisons": [
     {
-      "comparison_id": "diagonal_instruction_permissive_vs_prohibitive",
       "case_ids": [
         "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
         "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing"
+      ],
+      "comparison_id": "diagonal_instruction_permissive_vs_prohibitive",
+      "deliberate_differences": [
+        "original observed diagonal pedestrian instruction during crossing: permissive versus prohibitive"
       ],
       "fixed_conditions": [
         "same source-surveyed intersection and opposite-corner pedestrian route",
         "same official pedestrian-specific diagonal-governing device, walker blueprint, speed, 20 Hz, cameras and duration",
         "same 484B.290 exception review state"
-      ],
-      "deliberate_differences": [
-        "original observed diagonal pedestrian instruction during crossing: permissive versus prohibitive"
       ]
     },
     {
-      "comparison_id": "diagonal_instruction_phase_change",
       "case_ids": [
         "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
         "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing"
+      ],
+      "comparison_id": "diagonal_instruction_phase_change",
+      "deliberate_differences": [
+        "governing diagonal pedestrian instruction changes during crossing"
       ],
       "fixed_conditions": [
         "same source-surveyed intersection, opposite-corner route and device identity",
         "same walker blueprint, speed, 20 Hz, cameras and duration",
         "same observed route and entry instruction"
-      ],
-      "deliberate_differences": [
-        "governing diagonal pedestrian instruction changes during crossing"
       ]
     }
   ],
-  "observations": [
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_diagonal_device_recording",
+        "requirement": "Full diagonal pedestrian route, official governing instructions and synchronized original crossing evidence",
+        "source": {
+          "path": "inputs/testing__C111329__NRS-484B-287-1e__pedestrian/evidence.json",
+          "sha256": "86db67f225ac05d59af6a0c3c57007a2fab2edd597f1f0dd5efed35205205b78"
+        },
+        "why_existing_insufficient": "The frozen accepted-recording inventory is empty."
+      }
+    ],
+    "method": "Read frozen evidence.json: zero accepted recordings. Reviewed the conditional witness against exact NRS 484B.287(1)(e). No source establishes an actual diagonal route, official pedestrian-governing instructions or a frame-synchronized trajectory.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-287-1e",
+  "law_source": "NRS 484B.287(1)(e)",
+  "law_text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements.",
+  "observation_notes": [
     "source-hashed map and four-corner survey; complete opposite-corner pedestrian route",
     "source documents for official diagonal authorization, device placement, instruction and exception review",
     "original synchronized walker identity, location, route footprint and governing device identity/state each crossing frame",
     "four-camera coverage and original-to-presented frame map"
   ],
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "walker_center_xy",
+      "source": "original Native pedestrian position and opposite-corner route footprint"
+    },
+    {
+      "mandatory": true,
+      "name": "governing_diagonal_instruction",
+      "source": "source-bound official diagonal device identity and instruction readback"
+    },
+    {
+      "mandatory": true,
+      "name": "camera_original_frame_map",
+      "source": "four synchronized original camera frame identities"
+    }
+  ],
+  "planning_status": "partial_constructed_cpu_probes",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
+        "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing",
+        "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing"
+      ],
+      "evidence_or_gap": "No accepted recording; diagnostic source-join software proof exists, while official site/device provenance and physical crossing remain unverified.",
+      "requirement": "Original opposite-corner pedestrian trajectory and governing official diagonal-device instruction through the crossing, with NRS 484B.290 exception source state retained",
+      "source": {
+        "path": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+        "sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+        "source_index": 392
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No source-surveyed C111329 official pedestrian-diagonal governing device packet is frozen; production capture fails closed until supplied.",
+    "Offline exact source-gated bundles and diagnostic saved-source tests exist; current-runtime measurement compatibility, semantic proposals, selected delivery manifest and process-saved receipts remain unfinished CPU work.",
+    "The NRS 484B.290 exception remains unresolved; no legal compliance conclusion is generated."
+  ],
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "Authorized crossing during pedestrian travel",
+      "cell_id": "C111329",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-287-1e",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-287-1e",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 392,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C111329__NRS-484B-287-1e__pedestrian/assignment.json",
@@ -146,38 +230,15 @@
       "sha256": "9ed66d5c9e133b79b4ad8a45eecb65206f9fdf862a7b743b42143ab8ca031837"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No source-surveyed C111329 official pedestrian-diagonal governing device packet is frozen; production capture fails closed until supplied.",
-    "Offline exact source-gated bundles and diagnostic saved-source tests exist; current-runtime measurement compatibility, semantic proposals, selected delivery manifest and process-saved receipts remain unfinished CPU work.",
-    "The NRS 484B.290 exception remains unresolved; no legal compliance conclusion is generated."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Read frozen evidence.json: zero accepted recordings. Reviewed the conditional witness against exact NRS 484B.287(1)(e). No source establishes an actual diagonal route, official pedestrian-governing instructions or a frame-synchronized trajectory.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_diagonal_device_recording",
-        "requirement": "Full diagonal pedestrian route, official governing instructions and synchronized original crossing evidence",
-        "source": {
-          "path": "inputs/testing__C111329__NRS-484B-287-1e__pedestrian/evidence.json",
-          "sha256": "86db67f225ac05d59af6a0c3c57007a2fab2edd597f1f0dd5efed35205205b78"
-        },
-        "why_existing_insufficient": "The frozen accepted-recording inventory is empty."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: When authorized to cross diagonally, pedestrians shall cross only in accordance with the official traffic-control devices pertaining to such crossing movements."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_cpu_probes",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 392,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Authorized crossing during pedestrian travel",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The travel route can include an authorized opposite-corner crossing with actual pertaining instructions.",
       "required_context": [
         "Construct the complete pedestrian crossing and supply its authorization basis.",
         "Establish actual diagonal authorization, pertaining instructions, official provenance and pedestrian-specific governance.",
@@ -186,25 +247,9 @@
         "Retain the complete trajectory, footprint and crossing times synchronized with device states.",
         "Verify route support and official-status evidence; preserve the unresolved exception."
       ],
-      "reason": "The travel route can include an authorized opposite-corner crossing with actual pertaining instructions."
-    }
-  ],
-  "source_observation_mapping": {},
-  "requirement_dispositions": [
-    {
-      "case_ids": [
-        "testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing",
-        "testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing",
-        "testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing"
-      ],
-      "requirement": "Original opposite-corner pedestrian trajectory and governing official diagonal-device instruction through the crossing, with NRS 484B.290 exception source state retained",
-      "source": {
-        "path": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-        "sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-        "source_index": 392
-      },
-      "status": "selected_required",
-      "evidence_or_gap": "No accepted recording; diagnostic source-join software proof exists, while official site/device provenance and physical crossing remain unverified."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 392,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

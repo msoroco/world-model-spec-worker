@@ -59,14 +59,22 @@ def audit_attempt_sources(attempt: Path, case: dict) -> dict:
                 or not math.isclose(frame.get("time_s", math.inf), row["time_s"], abs_tol=1e-4)
                 or not math.isclose(state.get("time_s", math.inf), row["time_s"], abs_tol=1e-4)):
             raise ValueError("original frame or time identity differs")
-    acquisition = json.loads((root / "acquisition.json").read_text())
+    seal = json.loads((root / "capture-seal.json").read_text())
+    if (seal.get("format") != "worker-sealed-capture" or
+            seal.get("provenance_kind") != "native" or
+            seal.get("diagnostic_fixture") is True or
+            seal.get("frames") != len(rows) or
+            seal.get("restoration", {}).get("restored") is not True):
+        raise ValueError("original capture seal or restoration differs")
     required = ("original-site.json", "original-instruction-trace.json",
                 "original-source-hashes.json", "trace.jsonl", "video_frames.jsonl",
                 "body_history.jsonl", "overview.mkv", "approach.mkv",
                 "reference_corner.mkv", "driver_reference.mkv")
+    if case["officer_direction"] != "none":
+        required += ("original-officer.json", "original-acquisition-receipt.json")
     for name in required:
-        if acquisition.get(name, {}).get("sha256") != sha(root / name):
-            raise ValueError("missing or stale original acquisition source: " + name)
+        if seal.get("sources", {}).get(name) != sha(root / name):
+            raise ValueError("missing or stale sealed original source: " + name)
     videos = {}
     for name in ("overview", "approach", "reference_corner", "driver_reference"):
         source = root / (name + ".mkv")
@@ -77,12 +85,6 @@ def audit_attempt_sources(attempt: Path, case: dict) -> dict:
     config = json.loads((root / "config.json").read_text())
     if config.get("selected_case_id") != case["case_id"]:
         raise ValueError("exact original case configuration differs")
-    seal = json.loads((root / "capture-seal.json").read_text())
-    if (seal.get("format") != "worker-sealed-capture" or
-            seal.get("provenance_kind") != "native" or
-            seal.get("frames") != len(rows) or
-            seal.get("restoration", {}).get("restored") is not True):
-        raise ValueError("original capture seal or restoration differs")
     for name, expected in seal.get("sources", {}).items():
         if sha(root / name) != expected:
             raise ValueError("sealed original source changed: " + name)

@@ -86,7 +86,20 @@ manifest['comparison_audit_protocol'] = {
     'log_sha256': sha(comparison_log),
     'comparison_ids': sorted(expected),
     'physical_realization_claimed': False,
-    'legal_conclusion': 'not_assessed'}
+    'legal_conclusion': 'not_assessed',
+    'production_script': 'comparison_audit.py',
+    'production_script_sha256': sha(ROOT / 'comparison_audit.py'),
+    'production_commands': [
+        'PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c111329-pedestrian-audits" '
+        '.venv-cpu/bin/python ' + str(ROOT / 'comparison_audit.py')
+        + ' --comparison-id ' + comparison_id
+        + ' --reference-attempt "$REFERENCE_ORIGINAL_ATTEMPT"'
+        + ' --variant-attempt "$VARIANT_ORIGINAL_ATTEMPT"'
+        + ' --reference-review-ref "$REFERENCE_SEALED_REVIEW_REF"'
+        + ' --variant-review-ref "$VARIANT_SEALED_REVIEW_REF"'
+        + ' --output "$COMPARISON_OUTPUT"'
+        for comparison_id in sorted(expected)],
+    'diagnostic_fixture_accepted': False}
 operator_log = ROOT / 'nov25-selected-operator-gate.log'
 manifest['source_audit_protocol']['native_operator_gate'] = {
     'script': 'prove_operator_gate.py',

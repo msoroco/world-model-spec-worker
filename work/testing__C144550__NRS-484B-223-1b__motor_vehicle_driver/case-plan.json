@@ -1,6 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 frames",
+        "subject": "ego, target-lane vehicle and marked lane geometry",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 frames",
+        "subject": "ego lane departure and turn-signal visibility",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 frames",
+        "subject": "destination-lane traffic gap and lane markings",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 frames",
+        "subject": "driver input event context and ego movement",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "branch": "Both conjunctive prerequisites before lane movement.",
@@ -265,10 +292,6 @@
           {
             "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/accepted/7c7e8c4cb636a0962288f18c0672f519ffacbf59eebd2086a10012b79c0bd807/metadata.json",
             "sha256": "c5b4ec358f9f9c6e21d1cb75214e283eda75d7638296d005c63dcef989f30fa3"
-          },
-          {
-            "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ef82fb0f1fcdf3c0f2a4e6038c38d4515e32dd3a068fcfbfb98605e48a32d9e5"
           }
         ]
       },
@@ -280,10 +303,6 @@
           {
             "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/accepted/fa24d351feb9b6e5605c682ebdf7c7eecad68f30363a47e8fb1afe7545e34dc9/metadata.json",
             "sha256": "5f79ad9ff06e06038597c8f6b6e6a313f5f7aa914a18adc779791ea5ff69c887"
-          },
-          {
-            "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ef82fb0f1fcdf3c0f2a4e6038c38d4515e32dd3a068fcfbfb98605e48a32d9e5"
           }
         ]
       },
@@ -295,10 +314,6 @@
           {
             "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/accepted/bfc5999fbedf7ebb44b12683206ed91eecfcd15aa52732245e297c387ed40e40/metadata.json",
             "sha256": "6dcdb862406e5c5f787164108bbbc576dbc9875afb9e5d00b25ef2b90f0bc598"
-          },
-          {
-            "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ef82fb0f1fcdf3c0f2a4e6038c38d4515e32dd3a068fcfbfb98605e48a32d9e5"
           }
         ]
       }
@@ -349,7 +364,58 @@
   "law_id": "NRS-484B-223-1b",
   "law_source": "NRS 484B.223(1)(b)",
   "law_text": "If a highway has two or more clearly marked lanes for traffic traveling in one direction, vehicles must: Not be moved from that lane until the driver has given the appropriate turn signal and ascertained that such movement can be made with safety.",
-  "observations": [],
+  "observations": [
+    {
+      "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+      "name": "original_lane_and_pose",
+      "reference_frame": "reviewed source lane and original world frame",
+      "sampling_rate_hz": 20,
+      "time_window": "all 900 original world ticks",
+      "uncertainty": "physical lane geometry and transition require local review",
+      "unit": "metres and seconds",
+      "mandatory": true
+    },
+    {
+      "method": "Original actor.get_light_state each Native world tick",
+      "name": "native_signal_state",
+      "reference_frame": "original world frame",
+      "sampling_rate_hz": 20,
+      "time_window": "all 900 original world ticks",
+      "uncertainty": "API signal state alone does not decide appropriateness",
+      "unit": "boolean API state",
+      "mandatory": true
+    },
+    {
+      "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+      "name": "independent_driver_input",
+      "reference_frame": "original world frame",
+      "sampling_rate_hz": 20,
+      "time_window": "all 900 original world ticks",
+      "uncertainty": "observed event does not prove mental ascertainment or safety",
+      "unit": "boolean observed event",
+      "mandatory": true
+    },
+    {
+      "method": "Original target actor transform and velocity on each world tick",
+      "name": "target_lane_traffic",
+      "reference_frame": "reviewed destination lane and original world frame",
+      "sampling_rate_hz": 20,
+      "time_window": "all 900 original world ticks",
+      "uncertainty": "relative gap and actual safety require local physical review",
+      "unit": "metres and metres per second",
+      "mandatory": true
+    },
+    {
+      "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+      "name": "four_camera_views",
+      "reference_frame": "same-frame Native sensor clock",
+      "sampling_rate_hz": 20,
+      "time_window": "all 900 original world ticks",
+      "uncertainty": "actual visibility requires local pixel audit",
+      "unit": "original RGB pixels",
+      "mandatory": true
+    }
+  ],
   "planning_status": "controlled_cases_selected_source_gated;_existing_evidence_unverified",
   "prior_review_context": {
     "comparison_ids": [
@@ -423,6 +489,7 @@
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",

@@ -9,11 +9,20 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 
-from comparison_audit import audit, audit_from_sources
+from comparison_audit import audit, audit_from_sources, audit_attempts
 from test_saved_instruction import CASE, SITE, packet
 
 
 class TestComparisonAudit(unittest.TestCase):
+    def test_production_pair_rejects_diagnostic_attempt(self):
+        scratch = REPO / ".runtime-work/c111329-comparison/tmp"
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            root = Path(temporary)
+            (root / "fixture-provenance.json").write_text('{"diagnostic_fixture":true}\n')
+            with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot"):
+                audit_attempts("red_operator_motion", [root, root])
+
     def test_source_bound_motion_pair_and_rejections(self):
         scratch = REPO / ".runtime-work/c111329-comparison/tmp"
         scratch.mkdir(parents=True, exist_ok=True)

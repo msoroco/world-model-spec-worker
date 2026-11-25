@@ -89,6 +89,16 @@ for entry in draft['cases']:
         'negative_log_sha256': delivery['negative_']['log_sha256'],
         'negative_expected_error': 'diagnostic attempt cannot pass delivery audit',
         'script': 'prove_delivery.py', 'script_sha256': sha(ROOT / 'prove_delivery.py')}
+    entry['production_original_audit'] = {
+        'script': 'delivery_audit.py',
+        'script_sha256': sha(ROOT / 'delivery_audit.py'),
+        'command': 'PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c111329-pedestrian-audits" '
+                   '.venv-cpu/bin/python ' + str(ROOT / 'delivery_audit.py')
+                   + ' --attempt "$ORIGINAL_ATTEMPT" --case ' + case
+                   + ' --physical-review-ref "$SEALED_REVIEW_REF" --output "$AUDIT_OUTPUT"',
+        'original_sources_required': True,
+        'diagnostic_fixture_accepted': False,
+        'physical_completion_claimed': False}
 
 source_probes = []
 for negative in (False, True):

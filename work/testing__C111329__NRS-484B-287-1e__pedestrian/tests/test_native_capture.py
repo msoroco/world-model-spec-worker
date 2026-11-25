@@ -117,6 +117,7 @@ class NativeCaptureTests(unittest.TestCase):
         diagnostic = audit_delivery(self.attempt, self.case, allow_diagnostic=True)
         self.assertTrue(diagnostic['software_checks_passed'])
         self.assertFalse(diagnostic['physical_completion'])
+        self.assertFalse((self.attempt / 'delivery-measurement.json').exists())
         with self.assertRaisesRegex(ValueError, 'diagnostic attempt'):
             audit_delivery(self.attempt, self.case)
         (self.attempt / 'camera-media-audit.json').write_text('{}')
@@ -195,6 +196,10 @@ class NativeCaptureTests(unittest.TestCase):
                                          attempts[variant], allow_diagnostic=True)
             self.assertTrue(receipt['comparison_verified'])
             self.assertEqual(receipt['physical_realization'], 'unconfirmed')
+            self.assertFalse((attempts['permissive_whole_crossing'] /
+                              'comparison-left-measurement.json').exists())
+            self.assertFalse((attempts[variant] /
+                              'comparison-right-measurement.json').exists())
         missing = attempts['instruction_changes_during_crossing']
         (missing / 'overview.mkv').unlink()
         with self.assertRaisesRegex(ValueError, 'missing|escapes'):
