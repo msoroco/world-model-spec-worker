@@ -93,6 +93,22 @@ def build(index):
                 'negative': {'remove': ['signal.json'],
                              'error_contains': 'Missing required source: signal.json'}}
     write(folder / 'measurement-contract.json', contract)
+    for candidate, tuning in (
+            ('fallback1', {'roll_throttle': .18, 'other_entry_speed_mps': 5.5,
+                           'other_clear_speed_mps': 3.5}),
+            ('fallback2', {'roll_throttle': .25, 'other_entry_speed_mps': 6.0,
+                           'other_clear_speed_mps': 4.5})):
+        alternate = json.loads(json.dumps(construction))
+        alternate['candidate_id'] = candidate
+        alternate['mechanisms'].append('source-observed motion tuning: ' + candidate)
+        for item in alternate['files']:
+            if item['path'] == 'config.json':
+                alternate_config = json.loads(item['content'])
+                alternate_config['candidate_id'] = candidate
+                alternate_config['motion_tuning'] = tuning
+                item['content'] = json.dumps(alternate_config, indent=2) + '\n'
+        write(ROOT / 'candidates' / ('condition_a' if index == 0 else 'condition_b') /
+              candidate / 'construction.json', alternate)
     return case
 
 

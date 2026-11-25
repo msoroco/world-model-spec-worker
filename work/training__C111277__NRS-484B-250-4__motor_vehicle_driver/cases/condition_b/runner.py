@@ -95,6 +95,13 @@ def execute(case_id, output_dir, host, port):
         raise ValueError('unknown exact selected case')
     condition = CASES[suffix]
     output = Path(output_dir).resolve()
+    tuning = json.loads((output / 'config.json').read_text()).get('motion_tuning', {})
+    roll_throttle = float(tuning.get('roll_throttle', .22))
+    other_entry_speed = float(tuning.get('other_entry_speed_mps', 6.25))
+    other_clear_speed = float(tuning.get('other_clear_speed_mps', 4.0))
+    if not (0.1 <= roll_throttle <= .4 and 2 <= other_entry_speed <= 8 and
+            2 <= other_clear_speed <= 6):
+        raise ValueError('fallback motion tuning outside predeclared engineering range')
     if not output.is_dir() or any((output / name).exists() for name in
                                   ('native-rows.jsonl', 'video_frames.jsonl',
                                    'native-index.json')):
@@ -196,15 +203,15 @@ def execute(case_id, output_dir, host, port):
                     ego.apply_control(carla.VehicleControl(throttle=command.throttle,
                                                            brake=command.brake))
                 else:
-                    ego.apply_control(carla.VehicleControl(throttle=.22, brake=0))
+                    ego.apply_control(carla.VehicleControl(throttle=roll_throttle, brake=0))
                     command = None
                 # Other vehicle stops first, then traverses the junction.
                 if index < 80:
-                    other.set_target_velocity(carla.Vector3D(x=0, y=6.25, z=0))
+                    other.set_target_velocity(carla.Vector3D(x=0, y=other_entry_speed, z=0))
                 elif index < 120:
                     other.set_target_velocity(carla.Vector3D(x=0, y=0, z=0))
                 elif index < 240:
-                    other.set_target_velocity(carla.Vector3D(x=0, y=4, z=0))
+                    other.set_target_velocity(carla.Vector3D(x=0, y=other_clear_speed, z=0))
                 else:
                     other.set_target_velocity(carla.Vector3D(x=0, y=0, z=0))
                 frame = world.tick()

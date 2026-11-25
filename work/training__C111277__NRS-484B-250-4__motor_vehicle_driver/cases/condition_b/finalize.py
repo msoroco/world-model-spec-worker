@@ -40,6 +40,11 @@ def video_frames(path):
     return int(result.stdout.strip())
 
 
+def visibility_relations(event):
+    return event.get('original_observations', {}).get(
+        'relations', event.get('synthetic_visibility_relations', []))
+
+
 def original_join(root, source_rows):
     trace = rows(root, 'trace.jsonl')
     evidence = rows(root, 'capture/evidence.jsonl')
@@ -109,7 +114,7 @@ def measure_scope(attempt):
     root = Path(attempt)
     evidence = rows(root, 'capture/evidence.jsonl')
     values = [e.get('visibility') for e in evidence]
-    relations = [e.get('original_observations', {}).get('relations', []) for e in evidence]
+    relations = [visibility_relations(e) for e in evidence]
     if len(values) != 600 or any(value is None for value in values):
         raise ValueError('Native sight-distance proxy absent')
     if not any(relations):
@@ -147,7 +152,7 @@ def finalize(attempt, output):
     intermediate = root / 'retained-finalization.json'
     retained = finalize_retained(root, intermediate)
     sight = [e['visibility'] for e in evidence]
-    relations = [e['original_observations']['relations'] for e in evidence]
+    relations = [visibility_relations(e) for e in evidence]
     added = {'st.lane_enters': [{'incoming_lane': geometry['ego_incoming_lane'],
                                  'intersection_entry_x_m': geometry['intersection_entry_x_m']}] * 600,
              'st.sight_distance': sight, 'rel.visible': relations}

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from native.generate_fixture import x_at
+from native.scene import road_xml
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = 'training__C111277__NRS-484B-250-4__motor_vehicle_driver'
@@ -54,30 +55,35 @@ def make(index):
                       'position': {'x': x - 2.25, 'y': -1.75, 'z': 0},
                       'position_m': [x - 2.25, -1.75, 0],
                       'heading_deg': 0, 'speed_mps': speed,
+                      'velocity_mps': [speed, 0.0, 0.0],
+                      'speed_mph': speed / .44704,
                       'control': {}})
         evidence.append({'original_frame': frame, 'recording_time_s': i / 20,
                          'replay_frame': frame, 'replay_simulation_time_s': i / 20,
                          'actor_id': 1,
                          'ego': {'body_vertices_m': body,
                                  'position_m': [x - 2.25, -1.75, 0],
-                                 'heading_deg': 0, 'speed_mps': speed},
+                                 'heading_deg': 0, 'speed_mps': speed,
+                                 'speed_provenance': 'synthetic_native_sample'},
                          'world': {},
                          'visibility': {'method': 'synthetic_body_ray_proxy',
                                         'approaches': [], 'unknown': True},
-                         'original_observations': {'relations': [
+                         'synthetic_visibility_relations': [
                              {'a': 1, 'b': 2, 'visible': True,
-                              'method': 'synthetic_any_body_ray', 'rays': []}]}})
+                              'method': 'synthetic_any_body_ray', 'rays': []}]})
         motion.append({'frame': frame, 'time_s': i / 20,
                        'states': {'ego': {'body_vertices_m': body}},
                        'signal_actor_id': 3, 'signal_state': 'Off',
                        'other_actor_id': 2,
                        'other_in_intersection': 120 <= i <= 240})
     files = {'geometry.json': json.dumps(geometry, indent=2) + '\n',
+             'road.xodr': road_xml(),
              'signal.json': json.dumps(signal, indent=2) + '\n',
              'native-rows.jsonl': lines(native),
              'video_frames.jsonl': lines(mapping),
              'trace.jsonl': lines(trace),
              'capture/evidence.jsonl': lines(evidence),
+             'capture/recorder_info.txt': 'Create 1: vehicle.tesla.model3\nCreate 2: vehicle.audi.tt\n',
              'interaction_history.jsonl': lines(motion),
              'signal_context.json': json.dumps({
                  'intersection_polygon_xy_m': [[-9, -7], [7, -7], [7, 7], [-9, 7]],
@@ -96,6 +102,11 @@ def make(index):
          'edges': 0, 'frame': i + 100, 'nodes': 0,
          'simulation_time': i / 20, 'synthetic_diagnostic': True,
          'time_s': i / 20} for i in range(600)])
+    files['capture/manifest.json'] = json.dumps({
+        'frames': 600, 'extraction_confirmed': True,
+        'case_id': case_id, 'synthetic_diagnostic': True,
+        'sources': {name: hashlib.sha256(files[name].encode()).hexdigest()
+                    for name in ('road.xodr', 'trace.jsonl')}}, indent=2) + '\n'
     hashes = {name: hashlib.sha256(files[name].encode()).hexdigest()
               for name in ('geometry.json', 'signal.json', 'native-rows.jsonl')}
     files['native-index.json'] = json.dumps({
