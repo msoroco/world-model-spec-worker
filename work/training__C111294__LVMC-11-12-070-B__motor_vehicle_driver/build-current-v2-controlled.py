@@ -100,15 +100,10 @@ def main():
                    'generator': {'source': spec.relative_to(ROOT).as_posix(),
                                  'sha256': sha(spec)}})
     contract = HERE / 'current-v2-probe-2-measurement-contract.json'
-    write(contract, {'format': 'worker-measurement-contract', 'case_id': CASE,
-                     'requirements': [{'disposition_index': 0, 'requirement': 'LVMC-11-12-070-B',
-                                       'source': 'LVMC 11.12.070(B)',
-                                       'output_key': 'priority_requirement',
-                                       'method': 'measure_priority_requirement',
-                                       'value_type': 'object', 'kind': 'measured',
-                                       'inputs': ['native_samples.jsonl', 'road.xodr']}],
-                     'negative': {'remove': ['road.xodr'],
-                                  'error_contains': 'Missing required source: road.xodr'}})
+    draft = json.loads((HERE / 'branch-measurements-v2-probe-2.json').read_text())
+    if draft['case_id'] != CASE or len(draft['requirements']) != 3:
+        raise ValueError('Three exact case measurements required')
+    write(contract, draft)
     manifest = json.loads((HERE / 'draft-primary-manifest.json').read_text())
     entry = manifest['cases'][1]
     entry['fixture_recipe'] = recipe.relative_to(ROOT).as_posix()

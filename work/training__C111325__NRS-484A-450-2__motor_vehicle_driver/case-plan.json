@@ -49,9 +49,12 @@
       "requirement": "NRS-484A-450-2",
       "source": "NRS 484A.450(2)",
       "branch": "no-crosswalk/no-line sight-point branch",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_stop",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_pass"
+      ],
+      "evidence_or_gap": "Exact source-hashed synthetic view-proxy pair is under CPU compatibility construction; original Native approaching actor, physical occlusion and driver pixels remain unreviewed."
     }
   ],
   "neutral_baseline": {
@@ -130,6 +133,42 @@
       "gap_ids": [
         "no_crosswalk_stop_line_source"
       ]
+    },
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_stop",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "selected_delivery_draft",
+      "target_type": "compliant_attempt",
+      "physical_target": "full halt at first view of approaching intersecting traffic before intersection entry",
+      "comparison_variable": "halt_at_first_view_point",
+      "source_branch": "no-crosswalk/no-line sight-point branch",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "construction_manifest": "selected-sight-draft-manifest.json",
+      "gap_ids": [
+        "no_crosswalk_sight_point_source"
+      ]
+    },
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_pass",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "selected_delivery_draft",
+      "target_type": "violating_attempt",
+      "physical_target": "enter without full halt at first view",
+      "comparison_variable": "halt_at_first_view_point",
+      "source_branch": "no-crosswalk/no-line sight-point branch",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "construction_manifest": "selected-sight-draft-manifest.json",
+      "gap_ids": [
+        "no_crosswalk_sight_point_source"
+      ]
     }
   ],
   "comparisons": [
@@ -159,6 +198,20 @@
       "fixed_conditions": [
         "same authored signed approach with no crosswalk and one marked line",
         "same actor, cameras, source frame/time model and intersection geometry"
+      ]
+    },
+    {
+      "comparison_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_comparison",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_stop",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__sight_pass"
+      ],
+      "deliberate_differences": [
+        "requested_halt_at_first_view_point"
+      ],
+      "fixed_conditions": [
+        "same no-crosswalk/no-line authored approach and synthetic occluder geometry",
+        "same actor, cameras, intersecting traffic trajectory and frame/time model"
       ]
     }
   ],
@@ -251,6 +304,10 @@
     {
       "path": "work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/native/road_stop_line.xodr",
       "sha256": "7078684cbeabe50a7a90404ab2be051e8b443d623b8aa98a74ec189b375bd835"
+    },
+    {
+      "path": "work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/native/road_sight_point.xodr",
+      "sha256": "bbf205f3261d45cb81cf53ebfb799f2b8d67e7261ba7e1c27fb849b826bc8ec6"
     }
   ],
   "unverified_physical_assumptions": [

@@ -19,8 +19,8 @@ def sha(path):
 def prove(number):
     case = HERE.name + f'__probe_{number}'
     manifest = HERE / f'fallback-probe-{number}-compatibility-manifest.json'
-    source = ROOT / f'.runtime-work/c111294-fallback-compat-{number}'
-    scratch = ROOT / f'.runtime-work/c111294-fallback-saved-{number}'
+    source = ROOT / f'.runtime-work/c111294-v2-fallback-{number}-public'
+    scratch = ROOT / f'.runtime-work/c111294-branch-v2-fallback-{number}-saved'
     if scratch.exists():
         raise ValueError('Saved-processing scratch must be fresh')
     compatibility = json.loads((source / 'compatibility.json').read_text())
@@ -45,7 +45,7 @@ def prove(number):
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)
     log = HERE / f'fallback-probe-{number}-saved-command.log'
-    log.write_text(run.stdout)
+    log.write_text(run.stdout.rstrip() + '\n')
     if run.returncode:
         raise RuntimeError(f'Fallback process-saved exit {run.returncode}; see {log}')
     receipt = json.loads(run.stdout)

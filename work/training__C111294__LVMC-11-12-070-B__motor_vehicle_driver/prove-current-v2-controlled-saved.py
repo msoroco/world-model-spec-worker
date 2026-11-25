@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CASE = HERE.name + '__probe_2'
 MANIFEST = HERE / 'current-v2-probe-2-primary-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c111294-live-saved-bound-2'
+SCRATCH = ROOT / '.runtime-work/c111294-branch-v2-primary-2-saved'
 VALIDATOR = ROOT / '.runtime-work/c111250-current-decoder/.lake/build/bin/adapterCheck'
 
 
@@ -20,7 +20,7 @@ def sha(path):
 
 
 def main():
-    source = ROOT / '.runtime-work/c111294-live-compat-bound-2'
+    source = ROOT / '.runtime-work/c111294-v2-primary-2-public'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
@@ -46,7 +46,7 @@ def main():
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)
     log = HERE / 'current-v2-probe-2-saved-command.log'
-    log.write_text(run.stdout)
+    log.write_text(run.stdout.rstrip() + '\n')
     if run.returncode:
         raise RuntimeError(f'process-saved exit {run.returncode}; see {log}')
     receipt = json.loads(run.stdout)

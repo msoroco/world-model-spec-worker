@@ -35,6 +35,8 @@ def check_result(result, case):
     required = {'ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'}
     if 'weather_probe' in case:
         required.add('weather_parameters')
+    if 'pedestrian_probe' in case:
+        required.update(('pedestrian_pose', 'pedestrian_hazard'))
     if not required <= names:
         raise ValueError('Ego, other-traffic or weather recording missing')
     if not result.get('target_checks') or not result.get('realized_observables'):
@@ -71,6 +73,18 @@ def check_review(review, attempt, frame_map, trace, case):
         evidence = [json.loads(line) for line in expected['capture/evidence.jsonl'].read_text().splitlines()]
         if context.get('weather_parameters', {}).get('wetness', 0) <= 0 or len(evidence) != 600 or any(row.get('world', {}).get('weather', {}).get('wetness', 0) <= 0 for row in evidence):
             raise ValueError('Original wet-weather condition unverified')
+    if 'pedestrian_probe' in case:
+        for name in ('context.json', 'capture/evidence.jsonl'):
+            expected[name] = source(attempt, name)
+        context = json.loads(expected['context.json'].read_text())
+        evidence = [json.loads(line) for line in expected['capture/evidence.jsonl'].read_text().splitlines()]
+        samples = [json.loads(line) for line in expected['native_samples.jsonl'].read_text().splitlines()]
+        if not context.get('pedestrian_hazard') or len(evidence) != 600 or len(samples) != 600:
+            raise ValueError('Original pedestrian hazard context unverified')
+        if any(not row.get('world', {}).get('pedestrian', {}).get('position_m') for row in evidence):
+            raise ValueError('Pedestrian missing from original evidence')
+        if any(row.get('pedestrian_role') != 'pedestrian' or not row.get('pedestrian_position_m') for row in samples):
+            raise ValueError('Pedestrian missing from original Native samples')
     for name, path in expected.items():
         if review.get('source_sha256', {}).get(name) != digest(path):
             raise ValueError('Review lacks exact original source hash: ' + name)
@@ -78,6 +92,8 @@ def check_review(review, attempt, frame_map, trace, case):
     if len(rows) != 600 or any(row.get('frame') != i or row.get('ego_and_other_vehicle_reviewed') is not True or
             set(row.get('source_rgb_sha256', {})) != set(VIEWS) for i, row in enumerate(rows)):
         raise ValueError('Original actor/pixel review incomplete')
+    if 'pedestrian_probe' in case and any(row.get('pedestrian_reviewed') is not True for row in rows):
+        raise ValueError('Original pedestrian review incomplete')
 
 
 def audit(args):
@@ -121,7 +137,7 @@ def selftest(case, negative):
               'accepted': False, 'legal_verdict_claimed': False, 'setup_confirmed': False,
               'behavior_attempted': True, 'maneuver_completed': True, 'target_checks': [{'target': 'speed_profile', 'matched': True}],
               'realized_observables': {'ego_speed': {'value': 10}},
-              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
+              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'pedestrian_pose', 'pedestrian_hazard') if 'pedestrian_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
               'measured_values': {'frames': 600, 'approach_start_mph': 28.8, 'preentry_mph': 20.0,
                                   'crossing_peak_mph': 20.0, 'measured_decrease_mph': 8.8,
                                   'reduction_necessity_legally_verified': False}}

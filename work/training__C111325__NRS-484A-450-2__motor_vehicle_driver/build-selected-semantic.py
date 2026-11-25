@@ -47,6 +47,8 @@ def build():
                      'range_or_domain': 'true or false; request is not measured behavior'},
                     {'name': 'requested_pre_line_stop', 'kind': 'controller',
                      'range_or_domain': 'true or false when the marked-line branch applies'},
+                    {'name': 'requested_sight_point_stop', 'kind': 'controller',
+                     'range_or_domain': 'true or false when neither crosswalk nor line exists'},
                     {'name': 'measured_pre_crosswalk_stop', 'kind': 'subject_behavior',
                      'range_or_domain': 'source-measured Boolean; no legal conclusion'},
                 ]}
@@ -64,14 +66,17 @@ def build():
                     'range_or_domain': 'true/false', 'used_by_laws': [LAW_ID]},
                    {'name': 'requested_pre_line_stop', 'kind': 'controller',
                     'range_or_domain': 'true/false on the marked-line branch', 'used_by_laws': [LAW_ID]},
+                   {'name': 'requested_sight_point_stop', 'kind': 'controller',
+                    'range_or_domain': 'true/false on the no-reference branch', 'used_by_laws': [LAW_ID]},
                    {'name': 'measured_pre_crosswalk_stop', 'kind': 'subject_behavior',
                     'range_or_domain': 'source-measured true/false', 'used_by_laws': [LAW_ID]}]}
     refs['bindings'] = write('bindings.json', binding)
     description = json.loads((HERE / 'selected-probe-1-primary-construction.json').read_text())['recording_description']
-    assignments = lambda requested, crosswalk=True: {
+    assignments = lambda requested, crosswalk=True, sight=False: {
         'near_side_crosswalk_present': {'kind': 'world_setup', 'value': crosswalk, 'unit': 'boolean'},
         'requested_pre_crosswalk_stop': {'kind': 'controller', 'value': requested if crosswalk else None, 'unit': 'boolean'},
-        'requested_pre_line_stop': {'kind': 'controller', 'value': requested if not crosswalk else None, 'unit': 'boolean'},
+        'requested_pre_line_stop': {'kind': 'controller', 'value': requested if not crosswalk and not sight else None, 'unit': 'boolean'},
+        'requested_sight_point_stop': {'kind': 'controller', 'value': requested if sight else None, 'unit': 'boolean'},
         'measured_pre_crosswalk_stop': {'kind': 'subject_behavior', 'value': None, 'unit': 'boolean'},
     }
     cases = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
@@ -107,12 +112,25 @@ def build():
                     'recording_description': description,
                     'unresolved_judgment_calls': []}
                    for label, requested in (('line_stop', True), ('line_pass', False))],
+                 *[{'case_id': HERE.name + '__' + label,
+                    'target_law_id': LAW_ID,
+                    'target_type': 'compliant_attempt' if requested else 'violating_attempt',
+                    'paired_probe_id': HERE.name + '__sight_comparison',
+                    'deliberate_differences': ['requested_sight_point_stop'],
+                    'probe': {'primary_variable': 'requested_sight_point_stop',
+                              'comparison_or_standard': 'source-measured halt at first synthetic view opening before intersection; original driver view pending',
+                              'target_value_or_branch': requested},
+                    'rationale': 'No-crosswalk/no-line controlled request; physical visibility and traffic need original review',
+                    'variable_assignments': assignments(requested, False, True),
+                    'recording_description': description,
+                    'unresolved_judgment_calls': []}
+                   for label, requested in (('sight_stop', True), ('sight_pass', False))],
              ]}
     refs['cases'] = write('cases.json', cases)
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
                                   'assignment_id': HERE.name,
                                   'status': 'draft', 'stages': refs})
-    return {'selected_cases': 4, 'index_sha256': refs['cases']['sha256']}
+    return {'selected_cases': 6, 'index_sha256': refs['cases']['sha256']}
 
 
 if __name__ == '__main__':

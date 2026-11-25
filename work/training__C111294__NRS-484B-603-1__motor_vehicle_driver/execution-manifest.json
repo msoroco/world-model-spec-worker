@@ -135,7 +135,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5c95832a3429ec4b7750d31a48723c2b0478b49f41894edb9f25f1ca6d3450ed",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
         "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --self-test",
         "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --self-test --negative",
         "test_exit_code": 0,
@@ -277,7 +277,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5c95832a3429ec4b7750d31a48723c2b0478b49f41894edb9f25f1ca6d3450ed",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
         "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --self-test",
         "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --self-test --negative",
         "test_exit_code": 0,
@@ -424,7 +424,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5c95832a3429ec4b7750d31a48723c2b0478b49f41894edb9f25f1ca6d3450ed",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
         "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a --self-test",
         "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a --self-test --negative",
         "test_exit_code": 0,
@@ -571,7 +571,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5c95832a3429ec4b7750d31a48723c2b0478b49f41894edb9f25f1ca6d3450ed",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
         "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b --self-test",
         "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b --self-test --negative",
         "test_exit_code": 0,
@@ -581,6 +581,310 @@
         "test_log_sha256": "e5bb67cf358dc15452a32ba44ddcc5abefbcf95b17518124b0d94731140c91ee",
         "negative_log": "delivery-weather_probe_b-negative.log",
         "negative_log_sha256": "d1cc4fa60804dbda5a077fd65272f8823da6b18a8547f8b086a84a9cb4951cef"
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+      "kind": "delivery",
+      "measurement_contract": "pedestrian_probe_a-measurement-contract.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker crossing, ego speed and conflict distance can differ from synthetic diagnostics; retry changes the common other-vehicle spawn timing only."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-pedestrian-saved-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "pedestrian-branch-drafts/pedestrian_probe_a-fallback1/construction.json",
+          "construction_sha256": "f5f10b602031decff740bbbd7e29499a6f61ddbdb46896a3ccb41f065660a67e",
+          "trigger": {
+            "source": "original Native ego speed, pedestrian pose and other-vehicle trajectory",
+            "metric": "approach reduction and conflict timing with original walker readback",
+            "failure_condition": "Primary speed profile or source-reviewed other-traffic timing fails physical target with pedestrian present"
+          },
+          "changed_knobs": [
+            "common other-vehicle spawn position; same walker route and camera contract"
+          ],
+          "offline": {
+            "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+            "candidate_id": "fallback1",
+            "construction_sha256": "f5f10b602031decff740bbbd7e29499a6f61ddbdb46896a3ccb41f065660a67e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian_probe_a-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a --candidate fallback1 --output .runtime-work/c111294-pedestrian_probe_a-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "pedestrian-branch-drafts/pedestrian_probe_a-fallback1/offline.log",
+            "log_sha256": "e91ffc2f0ddb65afe42693ffd216268cc8d15d0897c222199bf34dd814e76e9c"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-branch-drafts/pedestrian_probe_a-fallback1/compatibility.json",
+            "sha256": "82f972fc7754af12cffbc9400693db80df53e315ac054bfff9a4629fe6a94c02",
+            "log": "pedestrian-branch-drafts/pedestrian_probe_a-fallback1/analysis.log",
+            "negative_log": "pedestrian-branch-drafts/pedestrian_probe_a-fallback1/negative.log"
+          },
+          "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian-branch-drafts/pedestrian_probe_a/recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "pedestrian-branch-drafts/pedestrian_probe_a/construction.json",
+      "construction_sha256": "8abd537275f75537a278709bb39e1dc4de470c04ebbd345cd437bb78dfb1f74f",
+      "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian-branch-drafts/pedestrian_probe_a/recipe.json",
+      "offline": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+        "candidate_id": "primary",
+        "construction_sha256": "8abd537275f75537a278709bb39e1dc4de470c04ebbd345cd437bb78dfb1f74f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian_probe_a-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a --candidate primary --output .runtime-work/c111294-pedestrian_probe_a-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "pedestrian-branch-drafts/pedestrian_probe_a/offline.log",
+        "log_sha256": "35147bdd5ff0ad381d4980ceb71f2ac8eccef3386a4067dff229f2a858e97265"
+      },
+      "compatibility": {
+        "receipt": "pedestrian-branch-drafts/pedestrian_probe_a/compatibility.json",
+        "sha256": "31e7d941e8e5f0967aabab26446f1575fc8c1b06fe49e2696744fa79591a6ac3",
+        "log": "pedestrian-branch-drafts/pedestrian_probe_a/analysis.log",
+        "negative_log": "pedestrian-branch-drafts/pedestrian_probe_a/negative.log"
+      },
+      "negative": {
+        "log": "pedestrian-branch-drafts/pedestrian_probe_a/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/pedestrian_probe_a/proof.json",
+        "sha256": "adde539bc399374f3ddefa5c8aaa453927fa8e6d4217dba79c83b4e2b04f8aa2"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "observed_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "pedestrian_pose": {
+          "entrypoint": "runner.py",
+          "method": "Original Native walker actor transform readback on 600 joined frames",
+          "evidence": "native_samples.jsonl, context.json and capture/evidence.jsonl"
+        },
+        "pedestrian_hazard": {
+          "entrypoint": "runner.py",
+          "method": "Original Native walker route and independent highway conflict review",
+          "evidence": "context.json and capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v*/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "pedestrian-branch-drafts/pedestrian_probe_a/saved.log",
+        "test_log_sha256": "2706ee027c6ff59ffdcda29db33bff8f5b7703115599b2fe9f9aadfb0bac1102",
+        "processing_receipt": "pedestrian-branch-drafts/pedestrian_probe_a/processing.json",
+        "processing_sha256": "2706ee027c6ff59ffdcda29db33bff8f5b7703115599b2fe9f9aadfb0bac1102"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
+        "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native result required",
+        "test_log": "delivery-pedestrian_probe_a-positive.log",
+        "test_log_sha256": "f6dedf84e1c7640d7dfbd7a577ed02989553fd8c39d6b9452cb6646d69117904",
+        "negative_log": "delivery-pedestrian_probe_a-negative.log",
+        "negative_log_sha256": "45f5a7fcd2ca3c82d1bd330669f83f3f32d895f2210e21656b1db14fe5e37dbe"
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b",
+      "kind": "delivery",
+      "measurement_contract": "pedestrian_probe_b-measurement-contract.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native walker crossing, ego speed and conflict distance can differ from synthetic diagnostics; retry changes the common other-vehicle spawn timing only."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-pedestrian-saved-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "pedestrian-branch-drafts/pedestrian_probe_b-fallback1/construction.json",
+          "construction_sha256": "5616499019146c5080d4d748e19a4655b80546f77c6fd253c072ac3fd7fc727f",
+          "trigger": {
+            "source": "original Native ego speed, pedestrian pose and other-vehicle trajectory",
+            "metric": "approach reduction and conflict timing with original walker readback",
+            "failure_condition": "Primary speed profile or source-reviewed other-traffic timing fails physical target with pedestrian present"
+          },
+          "changed_knobs": [
+            "common other-vehicle spawn position; same walker route and camera contract"
+          ],
+          "offline": {
+            "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b",
+            "candidate_id": "fallback1",
+            "construction_sha256": "5616499019146c5080d4d748e19a4655b80546f77c6fd253c072ac3fd7fc727f",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian_probe_b-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b --candidate fallback1 --output .runtime-work/c111294-pedestrian_probe_b-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "pedestrian-branch-drafts/pedestrian_probe_b-fallback1/offline.log",
+            "log_sha256": "6226937de33d9940b21feabf604c914461c982ec68f23c3555ff537ea5472b2f"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-branch-drafts/pedestrian_probe_b-fallback1/compatibility.json",
+            "sha256": "c03260a7d81ec520497532ad4d577c291ee6e9d7bc034c81a8209699152b97f9",
+            "log": "pedestrian-branch-drafts/pedestrian_probe_b-fallback1/analysis.log",
+            "negative_log": "pedestrian-branch-drafts/pedestrian_probe_b-fallback1/negative.log"
+          },
+          "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian-branch-drafts/pedestrian_probe_b/recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "pedestrian-branch-drafts/pedestrian_probe_b/construction.json",
+      "construction_sha256": "e3a076266a5521a97411553ead7277d038a4aaeac1fb71e8e728843e658fc5e8",
+      "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian-branch-drafts/pedestrian_probe_b/recipe.json",
+      "offline": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b",
+        "candidate_id": "primary",
+        "construction_sha256": "e3a076266a5521a97411553ead7277d038a4aaeac1fb71e8e728843e658fc5e8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/pedestrian_probe_b-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b --candidate primary --output .runtime-work/c111294-pedestrian_probe_b-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "pedestrian-branch-drafts/pedestrian_probe_b/offline.log",
+        "log_sha256": "234f4fe8e60411a4926f118ae262d874890ed1b36ae13757eacacacbafac4e98"
+      },
+      "compatibility": {
+        "receipt": "pedestrian-branch-drafts/pedestrian_probe_b/compatibility.json",
+        "sha256": "50b78c7a1102782c723b4802ea0008a70e5d3e6330dd4ec26a8f87474f4eecc4",
+        "log": "pedestrian-branch-drafts/pedestrian_probe_b/analysis.log",
+        "negative_log": "pedestrian-branch-drafts/pedestrian_probe_b/negative.log"
+      },
+      "negative": {
+        "log": "pedestrian-branch-drafts/pedestrian_probe_b/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/pedestrian_probe_b/proof.json",
+        "sha256": "5cd5359cd88dc1a3407a890dfcb9495867fb2fb405f42311e8f199983d7314fe"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "observed_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "pedestrian_pose": {
+          "entrypoint": "runner.py",
+          "method": "Original Native walker actor transform readback on 600 joined frames",
+          "evidence": "native_samples.jsonl, context.json and capture/evidence.jsonl"
+        },
+        "pedestrian_hazard": {
+          "entrypoint": "runner.py",
+          "method": "Original Native walker route and independent highway conflict review",
+          "evidence": "context.json and capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v*/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "pedestrian-branch-drafts/pedestrian_probe_b/saved.log",
+        "test_log_sha256": "1b41020893a49a349bac83b5f16fee90d02e6a52889da9db9366d2c0abdadbee",
+        "processing_receipt": "pedestrian-branch-drafts/pedestrian_probe_b/processing.json",
+        "processing_sha256": "1b41020893a49a349bac83b5f16fee90d02e6a52889da9db9366d2c0abdadbee"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "92c69fc56b39a7c2a83736a5e99cd75520637b1fbd77d8cd9cfbc4624eab5206",
+        "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native result required",
+        "test_log": "delivery-pedestrian_probe_b-positive.log",
+        "test_log_sha256": "c42a652b1edce82bbbf661d7ca4c4b22b876755798e9f0e74319fad7003fabe0",
+        "negative_log": "delivery-pedestrian_probe_b-negative.log",
+        "negative_log_sha256": "45f5a7fcd2ca3c82d1bd330669f83f3f32d895f2210e21656b1db14fe5e37dbe"
       }
     }
   ]

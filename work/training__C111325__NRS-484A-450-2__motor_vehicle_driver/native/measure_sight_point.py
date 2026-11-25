@@ -19,6 +19,9 @@ def measure(root, case_id):
     if manifest.get('case_id') != case_id or manifest.get('source_kind') not in ('synthetic_native_sample', 'native_observation'):
         raise ValueError('Sight source identity differs')
     needed = ('road.xodr', 'native_samples.jsonl', 'sight_samples.jsonl', 'video_frames.jsonl')
+    for name in needed:
+        if not (root / name).is_file():
+            raise ValueError('Missing required source: ' + name)
     if any(manifest.get('sha256', {}).get(name) != sha(root / name) for name in needed):
         raise ValueError('Sight source hash differs')
     road = ET.parse(root / 'road.xodr').getroot()

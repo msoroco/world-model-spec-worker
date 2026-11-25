@@ -25,6 +25,10 @@ def compare(a, b):
             raise ValueError('Participant roles changed')
         if left.get('other_position_m') != right.get('other_position_m'):
             raise ValueError('Other-traffic trajectory changed')
+        if left.get('pedestrian_position_m') != right.get('pedestrian_position_m'):
+            raise ValueError('Pedestrian trajectory changed')
+        if left.get('pedestrian_actor_id') != right.get('pedestrian_actor_id'):
+            raise ValueError('Pedestrian actor identity changed')
         if left.get('ego_position_m', [None])[0] != right.get('ego_position_m', [None])[0]:
             raise ValueError('Ego lateral starting or path coordinate changed')
     return {'frames_per_case': 600, 'fixed_other_traffic': True, 'fixed_initial_ego': True}
@@ -41,6 +45,11 @@ def audit(args):
             raise ValueError('Case has unsupported legal acceptance')
     if sha(left / 'road.xodr') != sha(right / 'road.xodr'):
         raise ValueError('Controlled comparison map changed')
+    left_context = json.loads((left / 'context.json').read_text())
+    right_context = json.loads((right / 'context.json').read_text())
+    for condition in ('weather_parameters', 'pedestrian_hazard'):
+        if left_context.get(condition) != right_context.get(condition):
+            raise ValueError(f'Controlled comparison {condition} changed')
     lc = json.loads((left / 'candidate-selection.json').read_text())
     rc = json.loads((right / 'candidate-selection.json').read_text())
     if lc.get('candidate_id') != rc.get('candidate_id'):
@@ -74,6 +83,18 @@ def selftest(negative):
         except ValueError:
             continue
         raise AssertionError('Changed controlled condition accepted')
+    with_walker = json.loads(json.dumps(a))
+    for row in with_walker:
+        row['pedestrian_position_m'] = [row['frame'] / 20, -5, 0.5]
+        row['pedestrian_actor_id'] = 303
+    changed = json.loads(json.dumps(with_walker))
+    changed[200]['pedestrian_position_m'][0] += 1
+    try:
+        compare(with_walker, changed)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Changed pedestrian trajectory accepted')
     return dict(result, original_capture_attested=False)
 
 
