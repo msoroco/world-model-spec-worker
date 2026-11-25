@@ -135,8 +135,25 @@ def finalize(attempt, output):
         'format': 'c228133-saved-analysis-v1',
         'case_id': config['case_id'],
         'measurements': {'road_entry': {
-            'method': 'saved_source_analysis', 'value': measurement,
-            'source_sha256': review['original_source_sha256']}},
+            'method': 'finalize', 'value': measurement,
+            'sources': {name: digest(attempt / name) for name in
+                        ('native-pedestrian-frames.jsonl', 'road-boundary.json',
+                         'independent-review.json')}},
+            'signal_context': {
+                'method': 'finalize',
+                'value': {'frame_count': len(signal), 'reviewed_diagnostic':
+                          review['diagnostic_fixture']},
+                'sources': {name: digest(attempt / name) for name in
+                            ('native-signal-frames.jsonl',
+                             'governing-device-authority.json',
+                             'independent-review.json')}},
+            'other_device_context': {
+                'method': 'finalize',
+                'value': {'frame_count': len(device), 'permission_frames':
+                          sum(bool(item['permits_proceed']) for item in device)},
+                'sources': {name: digest(attempt / name) for name in
+                            ('native-pedestrian-device-frames.jsonl',
+                             'independent-review.json')}}},
         'physical_acceptance_claimed': False,
         'legal_verdict_claimed': False}, indent=2, allow_nan=False) + '\n')
     (attempt / 'result.json').write_text(json.dumps(result, indent=2,

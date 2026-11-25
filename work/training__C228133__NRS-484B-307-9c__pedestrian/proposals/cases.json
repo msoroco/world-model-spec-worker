@@ -1,0 +1,253 @@
+{
+  "cell_id": "C228133",
+  "actor": "pedestrian",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored signal and road geometry.",
+      "variable_assignments": {
+        "requested_pedestrian_entry": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "observed_road_entry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native walker bounding-box world vertices",
+            "name": "pedestrian_footprint",
+            "reference_frame": "Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms frame interval and map edge calibration; legal highway status unreviewed",
+            "unit": "m"
+          },
+          {
+            "method": "Two Native traffic-light actors plus independent original pixel and facing review",
+            "name": "governing_red_and_turn_arrow",
+            "reference_frame": "Native actor IDs and four synchronized RGB streams",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Traffic-light actor state alone cannot prove arrow shape or governance",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent source inventory and pixel review of any other governing device",
+            "name": "other_device_permission",
+            "reference_frame": "Original Native source rows and pixel hashes",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Permission remains unknown until source review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Original Native map road-boundary readback with independent highway authority",
+            "name": "native_road_boundary",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official traffic-control inventory bound to Native actor IDs",
+            "name": "governing_signal_authority",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official road inventory or dedication and public use source",
+            "name": "highway_authority",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Source review and CPU measurement do not establish physical or legal acceptance. Debug signal geometry is not an official governing device."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+      "target_law_id": "NRS-484B-307-9c",
+      "target_type": "boundary_probe",
+      "rationale": "Compare source-observed road entry with indication and other-device context held fixed; do not label legal outcome.",
+      "variable_assignments": {
+        "requested_pedestrian_entry": {
+          "kind": "world_setup",
+          "value": "no_entry"
+        },
+        "observed_road_entry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native walker bounding-box world vertices",
+            "name": "pedestrian_footprint",
+            "reference_frame": "Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms frame interval and map edge calibration; legal highway status unreviewed",
+            "unit": "m"
+          },
+          {
+            "method": "Two Native traffic-light actors plus independent original pixel and facing review",
+            "name": "governing_red_and_turn_arrow",
+            "reference_frame": "Native actor IDs and four synchronized RGB streams",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Traffic-light actor state alone cannot prove arrow shape or governance",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent source inventory and pixel review of any other governing device",
+            "name": "other_device_permission",
+            "reference_frame": "Original Native source rows and pixel hashes",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Permission remains unknown until source review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Original Native map road-boundary readback with independent highway authority",
+            "name": "native_road_boundary",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official traffic-control inventory bound to Native actor IDs",
+            "name": "governing_signal_authority",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official road inventory or dedication and public use source",
+            "name": "highway_authority",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Source review and CPU measurement do not establish physical or legal acceptance. Debug signal geometry is not an official governing device."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ],
+      "paired_probe_id": "c228133-entry-pair",
+      "deliberate_differences": [
+        "requested_pedestrian_entry"
+      ],
+      "probe": {
+        "primary_variable": "requested_pedestrian_entry",
+        "comparison_or_standard": "source-reviewed first road entry with fixed governing indication",
+        "target_value_or_branch": "no_entry"
+      }
+    },
+    {
+      "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__contrast",
+      "target_law_id": "NRS-484B-307-9c",
+      "target_type": "boundary_probe",
+      "rationale": "Compare source-observed road entry with indication and other-device context held fixed; do not label legal outcome.",
+      "variable_assignments": {
+        "requested_pedestrian_entry": {
+          "kind": "world_setup",
+          "value": "entry"
+        },
+        "observed_road_entry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native walker bounding-box world vertices",
+            "name": "pedestrian_footprint",
+            "reference_frame": "Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms frame interval and map edge calibration; legal highway status unreviewed",
+            "unit": "m"
+          },
+          {
+            "method": "Two Native traffic-light actors plus independent original pixel and facing review",
+            "name": "governing_red_and_turn_arrow",
+            "reference_frame": "Native actor IDs and four synchronized RGB streams",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Traffic-light actor state alone cannot prove arrow shape or governance",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent source inventory and pixel review of any other governing device",
+            "name": "other_device_permission",
+            "reference_frame": "Original Native source rows and pixel hashes",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "Permission remains unknown until source review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Original Native map road-boundary readback with independent highway authority",
+            "name": "native_road_boundary",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official traffic-control inventory bound to Native actor IDs",
+            "name": "governing_signal_authority",
+            "unit": "structured"
+          },
+          {
+            "method": "Independent official road inventory or dedication and public use source",
+            "name": "highway_authority",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Source review and CPU measurement do not establish physical or legal acceptance. Debug signal geometry is not an official governing device."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ],
+      "paired_probe_id": "c228133-entry-pair",
+      "deliberate_differences": [
+        "requested_pedestrian_entry"
+      ],
+      "probe": {
+        "primary_variable": "requested_pedestrian_entry",
+        "comparison_or_standard": "source-reviewed first road entry with fixed governing indication",
+        "target_value_or_branch": "entry"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c228133-other-device-governance",
+      "target_law_id": "NRS-484B-307-9c",
+      "judgment_refs": [
+        {
+          "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+          "note": "Whether another official device permits the facing pedestrian to proceed requires original indication, facing and governance review."
+        }
+      ],
+      "rationale": "Official device permission and applicability require independent source review, not a numeric sweep.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Independent verified authority and original pixel review of any other device are not supplied by CPU diagnostic fixtures."
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C228133__NRS-484B-307-9c__pedestrian__reference",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "signal_context",
+      "method": "finalize",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-frames.jsonl",
+        "governing-device-authority.json",
+        "independent-review.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "road_entry",
+      "method": "finalize",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-pedestrian-frames.jsonl",
+        "road-boundary.json",
+        "independent-review.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "other_device_context",
+      "method": "finalize",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-pedestrian-device-frames.jsonl",
+        "independent-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-pedestrian-frames.jsonl"
+    ],
+    "error_contains": "Missing required source: native-pedestrian-frames.jsonl"
+  }
+}

@@ -183,5 +183,3 @@ def build(suffix):
 
 if __name__=='__main__':
     print(json.dumps([build(suffix) for suffix in CASES]))
-
-

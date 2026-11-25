@@ -27,9 +27,19 @@ def check(bundle):
                      ('tracks_sha256','requested-tracks.jsonl')):
         if config.get(key)!=sha(bundle/name):raise ValueError('Changed rotary source: '+name)
     road=ET.parse(bundle/'road.xodr').getroot()
-    lanes={int(x.attrib['id']):x.attrib['type'] for x in road.findall('.//lane')}
-    if lanes!={0:'none',-1:'driving',-2:'driving'} or road.find('./road/planView/geometry/arc') is None:
-        raise ValueError('Authored rotary geometry absent')
+    roads=road.findall('./road')
+    if [int(item.attrib['id']) for item in roads]!=[1,2,3,4]:
+        raise ValueError('Four connected rotary quarters absent')
+    for index,item in enumerate(roads):
+        lanes={int(x.attrib['id']):x.attrib['type'] for x in item.findall('.//lane')}
+        previous=(index-1)%4+1;following=(index+1)%4+1
+        predecessor=item.find('./link/predecessor');successor=item.find('./link/successor')
+        if (lanes!={0:'none',-1:'driving',-2:'driving'} or
+                item.find('./planView/geometry/arc') is None or
+                predecessor is None or successor is None or
+                predecessor.attrib.get('elementId')!=str(previous) or
+                successor.attrib.get('elementId')!=str(following)):
+            raise ValueError('Authored connected rotary geometry differs')
     rows=[json.loads(x) for x in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
     if len(rows)!=600:raise ValueError('Continuous rotary request needs 600 frames')
     speed=config.get('requested_speed_mps')

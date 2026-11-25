@@ -90,13 +90,17 @@ def execute(bundle,output,host,port,checked):
         mapping=world.get_map()
         native_lanes={}
         for lane_id,radius in ((-1,23.75),(-2,27.25)):
-            point=carla.Location(x=radius/math.sqrt(2),y=-radius/math.sqrt(2),z=1)
-            waypoint=mapping.get_waypoint(point,project_to_road=False,
-                                          lane_type=carla.LaneType.Driving)
-            native_lanes[str(lane_id)]=None if waypoint is None else {
-                'road_id':waypoint.road_id,'lane_id':waypoint.lane_id}
-            if waypoint is None or waypoint.road_id!=1 or waypoint.lane_id!=lane_id:
-                raise RuntimeError('Generated Native rotary lane readback differs')
+            native_lanes[str(lane_id)]=[]
+            for quadrant in range(4):
+                angle=(quadrant+.5)*math.pi/2
+                point=carla.Location(x=radius*math.cos(angle),
+                                     y=radius*math.sin(angle),z=1)
+                waypoint=mapping.get_waypoint(point,project_to_road=False,
+                                              lane_type=carla.LaneType.Driving)
+                native_lanes[str(lane_id)].append(None if waypoint is None else {
+                    'road_id':waypoint.road_id,'lane_id':waypoint.lane_id})
+                if waypoint is None or waypoint.road_id!=quadrant+1 or waypoint.lane_id!=lane_id:
+                    raise RuntimeError('Generated Native rotary quarter/lane readback differs')
         first=requests[0];library=world.get_blueprint_library()
         bp=library.find('vehicle.tesla.model3');bp.set_attribute('role_name','c234827_ego')
         ego=world.try_spawn_actor(bp,carla.Transform(
@@ -112,6 +116,11 @@ def execute(bundle,output,host,port,checked):
             'arc_lane_readback':native_lanes,'ego_actor_id':ego.id,
             'physical_roundabout_verified':False,'traffic_control_verified':False,
             'legal_verdict':None})
+        write_new(output/'context.json',{'rotary_island_source':{
+            'kind':'original_native','island_center_xy_m':[0,0],
+            'island_radius_m':15,'road_sha256':sha(bundle/'road.xodr'),
+            'native_map_sha256':hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
+            'physical_roundabout_verified':False}})
         cameras=camera_plan()
         for name,width,height,fov,location,attachment in cameras:
             camera_bp=library.find('sensor.camera.rgb')

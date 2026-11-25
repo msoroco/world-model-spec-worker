@@ -37,7 +37,7 @@ def build(index,candidate='primary'):
                         ('approach',1280,720,80,None,'world'),
                         ('reference_corner',1280,720,85,None,'world'),
                         ('driver_reference',1280,720,90,None,'ego')]]
-    config['road_sha256']=hashlib.sha256((NATIVE/'road.xodr').read_bytes()).hexdigest()
+    config['road_sha256']=hashlib.sha256((NATIVE/'road_30s.xodr').read_bytes()).hexdigest()
     config['island_geometry_sha256']=hashlib.sha256((NATIVE/'island-geometry.json').read_bytes()).hexdigest()
     description={'channels':[{'name':key,'unit':'structured','sampling_rate_hz':20,
         'method':value,'time_window':'all original 600 Native frames / 30 s',
@@ -66,8 +66,10 @@ def build(index,candidate='primary'):
         config['requested_speed_mps']=speed
     files={'runner.py':(NATIVE/'runner_30s.py').read_text(),
            'capture_30s.py':(NATIVE/'capture_30s.py').read_text(),
+           'measure_saved_30s.py':(NATIVE/'measure_saved_30s.py').read_text(),
            'tests/test_capture_30s.py':(NATIVE/'test_capture_30s.py').read_text(),
-           'road.xodr':(NATIVE/'road.xodr').read_text(),
+           'tests/test_measure_saved_30s.py':(NATIVE/'test_measure_saved_30s.py').read_text(),
+           'road.xodr':(NATIVE/'road_30s.xodr').read_text(),
            'island-geometry.json':(NATIVE/'island-geometry.json').read_text(),
            'assignment-source.json':files['assignment-source.json'],
            'requested-tracks.jsonl':files['requested-tracks.jsonl']}
@@ -93,11 +95,21 @@ def build(index,candidate='primary'):
                            'metric':'sampled rotary-lane body clearance and continuous signed angular motion',
                            'failure_condition':'8 m/s primary leaves claimed rotary lane or reverses/interrupts signed progress'},
                 'changed_knobs':['requested controller speed 8 m/s to 6 m/s; same 23.75 m lane-center radius']}
+    contract={'format':'worker-measurement-contract','case_id':old['case_id'],
+        'requirements':[{'disposition_index':0,'requirement':'LVMC-11-43-010-A',
+            'source':'LVMC 11.43.010(A)','output_key':'rotation_observation',
+            'method':'measure','value_type':'object','kind':'measured','inputs':list((
+            'native-raw-actors.jsonl','native-map-readback.json','video_frames.jsonl',
+            'trace.jsonl','capture/evidence.jsonl','capture/manifest.json'))}],
+        'negative':{'remove':['native-raw-actors.jsonl'],
+                    'error_contains':'Missing required source: native-raw-actors.jsonl'}}
+    (ROOT/f'measurement-contract-witness_{index}.json').write_text(encode(contract))
     return {'case_id':old['case_id'],'kind':'delivery',
             'candidate_risk':{'status':'physical','reason':'Original Native rotary lane/turn tracking and four-camera framing may fail at target speed'},
-            'measurement_contract':f'native/30s/witness_{index}/construction.json',
+            'measurement_contract':f'measurement-contract-witness_{index}.json',
             'measurement_procedure':{'entrypoint':'measure_saved_30s.py','output_schema':'c234827-rotary-saved-v1'},
             'candidates':[build(index,'fallback1')],'id':'primary','construction':path.name,
+            'fixture_recipe':f'work/{ASSIGNMENT}/selected-recipe-witness_{index}.json',
             'construction_sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 
 if __name__=='__main__':

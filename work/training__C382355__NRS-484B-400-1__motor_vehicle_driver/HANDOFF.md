@@ -1,4 +1,14 @@
-# NRS-484B-400-1 at C382355
+# C382355 / NRS 484B.400(1) current handoff
+
+Status: ready after the exact scoped strict gate passed on 2026-11-25. Four selected 24 s cases cover the qualifying right-only lane and the alternative extreme-right lane, each with rightmost versus inner-lane approach. The alternate authored map now has both a right-turn connector and a straight-through connector from lane -2; the earlier arrow-only alternate receipts are superseded.
+
+All 12 selected current-runtime primary/fallback constructions pass offline CPU tests and current-v2 public positive/removed-Native-source negative compatibility. All 12 recorded-only saved chains have 480 joined frames and full four-view decode. Six canonical semantic stages validate four selected cases. Four source-shaped physical fixture predicates and four independent delivery positive/negative selftests pass. A separate source audit binds exact frozen NRS 484B.400(1), NRS 484B.223(4)(a)/(b) text and verifies both authored branch layouts; the selected comparison audit fixes all within-pair conditions and rejects map drift. Seventeen root CPU tests pass. Original Native pixels and road design remain for local delivery review; no accepted recording or legal verdict is claimed.
+
+Current receipts: execution manifest SHA-256 fc5584b86d8b991671f822db2d3f3eb057f67298ad71a6e71d2819297c3b230b; selected public proof SHA-256 6d9e881a8726ffa312611879f3078117fb1fe0d6a29c4b3d02579205333cffff; semantic index SHA-256 2e0662b2660f1a18540be765065bea5c087aeb1a7f33127b782b2a6585dcc520; selected comparison SHA-256 45aa9418146520ff8a458efa4049548ca56c2406d3936be02c59248f8d2dc246; source audit SHA-256 f5b392092a5265bd06978ec3283768f5ba210e4fea0728b74346546052f76b3d; root tests SHA-256 55ddbec3785fba1b550eff259529c39ea1a550bd14df36b0205a6bc6c4dbb414. First GPU command is in result.json. Scratch media and temporary files are only under .runtime-work/.
+
+## Historical checkpoints
+
+# Historical C382355/400-1 checkpoints
 
 Actor: `motor_vehicle_driver`; frozen cell: intersection / right turn / right turn lane. Status: **blocked**. Two planned boundary probes and eight candidate bundles are unselected drafts; selected count is zero.
 
