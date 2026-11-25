@@ -19,6 +19,37 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def verify_live_site(client, survey: dict, survey_path: Path) -> str:
+    """Bind a reviewed survey to the current OpenDRIVE bytes before mutation."""
+    review = survey.get("reviewed_original_site")
+    if not isinstance(review, dict) or not all(review.get(key) for key in
+            ("reviewer", "method", "source_refs")):
+        raise ValueError("original hill-crest site review is missing")
+    if not isinstance(review["source_refs"], list) or not all(
+            isinstance(ref, dict) and ref.get("path") and ref.get("sha256")
+            for ref in review["source_refs"]):
+        raise ValueError("original site review lacks source hashes")
+    source_root = Path(survey_path).resolve().parent
+    for ref in review["source_refs"]:
+        relative = Path(ref["path"])
+        if relative.is_absolute() or not relative.parts:
+            raise ValueError("original site review source path must be relative")
+        source = (source_root / relative).resolve()
+        if not source.is_relative_to(source_root) or not source.is_file() or \
+                sha(source) != ref["sha256"]:
+            raise ValueError("original site review source bytes differ")
+    expected = survey.get("map_opendrive_sha256")
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError("original hill-crest OpenDRIVE hash is missing")
+    road_map = client.get_world().get_map()
+    if road_map.name != survey["map_id"]:
+        raise ValueError("live Native map identity differs from reviewed site")
+    observed = hashlib.sha256(road_map.to_opendrive().encode("utf-8")).hexdigest()
+    if observed != expected:
+        raise ValueError("live Native OpenDRIVE bytes differ from reviewed site")
+    return observed
+
+
 def run_bound_attempt(client, carla, plan: dict, case_id: str,
                       survey_path: Path, camera_profile_path: Path,
                       traffic_plan_path: Path, output: Path, *, restore_api):
@@ -42,6 +73,7 @@ def run_bound_attempt(client, carla, plan: dict, case_id: str,
     if traffic.get("actor_ids") != survey.get("traffic_actor_ids") or \
             not isinstance(traffic.get("actor_ids"), list) or not traffic["actor_ids"]:
         raise ValueError("original traffic roster differs from site survey")
+    verify_live_site(client, survey, survey_path)
     world = client.get_world()
     adapter = CarlaActorAdapter(world, carla, survey)
     holder = {}

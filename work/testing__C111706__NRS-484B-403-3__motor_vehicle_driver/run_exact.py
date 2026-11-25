@@ -17,7 +17,7 @@ from control_uturn import RouteFollower, TimedOtherVehicle
 
 def run_exact(world, *, site_path: Path, site_sha256: str, case_id: str,
               ego_spawn, other_spawn, camera_builder, output: Path,
-              control_factory, capture_fn=capture) -> dict:
+              control_factory, capture_fn=capture, pipeline_factory=None) -> dict:
     """Run one exact case and restore world/owned actors even on readback failure.
 
     ``camera_builder(world, actors, site)`` must return four named CARLA sensor
@@ -34,6 +34,9 @@ def run_exact(world, *, site_path: Path, site_sha256: str, case_id: str,
     original_settings = copy(world.get_settings())
     owned = None
     sensors = {}
+    pipeline = None
+    return_value = None
+    restored = False
     try:
         settings = copy(original_settings)
         settings.synchronous_mode = True
@@ -47,6 +50,8 @@ def run_exact(world, *, site_path: Path, site_sha256: str, case_id: str,
         if camera_root.exists():
             raise ValueError("new camera-originals directory required")
         collector = OriginalCameraCollector(camera_root, sensors)
+        if pipeline_factory is not None:
+            pipeline = pipeline_factory(owned["ego"], output.parent.parent, case_id)
         ego_control = RouteFollower(owned["ego_route"], control_factory)
         other_follow = RouteFollower(owned["other_route"], control_factory)
         other_control = TimedOtherVehicle(other_follow, site["other_start_tick"])
@@ -55,10 +60,16 @@ def run_exact(world, *, site_path: Path, site_sha256: str, case_id: str,
         receipt = capture_fn(world, owned["ego"], owned["other_vehicle"],
                              site_path, site_sha256, case_id, output,
                              ego_control, other_control, brake,
-                             ticks=900, step_s=0.05, camera_collector=collector)
-        return {**receipt, "camera_manifest": str(camera_root / "camera-manifest.json")}
+                             ticks=900, step_s=0.05, camera_collector=collector,
+                             pipeline_capture=pipeline)
+        return_value = {**receipt, "camera_manifest": str(camera_root / "camera-manifest.json")}
     finally:
         cleanup_errors = []
+        if pipeline is not None and not pipeline.closed:
+            try:
+                pipeline.close(confirmed=False)
+            except Exception as exc:
+                cleanup_errors.append(exc)
         for sensor in sensors.values():
             for method in (sensor.stop, sensor.destroy):
                 try:
@@ -77,7 +88,17 @@ def run_exact(world, *, site_path: Path, site_sha256: str, case_id: str,
                     cleanup_errors.append(exc)
         try:
             world.apply_settings(original_settings)
+            readback = world.get_settings()
+            restored = (readback.synchronous_mode == original_settings.synchronous_mode and
+                        readback.fixed_delta_seconds == original_settings.fixed_delta_seconds)
+            if not restored:
+                raise ValueError("world settings restoration readback differs")
         except Exception as exc:
             cleanup_errors.append(exc)
         if cleanup_errors and sys.exc_info()[0] is None:
             raise RuntimeError("exact-case cleanup failed") from cleanup_errors[0]
+    if return_value is None or not restored:
+        raise ValueError("exact-case capture or restoration incomplete")
+    return_value["restoration"] = {"restored": True,
+                                   "settings_readback": "synchronous mode and fixed delta verified"}
+    return return_value

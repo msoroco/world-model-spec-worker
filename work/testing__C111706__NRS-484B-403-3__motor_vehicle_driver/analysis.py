@@ -180,6 +180,10 @@ def build_result(root: Path, report: dict):
               "diagnostic_fixture": diagnostic,
               "legal_verdict_claimed": False,
               "physical_acceptance_claimed": False}
+    from worker_exchange.native_output import physical_result
+    result = physical_result(root, result)
+    report["physical_checks"] = result["physical_checks"]
+    report["realized_observables"] = result["realized_observables"]
     if (root / "result.json").exists():
         raise ValueError("Retain prior result; use a fresh analysis attempt")
     write(root / "result.json", result)

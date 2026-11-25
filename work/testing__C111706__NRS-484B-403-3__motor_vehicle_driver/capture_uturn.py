@@ -49,7 +49,8 @@ def _position(actor, road_map) -> dict:
 
 def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
             expected_case: str, output: Path, ego_control, other_control, brake_control,
-            *, ticks: int = 900, step_s: float = 0.05, camera_collector=None) -> dict:
+            *, ticks: int = 900, step_s: float = 0.05, camera_collector=None,
+            pipeline_capture=None) -> dict:
     """Write a sealed projection only after all original ticks are acquired.
 
     Control callbacks receive (actor, tick_index) and must apply a control.
@@ -76,6 +77,7 @@ def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
     frames = []
     prior_frame = None
     prior_time = None
+    completed = False
     try:
         for index in range(ticks):
             ego_control(ego, index)
@@ -91,14 +93,21 @@ def capture(world, ego, other, site_path: Path, expected_site_sha256: str,
             _need(math.isfinite(t), "nonfinite original time")
             if camera_collector is not None:
                 camera_collector.read_frame(frame, t)
+            if pipeline_capture is not None:
+                pipeline_capture.capture(frame, t)
             frames.append({"frame": frame, "time_s": t,
                            "ego": _position(ego, road_map),
                            "other_vehicle": _position(other, road_map)})
             prior_frame, prior_time = frame, t
+        completed = True
     finally:
-        # A failed readback must not leave a vehicle under commanded throttle.
-        for actor in (ego, other):
-            brake_control(actor)
+        try:
+            if pipeline_capture is not None:
+                pipeline_capture.close(confirmed=completed)
+        finally:
+            # A failed readback must not leave a vehicle under commanded throttle.
+            for actor in (ego, other):
+                brake_control(actor)
     packet = {
         "case_id": expected_case, "actor": "motor_vehicle_driver",
         "site_sha256": expected_site_sha256,

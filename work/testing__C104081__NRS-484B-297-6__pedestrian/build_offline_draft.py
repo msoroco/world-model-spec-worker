@@ -83,6 +83,23 @@ def main():
         shutil.copyfile(original, target)
         if hashlib.sha256(original.read_bytes()).digest() != hashlib.sha256(target.read_bytes()).digest():
             raise ValueError("original source changed while copying")
+    survey = json.loads((output / "site-survey.json").read_text())
+    review = survey.get("reviewed_original_site", {})
+    refs = review.get("source_refs", []) if isinstance(review, dict) else []
+    if not refs or not all(isinstance(ref, dict) and ref.get("path") and ref.get("sha256") for ref in refs):
+        raise ValueError("original hill-crest site review lacks source hashes")
+    for ref in refs:
+        relative = Path(ref["path"])
+        original = (source / relative).resolve()
+        target = (output / relative).resolve()
+        if relative.is_absolute() or not original.is_relative_to(source) or not target.is_relative_to(output):
+            raise ValueError("original site review source path escapes root")
+        if not original.is_file() or target.exists():
+            raise ValueError("missing or colliding original site review source")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(original, target)
+        if hashlib.sha256(target.read_bytes()).hexdigest() != ref["sha256"]:
+            raise ValueError("original site review source bytes differ")
     import carla
     from native_bound_attempt import run_bound_attempt
     from native_publication import publish_original

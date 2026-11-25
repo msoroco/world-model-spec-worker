@@ -118,3 +118,41 @@ class CaptureTest(unittest.TestCase):
             self.assertFalse(output.exists())
             self.assertEqual(ego.controls[-1], "brake")
             self.assertEqual(other.controls[-1], "brake")
+
+    def test_generic_pipeline_observes_same_900_original_ticks(self):
+        class Pipeline:
+            def __init__(self):
+                self.frames = []
+                self.confirmed = None
+
+            def capture(self, frame, time_s):
+                self.frames.append((frame, time_s))
+
+            def close(self, confirmed):
+                self.confirmed = confirmed
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            site = {"case_id": CASE, "map_name": "reviewed-map", "map_sha256": "map-seal",
+                    "route_sha256": "route-seal", "district_source_sha256": "district-seal",
+                    "intersection_boundary": {"source_sha256": "boundary-seal",
+                                              "polygon_xy_m": [[0, 0], [1, 0], [1, 1]]}}
+            path = root / "site.json"
+            path.write_text(json.dumps(site))
+            ego, other = Actor("ego", 0), Actor("other", 5)
+            pipeline = Pipeline()
+            capture(World(), ego, other, path, hashlib.sha256(path.read_bytes()).hexdigest(),
+                    CASE, root / "native.json", lambda a, i: a.apply_control("drive"),
+                    lambda a, i: a.apply_control("drive"), lambda a: a.apply_control("brake"),
+                    pipeline_capture=pipeline)
+            self.assertEqual([frame for frame, _ in pipeline.frames], list(range(100, 1000)))
+            self.assertTrue(pipeline.confirmed)
+
+            failed = Pipeline()
+            with self.assertRaisesRegex(CaptureError, "tick interval"):
+                capture(World(bad_interval=True), ego, other, path,
+                        hashlib.sha256(path.read_bytes()).hexdigest(), CASE,
+                        root / "failed.json", lambda a, i: a.apply_control("drive"),
+                        lambda a, i: a.apply_control("drive"),
+                        lambda a: a.apply_control("brake"), pipeline_capture=failed)
+            self.assertFalse(failed.confirmed)

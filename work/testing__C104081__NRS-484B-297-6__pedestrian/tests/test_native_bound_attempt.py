@@ -31,6 +31,8 @@ class BoundAttemptTest(unittest.TestCase):
             traffic = base / "traffic.json"
             traffic_sha = write(traffic, {"actor_ids": [42]})
             survey = base / "survey.json"
+            opendrive = "<OpenDRIVE><header name='surveyed-hill-road'/></OpenDRIVE>"
+            (base / "synthetic-map.xodr").write_text(opendrive)
             write(survey, {"source_kind": "original_native_map_survey",
                 "cell_id": "C104081", "map_id": "surveyed-hill-road",
                 "layout": "hill_crest", "surfaces": {key: {"surveyed": True} for key in
@@ -38,10 +40,16 @@ class BoundAttemptTest(unittest.TestCase):
                  "immediately_adjacent_highway")},
                 "local_to_world": {"x": 0, "y": 0, "yaw_degrees": 0},
                 "pedestrian_blueprint": "walker.pedestrian.0001",
+                "map_opendrive_sha256": hashlib.sha256(opendrive.encode()).hexdigest(),
+                "reviewed_original_site": {"reviewer": "CPU test fixture only",
+                    "method": "Synthetic review-field shape for hash-join test",
+                    "source_refs": [{"path": "synthetic-map.xodr",
+                                     "sha256": hashlib.sha256(opendrive.encode()).hexdigest()}]},
                 "camera_profile_sha256": profile_sha,
                 "traffic_plan_sha256": traffic_sha,
                 "traffic_actor_ids": [42]})
-            world = NS(get_map=lambda: NS(name="surveyed-hill-road"))
+            world = NS(get_map=lambda: NS(name="surveyed-hill-road",
+                                        to_opendrive=lambda: opendrive))
             client = NS(get_world=lambda: world)
             with patch("native_bound_attempt.run_native_attempt", return_value={"bound": True}) as run:
                 result = run_bound_attempt(client, object(), {}, "exact", survey,
@@ -55,6 +63,13 @@ class BoundAttemptTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "differs from site survey"):
                 run_bound_attempt(client, object(), {}, "exact", survey,
                     camera, traffic, base / "capture", restore_api=object())
+            write(traffic, {"actor_ids": [42]})
+            wrong_world = NS(get_map=lambda: NS(name="surveyed-hill-road",
+                                               to_opendrive=lambda: opendrive + "changed"))
+            with self.assertRaisesRegex(ValueError, "OpenDRIVE bytes differ"):
+                run_bound_attempt(NS(get_world=lambda: wrong_world), object(), {},
+                    "exact", survey, camera, traffic, base / "capture",
+                    restore_api=object())
 
 
 if __name__ == "__main__":

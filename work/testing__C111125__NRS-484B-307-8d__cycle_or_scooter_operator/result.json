@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator",
   "input_sha256": "e9ad29ba4004049d32f012b08ca06b1b04b206b7608a5207db1633dacb29a539",
   "status": "partial",
-  "readiness_kind": "six_case_pinned_compatibility_and_selected_saved_cpu_checkpoint",
+  "readiness_kind": "six_case_native_source_gate_and_pinned_cpu_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -358,6 +358,180 @@
       "exit_code": 1,
       "log": "cpu-canonical-audit-negative-diagnostic-production.log",
       "sha256": "909f145e0d8eeb87c65150757f2e5e73a292f0f59c8d6d84a92fc5f0d3054244"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/tests -q",
+      "exit_code": 0,
+      "log": "cpu-runner-entrypoint-unit.log",
+      "sha256": "497d49f033a8d9cdb01de3dacc1aac518e8aae8964276ebc5eaa207a72f5b185"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --attempt .runtime-work/c111125-8d-nov24/runner-rebind/saved-revision-two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/runner-rebind/saved-selected-new --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-saved-selected.log",
+      "sha256": "7b53b8413745230a86b6adadd208e9ee0238fb33aface34ee7af61b7923c5b79"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c111125-8d-nov24/runner-rebind/saved-revision-two_cycles_failed_detection --processed .runtime-work/c111125-8d-nov24/runner-rebind/saved-selected-new/v0001 --case-id testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --diagnostic-protocol --output .runtime-work/c111125-8d-nov24/runner-rebind/saved-selected-new/audit.json",
+      "exit_code": 0,
+      "log": "cpu-runner-saved-audit.log",
+      "sha256": "6eeac47b41bcde16ca05f86693a6f495e2dbf62d6eb1fecfff778ec03ecce11e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete",
+      "exit_code": 0,
+      "log": "cpu-runner-static-check.log",
+      "sha256": "4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-runner-strict-check.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --output .runtime-work/c111125-8d-nov24/runner-rebind/fails_to_yield-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-fails_to_yield-fallback1.log",
+      "sha256": "bdaae0f4099a9f0c2e54149f654a81de9140df15d588c25445ad9be6788083f5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --output .runtime-work/c111125-8d-nov24/runner-rebind/fails_to_yield-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-fails_to_yield-primary.log",
+      "sha256": "759818c19482f01c77c85584940105ef1ef82eaadec08e4b26c83a2aee3abd0c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --output .runtime-work/c111125-8d-nov24/runner-rebind/no_prior_stop-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-no_prior_stop-fallback1.log",
+      "sha256": "c1364102a116a3dd38b54b0f5942276e31f0f5ae5f29d8d9c46cab3d756cb4b7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --output .runtime-work/c111125-8d-nov24/runner-rebind/no_prior_stop-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-no_prior_stop-primary.log",
+      "sha256": "ede3fa1a1f849858bf5b745094247b7389aaf38279c2d73b33ccab4baed759fc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --output .runtime-work/c111125-8d-nov24/runner-rebind/one_cycle-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-one_cycle-fallback1.log",
+      "sha256": "72509c7404d5df053d2ca5f6f51861e4336ee0696e2b1c668c63225e161094ab"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --output .runtime-work/c111125-8d-nov24/runner-rebind/one_cycle-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-one_cycle-primary.log",
+      "sha256": "0a6abfa63fdbd42f6aeccc4fa1ae989ac5cd798f3470b402313e10c0992a199a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --output .runtime-work/c111125-8d-nov24/runner-rebind/signal_changes-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-signal_changes-fallback1.log",
+      "sha256": "884ad4152dd98bb4efcef5f431d668b18b6ed1075aa47fe3e534a82545ce0c4b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --output .runtime-work/c111125-8d-nov24/runner-rebind/signal_changes-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-signal_changes-primary.log",
+      "sha256": "68f8512e4c2139e6321698d133bc191f92d4df41970af2daa8b0ed5c31e23aba"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --output .runtime-work/c111125-8d-nov24/runner-rebind/three_cycles-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-three_cycles-fallback1.log",
+      "sha256": "f6f00cdd725e284c7b7ec35cdde68165e10be6973a07ca19996c0a42cb8635f7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --output .runtime-work/c111125-8d-nov24/runner-rebind/three_cycles-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-three_cycles-primary.log",
+      "sha256": "46cc1ec1f328356f2f7f59c618ad580c4d628d8e7aed0bcde862071033dd6338"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/runner-rebind/two_cycles_failed_detection-fallback1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-two_cycles_failed_detection-fallback1.log",
+      "sha256": "8f48ef151274cc52e596eee947f719ac2028c49cba78d471cceb11c91d1e8be9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/runner-rebind/two_cycles_failed_detection-primary",
+      "exit_code": 0,
+      "log": "cpu-runner-offline-two_cycles_failed_detection-primary.log",
+      "sha256": "c14f635a6b6a5cb421e59ca1ec9009d7c019749d70710efa5ba100b569a292d6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-fails_to_yield-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-fails_to_yield-fallback1.log",
+      "sha256": "01f270760c3b11f5d4fcbad84fb2f0fac02e29b8dec11778e7f53c6fe8b064be"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-fails_to_yield-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-fails_to_yield-primary.log",
+      "sha256": "cde1941d5b9fa8eb4fa4700d2b4e9cc9ee68f5b560c4b6b7959628e93e442c14"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-no_prior_stop-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-no_prior_stop-fallback1.log",
+      "sha256": "9ad90935709cbaf49040c111bfcb83fe134e699a72ab24ac5316a02c1f37758f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-no_prior_stop-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-no_prior_stop-primary.log",
+      "sha256": "e2c36f4765d3990019ab164de9d03a7ec387d593ac926a0c9d9f3e037723d0b6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-one_cycle-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-one_cycle-fallback1.log",
+      "sha256": "df49255c732e25aaf4f0895ab4cc4bd37041dca2dda0226f77b7ff94500d2edb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-one_cycle-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-one_cycle-primary.log",
+      "sha256": "bd7560e4bd3586098b73a5ee377e807a83cc17ea88719db44442b3a894a10f3a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-signal_changes-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-signal_changes-fallback1.log",
+      "sha256": "f01fba967bf4fc769d012ec959b0f51e65e423dc07f35837845e0da7102b9ee7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-signal_changes-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-signal_changes-primary.log",
+      "sha256": "2a9affe0c3c134af39d13ca582d21c738022db490d3cff681f9d3effa317c199"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-three_cycles-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-three_cycles-fallback1.log",
+      "sha256": "562264546e64773239d82c497246f0bf5aaa9d4b62da74795fd3e9e336e8d3cc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-three_cycles-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-three_cycles-primary.log",
+      "sha256": "7b178ecd9db21b8c69a614e2180c483a56b6d182ecfbc52e98eb9311e3a252ed"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-two_cycles_failed_detection-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --candidate fallback1",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-two_cycles_failed_detection-fallback1.log",
+      "sha256": "5ac13eebe76f07d1017a574f141333eb8333615fa02602488a5e1ea660857259"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/runner-rebind/compat-two_cycles_failed_detection-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-runner-compat-two_cycles_failed_detection-primary.log",
+      "sha256": "80bcba0bc79c7f1a9660cabc3b83b37459d01913a5eb64df930fbbb285786116"
     }
   ],
   "remaining_gpu_checks": [
@@ -365,5 +539,5 @@
     "Actual detector-zone occupancy, sensor-to-signal causal behavior and two complete device cycles",
     "Full four-camera video and directed-participant conflict visibility after CPU package completion"
   ],
-  "reason": "Six exact primary/fallback candidates and six saved-only diagnostic runs pass pinned CPU checks; five measured comparisons and three synthetic physical outcomes per case pass. Independent canonical saved-source audit now verifies all 936 original source hashes, 900 frame/time joins and four full-camera pixel streams; its diagnostic positive and production-mode rejection pass. Still missing reviewed original C111125 map/device/detector/rider authority, physically feasible source-expanded causal/right-of-way judgment sweeps, and actual Native capture. Manifest therefore remains partial; no physical or legal acceptance is claimed."
+  "reason": "Six exact primary/fallback constructions with bundled source-gated Native runner passed all 12 offline and all 12 pinned positive/negative compatibility reproofs. The 37-test CPU suite covers accepted Native-shaped reviewed source and missing/stale source rejection. A new-revision diagnostic saved-only processing run and independent 900-frame four-camera original-source audit passed; physical and legal acceptance remain false. Reviewed original C111125 map/device/detector/bicycle-rider and causal/right-of-way source ranges are absent, so two judgment sweep specs remain incomplete and actual Native physical capture is pending. Strict scoped delivery gate exits 1 on truthful partial status."
 }

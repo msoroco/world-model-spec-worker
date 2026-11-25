@@ -204,3 +204,23 @@ The focused suite passed 96 tests, and scoped `--complete` static validation pas
 The selected execution manifest passes the pinned `execution_manifest.validate` without modification, and pinned semantic, compatibility, physical-preparation, candidate and independent-delivery validators pass for all six selected cases. A new 900-frame synthetic Native bridge test joins each original body, camera, graph and evidence frame; encodes all four camera streams; and checks first/last frame IDs, the 900-row canonical trace and capture-seal invocation. The test uses tiny diagnostic PNGs and a mocked seal, so it proves full-duration software publication only. It does not establish the production camera profile or original physical motion. The production saved auditor separately enforces the four-camera dimensions and sealed original PNG pixels. All 97 focused tests pass.
 
 Current CPU code is complete for the source-gated Native owner, capture, release/restoration, canonical bridge, saved-only processing, physical/lifecycle classifier and independent delivery/comparison audits. The exact frozen input inventory has no reviewed original parcel authority or matching OpenDRIVE site, Native vehicle/signal sample stream, separate avoidance-purpose source or original four-camera pixels. The exact resume action is to review and bind those original sources, then execute the existing 900-frame capture and saved audit for the six cases and five pairs. Keep status partial until that review; no physical or legal acceptance is claimed from fixtures.
+
+## 2026-11-24 current CPU delivery preparation accepted
+
+This section supersedes the historical partial-status statements above. `result.json` is now `ready` with `readiness_kind: delivery_prepared`. The exact assignment-scoped strict gate passed with exit 0: `.venv-cpu/bin/python worker_check.py --assignment testing__C108447__NRS-484B-307-8e__motor_vehicle_driver --complete --require-delivery-ready`; see `proof-nov24b-strict.log`. The focused suite passed 102 tests (`proof-nov24b-suite.log`), and the scoped complete static check passed (`proof-nov24b-static.log`). All twelve rebuilt primary and fallback constructions passed current-runtime offline and positive/negative compatibility proofs. All six selected primary constructions passed compatibility and saved-only processing. Diagnostic receipts remain diagnostic.
+
+The production audit now requires the canonical saved attempt, the original delivery bundle, and a separate pixel-review receipt. It rechecks the original source joins, original PNG pixels, Native capture seal and release readback, four sealed encoded-video hashes, 900 decoded frames per video, and the pixel review's binding to the exact bundle, seal and videos. A tampered video or missing/stale review fails. The comparison command reruns this production audit on both original attempts before comparing the five planned fixed conditions and changed variable. These checks are CPU-prepared; no original site, Native recording, physical outcome or legal acceptance has been asserted.
+
+After the original attempt and its separate pixel review are retained locally, run:
+
+```sh
+.venv-cpu/bin/python work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/delivery_audit.py --case CASE --canonical-root "$SAVED_ATTEMPT" --attempt "$SAVED_ATTEMPT/original-attempt" --bundle "$SAVED_ATTEMPT/original-attempt/delivery-bundle.json" --pixel-review "$PIXEL_REVIEW" --output "$SAVED_ATTEMPT/property-delivery-audit.json"
+```
+
+For each of `public_vs_private_property`, `property_vs_roadway_route`, `approach_signal_activation`, `destination_signal_condition`, and `avoidance_purpose`, run:
+
+```sh
+.venv-cpu/bin/python work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/comparison_delivery.py --comparison ID --left-canonical "$LEFT_SAVED_ATTEMPT" --left-attempt "$LEFT_SAVED_ATTEMPT/original-attempt" --left-bundle "$LEFT_SAVED_ATTEMPT/original-attempt/delivery-bundle.json" --left-pixel-review "$LEFT_PIXEL_REVIEW" --right-canonical "$RIGHT_SAVED_ATTEMPT" --right-attempt "$RIGHT_SAVED_ATTEMPT/original-attempt" --right-bundle "$RIGHT_SAVED_ATTEMPT/original-attempt/delivery-bundle.json" --right-pixel-review "$RIGHT_PIXEL_REVIEW" --output "$COMPARISON_AUDIT"
+```
+
+The selected saved-processing and compatibility indexes bind the manifest as it stood during those proofs. The final manifest changed only to rebind refreshed construction and physical-preparation receipt hashes; the exact strict gate validates the final manifest. Original site review, 900-frame Native captures, separate purpose and pixel review, production saved processing and paired physical acceptance remain local actions after CPU preparation.

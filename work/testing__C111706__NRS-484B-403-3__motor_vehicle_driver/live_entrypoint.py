@@ -136,9 +136,12 @@ def run(*, host: str, port: int, site_path: Path, case_id: str,
     client.set_timeout(30.0)
     world = client.get_world()
     verify_site_sources(site_path, site, world.get_map())
+    from pipeline_capture import PipelineCapture
     return run_exact(world, site_path=site_path, site_sha256=_sha(site_path),
                      case_id=case_id, ego_spawn=ego_spawn,
                      other_spawn=other_spawn,
                      camera_builder=lambda world_, actors_, site_: camera_builder(
                          carla_module, world_, actors_, site_),
-                     output=Path(output), control_factory=carla_module.VehicleControl)
+                     output=Path(output), control_factory=carla_module.VehicleControl,
+                     pipeline_factory=lambda ego, attempt, selected: PipelineCapture(
+                         client, ego, attempt, selected))
