@@ -144,6 +144,10 @@ def finalize(attempt, output, site_path=None, review_path=None):
             stream.write(json.dumps({
                 'original_frame': row['carla_frame'], 'time_s': row['time_s'],
                 'value': row['ego_front_x_m']}, allow_nan=False) + '\n')
+    context_path = channel_dir / 'authored_reference.json'
+    context_path.write_text(json.dumps({
+        'authored_reference': report['reference_measurement'],
+        'site_sha256': capture['site_sha256']}, sort_keys=True) + '\n')
     stopped = report['reference_measurement']['first_engineering_stop_before_reference']
     checks = [{'target': 'engineering_stop_before_authored_reference',
                'requested': True, 'measured': stopped is not None,
@@ -179,7 +183,9 @@ def finalize(attempt, output, site_path=None, review_path=None):
               'recording_description': config['case']['recording_description'],
               'recording_evidence': [
                   {'name': 'ego_body_front_at_reference', 'unit': 'm',
-                   'reference': 'channels/ego_body_front_at_reference.jsonl'}],
+                   'reference': 'channels/ego_body_front_at_reference.jsonl'},
+                  {'name': 'authored_reference', 'unit': 'structured record',
+                   'reference': 'channels/authored_reference.json'}],
               'source_evidence_hashes': report['source_sha256'],
               'realized_observables': {}}
     from worker_exchange.native_output import physical_result, write_result

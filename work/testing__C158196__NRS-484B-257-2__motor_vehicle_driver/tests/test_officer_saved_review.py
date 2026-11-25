@@ -79,6 +79,17 @@ class OfficerSavedReviewTests(unittest.TestCase):
         self.assertEqual(result['reviewed_frames'][2]['officer_direction_observed'], 'go')
         self.assertNotIn('programmed_direction', result['reviewed_frames'][2])
 
+    def test_relative_camera_frame_sources_survive_relocation(self):
+        for index, row in enumerate(self.capture['rows']):
+            for name, ref in row['camera_raw_sources'].items():
+                ref['raw_source'] = name + '.mkv#frame-' + str(index)
+        self.write_capture()
+        self.review['capture_sha256'] = sha(self.capture_path)
+        self.review['frames'] = [self.observation(i) for i in range(3)]
+        self.write_review()
+        self.assertTrue(REVIEW.validate(self.capture_path, self.review_path,
+                                        self.cameras)['police_control_verified'])
+
     def test_changed_camera_and_stale_review_rejected(self):
         self.cameras['approach'].write_bytes(b'changed')
         with self.assertRaisesRegex(ValueError, 'camera bytes differ'):
