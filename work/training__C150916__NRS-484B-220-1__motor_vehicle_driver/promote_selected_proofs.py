@@ -6,6 +6,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+REVISION = 'v5'
 
 
 def sha(path):
@@ -26,24 +27,24 @@ def main():
     for entry in manifest['cases']:
         direction = entry['case_id'].rsplit('__', 1)[1]
         shared = HERE / 'proofs' / direction
-        offline = ROOT / '.runtime-work' / ('c150916-offline-' + direction + '-primary-v3') / 'offline.log'
+        offline = ROOT / '.runtime-work' / ('c150916-offline-' + direction + '-primary-' + REVISION) / 'offline.log'
         log = copy(offline, shared / 'primary' / 'offline.log')
         command = ('.venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name +
                    '/execution-manifest.json --case ' + entry['case_id'] + ' --candidate primary --output ' +
-                   '.runtime-work/c150916-offline-' + direction + '-primary-v3')
+                   '.runtime-work/c150916-offline-' + direction + '-primary-' + REVISION)
         entry['offline'] = {'command': command, 'exit_code': 0,
                             'construction_sha256': entry['construction_sha256'],
                             'log': log, 'log_sha256': sha(offline)}
         for candidate_id, target in [('primary', entry),
                                       ('fallback1', entry['candidates'][0])]:
             if candidate_id != 'primary':
-                offline = ROOT / '.runtime-work' / ('c150916-offline-' + direction + '-fallback1-v3') / 'offline.log'
+                offline = ROOT / '.runtime-work' / ('c150916-offline-' + direction + '-fallback1-' + REVISION) / 'offline.log'
                 log = copy(offline, shared / candidate_id / 'offline.log')
                 target['offline'] = {'command': command.replace('primary', 'fallback1'),
                                      'exit_code': 0,
                                      'construction_sha256': target['construction_sha256'],
                                      'log': log, 'log_sha256': sha(offline)}
-            output = ROOT / '.runtime-work' / ('c150916-compat-' + direction + '-' + candidate_id + '-v3')
+            output = ROOT / '.runtime-work' / ('c150916-compat-' + direction + '-' + candidate_id + '-' + REVISION)
             receipt = json.loads((output / 'compatibility.json').read_text())
             if (receipt['case_id'] != entry['case_id'] or receipt['candidate_id'] != candidate_id or
                     receipt['construction_sha256'] != target['construction_sha256'] or not receipt['passed']):

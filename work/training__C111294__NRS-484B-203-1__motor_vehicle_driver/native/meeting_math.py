@@ -38,6 +38,8 @@ def measure(context, rows):
     right_fraction = []
     lateral_gaps = []
     pass_right = []
+    paved_width_available_to_oncoming = []
+    paved_width_available_to_ego = []
     for i, row in enumerate(rows):
         if row.get("video_frame") != i:
             raise ValueError("Video frame identity gap")
@@ -68,6 +70,8 @@ def measure(context, rows):
             right_fraction.append(overlap / ego_width)
             lateral_gaps.append(other_low - ego_high)
             pass_right.append(ego_y < other_y)
+            paved_width_available_to_oncoming.append(max(0.0, right - max(left, ego_high)))
+            paved_width_available_to_ego.append(max(0.0, min(right, other_low) - left))
     if not meetings:
         raise ValueError("No observed opposite-direction meeting")
     return {"format": "worker-source-opposite-meeting-measurement",
@@ -77,7 +81,17 @@ def measure(context, rows):
             "ego_right_paved_half_footprint_fraction_max": max(right_fraction),
             "minimum_lateral_surface_gap_m": min(lateral_gaps),
             "ego_passed_to_right_of_other_center": all(pass_right),
-            "paved_width_m": right - left, "legal_compliance": "unassessed",
+            "paved_width_m": right - left,
+            "right_passing_condition": {"observed": all(pass_right), "source": "both vehicle centers and signed longitudinal velocities at every meeting frame"},
+            "one_half_paved_portion_condition": {
+                "minimum_width_available_to_oncoming_m": min(paved_width_available_to_oncoming),
+                "minimum_fraction_available_to_oncoming": min(paved_width_available_to_oncoming) / (right - left),
+                "minimum_width_available_to_ego_m": min(paved_width_available_to_ego),
+                "minimum_fraction_available_to_ego": min(paved_width_available_to_ego) / (right - left),
+                "source": "both vehicle body footprints and surveyed paved edges at every meeting frame",
+                "as_nearly_as_possible": "unassessed"},
+            "legal_compliance": "unassessed",
             "limitations": ["Vehicle-footprint fraction is an engineering diagnostic, not the statutory allocation of at least half the paved portion.",
+                            "Available paved width is a geometric proxy; final statutory allocation needs original pixel and constraint review.",
                             "As nearly as possible requires original road and surrounding constraints review.",
                             "Both opposite-direction bodies, pavement edges and lane count require original source and pixel review."]}

@@ -1,23 +1,21 @@
 # training__C150916__NRS-484B-220-1__motor_vehicle_driver
 
-Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: ready for local Native delivery preparation. The assignment-scoped strict CPU gate passed on 2026-11-25. No original Native capture, accepted recording, physical sign pixel, official sign authority, or legal verdict is claimed.
 
-## Current-input CPU checkpoint (2026-11-23)
+## Selected exact cases
 
-The eight authored designated/opposite requests and their offline bundles were rebuilt from the frozen assignment with SHA-256 `67e058bbd9f823806f1eedfb21be7c56be27d3128b71bac2772a5f3b83da919f`. `current-source-rebinding.json` binds 17 refreshed proof and audit files. The exact copied-bundle checker passed eight positive requests and rejected 24 altered source bundles. Its independent package audit replayed all 24 rejections and the copied saved, trigger, comparison and preparation checks. The source-bound Native construction, paired-request, synthetic saved, saved comparison, raw preparation, fallback-trigger and statutory audits also passed. Commands were run with `.venv-cpu/bin/python` against the corresponding `build.py`, `build_offline.py`, `prove_compatibility.py`, `audit_package.py`, and `native/prove_*.py`/`native/audit_*.py` scripts; the exact receipt hashes are in `current-source-rebinding.json`.
+- `training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated`: requested travel in the designated one-way direction.
+- `training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite`: requested travel opposed to the designated one-way direction.
+- `training__C150916__NRS-484B-220-1__motor_vehicle_driver__comparison`: same authored road, sign requests, source context, camera profile and frame map; only requested and measured travel direction differs.
 
-These are refreshed proofs of the authored legacy request and synthetic saved checks. The current delivery runtime's exact offline, four-camera positive/negative compatibility and `process-saved` path have not passed for a selected case. The existing 240-frame, 12-second, two-camera runner does not meet the 30-second or longer four-source-camera contract. The one-way designation source and physical sign still require original Native review. Keep the result partial while extending and proving this CPU path.
+Each case has a 600-frame, 20 Hz, 30-second four-camera Native construction, a primary 8 m/s candidate, a fallback 5 m/s candidate, and a source-bound measurement contract. The manifest SHA-256 is `d4ea2e57ca083b71106e0c1ffded94bd82180ca4cb54627496131adf4b4099b5`. The final case-plan and fixture-recipe bytes were frozen before the four v6 compatibility proofs.
 
-## Source and scope
+## CPU proofs
 
-NRS 484B.220(1): Upon a highway designated and signposted for one-way traffic a vehicle shall be driven only in the direction designated.
+The four exact primary/fallback offline and current-runtime compatibility tests passed, including positive analysis and missing-source negative checks. Both recorded-only `runtime.py process-saved` runs preserved original source hashes, joined 600 original frames, and decoded the final video. Both independent delivery audits passed and rejected missing original pose. Source-shaped physical complete/incomplete/missing diagnostics and the lifecycle-order negative passed. The five-stage canonical semantic chain validated two selected cases. The comparison audit passed and rejected an unchanged-direction negative. The native unit suite passed 2 tests. The exact scoped strict command passed: `.venv-cpu/bin/python worker_check.py --assignment training__C150916__NRS-484B-220-1__motor_vehicle_driver --complete --require-delivery-ready`.
 
-Cell: one_way_road / travel / direction_sign; actor: motor_vehicle_driver. Frozen witness count: 3. Membership rows: {'demo-train': 4, 'full-train': 4}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+These proofs use synthetic diagnostic fixtures for software preparation. Local delivery must execute the Native CARLA run, inspect all four actual camera views and sign pixels, review one-way designation and official sign authority from original sources, measure realized vehicle direction, and perform physical and legal acceptance. Membership rows are not treated as accepted source evidence.
 
-## Proposed comparison
+## Legacy source context
 
-designated and signposted one-way road; same segment and vehicle Vary only `travel_direction_vs_sign` (category) across ['designated', 'opposite']. Record physical sign direction, road designation provenance, ego heading and movement. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Current runtime delivery construction and its primary plus three distinct fallback proofs remain unfinished for both exact cases. Road designation requires sourced authority beyond an arbitrary map tag. Resolve exact statutory branches and source review from the frozen law and cited sources. Build semantic stages, a full-duration four-camera Native construction and Core mapping; run current-runtime exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after the assignment-scoped strict worker gate passes.
+The older eight 240-frame request bundles remain retained as source-bound preliminary checks. They do not substitute for the selected 600-frame current-runtime cases. Exact frozen assignment SHA-256: `67e058bbd9f823806f1eedfb21be7c56be27d3128b71bac2772a5f3b83da919f`.

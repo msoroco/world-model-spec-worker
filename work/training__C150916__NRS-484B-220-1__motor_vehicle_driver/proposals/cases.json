@@ -6,19 +6,22 @@
   "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated",
-      "target_law_id": "NRS-484B-220-1",
-      "target_type": "controlled_attempt",
+      "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
       "cell_id": "C150916",
       "actor": "motor_vehicle_driver",
-      "source_branch": "designated and signposted one-way highway; compare travel along and opposed to its designated direction",
-      "comparison_variable": "travel_direction_vs_sign",
-      "requested_not_measured": true,
+      "rationale": "Shared one-way highway and driver context; unselected recording.",
       "variable_assignments": {
-        "travel_direction_vs_sign": {
+        "requested_travel_direction": {
           "kind": "controller",
-          "value": "designated",
+          "value": null,
           "unit": "category"
+        },
+        "observed_designation_and_signposting": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
         }
       },
       "recording_description": {
@@ -102,22 +105,145 @@
           "one-way designation needs an independent source",
           "actual Native motion and sign pixels require later physical review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "compliant_attempt",
+      "cell_id": "C150916",
+      "actor": "motor_vehicle_driver",
+      "source_branch": "designated and signposted one-way highway; compare travel along and opposed to its designated direction",
+      "comparison_variable": "travel_direction_vs_sign",
+      "requested_not_measured": true,
+      "variable_assignments": {
+        "requested_travel_direction": {
+          "kind": "controller",
+          "value": "designated",
+          "unit": "category"
+        },
+        "observed_designation_and_signposting": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native transform, bounding box and velocity",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "travel_direction_vs_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved trajectory, source-reviewed designated direction and sign",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "independent one-way designation joined to original map",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original signal inventory and sourced official sign review",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "st.lane_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-reviewed permitted direction and OpenDRIVE lane",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native yaw and velocity",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "drv.wrong_way",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "measured velocity projection against sourced designation",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original footprint projected into governed road extent",
+            "time_window": "600 original Native frames",
+            "reference_frame": "directed governed one-way road",
+            "uncertainty": "20 Hz sampling; original authority and sign pixel review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "authored sign request alone proves neither official authority nor physical visibility",
+          "one-way designation needs an independent source",
+          "actual Native motion and sign pixels require later physical review"
+        ]
+      },
+      "paired_probe_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_travel_direction"
+      ],
+      "probe": {
+        "primary_variable": "requested_travel_direction",
+        "comparison_or_standard": "same designated and signposted one-way road, direction setting differs",
+        "target_value_or_branch": "designated"
+      },
+      "unresolved_judgment_calls": [
+        "Official sign authority, physical signposting and legal conclusion need original sources"
+      ],
+      "rationale": "Requested travel along the sourced designated direction"
     },
     {
       "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite",
       "target_law_id": "NRS-484B-220-1",
-      "target_type": "controlled_attempt",
+      "target_type": "violating_attempt",
       "cell_id": "C150916",
       "actor": "motor_vehicle_driver",
       "source_branch": "designated and signposted one-way highway; compare travel along and opposed to its designated direction",
       "comparison_variable": "travel_direction_vs_sign",
       "requested_not_measured": true,
       "variable_assignments": {
-        "travel_direction_vs_sign": {
+        "requested_travel_direction": {
           "kind": "controller",
           "value": "opposite",
           "unit": "category"
+        },
+        "observed_designation_and_signposting": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
         }
       },
       "recording_description": {
@@ -201,7 +327,20 @@
           "one-way designation needs an independent source",
           "actual Native motion and sign pixels require later physical review"
         ]
-      }
+      },
+      "paired_probe_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_travel_direction"
+      ],
+      "probe": {
+        "primary_variable": "requested_travel_direction",
+        "comparison_or_standard": "same designated and signposted one-way road, direction setting differs",
+        "target_value_or_branch": "opposite"
+      },
+      "unresolved_judgment_calls": [
+        "Official sign authority, physical signposting and legal conclusion need original sources"
+      ],
+      "rationale": "Requested travel opposed to the sourced designated direction"
     }
   ]
 }

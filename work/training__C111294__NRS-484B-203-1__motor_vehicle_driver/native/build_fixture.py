@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from route import requested_rows
+from route_safe import requested_rows as requested_safe_rows
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -47,7 +48,7 @@ def graph(frame, x, y, ox, oy):
 
 
 def build(case):
-    rows = list(requested_rows(case))
+    rows = list((requested_safe_rows if case == '1.00' else requested_rows)(case))
     source = HERE / 'diagnostic' / case
     source.mkdir(parents=True, exist_ok=True)
     put(source / 'pavement-survey.json', {
@@ -126,4 +127,4 @@ def build(case):
 
 
 if __name__ == '__main__':
-    print(json.dumps([build(case) for case in ('0.45', '0.55')]))
+    print(json.dumps([build(case) for case in ('0.45', '0.55', '1.00')]))

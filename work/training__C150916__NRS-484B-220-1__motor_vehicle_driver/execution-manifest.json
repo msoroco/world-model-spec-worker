@@ -38,9 +38,169 @@
           },
           "changed_knobs": [
             "target speed reduced from 8 to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --candidate fallback1 --output .runtime-work/c150916-offline-designated-fallback1-v5",
+            "exit_code": 0,
+            "construction_sha256": "a142f8d15f5338edf74ca8011a96b76cf7b24ba902114d76177d802ab178e21b",
+            "log": "proofs/designated/fallback1/offline.log",
+            "log_sha256": "e49ad5712c024b8afb63f7d494b6572e14cf7ac21b32866e895cf4f5c7c504cd"
+          },
+          "compatibility": {
+            "receipt": "proofs/designated/fallback1/receipt.json",
+            "sha256": "b72839f4547755befa84f09dd052aea8034f2dcb1a832d362a26620642c0fd0f",
+            "log": "proofs/designated/fallback1/analysis.log",
+            "negative_log": "proofs/designated/fallback1/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --candidate primary --output .runtime-work/c150916-offline-designated-primary-v5",
+        "exit_code": 0,
+        "construction_sha256": "bc764524838827d6cf0597aa18baabc6968e8452ea70faa1aeef984b6c14e751",
+        "log": "proofs/designated/primary/offline.log",
+        "log_sha256": "e49ad5712c024b8afb63f7d494b6572e14cf7ac21b32866e895cf4f5c7c504cd"
+      },
+      "compatibility": {
+        "receipt": "proofs/designated/primary/receipt.json",
+        "sha256": "4c8eeac3f2c72da9b377ee7df4fc379d7a51e390b2d080e5be0e014abdfb830d",
+        "log": "proofs/designated/primary/analysis.log",
+        "negative_log": "proofs/designated/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/designated/primary/negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native transform, bounding box and velocity",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "travel_direction_vs_sign": {
+          "entrypoint": "finalize.py",
+          "method": "saved trajectory, source-reviewed designated direction and sign",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "independent one-way designation joined to original map",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original signal inventory and sourced official sign review",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "source-reviewed permitted direction and OpenDRIVE lane",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "original Native yaw and velocity",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "drv.wrong_way": {
+          "entrypoint": "finalize.py",
+          "method": "measured velocity projection against sourced designation",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "original footprint projected into governed road extent",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
           ]
         }
-      ]
+      },
+      "physical_preparation": {
+        "receipt": "physical/designated/receipt.json",
+        "sha256": "0531c89ce460efecda61dc4b82eeee574bef3e041d70e0bc190ad963df66eded"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proofs/designated/saved.log",
+        "test_log_sha256": "796daa233271d0032eefd5a1ac3fe251aa1c78889c5cd1d79942e21de51f963d",
+        "processing_receipt": "proofs/designated/processing.json",
+        "processing_receipt_sha256": "796daa233271d0032eefd5a1ac3fe251aa1c78889c5cd1d79942e21de51f963d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c5c2656d273377bb76fe724d071623750726e7e2b8d8af4a488afaccf3cf6fe4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/delivery_audit.py --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c150916-saved-attempt-designated --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/designated/processing.json --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/physical/designated/complete_motion.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/designated/delivery-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/designated/delivery-positive.log",
+        "test_log_sha256": "2309e83fce085b0dc96c0a534e3779dafc98d19b73d127764b008a37247c2a78",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/delivery_audit.py --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c150916-negative-attempt-designated --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/designated/processing.json --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/physical/designated/complete_motion.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/designated/delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: vehicle-pose.jsonl",
+        "negative_log": "proofs/designated/delivery-negative.log",
+        "negative_log_sha256": "2e7f2482a250866b81c01e86c15a9047a6967f2b21136af529b21df80fb5af29",
+        "scope": "diagnostic synthetic source and physical checks; actual capture acceptance pending"
+      }
     },
     {
       "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite",
@@ -74,9 +234,169 @@
           },
           "changed_knobs": [
             "target speed reduced from 8 to 5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --candidate fallback1 --output .runtime-work/c150916-offline-opposite-fallback1-v5",
+            "exit_code": 0,
+            "construction_sha256": "169faaba93e7bc449f00d6c7884e94ffe1e8cd7569109577242e75372b8a927c",
+            "log": "proofs/opposite/fallback1/offline.log",
+            "log_sha256": "d82da3d331b21cb6d5e18cbd8f85a5b4150e2661390690ffa23a47b518630cf2"
+          },
+          "compatibility": {
+            "receipt": "proofs/opposite/fallback1/receipt.json",
+            "sha256": "7cfcfa8eb53baecdb98cb4d291bc173ce0002e5a86f854eb276d813a680e4886",
+            "log": "proofs/opposite/fallback1/analysis.log",
+            "negative_log": "proofs/opposite/fallback1/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --candidate primary --output .runtime-work/c150916-offline-opposite-primary-v5",
+        "exit_code": 0,
+        "construction_sha256": "0ed0ef6a2db7f840aff4aff2201fae824e09907a6a28b7d864f55436fae10f78",
+        "log": "proofs/opposite/primary/offline.log",
+        "log_sha256": "d82da3d331b21cb6d5e18cbd8f85a5b4150e2661390690ffa23a47b518630cf2"
+      },
+      "compatibility": {
+        "receipt": "proofs/opposite/primary/receipt.json",
+        "sha256": "5bcd437842b72a9fab09cc0f5f209accd75d667b4187741d66e4354235201e97",
+        "log": "proofs/opposite/primary/analysis.log",
+        "negative_log": "proofs/opposite/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/opposite/primary/negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native transform, bounding box and velocity",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "travel_direction_vs_sign": {
+          "entrypoint": "finalize.py",
+          "method": "saved trajectory, source-reviewed designated direction and sign",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "independent one-way designation joined to original map",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original signal inventory and sourced official sign review",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "source-reviewed permitted direction and OpenDRIVE lane",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "original Native yaw and velocity",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "drv.wrong_way": {
+          "entrypoint": "finalize.py",
+          "method": "measured velocity projection against sourced designation",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "original footprint projected into governed road extent",
+          "evidence": [
+            "vehicle-pose.jsonl",
+            "video_frames.jsonl",
+            "road.xodr",
+            "road-review.json",
+            "trace.jsonl"
           ]
         }
-      ]
+      },
+      "physical_preparation": {
+        "receipt": "physical/opposite/receipt.json",
+        "sha256": "bc61e0a2d2c27504cfe7e5a27dc823454d9b53f5f136d2a8265fc2498eb66102"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/execution-manifest.json --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proofs/opposite/saved.log",
+        "test_log_sha256": "e49594e60d455b6a5868e68cb1f7cbf933dda6ac4554ac0fa38f74afb07ca265",
+        "processing_receipt": "proofs/opposite/processing.json",
+        "processing_receipt_sha256": "e49594e60d455b6a5868e68cb1f7cbf933dda6ac4554ac0fa38f74afb07ca265"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c5c2656d273377bb76fe724d071623750726e7e2b8d8af4a488afaccf3cf6fe4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/delivery_audit.py --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c150916-saved-attempt-opposite --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/opposite/processing.json --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/physical/opposite/complete_motion.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/opposite/delivery-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/opposite/delivery-positive.log",
+        "test_log_sha256": "4f18a43c47e31b8874e049008095b568259dbfc304683f1ee00f1c53c98764c4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/delivery_audit.py --case training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c150916-negative-attempt-opposite --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/opposite/processing.json --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/physical/opposite/complete_motion.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/opposite/delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: vehicle-pose.jsonl",
+        "negative_log": "proofs/opposite/delivery-negative.log",
+        "negative_log_sha256": "2e7f2482a250866b81c01e86c15a9047a6967f2b21136af529b21df80fb5af29",
+        "scope": "diagnostic synthetic source and physical checks; actual capture acceptance pending"
+      }
     }
   ]
 }

@@ -172,7 +172,24 @@
         "capture profile"
       ],
       "status": "selected_cpu_comparison_physical_unverified",
-      "measurement_method": "Record physical sign direction, road designation provenance, ego heading and movement."
+      "measurement_method": "Record physical sign direction, road designation provenance, ego heading and movement.",
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "script_sha256": "0dcddb884cd89b24784659b78e91d8f8124801f75c801627a6cf405a554d53a9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/audit_comparison.py --comparison training__C150916__NRS-484B-220-1__motor_vehicle_driver__comparison --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/comparisons/comparison/positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/comparisons/comparison/positive.log",
+        "test_log_sha256": "a25a8545f7403752bafae7f8f28c94510a15ebe3e38f432ea991b2525f3a2e92",
+        "receipt": "proofs/comparisons/comparison/positive.json",
+        "receipt_sha256": "578f5748ff7fa2801c3773762f683bfe5be2194de5b693aaadee76099007ce45",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/audit_comparison.py --comparison training__C150916__NRS-484B-220-1__motor_vehicle_driver__comparison --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/proofs/comparisons/comparison/negative.json --right-override designated",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Selected comparison source differs from planned isolation",
+        "negative_log": "proofs/comparisons/comparison/negative.log",
+        "negative_log_sha256": "209b4f7327f22eaf902b00456c1320abc532747f7384d40ad220a425bec267c5",
+        "diagnostic_fixture": true,
+        "legal_verdict_claimed": false
+      }
     }
   ],
   "observations": [
@@ -299,6 +316,33 @@
         "requirement": "NRS-484B-220-1",
         "source": "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
         "why_existing_insufficient": "Four demo/full membership rows lack source-hashed accepted recording evidence of one-way designation, physical signposting or original direction of travel"
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject vehicle, two-lane designated road and signpost",
+        "interval": "startup through 30 s termination"
+      },
+      {
+        "view": "approach",
+        "subject": "subject approach along governed road",
+        "interval": "startup through 30 s termination"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "one-way sign requests and directed road segment",
+        "interval": "startup through 30 s termination"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject vehicle and direction relative to governing sign",
+        "interval": "startup through 30 s termination"
       }
     ]
   }

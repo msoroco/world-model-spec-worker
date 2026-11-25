@@ -2,7 +2,7 @@
   "format": "worker-package-compatibility",
   "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.55",
   "candidate_id": "primary",
-  "construction_sha256": "45952afde071184dd46f8a0213a670aeedbf3f735f8b61e27425329e16868192",
+  "construction_sha256": "1c798a881c0074eae981f7d3e241772e8c4f06650a8237405c6ac84fa9eed1db",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "fixture_sha256": "a8ab161190e30d7142415ee8b25a50626e5884e67ebfaf778df97cd9ac4cd4ce",
   "passed": true,
@@ -639,7 +639,7 @@
   "fixture_generator_sha256": "0857d9ac6c0a08c5bc25f4b58fef81c93cf1fe31d6845e904ce6a10c4f6eab53",
   "fixture_recipe_sha256": "f2d4c05ec9bf165273a7c020ba399027bbcc1e7c93b00297db15223a9421dba6",
   "measurement_contract_sha256": "e81b6780a8179d41710d5427f868a4abef02bb08ce1e4a4c3d24a2af370f7f7a",
-  "analysis_report_sha256": "50ae8caa04e41319983e37e3c1a03054d4ff8c7bf2049f0013c85ebb76f60911",
+  "analysis_report_sha256": "dcac73553adb8ebc6531a46cf0ce86d02f2ab0ded6e2ab6ff437399cda554afd",
   "measurement_keys": [
     "opposite_direction_paved_half_measurement"
   ],
@@ -657,9 +657,22 @@
         "minimum_lateral_surface_gap_m": 0.6,
         "ego_passed_to_right_of_other_center": true,
         "paved_width_m": 8.0,
+        "right_passing_condition": {
+          "observed": true,
+          "source": "both vehicle centers and signed longitudinal velocities at every meeting frame"
+        },
+        "one_half_paved_portion_condition": {
+          "minimum_width_available_to_oncoming_m": 3.1,
+          "minimum_fraction_available_to_oncoming": 0.3875,
+          "minimum_width_available_to_ego_m": 5.5,
+          "minimum_fraction_available_to_ego": 0.6875,
+          "source": "both vehicle body footprints and surveyed paved edges at every meeting frame",
+          "as_nearly_as_possible": "unassessed"
+        },
         "legal_compliance": "unassessed",
         "limitations": [
           "Vehicle-footprint fraction is an engineering diagnostic, not the statutory allocation of at least half the paved portion.",
+          "Available paved width is a geometric proxy; final statutory allocation needs original pixel and constraint review.",
           "As nearly as possible requires original road and surrounding constraints review.",
           "Both opposite-direction bodies, pavement edges and lane count require original source and pixel review."
         ],
@@ -688,5 +701,5 @@
   },
   "negative_removed": "pavement-survey.json",
   "negative_error_contains": "Missing required source: pavement-survey.json",
-  "negative_log_sha256": "fa0e6c3b3a69361e4309e2e8eb26e6b9b52cb01b20f77764c3da924ff20173ef"
+  "negative_log_sha256": "a84e996ea9ef06298f531c3f1c5d3b43db326003294156caf2162da0cf6c1c3a"
 }

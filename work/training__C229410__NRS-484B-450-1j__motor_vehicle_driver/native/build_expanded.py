@@ -21,6 +21,9 @@ def build():
     for suffix, branch in BRANCHES.items():
         if suffix in ("controlled_1", "controlled_2"):
             continue
+        finalize_source = ("expanded_finalize_exception.py" if suffix in
+            ("stopped", "traffic_conflict", "law_direction", "police_direction", "device_direction")
+            else "expanded_finalize.py")
         case_id = ASSIGNMENT + "__" + suffix
         description = {"channels": [{"name": "parking_geometry", "unit": "mixed",
             "sampling_rate_hz": 20, "method": "original Native full-body corners and speed readback",
@@ -43,9 +46,9 @@ def build():
         for name in ("branch_variants.py", "expanded_layout.py", "expanded_controller.py",
                      "expanded_measurement.py", "measure_entrance.py", "source_context.py", "source_channels.py",
                      "expanded_finalize.py"):
-            files.append({"path": name, "content": (HERE / name).read_text()})
+            files.append({"path": name, "content": (HERE / (finalize_source if name == "expanded_finalize.py" else name)).read_text()})
         files.append({"path": "runner.py", "content": (HERE / "expanded_runner.py").read_text()})
-        files.append({"path": "finalize.py", "content": (HERE / "expanded_finalize.py").read_text()})
+        files.append({"path": "finalize.py", "content": (HERE / finalize_source).read_text()})
         files.append({"path": "tests/test_expanded_bundle.py",
                       "content": (HERE / "tests/test_expanded_bundle.py").read_text()})
         for name in ("assignment.json", "witnesses.json"):

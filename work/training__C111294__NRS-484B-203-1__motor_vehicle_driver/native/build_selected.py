@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 from route import requested_rows
+from route_safe import requested_rows as requested_safe_rows
 
 PKG = Path(__file__).resolve().parents[1]
 NATIVE = Path(__file__).resolve().parent
@@ -32,7 +33,8 @@ def build(case, candidate='primary'):
         'spawn_z_m':1.5 if candidate=='primary' else 1.8,
         'source_kind':'synthetic_scene_request','native_observed':False,
         'required_atoms':[],'source_packets':[],'cameras':CAMERAS,'supported_case_ids':[aid]}
-    rows = ''.join(json.dumps(r,allow_nan=False)+'\n' for r in requested_rows(case))
+    route_rows = requested_safe_rows if case == '1.00' else requested_rows
+    rows = ''.join(json.dumps(r,allow_nan=False)+'\n' for r in route_rows(case))
     config['request_sha256']=sha(rows.encode())
     config_text = json.dumps(config,indent=2)+'\n'
     files = [
@@ -41,8 +43,11 @@ def build(case, candidate='primary'):
         {'path':'config.json','content':config_text}]
     for name in ('road.xodr','route.py','check.py','runner.py','meeting_math.py',
                  'measure_saved.py','finalize.py','tests/test_request.py'):
-        source = NATIVE/name
-        files.append({'path':name,'source':str(source),'content':source.read_text()})
+        alternate = {'route.py':'route_safe.py','finalize.py':'finalize_safe.py',
+                     'tests/test_request.py':'tests/test_safe_request.py'}
+        source = NATIVE/(alternate.get(name,name) if case == '1.00' else name)
+        files.append({'path':name,'source':str(source.relative_to(Path.cwd())),
+                      'content':source.read_text()})
     description = {'channels':[
         {'name':'ego_body','unit':'structured','method':'original Native body vertices','sampling_rate_hz':20,'time_window':'600 frames','reference_frame':'Native world and frame','uncertainty':'original road/body review pending'},
         {'name':'oncoming_body','unit':'structured','method':'original Native body vertices','sampling_rate_hz':20,'time_window':'600 frames','reference_frame':'Native world and frame','uncertainty':'original road/body review pending'},
@@ -64,5 +69,5 @@ def build(case, candidate='primary'):
 
 
 if __name__=='__main__':
-    print(json.dumps([build(case,candidate) for case in ('0.45','0.55')
+    print(json.dumps([build(case,candidate) for case in ('0.45','0.55','1.00')
                       for candidate in ('primary','fallback1')],indent=2))

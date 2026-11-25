@@ -2,14 +2,79 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C111294",
   "status": "draft",
-  "sweeps_expanded": false,
+  "sweeps_expanded": true,
   "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral definition, no legal outcome asserted.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "original road/body review pending"
+          },
+          {
+            "name": "oncoming_body",
+            "unit": "structured",
+            "method": "original Native body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "original road/body review pending"
+          },
+          {
+            "name": "paved_road_context",
+            "unit": "structured",
+            "method": "OpenDRIVE lane readback plus original pavement edge review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 111294",
+            "uncertainty": "authored boundaries are not verified original pavement edges"
+          },
+          {
+            "name": "meeting_motion",
+            "unit": "structured",
+            "method": "original Native actor velocities and positions",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "50 ms frame bracket"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original pavement edges and as-nearly-as-possible physical context require separate review.",
+          "Body-footprint fraction is an engineering diagnostic, not statutory half allocation."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "as nearly as possible"
+      ],
+      "variable_assignments": {
+        "requested_ego_right_half_body_fraction": {
+          "kind": "controller",
+          "unit": "fraction",
+          "value": 0.5
+        }
+      }
+    },
     {
       "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.45",
       "target_law_id": "NRS-484B-203-1",
-      "target_type": "controlled",
-      "probe": "requested footprint fraction diagnostic",
-      "paired_probe_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.55",
+      "target_type": "judgment_sweep",
+      "probe": {
+        "primary_variable": "requested_ego_right_half_body_fraction",
+        "comparison_or_standard": "same-scene opposite-direction body footprint contrast",
+        "target_value_or_branch": 0.45
+      },
+      "paired_probe_id": "C111294-footprint-fraction",
       "deliberate_differences": [
         "requested_ego_right_half_body_fraction"
       ],
@@ -74,9 +139,13 @@
     {
       "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.55",
       "target_law_id": "NRS-484B-203-1",
-      "target_type": "controlled",
-      "probe": "requested footprint fraction diagnostic",
-      "paired_probe_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.45",
+      "target_type": "judgment_sweep",
+      "probe": {
+        "primary_variable": "requested_ego_right_half_body_fraction",
+        "comparison_or_standard": "same-scene opposite-direction body footprint contrast",
+        "target_value_or_branch": 0.55
+      },
+      "paired_probe_id": "C111294-footprint-fraction",
       "deliberate_differences": [
         "requested_ego_right_half_body_fraction"
       ],
@@ -137,6 +206,96 @@
           "value": 0.55
         }
       }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__1.00",
+      "target_law_id": "NRS-484B-203-1",
+      "target_type": "judgment_sweep",
+      "probe": {
+        "primary_variable": "requested_ego_right_half_body_fraction",
+        "comparison_or_standard": "same-scene opposite-direction body footprint contrast",
+        "target_value_or_branch": 1.0
+      },
+      "paired_probe_id": "C111294-footprint-fraction",
+      "deliberate_differences": [
+        "requested_ego_right_half_body_fraction"
+      ],
+      "rationale": "Geometric yielding reference on the same one-lane-per-direction opposite meeting; both drivers retain at least half the authored paved width in synthetic readback, subject to original source and as-nearly-as-possible review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "original road/body review pending"
+          },
+          {
+            "name": "oncoming_body",
+            "unit": "structured",
+            "method": "original Native body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "original road/body review pending"
+          },
+          {
+            "name": "paved_road_context",
+            "unit": "structured",
+            "method": "OpenDRIVE lane readback plus original pavement edge review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 111294",
+            "uncertainty": "authored boundaries are not verified original pavement edges"
+          },
+          {
+            "name": "meeting_motion",
+            "unit": "structured",
+            "method": "original Native actor velocities and positions",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native world and frame",
+            "uncertainty": "50 ms frame bracket"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original pavement edges and as-nearly-as-possible physical context require separate review.",
+          "Body-footprint fraction is an engineering diagnostic, not statutory half allocation."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "as nearly as possible",
+        "one-half of the paved portion"
+      ],
+      "variable_assignments": {
+        "requested_ego_right_half_body_fraction": {
+          "kind": "controller",
+          "unit": "fraction",
+          "value": 1.0
+        }
+      }
+    }
+  ],
+  "semantic_status": "draft_incomplete_original_judgment_sweep",
+  "sweep_specs": [
+    {
+      "sweep_id": "original_paved_allocation_review",
+      "target_law_id": "NRS-484B-203-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "as nearly as possible",
+          "note": "Original pavement, full vehicle extents and actual physical road constraints require independent review; the body-footprint fraction is not the statutory allocation."
+        }
+      ],
+      "missing_inputs": [
+        "Original Native paved edge and both full-body sources",
+        "Independent physical road constraints and pixel review"
+      ],
+      "rationale": "No legal meaning or threshold is inferred from the two engineering body-fraction probes."
     }
   ]
 }
