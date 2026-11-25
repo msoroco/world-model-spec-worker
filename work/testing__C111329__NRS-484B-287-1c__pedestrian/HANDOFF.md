@@ -1,6 +1,6 @@
 # testing__C111329__NRS-484B-287-1c__pedestrian
 
-Status: partial case plan, source measurement and four-camera capture checkpoint. No Native or accepted recording is claimed.
+Status: partial, source-gated CPU prepared. Three selected case bundles and their CPU proof paths are built. No reviewed original C111329 site, Native recording, physical acceptance, or legal verdict is claimed. The dated checkpoints below record prior work; the final section is current.
 
 Exact source: NRS 484B.287(1)(c) in frozen `inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json`; witness 390 is conditional and frozen accepted evidence lists zero recordings. The NRS 484B.290 exception remains unresolved.
 
@@ -51,3 +51,30 @@ Focused suite: 34 tests pass. Pinned preflight and scoped static pass. Exact sco
 - `cpu-route-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
 Next: bind reviewed fixed-cell map, device authority/operation and complete marking survey; build exact per-case production bundles/finalizers, canonical proposals and saved positive/negative compatibility with independent delivery audit. Legal adjacency, official-device status and the NRS 484B.290 exception remain unresolved.
+
+## 2026-11-25 selected CPU delivery checkpoint
+
+`execution-manifest.json` is the canonical selected three-case manifest, SHA256 `38315b7b7f3c72009489fca1caf2fc4f388313a71927c10a5f4449bbc727706e`. It has zero `manifest.draft` command references and binds primary and fallback construction, offline and compatibility proofs, saved-only and independent delivery commands, physical preparation receipts, and two comparison audits. `proposals/` contains semantic stage and pending-source judgment proposals. Every physical and legal acceptance flag remains false.
+
+All six primary/fallback CPU offline and positive/missing-site compatibility proofs passed. `cpu-offline-proofs.json` and `cpu-compatibility-proofs.json` index the receipts. All six final compatibility runs used `.runtime-work/c111329-287-1c-compat-v9-<case>-<candidate>` and the assignment-local Lean validator. Their receipt hashes equal the canonical bound hashes, and every `candidate-selection.json.manifest_sha256` equals the canonical manifest SHA above. `run_compat_deterministic.py` clears and recreates only its `.runtime-work/c111329-287-1c-fixture-stable/` negative fixture path; this stabilizes the negative traceback receipt while still calling frozen `package_compatibility.run`.
+
+Three selected saved-only positive runs passed with `missing_evidence=false`; three missing-site runs passed with `missing_evidence=true`. They used v9 primary attempts and retained recorded originals. `cpu-saved-proofs.json` hashes the current per-case processing receipts, analysis logs, and negative feedback. Three independent positive delivery audits decoded 900 frames and all four encoded camera sources per case. Three negative audits exited 1 on `Missing required source: effective-site-packet.json`. Their v9 receipts and logs are byte-identical to the indexed `cpu-independent-proofs.json` and `cpu-independent-negative-proofs.json`. `cpu-comparison-proofs.json` binds both measured diagnostic source comparisons to these independent receipts. Three `cases/*/physical/receipt.json` triads exercise complete-motion, incomplete-motion, and missing-evidence paths, all diagnostic only.
+
+The diagnostic packets under `cases/*/diagnostic-sources/` are fixtures. The frozen accepted evidence inventory has zero recordings; no reviewed original fixed-cell map, route, complete marking survey, highway banks, two device authority/placement/operation records, or Native site packet was supplied. Adjacent-intersection meaning, official-device status, and NRS 484B.290 exception applicability require independent source-supported review. The 900-frame four-camera CPU fixture proves processing, not Native camera coverage or physical completion.
+
+Scratch is intentionally outside returned `work/`. Rebuild the assignment-local validator before replaying compatibility or saved-only commands:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py build-decoder --library runtime/library --output .runtime-work/c111329-287-1c-decoder --lake /lustre/fsw/portfolios/av/users/wcong/tools/bin/lake
+```
+
+Pinned Lean/Lake is 4.28.0. The built `.runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck` SHA256 is `0500e6edb8d441c540260373550f8855a77ef9f31dd216875a901ff162e0c614`. Every direct pipeline import must set `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/`; all temporary directories belong there.
+
+Final scoped checks:
+
+- `cpu-v9-tests.log`: 45 tests, exit 0, SHA256 `3a060839a085eac0de54da0bdd095f9d492344699d1b416081f68412894df253`.
+- `cpu-v9-preflight.log`: pinned CPU preflight, exit 0, SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `cpu-v9-static.log`: exact assignment `--complete`, exit 0, SHA256 `2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe`.
+- `cpu-v9-strict.log`: exact assignment `--complete --require-delivery-ready`, exit 1, SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`. The checker reaches its status gate and reports `Preparation acceptance failed: partial/missing packages remain` because `result.json` truthfully remains partial.
+
+The next step is to bind the reviewed original fixed-cell sources and actual Native attempts for each case, then replay source-bound proofs and independent physical/comparison review. Keep `result.json` partial until its strict assignment gate passes.

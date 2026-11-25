@@ -46,6 +46,15 @@ def map_packet():
             "wrong_side": {"ego": 1.7, "other": -1.7},
             "left_encroachment": {"ego": -0.7, "other": 1.7},
             "right_constrained": {"ego": -1.5, "other": 1.7}},
+        "verified_alternate_centers_y_m": {
+            "right_half": {"ego": -1.9, "other": 1.9},
+            "wrong_side": {"ego": 1.9, "other": -1.9},
+            "left_encroachment": {"ego": -0.5, "other": 1.9},
+            "right_constrained": {"ego": -1.3, "other": 1.9}},
+        "alternate_route_review": {variant: {
+            "source_id": "synthetic diagnostic alternate waypoints " + variant,
+            "clearance_review": "synthetic diagnostic paved and body clearance"}
+            for variant in VARIANTS},
         "physical_constraint": {"source_kind": "original_native_map_geometry",
                                 "source_id": "synthetic diagnostic right-edge feature",
                                 "station_range_m": [-4, 4],

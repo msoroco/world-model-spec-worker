@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_device import read_site, construct, audit_original_history
 from comparison_audit import audit
 
-SITE = {"source_kind":"original_local_native_site_inventory","map_name":"TownX","jurisdiction_source":"map-survey","governed_approach":"northbound","stop_line":[[0,-3],[0,3]],"vehicle_route":[[-10,0,0],[10,0,0]],"device_id":"10","device_type":"signal","device_authority_source":"traffic-order","vehicle_applicability_source":"sign-face","bike_blueprint_id":"vehicle.bicycle","police_authority_source":"dispatch"}
+SITE = {"source_kind":"original_local_native_site_inventory","map_name":"TownX","jurisdiction_source":"map-survey","governed_approach":"northbound","stop_line":[[0,-3],[0,3]],"vehicle_route":[[-10,0,0],[10,0,0]],"device_id":"10","device_type":"signal","device_authority_source":"traffic-order","vehicle_applicability_source":"sign-face","bike_blueprint_id":"vehicle.bicycle","participant_class":"human_powered_bicycle","classification_source":"reviewed test bicycle type","police_authority_source":"dispatch"}
 CASE={"case_id":"case-red","device_type":"signal","officer_direction":"none"}
 class Location:
  def __init__(self,x=0,y=0,z=0):self.x,self.y,self.z=x,y,z

@@ -51,7 +51,8 @@ def run(output, host, port, map_packet, map_sha256):
         raise ValueError("Native attempt must be materialized by runtime.py capture")
     if not map_packet or not map_sha256:
         raise ValueError("separately reviewed original median-opening map source required")
-    with open_session(host, port, map_packet, map_sha256, config["variant"]) as session:
+    with open_session(host, port, map_packet, map_sha256, config["variant"],
+                      config.get("route_profile", "primary")) as session:
         source = Path(map_packet)
         if source.is_symlink() or hashlib.sha256(source.read_bytes()).hexdigest() != map_sha256:
             raise ValueError("original reviewed site changed before source retention")

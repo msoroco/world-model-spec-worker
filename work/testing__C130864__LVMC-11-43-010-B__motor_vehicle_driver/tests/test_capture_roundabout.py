@@ -4,10 +4,15 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from io import BytesIO
+
+from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from capture_roundabout import capture
+from capture_roundabout import CAMERAS, capture
+from saved_roundabout_camera_audit import audit_saved
+from roundabout_delivery_audit import audit_delivery
 from roundabout_measurements import measure
 import test_native_roundabout as source_module
 
@@ -53,7 +58,7 @@ class CaptureTests(unittest.TestCase):
         return [[x + dx, y + dy, z] for z in (-.5, .5)
                 for dx in (-.5, .5) for dy in (-.5, .5)]
 
-    def run_capture(self, ticks):
+    def run_capture(self, ticks, **options):
         path = self.source.map_path
         return capture(self.world, self.ego, self.other, path,
                        hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -61,7 +66,16 @@ class CaptureTests(unittest.TestCase):
                        lambda actor, tick: self.controls.append((actor.id, tick)),
                        lambda actor, tick: self.controls.append((actor.id, tick)),
                        self.body, lambda actor: self.brakes.append(actor.id),
-                       ticks=ticks)
+                       ticks=ticks, **options)
+
+    def camera_options(self):
+        image = Image.new("RGB", (4, 3), (24, 68, 102))
+        output = BytesIO()
+        image.save(output, format="PNG")
+        payload = output.getvalue()
+        return {"camera_dimensions": {name: (4, 3) for name in CAMERAS},
+                "camera_readers": {name: lambda frame, data=payload:
+                    {"frame": frame, "png_bytes": data} for name in CAMERAS}}
 
     def test_full_original_trace_joins_saved_measurement(self):
         receipt = self.run_capture(900)
@@ -79,6 +93,37 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "diagnostic fixture"):
             measure(case_id=self.source.case, map_path=self.source.map_path,
                     trace_path=receipt["trace"], receipt_path=receipt["receipt"])
+
+    def test_full_four_camera_saved_decode_and_source_binding(self):
+        options = self.camera_options()
+        receipt = self.run_capture(900, **options)
+        result = audit_saved(case_id=self.source.case, map_path=self.source.map_path,
+                             trace_path=receipt["trace"], receipt_path=receipt["receipt"],
+                             camera_dimensions=options["camera_dimensions"])
+        self.assertEqual(result["decoded_images"], 3600)
+        self.assertEqual(set(result["camera_source_sha256"]), set(CAMERAS))
+        delivery = audit_delivery(case_id=self.source.case, map_path=self.source.map_path,
+                                  trace_path=receipt["trace"], receipt_path=receipt["receipt"],
+                                  camera_dimensions=options["camera_dimensions"])
+        self.assertEqual(delivery["decoded_images"], 3600)
+        self.assertFalse(delivery["physical_acceptance"])
+        video = self.output / "original-overview.png.zip"
+        with video.open("ab") as stream:
+            stream.write(b"changed")
+        with self.assertRaisesRegex(ValueError, "source hash mismatch"):
+            audit_saved(case_id=self.source.case, map_path=self.source.map_path,
+                        trace_path=receipt["trace"], receipt_path=receipt["receipt"],
+                        camera_dimensions=options["camera_dimensions"])
+
+    def test_camera_frame_failure_brakes_and_refuses_source(self):
+        options = self.camera_options()
+        options["camera_readers"]["approach"] = lambda frame: {
+            "frame": frame + 1, "png_bytes": b""}
+        with self.assertRaisesRegex(ValueError, "camera frame identity"):
+            self.run_capture(3, **options)
+        self.assertEqual(self.brakes, [10, 11])
+        self.assertFalse((self.output / "source-receipt.json").exists())
+        self.assertFalse(list(self.output.glob("*.png.zip")))
 
     def test_frame_failure_brakes_both_and_leaves_no_source(self):
         original_tick = self.world.tick

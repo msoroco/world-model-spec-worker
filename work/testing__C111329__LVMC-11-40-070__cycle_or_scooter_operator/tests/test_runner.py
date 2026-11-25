@@ -35,7 +35,8 @@ class RunnerTests(unittest.TestCase):
             "stop_line": [[0, -1], [0, 1]], "vehicle_route": [[-10, 0, 0], [10, 0, 0]],
             "device_id": "device-1", "device_type": "signal",
             "device_authority_source": "reviewed-device", "vehicle_applicability_source": "reviewed-vehicle",
-            "bike_blueprint_id": "vehicle.bicycle", "police_authority_source": "reviewed-police",
+            "bike_blueprint_id": "vehicle.bicycle", "participant_class": "human_powered_bicycle",
+            "classification_source": "reviewed-test bicycle", "police_authority_source": "reviewed-police",
         }
         temp_parent = Path(".runtime-work").resolve()
         temp_parent.mkdir(exist_ok=True)
@@ -44,6 +45,10 @@ class RunnerTests(unittest.TestCase):
             path.write_text(json.dumps(site) + "\n")
             checksum = hashlib.sha256(path.read_bytes()).hexdigest()
             self.assertEqual(runner.preflight_sources(CASE, path, checksum, None, None)["site"], site)
+            path.write_text(json.dumps(dict(site, diagnostic_fixture=True)) + "\n")
+            with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot"):
+                runner.preflight_sources(CASE, path, hashlib.sha256(path.read_bytes()).hexdigest(), None, None)
+            path.write_text(json.dumps(site) + "\n")
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
                 runner.preflight_sources(CASE, path, "0" * 64, None, None)
             invalid = dict(site, vehicle_route=[[-10, 0, 0], [-5, 0, 0]])
@@ -62,7 +67,8 @@ class RunnerTests(unittest.TestCase):
             "stop_line": [[0, -1], [0, 1]], "vehicle_route": [[-10, 0, 0], [10, 0, 0]],
             "device_id": "device-1", "device_type": "signal",
             "device_authority_source": "reviewed-device", "vehicle_applicability_source": "reviewed-vehicle",
-            "bike_blueprint_id": "vehicle.bicycle", "police_authority_source": "reviewed-police",
+            "bike_blueprint_id": "vehicle.bicycle", "participant_class": "human_powered_bicycle",
+            "classification_source": "reviewed-test bicycle", "police_authority_source": "reviewed-police",
         }
         scratch = Path(".runtime-work").resolve()
         with tempfile.TemporaryDirectory(dir=scratch) as name:
@@ -90,7 +96,8 @@ class RunnerTests(unittest.TestCase):
             "stop_line": [[0, -1], [0, 1]], "vehicle_route": [[-10, 0, 0], [10, 0, 0]],
             "device_id": "device-1", "device_type": "signal",
             "device_authority_source": "reviewed-device", "vehicle_applicability_source": "reviewed-vehicle",
-            "bike_blueprint_id": "vehicle.bicycle", "police_authority_source": "reviewed-police",
+            "bike_blueprint_id": "vehicle.bicycle", "participant_class": "human_powered_bicycle",
+            "classification_source": "reviewed-test bicycle", "police_authority_source": "reviewed-police",
         }
         packet = {"source_kind": "original_local_officer_authority_and_gesture",
                   "map_name": "reviewed-test-map", "authority_source": "reviewed-police",
@@ -127,7 +134,8 @@ class RunnerTests(unittest.TestCase):
                 "stop_line": [[0, -1], [0, 1]], "vehicle_route": [[-10, 0, 0], [10, 0, 0]],
                 "device_id": "device-1", "device_type": officer_case["device_type"],
                 "device_authority_source": "reviewed-device", "vehicle_applicability_source": "reviewed-vehicle",
-                "bike_blueprint_id": "vehicle.bicycle", "police_authority_source": "reviewed-police"}
+                "bike_blueprint_id": "vehicle.bicycle", "participant_class": "human_powered_bicycle",
+                "classification_source": "reviewed-test bicycle", "police_authority_source": "reviewed-police"}
         packet = {"source_kind": "original_local_officer_authority_and_gesture",
                   "map_name": site["map_name"], "authority_source": site["police_authority_source"],
                   "officer_blueprint_id": "walker.officer", "gesture_asset_id": "reviewed-gesture",

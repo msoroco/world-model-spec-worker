@@ -20,11 +20,11 @@ from native_history import CAMERAS, CAMERA_DIMENSIONS, capture, audit_media
 from opposing_pass import construct, load_sealed, spawn_native_pair, world_routes
 
 
-def review_live_site(world, map_path, expected_sha256, variant):
+def review_live_site(world, map_path, expected_sha256, variant, route_profile="primary"):
     """Fail before world mutation when original site review is absent or stale."""
     packet = load_sealed(map_path, expected_sha256)
-    construct(packet, variant)
-    world_routes(packet, variant)
+    construct(packet, variant, route_profile)
+    world_routes(packet, variant, route_profile)
     provenance = packet.get("reviewed_provenance")
     if not isinstance(provenance, dict) or not all(provenance.get(key) for key in
             ("reviewer", "source_citation", "native_map_name", "opendrive_sha256")):
@@ -112,17 +112,20 @@ class CameraReaders:
 
 
 class OpposingSession:
-    def __init__(self, world, carla, map_path, map_sha256, variant, client=None):
+    def __init__(self, world, carla, map_path, map_sha256, variant, client=None,
+                 route_profile="primary"):
         self.world, self.carla = world, carla
         self.client = client
         self.map_path, self.map_sha256, self.variant = Path(map_path), map_sha256, variant
+        self.route_profile = route_profile
         self.original_settings = world.get_settings()
         self.actors = {}
         self.cameras = None
         self.restoration_verified = False
 
     def __enter__(self):
-        packet = review_live_site(self.world, self.map_path, self.map_sha256, self.variant)
+        packet = review_live_site(self.world, self.map_path, self.map_sha256,
+                                  self.variant, self.route_profile)
         self.packet = packet
         try:
             settings = self.world.get_settings()
@@ -134,9 +137,9 @@ class OpposingSession:
                 return self.carla.Transform(self.carla.Location(x=x, y=y, z=z),
                                             self.carla.Rotation(yaw=yaw, pitch=pitch, roll=roll))
             pair = spawn_native_pair(self.world, self.world.get_blueprint_library(), packet,
-                                     self.variant, transform)
+                                     self.variant, transform, self.route_profile)
             self.actors = pair["actors"]
-            self.route = world_routes(packet, self.variant)
+            self.route = world_routes(packet, self.variant, self.route_profile)
             self.cameras = CameraReaders(self.world, self.carla, packet, self.actors["ego"])
             readers = {name: lambda frame, elapsed, label=name: self.cameras.read(label, frame, elapsed)
                        for name in CAMERAS}
@@ -220,10 +223,10 @@ class OpposingSession:
             raise RuntimeError("original Native session restoration failed: " + "; ".join(errors))
 
 
-def open_session(host, port, map_path, map_sha256, variant):
+def open_session(host, port, map_path, map_sha256, variant, route_profile="primary"):
     """Connect lazily; opening a session still requires independently reviewed bytes."""
     import carla
     client = carla.Client(host, port)
     client.set_timeout(30)
     return OpposingSession(client.get_world(), carla, map_path, map_sha256, variant,
-                           client=client)
+                           client=client, route_profile=route_profile)

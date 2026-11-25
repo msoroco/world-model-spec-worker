@@ -27,7 +27,7 @@ def load_sealed(path: Path, expected_sha256: str) -> dict:
     return json.loads(raw)
 
 
-def construct(map_packet: dict, variant: str) -> dict:
+def construct(map_packet: dict, variant: str, route_profile: str = "primary") -> dict:
     """Return Native-lazy spawn/controller requests only for a verified site.
 
     An operator must bind this packet to live OpenDRIVE and recheck dimensions
@@ -35,6 +35,8 @@ def construct(map_packet: dict, variant: str) -> dict:
     """
     if variant not in VARIANTS:
         raise ValueError("unknown case variant")
+    if route_profile not in ("primary", "alternate"):
+        raise ValueError("unsupported reviewed route profile")
     if map_packet.get("source_kind") != "original_native_map_geometry":
         raise ValueError("original Native map packet required")
     if map_packet.get("layout") != "median_opening" or map_packet.get("public_highway") is not True:
@@ -67,7 +69,16 @@ def construct(map_packet: dict, variant: str) -> dict:
         a, b = map(_number, row["paved_y_bounds_m"])
         if abs(a - lo) > 0.25 or abs(b - hi) > 0.25:
             raise ValueError("paved boundaries vary beyond reviewed route")
-    centers = map_packet.get("verified_centers_y_m", {})
+    center_key = ("verified_centers_y_m" if route_profile == "primary"
+                  else "verified_alternate_centers_y_m")
+    centers = map_packet.get(center_key, {})
+    if not isinstance(centers, dict) or variant not in centers:
+        raise ValueError("reviewed alternate route centers absent" if route_profile == "alternate"
+                         else "reviewed primary route centers absent")
+    if route_profile == "alternate":
+        review = map_packet.get("alternate_route_review", {}).get(variant, {})
+        if not isinstance(review, dict) or not review.get("source_id") or not review.get("clearance_review"):
+            raise ValueError("alternate clearance source review absent")
     ego_y = _number(centers[variant]["ego"])
     other_y = _number(centers[variant]["other"])
     if not (lo + ego_half < ego_y < hi - ego_half and lo + other_half < other_y < hi - other_half):
@@ -89,6 +100,7 @@ def construct(map_packet: dict, variant: str) -> dict:
             raise ValueError("right-side physical constraint is too remote from body route")
     return {
         "variant": variant,
+        "route_profile": route_profile,
         "coordinate_frame": "s_ego_forward_y_ego_left",
         "ego_route": [[s, ego_y] for s in stations],
         "other_route": [[s, other_y] for s in reversed(stations)],
@@ -101,15 +113,17 @@ def construct(map_packet: dict, variant: str) -> dict:
     }
 
 
-def spawn_native_pair(world, blueprint_library, map_packet: dict, variant: str, transform_factory):
+def spawn_native_pair(world, blueprint_library, map_packet: dict, variant: str, transform_factory,
+                      route_profile: str = "primary"):
     """Spawn the exact opposing pair after the source-gated site check.
 
     transform_factory converts the sealed packet's six-number poses to the
     simulator transform type. This keeps CARLA optional at import and CPU test.
     A failed second spawn destroys the first actor.
     """
-    route = construct(map_packet, variant)
-    spec = map_packet.get("native_spawn", {}).get(variant)
+    route = construct(map_packet, variant, route_profile)
+    spawn_key = "native_spawn" if route_profile == "primary" else "native_spawn_alternate"
+    spec = map_packet.get(spawn_key, {}).get(variant)
     if not isinstance(spec, dict):
         raise ValueError("source-bound Native spawn poses absent")
     created = []
@@ -148,9 +162,9 @@ def spawn_native_pair(world, blueprint_library, map_packet: dict, variant: str, 
         raise
 
 
-def world_routes(map_packet: dict, variant: str) -> dict:
+def world_routes(map_packet: dict, variant: str, route_profile: str = "primary") -> dict:
     """Project approved station/lateral routes into Native world coordinates."""
-    route = construct(map_packet, variant)
+    route = construct(map_packet, variant, route_profile)
     frame = map_packet.get("native_road_frame")
     if not isinstance(frame, dict) or not frame.get("source_id"):
         raise ValueError("source Native road frame absent")

@@ -131,7 +131,13 @@ def main() -> None:
                 stream.write(json.dumps({"time_s": frame["time_s"], "value": value}) + "\n")
         evidence.append({"name": name, "unit": channel["unit"], "reference": relative})
     for context in description["context_inputs"]:
-        reference = "original-site.json" if context["name"] == "reviewed_site" else "original-source-hashes.json"
+        reference = "context-" + context["name"] + ".json"
+        value = {"source_sha256": sha(required(attempt, "original-site.json")),
+                 "source_kind": "diagnostic_fixture" if result["diagnostic_fixture"] else "original_native"}
+        if context["name"] == "reviewed_officer":
+            value["officer_source_sha256"] = json.loads(
+                required(attempt, "original-source-hashes.json").read_text()).get("officer")
+        (attempt / reference).write_text(json.dumps({context["name"]: value}, sort_keys=True) + "\n")
         evidence.append({"name": context["name"], "unit": context["unit"],
                          "reference": reference})
     native_result = {

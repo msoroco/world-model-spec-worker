@@ -25,7 +25,7 @@ def sha(path: Path) -> str:
 def audit(case: dict, site_path: Path, site_sha256: str, trace_path: Path,
           trace_sha256: str, *, diagnostic: bool = False,
           review_path: Path | None = None, review_sha256: str | None = None) -> dict:
-    site = read_site(Path(site_path), site_sha256)
+    site = read_site(Path(site_path), site_sha256, allow_diagnostic=diagnostic)
     if site["device_type"] != case["device_type"]:
         raise ValueError("governing device type differs from selected case")
     trace = Path(trace_path)

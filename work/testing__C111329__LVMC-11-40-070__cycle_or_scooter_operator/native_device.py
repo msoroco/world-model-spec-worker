@@ -23,9 +23,11 @@ def read_site(path: Path, expected_sha256: str, *, allow_diagnostic: bool = Fals
         raise ValueError("unverified Native site inventory")
     if site.get("diagnostic_fixture") and not allow_diagnostic:
         raise ValueError("diagnostic fixture cannot be an original Native site")
-    for key in ("map_name", "jurisdiction_source", "governed_approach", "stop_line", "vehicle_route", "device_id", "device_type", "device_authority_source", "vehicle_applicability_source", "bike_blueprint_id"):
+    for key in ("map_name", "jurisdiction_source", "governed_approach", "stop_line", "vehicle_route", "device_id", "device_type", "device_authority_source", "vehicle_applicability_source", "bike_blueprint_id", "participant_class", "classification_source"):
         if not site.get(key):
             raise ValueError("missing Native site field: " + key)
+    if site["participant_class"] != "human_powered_bicycle":
+        raise ValueError("selected witness requires a human-powered bicycle")
     if site["device_type"] not in VALID_DEVICES:
         raise ValueError("unsupported official device type")
     if len(site["vehicle_route"]) < 2 or len(site["stop_line"]) != 2:

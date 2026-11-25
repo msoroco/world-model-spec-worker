@@ -25,6 +25,8 @@ class DeliveryAuditTests(unittest.TestCase):
             site = dict(SITE, source_kind="original_local_native_site_inventory",
                         map_name="synthetic-test-map", jurisdiction_source="synthetic-test",
                         governed_approach="test-east", device_type="signal",
+                        participant_class="human_powered_bicycle",
+                        classification_source="reviewed-test bicycle",
                         device_authority_source="synthetic-test",
                         vehicle_applicability_source="synthetic-test")
             site_path = folder / "original-site.json"

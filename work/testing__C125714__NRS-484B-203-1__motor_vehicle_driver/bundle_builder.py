@@ -80,6 +80,16 @@ def write():
         (directory / "construction.json").write_text(
             json.dumps(construction(variant, directory), indent=2, sort_keys=True) + "\n",
             encoding="utf-8")
+        alternate = construction(variant, directory)
+        alternate_config = config(variant)
+        alternate_config["route_profile"] = "alternate"
+        for item in alternate["files"]:
+            if item["path"] == "config.json":
+                item["content"] = json.dumps(alternate_config, indent=2, sort_keys=True) + "\n"
+        alternate["mechanisms"].append(
+            "Separate source-reviewed alternate lateral clearance and Native spawn poses")
+        (HERE / "cases" / variant / "fallback1-construction.json").write_text(
+            json.dumps(alternate, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

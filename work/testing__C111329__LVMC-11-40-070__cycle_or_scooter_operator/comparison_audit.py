@@ -9,7 +9,7 @@ from saved_instruction import measure
 
 
 def audit_from_sources(comparison: dict, cases: dict, site_path: Path,
-                       site_sha256: str, trace_sources: dict) -> dict:
+                       site_sha256: str, trace_sources: dict, *, diagnostic: bool = False) -> dict:
     """Recompute each response from sealed original traces before comparison.
 
     This does not make a physical or legal acceptance claim. The separate camera
@@ -19,10 +19,14 @@ def audit_from_sources(comparison: dict, cases: dict, site_path: Path,
     if hashlib.sha256(raw).hexdigest() != site_sha256:
         raise ValueError("site source hash mismatch")
     site = json.loads(raw)
+    if site.get("diagnostic_fixture") and not diagnostic:
+        raise ValueError("diagnostic site cannot establish original comparison")
     measurements = []
     for case_id in comparison["case_ids"]:
         case = cases[case_id]
         trace_path, trace_sha256 = trace_sources[case_id]
+        if json.loads(Path(trace_path).read_text()).get("diagnostic_fixture") and not diagnostic:
+            raise ValueError("diagnostic trace cannot establish original comparison")
         value = measure(Path(trace_path), trace_sha256, case, site, site_sha256)
         value["context"] = {
             "map_name": site["map_name"],
@@ -42,6 +46,8 @@ def audit_from_sources(comparison: dict, cases: dict, site_path: Path,
     result = audit(comparison, *measurements)
     result["source_hashes"] = {case_id: measurements[i]["source_hashes"]
                                for i, case_id in enumerate(comparison["case_ids"])}
+    result["diagnostic_fixture"] = diagnostic
+    result["physical_acceptance"] = False
     return result
 
 

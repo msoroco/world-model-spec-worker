@@ -108,6 +108,30 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(route["ego_route"][0][0], -25)
             self.assertEqual(route["other_route"][0][0], 25)
 
+    def test_alternate_clearance_requires_separate_reviewed_source(self):
+        packet = site()
+        for variant in module.VARIANTS:
+            with self.assertRaisesRegex(ValueError, "alternate route centers absent"):
+                module.construct(packet, variant, "alternate")
+        packet["verified_alternate_centers_y_m"] = {
+            "right_half": {"ego": -1.9, "other": 1.9},
+            "wrong_side": {"ego": 1.9, "other": -1.9},
+            "left_encroachment": {"ego": -0.5, "other": 1.9},
+            "right_constrained": {"ego": -1.3, "other": 1.9}}
+        for variant in module.VARIANTS:
+            with self.assertRaisesRegex(ValueError, "alternate clearance source review absent"):
+                module.construct(packet, variant, "alternate")
+        packet["alternate_route_review"] = {variant: {
+            "source_id": "diagnostic alternate waypoint " + variant,
+            "clearance_review": "diagnostic source shaped clearance survey"}
+            for variant in module.VARIANTS}
+        for variant in module.VARIANTS:
+            alternate = module.construct(packet, variant, "alternate")
+            self.assertNotEqual(alternate["ego_route"],
+                                module.construct(packet, variant)["ego_route"])
+        with self.assertRaisesRegex(ValueError, "spawn poses absent"):
+            module.spawn_native_pair(None, None, packet, "right_half", tuple, "alternate")
+
     def test_reject_divided_or_unsupported_width(self):
         for change in ({"encounter_on_undivided_approach": False},
                        {"traffic_line_capacity_each_direction": [2, 1]}):

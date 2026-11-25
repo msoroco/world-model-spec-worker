@@ -35,6 +35,9 @@ def make(case: dict) -> None:
         "device_authority_source": "synthetic fixture; not official",
         "vehicle_applicability_source": "synthetic fixture; applicability unverified",
         "bike_blueprint_id": "vehicle.bicycle.fixture",
+        "participant_class": "human_powered_bicycle",
+        "classification_source": "synthetic fixture; not an original participant review",
+        "camera_contract": "four named diagnostic source streams",
         "police_authority_source": "synthetic fixture; officer unverified",
     }
     site_path = folder / "diagnostic-site.json"
