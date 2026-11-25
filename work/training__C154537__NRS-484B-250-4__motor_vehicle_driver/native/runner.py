@@ -6,13 +6,14 @@ import math
 from pathlib import Path
 import queue
 import subprocess
+import xml.etree.ElementTree as ET
 
 from check import check as request_check
 
-CAMERAS = (('overview', 1280, 720, 0, -18, 25, -70),
-           ('ego_approach', 1280, 720, -30, -8, 7, -30),
-           ('cross_approach', 1280, 720, 8, -30, 7, -30),
-           ('driver_view', 1280, 720, -9, -1.75, 3, -5))
+CAMERAS = (('overview', 1920, 1080, 0, -18, 25, -70),
+           ('approach', 1280, 720, -30, -8, 7, -30),
+           ('reference_corner', 1280, 720, 8, -30, 7, -30),
+           ('driver_reference', 1280, 720, -9, -1.75, 3, -5))
 FRAMES = 600
 
 
@@ -23,7 +24,6 @@ def sha(path):
 def check():
     result = request_check()
     root = Path.cwd()
-    import xml.etree.ElementTree as ET
     tree = ET.fromstring((root / 'crossroads.xodr').read_text())
     roads = tree.findall('road')
     if {int(road.get('id')) for road in roads} != {250, 251, 252, 253, 254, 255}:
@@ -39,6 +39,57 @@ def check():
     return result
 
 
+def authored_survey(source_road):
+    """Inventory the authored geometry; leave legal road status for source review."""
+    root = ET.fromstring(Path(source_road).read_text())
+    roads = root.findall('road')
+    road_ids = {road.get('id') for road in roads}
+    if road_ids != {'250', '251', '252', '253', '254', '255'}:
+        raise ValueError('Authored junction road inventory differs')
+    objects = [obj for road in roads for obj in road.findall('objects/object')]
+    sidewalks = [lane for road in roads for lane in road.findall('.//lane')
+                 if lane.get('type') == 'sidewalk']
+    marks = [mark.get('type') for road in roads for mark in road.findall('.//roadMark')]
+    signals = {signal.get('id'): signal for road in roads
+               for signal in road.findall('signals/signal')}
+    if objects or sidewalks or any(mark in {'stop', 'crosswalk'} for mark in marks):
+        raise ValueError('Authored stop or pedestrian crossing geometry differs')
+    if set(signals) != {'701', '702'}:
+        raise ValueError('Authored signal inventory differs')
+    return {'road_ids': sorted(road_ids), 'objects': len(objects),
+            'sidewalk_lanes': len(sidewalks), 'road_mark_types': marks,
+            'signal_ids': sorted(signals), 'road_sha256': sha(source_road),
+            'authoring_absence_only': True}
+
+
+def view_sample(world, ego, other, carla, native_frame):
+    """Retain nine rays from a virtual driver eye to the other body's measured pose."""
+    ego_pose = ego.get_transform()
+    other_pose = other.get_transform()
+    eye = ego_pose.transform(carla.Location(x=.5, y=0, z=1.4))
+    corners = list(other.bounding_box.get_world_vertices(other_pose))
+    center = other_pose.location
+    rays = []
+    for endpoint in corners + [center]:
+        blockers = []
+        for hit in world.cast_ray(eye, endpoint):
+            if other.bounding_box.contains(hit.location, other_pose):
+                continue
+            if hit.location.distance(eye) < .05 or hit.location.distance(endpoint) < .02:
+                continue
+            blockers.append({'label': str(hit.label),
+                             'location_m': [hit.location.x, hit.location.y, hit.location.z]})
+        rays.append({'endpoint_m': [endpoint.x, endpoint.y, endpoint.z],
+                     'blockers': blockers, 'clear': not blockers})
+    return {'native_frame': native_frame,
+            'center_x_m': ego_pose.location.x,
+            'eye_m': [eye.x, eye.y, eye.z],
+            'other_actor_id': other.id,
+            'approaching_traffic_visible': any(ray['clear'] for ray in rays),
+            'rays': rays,
+            'method': 'original world.cast_ray to measured other body, virtual eye 1.4 m'}
+
+
 def actor_row(actor):
     transform = actor.get_transform(); velocity = actor.get_velocity()
     vertices = actor.bounding_box.get_world_vertices(transform)
@@ -51,8 +102,8 @@ def actor_row(actor):
 
 def execute(output, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
-    from worker_exchange.world_restore import snapshot, restore
+    from scenario_pipeline.worker_exchange.native_output import FrameMap
+    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
     check()
     output = Path(output).resolve()
     if output.exists():
@@ -67,6 +118,7 @@ def execute(output, host, port):
     changed = False
     try:
         source_road = Path('crossroads.xodr')
+        authored = authored_survey(source_road)
         world = client.generate_opendrive_world(source_road.read_text(),
             carla.OpendriveGenerationParameters(vertex_distance=.25, max_road_length=50,
                 wall_height=0, additional_width=0, smooth_junctions=False,
@@ -85,7 +137,7 @@ def execute(output, host, port):
                 raise RuntimeError('Native one-way driving lane readback failed: ' + str(road_id))
         lights = {str(light.get_opendrive_id()): light for light in
                   world.get_actors().filter('traffic.traffic_light*')}
-        if not {'c154537-head-ego', 'c154537-head-cross'} <= set(lights):
+        if not {'701', '702'} <= set(lights):
             raise RuntimeError('Native installed signal heads missing from authored OpenDRIVE')
         for light in lights.values():
             light.set_state(carla.TrafficLightState.Off)
@@ -104,7 +156,7 @@ def execute(output, host, port):
                                ('fov', 85), ('sensor_tick', .05)):
                 bp.set_attribute(key, str(value))
             sensor = world.spawn_actor(bp, carla.Transform(carla.Location(x=x, y=y, z=z),
-                carla.Rotation(pitch=pitch, yaw=90 if name == 'cross_approach' else 0)))
+                carla.Rotation(pitch=pitch, yaw=90 if name == 'reference_corner' else 0)))
             owned.append(sensor)
             received = queue.Queue(); sensor.listen(received.put); queues[name] = received
             encoders[name] = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner',
@@ -113,6 +165,7 @@ def execute(output, host, port):
                 str(FRAMES), '-c:v', 'ffv1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         requests = [json.loads(line) for line in Path('request.jsonl').read_text().splitlines()]
+        view_samples = []
         with (output / 'native-motion.jsonl').open('x') as motion, FrameMap(output / 'video_frames.jsonl') as frame_map:
             for index, request in enumerate(requests):
                 target_speed = 0 if index and request['ego_center_xy_m'][0] == requests[index-1]['ego_center_xy_m'][0] else 4
@@ -120,13 +173,15 @@ def execute(output, host, port):
                 other.set_target_velocity(carla.Vector3D(x=0, y=4 if index < 350 else 0, z=0))
                 native_frame = world.tick()
                 ego_source, other_source = actor_row(ego), actor_row(other)
+                if index % 20 == 0 and ego_source['center_xyz_m'][0] < -6:
+                    view_samples.append(view_sample(world, ego, other, carla, native_frame))
                 state = 'inoperative_dark' if all(light.get_state() == carla.TrafficLightState.Off for light in lights.values()) else 'changed'
                 pose = {'native_frame': native_frame, 'video_frame': index, 'time_s': index / 20,
                     'ego_center_x_m': ego_source['center_xyz_m'][0],
                     'ego_front_x_m': max(vertex[0] for vertex in ego_source['body_xyz_m']),
                     'ego_speed_mps': ego_source['speed_mps'],
                     'ego': ego_source, 'other': other_source,
-                    'signal_id': 'c154537-head-ego', 'signal_state': state,
+                    'signal_id': '701', 'signal_state': state,
                     'source_kind': 'original_native', 'legal_verdict': None}
                 motion.write(json.dumps(pose, allow_nan=False) + '\n')
                 camera_frames = {}
@@ -146,16 +201,20 @@ def execute(output, host, port):
         (output / 'crossroads.xodr').write_text(source_road.read_text())
         (output / 'scene-survey.json').write_text(json.dumps({
             'source_kind': 'original_native', 'road_sha256': sha(source_road),
+            'authored_geometry_inventory': authored,
             'stop_line_present': False, 'near_side_crosswalk_present': False,
             'sidewalk_derived_crosswalk_reviewed': False,
             'signal_installed': True, 'signal_uncovered': True,
             'official_device_provenance_reviewed': False,
             'through_highway_provenance_reviewed': False,
-            'signal_id': 'c154537-head-ego',
-            'ego_front_offset_m': None, 'intersection_entry_front_x_m': -6.0,
-            'driver_view_samples': [],
-            'review_pending': ['original painted geometry and sidewalks',
-                'official signal provenance', 'through highway', 'driver view rays']}, indent=2) + '\n')
+            'signal_id': '701',
+            'ego_front_offset_m': None,
+            'intersection_entry_front_x_m': -6.0,
+            'driver_view_samples': view_samples,
+            'review_pending': ['imported painted geometry and sidewalk crossing',
+                'official signal authority and uncovering',
+                'through-highway legal designation',
+                'continuous nearest point and driver perception']}, indent=2) + '\n')
         return {'frames': FRAMES, 'camera_names': list(queues),
                 'source_review_complete': False, 'physical_acceptance_claimed': False}
     finally:

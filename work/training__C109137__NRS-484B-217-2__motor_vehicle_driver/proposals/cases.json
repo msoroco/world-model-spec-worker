@@ -2,10 +2,60 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C109137",
   "status": "draft",
-  "sweep_specs": [],
-  "cases": [
+  "sweep_specs": [
     {
-      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+      "sweep_id": "signal_request_pair",
+      "target_law_id": "NRS-484B-217-2",
+      "judgment_refs": [
+        {
+          "phrase": "appropriate turn signal before crossing zone striping",
+          "note": "Original lamp state and prior timing require source and pixel review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_signal_onset_frame",
+          "observable": "observed_signal_onset_frame",
+          "unit": "frame",
+          "min": 60,
+          "max": 600,
+          "spacing": 540,
+          "measurement": {
+            "method": "original Native source review",
+            "time_window": "entire 600-frame attempt",
+            "statistic": "first"
+          },
+          "range_rationale": "Two already selected physical requests bound the controlled pair; no legal cutoff.",
+          "spacing_rationale": "Endpoint contrast only, preserving selected case count.",
+          "feasibility_evidence": "Source-bound selected construction and current-runtime public compatibility."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Finite physical request contrast; legal judgment stays unresolved.",
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -49,57 +99,67 @@
         "limitations": [
           "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
         ]
-      }
+      },
+      "spec_version": "c0644ed9cffab785a64d2a0bc859b8b4f5bf50d2e97d883016f69d26dd60ebf4",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2"
+      ]
     },
     {
-      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2",
-      "recording_description": {
-        "channels": [
-          {
-            "name": "stripe_body_crossing",
-            "unit": "object",
-            "method": "Native ego body versus authored stripe",
-            "reference_frame": "original Native frame and time",
-            "sampling_rate_hz": 20,
-            "time_window": "600-frame crossing attempt",
-            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+      "sweep_id": "following_response_pair",
+      "target_law_id": "NRS-484B-217-2",
+      "judgment_refs": [
+        {
+          "phrase": "no impediment to oncoming or following traffic and safe left turn",
+          "note": "Original traffic response and safety context require source review; no numeric legal cutoff is asserted."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_following_speed_after_crossing_mps",
+          "observable": "observed_following_speed_mps",
+          "unit": "m/s",
+          "min": 1,
+          "max": 2,
+          "spacing": 1,
+          "measurement": {
+            "method": "original Native source review",
+            "time_window": "entire 600-frame attempt",
+            "statistic": "min"
           },
-          {
-            "name": "adjoining_road_entry",
-            "unit": "object",
-            "method": "Native waypoint road/lane readback",
-            "reference_frame": "original Native frame and time",
-            "sampling_rate_hz": 20,
-            "time_window": "600-frame crossing attempt",
-            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
-          },
-          {
-            "name": "prior_left_indicator",
-            "unit": "object",
-            "method": "Native observed vehicle light state",
-            "reference_frame": "original Native frame and time",
-            "sampling_rate_hz": 20,
-            "time_window": "600-frame crossing attempt",
-            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
-          },
-          {
-            "name": "oncoming_following_traffic",
-            "unit": "object",
-            "method": "Native other-actor bodies and velocities",
-            "reference_frame": "original Native frame and time",
-            "sampling_rate_hz": 20,
-            "time_window": "600-frame crossing attempt",
-            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
-          }
-        ],
-        "context_inputs": [],
-        "limitations": [
-          "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+          "range_rationale": "Two already selected physical requests bound the controlled pair; no legal cutoff.",
+          "spacing_rationale": "Endpoint contrast only, preserving selected case count.",
+          "feasibility_evidence": "Source-bound selected construction and current-runtime public compatibility."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Finite physical request contrast; legal judgment stays unresolved.",
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -152,7 +212,271 @@
         "limitations": [
           "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
         ]
-      }
+      },
+      "spec_version": "2ec7f32d66522ddefe92d7a6deb605630c2898d41bd56d0527a2e35f2d002d7f",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__baseline",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "stripe_body_crossing",
+            "unit": "object",
+            "method": "Native ego body versus authored stripe",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "adjoining_road_entry",
+            "unit": "object",
+            "method": "Native waypoint road/lane readback",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "prior_left_indicator",
+            "unit": "object",
+            "method": "Native observed vehicle light state",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "oncoming_following_traffic",
+            "unit": "object",
+            "method": "Native other-actor bodies and velocities",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected comparison reference; no original source or legal state asserted.",
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal before crossing zone striping",
+        "no impediment to oncoming or following traffic and safe left turn"
+      ]
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "stripe_body_crossing",
+            "unit": "object",
+            "method": "Native ego body versus authored stripe",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "adjoining_road_entry",
+            "unit": "object",
+            "method": "Native waypoint road/lane readback",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "prior_left_indicator",
+            "unit": "object",
+            "method": "Native observed vehicle light state",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "oncoming_following_traffic",
+            "unit": "object",
+            "method": "Native other-actor bodies and velocities",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
+        ]
+      },
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled selected Native request; original source and legal assessment remain unconfirmed.",
+      "paired_probe_id": "signal_request_pair",
+      "deliberate_differences": [
+        "requested_signal_onset_frame"
+      ],
+      "probe": {
+        "primary_variable": "requested_signal_onset_frame",
+        "comparison_or_standard": "fixed physical source comparison; statutory judgment unresolved",
+        "target_value_or_branch": 60
+      },
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal before crossing zone striping",
+        "no impediment to oncoming or following traffic and safe left turn"
+      ],
+      "sweep_id": "signal_request_pair",
+      "sweep_point": {
+        "requested_signal_onset_frame": 60
+      },
+      "sweep_spec_version": "c0644ed9cffab785a64d2a0bc859b8b4f5bf50d2e97d883016f69d26dd60ebf4"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "stripe_body_crossing",
+            "unit": "object",
+            "method": "Native ego body versus authored stripe",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "adjoining_road_entry",
+            "unit": "object",
+            "method": "Native waypoint road/lane readback",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "prior_left_indicator",
+            "unit": "object",
+            "method": "Native observed vehicle light state",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "oncoming_following_traffic",
+            "unit": "object",
+            "method": "Native other-actor bodies and velocities",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
+        ]
+      },
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled selected Native request; original source and legal assessment remain unconfirmed.",
+      "paired_probe_id": "signal_request_pair",
+      "deliberate_differences": [
+        "requested_signal_onset_frame"
+      ],
+      "probe": {
+        "primary_variable": "requested_signal_onset_frame",
+        "comparison_or_standard": "fixed physical source comparison; statutory judgment unresolved",
+        "target_value_or_branch": 600
+      },
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 600,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal before crossing zone striping",
+        "no impediment to oncoming or following traffic and safe left turn"
+      ],
+      "sweep_id": "signal_request_pair",
+      "sweep_point": {
+        "requested_signal_onset_frame": 600
+      },
+      "sweep_spec_version": "c0644ed9cffab785a64d2a0bc859b8b4f5bf50d2e97d883016f69d26dd60ebf4"
     },
     {
       "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake",
@@ -208,7 +532,150 @@
         "limitations": [
           "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
         ]
-      }
+      },
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled selected Native request; original source and legal assessment remain unconfirmed.",
+      "paired_probe_id": "following_response_pair",
+      "deliberate_differences": [
+        "requested_following_speed_after_crossing_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_following_speed_after_crossing_mps",
+        "comparison_or_standard": "fixed physical source comparison; statutory judgment unresolved",
+        "target_value_or_branch": 1
+      },
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 1,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal before crossing zone striping",
+        "no impediment to oncoming or following traffic and safe left turn"
+      ],
+      "sweep_id": "following_response_pair",
+      "sweep_point": {
+        "requested_following_speed_after_crossing_mps": 1
+      },
+      "sweep_spec_version": "2ec7f32d66522ddefe92d7a6deb605630c2898d41bd56d0527a2e35f2d002d7f"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "stripe_body_crossing",
+            "unit": "object",
+            "method": "Native ego body versus authored stripe",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "adjoining_road_entry",
+            "unit": "object",
+            "method": "Native waypoint road/lane readback",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "prior_left_indicator",
+            "unit": "object",
+            "method": "Native observed vehicle light state",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "oncoming_following_traffic",
+            "unit": "object",
+            "method": "Native other-actor bodies and velocities",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+          },
+          {
+            "name": "following_speed_response",
+            "unit": "m/s",
+            "method": "Native following-actor speed around stripe-body crossing",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "600-frame crossing attempt",
+            "uncertainty": "50 ms bracket; physical cause pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
+        ]
+      },
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled selected Native request; original source and legal assessment remain unconfirmed.",
+      "paired_probe_id": "following_response_pair",
+      "deliberate_differences": [
+        "requested_following_speed_after_crossing_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_following_speed_after_crossing_mps",
+        "comparison_or_standard": "fixed physical source comparison; statutory judgment unresolved",
+        "target_value_or_branch": 2
+      },
+      "variable_assignments": {
+        "requested_signal_onset_frame": {
+          "kind": "controller",
+          "value": 60,
+          "unit": "frame"
+        },
+        "requested_following_speed_after_crossing_mps": {
+          "kind": "controller",
+          "value": 2,
+          "unit": "m/s"
+        },
+        "observed_signal_onset_frame": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "observed_following_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate turn signal before crossing zone striping",
+        "no impediment to oncoming or following traffic and safe left turn"
+      ],
+      "sweep_id": "following_response_pair",
+      "sweep_point": {
+        "requested_following_speed_after_crossing_mps": 2
+      },
+      "sweep_spec_version": "2ec7f32d66522ddefe92d7a6deb605630c2898d41bd56d0527a2e35f2d002d7f"
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

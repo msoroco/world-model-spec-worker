@@ -8,7 +8,7 @@ import sys
 import tempfile
 
 HERE = Path(__file__).resolve().parent
-CAMERAS = ('overview', 'ego_approach', 'cross_approach', 'driver_view')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -22,10 +22,15 @@ def fixture(path, stop=True):
         'signal_installed': True, 'signal_uncovered': True,
         'official_device_provenance_reviewed': True,
         'through_highway_provenance_reviewed': True,
-        'signal_id': 'c154537-uncovered-head', 'ego_front_offset_m': 2.0,
+        'signal_id': '701', 'ego_front_offset_m': 2.0,
         'intersection_entry_front_x_m': -6.0,
-        'driver_view_samples': [{'center_x_m': x, 'approaching_traffic_visible': x >= -11}
-            for x in (-15, -13, -11, -9)]}
+        'driver_view_samples': [
+            {'native_frame': 1000 + frame, 'center_x_m': x,
+             'other_actor_id': 9, 'approaching_traffic_visible': x >= -11,
+             'rays': [{'clear': x >= -11,
+                       'blockers': [] if x >= -11 else [{'label': 'building'}]}
+                      for _ in range(9)]}
+            for frame, x in ((100, -15), (110, -13), (120, -11), (130, -9))]}
     (path / 'scene-survey.json').write_text(json.dumps(survey) + '\n')
     with (path / 'native-motion.jsonl').open('w') as motion, (path / 'video_frames.jsonl').open('w') as frames:
         for index in range(600):
@@ -55,6 +60,7 @@ def main():
     output_root = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'])
     output_root.mkdir(parents=True, exist_ok=True)
     script = HERE / 'measure_saved.py'
+    from audit_pair import audit
     with tempfile.TemporaryDirectory(prefix='c154537-saved-', dir=output_root) as temp:
         base = Path(temp)
         halt = base / 'halt'; fixture(halt, True)
@@ -68,6 +74,22 @@ def main():
         roll_result = base / 'roll-result.json'; rolling = run(script, roll, roll_result)
         if rolling.returncode or json.loads(roll_result.read_text())['complete_cessation_sample_before_entry']:
             raise ValueError('Rolling contrast not measured')
+        pair = audit(halt, roll)
+        if not pair['passed'] or pair['legal_verdict_claimed']:
+            raise ValueError('Source pair audit differs')
+        roll_survey_path = roll / 'scene-survey.json'
+        roll_survey = json.loads(roll_survey_path.read_text())
+        roll_survey['signal_id'] = 'another-head'
+        roll_survey_path.write_text(json.dumps(roll_survey) + '\n')
+        try:
+            audit(halt, roll)
+        except ValueError as exc:
+            if 'Governing signal' not in str(exc):
+                raise
+        else:
+            raise ValueError('Changed governing signal was not rejected')
+        roll_survey['signal_id'] = json.loads((halt / 'scene-survey.json').read_text())['signal_id']
+        roll_survey_path.write_text(json.dumps(roll_survey) + '\n')
         survey_path = halt / 'scene-survey.json'
         survey = json.loads(survey_path.read_text()); survey['near_side_crosswalk_present'] = True
         survey_path.write_text(json.dumps(survey) + '\n')
@@ -75,6 +97,13 @@ def main():
         if wrong.returncode == 0 or 'stop-line and crosswalk absence not established' not in wrong.stderr:
             raise ValueError('Crosswalk presence was not rejected')
         survey['near_side_crosswalk_present'] = False; survey_path.write_text(json.dumps(survey) + '\n')
+        survey['driver_view_samples'][0]['rays'][0]['blockers'] = []
+        survey_path.write_text(json.dumps(survey) + '\n')
+        bad_ray = run(script, halt, base / 'bad-ray.json')
+        if bad_ray.returncode == 0 or 'driver-view rays incomplete' not in bad_ray.stderr:
+            raise ValueError('Inconsistent original ray source was not rejected')
+        survey['driver_view_samples'][0]['rays'][0]['blockers'] = [{'label': 'building'}]
+        survey_path.write_text(json.dumps(survey) + '\n')
         (halt / 'native-motion.jsonl').unlink()
         missing = run(script, halt, base / 'missing.json')
         if missing.returncode == 0 or 'Missing required source: native-motion.jsonl' not in missing.stderr:
@@ -83,6 +112,9 @@ def main():
             'halt_result_sha256': sha(halt_result), 'roll_result_sha256': sha(roll_result),
             'halt_sample_before_entry': True, 'rolling_sample_before_entry': False,
             'crosswalk_presence_rejected': True, 'missing_motion_rejected': True,
+            'inconsistent_ray_rejected': True,
+            'source_pair_audit_sha256': sha(HERE / 'audit_pair.py'),
+            'changed_governing_signal_rejected': True,
             'fixture_media_are_synthetic_placeholders': True,
             'continuous_nearest_point_proven': False,
             'physical_acceptance_claimed': False}, sort_keys=True))

@@ -29,7 +29,7 @@ def box(x,y):
     return [[x-2,y-.8],[x+2,y-.8],[x+2,y+.8],[x-2,y+.8]]
 
 
-def build(suffix,conflict):
+def build(suffix,conflict,initial_status,parking_permitted):
     folder=HERE/'selected-source'/suffix
     folder.mkdir(parents=True,exist_ok=True)
     road=open_drive()
@@ -42,8 +42,9 @@ def build(suffix,conflict):
              'public_access_source_sha256':authority_hash,
              'curb_permission_source_sha256':authority_hash,
              'parking_purpose_source_sha256':authority_hash,
-             'state':'Nevada','public_highway':True,'parking_permitted':True,
-             'initial_status':'parked_no_loading','synthetic_diagnostic':True}
+             'state':'Nevada','public_highway':True,
+             'parking_permitted':parking_permitted,
+             'initial_status':initial_status,'synthetic_diagnostic':True}
     departure,mapping,core,evidence,graph_frames,graphs=[],[],[],[],[],[]
     for i in range(600):
         frame,time=100+i,i/20
@@ -124,4 +125,5 @@ def build(suffix,conflict):
 
 
 if __name__=='__main__':
-    print(json.dumps([build('controlled_1',False),build('controlled_2',True)]))
+    from build_draft import CASES
+    print(json.dumps([build(*case) for case in CASES]))

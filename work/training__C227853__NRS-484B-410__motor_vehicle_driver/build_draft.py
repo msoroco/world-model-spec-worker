@@ -1,12 +1,20 @@
 """Build clear/conflict primary Native drafts with the same ego departure policy."""
 import hashlib
 import json
+import copy
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 ASSIGNMENT=HERE.name
-CASES=(('controlled_1',False),('controlled_2',True))
+CASES=(('controlled_1',False,'parked_no_loading',True),
+       ('controlled_2',True,'parked_no_loading',True),
+       ('controlled_3',False,'stopped_temporary',True),
+       ('controlled_4',True,'stopped_temporary',True),
+       ('controlled_5',False,'standing_passenger_exchange',True),
+       ('controlled_6',True,'standing_passenger_exchange',True),
+       ('controlled_7',False,'parked_no_loading',False),
+       ('controlled_8',True,'parked_no_loading',False))
 
 
 def sha(path):
@@ -16,11 +24,14 @@ def sha(path):
 def main():
     batch=json.loads((ROOT/'batch.json').read_text())
     entries=[]
-    for suffix,conflict in CASES:
+    for suffix,conflict,initial_status,parking_permitted in CASES:
         case=ASSIGNMENT+'__'+suffix
         config={'case_id':case,'selected_case_id':case,'supported_case_ids':[case],
                 'candidate_id':'primary','law_id':'NRS-484B-410','cell_id':'C227853',
                 'actor':'motor_vehicle_driver','approaching_conflict_requested':conflict,
+                'requested_initial_status':initial_status,
+                'requested_parking_permitted':parking_permitted,
+                'initial_shoulder_y_m':-5.0,
                 'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
                 'case':{'case_id':case},
                 'cameras':[{'name':name,'width':1920 if name=='overview' else 1280,
@@ -37,7 +48,7 @@ def main():
                      'uncertainty':'physics and identity require physical review'}],
                      'context_inputs':[],
                      'limitations':['Safety is a legal judgment, never a numeric gap cutoff',
-                                    'Highway dedication, parking permission and purpose require sources',
+                                    'Highway dedication, curb permission and initial status require sources',
                                     'Physical curb and camera pixels remain unverified']},
                 'status':'partial_cpu_draft'}
         files=[{'path':name,'content':(HERE/'native'/name).read_text()}
@@ -59,17 +70,38 @@ def main():
             'termination_rules':['600 original frames','restore world and destroy owned actors'],
             'mechanisms':['same ego departure policy; other traffic initial gap '+
                           ('near' if conflict else 'far'),
+                          'initial sourced status '+initial_status,
+                          'sourced parking permission '+str(parking_permitted),
                           'no safety verdict or physical completion claim'],
             'status':'partial_native_execution_cpu_checked_physical_unverified'}
         path=HERE/'draft-departure'/suffix/'primary'/'construction.json'
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_text(json.dumps(construction,indent=2)+'\n')
+        fallback=copy.deepcopy(construction)
+        fallback_config=copy.deepcopy(config)
+        fallback_config['candidate_id']='fallback1'
+        fallback_config['initial_shoulder_y_m']=-4.7
+        for file in fallback['files']:
+            if file['path']=='config.json':
+                file['content']=json.dumps(fallback_config,indent=2)+'\n'
+        fallback['mechanisms'].append('alternate shoulder spawn center -4.7 m')
+        fallback_path=HERE/'draft-departure'/suffix/'fallback1'/'construction.json'
+        fallback_path.parent.mkdir(parents=True,exist_ok=True)
+        fallback_path.write_text(json.dumps(fallback,indent=2)+'\n')
         entries.append({'case_id':case,'kind':'delivery',
             'construction':str(path.relative_to(HERE)),
             'construction_sha256':sha(path),
             'candidate_risk':{'status':'physical',
                 'reason':'Curb contact, merge trajectory and traffic clearance need Native review'},
-            'candidates':[],'delivery_readiness':'incomplete'})
+            'candidates':[{'id':'fallback1',
+                'construction':str(fallback_path.relative_to(HERE)),
+                'construction_sha256':sha(fallback_path),
+                'trigger':{'source':'original Native lane survey and spawn readback',
+                           'metric':'initial shoulder actor center and lane projection',
+                           'failure_condition':'primary -5.0 m shoulder spawn rejected or '
+                                               'projects outside surveyed shoulder'},
+                'changed_knobs':['initial shoulder center -5.0 m to -4.7 m']}],
+            'delivery_readiness':'incomplete'})
     manifest={'format':'worker-selected-cpu-draft-manifest-v1',
               'assignment_id':ASSIGNMENT,
               'runtime_manifest_sha256':batch['runtime']['source_manifest_sha256'],

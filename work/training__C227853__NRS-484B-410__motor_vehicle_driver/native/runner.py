@@ -57,7 +57,9 @@ def corners(actor):
                           (extent.x,extent.y),(-extent.x,extent.y))]
 
 
-def execute(output_dir,conflict,host,port,source_context):
+def execute(output_dir,conflict,host,port,source_context,initial_shoulder_y=-5.0,
+            case_id=None,requested_initial_status='parked_no_loading',
+            requested_parking_permitted=True):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -66,6 +68,14 @@ def execute(output_dir,conflict,host,port,source_context):
     from worker_exchange.world_restore import snapshot,restore
     check()
     authority = load_source_context(source_context)
+    if (authority['initial_status'] != requested_initial_status or
+            authority['parking_permitted'] != requested_parking_permitted):
+        raise ValueError('Authority context differs from requested statutory branch')
+    if not case_id or not case_id.startswith(
+            'training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_'):
+        raise ValueError('Controlled case ID missing')
+    if initial_shoulder_y not in (-5.0,-4.7):
+        raise ValueError('Unreviewed initial shoulder position')
     output=Path(output_dir).resolve()
     if (output/'road.xodr').exists() or (output/'departure-trace.jsonl').exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -123,7 +133,7 @@ def execute(output_dir,conflict,host,port,source_context):
         traffic_bp=blueprints.find('vehicle.audi.tt')
         traffic_bp.set_attribute('role_name','c227853_approaching_user')
         ego=world.spawn_actor(ego_bp,carla.Transform(
-            carla.Location(x=0,y=-5,z=1),carla.Rotation(yaw=0)))
+            carla.Location(x=0,y=initial_shoulder_y,z=1),carla.Rotation(yaw=0)))
         owned.append(ego)
         other=world.spawn_actor(traffic_bp,carla.Transform(
             carla.Location(x=-55 if conflict else 15,y=-1.75,z=1),carla.Rotation(yaw=0)))
@@ -146,8 +156,6 @@ def execute(output_dir,conflict,host,port,source_context):
                 '-r',str(RATE),'-i','-','-frames:v',str(FRAMES),
                 '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-        case_id='training__C227853__NRS-484B-410__motor_vehicle_driver__'+(
-            'controlled_2' if conflict else 'controlled_1')
         capture=PipelineCapture(client,ego,output,case_id,required_observations=[])
         with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'departure-trace.jsonl').open('x') as trace:
             first_elapsed=None
@@ -221,9 +229,7 @@ def execute(output_dir,conflict,host,port,source_context):
             restored=restore(client,saved)
             if capture is None and len(encoder_exit_codes)==4:
                 seal_capture(output,frames=FRAMES,restoration=restored,errors=[],
-                    encoder_exit_codes=encoder_exit_codes,context={'case_id':
-                    'training__C227853__NRS-484B-410__motor_vehicle_driver__'+
-                    ('controlled_2' if conflict else 'controlled_1')})
+                    encoder_exit_codes=encoder_exit_codes,context={'case_id':case_id})
                 record_native_exit(output)
 
 
@@ -244,5 +250,8 @@ if __name__=='__main__':
             raise SystemExit('--output-dir required for Native execution')
         if not a.source_context:
             raise SystemExit('--source-context required for source-grounded Native execution')
-        conflict=json.loads((Path(__file__).parent/'config.json').read_text())['approaching_conflict_requested']
-        print(json.dumps(execute(a.output_dir,conflict,a.host,a.port,a.source_context)))
+        config=json.loads((Path(__file__).parent/'config.json').read_text())
+        print(json.dumps(execute(a.output_dir,config['approaching_conflict_requested'],
+            a.host,a.port,a.source_context,config.get('initial_shoulder_y_m',-5.0),
+            config['case_id'],config.get('requested_initial_status','parked_no_loading'),
+            config.get('requested_parking_permitted',True))))

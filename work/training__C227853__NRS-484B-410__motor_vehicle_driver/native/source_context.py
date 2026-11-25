@@ -21,8 +21,10 @@ def load_source_context(path):
         raise ValueError('Nevada public highway source conclusion missing')
     if type(manifest.get('parking_permitted')) is not bool:
         raise ValueError('Parking permission source conclusion missing')
-    if manifest.get('initial_status') != 'parked_no_loading':
-        raise ValueError('Initial parked purpose source conclusion missing')
+    if manifest.get('initial_status') not in ('parked_no_loading',
+                                               'stopped_temporary',
+                                               'standing_passenger_exchange'):
+        raise ValueError('Initial stopped, standing or parked purpose source conclusion missing')
     sources = manifest.get('sources')
     if not isinstance(sources, dict) or set(sources) != set(FACTS):
         raise ValueError('Four independent authority sources required')

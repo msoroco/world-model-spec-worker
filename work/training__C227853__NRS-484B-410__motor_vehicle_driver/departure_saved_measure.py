@@ -50,8 +50,9 @@ def measure(raw_trace, raw_context):
             'Nevada highway source missing')
     require(type(context.get('parking_permitted')) is bool,
             'curb parking permission unresolved')
-    require(context.get('initial_status') == 'parked_no_loading',
-            'initial parked purpose unresolved')
+    require(context.get('initial_status') in ('parked_no_loading',
+            'stopped_temporary', 'standing_passenger_exchange'),
+            'initial stopped, standing or parked purpose unresolved')
     frames = packet.get('frames')
     require(isinstance(frames, list) and len(frames) >= 600,
             'recording shorter than 30 seconds')
@@ -102,6 +103,7 @@ def measure(raw_trace, raw_context):
             'max_observed_traffic_deceleration_mps2':max(braking),
             'traffic_speed_at_start_mps':traffic_speeds[onset],
             'parking_permitted_source_fact':context['parking_permitted'],
+            'initial_status_source_fact':context['initial_status'],
             'legal_safety_result':None,
             'unresolved':['independent highway and curb-permission source review',
                           'whether movement could be made with safety',

@@ -33,6 +33,10 @@ def analysis_report(folder, contract=None):
     source = {name: required(folder, name) for name in SOURCES}
     measured = departure_observation(source)
     context=json.loads(source['departure-context.json'].read_text())
+    if (context.get('initial_status') != config.get('requested_initial_status',
+                                                   'parked_no_loading') or
+            context.get('parking_permitted') != config.get('requested_parking_permitted', True)):
+        raise ValueError('Source context differs from requested statutory branch')
     if context.get('source_kind')=='native_saved_sample':
         manifest=required(folder,'authority/manifest.json')
         if sha(manifest)!=context.get('authority_manifest_sha256'):
@@ -131,7 +135,7 @@ def finalize(attempt,output):
         if item['name'] not in channels:
             raise ValueError('Unknown required Native channel: '+item['name'])
     result={'case_id':config['case_id'],'measured_values':measured,
-        'target_checks':[{'target':'sourced highway parked departure with surrounding traffic',
+        'target_checks':[{'target':'sourced highway stopped, standing or parked departure with surrounding traffic',
             'requested':'closer traffic' if config['approaching_conflict_requested'] else 'clear traffic',
             'measured':{'surface_gap_at_start_m':measured['surface_gap_at_start_m'],
                         'minimum_surface_gap_during_first_10s_after_start_m':
@@ -142,7 +146,7 @@ def finalize(attempt,output):
             'tolerance':'continuous source values; no legal cutoff',
             'matched':False,'physical_cause_confirmed':False,
             'cause_evidence':list(SOURCES)}],
-        'setup_confirmed':native and measured['parking_permitted_source_fact'],
+        'setup_confirmed':native,
         'behavior_attempted':native,'maneuver_completed':False,
         'termination_reason':'600 original Native frames retained',
         'physical_failure_flags':['highway_and_permission_require_independent_review',

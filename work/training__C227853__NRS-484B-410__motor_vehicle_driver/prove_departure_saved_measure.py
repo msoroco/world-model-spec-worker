@@ -83,7 +83,7 @@ def main():
       ('unknown_curb',lambda p,c:c.__setitem__('parking_permitted',None),
        'curb parking permission unresolved'),
       ('unknown_purpose',lambda p,c:c.__setitem__('initial_status','unknown'),
-       'initial parked purpose unresolved'),
+       'initial stopped, standing or parked purpose unresolved'),
       ('changed_traffic',lambda p,c:p['frames'][300].__setitem__('traffic_id','other'),
        'participant identity changed'),
       ('missing_camera',lambda p,c:p['frames'][300]['camera_native_frames'].pop('approach'),

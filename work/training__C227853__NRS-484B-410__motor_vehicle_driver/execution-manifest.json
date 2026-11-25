@@ -8,37 +8,625 @@
       "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "draft-departure/controlled_1/primary/construction.json",
-      "construction_sha256": "166e2f4c08c133f65acb1cfecb77e621c152b9f7699549136be6a74060a42117",
+      "construction_sha256": "11660d79edce00e1839a8cf51833ba2182e8a0803ab58b5586bbf29073d61e60",
       "candidate_risk": {
         "status": "physical",
         "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_1/fallback1/construction.json",
+          "construction_sha256": "828b13c32f710bb5533fc03efcc3a676c7495e1e18506e89db1ffdb7c6a729bc",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-controlled_1.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c227853-departure-analysis-v1"
       },
-      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_1.json"
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "6adbe2785abb36a6b141aa99a9184c2bd016e04b02a08839eb3b4fd49ca22972"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_1-positive.log",
+        "test_log_sha256": "832bef27cb042ec401d2a2047bc91377fc723a07c67cbf733506b1578325ac1d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_1-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
     },
     {
       "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "draft-departure/controlled_2/primary/construction.json",
-      "construction_sha256": "ebfa5919cdfc630149d9214c64ce0975a0a3b31bb7770984e54f82b70cfae745",
+      "construction_sha256": "eb9120b214f66c276ad2170a02c1e691ce2df57f33009dcc0d1603f4cad6bfa8",
       "candidate_risk": {
         "status": "physical",
         "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_2/fallback1/construction.json",
+          "construction_sha256": "504b877d53b46acd71fe6bf17db0ee832cee456fc73104545d6441e632d21425",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-controlled_2.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c227853-departure-analysis-v1"
       },
-      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_2.json"
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "c3d9fb71b2dbcf67000614d92656c8468e374bb199a265dd1b1aa3304d00a1b7"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_2-positive.log",
+        "test_log_sha256": "ba89a0f9d37b023f195738e6c400cf645a998669c6b59c36c3d0826427805e32",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_2-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_3/primary/construction.json",
+      "construction_sha256": "2fb1a60060da8273d75c1e7096053dae92ee7f0639f86c483838382218ed6236",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_3/fallback1/construction.json",
+          "construction_sha256": "9ad492ed06a5880d6b583b7eccaec013e56924517ead1f6df152098f1195fc49",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_3.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_3.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_3/proof.json",
+        "sha256": "a9446949876c04c7515a4b7d9d71e1bff6ef066077b9e3ec4704d12aab2a0916"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_3-positive.log",
+        "test_log_sha256": "85f3c38f22dbf50721224fd5c4a5d6551bbf74e7a2c34b92faa958e14bed8def",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_3-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_4/primary/construction.json",
+      "construction_sha256": "ac828683885ca9bee27c7757bac6bf8aba034ce521c1ec9f78046f1cf5fff4e7",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_4/fallback1/construction.json",
+          "construction_sha256": "5df2fd3fd794ebb7c62372a7b6b5a084427b3a9d29ce8a57dc36737407224bc2",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_4.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_4.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_4/proof.json",
+        "sha256": "8f277f9e20451ced8759b8e74178ecfd3ad9c38d51c232b27261023bf8b70b9d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_4-positive.log",
+        "test_log_sha256": "bd0457ebe791eb8236d149b84d4ddca57de5f69f766957180b16b3730bb26022",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_4-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_5/primary/construction.json",
+      "construction_sha256": "d497e968e4d72c24e89bd962bb494570aa5779f12f2072a6adf3a39bb64e79fa",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_5/fallback1/construction.json",
+          "construction_sha256": "c34b1575144691b6a20a307d09a7eeaa99f9c1a523a484914db020caee7b377e",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_5.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_5.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_5/proof.json",
+        "sha256": "c18be72334f7c2b42f626aad5a118c4f2ea149ac0e74be7716c88e390e88b703"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_5-positive.log",
+        "test_log_sha256": "21ba6fc5d42119983affdd2b4151ff3f2c216f77a83e32218c3c13ce1e4f4843",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_5-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_6/primary/construction.json",
+      "construction_sha256": "7d0c20ae208e821f62687b05156745eb613a52c8c268547f54290d56e575586e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_6/fallback1/construction.json",
+          "construction_sha256": "dd197f3eba7b5bbc473fd6fc9e68457711ced998559778dfa19077ee9812ccd0",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_6.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_6.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_6/proof.json",
+        "sha256": "0d185bce5c4ae866b554779c4242a427cb49941ec693779ae9b85ccaa84cf835"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_6-positive.log",
+        "test_log_sha256": "9ec73014aefac5b47ea19465e4af15045363622a1fd339878007342ca323bae9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_6-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_7/primary/construction.json",
+      "construction_sha256": "6cd3a8ea96041914a193e4d8e02824fc67b87f84f345c010379cf109cec834d9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_7/fallback1/construction.json",
+          "construction_sha256": "f9564808a40a4a940648f630cb2975f2892278ce708c110c0e6d8dd66a50ad92",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_7.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_7.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_7/proof.json",
+        "sha256": "2b70fa4bea6c235790dec1c4a7b58a00cec13b947668db3ab6e571530a9ad863"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_7-positive.log",
+        "test_log_sha256": "ac7142ef0e8c9120d6d30c70b063739653f26084f617c2aa7fcaf1a02ce77291",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_7-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8",
+      "kind": "delivery",
+      "construction": "draft-departure/controlled_8/primary/construction.json",
+      "construction_sha256": "8e1a81af4e808c3aa01b1638c447544a108b8f49df4abdf2845abae823a9199f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb contact, merge trajectory and traffic clearance need Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-departure/controlled_8/fallback1/construction.json",
+          "construction_sha256": "58dd0b8634d16165571386431b953ca62759db3f2d8089c52bd019ddb3f8df2e",
+          "trigger": {
+            "source": "original Native lane survey and spawn readback",
+            "metric": "initial shoulder actor center and lane projection",
+            "failure_condition": "primary -5.0 m shoulder spawn rejected or projects outside surveyed shoulder"
+          },
+          "changed_knobs": [
+            "initial shoulder center -5.0 m to -4.7 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-controlled_8.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c227853-departure-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C227853__NRS-484B-410__motor_vehicle_driver/selected-recipe-controlled_8.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "participant_footprints": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor boxes and same-tick four-camera frame join",
+          "evidence": "departure-trace.jsonl, video_frames.jsonl and original cameras"
+        },
+        "participant_velocity": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor velocity readback",
+          "evidence": "departure-trace.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_8/proof.json",
+        "sha256": "76f2a9325cd63f9b4538b0218e3c8edc8acf602d8d700db35c07178f52ba5c2d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4f916cb7c99a3b3f11328de1f4ccd7f60132e829053f50cd053e336e604b076d",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/controlled_8-positive.log",
+        "test_log_sha256": "1a1abca361e7c5299fe9aad761cb4224da0d5856abe4d8ed433e3bcceffc068d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C227853__NRS-484B-410__motor_vehicle_driver/delivery_audit.py --case training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/controlled_8-negative.log",
+        "negative_log_sha256": "41a519eb502b72a9dfef644e6ae532331ceaa21f978d5382480a3c1e0a2c69e2"
+      }
     }
   ]
 }

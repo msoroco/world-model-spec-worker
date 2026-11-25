@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 FRAMES = 600
-CAMERAS = ('overview', 'ego_approach', 'cross_approach', 'driver_view')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -42,14 +42,26 @@ def measure(attempt):
     samples = survey.get('driver_view_samples')
     if not isinstance(samples, list) or len(samples) < 2:
         raise ValueError('Original driver-view survey incomplete')
+    motions, frames = read_rows(motion_path), read_rows(frame_path)
+    native_rows = {row.get('native_frame'): row for row in motions}
     for sample in samples:
-        if type(sample.get('center_x_m')) not in (int, float) or type(sample.get('approaching_traffic_visible')) is not bool:
-            raise ValueError('Original driver-view sample invalid')
+        source = native_rows.get(sample.get('native_frame'))
+        if source is None or type(sample.get('center_x_m')) not in (int, float) or \
+                abs(sample['center_x_m'] - source.get('ego_center_x_m', float('inf'))) > 1e-5:
+            raise ValueError('Original driver-view sample/frame join differs')
+        rays = sample.get('rays')
+        if not isinstance(rays, list) or len(rays) != 9 or any(
+                type(ray.get('clear')) is not bool or not isinstance(ray.get('blockers'), list) or
+                ray['clear'] != (len(ray['blockers']) == 0) for ray in rays):
+            raise ValueError('Original driver-view rays incomplete')
+        if sample.get('approaching_traffic_visible') is not any(ray['clear'] for ray in rays):
+            raise ValueError('Original driver-view visibility/rays differ')
+        if source.get('other') is not None and sample.get('other_actor_id') != source['other'].get('actor_id'):
+            raise ValueError('Original driver-view target differs')
     visible = [sample['center_x_m'] for sample in samples if sample['approaching_traffic_visible']]
     if not visible:
         raise ValueError('No surveyed driver view of approaching traffic')
     nearest_surveyed = max(visible)
-    motions, frames = read_rows(motion_path), read_rows(frame_path)
     previous_native = -1
     stop_frames = []
     entry_frame = None
@@ -69,8 +81,21 @@ def measure(attempt):
         front = row.get('ego_front_x_m')
         if any(type(value) not in (int, float) or not math.isfinite(value) for value in (speed, center, front)):
             raise ValueError('Original ego motion invalid')
-        if abs(front - center - survey['ego_front_offset_m']) > 1e-5:
-            raise ValueError('Original front-body reference differs')
+        body = row.get('ego')
+        if body is not None:
+            vertices = body.get('body_xyz_m')
+            if not isinstance(vertices, list) or len(vertices) != 8 or any(
+                    not isinstance(v, list) or len(v) != 3 or
+                    any(type(c) not in (int, float) or not math.isfinite(c) for c in v)
+                    for v in vertices):
+                raise ValueError('Original ego body vertices missing')
+            if abs(front - max(v[0] for v in vertices)) > 1e-5:
+                raise ValueError('Original front-body reference differs')
+        elif type(survey.get('ego_front_offset_m')) in (int, float):
+            if abs(front - center - survey['ego_front_offset_m']) > 1e-5:
+                raise ValueError('Original front-body reference differs')
+        else:
+            raise ValueError('Original front-body reference missing')
         if speed == 0 and front < survey['intersection_entry_front_x_m']:
             stop_frames.append(index)
         if front >= survey['intersection_entry_front_x_m'] and entry_frame is None:

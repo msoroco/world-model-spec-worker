@@ -1,0 +1,75 @@
+{
+  "template_id": "NRS-484B-217-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-217-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "Except as otherwise provided in subsections 3 and 4, a driver shall not drive on the left side of the highway within such zone or drive across or on the left side of any pavement striping designed to mark such zone throughout its length. A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic. Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-217-2",
+    "activation": {
+      "condition": "marked no-passing zone and subject on left side or crossing zone striping",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "remain right of the zone striping except for textually allowed adjoining-highway or left-turn crossings",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic.",
+        "description": "Adjoining-highway crossing requires appropriate prior signal and no impediment."
+      },
+      {
+        "source_clause": "Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic.",
+        "description": "Left-turn crossing requires 484B.413 signal compliance, safety and no impediment."
+      }
+    ],
+    "timing": {
+      "description": "Signal precedes crossing; prohibition applies throughout zone length; no invented temporal cutoff",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "appropriate turn signal before crossing zone striping",
+        "note": "Original lamp state and prior timing require source and pixel review."
+      },
+      {
+        "phrase": "no impediment to oncoming or following traffic and safe left turn",
+        "note": "Original traffic response and safety context require source review; no numeric legal cutoff is asserted."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_signal_onset_frame",
+      "kind": "controller",
+      "range_or_domain": [
+        60,
+        600
+      ]
+    },
+    {
+      "name": "requested_following_speed_after_crossing_mps",
+      "kind": "controller",
+      "range_or_domain": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "observed_signal_onset_frame",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        null
+      ]
+    },
+    {
+      "name": "observed_following_speed_mps",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        null
+      ]
+    }
+  ]
+}
