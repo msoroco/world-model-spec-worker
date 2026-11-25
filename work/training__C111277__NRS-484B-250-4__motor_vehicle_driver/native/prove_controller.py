@@ -15,7 +15,7 @@ def run_trace(activation=True, crosswalk=True, stop_line=False, conflict=True):
     controller = InoperativeSignalController()
     phases = []
     for frame in range(600):
-        distance = max(0.1, 35 - frame * 0.1)
+        distance = max(0.1, 20 - frame * 0.1)
         speed = 0.0 if 150 <= frame < 251 else 2.0
         obs = Observation(
             frame, True, True, activation, True, stop_line, crosswalk,

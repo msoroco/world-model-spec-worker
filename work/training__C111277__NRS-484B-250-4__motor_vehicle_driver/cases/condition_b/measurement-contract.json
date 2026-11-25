@@ -1,0 +1,63 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.250(4)",
+      "output_key": "signal_and_stop_reference",
+      "method": "measure_activation",
+      "inputs": [
+        "geometry.json",
+        "signal.json",
+        "native-rows.jsonl"
+      ],
+      "value_type": "object",
+      "kind": "measured"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.250(4)",
+      "output_key": "post_stop_priority",
+      "method": "measure_yield",
+      "inputs": [
+        "geometry.json",
+        "native-rows.jsonl"
+      ],
+      "value_type": "object",
+      "kind": "measured"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "selected_crosswalk_sight",
+      "method": "measure_scope",
+      "inputs": [
+        "capture/evidence.jsonl"
+      ],
+      "value_type": "object",
+      "kind": "measured"
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-1",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "duplicate_reviewed_scope",
+      "method": "measure_scope_duplicate",
+      "inputs": [
+        "capture/evidence.jsonl"
+      ],
+      "value_type": "object",
+      "kind": "measured"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal.json"
+    ],
+    "error_contains": "Missing required source: signal.json"
+  }
+}

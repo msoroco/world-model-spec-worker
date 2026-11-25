@@ -7,7 +7,7 @@ import math
 RATE_HZ = 20
 FRAMES = 600
 MPH_TO_MPS = 0.44704
-TARGET_MPH = {"slow": 20.0, "at_default": 25.0, "fast": 30.0}
+TARGET_MPH = {"slow": 20.0, "at_default": 25.0, "fast": 30.0, "posted_35": 30.0}
 
 
 def command(case, frame, observed_speed_mps):

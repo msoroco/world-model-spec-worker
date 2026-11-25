@@ -6,7 +6,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
-CASES = (('probe_1', 'slow'), ('probe_2', 'at_default'), ('probe_3', 'fast'))
+CASES = (('probe_1', 'slow'), ('probe_2', 'at_default'), ('probe_3', 'fast'),
+         ('posted_35', 'posted_35'))
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -40,7 +41,9 @@ def main():
                   'supported_case_ids': [ASSIGNMENT + '__' + s for s, _ in CASES],
                   'candidate_id': 'primary', 'law_id': 'LVMC-11-16-060',
                   'cell_id': 'C179819', 'actor': 'motor_vehicle_driver',
+                  'statutory_text': 'The prima facie speed limit is twenty-five miles per hour on all streets and highways unless a different speed limit is posted as set forth in this Title.',
                   'speed_case': speed_case, 'rate_hz': 20, 'duration_s': 30,
+                  'posted_limit_mph': 35 if speed_case == 'posted_35' else None,
                   'required_atoms': [], 'source_packets': [], 'case': {'case_id': case_id},
                   'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                                'height': 1080 if name == 'overview' else 720} for name in CAMERAS],
@@ -62,10 +65,12 @@ def main():
                     'mechanisms': ['same roadway and controller; requested speed varies'],
                     'status': 'partial_native_draft_authority_unverified'}
         proposal_cases.append({'case_id': case_id, 'target_law_id': config['law_id'],
-            'target_type': {'probe_1': 'below', 'probe_2': 'at', 'probe_3': 'above'}[suffix],
+            'target_type': {'probe_1': 'below', 'probe_2': 'at', 'probe_3': 'above',
+                            'posted_35': 'posted_exception'}[suffix],
             'rationale': 'Original measured speed at requested setpoint on a reviewed surveyed street',
             'variable_assignments': {'speed_mph': {'kind': 'world_setup',
-                'value': {'slow': 20, 'at_default': 25, 'fast': 30}[speed_case]}},
+                'value': {'slow': 20, 'at_default': 25, 'fast': 30,
+                          'posted_35': 30}[speed_case]}},
             'unresolved_judgment_calls': ['prima facie legal status', 'posted sign authority'],
             'recording_description': description})
         path = HERE / 'draft-exact' / suffix / 'primary' / 'construction.json'
@@ -80,11 +85,15 @@ def main():
             'measurement_procedure': {'entrypoint': 'finalize.py'},
             'preparation_status': 'incomplete'})
         contract = {'format': 'worker-measurement-contract', 'case_id': case_id,
-            'requirements': [{'disposition_index': 0, 'requirement': 'LVMC-11-16-060',
+            'requirements': [{'disposition_index': 1 if suffix == 'posted_35' else 0, 'requirement': 'LVMC-11-16-060',
                 'source': 'LVMC 11.16.060', 'output_key': 'source_bound_speed_and_governance',
                 'method': 'speed_and_governance_measurement', 'value_type': 'object',
                 'kind': 'measured', 'inputs': ['road.xodr', 'sign-survey.json',
-                    'street-status.json', 'actor-poses.jsonl']}],
+                    'street-status.json', 'actor-poses.jsonl', 'reference_corner.mkv']},
+                {'disposition_index': 2, 'requirement': 'LVMC-11-16-060',
+                 'source': 'LVMC 11.16.060', 'output_key': 'prima_facie_context',
+                 'method': 'prima_facie_context', 'value_type': 'object',
+                 'kind': 'sourced_context', 'inputs': ['law-text.json']}],
             'negative': {'remove': ['sign-survey.json'],
                 'error_contains': 'Missing required source: sign-survey.json'}}
         (path.parent.parent / 'measurement-contract.json').write_text(json.dumps(contract, indent=2) + '\n')

@@ -38,17 +38,24 @@
       "requirement": "LVMC-11-16-060",
       "source": "LVMC 11.16.060",
       "branch": "different posted limit governs",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35"
+      ],
+      "evidence_or_gap": "35 mph posted alternative selected for source-bound governance comparison; physical authority remains to review"
     },
     {
       "requirement": "LVMC-11-16-060",
       "source": "LVMC 11.16.060",
       "branch": "prima facie meaning requires review",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1",
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2",
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3",
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35"
+      ],
+      "evidence_or_gap": "Prima facie legal status reserved for independent legal review; measurements never assert verdict"
     }
   ],
   "neutral_baseline": {
@@ -67,6 +74,9 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "gap_ids": [
+        "default_speed"
       ]
     },
     {
@@ -80,6 +90,9 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "gap_ids": [
+        "default_speed"
       ]
     },
     {
@@ -93,6 +106,25 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "gap_ids": [
+        "default_speed"
+      ]
+    },
+    {
+      "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35",
+      "target_law_id": "LVMC-11-16-060",
+      "kind": "delivery",
+      "target_type": "posted_exception",
+      "physical_target": "measured 30 mph while a different posted 35 mph limit governs",
+      "comparison_variable": "posted_governance",
+      "source_branch": "different posted limit governs",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "posted_governance"
       ]
     }
   ],
@@ -110,6 +142,20 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_comparison",
+      "case_ids": [
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3",
+        "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35"
+      ],
+      "deliberate_differences": [
+        "different posted limit and sourced governance"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, route, road and 30 mph speed request",
+        "controller policy, duration and cameras"
       ]
     }
   ],
@@ -189,5 +235,103 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "saved original Native sample and reviewed context; legal interpretation reserved",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl"
+      ]
+    },
+    "dev.speed_limit_sign": {
+      "evidence": "saved original Native sample and reviewed context; legal interpretation reserved",
+      "channels": [
+        "dev.speed_limit_sign"
+      ],
+      "source_refs": [
+        "sign-survey-native.json",
+        "sign-survey.json",
+        "reference_corner.mkv"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "saved original Native sample and reviewed context; legal interpretation reserved",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "sign-survey.json",
+        "actor-poses.jsonl"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "saved original Native sample and reviewed context; legal interpretation reserved",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "street-status.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "saved original Native sample and reviewed context; legal interpretation reserved",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "road.xodr"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "travelled roadway and subject vehicle",
+        "interval": "full 30 second recording",
+        "view": "overview"
+      },
+      {
+        "subject": "subject approach and speed sign",
+        "interval": "full 30 second recording",
+        "view": "approach"
+      },
+      {
+        "subject": "speed sign face and governing approach",
+        "interval": "full 30 second recording",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-facing road context",
+        "interval": "full 30 second recording",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "portable worker source inventory review",
+    "method": "Frozen assignment lists no accepted recording membership; no equivalence reuse asserted",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "default_speed",
+        "requirement": "25 mph prima facie default with no different governing posting",
+        "source": "LVMC 11.16.060",
+        "why_existing_insufficient": "No accepted original recording supplied"
+      },
+      {
+        "id": "posted_governance",
+        "requirement": "different posted speed limit displaces default",
+        "source": "LVMC 11.16.060",
+        "why_existing_insufficient": "No accepted original recording supplied"
+      }
+    ]
+  }
 }

@@ -22,7 +22,7 @@ def rows(text):
     return [json.loads(line) for line in text.splitlines()]
 
 
-for suffix, mph in (('probe_1', 20), ('probe_2', 25), ('probe_3', 30)):
+for suffix, mph in (('probe_1', 20), ('probe_2', 25), ('probe_3', 30), ('posted_35', 30)):
     spec = json.loads(BASE.read_text())
     spec['files'] = {key: value for key, value in spec['files'].items() if key in
         ('road.xodr', 'trace.jsonl', 'video_frames.jsonl', 'capture/recorder_info.txt',
@@ -69,14 +69,22 @@ for suffix, mph in (('probe_1', 20), ('probe_2', 25), ('probe_3', 30)):
     spec['files']['actor-poses.jsonl'] = lines(poses)
     road_hash = sha(spec['files']['road.xodr'])
     spec['files']['street-status.json'] = json.dumps({'source_kind': 'independent_street_status',
-        'review_status': 'synthetic_diagnostic', 'street_status': 'city_street',
+        'review_status': 'synthetic_diagnostic', 'reviewer': 'synthetic fixture generator',
+        'street_status': 'city_street',
         'road_sha256': road_hash, 'synthetic_diagnostic': True}) + '\n'
     spec['files']['sign-survey.json'] = json.dumps({'source_kind': 'native_complete_sign_survey',
-        'review_status': 'synthetic_diagnostic', 'road_sha256': road_hash,
+        'review_status': 'synthetic_diagnostic', 'reviewer': 'synthetic fixture generator',
+        'road_sha256': road_hash,
         'surveyed_route_interval_m': [0, 500], 'survey_complete_both_directions': True,
-        'applicable_posted_signs': [], 'synthetic_diagnostic': True}) + '\n'
+        'pixel_source': 'reference_corner.mkv',
+        'applicable_posted_signs': [{'governs_from_m': 100, 'governs_to_m': 500,
+            'limit_mph': 35 if suffix == 'posted_35' else 25,
+            'pixel_sha256': '6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938'}],
+        'synthetic_diagnostic': True}) + '\n'
     spec['files']['fixture-provenance.json'] = json.dumps({'diagnostic_fixture': True,
         'source': 'synthetic C179819 speed and sign shape', 'physical_acceptance_claimed': False}) + '\n'
+    spec['files']['law-text.json'] = json.dumps({'source': 'LVMC 11.16.060',
+        'text': 'The prima facie speed limit is twenty-five miles per hour on all streets and highways unless a different speed limit is posted as set forth in this Title.'}) + '\n'
     manifest = json.loads(spec['files']['capture/manifest.json'])
     manifest.update(case_id=ASSIGNMENT + '__' + suffix, frames=600,
                     sources={'road.xodr': road_hash, 'trace.jsonl': sha(spec['files']['trace.jsonl'])})

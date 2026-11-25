@@ -25,12 +25,13 @@ def finalize(attempt, output):
     output = Path(output).resolve()
     if output.exists() or (attempt / 'channels').exists():
         raise ValueError('Use a fresh source-only finalization attempt')
-    for name in ('source-index.json', 'geometry.json', 'signal.json', 'native-rows.jsonl'):
+    index_name = 'native-index.json' if (attempt / 'native-index.json').is_file() else 'source-index.json'
+    for name in (index_name, 'geometry.json', 'signal.json', 'native-rows.jsonl'):
         source(attempt / name)
     index, geometry, signal, rows = load(attempt)
     measured = measure(attempt)
     originals = {name: sha(attempt / name) for name in
-                 ('source-index.json', 'geometry.json', 'signal.json', 'native-rows.jsonl')}
+                 (index_name, 'geometry.json', 'signal.json', 'native-rows.jsonl')}
     streams = {name: [] for name in
                ('dev.traffic_signal', 'dev.inoperative', 'st.stop_line', 'st.crosswalk',
                 'drv.stopped', 'drv.entering_intersection', 'drv.arrival_order',

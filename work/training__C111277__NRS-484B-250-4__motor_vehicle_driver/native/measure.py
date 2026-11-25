@@ -24,7 +24,8 @@ def require(ok, message):
 
 def load(source):
     source = Path(source)
-    index = json.loads((source / "source-index.json").read_text())
+    index_name = 'native-index.json' if (source / 'native-index.json').is_file() else 'source-index.json'
+    index = json.loads((source / index_name).read_text())
     for name, expected in index["files"].items():
         path = source / name
         require(path.is_file() and digest(path) == expected, "source hash mismatch: " + name)
@@ -36,6 +37,7 @@ def load(source):
 
 def measure(source):
     index, geometry, signal, rows = load(source)
+    index_name = 'native-index.json' if (Path(source) / 'native-index.json').is_file() else 'source-index.json'
     require(len(rows) == FRAMES and index["rate_hz"] == RATE, "600-frame 20 Hz source required")
     require(geometry["stop_line_present"] is False, "selected branch requires no stop line")
     require(geometry["near_crosswalk_present"] is True, "near-side crosswalk missing")
@@ -64,7 +66,7 @@ def measure(source):
         "format": "nrs-484b-250-4-source-measurement-v1",
         "assignment_id": index["assignment_id"],
         "condition": index["condition"],
-        "source_index_sha256": digest(Path(source) / "source-index.json"),
+        "source_index_sha256": digest(Path(source) / index_name),
         "source_hashes": index["files"],
         "frames": len(rows), "rate_hz": RATE,
         "stop_line_present": False, "near_crosswalk_present": True,

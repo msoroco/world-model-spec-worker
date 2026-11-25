@@ -10,7 +10,8 @@ from controller import FRAMES, RATE_HZ, TARGET_MPH, command
 from geometry import check as geometry_check, open_drive
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
-CASES = {'probe_1': 'slow', 'probe_2': 'at_default', 'probe_3': 'fast'}
+CASES = {'probe_1': 'slow', 'probe_2': 'at_default', 'probe_3': 'fast',
+         'posted_35': 'posted_35'}
 
 
 def check(config):
@@ -51,6 +52,8 @@ def execute(config, output_dir, host, port):
     output = Path(output_dir).resolve()
     if not output.is_dir() or (output / 'actor-poses.jsonl').exists():
         raise ValueError('new materialized attempt required')
+    (output / 'law-text.json').write_text(json.dumps({'source': 'LVMC 11.16.060',
+        'text': config['statutory_text']}, indent=2) + '\n')
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -63,7 +66,7 @@ def execute(config, output_dir, host, port):
     changed = False
     complete = False
     try:
-        world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
+        world = client.generate_opendrive_world(open_drive(config.get('posted_limit_mph')), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
             smooth_junctions=False, enable_mesh_visibility=True,
             enable_pedestrian_navigation=False))
@@ -85,10 +88,13 @@ def execute(config, output_dir, host, port):
         capture = PipelineCapture(client, subject, output, config['case_id'],
                                   visibility=False,
                                   required_observations=config.get('required_atoms', []))
-        (output / 'sign-survey.json').write_text(json.dumps({
+        (output / 'sign-survey-native.json').write_text(json.dumps({
             'source_kind': 'native_saved_sample', 'lane_survey': readback,
             'street_status': 'unverified', 'survey_complete_both_directions': False,
             'applicable_posted_signs': [], 'sign_authority_source': None,
+            'map_landmarks': [{'id': str(item.id), 'name': getattr(item, 'name', ''),
+                               'value': getattr(item, 'value', None)}
+                              for item in world.get_map().get_all_landmarks()],
             'subject_blueprint_id': subject.type_id}, indent=2) + '\n')
         mounts = {'overview': (-25, -20, 35, -35), 'approach': (1.5, 0, 1.8, 0),
                   'reference_corner': (90, -9, 9, -15), 'driver_reference': (-6, 0, 3, -5)}

@@ -57,7 +57,8 @@ class InoperativeSignalController:
             if o.ego_front_distance_to_boundary_m <= 0:
                 raise ValueError("ego crossed boundary before release")
             if self.phase == "approach":
-                self.phase = "hold" if o.ego_speed_mps <= HALT_SPEED_MPS else "approach"
+                self.phase = "hold" if (o.ego_front_distance_to_boundary_m <= 5.0
+                                        and o.ego_speed_mps <= HALT_SPEED_MPS) else "approach"
             if self.phase == "hold":
                 if o.ego_speed_mps > HALT_SPEED_MPS:
                     self.stopped_frames = 0
@@ -71,4 +72,6 @@ class InoperativeSignalController:
                 self.phase = "released"
         if self.phase == "released":
             return Command(0.15, 0.0, self.phase)
+        if self.phase == "approach" and o.ego_front_distance_to_boundary_m > 5.0:
+            return Command(0.25, 0.0, self.phase)
         return Command(0.0, 1.0, self.phase)

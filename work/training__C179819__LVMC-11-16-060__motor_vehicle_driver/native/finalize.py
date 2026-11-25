@@ -30,12 +30,23 @@ def speed_and_governance_measurement(root):
     expected_review = 'synthetic_diagnostic' if diagnostic else 'independently_reviewed'
     if status.get('source_kind') != 'independent_street_status' or status.get('review_status') != expected_review:
         raise ValueError('Independent street or highway status source required')
+    if not status.get('reviewer'):
+        raise ValueError('Street status source lacks reviewer')
     if status.get('road_sha256') != sha(road):
         raise ValueError('Street status source differs from original road')
     if survey.get('source_kind') != 'native_complete_sign_survey' or survey.get('review_status') != expected_review:
         raise ValueError('Independent complete sign survey required')
+    if not survey.get('reviewer'):
+        raise ValueError('Sign survey source lacks reviewer')
     if survey.get('road_sha256') != sha(road):
         raise ValueError('Sign survey source differs from original road')
+    signs = survey.get('applicable_posted_signs')
+    if signs:
+        if survey.get('pixel_source') != 'reference_corner.mkv':
+            raise ValueError('Original sign pixel source required')
+        video_sha = sha(required(root, 'reference_corner.mkv'))
+        if any(sign.get('pixel_sha256') != video_sha for sign in signs):
+            raise ValueError('Sign review differs from original source pixels')
     context = {'source_kind': 'native_speed_and_complete_sign_survey',
                'native_map_sha256': sha(road), 'street_status_sha256': sha(status_path),
                'sign_survey_sha256': sha(survey_path),
@@ -47,15 +58,28 @@ def speed_and_governance_measurement(root):
     return measure(context, rows)
 
 
+def prima_facie_context(root):
+    source = json.loads(required(root, 'law-text.json').read_text())
+    if source.get('text') != ('The prima facie speed limit is twenty-five miles per hour on all streets '
+                              'and highways unless a different speed limit is posted as set forth in this Title.'):
+        raise ValueError('Exact statutory text source changed')
+    return {'phrase': 'prima facie', 'status': 'legal_interpretation_reserved',
+            'speed_and_governance_are_measurements_only': True}
+
+
 def report(root):
     root = Path(root)
     config = json.loads(required(root, 'config.json').read_text())
     value = speed_and_governance_measurement(root)
-    names = ('road.xodr', 'sign-survey.json', 'street-status.json', 'actor-poses.jsonl')
+    names = ('road.xodr', 'sign-survey.json', 'street-status.json',
+             'actor-poses.jsonl', 'reference_corner.mkv')
     return {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],
             'measurements': {'source_bound_speed_and_governance': {
                 'method': 'speed_and_governance_measurement', 'value': value,
-                'sources': {name: sha(required(root, name)) for name in names}}},
+                'sources': {name: sha(required(root, name)) for name in names}},
+                'prima_facie_context': {'method': 'prima_facie_context',
+                    'value': prima_facie_context(root),
+                    'sources': {'law-text.json': sha(required(root, 'law-text.json'))}}},
             'scope': 'original speed and independently reviewed street/sign context; legal outcome unassessed'}
 
 
@@ -102,7 +126,7 @@ def finalize(root, output):
     analysis = report(root)
     derive_channels(root, config)
     measured = analysis['measurements']['source_bound_speed_and_governance']['value']
-    target_mph = {'slow': 20, 'at_default': 25, 'fast': 30}[config['speed_case']]
+    target_mph = {'slow': 20, 'at_default': 25, 'fast': 30, 'posted_35': 30}[config['speed_case']]
     actual_range = measured['observed_speed_mph_range']
     target = {'target': 'original observed speed over surveyed route',
               'requested': target_mph, 'measured': actual_range,

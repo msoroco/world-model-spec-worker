@@ -2,7 +2,7 @@
 import xml.etree.ElementTree as ET
 
 
-def open_drive():
+def open_drive(posted_limit_mph=None):
     root = ET.Element('OpenDRIVE')
     ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C179819 speed road',
                   version='1.00', date='2026-11-24', north='0', south='0', east='700', west='-100')
@@ -22,7 +22,14 @@ def open_drive():
     lane = ET.SubElement(right, 'lane', id='-1', type='driving', level='false')
     ET.SubElement(lane, 'width', sOffset='0', a='4', b='0', c='0', d='0')
     ET.SubElement(road, 'objects')
-    ET.SubElement(road, 'signals')
+    signals = ET.SubElement(road, 'signals')
+    if posted_limit_mph not in (None, 35):
+        raise ValueError('Only authored 25/35 mph sign comparison supported')
+    limit = 35 if posted_limit_mph == 35 else 25
+    ET.SubElement(signals, 'signal', id='c179819-speed-sign', s='110', t='-4',
+                  name=f'speed-{limit}-mph', dynamic='no', orientation='+', zOffset='0',
+                  country='US', type='R2-1', subtype='speed-limit', value=str(limit), unit='mph',
+                  height='0.75', width='0.6')
     return ET.tostring(root, encoding='unicode')
 
 
