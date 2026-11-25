@@ -75,3 +75,7 @@ Repaired synthetic physical fixture provenance and reran the three met/not_met/u
 Batch strict gate after C10301 readiness: `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at frozen `runtime/scenario_pipeline/worker_exchange/preparation.py:97`, first reporting `ValueError: Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. C10301's assignment-scoped strict gate remains passing. The frozen runtime path was not edited. Other assignments and shared coverage/queue/local integration remain worker-owned CPU work.
 
 2026-11-24 archive note: historical `diagnostic-comparison-negative.log` is retained by exact path inside `work/_shared/unreferenced-cpu-logs-20261124.tar.xz` (SHA-256 `c816a7396f87bfd2529755c8479efe8f37ce536f3765d1dd4f4f601b9aba4870`).
+
+## 2026-11-25 current-runtime postcapture binding
+
+The three current-runtime saved-processing receipts now bind recorded-only `post_capture` and feedback commands for every exact case. The scoped strict assignment gate passed after this manifest update. Prior runtime receipts remain in `prior-runtime-20261125/`; these CPU fixtures do not establish realized Native motion or legal acceptance.

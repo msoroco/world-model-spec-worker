@@ -704,3 +704,7 @@ Eight unreferenced historical primary saved logs were embedded byte-for-byte wit
 ## 2026-11-23 unbound proof preservation
 
 Six historical proof files without current JSON path references were preserved byte for byte in `work/_shared/c109749-unbound-proof-files-20261123.json` (SHA256 `f80fc2b29458055706ff927ec7eab5cb55a3e87173fe18450803bc15f3cf3e14`). Each entry records its original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C109749 remains ready.
+
+## 2026-11-25 current-runtime receipt renewal
+
+All 16 exact cases and 48 fallback candidates passed fresh offline and positive/missing-source compatibility CPU runs under current runtime manifest `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. The refreshed receipt and log bindings are in `execution-manifest.json`; previous manifest and receipts remain readable under `prior-runtime-20261125/`. The scoped strict assignment gate passed. This renews software compatibility only; Native motion, original pixel review and legal findings remain unverified.
