@@ -2,14 +2,14 @@
   "assignment_id": "training__C230222__LVMC-11-30-050__pedestrian",
   "input_sha256": "d0a558572220b118c28903cd1ff3ede564ff16635e13590562c49c0f388f16af",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Current-runtime selected primary and risk-based fallback constructions for both exact 600-frame crossing cases pass full diagnostic compatibility, including Native validation, Lean conversion/render/decode, two source-bound measurements and missing-source rejection. Recorded-only saved processing passes for all four with originals preserved. Canonical semantic proposals, selected execution manifest proof binding, independent delivery acceptance and original Native source review remain; scoped strict ready gate has not passed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "CPU delivery package prepared; original Native capture and GPU delivery remain for execution.",
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 2,
     "selected_comparison_cases_planned": 2,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
+    "delivery_cases_prepared": 2,
     "candidates_proven": 4,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
@@ -26,56 +26,11 @@
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230222__LVMC-11-30-050__pedestrian/native/prove_route_meter.py",
+      "command": "(cd work/training__C230222__LVMC-11-30-050__pedestrian && ../../.venv-cpu/bin/python -m unittest discover -s tests -p \"test*.py\" -v)",
       "exit_code": 0,
-      "proof": "native/route-meter-proof.json",
-      "sha256": "7589fc27a4aefec606cf9cbf4d8380511d12ad5596d96640d0c44b03a31f7d89"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/draft-route-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --output .runtime-work/lvmc-11-30-050-a3 --python ABSOLUTE_VENV_PYTHON",
-      "exit_code": 0,
-      "log": "draft-route/condition_a/offline.log",
-      "sha256": "aa0b9fa272d10371ed477493d2a9a3d13a71ef446acf1941743deb681bd997d0"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/draft-route-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b --output .runtime-work/lvmc-11-30-050-b3 --python ABSOLUTE_VENV_PYTHON",
-      "exit_code": 0,
-      "log": "draft-route/condition_b/offline.log",
-      "sha256": "243d1a1be5bd43e21ec034c90bd7e8fc35cf6279ab659d7d42caa0a9da99c894"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230222__LVMC-11-30-050__pedestrian/native/prove_comparison.py",
-      "exit_code": 0,
-      "proof": "native/comparison-proof.json",
-      "sha256": "de79809ff9ada0a787600a2a2e428ecaa43b42e73c7bd4b9decda0c27371bf60"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/draft-route-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --output .runtime-work/c230222-lvmc-route/a/offline-with-finalizer --python .venv-cpu/bin/python",
-      "exit_code": 0,
-      "log": "draft-route/condition_a/current-runtime-offline.log",
-      "sha256": "aa0b9fa272d10371ed477493d2a9a3d13a71ef446acf1941743deb681bd997d0"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/draft-route-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b --output .runtime-work/c230222-lvmc-route/b/offline-with-finalizer --python .venv-cpu/bin/python",
-      "exit_code": 0,
-      "log": "draft-route/condition_b/current-runtime-offline.log",
-      "sha256": "243d1a1be5bd43e21ec034c90bd7e8fc35cf6279ab659d7d42caa0a9da99c894"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230222__LVMC-11-30-050__pedestrian/native/prove_finalizer.py",
-      "exit_code": 0,
-      "proof": "native/finalizer-proof.json",
-      "sha256": "0bc2c6ea395024887002b198db9ce7665664a199eae228d1c069e48a7e316db0"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230222__LVMC-11-30-050__pedestrian/native/prove_full_finalizer.py",
-      "exit_code": 0,
-      "proof": "native/full-finalizer-proof.json",
-      "sha256": "a98b3dbb2112f959000c992fda31ad54d0271e0d278e0ba4dd0069e0f0c504b9"
+      "log": "root-tests.log",
+      "sha256": "db0aecfa689384805eee8d82eeb2fd98fc0476597873bb3745e19f63139b12b8"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230222__LVMC-11-30-050__pedestrian --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

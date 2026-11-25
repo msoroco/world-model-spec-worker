@@ -1,0 +1,199 @@
+{
+  "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+  "selected_case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+  "cell_id": "C230222",
+  "law_id": "LVMC-11-30-050",
+  "actor": "pedestrian",
+  "condition": "right_angle",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "walker_speed_mps": 1.8,
+  "walker_spawn_z_m": 0.5,
+  "road_geometry_sha256": "ad9c47920102546f0342156d7eb08bebcabdee28992ba94dc202b89ce08a2706",
+  "required_atoms": [
+    "ru.pedestrian",
+    "kin.position"
+  ],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed elevated full crossing",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed origin curb view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed opposite curb view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed side route view",
+      "fov_deg": 90
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ru.subject",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original pedestrian actor identity at every Native frame",
+        "time_window": "full 600-frame crossing capture",
+        "reference_frame": "Native actor id and original frame map",
+        "uncertainty": "Identity joins require independent original audit"
+      },
+      {
+        "name": "st.roadway",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored roadway geometry with original map and pixel review",
+        "time_window": "full 600-frame crossing capture",
+        "reference_frame": "authored road and original Native map",
+        "uncertainty": "Road status requires independent original audit"
+      },
+      {
+        "name": "kin.position",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original pedestrian transform at each Native frame",
+        "time_window": "full 600-frame crossing capture",
+        "reference_frame": "authored road coordinates and original frame map",
+        "uncertainty": "50 ms frame bracket plus Native pose uncertainty"
+      },
+      {
+        "name": "kin.path_length",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Sum distances of source-joined pedestrian positions",
+        "time_window": "entry through opposite-curb exit",
+        "reference_frame": "authored road coordinates",
+        "uncertainty": "Depends on observed entry and exit and frame sampling"
+      },
+      {
+        "name": "kin.heading",
+        "unit": "deg",
+        "sampling_rate_hz": 20,
+        "method": "Observed frame-to-frame pedestrian displacement heading",
+        "time_window": "full 600-frame crossing capture",
+        "reference_frame": "authored curb tangent and original pedestrian positions",
+        "uncertainty": "50 ms frame bracket; stationary frames have no heading"
+      },
+      {
+        "name": "st.road_edge",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored curb segments independently verified against Native map and pixels",
+        "time_window": "full crossing capture",
+        "reference_frame": "authored road coordinates",
+        "uncertainty": "Map projection and actual curb status require independent audit"
+      },
+      {
+        "name": "st.crosswalk",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored absence of crosswalk independently verified against Native map and pixels",
+        "time_window": "full crossing capture",
+        "reference_frame": "authored road coordinates",
+        "uncertainty": "Crosswalk exception cannot be settled by authored claim alone"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Measured route alternatives are not legal thresholds",
+      "Native execution and independent source audit remain unverified"
+    ]
+  },
+  "case": {
+    "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ru.subject",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original pedestrian actor identity at every Native frame",
+          "time_window": "full 600-frame crossing capture",
+          "reference_frame": "Native actor id and original frame map",
+          "uncertainty": "Identity joins require independent original audit"
+        },
+        {
+          "name": "st.roadway",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Authored roadway geometry with original map and pixel review",
+          "time_window": "full 600-frame crossing capture",
+          "reference_frame": "authored road and original Native map",
+          "uncertainty": "Road status requires independent original audit"
+        },
+        {
+          "name": "kin.position",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Original pedestrian transform at each Native frame",
+          "time_window": "full 600-frame crossing capture",
+          "reference_frame": "authored road coordinates and original frame map",
+          "uncertainty": "50 ms frame bracket plus Native pose uncertainty"
+        },
+        {
+          "name": "kin.path_length",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Sum distances of source-joined pedestrian positions",
+          "time_window": "entry through opposite-curb exit",
+          "reference_frame": "authored road coordinates",
+          "uncertainty": "Depends on observed entry and exit and frame sampling"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "Observed frame-to-frame pedestrian displacement heading",
+          "time_window": "full 600-frame crossing capture",
+          "reference_frame": "authored curb tangent and original pedestrian positions",
+          "uncertainty": "50 ms frame bracket; stationary frames have no heading"
+        },
+        {
+          "name": "st.road_edge",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Authored curb segments independently verified against Native map and pixels",
+          "time_window": "full crossing capture",
+          "reference_frame": "authored road coordinates",
+          "uncertainty": "Map projection and actual curb status require independent audit"
+        },
+        {
+          "name": "st.crosswalk",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Authored absence of crosswalk independently verified against Native map and pixels",
+          "time_window": "full crossing capture",
+          "reference_frame": "authored road coordinates",
+          "uncertainty": "Crosswalk exception cannot be settled by authored claim alone"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Measured route alternatives are not legal thresholds",
+        "Native execution and independent source audit remain unverified"
+      ]
+    }
+  },
+  "supported_case_ids": [
+    "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+    "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b"
+  ]
+}

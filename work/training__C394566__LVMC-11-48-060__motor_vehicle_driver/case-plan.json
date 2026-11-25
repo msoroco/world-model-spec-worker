@@ -83,7 +83,20 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "2fc9dd4db7eb98761247eba04207eb028c6d4da45cc83c18b3e867fef3530df8",
+        "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-selected-positive.log",
+        "test_log_sha256": "c024ab51762cb36ab74c7729fb10a949dc1639b56ce94b729fb110fab4136a5f",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py --reject-comparison-drift",
+        "negative_log": "comparison-selected-negative.log",
+        "negative_log_sha256": "040b3857fe70f806322cf9368d62510e90671120284896cc8f5e1ab7ac0d8973",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed route or truck context changed"
+      }
     }
   ],
   "mandatory_observation_targets": [
@@ -202,7 +215,7 @@
         "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
         "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02"
       ],
-      "evidence_or_gap": "Both exact through-route variants and fallbacks pass current-runtime offline; saved finalizers have source-bound positive/negative CPU proof. Exact Core compatibility and delivery audit remain."
+      "evidence_or_gap": "Both exact through-route variants and fallbacks passed current-runtime offline and diagnostic compatibility. Independently source-bound saved processing and comparison software proofs are retained; original CARLA route, truck class, required enroute purpose and physical outcome remain for local review."
     }
   ],
   "source_observation_mapping": [
@@ -240,5 +253,32 @@
         "route_context.json:served_premises_source"
       ]
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "truck route and intervening street",
+        "interval": "whole 30-second journey"
+      },
+      {
+        "view": "approach",
+        "subject": "truck at route entry",
+        "interval": "entry and intervening street"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "truck at intervening street and premises",
+        "interval": "whole passage"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "truck and roadway ahead",
+        "interval": "whole passage"
+      }
+    ]
+  }
 }

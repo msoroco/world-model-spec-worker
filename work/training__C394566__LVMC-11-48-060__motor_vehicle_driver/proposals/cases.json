@@ -4,9 +4,83 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral shared surveyed route context; no accepted recording or legal outcome.",
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "method": "saved original Native route trace joined to original frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "30 seconds / 600 original joined frames",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling; route and purpose need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "method": "saved original Native route trace joined to original frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "30 seconds / 600 original joined frames",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling; route and purpose need independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "saved original Native route trace joined to original frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "30 seconds / 600 original joined frames",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling; route and purpose need independent original review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "method": "saved original Native route trace joined to original frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "30 seconds / 600 original joined frames",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms sampling; route and purpose need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "method": "independently reviewed original route/vehicle/purpose source context"
+          },
+          {
+            "name": "ru.truck",
+            "unit": "structured",
+            "method": "independently reviewed original route/vehicle/purpose source context"
+          },
+          {
+            "name": "st.driveway_or_alley_entrance",
+            "unit": "structured",
+            "method": "independently reviewed original route/vehicle/purpose source context"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostics do not establish original route designation, truck identity, service purpose, physical completion or legal outcome"
+        ]
+      }
+    },
+    {
       "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
       "target_law_id": "LVMC-11-48-060",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "recording_description": {
         "channels": [
           {
@@ -74,13 +148,24 @@
           "unit": "categorical"
         }
       },
-      "unresolved_judgment_calls": [],
-      "rationale": "Synthetic diagnostic only; original designation, purpose and physical completion require independent review."
+      "unresolved_judgment_calls": [
+        "essential use is required enroute"
+      ],
+      "rationale": "Synthetic diagnostic only; original designation, purpose and physical completion require independent review.",
+      "paired_probe_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__purpose_comparison",
+      "deliberate_differences": [
+        "enroute_purpose"
+      ],
+      "probe": {
+        "primary_variable": "enroute_purpose",
+        "comparison_or_standard": "LVMC 11.48.060 enroute purpose exception",
+        "target_value_or_branch": "none"
+      }
     },
     {
       "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
       "target_law_id": "LVMC-11-48-060",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "recording_description": {
         "channels": [
           {
@@ -148,9 +233,37 @@
           "unit": "categorical"
         }
       },
-      "unresolved_judgment_calls": [],
-      "rationale": "Synthetic diagnostic only; original designation, purpose and physical completion require independent review."
+      "unresolved_judgment_calls": [
+        "essential use is required enroute"
+      ],
+      "rationale": "Synthetic diagnostic only; original designation, purpose and physical completion require independent review.",
+      "paired_probe_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__purpose_comparison",
+      "deliberate_differences": [
+        "enroute_purpose"
+      ],
+      "probe": {
+        "primary_variable": "enroute_purpose",
+        "comparison_or_standard": "LVMC 11.48.060 enroute purpose exception",
+        "target_value_or_branch": "delivery"
+      }
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "c394566_enroute_purpose",
+      "target_law_id": "LVMC-11-48-060",
+      "judgment_refs": [
+        {
+          "phrase": "essential use is required enroute",
+          "note": "Purpose necessity and essential use remain an unresolved source-grounded judgment; a stop alone does not establish it."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative required-purpose judgment lacks a numeric sweep axis; selected exact comparison retains independent purpose review.",
+      "missing_inputs": [
+        "No numeric legal meaning or physical scalar sweep for whether a particular enroute use is required; original service premise and necessity remain for independent local review."
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

@@ -26,7 +26,7 @@
           },
           "compatibility": {
             "receipt": "compat-p01-fb/receipt.json",
-            "sha256": "de26d89e4294bc06c811144cb667c865f4eccfd3b4beae136a0a8159ea7d6f30",
+            "sha256": "884ccebe631e5dec564d8f80f76eb3605b290a53bd223a0235bca630fd17a80c",
             "log": "compat-p01-fb/analysis.log",
             "negative_log": "compat-p01-fb/negative.log"
           },
@@ -56,7 +56,7 @@
       },
       "compatibility": {
         "receipt": "compat-p01-pr/receipt.json",
-        "sha256": "8dde75247f40160bdf9671e74bd3b1fd7b588aad25fccb7249133c3d4c2244a2",
+        "sha256": "dc4a008d3c27614d592ba90d4ce0cfaf44c93951ad9df04eca9737c26d7a668d",
         "log": "compat-p01-pr/analysis.log",
         "negative_log": "compat-p01-pr/negative.log"
       },
@@ -94,7 +94,54 @@
       },
       "physical_preparation": {
         "receipt": "physical/probe_01/proof.json",
-        "sha256": "63fc7b20d80392298e8413e5a77297b84b9a377b4a9075959592acea34aa6f14"
+        "sha256": "3ee52edac5f05b25f06b8c91fa33296beaf3fad06e441355cb7c488e3e77fc18"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "saved-p01-processing.json",
+        "test_log_sha256": "bf331461ae2d7a08b6d11a3f1c95c8f9db60c5863dd2ad199d7f58a6db49dda0",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit-selected-delivery.py",
+        "script_sha256": "0579ed0b5b8e700a053645b185d064e16b1a498ae63234d2fc4b2a316b2ebce9",
+        "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_01-positive.log",
+        "test_log_sha256": "1b157cac7eddc68fea71f4181463b726957327a92a1d7324265fd17ebf4d4412",
+        "negative_command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --remove-native-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native_route_trace.jsonl",
+        "negative_log": "delivery-probe_01-negative.log",
+        "negative_log_sha256": "487158155298aafd4940b5fe44d92f50e417d7e6e8d14ac1f6ef4a824d93b9a7",
+        "cpu_scope": "synthetic source/receipt audit only; actual physical pixels and completion pending"
+      },
+      "comparison_audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "2fc9dd4db7eb98761247eba04207eb028c6d4da45cc83c18b3e867fef3530df8",
+        "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-selected-positive.log",
+        "test_log_sha256": "c024ab51762cb36ab74c7729fb10a949dc1639b56ce94b729fb110fab4136a5f",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py --reject-comparison-drift",
+        "negative_log": "comparison-selected-negative.log",
+        "negative_log_sha256": "040b3857fe70f806322cf9368d62510e90671120284896cc8f5e1ab7ac0d8973",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed route or truck context changed"
       }
     },
     {
@@ -119,7 +166,7 @@
           },
           "compatibility": {
             "receipt": "compat-p02-fb/receipt.json",
-            "sha256": "88c73f8916f0db61a7b5db7ee0e2caf9ff526791a200b6f05eaf78793c6045ed",
+            "sha256": "103b0e727dc50304c51018e31503117a5402ed7c350afbeb8a410f567bf43229",
             "log": "compat-p02-fb/analysis.log",
             "negative_log": "compat-p02-fb/negative.log"
           },
@@ -149,7 +196,7 @@
       },
       "compatibility": {
         "receipt": "compat-p02-pr/receipt.json",
-        "sha256": "16aa4e12d5bc4c24d5c9926be7b698ce03b300c6888b87574b73199ecb9ae6fc",
+        "sha256": "9bc27fef01b4b2b5650d88c93810d5b880e132cf2b5ffccd572da39967047e7d",
         "log": "compat-p02-pr/analysis.log",
         "negative_log": "compat-p02-pr/negative.log"
       },
@@ -187,7 +234,54 @@
       },
       "physical_preparation": {
         "receipt": "physical/probe_02/proof.json",
-        "sha256": "b122ce4567d7a50e46123bdfa9611b3eb5be93456a4260679b3a4f5d2515c4e9"
+        "sha256": "c2dd52260b211a3c71b51ad067e59ed48a60809985bab1b3a2124dc6e034bc78"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "saved-p02-processing.json",
+        "test_log_sha256": "ac023871013f86762ec15e1aff05cecb45151306fefe4257d17776eaab4781fd",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit-selected-delivery.py",
+        "script_sha256": "0579ed0b5b8e700a053645b185d064e16b1a498ae63234d2fc4b2a316b2ebce9",
+        "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_02-positive.log",
+        "test_log_sha256": "e362d04f5756d651af422fe8aecbbba470233b0fbbaa3ce49aca6aacb3ee1cb6",
+        "negative_command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --remove-native-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native_route_trace.jsonl",
+        "negative_log": "delivery-probe_02-negative.log",
+        "negative_log_sha256": "487158155298aafd4940b5fe44d92f50e417d7e6e8d14ac1f6ef4a824d93b9a7",
+        "cpu_scope": "synthetic source/receipt audit only; actual physical pixels and completion pending"
+      },
+      "comparison_audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "2fc9dd4db7eb98761247eba04207eb028c6d4da45cc83c18b3e867fef3530df8",
+        "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-selected-positive.log",
+        "test_log_sha256": "c024ab51762cb36ab74c7729fb10a949dc1639b56ce94b729fb110fab4136a5f",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py --reject-comparison-drift",
+        "negative_log": "comparison-selected-negative.log",
+        "negative_log_sha256": "040b3857fe70f806322cf9368d62510e90671120284896cc8f5e1ab7ac0d8973",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed route or truck context changed"
       }
     }
   ]

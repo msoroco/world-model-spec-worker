@@ -51,9 +51,11 @@ def build(case, hashes):
     for i in range(COUNT):
         frame, t = 1000+i, round((i+1)*.05, 4)
         stop = case == 'probe_02' and 220 <= i < 320
-        x = (i if case == 'probe_01' or i < 220 else 220 if i < 320 else i-100)*.1
+        progress = i if case == 'probe_01' or i < 220 else 220 if i < 320 else i-100
+        step_m = .14 if case == 'probe_01' else .168
+        x = progress*step_m
         road = 100 if i < 150 else 200 if i < 450 else 300
-        speed = 0.0 if stop else 2.0
+        speed = 0.0 if stop else step_m*20
         body = [[round(x+dx, 4), dy, dz]
                 for dx in (-2.0, 2.0) for dy in (-1.0, 1.0) for dz in (0.0, 2.0)]
         sample = {'frame': frame, 'time_s': t, 'position': {'x': x, 'y': 0.0, 'z': 0.0},

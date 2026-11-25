@@ -1,0 +1,40 @@
+{
+  "format": "worker-selected-source-probe-manifest",
+  "assignment_id": "training__C10374__NRS-484B-110__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_source_pending_delivery_proofs",
+  "cases": [
+    {
+      "case_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_b",
+      "kind": "draft_not_selected",
+      "id": "primary",
+      "construction": "selected-current-v2-condition_b-construction.json",
+      "construction_sha256": "a489d9c1147448fdb9a6635b587a3edaeef512cef150969c46da512966a0e57b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original zone designation, body and pixels require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback2",
+          "construction": "selected-current-v2-condition_b-fallback2-construction.json",
+          "construction_sha256": "af1d5656ef8b126485201ef7b9206dbf3d401c5560029259ba18fab1cd8b32b7",
+          "trigger": {
+            "source": "original overview camera frames",
+            "metric": "audited moving body and zone-boundary visibility",
+            "failure_condition": "primary overview obscures the body or zone boundary"
+          },
+          "changed_knobs": [
+            "camera_policy: standard to elevated_overview"
+          ]
+        }
+      ],
+      "measurement_contract": "current-runtime-v2-condition_b-fallback2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C10374__NRS-484B-110__motor_vehicle_driver/current-runtime-v2-condition_b-fallback2-recipe.json"
+    }
+  ]
+}
