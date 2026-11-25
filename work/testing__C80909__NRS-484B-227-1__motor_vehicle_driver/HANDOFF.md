@@ -1,3 +1,11 @@
+# C80909 current-runtime delivery handoff — 2026-11-25
+
+Status: **ready** on the exact assignment scoped CPU gate. Command: `.venv-cpu/bin/python worker_check.py --assignment testing__C80909__NRS-484B-227-1__motor_vehicle_driver --complete --require-delivery-ready` (exit 0). The selected `execution-manifest.json` binds four exact delivery cases, four positive and negative compatibility receipts, recorded-only processing proofs, physical outcome fixture receipts and three risk-based fallback constructions with passing offline and positive/negative compatibility checks. `delivery_audit.py` passed each case on synthetic saved sources and rejected a missing movement history; it requires original Native provenance, complete four-camera decode, independent pixel/site review and physical completion for actual acceptance. `comparison_audit.py` passed opening versus blocked crossing and left turn versus continuation on original-shaped sources, and rejected wrong-case pairing. The shared GPU queue now includes four exact cases, their fallback preparation commands and both comparison commands. Public authority establishment, actual map geometry, vehicle motion and pixel visibility remain local Native review; synthetic fixtures establish software compatibility only. C126120 owns the distinct U-turn branch.
+
+Proof commands and per-case logs are bound in `result.json` and `execution-manifest.json`; implementation and fixture source is under this assignment directory. No frozen input, runtime or batch file was edited. The full batch strict gate remains pending three partial assignments and retained prior-runtime manifest bindings.
+
+## Earlier checkpoints
+
 ## 2026-11-25 16:13 UTC: four exact C80909 runtime offline proofs
 
 C80909 remains **partial**. `review-draft-manifest.json` binds all four selected left-turn/continuation constructions to the current pinned runtime and their exact construction SHA-256 values. `.venv-cpu/bin/python runtime.py offline` passed independently for every primary exact case, and each full command and log SHA is recorded in the draft manifest and `result.json`. The four logs are under `cases/*/primary-offline.log`; materialized bundles and test artifacts remain under `.runtime-work/`. These are software construction checks, not a selected ready execution manifest or Native proof.

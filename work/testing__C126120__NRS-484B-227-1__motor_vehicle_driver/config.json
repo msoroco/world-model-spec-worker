@@ -1,0 +1,139 @@
+{
+  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-227-1",
+  "cell_id": "C126120",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+  "supported_case_ids": [
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn"
+  ],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "physical_completion": {
+    "criterion": "turn",
+    "motion_source": "movement_history.jsonl",
+    "body_key": "ego_body_vertices_xy_m",
+    "heading_key": "heading_deg",
+    "turn_degrees": 180,
+    "turn_tolerance_deg": 30,
+    "engineering_tolerances_not_legal": true
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "source-reviewed-site-pose"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "source-reviewed-site-pose"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "source-reviewed-site-pose"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "source-reviewed-site-pose"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body",
+          "unit": "m",
+          "method": "original complete Native world vertices",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        },
+        {
+          "name": "other_body",
+          "unit": "m",
+          "method": "original complete Native world vertices",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        },
+        {
+          "name": "ego_heading",
+          "unit": "degrees",
+          "method": "original Native pose yaw",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        },
+        {
+          "name": "divider_overlap",
+          "unit": "boolean",
+          "method": "complete body against sourced divider polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        },
+        {
+          "name": "camera_frames",
+          "unit": "frame",
+          "method": "four original RGB frames joined to Native tick",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        },
+        {
+          "name": "ego_gear",
+          "unit": "categorical",
+          "method": "original Native reverse-control readback",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "actual motion, authority status and legal judgment require independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "divider_site",
+          "unit": "structured record",
+          "method": "source-hashed divided-road, opening and authority context",
+          "source_refs": [
+            "divider_context.json",
+            "site_source_receipt.json"
+          ],
+          "uncertainty": "public-authority establishment requires independent document review"
+        },
+        {
+          "name": "barrier_opening",
+          "unit": "structured record",
+          "method": "realized Native barrier section vertices and opening",
+          "source_refs": [
+            "barrier_receipt.json"
+          ],
+          "uncertainty": "actual clearance requires physical review"
+        }
+      ],
+      "limitations": [
+        "Authored CPU site is diagnostic only; original authority and map review pending"
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Divided-highway and two roadway boundaries require original source review",
+      "source": "NRS 484B.227(1); inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "output_key": "site_context_sources",
+      "method": "finalize_delivery",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "divider_context.json",
+        "site_source_receipt.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Complete ego body starts on right-hand roadway",
+      "source": "NRS 484B.227(1); inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "output_key": "starts_on_right_hand_roadway",
+      "method": "finalize_delivery",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "divider_context.json",
+        "movement_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Complete body crosses only within physical barrier opening",
+      "source": "NRS 484B.227(1); inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "output_key": "any_body_overlap_outside_opening",
+      "method": "finalize_delivery",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "divider_context.json",
+        "barrier_receipt.json",
+        "movement_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Semicircular or U-turn heading change is measured without legal threshold",
+      "source": "NRS 484B.227(1); inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "output_key": "observed_turn_angle_degrees",
+      "method": "finalize_delivery",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "movement_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Public-authority-established opening needs separate source",
+      "source": "NRS 484B.227(1); inputs/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
+      "output_key": "public_authority_establishment_judgment",
+      "method": "finalize_delivery",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "site_source_receipt.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "movement_history.jsonl"
+    ],
+    "error_contains": "Missing required source: movement_history.jsonl"
+  },
+  "statutory_judgment": "unresolved; original site and authority review required"
+}

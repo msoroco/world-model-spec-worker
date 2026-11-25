@@ -1,0 +1,511 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+      "construction": "construction.json",
+      "construction_sha256": "15e70700e52bb744ca888ebfb2091fe4b2b885fce3bb655286ef59b8c3b83b43",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/cases/left_through_opening/opening-fixture-recipe.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c80909-offline-left_through_opening-20261125-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "15e70700e52bb744ca888ebfb2091fe4b2b885fce3bb655286ef59b8c3b83b43",
+        "log": "cases/left_through_opening/primary-offline.log",
+        "log_sha256": "77a905d9c60cdd749c4421dc8e7fb7759ba7153e1e7eb70f90a4984b411f0743"
+      },
+      "compatibility": {
+        "receipt": "cases/left_through_opening/primary-compatibility.json",
+        "sha256": "c71a7f173d5229004d43ec695f992c236c01591be2c0435cb6ceb356e4df2af0",
+        "log": "cases/left_through_opening/primary-compat-analysis.log",
+        "negative_log": "cases/left_through_opening/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/left_through_opening/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_through_opening/primary-physical-preparation.json",
+        "sha256": "92be249bcf0a203860a8f4f01bbd98440e057ed8dfc6dd7c12589cbfd623068f"
+      },
+      "post_capture": {
+        "receipt": "cases/left_through_opening/primary-saved-processing.json",
+        "sha256": "b653b668f81bb3719375102b9445c693c0605558789f1421113d6ee8bc0afdbe",
+        "test_log": "cases/left_through_opening/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+        "feedback_command": "review saved feedback for testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete ego body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete other body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego pose yaw at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "divider_measurements.py",
+          "method": "join original body polygons to sourced divider and opening polygons",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original RGB streams to each Native tick",
+          "evidence": "video_frames.jsonl and four original FFV1 MKVs"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Keep the complete body farther from the opening west edge after measured edge clearance falls below 0.4 m."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_through_opening/fallback1-construction.json",
+          "construction_sha256": "d558245cecfea167f32c7ceea488bf741baec741fd49d7c39e5197d821e69d5a",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance to planned divider or opening edge",
+            "failure_condition": "clearance under 0.4 m or collision before planned motion completes"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m"
+          ],
+          "design_rationale": "Keep the complete body farther from the opening west edge after measured edge clearance falls below 0.4 m.",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening --candidate fallback1 --output .runtime-work/c80909-fallback-offline-left_through_opening",
+            "exit_code": 0,
+            "construction_sha256": "d558245cecfea167f32c7ceea488bf741baec741fd49d7c39e5197d821e69d5a",
+            "log": "cases/left_through_opening/fallback1-offline.log",
+            "log_sha256": "9aa00e33484e30af32d40a5a913307acb22245f8e9b90681f6d9f322921432c6"
+          },
+          "compatibility": {
+            "receipt": "cases/left_through_opening/fallback1-compatibility.json",
+            "sha256": "2b275ba2e8012c803d011edbd5564e9feb6e3a4662dc1d6949169d099be12226",
+            "log": "cases/left_through_opening/fallback1-compat-analysis.log",
+            "negative_log": "cases/left_through_opening/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d73d9cd795ac1d3298d68e8fce760b22ef12f56bd377339ce5756fcb4eb935af",
+        "command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening --attempt $ATTEMPT --diagnostic-fixture",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening --attempt $MISSING_SOURCE_ATTEMPT --diagnostic-fixture",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: movement_history.jsonl",
+        "test_log": "cases/left_through_opening/delivery-audit-positive.log",
+        "test_log_sha256": "3fcf0cc0c0c0dd5645716014895122ecfd7b24829e51df551cb275218fa08bea",
+        "negative_log": "cases/left_through_opening/delivery-audit-negative.log",
+        "negative_log_sha256": "fb022c30d4c723587a8063c82ed97e0aa1323e4cb661ed7f030e40234b2ce3b6",
+        "scope": "CPU diagnostic audit only; local Native acceptance requires original pixels and site review"
+      }
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider",
+      "construction": "cases/left_across_blocked_divider/construction.json",
+      "construction_sha256": "c1683e9bb9a0ad1edae15a720dc6dca79662d1924f0c52865893014ed53f4f9f",
+      "kind": "delivery",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c80909-offline-left_across_blocked_divider-20261125-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c1683e9bb9a0ad1edae15a720dc6dca79662d1924f0c52865893014ed53f4f9f",
+        "log": "cases/left_across_blocked_divider/primary-offline.log",
+        "log_sha256": "cd7f2d093168bb546fef9e22ae8c95d9c343828ed4b39822b9571b9648c9c319"
+      },
+      "measurement_contract": "cases/left_across_blocked_divider/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/cases/left_across_blocked_divider/left_across_blocked_divider-fixture-recipe.json",
+      "compatibility": {
+        "receipt": "cases/left_across_blocked_divider/primary-compatibility.json",
+        "sha256": "048fbb20370795ac0f5905f30a826a46aabe31cc1d3909434f6a0913ea8ba76a",
+        "log": "cases/left_across_blocked_divider/primary-compat-analysis.log",
+        "negative_log": "cases/left_across_blocked_divider/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/left_across_blocked_divider/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_across_blocked_divider/primary-physical-preparation.json",
+        "sha256": "aa1f082ce2f167834242e48af250f69da943506f7b7d37a2720c082c1ef32b2e"
+      },
+      "post_capture": {
+        "receipt": "cases/left_across_blocked_divider/primary-saved-processing.json",
+        "sha256": "8fcffa5d295bcc55cc08548e626b431d135faef808ad89657620260a8e9891c9",
+        "test_log": "cases/left_across_blocked_divider/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider",
+        "feedback_command": "review saved feedback for testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete ego body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete other body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego pose yaw at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "divider_measurements.py",
+          "method": "join original body polygons to sourced divider and opening polygons",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original RGB streams to each Native tick",
+          "evidence": "video_frames.jsonl and four original FFV1 MKVs"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Move the crossing track toward the opening without entering it, maintaining clearance from the western physical barrier."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_across_blocked_divider/fallback1-construction.json",
+          "construction_sha256": "0fe553f2f0bab880fbe3ded54dddd83368d7720e4423aa46b2fc08491892535f",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance to planned divider or opening edge",
+            "failure_condition": "clearance under 0.4 m or collision before planned motion completes"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m"
+          ],
+          "design_rationale": "Move the crossing track toward the opening without entering it, maintaining clearance from the western physical barrier.",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider --candidate fallback1 --output .runtime-work/c80909-fallback-offline-left_across_blocked_divider",
+            "exit_code": 0,
+            "construction_sha256": "0fe553f2f0bab880fbe3ded54dddd83368d7720e4423aa46b2fc08491892535f",
+            "log": "cases/left_across_blocked_divider/fallback1-offline.log",
+            "log_sha256": "16278dd4fc59673db3c7e28f6acfa874defa379d93ad6c8f8cd9f1bc144352eb"
+          },
+          "compatibility": {
+            "receipt": "cases/left_across_blocked_divider/fallback1-compatibility.json",
+            "sha256": "47ad96c26940f6fbd9e39691fc4e94fb728f7dfb6379a1ef95f1bb023f286a69",
+            "log": "cases/left_across_blocked_divider/fallback1-compat-analysis.log",
+            "negative_log": "cases/left_across_blocked_divider/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d73d9cd795ac1d3298d68e8fce760b22ef12f56bd377339ce5756fcb4eb935af",
+        "command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider --attempt $ATTEMPT --diagnostic-fixture",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider --attempt $MISSING_SOURCE_ATTEMPT --diagnostic-fixture",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: movement_history.jsonl",
+        "test_log": "cases/left_across_blocked_divider/delivery-audit-positive.log",
+        "test_log_sha256": "6e2281317dd2669b8040647d484aa97b00fb4ea4678d484f13bb8e732431c70b",
+        "negative_log": "cases/left_across_blocked_divider/delivery-audit-negative.log",
+        "negative_log_sha256": "fb022c30d4c723587a8063c82ed97e0aa1323e4cb661ed7f030e40234b2ce3b6",
+        "scope": "CPU diagnostic audit only; local Native acceptance requires original pixels and site review"
+      }
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover",
+      "construction": "cases/left_at_established_crossover/construction.json",
+      "construction_sha256": "d98e4644b13f480515a7cbec6728b46beae48e6a5cda1ea6367fbd82809b7ca8",
+      "kind": "delivery",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c80909-offline-left_at_established_crossover-20261125-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d98e4644b13f480515a7cbec6728b46beae48e6a5cda1ea6367fbd82809b7ca8",
+        "log": "cases/left_at_established_crossover/primary-offline.log",
+        "log_sha256": "090425b38b2bf964091cf3fd6699f555ba21ed478b42a8ef968551680511dce0"
+      },
+      "measurement_contract": "cases/left_at_established_crossover/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/cases/left_at_established_crossover/left_at_established_crossover-fixture-recipe.json",
+      "compatibility": {
+        "receipt": "cases/left_at_established_crossover/primary-compatibility.json",
+        "sha256": "2dfecfa4da40ffb4e5ec3cdca85892dbec2eb75af5cc97d532d59d7e01599c35",
+        "log": "cases/left_at_established_crossover/primary-compat-analysis.log",
+        "negative_log": "cases/left_at_established_crossover/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/left_at_established_crossover/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_at_established_crossover/primary-physical-preparation.json",
+        "sha256": "e3fbcd5da7813e8c23950be445c6657f1facb6f229a06888ed6538564e41cdab"
+      },
+      "post_capture": {
+        "receipt": "cases/left_at_established_crossover/primary-saved-processing.json",
+        "sha256": "e7e7d1baba244f16d795211899630d56939039e3a37ac5be8e88696e71c1d84b",
+        "test_log": "cases/left_at_established_crossover/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover",
+        "feedback_command": "review saved feedback for testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete ego body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete other body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego pose yaw at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "divider_measurements.py",
+          "method": "join original body polygons to sourced divider and opening polygons",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original RGB streams to each Native tick",
+          "evidence": "video_frames.jsonl and four original FFV1 MKVs"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Authority document availability is an administrative source review; route changes cannot establish public authority."
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d73d9cd795ac1d3298d68e8fce760b22ef12f56bd377339ce5756fcb4eb935af",
+        "command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover --attempt $ATTEMPT --diagnostic-fixture",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_at_established_crossover --attempt $MISSING_SOURCE_ATTEMPT --diagnostic-fixture",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: movement_history.jsonl",
+        "test_log": "cases/left_at_established_crossover/delivery-audit-positive.log",
+        "test_log_sha256": "74adac37dd74601c05413fa11cc6bf3db9a4df6bd781d5ec5a4efed1a57baf80",
+        "negative_log": "cases/left_at_established_crossover/delivery-audit-negative.log",
+        "negative_log_sha256": "fb022c30d4c723587a8063c82ed97e0aa1323e4cb661ed7f030e40234b2ce3b6",
+        "scope": "CPU diagnostic audit only; local Native acceptance requires original pixels and site review"
+      }
+    },
+    {
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation",
+      "construction": "cases/left_right_roadway_continuation/construction.json",
+      "construction_sha256": "1f6ff8932818cd4120b25bd3ee6f07130535a12dff951903350f6d7f94277a8c",
+      "kind": "delivery",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c80909-offline-continuation-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1f6ff8932818cd4120b25bd3ee6f07130535a12dff951903350f6d7f94277a8c",
+        "log": "cases/left_right_roadway_continuation/primary-offline.log",
+        "log_sha256": "db1760de2fe82476fa25144c63a09dace520214a6a6ba70cdbeb0d250cb9a894"
+      },
+      "measurement_contract": "cases/left_right_roadway_continuation/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/cases/left_right_roadway_continuation/left_right_roadway_continuation-fixture-recipe.json",
+      "compatibility": {
+        "receipt": "cases/left_right_roadway_continuation/primary-compatibility.json",
+        "sha256": "bf75e58a55013413a371c4d32bf738876823b4dd73d4e4454078ae2183af6210",
+        "log": "cases/left_right_roadway_continuation/primary-compat-analysis.log",
+        "negative_log": "cases/left_right_roadway_continuation/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/left_right_roadway_continuation/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_right_roadway_continuation/primary-physical-preparation.json",
+        "sha256": "67976cd4cdca6d7e2c492d6f7670336d2958fb0655a1b9c9769cb497fc6240d6"
+      },
+      "post_capture": {
+        "receipt": "cases/left_right_roadway_continuation/primary-saved-processing.json",
+        "sha256": "d2ecf58d06208235cda28375c741188e29921b396823dba0c0df4bba43f71c6b",
+        "test_log": "cases/left_right_roadway_continuation/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation",
+        "feedback_command": "review saved feedback for testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete ego body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native complete other body at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego pose yaw at each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "divider_measurements.py",
+          "method": "join original body polygons to sourced divider and opening polygons",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original RGB streams to each Native tick",
+          "evidence": "video_frames.jsonl and four original FFV1 MKVs"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Increase right-roadway median clearance when complete body approaches within 0.4 m of divider."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_right_roadway_continuation/fallback1-construction.json",
+          "construction_sha256": "9c21c14bb983dbd95a5544eb4708654d93d61c85de7537c89cc641a5b8ae94f7",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance to planned divider or opening edge",
+            "failure_condition": "clearance under 0.4 m or collision before planned motion completes"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m"
+          ],
+          "design_rationale": "Increase right-roadway median clearance when complete body approaches within 0.4 m of divider.",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation --candidate fallback1 --output .runtime-work/c80909-fallback-offline-left_right_roadway_continuation",
+            "exit_code": 0,
+            "construction_sha256": "9c21c14bb983dbd95a5544eb4708654d93d61c85de7537c89cc641a5b8ae94f7",
+            "log": "cases/left_right_roadway_continuation/fallback1-offline.log",
+            "log_sha256": "9f0a17fbde3b52ee1c8f1484b65b1b619458b24722f992b9f05fc5bb26a14110"
+          },
+          "compatibility": {
+            "receipt": "cases/left_right_roadway_continuation/fallback1-compatibility.json",
+            "sha256": "e5256079de565b69142cb117cdb64a048f40e2db45b8188cde486fce7e6cb0a3",
+            "log": "cases/left_right_roadway_continuation/fallback1-compat-analysis.log",
+            "negative_log": "cases/left_right_roadway_continuation/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d73d9cd795ac1d3298d68e8fce760b22ef12f56bd377339ce5756fcb4eb935af",
+        "command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation --attempt $ATTEMPT --diagnostic-fixture",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline:runtime .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_right_roadway_continuation --attempt $MISSING_SOURCE_ATTEMPT --diagnostic-fixture",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: movement_history.jsonl",
+        "test_log": "cases/left_right_roadway_continuation/delivery-audit-positive.log",
+        "test_log_sha256": "ddb5d71b2e9d45b1c556e5227460dbd2520196f2f72819478ea6f8492f3d68a5",
+        "negative_log": "cases/left_right_roadway_continuation/delivery-audit-negative.log",
+        "negative_log_sha256": "fb022c30d4c723587a8063c82ed97e0aa1323e4cb661ed7f030e40234b2ce3b6",
+        "scope": "CPU diagnostic audit only; local Native acceptance requires original pixels and site review"
+      }
+    }
+  ],
+  "draft_only": true
+}

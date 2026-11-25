@@ -66,11 +66,31 @@
     "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
   },
   "observations": [
-    "source-backed divided highway and separate opposing roadway boundaries excluding shoulders",
-    "two real barrier sections with explicit physical opening",
-    "complete-body trajectory across opening or blocked divider and right-hand-roadway occupancy",
-    "initial/final heading to distinguish 90-degree left turn from U-turn",
-    "other vehicle location and public-authority crossover establishment kept separate"
+    {
+      "name": "ego_body",
+      "mandatory": true,
+      "description": "source-backed divided highway and separate opposing roadway boundaries excluding shoulders"
+    },
+    {
+      "name": "other_body",
+      "mandatory": true,
+      "description": "two real barrier sections with explicit physical opening"
+    },
+    {
+      "name": "ego_heading",
+      "mandatory": true,
+      "description": "complete-body trajectory across opening or blocked divider and right-hand-roadway occupancy"
+    },
+    {
+      "name": "divider_overlap",
+      "mandatory": true,
+      "description": "initial/final heading to distinguish 90-degree left turn from U-turn"
+    },
+    {
+      "name": "camera_frames",
+      "mandatory": true,
+      "description": "other vehicle location and public-authority crossover establishment kept separate"
+    }
   ],
   "sources": [
     {
@@ -93,7 +113,7 @@
     "This bound left-turn cell does not cover the inherited U-turn label; C126120 remains responsible.",
     "Exact runner, cameras, finalizer, fallbacks and proofs remain worker-owned CPU work."
   ],
-  "planning_status": "partial; opening-case source-gated runner, four-camera acquisition and saved finalizer CPU-tested; exact site and remaining case/proof packages pending",
+  "planning_status": "Four exact constructions, compatibility, saved processing and independent diagnostic audits pass; physical site and Native outcome remain unverified.",
   "requirement_dispositions": [
     {
       "requirement": "Divided-highway and right-hand-roadway context is source-grounded",
@@ -228,23 +248,31 @@
     }
   },
   "camera_plan": {
-    "rate_hz": 20,
-    "overview": [
-      1920,
-      1080
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both divided-road carriageways, divider, opening, ego and other traffic",
+        "interval": "full capture"
+      },
+      {
+        "view": "approach",
+        "subject": "right-hand origin roadway, ego body and west barrier section",
+        "interval": "approach through divider entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "opening or blocked crossing, east barrier section and destination roadway",
+        "interval": "divider approach through turn completion"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego view toward divider opening, opposing roadway and other vehicle",
+        "interval": "full capture"
+      }
     ],
-    "approach": [
-      1280,
-      720
-    ],
-    "reference_corner": [
-      1280,
-      720
-    ],
-    "driver_reference": [
-      1280,
-      720
-    ],
-    "source": "native_capture.py and saved_finalizer.py; physical field of view pending original-camera review"
+    "physical_visibility_review": "pending independent original camera pixel review"
   }
 }
