@@ -40,10 +40,15 @@ def check_result(result, case):
         raise ValueError('Missing source-bound original measurement')
     if not isinstance(metric.get('ego_entry_frame'),int) or not isinstance(metric.get('other_entry_frame'),int):
         raise ValueError('Physical junction entry incomplete')
-    observed=bool(metric.get('pre_line_low_speed_frames'))
+    no_line=case.endswith(('crosswalk_stop','crosswalk_no_stop',
+                           'visible_point_stop','visible_point_no_stop'))
+    key='pre_reference_low_speed_frames' if no_line else 'pre_line_low_speed_frames'
+    if key not in metric:
+        raise ValueError('Missing original governing-reference stop measurement')
+    observed=bool(metric[key])
     expects_stop = not case.endswith(('controlled_2','crosswalk_no_stop','visible_point_no_stop'))
     if observed != expects_stop:
-        raise ValueError('Physical marked-line stop contrast incomplete')
+        raise ValueError('Physical governing-reference stop contrast incomplete')
     return metric
 
 
@@ -55,10 +60,19 @@ def check_review(review,case,video,mapping,metric):
             review.get('video_frames_sha256')!=sha(mapping)):
         raise ValueError('Missing source-bound original pixel review')
     findings=review.get('findings',{})
-    for key in ('ego_visible','other_visible','both_heads_uncovered',
-                'both_heads_dark','marked_lines_visible','near_side_crosswalks_visible'):
+    for key in ('ego_visible','other_visible','both_heads_uncovered','both_heads_dark'):
         if findings.get(key) is not True:
             raise ValueError('Original pixel finding missing: '+key)
+    no_line=case.endswith(('crosswalk_stop','crosswalk_no_stop',
+                           'visible_point_stop','visible_point_no_stop'))
+    no_crosswalk=case.endswith(('visible_point_stop','visible_point_no_stop'))
+    if findings.get('marked_lines_visible') is not (not no_line):
+        raise ValueError('Original marked-line pixel finding differs')
+    if findings.get('near_side_crosswalks_visible') is not (not no_crosswalk):
+        raise ValueError('Original crosswalk pixel finding differs')
+    if no_crosswalk and (findings.get('view_opening_visible') is not True or
+                         findings.get('approaching_traffic_visible') is not True):
+        raise ValueError('Original view-opening pixel finding missing')
     frames=review.get('decisive_frames',{})
     for key in ('ego_entry','other_entry','governing_reference'):
         if not isinstance(frames.get(key),int) or not 0<=frames[key]<600:
@@ -114,7 +128,8 @@ def selftest(case,negative):
         'measured_values':{'frames':600,'legal_verdict':None,'actual_pixels_reviewed':False,
         'source_sha256':{x:'0'*64 for x in ('native-raw-actors.jsonl','native-signal-readback.jsonl','native-map-readback.json','video_frames.jsonl')},
         'ego_entry_frame':300,'other_entry_frame':250,
-        'pre_line_low_speed_frames':[180] if not case.endswith(('controlled_2','crosswalk_no_stop','visible_point_no_stop')) else []}}
+        ('pre_reference_low_speed_frames' if case.endswith(('crosswalk_stop','crosswalk_no_stop','visible_point_stop','visible_point_no_stop')) else 'pre_line_low_speed_frames'):
+            [180] if not case.endswith(('controlled_2','crosswalk_no_stop','visible_point_no_stop')) else []}}
     if negative:
         sample['provenance_kind']='synthetic_fixture'
         check_result(sample,case)

@@ -748,6 +748,192 @@
         "negative_log": "delivery-proofs/official_2/native-required.log",
         "negative_log_sha256": "5bd4c3077e71fab5983764d7ae91854bd909fcc265062c88647059aa9832cf97"
       }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-preparing-movement/primary/construction.json",
+      "construction_sha256": "29e3fcfc20f1b95b8039015f8c7c5d4534e0948aab2062ff08597939a43e9c2a",
+      "measurement_contract": "measurement-contracts/preparing_movement.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Visible vehicle movement, authorization and flashing pixels require original source review"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-preparing-movement/fallback1/construction.json",
+          "construction_sha256": "368a1a447507eca0a108065c9a957e814e8efc6bee928e84646c829b62d9fe0b",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject does not remain behind the source vehicle",
+            "metric": "measured following gap during source preparation",
+            "source": "original Native pose and lane survey"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "368a1a447507eca0a108065c9a957e814e8efc6bee928e84646c829b62d9fe0b",
+            "log": "current-preparing-offline/fallback1.log",
+            "log_sha256": "9cb149be2408bb274508708e12ebef6521d0b9cb829a6ba776b8ec89b7139002"
+          },
+          "compatibility": {
+            "receipt": "current-preparing-public/fallback1/receipt.json",
+            "sha256": "b686f46a5ec9edf2741bffca49c014d8ea021944df65660f6067296d1e6c2e88",
+            "log": "current-preparing-public/fallback1/analysis.log",
+            "negative_log": "current-preparing-public/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "current-preparing-public/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-preparing-saved/fallback1/receipt.json",
+            "sha256": "947a2e7b842f298861994c05646175582565bbb6c3015e709c50d60265071d96"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-preparing-movement/fallback2/construction.json",
+          "construction_sha256": "d67731011f70e338d3825412d622471c3593ac31d17e90d8fd83003bd5ec2ebc",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot distinguish source movement or lamps",
+            "metric": "visible source vehicle movement and flashing-light pixels",
+            "source": "original four-camera frame map and pixels"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --candidate fallback2 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d67731011f70e338d3825412d622471c3593ac31d17e90d8fd83003bd5ec2ebc",
+            "log": "current-preparing-offline/fallback2.log",
+            "log_sha256": "83a69709ec6d6cf4eaf7f12c1a3eaecc7900df0d7e22fbc2e85fe083e2f49614"
+          },
+          "compatibility": {
+            "receipt": "current-preparing-public/fallback2/receipt.json",
+            "sha256": "6bfdda61dcf417a82b18f593de8dec85c3dcdf5713c5f8f5a2e4c17f02662de9",
+            "log": "current-preparing-public/fallback2/analysis.log",
+            "negative_log": "current-preparing-public/fallback2/negative.log"
+          },
+          "negative": {
+            "log": "current-preparing-public/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-preparing-saved/fallback2/receipt.json",
+            "sha256": "901d36893d396c8b03bc3b0dea283c730e8480b21f3d7d42dbee30eef2a0df32"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-preparing_movement-recipe.json",
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Record original vehicle identity, stopped phase, visibly moving phase and later travel on every Native frame",
+          "evidence": "vehicle_poses.jsonl and emergency_context.template.json; preparation, authorization, lamps and pixels require independent original review"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "method": "Read back both observed driving-lane waypoints, travel heading and per-frame actor headings",
+          "evidence": "vehicle_poses.jsonl joined to video_frames.jsonl and reviewed lane context"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "Project original subject and emergency vehicle body extents onto observed travel axis and retain each overlapping frame",
+          "evidence": "vehicle_poses.jsonl, trace.jsonl and channels/rel.longitudinal_overlap.jsonl"
+        },
+        "drv.overtaking": {
+          "entrypoint": "finalize.py",
+          "method": "Track signed original relative order across frames separately from body overlap",
+          "evidence": "vehicle_poses.jsonl and channels/drv.overtaking.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Report signed relative longitudinal order and distinct adjacent lane identities",
+          "evidence": "vehicle_poses.jsonl and channels/rel.ahead_behind_in_lane.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Retain observed per-frame actor velocities and ego trace at original Native frame and time",
+          "evidence": "vehicle_poses.jsonl and trace.jsonl joined to video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Carry source-reviewed officer direction as structured context with unknown preserved",
+          "evidence": "officer_direction_context review and channels/context-review.json"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/preparing_movement/canonical-proof.json",
+        "sha256": "8a8b50e8ba9cf8b73862480179709c93dde1257bf1e3f8c08e0784f386ef4646"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_NATIVE_SURVEY"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "29e3fcfc20f1b95b8039015f8c7c5d4534e0948aab2062ff08597939a43e9c2a",
+        "log": "current-preparing-offline/primary.log",
+        "log_sha256": "1f7f2fe49352dc7114edc85c5e65440afe85a67581a1a1e61b5d328b7e86f34d"
+      },
+      "compatibility": {
+        "receipt": "current-preparing-public/primary/receipt.json",
+        "sha256": "3567559f0f0f1a855add44e3d09374cdea07453bdda3fdd7f2a36eb745547e4b",
+        "log": "current-preparing-public/primary/analysis.log",
+        "negative_log": "current-preparing-public/primary/negative.log"
+      },
+      "negative": {
+        "log": "current-preparing-public/primary/negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-preparing-saved/primary/receipt.json",
+        "sha256": "2b6cf303c8bedff6f30eeb266ea1a766a9b84287215eb279360edbf872395a1a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-preparing-saved/primary/receipt.json",
+        "test_log_sha256": "2b6cf303c8bedff6f30eeb266ea1a766a9b84287215eb279360edbf872395a1a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-check/preparing-public-primary-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-preparing-saved/primary/receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/preparing_movement-delivery-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_movement --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-check/preparing-public-primary-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-preparing-saved/primary/receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/preparing_movement-delivery-diagnostic.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ca009c4c636d7607f1a3eec1f98545cfd8aff73268e5b2ac9a6891039f8dbfcb",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "test_log": "delivery-proofs/preparing_movement/diagnostic.log",
+        "test_log_sha256": "c5b2ffe7b8bf5d48b7ad58e42c9efe2e742b291ae3629fcc6a20e94bb3e7b21b",
+        "negative_log": "delivery-proofs/preparing_movement/native-required.log",
+        "negative_log_sha256": "5bd4c3077e71fab5983764d7ae91854bd909fcc265062c88647059aa9832cf97"
+      }
     }
   ]
 }

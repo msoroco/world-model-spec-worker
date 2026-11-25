@@ -1,0 +1,76 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "commanded_stop_response",
+      "range_or_domain": [
+        "stop",
+        "no_stop"
+      ]
+    },
+    {
+      "kind": "world_setup",
+      "name": "governing_stop_reference",
+      "range_or_domain": [
+        "marked_line",
+        "crosswalk",
+        "visible_point"
+      ]
+    },
+    {
+      "kind": "controller",
+      "name": "commanded_release_order",
+      "range_or_domain": [
+        "normal",
+        "yield",
+        "prior",
+        "inside"
+      ]
+    },
+    {
+      "kind": "world_setup",
+      "name": "other_vehicle_context",
+      "range_or_domain": [
+        "approaching",
+        "prior_stop",
+        "inside"
+      ]
+    }
+  ],
+  "quote": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Installed uncovered vehicular traffic-control signal is inoperative at entry",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Original observer perspective and approaching traffic pixels are needed for the no-line/no-crosswalk branch.",
+        "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway"
+      },
+      {
+        "note": "Retain original speed, body trajectory and pixels; no numeric legal threshold is specified.",
+        "phrase": "proceed cautiously"
+      },
+      {
+        "note": "Retain both actor histories, body-to-junction occupancy and release order.",
+        "phrase": "yielding to vehicles which have previously completed a stop or are within the intersection"
+      }
+    ],
+    "law_id": "NRS-484B-250-4",
+    "obligation": {
+      "description": "Stop at the governing hierarchy reference, then proceed cautiously and yield to prior stoppers or vehicles within the intersection",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Signal state at entry; stop before entry; yield after such stop",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-250-4@motor_vehicle_driver"
+}

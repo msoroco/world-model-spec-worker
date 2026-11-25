@@ -122,6 +122,12 @@ def execute(config, output, host, port):
         raise ValueError('attempt already contains authority receipt')
     shutil.copy2(receipt_path, output / 'authority-receipt.json')
     authority = authorize_native_capture(output, original_receipt, config['opendrive_signal_id'])
+    _write(output / 'exception-applicability-source.json', {
+        'format': 'c109166-exception-applicability-source-v1',
+        'statute': 'NRS 484B.290',
+        'review_status': 'pending_independent_review',
+        'applicability': 'undetermined',
+        'original_review_pending': True})
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     world = client.get_world()

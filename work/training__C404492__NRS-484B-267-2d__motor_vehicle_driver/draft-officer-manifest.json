@@ -1,0 +1,54 @@
+{
+  "assignment_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Original officer identity, instruction, recipient and timing need independent review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-officer/fallback1/construction.json",
+          "construction_sha256": "782160170f6f1b269bba104068675706a668df99f29e92b0825b19f610512ec4",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-officer/fallback2/construction.json",
+          "construction_sha256": "e6924725090ee62d9243e66e494c23749dd8b526b272b93176dd28ec1f3387f3",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          }
+        }
+      ],
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed",
+      "construction": "draft-officer/primary/construction.json",
+      "construction_sha256": "192c6502f535beb12e88b1a8b8ebdf8d050b58db41379c3cfaf377cc1a45f4c0",
+      "delivery_readiness": "incomplete",
+      "kind": "selected_cpu_draft_not_delivery_ready",
+      "measurement_contract": "measurement-contracts/officer_directed.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      }
+    }
+  ],
+  "format": "worker-selected-cpu-draft-manifest-v1",
+  "reason": "Officer instruction original-source and comparison proof chain pending",
+  "selected_delivery": false,
+  "status": "partial"
+}

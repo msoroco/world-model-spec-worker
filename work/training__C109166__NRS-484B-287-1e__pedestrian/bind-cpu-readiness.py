@@ -35,10 +35,10 @@ def main():
         if ('"passed": true' not in positive.read_text() or
                 'Missing source: device-original.jsonl' not in negative.read_text()):
             raise ValueError('Exact delivery CPU positive/negative tests differ')
-        attempt = f'.runtime-work/c109166-public-r5-{suffix}-primary'
+        attempt = f'.runtime-work/c109166-public-r7-{suffix[-1]}-primary'
         process = f'work/{BASE}/saved-{index}-primary.log'
         if index == 1:
-            negative_attempt = '.runtime-work/c109166-saved-r5-negative-source'
+            negative_attempt = '.runtime-work/c109166-saved-r7-negative-source'
             negative_process = f'work/{BASE}/saved-1-negative.log'
             negative_output = '.runtime-work/c109166-delivery-diagnostic-negative.json'
         else:
@@ -49,7 +49,8 @@ def main():
         entry['delivery_acceptance'] = {
             'case_id': case, 'sets': ['full-train'],
             'checks': ['native_source', 'all_participants', 'time_join',
-                       'full_video_decode', 'actual_pixels', 'physical_completion'],
+                       'full_video_decode', 'actual_pixels', 'physical_completion',
+                       'source_hashed_exception_applicability_review'],
             'script': 'delivery_audit.py', 'script_sha256': sha(script),
             'command': (prefix + f' --attempt {attempt} --processing {process}' +
                         f' --output .runtime-work/c109166-delivery-diagnostic-{index}.json --diagnostic'),
@@ -66,6 +67,8 @@ def main():
     manifest['original_native_observed'] = False
     manifest['comparison_proof'] = {'path': 'comparison-proof.json',
                                     'sha256': sha(HERE / 'comparison-proof.json')}
+    manifest['exception_review_cpu_proof'] = {'path': 'exception-review-proof.json',
+                                              'sha256': sha(HERE / 'exception-review-proof.json')}
     write(manifest_path, manifest)
     print(json.dumps({'bound_cases': 2, 'manifest_sha256': sha(manifest_path)}))
 

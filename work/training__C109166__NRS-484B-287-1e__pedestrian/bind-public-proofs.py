@@ -40,7 +40,7 @@ def bind():
                     or receipt['candidate_id'] != candidate
                     or receipt['construction_sha256'] != selected['construction_sha256']):
                 raise ValueError('Public receipt identity differs: ' + label)
-            output_name = 'c109166-public-r5-' + label
+            output_name = 'c109166-public-r7-' + suffix[-1] + '-' + candidate
             output = ROOT / '.runtime-work' / output_name
             analysis = directory / 'public-analysis.log'
             negative = directory / 'negative-analysis.log'
@@ -54,6 +54,26 @@ def bind():
                 'receipt': str(receipt_path.relative_to(HERE)), 'sha256': sha(receipt_path),
                 'log': str(analysis.relative_to(HERE)),
                 'negative_log': str(negative.relative_to(HERE))}
+            if candidate == 'primary':
+                entry['negative'] = {'log': str(negative.relative_to(HERE)),
+                                     'log_sha256': sha(negative)}
+                source_map = {
+                    'ru.subject': 'pedestrian-original.jsonl',
+                    'ru.pedestrian': 'pedestrian-original.jsonl',
+                    'dev.pedestrian_signal': 'device-original.jsonl, diagonal-pixel-review.json',
+                    'dev.regulatory_sign': 'authority-receipt.json, authority/official_status.json',
+                    'dev.governs': 'authority-receipt.json, authority/movement_applicability.json',
+                    'st.intersection': 'road-boundary-review.json, pedestrian-original.jsonl',
+                    'kin.position': 'pedestrian-original.jsonl, video_frames.jsonl',
+                    'kin.heading': 'pedestrian-original.jsonl, video_frames.jsonl',
+                    'kin.path_length': 'pedestrian-original.jsonl, video_frames.jsonl',
+                    'kin.time': 'video_frames.jsonl',
+                    'rel.occupies': 'pedestrian-original.jsonl, road-boundary-review.json'}
+                entry['acquisition'] = {name: {
+                    'entrypoint': 'runner.py',
+                    'method': 'original Native readback, frame join and independent source review',
+                    'evidence': evidence}
+                    for name, evidence in source_map.items()}
     write(manifest_path, manifest)
     print(json.dumps({'bound_candidates': 4, 'manifest_sha256': sha(manifest_path)}))
 

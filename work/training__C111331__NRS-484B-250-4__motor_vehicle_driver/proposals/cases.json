@@ -1,8 +1,80 @@
 {
+  "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__baseline",
+      "rationale": "Unselected shared neutral reference; no legal outcome asserted.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "ego_front",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
+    },
+    {
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
-      "rationale": "Unselected inoperative-signal marked-stop-line diagnostic",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_controlled_1",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "controlled_1"
+      },
+      "rationale": "Exact diagnostic branch for controlled_1; legal judgment remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -30,14 +102,50 @@
         ]
       },
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
       "variable_assignments": {
-        "complete_stop_requested": true
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
       }
     },
     {
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_2",
-      "rationale": "Unselected inoperative-signal marked-stop-line diagnostic",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_controlled_2",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "controlled_2"
+      },
+      "rationale": "Exact diagnostic branch for controlled_2; legal judgment remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -65,14 +173,334 @@
         ]
       },
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
       "variable_assignments": {
-        "complete_stop_requested": false
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "no_stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_stop",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_crosswalk_stop",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "crosswalk_stop"
+      },
+      "rationale": "Exact diagnostic branch for crosswalk_stop; legal judgment remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "ego_front",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "crosswalk"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_crosswalk_no_stop",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "crosswalk_no_stop"
+      },
+      "rationale": "Exact diagnostic branch for crosswalk_no_stop; legal judgment remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "ego_front",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "no_stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "crosswalk"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_visible_point_stop",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "visible_point_stop"
+      },
+      "rationale": "Exact diagnostic branch for visible_point_stop; legal judgment remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "ego_front",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "visible_point"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_no_stop",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_visible_point_no_stop",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "visible_point_no_stop"
+      },
+      "rationale": "Exact diagnostic branch for visible_point_no_stop; legal judgment remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "ego_front",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "no_stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "visible_point"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
       }
     },
     {
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
-      "rationale": "Unselected inoperative-signal post-stop precedence diagnostic",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_prior_stop_yield",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "prior_stop_yield"
+      },
+      "rationale": "Exact diagnostic branch for prior_stop_yield; legal judgment remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -100,17 +528,50 @@
         ]
       },
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
-        "whether observed complete stop, yielding and cautious entry satisfy the exact statute"
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
       ],
       "variable_assignments": {
-        "precedence_request": "prior_stop_yield"
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "yield"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "prior_stop"
+        }
       }
     },
     {
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_no_yield",
-      "rationale": "Unselected inoperative-signal post-stop precedence diagnostic",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_prior_stop_no_yield",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "prior_stop_no_yield"
+      },
+      "rationale": "Exact diagnostic branch for prior_stop_no_yield; legal judgment remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -138,17 +599,50 @@
         ]
       },
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
-        "whether observed complete stop, yielding and cautious entry satisfy the exact statute"
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
       ],
       "variable_assignments": {
-        "precedence_request": "prior_stop_no_yield"
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "prior"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "prior_stop"
+        }
       }
     },
     {
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__inside_vehicle_no_yield",
-      "rationale": "Unselected inoperative-signal post-stop precedence diagnostic",
+      "deliberate_differences": [
+        "commanded_stop_response",
+        "governing_stop_reference",
+        "commanded_release_order",
+        "other_vehicle_context"
+      ],
+      "paired_probe_id": "reference_inside_vehicle_no_yield",
+      "probe": {
+        "comparison_or_standard": "Five exact case-plan comparisons",
+        "primary_variable": "commanded_stop_response",
+        "target_value_or_branch": "inside_vehicle_no_yield"
+      },
+      "rationale": "Exact diagnostic branch for inside_vehicle_no_yield; legal judgment remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -176,14 +670,63 @@
         ]
       },
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
-        "whether observed complete stop, yielding and cautious entry satisfy the exact statute"
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
       ],
       "variable_assignments": {
-        "precedence_request": "inside_vehicle_no_yield"
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "inside"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "inside"
+        }
       }
     }
   ],
-  "format": "worker-case-proposals"
+  "cell_id": "C111331",
+  "semantic_status": "draft_incomplete_original_judgment_sweep",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Original observer perspective and approaching traffic pixels are needed for the no-line/no-crosswalk branch.",
+          "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway"
+        },
+        {
+          "note": "Retain original speed, body trajectory and pixels; no numeric legal threshold is specified.",
+          "phrase": "proceed cautiously"
+        },
+        {
+          "note": "Retain both actor histories, body-to-junction occupancy and release order.",
+          "phrase": "yielding to vehicles which have previously completed a stop or are within the intersection"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native source and view-opening pixel review",
+        "Observable participant history and cautious-entry review"
+      ],
+      "rationale": "Qualitative visibility, caution and yielding need original Native source and human pixel review before a frozen sweep is specified.",
+      "status": "incomplete",
+      "sweep_id": "qualitative_original_review",
+      "target_law_id": "NRS-484B-250-4"
+    }
+  ]
 }

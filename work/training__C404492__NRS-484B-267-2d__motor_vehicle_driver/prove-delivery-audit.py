@@ -14,6 +14,7 @@ CASES = {
     'controlled_2': 'c404492-capture-final/controlled_2-primary',
     'official_1': 'c404492-official-public/official_1-primary-v2',
     'official_2': 'c404492-official-public/official_2-primary-v2',
+    'preparing_movement': 'c404492-check/preparing-public-primary-v3',
 }
 CHECKS = ['native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion']
@@ -39,6 +40,7 @@ def main():
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
         official = suffix.startswith('official_')
+        preparing = suffix == 'preparing_movement'
         context = {'case_id': entry['case_id'], 'review_kind': 'original_source_review',
                    'reviewer': 'independent local reviewer',
                    'emergency_vehicle_authorized': not official,
@@ -46,6 +48,9 @@ def main():
                    'regulatory_agency_vehicle_source': 'original-source:agency-status',
                    'qualifying_flash_equipment_reviewed': True,
                    'officer_directed_otherwise': False,
+                   'preparing_to_move_reviewed': preparing,
+                   'preparing_to_move_source': 'original-source:preparation-review',
+                   'visible_vehicle_movement_source': 'original-source:movement-frames',
                    **{key: 'original-source:' + key for key in context_sources}}
         selected_statutory_context(context, entry['case_id'])
         for key, value in (('officer_directed_otherwise', True),
@@ -63,6 +68,7 @@ def main():
                 raise AssertionError('Statutory context defect accepted: ' + key)
         attempt = ROOT / '.runtime-work' / CASES[suffix]
         processing = (HERE / 'current-official-saved' / (suffix + '-primary.json') if official
+                      else HERE / 'current-preparing-saved/primary/receipt.json' if preparing
                       else HERE / 'current-saved' / (suffix + '-primary-receipt.json'))
         folder = HERE / 'delivery-proofs' / suffix
         output = ROOT / '.runtime-work' / 'c404492-tmp' / (suffix + '-delivery-diagnostic.json')
