@@ -26,6 +26,10 @@ class DriveTests(unittest.TestCase):
         self.assertEqual([c["brake"] for c in ego.controls], [1, 1, 0, 0])
         self.assertEqual([c["throttle"] for c in ego.controls], [0, 0, 0.3, 0.3])
         self.assertEqual([c["throttle"] for c in other.controls], [0.2]*4)
+        ego, other = Actor(), Actor()
+        for tick in range(4):
+            drive.apply_tick(ego, other, make, tick, hold_ticks=2, other_hold_ticks=3)
+        self.assertEqual([c["brake"] for c in other.controls], [1, 1, 1, 0])
 
     def test_invalid_phase_and_actor_identity_rejected(self):
         ego, other = Actor(), Actor()

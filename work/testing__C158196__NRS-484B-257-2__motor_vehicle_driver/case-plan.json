@@ -9,19 +9,61 @@
       "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Operative governing signal controls ego; subsection-2 sign duty excepted",
-      "physical_risk": "signal head may not govern selected approach"
+      "physical_risk": "signal head may not govern selected approach",
+      "gap_ids": [
+        "signal_exception",
+        "signed_entrance"
+      ]
     },
     {
       "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Governing signal Off, properly erected ego sign and non-obligated other vehicle within intersection",
-      "physical_risk": "Off state may be confused with wholly inoperative physical signal"
+      "physical_risk": "Off state may be confused with wholly inoperative physical signal",
+      "gap_ids": [
+        "signed_entrance",
+        "non_obligated_traffic"
+      ]
     },
     {
       "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
       "target_law_id": "NRS-484B-257-2",
       "purpose": "Illuminated signal elsewhere does not govern ego; signed-entrance duty remains candidate",
-      "physical_risk": "visible adjacent signal may be incorrectly attributed to ego"
+      "physical_risk": "visible adjacent signal may be incorrectly attributed to ego",
+      "gap_ids": [
+        "signal_exception",
+        "signed_entrance"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Stop-sign alternative with governing signal Off and other traffic not obliged to stop",
+      "gap_ids": [
+        "signed_entrance",
+        "non_obligated_traffic"
+      ],
+      "physical_risk": "Native actor timing may not realize the intended occupancy or approach interval; original samples must decide"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Yield-sign entrance with an approaching non-obligated vehicle at the nearer engineering spawn",
+      "gap_ids": [
+        "hazard_sweep",
+        "non_obligated_traffic"
+      ],
+      "physical_risk": "Native actor timing may not realize the intended occupancy or approach interval; original samples must decide"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Yield-sign entrance with an approaching non-obligated vehicle at the farther engineering spawn",
+      "gap_ids": [
+        "hazard_sweep",
+        "non_obligated_traffic"
+      ],
+      "physical_risk": "Native actor timing may not realize the intended occupancy or approach interval; original samples must decide"
     }
   ],
   "comparisons": [
@@ -49,6 +91,32 @@
       ],
       "deliberate_differences": [
         "affected-lane governance of ego entrance"
+      ]
+    },
+    {
+      "comparison_id": "yield_vs_stop_signed_duty",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty"
+      ],
+      "fixed_conditions": [
+        "same junction geometry, ego and other routes, signal Off, camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "ego entrance yield versus stop sign"
+      ]
+    },
+    {
+      "comparison_id": "approaching_traffic_separation",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far"
+      ],
+      "fixed_conditions": [
+        "same yield-sign junction, ego route and motion script, signal Off, other route, camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "other vehicle starting separation and observed conflict time"
       ]
     }
   ],
@@ -124,5 +192,123 @@
     "Within-intersection observation does not complete approaching-hazard sweep.",
     "Exact runner, cameras, finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
   ],
-  "planning_status": "partial; signal exception, within-intersection body and Native state checks CPU-tested"
+  "planning_status": "partial; seven selected branches planned, site alternatives and crossing sources CPU-tested; exact delivery proofs pending",
+  "authored_sites": [
+    {
+      "path": "signal-site.xodr",
+      "sha256": "302a3c4f841a73821cc337a3f3d18c0d349a36698876e2b465a20447d0fcaf5b",
+      "review_status": "authored CPU source; Native sign, control and non-through status pending"
+    },
+    {
+      "path": "stop-site.xodr",
+      "sha256": "e8c6c120888abbf2177dd7067744b9b5def22f2a0454a4d45137386ab68a649b",
+      "review_status": "authored CPU source; Native sign, control and non-through status pending"
+    },
+    {
+      "path": "visible-site.xodr",
+      "sha256": "0f52ae7bfb95055245be789b0eb032ff50d4adba7b2ff827a208d4b852906da1",
+      "review_status": "authored CPU source; Native sign, control and non-through status pending"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Authored stop-site sign; physical proper erection unresolved",
+      "channels": [],
+      "source_refs": [
+        "stop-site.xodr"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "Authored yield-site sign; physical proper erection unresolved",
+      "channels": [],
+      "source_refs": [
+        "signal-site.xodr"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Native affected-lane readback plus original signal state",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Complete authored entrance inventory plus original actor lanes",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original ego speed before first body overlap",
+      "channels": [],
+      "source_refs": [
+        "crossing_history.jsonl"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Stop-line source and physical absence or location still pending",
+      "channels": [],
+      "source_refs": [
+        "stop-site.xodr"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Crosswalk source and physical absence or location still pending",
+      "channels": [],
+      "source_refs": [
+        "stop-site.xodr"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Complete original ego body vertices intersect sourced junction polygon",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Complete original ego and other body vertices intersect sourced junction polygon",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original speeds and distances to sourced conflict point; judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original body and motion overlap; cautious-yield judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "crossing_history.jsonl"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "No officer is constructed; local original visual confirmation pending",
+      "channels": [],
+      "source_refs": [
+        "overview.mkv",
+        "approach.mkv"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Native signal state and affected-lane map; physical governance review pending",
+      "channels": [],
+      "source_refs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl",
+        "approach.mkv"
+      ]
+    }
+  }
 }
