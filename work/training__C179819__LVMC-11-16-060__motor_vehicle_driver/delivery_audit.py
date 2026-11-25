@@ -69,7 +69,8 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
     if (survey.get("road_sha256") != hashes["road.xodr"] or
             street.get("road_sha256") != hashes["road.xodr"] or
             survey.get("pixel_source") != "reference_corner.mkv" or
-            (survey.get("applicable_posted_signs") != []) == posted):
+            not survey.get("applicable_posted_signs") or
+            {sign.get("limit_mph") for sign in survey["applicable_posted_signs"]} != ({35} if posted else {25})):
         raise ValueError("Original sign or street source join differs")
     if diagnostic:
         fixture = read(Path(attempt) / "compatibility.json")

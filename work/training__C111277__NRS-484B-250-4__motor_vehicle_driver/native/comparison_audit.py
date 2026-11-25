@@ -19,8 +19,8 @@ def require(ok, message):
 
 def read_source(root):
     root = Path(root)
-    index_path = root / 'source-index.json'
-    require(index_path.is_file(), 'missing source-index.json')
+    index_path = root / 'native-index.json'
+    require(index_path.is_file(), 'missing native-index.json')
     index = json.loads(index_path.read_text())
     required = ('geometry.json', 'signal.json', 'native-rows.jsonl')
     require(set(index['files']) == set(required), 'incomplete source index')
@@ -76,7 +76,7 @@ def audit(halt_root, roll_root):
             'comparison_variable': 'complete_halt_before_applicable_boundary',
             'crosswalk_entry_frames': entries, 'halt_before_crosswalk': stopped,
             'yielded_until_other_clear': yielded,
-            'source_index_sha256': [digest(Path(p) / 'source-index.json')
+            'source_index_sha256': [digest(Path(p) / 'native-index.json')
                                     for p in (halt_root, roll_root)],
             'physical_realization_confirmed': False, 'legal_outcome_asserted': False}
 

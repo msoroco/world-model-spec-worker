@@ -27,7 +27,7 @@ def main():
             "log": reference(proof / "offline.log"), "log_sha256": sha(proof / "offline.log")}
         entry["compatibility"] = {"receipt": reference(proof / "compatibility.json"),
             "sha256": sha(proof / "compatibility.json"),
-            "log": reference(proof / "compatibility-analysis.log"),
+            "log": reference(proof / "public-analysis.log"),
             "negative_log": reference(proof / "negative-analysis.log")}
         entry["post_capture"] = {"recorded_only": True,
             "command": "runtime.py process-saved --manifest work/" + ASSIGNMENT +
@@ -53,8 +53,9 @@ def main():
     (HERE / "execution-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     first = json.loads((HERE / manifest["cases"][0]["construction"]).read_text())
     for item in first["files"]:
-        if item["path"] in ("runner.py", "config.json"):
-            (HERE / item["path"]).write_text(item["content"])
+        target = HERE / item["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(item["content"])
     (HERE / "construction.json").write_text(json.dumps(first, indent=2) + "\n")
     print({"selected_cases": len(manifest["cases"]), "fallbacks": sum(len(e["candidates"]) for e in manifest["cases"])})
 

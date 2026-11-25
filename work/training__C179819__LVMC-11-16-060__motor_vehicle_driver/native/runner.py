@@ -45,7 +45,7 @@ def survey(carla, mapping):
 def execute(config, output_dir, host, port):
     import carla
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     check(config)
@@ -71,6 +71,10 @@ def execute(config, output_dir, host, port):
             smooth_junctions=False, enable_mesh_visibility=True,
             enable_pedestrian_navigation=False))
         changed = True
+        (output / 'road.xodr').write_text(world.get_map().to_opendrive())
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 1 / RATE_HZ
@@ -105,6 +109,7 @@ def execute(config, output_dir, host, port):
             cbp.set_attribute('image_size_x', str(spec['width']))
             cbp.set_attribute('image_size_y', str(spec['height']))
             cbp.set_attribute('sensor_tick', str(1 / RATE_HZ))
+            cbp.set_attribute('fov', str(spec['fov_deg']))
             transform = carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch))
             camera = world.spawn_actor(cbp, transform, attach_to=subject if name in ('approach', 'driver_reference') else None)
             owned.append(camera)
@@ -119,7 +124,8 @@ def execute(config, output_dir, host, port):
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'actor-poses.jsonl').open('x') as poses:
+                (output / 'actor-poses.jsonl').open('x') as poses, \
+                (output / 'trace.jsonl').open('x') as trace:
             initial_time = None
             for index in range(FRAMES):
                 velocity = subject.get_velocity()
@@ -154,6 +160,11 @@ def execute(config, output_dir, host, port):
                     'observed_speed_mps': math.sqrt(observed.x ** 2 + observed.y ** 2 + observed.z ** 2),
                     'requested_control': request, 'camera_native_frames': camera_frames,
                     'source_cameras': {name: index for name in CAMERAS}}) + '\n')
+                trace.write(json.dumps({'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': pose.location.x, 'y': pose.location.y,
+                                 'z': pose.location.z},
+                    'heading_deg': pose.rotation.yaw,
+                    'speed_mps': math.sqrt(observed.x ** 2 + observed.y ** 2 + observed.z ** 2)}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
@@ -162,6 +173,11 @@ def execute(config, output_dir, host, port):
         complete = True
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'sign_authority_sourced': False, 'legal_outcome_claimed': False}
+    except BaseException as error:
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'errors': [str(error)], 'frames_complete': complete,
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
+        raise
     finally:
         if capture is not None:
             capture.close(confirmed=complete)
@@ -176,8 +192,13 @@ def execute(config, output_dir, host, port):
                 actor.destroy()
             except Exception:
                 pass
-        if changed:
-            restore(client, saved)
+        restoration = restore(client, saved) if changed else {'restored': True, 'world_unchanged': True}
+        if complete:
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
+                context={'case_id': config['case_id'],
+                         'candidate_id': config.get('candidate_id', 'primary'),
+                         'sign_and_street_review': 'pending'})
 
 
 if __name__ == '__main__':

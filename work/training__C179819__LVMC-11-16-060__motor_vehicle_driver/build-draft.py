@@ -46,7 +46,9 @@ def main():
                   'posted_limit_mph': 35 if speed_case == 'posted_35' else None,
                   'required_atoms': [], 'source_packets': [], 'case': {'case_id': case_id},
                   'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
-                               'height': 1080 if name == 'overview' else 720} for name in CAMERAS],
+                               'height': 1080 if name == 'overview' else 720,
+                               'pose_strategy': 'fixed surveyed roadside overview' if name in ('overview', 'reference_corner') else 'subject-mounted original RGB',
+                               'fov_deg': 90} for name in CAMERAS],
                   'recording_description': description, 'status': 'cpu_draft_sign_authority_unverified'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'controller.py',

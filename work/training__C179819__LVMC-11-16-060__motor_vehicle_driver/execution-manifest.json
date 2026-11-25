@@ -1,0 +1,408 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_native_review",
+  "cases": [
+    {
+      "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_1/primary/construction.json",
+      "construction_sha256": "a5a8fd9f55cde84343c3850b74e6ff3d9d2137ac67608531f9b89e6956ce6ece",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native speed tracking and public sign governance require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_1/fallback1/construction.json",
+          "construction_sha256": "3f613536f38a3bb26c0271335259aa0eb84a659850a356e498d2fe8eb15ca709",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "3f613536f38a3bb26c0271335259aa0eb84a659850a356e498d2fe8eb15ca709",
+            "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --candidate fallback1",
+            "log": "proofs/probe_1/fallback1-offline.log",
+            "log_sha256": "6b69874c39c3f02786c4ee9a262648b53bcb09f3fd9fe497d5b839b843f9408f"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_1/fallback1-compatibility.json",
+            "sha256": "3baa36dc88c50d83325515951bf1b19900d5b8c617ac015a90b944eccceed19a",
+            "log": "proofs/probe_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/diagnostic-probe_1-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a5a8fd9f55cde84343c3850b74e6ff3d9d2137ac67608531f9b89e6956ce6ece",
+        "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --candidate primary",
+        "log": "proofs/probe_1/offline.log",
+        "log_sha256": "6b69874c39c3f02786c4ee9a262648b53bcb09f3fd9fe497d5b839b843f9408f"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_1/compatibility.json",
+        "sha256": "221df39361b2bb8fec425bc3739de63aa051b0c368a468c08708c285d1d874bd",
+        "log": "proofs/probe_1/public-analysis.log",
+        "negative_log": "proofs/probe_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/execution-manifest.json --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1",
+        "test_log": "proofs/probe_1/saved.log",
+        "test_log_sha256": "907a283916a3fa20917458d58eccce4725a6af5fc304a2113003eec3a3f06918",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_1/physical-preparation.json",
+        "sha256": "e863eae0b366a88217a80d2b41c4af718f32d9415d67477653af296034b13782"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sign_and_street_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "85566443e7af5e8ff131077ac638b6a0206b5ce5f1eca33c16f3443d84ddc50c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_1/delivery-positive.log",
+        "test_log_sha256": "d1cc3b61993c5f9eaf95394e48c2db018ce1041a581325c10b4f916a393e5432",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_1-positive.json --diagnostic --omit-source sign-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: sign-survey.json",
+        "negative_log": "proofs/probe_1/delivery-negative.log",
+        "negative_log_sha256": "4b6f017b62e1b6ed8766f784e5f3b78ea198173a40894ae1ec293abb5d2d6d8e"
+      }
+    },
+    {
+      "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_2/primary/construction.json",
+      "construction_sha256": "9c226c9feb7ad2da3c5a96961d6be1cf0e4016075ad16f29503cd7efcc1861f5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native speed tracking and public sign governance require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_2/fallback1/construction.json",
+          "construction_sha256": "d59fe30df0a0c01d9ca525bf02a573333e80235ce8d5aa5c951ca3710184a41f",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d59fe30df0a0c01d9ca525bf02a573333e80235ce8d5aa5c951ca3710184a41f",
+            "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2 --candidate fallback1",
+            "log": "proofs/probe_2/fallback1-offline.log",
+            "log_sha256": "c4a54308fcf9c0086d781588830e2df97b77711818c21e9f71eff245b729650f"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_2/fallback1-compatibility.json",
+            "sha256": "84041b33bdd4130f8749f68e550a694945059ec3be9c8d1bdff65135f49bd26d",
+            "log": "proofs/probe_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/diagnostic-probe_2-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9c226c9feb7ad2da3c5a96961d6be1cf0e4016075ad16f29503cd7efcc1861f5",
+        "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2 --candidate primary",
+        "log": "proofs/probe_2/offline.log",
+        "log_sha256": "c4a54308fcf9c0086d781588830e2df97b77711818c21e9f71eff245b729650f"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_2/compatibility.json",
+        "sha256": "901611a9d488cf2988c78aaec6ed144e7f3fbef1fa390016e412dc77b6824b10",
+        "log": "proofs/probe_2/public-analysis.log",
+        "negative_log": "proofs/probe_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/execution-manifest.json --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2",
+        "test_log": "proofs/probe_2/saved.log",
+        "test_log_sha256": "f2c8ebc72ccc0c0c1230967a71b5de9cc644cd65e181a08d534ce6fbf7740a32",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_2/physical-preparation.json",
+        "sha256": "d1f227b1ea623233ff4326a830e5ae8af7297f1d2cc83818490359205caef665"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sign_and_street_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "85566443e7af5e8ff131077ac638b6a0206b5ce5f1eca33c16f3443d84ddc50c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_2/delivery-positive.log",
+        "test_log_sha256": "d4b12788aaab567dea3ed6b6ed9347726a20f7abba8d8fd229870571af6fd0f3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_2-positive.json --diagnostic --omit-source sign-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: sign-survey.json",
+        "negative_log": "proofs/probe_2/delivery-negative.log",
+        "negative_log_sha256": "4b6f017b62e1b6ed8766f784e5f3b78ea198173a40894ae1ec293abb5d2d6d8e"
+      }
+    },
+    {
+      "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_3/primary/construction.json",
+      "construction_sha256": "1d421c3a527714fcd3427e53205da35a18f6e4e8129a056abe0d572d645c699e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native speed tracking and public sign governance require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_3/fallback1/construction.json",
+          "construction_sha256": "a3f040ccf11acf9ce5991151e0fb333eb8a559cbe9bf79ee10841aad6a66ccda",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a3f040ccf11acf9ce5991151e0fb333eb8a559cbe9bf79ee10841aad6a66ccda",
+            "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3 --candidate fallback1",
+            "log": "proofs/probe_3/fallback1-offline.log",
+            "log_sha256": "0515fe35c4f97437ac6432d4e55aeca49a98e85d295cd6a90afb4edd20669c7d"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_3/fallback1-compatibility.json",
+            "sha256": "cb45f7c1b067820dc30aae5d6432d2a34eaa4db858f0c15acc44767ac3d43776",
+            "log": "proofs/probe_3/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_3/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_3/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/diagnostic-probe_3-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "1d421c3a527714fcd3427e53205da35a18f6e4e8129a056abe0d572d645c699e",
+        "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3 --candidate primary",
+        "log": "proofs/probe_3/offline.log",
+        "log_sha256": "47e87fff392766182dde15347c64f7f872885d07573476db9d99fbe9a4543110"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_3/compatibility.json",
+        "sha256": "31a01aa2ed3c15ebc9580a3a2c7a222246c1c65c168c114a9623fa0d44df29ce",
+        "log": "proofs/probe_3/public-analysis.log",
+        "negative_log": "proofs/probe_3/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/execution-manifest.json --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3",
+        "test_log": "proofs/probe_3/saved.log",
+        "test_log_sha256": "6606c50a8342e4c119fdf545269d84fba3d88a8bafa8f432ba1f1feeafa17c2a",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_3/physical-preparation.json",
+        "sha256": "2e23f008eaab2ccba44e4e137cf4e470782fdfd7dcba6b62307b8a7cd41d7c02"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sign_and_street_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "85566443e7af5e8ff131077ac638b6a0206b5ce5f1eca33c16f3443d84ddc50c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_3-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_3/delivery-positive.log",
+        "test_log_sha256": "5d3278e1efa956796390907e673190638e63cc026898156d03251877bca74aa9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_3 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-probe_3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-probe_3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-probe_3-positive.json --diagnostic --omit-source sign-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: sign-survey.json",
+        "negative_log": "proofs/probe_3/delivery-negative.log",
+        "negative_log_sha256": "4b6f017b62e1b6ed8766f784e5f3b78ea198173a40894ae1ec293abb5d2d6d8e"
+      }
+    },
+    {
+      "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35",
+      "kind": "delivery",
+      "construction": "draft-exact/posted_35/primary/construction.json",
+      "construction_sha256": "18e10b2a5ccea906a82fbde1747d60e8ec5aac93d4eb3a1936ea7a348413865e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native speed tracking and public sign governance require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/posted_35/fallback1/construction.json",
+          "construction_sha256": "3923be29e38562655e0e1e57dbe2020b654d8ea98a94000d30583b4b020a367d",
+          "trigger": {
+            "source": "original Native actor-poses.jsonl and result.json",
+            "metric": "frames within one mph of the unchanged speed request",
+            "failure_condition": "fewer than 500 of 600 original samples within one mph, after checking no original source loss"
+          },
+          "changed_knobs": [
+            "controller proportional speed-error gain 0.08 to 0.10 for throttle and brake"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "3923be29e38562655e0e1e57dbe2020b654d8ea98a94000d30583b4b020a367d",
+            "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35 --candidate fallback1",
+            "log": "proofs/posted_35/fallback1-offline.log",
+            "log_sha256": "0515fe35c4f97437ac6432d4e55aeca49a98e85d295cd6a90afb4edd20669c7d"
+          },
+          "compatibility": {
+            "receipt": "proofs/posted_35/fallback1-compatibility.json",
+            "sha256": "dcdfed11bcb521b37f435b601d9ffe699b868654e9f7acfb9100cc6a10c1af5c",
+            "log": "proofs/posted_35/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/posted_35/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/posted_35/measurement-contract.json",
+      "fixture_recipe": "work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/diagnostic-posted_35-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "18e10b2a5ccea906a82fbde1747d60e8ec5aac93d4eb3a1936ea7a348413865e",
+        "command": "runtime.py offline --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35 --candidate primary",
+        "log": "proofs/posted_35/offline.log",
+        "log_sha256": "0515fe35c4f97437ac6432d4e55aeca49a98e85d295cd6a90afb4edd20669c7d"
+      },
+      "compatibility": {
+        "receipt": "proofs/posted_35/compatibility.json",
+        "sha256": "12237241a4f13a248d61ce57cf82fe13419c2e970769621139dd81cc9445276f",
+        "log": "proofs/posted_35/public-analysis.log",
+        "negative_log": "proofs/posted_35/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/execution-manifest.json --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35",
+        "test_log": "proofs/posted_35/saved.log",
+        "test_log_sha256": "eb6cfc8d4db42af88a93e11cd7198b131d73656653e6e5d6340dc359e76d44a4",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/posted_35/physical-preparation.json",
+        "sha256": "7831104bdef17996441d3e8c74adb56d6c047e26cd480da946f705ed79a7435c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sign_and_street_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "85566443e7af5e8ff131077ac638b6a0206b5ce5f1eca33c16f3443d84ddc50c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-posted_35 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-posted_35/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-posted_35-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/posted_35/delivery-positive.log",
+        "test_log_sha256": "0b4b123c979cc491499c9e50415aebd84e848f20acfef48d487c71d696c66a91",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179819__LVMC-11-16-060__motor_vehicle_driver/delivery_audit.py --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__posted_35 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-compat-posted_35 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-v12-saved-posted_35/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c179819-delivery-audit-posted_35-positive.json --diagnostic --omit-source sign-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: sign-survey.json",
+        "negative_log": "proofs/posted_35/delivery-negative.log",
+        "negative_log_sha256": "4b6f017b62e1b6ed8766f784e5f3b78ea198173a40894ae1ec293abb5d2d6d8e"
+      }
+    }
+  ]
+}

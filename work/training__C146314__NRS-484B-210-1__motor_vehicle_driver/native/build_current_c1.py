@@ -72,7 +72,7 @@ def check(bundle):
         row=json.loads(line)
         t=(i+1)/20
         x=5+8*t
-        blend=max(0,min(1,(x-16.2)/5,(20+distance+3.8-x)/5))
+        blend=max(0,min(1,(x-17.5)/5,(20+distance+2.5-x)/5))
         y=-1.75-3.5*blend
         if not (row['frame']==i and row['time_s']==t and
                 row['case_id']==cfg['case_id'] and
@@ -117,7 +117,7 @@ def build():
         for i in range(600):
             t=(i+1)/20
             x=5+8*t
-            blend=max(0,min(1,(x-16.2)/5,(20+distance+3.8-x)/5))
+            blend=max(0,min(1,(x-17.5)/5,(20+distance+2.5-x)/5))
             y=-1.75-3.5*blend
             rows.append({'frame':i,'time_s':t,'case_id':case_id,'candidate_id':'primary',
                 'source_kind':'authored_native_request','road_id':210,'ego_x_m':round(x,6),
@@ -133,14 +133,22 @@ def build():
         files['tests/test_exact.py']['content']=tests
         saved=files['saved.py']['content']
         saved=saved.replace("endswith('__witness_1')","endswith(('__exception_3_1','__exception_3_2'))")
-        saved=saved.replace('    right = ahead = 0\n', '    right = ahead = 0\n    shoulder_x = []\n')
+        saved=saved.replace('    right = ahead = 0\n', '    right = ahead = 0\n    source_xy = []\n')
         saved=saved.replace("        is_right = ego[3] < lead[2] and actor_row['observed_ego_lane_id'] == -2\n",
-            "        if actor_row['observed_ego_lane_id'] == -2:\n"
-            "            shoulder_x.append(actor_row['ego']['center_native_xyz_m'][0])\n"
+            "        source_xy.append(actor_row['ego']['center_native_xyz_m'][:2])\n"
             "        is_right = ego[3] < lead[2] and actor_row['observed_ego_lane_id'] == -2\n")
+        saved=saved.replace("    return {'format': 'c146314-current-primary-saved-measurement-v1',",
+            "    crossings=[]\n"
+            "    for (x0,y0),(x1,y1) in zip(source_xy,source_xy[1:]):\n"
+            "        if (y0+3.5)*(y1+3.5) < 0:\n"
+            "            crossings.append(x0+(x1-x0)*(-3.5-y0)/(y1-y0))\n"
+            "    if len(crossings)!=2:\n"
+            "        raise ValueError('Original shoulder crossing count differs')\n"
+            "    source_span=round(crossings[1]-crossings[0],6)\n"
+            "    return {'format': 'c146314-current-primary-saved-measurement-v1',")
         saved=saved.replace("            'ego_body_right_of_lead_frames': right,\n",
             "            'ego_body_right_of_lead_frames': right,\n"
-            "            'observed_shoulder_centerline_span_m': (round(max(shoulder_x)-min(shoulder_x), 6) if shoulder_x else 0),\n"
+            "            'observed_shoulder_centerline_span_m': source_span,\n"
             "            'unmarked_pavement_reviewed': False,\n"
             "            'statutory_200ft_verdict': None,\n")
         files['saved.py']['content']=saved

@@ -54,7 +54,7 @@ def build_one(suffix,distance,scratch):
     for i,line in enumerate((SOURCE/'fixture-native-raw-actors.jsonl').read_text().splitlines()):
         row=json.loads(line)
         x=5+8*(i+1)/20
-        blend=max(0,min(1,(x-16.2)/5,(20+distance+3.8-x)/5))
+        blend=max(0,min(1,(x-17.5)/5,(20+distance+2.5-x)/5))
         y=round(-1.75-3.5*blend,6)
         shift_ego(row['ego'],x,y)
         row['observed_ego_lane_id']=-2 if y < -3.5 else -1

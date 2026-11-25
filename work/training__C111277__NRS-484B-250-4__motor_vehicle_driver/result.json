@@ -2,47 +2,78 @@
   "assignment_id": "training__C111277__NRS-484B-250-4__motor_vehicle_driver",
   "input_sha256": "42d93d330a6604eab561f0431850549d39ac9de391ad436112622dade30daca6",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Selected crosswalk branch retains source-driven controller and finalizer checkpoints. Frozen accepted halt/no-halt comparison was reviewed from review-context/review.json: both case descriptions command an applicable stop-line behavior, explicitly leave stopping attainment and route completion unverified, and contain no source receipt. Neither is established equivalent to a no-stop-line near-crosswalk capture. Exact Native construction, public compatibility, saved-only processing, semantic proposals and independent audits remain CPU work. An independent source comparison audit now checks fixed geometry/signal, 600-frame joins, halt contrast and priority history with missing/changed-source negatives; this remains synthetic and is not a delivery audit.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "Two selected cases and six risk-based candidate constructions are CPU prepared. Source-bound diagnostic compatibility, saved-only processing, physical fixtures, semantic proposals and independent audits pass; actual Native motion, signal pixels and legal acceptance remain unverified.",
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 4,
     "selected_comparison_cases_planned": 2,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
-    "candidates_proven": 0,
+    "delivery_cases_prepared": 2,
+    "candidates_proven": 6,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 4,
-    "controller_policies_cpu_proven": 1
+    "controller_policies_cpu_proven": 1,
+    "comparisons_cpu_audited": 1
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python native/prove_controller.py native/controller-proof.json",
+      "name": "root unit",
+      "command": "(cd work/training__C111277__NRS-484B-250-4__motor_vehicle_driver && PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests)",
       "exit_code": 0,
-      "log": "native/controller-proof.log",
-      "log_sha256": "6f4b701e0966917f8714caf0d0026b7f4a0718b55f7e0c2bfeac31de93ba3eca",
-      "proof": "native/controller-proof.json",
-      "proof_sha256": "7883579d7e64e503c92f0a3dccc118859f83f79a0d98c4fdedd0c33f65aa1f00",
-      "scope": "synthetic 600-frame 20-Hz controller policy only; no Native physical or legal result"
+      "log": "native/root-unit.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python native/prove_source_finalization.py",
-      "exit_code": 0,
-      "proof": "native/source-finalization-proof.json",
-      "proof_sha256": "649d0dd9ab23b0c1027d6f598bfa71962e14cb15bfba66694f7bacf4788b2c4b",
-      "scope": "synthetic 600-frame retained-row finalization only; not public compatibility, process-saved or Native physical proof"
-    },
-    {
+      "name": "comparison",
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/native/prove_comparison_audit.py",
       "exit_code": 0,
-      "log": "native/comparison-audit-proof.log",
-      "log_sha256": "4ec15529f96557ada76f6c39f8b1b57e54363725413e88bfe7562f609a645995",
-      "proof": "native/comparison-audit-proof.json",
-      "proof_sha256": "a1f90ea847e4e203e2d8e559f9380a0b63b3d5778bd7069e85782e08e885f1be",
-      "scope": "independent synthetic retained-source comparison audit; no original Native or physical realization"
+      "log": "proofs/comparison-audit.log",
+      "sha256": "2a331155b3fdd1cbf25f04dcd170233086cd5e3ddcbaeb35d3ca3a0c9b1ae222"
+    },
+    {
+      "name": "delivery a",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/native/delivery_audit.py --attempt .runtime-work/c111277-compat-new-a-primary --case training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_a --output work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/proofs/condition_a/delivery-positive.json",
+      "exit_code": 0,
+      "log": "proofs/condition_a/delivery-positive.log",
+      "sha256": "e819457720c40daeec76dceabfb8051a0692863d3af0c4595f108cc3f97e6b16"
+    },
+    {
+      "name": "saved a",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_a --attempt .runtime-work/c111277-compat-new-a-primary --output .runtime-work/c111277-saved-new-a-primary --library runtime/library --validator .runtime-work/c111277-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/a-primary-saved.log",
+      "sha256": "dc8915677e1209153ec947163d8d3cf5aa16b92c0309412fce5028d219937c49"
+    },
+    {
+      "name": "delivery b",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/native/delivery_audit.py --attempt .runtime-work/c111277-compat-new-b-primary --case training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b --output work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/proofs/condition_b/delivery-positive.json",
+      "exit_code": 0,
+      "log": "proofs/condition_b/delivery-positive.log",
+      "sha256": "151b09d650a2483030ecd51e5d22a4d6940c9ca88afde58d5e229918fd378e76"
+    },
+    {
+      "name": "saved b",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111277__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_b --attempt .runtime-work/c111277-compat-new-b-primary --output .runtime-work/c111277-saved-new-b-primary --library runtime/library --validator .runtime-work/c111277-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/b-primary-saved.log",
+      "sha256": "5b01da2e4247053e729dde127832ed0c77ecdd89ca53e90c14ca612ada8e06af"
     }
   ],
-  "source_controller_checkpoint": {
+  "accepted_equivalence_review": {
+    "source": "inputs/training__C111277__NRS-484B-250-4__motor_vehicle_driver/review-context/review.json",
+    "source_sha256": "ce2b04e86608b50dbfc8798cb7b1c960412ccacee1bbf6762c1861d573155087",
+    "unique_recordings_reviewed": 2,
+    "equivalence_reuses": 0
+  },
+  "cases_planned": 2,
+  "cases_selected": 2,
+  "candidate_plans_proven": 6,
+  "comparison_audits_passed": 1,
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111277__NRS-484B-250-4__motor_vehicle_driver --case training__C111277__NRS-484B-250-4__motor_vehicle_driver__selected_148df679__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "historical_source_controller_checkpoint": {
     "script_sha256": "2fe0fa9daa3ad64f960d0824ba78b7d9a8fc61becbcbc0b83fbf101fdc631cdf",
     "proof_sha256": "2b1490d060fe0d823e8dcb4df2b98653c9666d6debd1a8e249129e597c4dece2",
     "halt_release_frame": 241,
@@ -50,7 +81,7 @@
     "changed_source_rejected": true,
     "original_native_observed": false
   },
-  "source_finalization_checkpoint": {
+  "historical_source_finalization_checkpoint": {
     "format": "nrs-484b-250-4-source-finalization-checkpoint-v1",
     "finalizer_sha256": "2d3cb0f36cabae651e1aa7a2940f6ec012e63ea7c6fcdcd9b37d91fb8842185a",
     "prover_sha256": "c46e2a8cd10ba7814d01bbf1c5012ad8d9cd69ffef70cf88e91758bf2c28f19a",
@@ -65,10 +96,23 @@
     "actual_process_saved_proved": false,
     "original_native_observed": false
   },
-  "accepted_equivalence_review": {
-    "source": "inputs/training__C111277__NRS-484B-250-4__motor_vehicle_driver/review-context/review.json",
-    "source_sha256": "ce2b04e86608b50dbfc8798cb7b1c960412ccacee1bbf6762c1861d573155087",
-    "unique_recordings_reviewed": 2,
-    "equivalence_reuses": 0
+  "cpu_proof_summary": {
+    "selected_cases": 2,
+    "candidate_constructions": 6,
+    "offline_passes": 6,
+    "public_compatibility_positive_and_missing_source_negative_passes": 6,
+    "selected_primary_recorded_only_saved_processing_passes": 2,
+    "semantic_stage_count": 6,
+    "physical_outcome_fixture_passes": 6,
+    "lifecycle_order_passes": 2,
+    "delivery_audit_positive_passes": 2,
+    "delivery_audit_missing_original_rejections": 2,
+    "delivery_audit_altered_source_rejections": 2,
+    "controlled_comparison_positive_passes": 1,
+    "controlled_comparison_negative_mutations": 5,
+    "original_native_observed": false,
+    "source_pixels_verified": false,
+    "physical_acceptance_claimed": false,
+    "legal_verdict_claimed": false
   }
 }
