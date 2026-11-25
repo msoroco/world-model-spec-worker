@@ -22,7 +22,8 @@ from officer_traffic_sampler import native_sampler
 ASSIGNMENT = PREFIX[:-2]
 CASES = {PREFIX + suffix for suffix in SUFFIXES}
 SWEEP_CASES = {f"{ASSIGNMENT}__c157964_sub2_judgment_{judgment}-{rank:04d}"
-               for judgment in (3, 5, 6) for rank in range(3)}
+               for judgment in (1, 2, 3, 4, 5, 6)
+               for rank in range(2 if judgment == 4 else 3)}
 
 
 def _sha(path):
@@ -42,7 +43,7 @@ def validate_config(config):
     if (config.get("rate_hz"), config.get("duration_s")) != (20, 30):
         raise ValueError("Exact officer capture requires 20 Hz and 30 seconds")
     controls = config.get("sweep_controls", {})
-    if not isinstance(controls, dict) or set(controls) - {"ego_target_speed_mps", "other_release_frame"}:
+    if not isinstance(controls, dict) or set(controls) - {"ego_target_speed_mps", "other_release_frame", "officer_go_frame", "ego_hold_until_frame", "other_approach_road_id"}:
         raise ValueError("Unknown physical sweep control")
     target_speed = controls.get("ego_target_speed_mps", 5.0)
     if (type(target_speed) not in (int, float) or not math.isfinite(target_speed)
@@ -54,6 +55,27 @@ def validate_config(config):
         raise ValueError("Physical other release frame must be an integer frame")
     if not 0 <= release < 600:
         raise ValueError("Physical other release frame must be within the 600-frame capture")
+    for name, low, high in (("officer_go_frame", 1, 599),
+                            ("ego_hold_until_frame", 0, 599)):
+        value = controls.get(name)
+        if value is not None and (type(value) is not int or not low <= value <= high):
+            raise ValueError(name + " must be an integer frame inside the capture")
+    road_id = controls.get("other_approach_road_id")
+    selected_id = config.get("selected_case_id", "")
+    if "__c157964_sub2_judgment_4-" in selected_id:
+        expected_road = 157964 if selected_id.endswith("0000") else 157966
+        if road_id != expected_road or set(controls) != {"other_approach_road_id"}:
+            raise ValueError("Exact other entrance sweep road required")
+    if road_id is not None:
+        if type(road_id) is not int or road_id not in (157964, 157966):
+            raise ValueError("Other approach must be one of the two authored through roads")
+        lane = [157964, -1] if road_id == 157964 else [157966, 1]
+        pose = config.get("actor_transforms", {}).get("other")
+        expected = {"x": 1.8, "y": -22.0, "yaw": 90.0} if road_id == 157964 else {"x": -1.8, "y": 22.0, "yaw": -90.0}
+        if (config.get("site", {}).get("other_lane") != lane or not isinstance(pose, dict)
+                or any(pose["location"][axis] != expected[axis] for axis in ("x", "y"))
+                or pose["rotation"]["yaw"] != expected["yaw"]):
+            raise ValueError("Other approach pose differs from authored through lane")
     if (config.get("site", {}).get("xodr_sha256") != site["site_sha256"] or
             config["site"].get("native_map_id") != "OpenDriveMap" or
             config["site"].get("ego_lane") != [site["ego_road_id"], site["ego_lane_id"]] or
@@ -112,7 +134,7 @@ def _copy_source_packet(source_root, output):
     return retained, intake
 
 
-def _hazard_plan(path, intake, frames):
+def _hazard_plan(path, intake, frames, expected_road_id=None):
     plan = json.loads(Path(path).read_text())
     rows = plan.get("frames")
     if (plan.get("format") != "worker-officer-approach-construction-plan" or
@@ -122,6 +144,8 @@ def _hazard_plan(path, intake, frames):
                 type(row.get("approaching_hazard")) is not bool
                 for i, row in enumerate(rows))):
         raise ValueError("Complete source-bound other approach plan required")
+    if expected_road_id is not None and plan.get("other_approach_road_id") != expected_road_id:
+        raise ValueError("Reviewed other route differs from selected through road")
     return rows
 
 
@@ -157,8 +181,13 @@ def capture(config, output_dir, host, port):
     if not source_root:
         raise ValueError("OFFICER_SOURCE_ROOT with reviewed source packet required")
     retained, intake = _copy_source_packet(source_root, output)
+    if "other_approach_road_id" in config.get("sweep_controls", {}):
+        reviewed = json.loads((retained / "source-packet.json").read_text())["review"]
+        if reviewed.get("other_entrance_road_id") != config["site"]["other_lane"][0]:
+            raise ValueError("Reviewed other entrance differs from selected through road")
     frames = config["rate_hz"] * config["duration_s"]
-    plan = _hazard_plan(retained / intake["source_paths"]["other_route"], intake, frames)
+    plan = _hazard_plan(retained / intake["source_paths"]["other_route"], intake,
+                        frames, config.get("sweep_controls", {}).get("other_approach_road_id"))
     client = carla.Client(host, int(port))
     client.set_timeout(30)
     saved = snapshot(client)
@@ -187,10 +216,12 @@ def capture(config, output_dir, host, port):
             camera_blueprints[item["name"]] = blueprint
         transforms = {role: _transform(carla, pose)
                       for role, pose in config["actor_transforms"].items()}
+        native_lanes = {}
         for role in ("ego", "other"):
             waypoint = world.get_map().get_waypoint(transforms[role].location)
             if waypoint is None or [waypoint.road_id, waypoint.lane_id] != config["site"][role + "_lane"]:
                 raise ValueError("Native vehicle pose misses selected approach lane: " + role)
+            native_lanes[role] = [waypoint.road_id, waypoint.lane_id]
         mounts = {name: {"transform": _transform(carla, value["pose"]),
                          "attach_to": value["attach_to"]}
                   for name, value in config["camera_mounts"].items()}
@@ -225,6 +256,9 @@ def capture(config, output_dir, host, port):
                         other_actor=actors["other"], traffic_sampler=traffic,
                         camera_readback=media.readback,
                         target_speed_mps=config.get("sweep_controls", {}).get("ego_target_speed_mps", 5.0),
+                        officer_go_frame=config.get("sweep_controls", {}).get("officer_go_frame"),
+                        ego_hold_until_frame=config.get("sweep_controls", {}).get("ego_hold_until_frame"),
+                        other_lane_readback=native_lanes["other"],
                         before_tick=lambda i: actors["other"].apply_control(
                             carla.VehicleControl(**other_control(
                                 i, frames, config["drive"]["other"],

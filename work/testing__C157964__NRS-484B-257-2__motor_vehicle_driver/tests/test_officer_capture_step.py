@@ -74,6 +74,18 @@ class OfficerCaptureStepTests(unittest.TestCase):
                      traffic, cameras, intake, target_speed_mps=3.0)
         self.assertEqual([round(control.throttle, 3) for control in applied], [0.25, 0.6])
 
+    def test_hold_release_changes_native_brake_after_go(self):
+        carla, world, ego, officer, adapter, cameras, traffic, intake, applied = self.fixtures()
+        case = 'testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000'
+        CAPTURE.step(carla, world, ego, officer, adapter, case, 6, 10,
+                     traffic, cameras, intake, ego_hold_until_frame=8)
+        CAPTURE.step(carla, world, ego, officer, adapter, case, 8, 10,
+                     traffic, cameras, intake, ego_hold_until_frame=8)
+        self.assertEqual((applied[0].brake, applied[1].throttle), (1.0, 0.6))
+        with self.assertRaisesRegex(ValueError, 'Ego hold release frame outside'):
+            CAPTURE.step(carla, world, ego, officer, adapter, case, 8, 10,
+                         traffic, cameras, intake, ego_hold_until_frame=10)
+
 
 if __name__ == '__main__':
     unittest.main()

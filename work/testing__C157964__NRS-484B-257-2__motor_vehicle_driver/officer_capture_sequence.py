@@ -18,7 +18,8 @@ from officer_site import validate_site
 
 def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
         source_root, source_packet, other_actor, traffic_sampler, camera_readback,
-        before_tick=None, after_tick=None, target_speed_mps=5.0):
+        before_tick=None, after_tick=None, target_speed_mps=5.0,
+        officer_go_frame=None, ego_hold_until_frame=None, other_lane_readback=None):
     if type(frame_count) is not int or frame_count < 3:
         raise ValueError("Complete 20 Hz frame count required")
     settings = world.get_settings()
@@ -41,7 +42,9 @@ def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
             before_tick(frame_index)
         row = step(carla, world, ego, officer, bone_adapter, case_id,
                    frame_index, frame_count, traffic, camera_readback, intake,
-                   target_speed_mps=target_speed_mps)
+                   target_speed_mps=target_speed_mps,
+                   officer_go_frame=officer_go_frame,
+                   ego_hold_until_frame=ego_hold_until_frame)
         row["native_actor_source"] = record_native_sources(world, ego, other_actor, row)
         native_frame = row["carla_frame"]
         if native_frame <= previous_frame:
@@ -56,6 +59,7 @@ def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
             after_tick(native_frame, native_time)
     return {"format": "worker-officer-subsection-2-native-capture",
             "case_id": case_id, "site_id": intake["site_id"],
+            "other_lane_readback": other_lane_readback,
             "source_packet_sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest(),
             "fixed_delta_seconds": 0.05, "frame_count": frame_count,
             "first_carla_frame": rows[0]["carla_frame"],

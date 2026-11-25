@@ -12,7 +12,8 @@ CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
            "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 SUFFIXES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
 SWEEP_CASES = tuple(f"{HERE.name}__c157964_sub2_judgment_{judgment}-{index:04d}"
-                    for judgment in (3, 5, 6) for index in range(3))
+                    for judgment in (1, 2, 3, 4, 5, 6)
+                    for index in range(2 if judgment == 4 else 3))
 
 
 def sha(path):
@@ -31,6 +32,16 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def verify_other_entrance(config, packet, capture):
+    road = packet.get("review", {}).get("other_entrance_road_id")
+    lane = capture.get("other_lane_readback")
+    if (type(road) is not int or road not in (157964, 157966)
+            or lane != config.get("site", {}).get("other_lane")
+            or lane[0] != road):
+        raise ValueError("Independent other entrance sign and Native lane join differs")
+    return road
+
+
 def audit(attempt, case_id, diagnostic_fixture=False):
     from worker_exchange.media import audit as audit_video
     from worker_exchange.measurement_contract import validate, verify_report
@@ -46,6 +57,10 @@ def audit(attempt, case_id, diagnostic_fixture=False):
     if not diagnostic_fixture and (result.get("provenance_kind") != "native"
                                    or result.get("diagnostic_fixture")):
         raise ValueError("Native original provenance required")
+    if "c157964_sub2_judgment_4-" in case_id:
+        packet = read(attempt / "source_review/source-packet.json")
+        capture = read(attempt / "capture-receipt.json")
+        verify_other_entrance(config, packet, capture)
     mapping = rows(attempt / "video_frames.jsonl")
     history = rows(attempt / "officer_history.jsonl")
     trace = rows(attempt / "trace.jsonl")

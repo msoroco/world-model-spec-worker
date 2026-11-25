@@ -16,7 +16,7 @@ SUFFIXES = (
     "officer_present_inactive",
 )
 PREFIX = "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__"
-SWEEP_CASE = re.compile(r"testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_[356]-000[0-2]\Z")
+SWEEP_CASE = re.compile(r"testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_(?:[12356]-000[0-2]|4-000[0-1])\Z")
 
 
 def behavior_suffix(case_id):
@@ -36,12 +36,14 @@ class DirectionPhase:
     direction: str
 
 
-def phases(case_id: str, frames: int = 600) -> tuple[DirectionPhase, ...]:
+def phases(case_id: str, frames: int = 600, go_frame: int | None = None) -> tuple[DirectionPhase, ...]:
     if type(frames) is not int or frames < 3:
         raise ValueError("Officer program needs a complete 20 Hz capture")
     suffix = behavior_suffix(case_id)
     if suffix == "officer_controls_go":
-        switch = frames // 2
+        switch = frames // 2 if go_frame is None else go_frame
+        if type(switch) is not int or not 0 < switch < frames:
+            raise ValueError("Officer go frame outside capture")
         return (DirectionPhase(0, switch, "stop"),
                 DirectionPhase(switch, frames, "go"))
     if suffix == "officer_controls_hold":
@@ -50,7 +52,7 @@ def phases(case_id: str, frames: int = 600) -> tuple[DirectionPhase, ...]:
 
 
 def apply_direction(actor, adapter, case_id: str, frame_index: int,
-                    frames: int = 600) -> dict:
+                    frames: int = 600, go_frame: int | None = None) -> dict:
     """Apply an explicit visible-bone pose and retain its Native readback.
 
     ``adapter`` takes (actor, direction) and returns a source-shaped readback
@@ -59,7 +61,7 @@ def apply_direction(actor, adapter, case_id: str, frame_index: int,
     """
     if type(frame_index) is not int or not 0 <= frame_index < frames:
         raise ValueError("Officer direction frame outside capture")
-    direction = next(p.direction for p in phases(case_id, frames)
+    direction = next(p.direction for p in phases(case_id, frames, go_frame)
                      if p.start_frame <= frame_index < p.end_frame)
     if direction == "none":
         if actor is not None and type(getattr(actor, "id", None)) is not int:

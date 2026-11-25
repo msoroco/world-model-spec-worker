@@ -14,7 +14,8 @@ from worker_exchange.native_output import physical_result
 
 CASES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
 SWEEP_CASES = tuple(f"c157964_sub2_judgment_{judgment}-{index:04d}"
-                    for judgment in (3, 5, 6) for index in range(3))
+                    for judgment in (1, 2, 3, 4, 5, 6)
+                    for index in range(2 if judgment == 4 else 3))
 EXPECTED = {"complete_motion": "met", "incomplete_motion": "not_met",
             "missing_evidence": "unverified"}
 

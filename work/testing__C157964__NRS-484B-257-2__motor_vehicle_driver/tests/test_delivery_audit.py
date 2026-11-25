@@ -10,10 +10,19 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
-from delivery_audit import audit
+from delivery_audit import audit, verify_other_entrance
 
 
 class DeliveryAuditTests(unittest.TestCase):
+    def test_other_entrance_native_lane_and_review_join(self):
+        config = {"site": {"other_lane": [157966, 1]}}
+        packet = {"review": {"other_entrance_road_id": 157966}}
+        capture = {"other_lane_readback": [157966, 1]}
+        self.assertEqual(verify_other_entrance(config, packet, capture), 157966)
+        with self.assertRaisesRegex(ValueError, "Native lane join differs"):
+            verify_other_entrance(config, packet,
+                                  {"other_lane_readback": [157964, -1]})
+
     def setUp(self):
         self.case_id = HERE.name + "__officer_controls_go"
         self.source = HERE.parents[1] / ".runtime-work/c157964-sub2/compatibility-go"

@@ -66,13 +66,22 @@ class OfficerDirectionTests(unittest.TestCase):
             DIRECTION.apply_direction(actor, missing, go, 12, 20)
 
     def test_expanded_physical_sweep_cases_use_go_program(self):
-        for judgment in (3, 5):
-            for rank in range(3):
+        for judgment in (1, 2, 3, 4, 5, 6):
+            for rank in range(2 if judgment == 4 else 3):
                 case = f'testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_{judgment}-{rank:04d}'
                 self.assertEqual([p.direction for p in DIRECTION.phases(case, 20)],
                                  ['stop', 'go'])
         with self.assertRaisesRegex(ValueError, 'Unknown exact'):
             DIRECTION.phases('testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-9999', 20)
+
+    def test_bounded_go_frame_changes_real_native_pose_command(self):
+        case = PREFIX + 'c157964_sub2_judgment_1-0000'
+        self.assertEqual([(p.start_frame, p.end_frame, p.direction)
+                          for p in DIRECTION.phases(case, 20, 8)],
+                         [(0, 8, 'stop'), (8, 20, 'go')])
+        self.assertEqual(DIRECTION.phases(case, 20, 12)[0].end_frame, 12)
+        with self.assertRaisesRegex(ValueError, 'go frame outside'):
+            DIRECTION.phases(case, 20, 20)
 
 
 if __name__ == '__main__':

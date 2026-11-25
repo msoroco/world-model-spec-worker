@@ -71,6 +71,16 @@ def case_spec(case_id, template, camera_hashes):
                          "officer_authority_reviewed": True, "officer_control_reviewed": True,
                          "original_camera_sight_reviewed": True,
                          "intersection_polygon_xy_m": [[-5, -5], [5, -5], [5, 5], [-5, 5]]}}
+    road_id = None
+    if suffix.startswith("c157964_sub2_judgment_4-"):
+        road_id = 157964 if suffix.endswith("0000") else 157966
+        packet["review"]["other_entrance_id"] = (
+            "other_south" if road_id == 157964 else "other_north")
+        packet["review"]["other_entrance_road_id"] = road_id
+        packet["review"]["entrances"] = [
+            {"entrance_id": "ego", "device": "yield", "sign_visible": True},
+            {"entrance_id": "other_south", "device": "none", "sign_visible": True},
+            {"entrance_id": "other_north", "device": "none", "sign_visible": True}]
     files["source_review/source-packet.json"] = encode(packet)
     trace = [json.loads(line) for line in files["trace.jsonl"].splitlines()]
     rows, reviews, frame_map = [], [], []
@@ -100,6 +110,8 @@ def case_spec(case_id, template, camera_hashes):
                "site_id": "c157964-cpu-diagnostic", "case_id": case_id,
                "source_packet_sha256": digest(files["source_review/source-packet.json"]),
                "frame_count": 3, "rows": rows}
+    if road_id is not None:
+        capture["other_lane_readback"] = [157964, -1] if road_id == 157964 else [157966, 1]
     files["capture-receipt.json"] = encode(capture)
     files["officer_review.json"] = encode({
         "format": "worker-officer-subsection-2-original-frame-review",

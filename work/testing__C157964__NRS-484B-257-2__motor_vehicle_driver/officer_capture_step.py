@@ -23,7 +23,7 @@ def _speed(actor):
 
 def step(carla, world, ego, officer, bone_adapter, case_id, frame_index,
          frame_count, traffic_sample, camera_readback, source_intake,
-         target_speed_mps=5.0):
+         target_speed_mps=5.0, officer_go_frame=None, ego_hold_until_frame=None):
     """Command one tick and bind all four raw camera sources to its frame.
 
     ``traffic_sample`` is supplied by a source adapter for actor-body
@@ -47,11 +47,18 @@ def step(carla, world, ego, officer, bone_adapter, case_id, frame_index,
         raise ValueError("Native other body and hazard source binding required")
     if not callable(camera_readback):
         raise ValueError("Four-camera readback adapter required")
-    pose = apply_direction(officer, bone_adapter, case_id, frame_index, frame_count)
+    pose = apply_direction(officer, bone_adapter, case_id, frame_index, frame_count,
+                           officer_go_frame)
     selected = command(case_id, pose["programmed_direction"],
                        other_inside=traffic_sample["other_inside"],
                        approaching_hazard=traffic_sample["approaching_hazard"],
                        current_speed_mps=_speed(ego), target_speed_mps=target_speed_mps)
+    if ego_hold_until_frame is not None:
+        if type(ego_hold_until_frame) is not int or not 0 <= ego_hold_until_frame < frame_count:
+            raise ValueError("Ego hold release frame outside capture")
+        if frame_index < ego_hold_until_frame:
+            selected = {"throttle": 0.0, "brake": 1.0, "proceed": False,
+                        "basis": "bounded physical ego hold command"}
     control = apply_native(carla, ego, selected)
     native_frame = world.tick()
     if type(native_frame) is not int:

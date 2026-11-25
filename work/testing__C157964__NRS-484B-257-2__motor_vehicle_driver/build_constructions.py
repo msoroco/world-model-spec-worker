@@ -118,12 +118,26 @@ def main():
             controls = {"ego_target_speed_mps": point["commanded_approach_speed"]}
         elif set(point) == {"other_release_frame"}:
             controls = {"other_release_frame": point["other_release_frame"]}
+        elif set(point) == {"officer_go_frame"}:
+            controls = {"officer_go_frame": int(point["officer_go_frame"])}
+        elif set(point) == {"ego_hold_until_frame"}:
+            controls = {"ego_hold_until_frame": int(point["ego_hold_until_frame"])}
+        elif set(point) == {"other_approach_road_id"}:
+            controls = {"other_approach_road_id": int(point["other_approach_road_id"])}
         else:
             raise ValueError("Unsupported physical sweep setpoint")
         config = deepcopy(root_config)
         config["selected_case_id"] = case_id
         config["case"] = deepcopy(case)
         config["sweep_controls"] = controls
+        if "other_approach_road_id" in controls:
+            north = controls["other_approach_road_id"] == 157966
+            config["site"]["other_lane"] = [157966, 1] if north else [157964, -1]
+            config["actor_transforms"]["other"]["location"].update(
+                {"x": -1.8 if north else 1.8, "y": 22.0 if north else -22.0})
+            config["actor_transforms"]["other"]["rotation"]["yaw"] = -90.0 if north else 90.0
+            config["officer_context"]["other_route_source"] = (
+                "officer-site.xodr#157966,157965" if north else "officer-site.xodr#157964,157965")
         config["recording_description"] = case["recording_description"]
         case_dir = ROOT / "cases" / case_id
         config_path = case_dir / "config.json"

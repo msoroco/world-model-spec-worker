@@ -113,14 +113,31 @@ def finalize(attempt, output, *, assessor=None, writer=None):
     sweep_names = {axis["observable"] for axis in sweep_measurements}
     first_other_entry = next((sample["frame"] for sample in samples
                               if sample["other_body_in_intersection"]), None)
-    if "other_first_body_entry_frame" in sweep_names:
-        if first_other_entry is None:
-            raise ValueError("Other complete body never entered the original intersection source")
-        with (channels / "other_first_body_entry_frame.jsonl").open("x") as stream:
+    first_observed_go = next((sample["frame"] for sample in samples
+                              if sample["direction"] == "go" and
+                              sample["traffic_control_observed"]), None)
+    first_ego_entry = (observed["first_ego_entry"] or {}).get("frame")
+    reviewed_road = None
+    if "other_approach_road_id_observed" in sweep_names:
+        packet = json.loads((attempt / "source_review/source-packet.json").read_text())
+        reviewed_road = packet["review"].get("other_entrance_road_id")
+        lane = capture.get("other_lane_readback")
+        if (type(reviewed_road) is not int or reviewed_road not in (157964, 157966)
+                or lane != config["site"]["other_lane"]
+                or lane[0] != reviewed_road):
+            raise ValueError("Original other entrance, Native lane and selected through road differ")
+    additional = {"other_first_body_entry_frame": first_other_entry,
+                  "first_observed_go_frame": first_observed_go,
+                  "first_ego_entry_frame": first_ego_entry,
+                  "other_approach_road_id_observed": reviewed_road}
+    for observable in sweep_names & additional.keys():
+        if additional[observable] is None:
+            raise ValueError("Selected physical sweep observation absent: " + observable)
+        with (channels / (observable + ".jsonl")).open("x") as stream:
             for sample in samples:
                 stream.write(json.dumps({"original_frame": sample["frame"],
                                          "time_s": sample["time_s"],
-                                         "value": first_other_entry}, allow_nan=False) + "\n")
+                                         "value": additional[observable]}, allow_nan=False) + "\n")
     for name, key in channel_keys.items():
         with (channels / (name + ".jsonl")).open("x") as stream:
             for index, sample in enumerate(samples):
@@ -171,9 +188,11 @@ def finalize(attempt, output, *, assessor=None, writer=None):
             {"name": name, "unit": next(channel["unit"] for channel in
                                          config["recording_description"]["channels"] if channel["name"] == name),
              "reference": "channels/" + name + ".jsonl"}
-            for name in CHANNELS + (("other_first_body_entry_frame",)
-                                    if "other_first_body_entry_frame" in sweep_names else ())
-        ] + [{"name": "officer_context", "unit": "structured record",
+            for name in CHANNELS
+        ] + [{"name": name, "unit": "road id" if name == "other_approach_road_id_observed" else "frame",
+               "reference": "channels/" + name + ".jsonl"}
+             for name in sorted(sweep_names & additional.keys())] + [
+            {"name": "officer_context", "unit": "structured record",
               "reference": "channels/officer_context.json"}],
         "source_evidence_hashes": sources,
         "realized_observables": {},
@@ -189,7 +208,7 @@ def finalize(attempt, output, *, assessor=None, writer=None):
             axis["measurement"], unit=axis["unit"],
             reference="channels/" + observable + ".jsonl",
             value=(max(sample["ego_speed_mps"] for sample in samples)
-                   if observable == "ego_speed_mps" else first_other_entry),
+                   if observable == "ego_speed_mps" else additional[observable]),
             sample_window_s=[samples[0]["time_s"], samples[-1]["time_s"]])
     writer(attempt, result)
     measurement_spec = {
