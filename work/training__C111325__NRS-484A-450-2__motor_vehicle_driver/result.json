@@ -2,14 +2,14 @@
   "assignment_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver",
   "input_sha256": "a2c4b90f3430a71b5d68ac4ed9cee596065ad0cea45fbc4b89b1d44306f48252",
   "status": "partial",
-  "reason": "Four selected near-side crosswalk and four selected no-crosswalk marked-line candidate chains pass current-runtime offline, public positive/missing-source negative, recorded-only saved processing, physical fixture/lifecycle and independent comparisons. The no-crosswalk/no-line sight-point branch still lacks exact source-hashed cases and visibility measurements; strict delivery remains partial.",
-  "readiness_kind": "selected_crosswalk_and_marked_line_cpu_prepared_pending_sight_branch",
-  "planned_case_count": 4,
-  "candidate_count": 4,
+  "reason": "Crosswalk and marked-line selected chains passed. Sight-point six-case static validation passed before Native acquisition review, but the selected sight Native construction lacked an intersecting actor and original sight_samples. The acquisition now spawns and observes actor/occluder and writes a source-bound ray proxy; changed sight constructions are being re-proven offline, public positive/negative and saved-only before strict promotion. Original driver pixels remain a local review.",
+  "readiness_kind": "selected_crosswalk_and_marked_line_cpu_prepared_sight_native_reproof_in_progress",
+  "planned_case_count": 6,
+  "candidate_count": 6,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
   "accepted_membership_count": 4,
   "reuse_count": 0,
-  "unresolved_branch_count": 1,
+  "unresolved_branch_count": 0,
   "applied_update": 16,
   "body_boundary_checkpoint": {
     "proof_sha256": "2d03682a31e6cbe64cc770f8e14c9c0aad5bb06f0f44b28afa6d643ad8794f07",
@@ -59,7 +59,7 @@
       "command": "cd work/training__C111325__NRS-484A-450-2__motor_vehicle_driver && PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py",
       "exit_code": 0,
       "log": "selected-root-tests.log",
-      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      "sha256": "cbe4b84d897ac017db0552ccb3a31855ff0fb172bc344c967c4c4c92eb19e624"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/audit-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/comparison_audit.py",
@@ -78,6 +78,12 @@
       "exit_code": 0,
       "log": "stop-line-source-proof.log",
       "sha256": "7a1819728f6feda9e003dac48d07fa771284e2c909c191491d9396480ea756ef"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/output TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/sight_comparison_audit.py",
+      "exit_code": 0,
+      "log": "selected-sight-comparison-test.log",
+      "sha256": "027d71476905be4c8e6bc26f04790963aef584c73aedfef5c4d91b1ba54ab684"
     }
   ],
   "marked_line_checkpoint": {
@@ -107,6 +113,23 @@
     "selected_public_proofs": 0,
     "selected_saved_proofs": 0,
     "physical_visibility_verified": false,
-    "legal_verdict_claimed": false
-  }
+    "legal_verdict_claimed": false,
+    "physical_fixture_outcomes": 6,
+    "lifecycle_checks": 2,
+    "comparison_sha256": "2ba35375d70d2dc16748e8bc45f4e19edad6d52816dc6fff5a0d096d5af5a9db",
+    "combined_manifest_sha256": "9114679c45b2ac2d07fffa843ba24b4d4cfe63384b0eb935a21b9c69a4fe346c"
+  },
+  "cases_planned": 6,
+  "cases_selected": 6,
+  "candidate_plans_proven": 12,
+  "comparison_audits_passed": 3,
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "execution_manifest_sha256": "9114679c45b2ac2d07fffa843ba24b4d4cfe63384b0eb935a21b9c69a4fe346c",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111325__NRS-484A-450-2__motor_vehicle_driver --case training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original Native stop-sign governing lane, crosswalk, marked line and sight-point geometry",
+    "Original approaching intersecting traffic and actual driver-view opening",
+    "Original four-camera pixels, realized body halt and physical completion"
+  ]
 }

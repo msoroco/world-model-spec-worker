@@ -3,12 +3,13 @@ import hashlib
 import json
 from pathlib import Path
 from slow_traffic_saved_measure import measure_original
+from finalize import analysis_report
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 SCRATCH=ROOT/'.runtime-work/c230259-slow-traffic-fixtures'
 SCRATCH.mkdir(parents=True,exist_ok=True)
-CAMERAS=('overview','right_margin','following_traffic','lateral_position')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def fixture(name,right):
@@ -39,6 +40,7 @@ def fixture(name,right):
                       'traffic_xy_m':[fx,-1.75],
                       'ego_footprint_xy_m':[[x-2,y-1],[x+2,y-1],[x+2,y+1],[x-2,y+1]],
                       'ego_speed_mps':1.5,'traffic_speed_mps':1.5,
+                      'ego_requested_speed_mps':1.5,
                       'follower_command_mps':1.5 if i>=50 else 5,
                       'follower_free_flow_request_mps':5})
         frames.append({'video_frame':i,'native_frame':native,'time_s':t,
@@ -73,8 +75,25 @@ def main():
     trace[10]['traffic_id']='subject-1'
     bad_identity=reject((('\n'.join(json.dumps(row) for row in trace)+'\n').encode(),*right[1:]),'participant identity changed')
     frames=[json.loads(line) for line in right[1].splitlines()]
-    frames[10]['camera_native_frames'].pop('lateral_position')
+    frames[10]['camera_native_frames'].pop('driver_reference')
     bad_camera=reject((right[0],('\n'.join(json.dumps(row) for row in frames)+'\n').encode(),*right[2:]),'four-camera original frame join missing')
+    for name,sources in (('right',right),('away',away)):
+        folder=SCRATCH/name
+        for filename,content in zip(('slow-traffic-trace.jsonl','video_frames.jsonl',
+                                     'slow-traffic-context.json','road.xodr'),sources):
+            (folder/filename).write_bytes(content)
+        (folder/'config.json').write_text(json.dumps({'case_id':HERE.name+'__'+name})+'\n')
+        report=analysis_report(folder)
+        assert report['measurements']['slow_traffic_observation']['value']['frame_count']==600
+        assert report['measurements']['slow_traffic_observation']['sources']['road.xodr']==hashlib.sha256(sources[3]).hexdigest()
+    missing=SCRATCH/'right'/'slow-traffic-context.json'
+    missing.unlink()
+    try:
+        analysis_report(SCRATCH/'right')
+    except ValueError as exc:
+        assert 'Missing required source: slow-traffic-context.json' in str(exc)
+    else:
+        raise AssertionError('Finalizer accepted missing case-specific source')
     print(json.dumps({'passed':True,'fixture_kind':'synthetic_native_sample',
         'extreme_right_draft':a,'away_draft':b,'negative_map':bad_map,
         'negative_frame':bad_frame,'negative_lane':bad_lane,

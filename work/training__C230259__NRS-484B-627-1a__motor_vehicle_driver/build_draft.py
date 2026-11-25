@@ -24,7 +24,7 @@ def main():
                 'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
                 'case':{'case_id':case},
                 'cameras':[{'name':name,'width':1280,'height':720} for name in
-                    ('overview','right_margin','following_traffic','lateral_position')],
+                    ('overview','approach','reference_corner','driver_reference')],
                 'recording_description':{'channels':[
                     {'name':'participant_footprints','unit':'structured','sampling_rate_hz':20,
                      'method':'original Native actor bounding boxes and transforms',
@@ -42,11 +42,13 @@ def main():
                for name in ('runner.py','geometry.py','tests/test_native.py')]
         files.append({'path':'slow_traffic_saved_measure.py',
                       'content':(HERE/'slow_traffic_saved_measure.py').read_text()})
+        files.append({'path':'finalize.py',
+                      'content':(HERE/'finalize.py').read_text()})
         files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
         construction={'case_id':case,'law_id':config['law_id'],'cell_id':config['cell_id'],
             'actor':config['actor'],'entrypoint':'runner.py','files':files,
             'recording_description':config['recording_description'],
-            'measurement_plan':{'entrypoint':'slow_traffic_saved_measure.py',
+            'measurement_plan':{'entrypoint':'finalize.py',
                 'required_sources':['slow-traffic-trace.jsonl','slow-traffic-context.json',
                                     'road.xodr','video_frames.jsonl'],
                 'source_review_required':True},
@@ -60,9 +62,22 @@ def main():
         path=HERE/'draft-slow-traffic'/suffix/'primary'/'construction.json'
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_text(json.dumps(construction,indent=2)+'\n')
+        contract={'format':'worker-measurement-contract','case_id':case,
+            'requirements':[{'disposition_index':0,'requirement':'NRS-484B-627-1a',
+                'source':'NRS 484B.627(1)(a)','output_key':'slow_traffic_observation',
+                'method':'slow_traffic_observation','value_type':'object','kind':'measured',
+                'inputs':['slow-traffic-trace.jsonl','video_frames.jsonl',
+                          'slow-traffic-context.json','road.xodr']}],
+            'negative':{'remove':['slow-traffic-context.json'],
+                'error_contains':'Missing required source: slow-traffic-context.json'}}
+        contract_path=HERE/('measurement-'+suffix+'.json')
+        contract_path.write_text(json.dumps(contract,indent=2)+'\n')
         entries.append({'case_id':case,'kind':'delivery',
             'construction':str(path.relative_to(HERE)),
             'construction_sha256':sha(path),
+            'measurement_contract':contract_path.name,
+            'measurement_procedure':{'entrypoint':'finalize.py',
+                                     'output_schema':'c230259-source-analysis-v1'},
             'candidate_risk':{'status':'physical',
                 'reason':'Paved edge, actual following impediment and rightward trajectory need Native review'},
             'candidates':[],'delivery_readiness':'incomplete'})

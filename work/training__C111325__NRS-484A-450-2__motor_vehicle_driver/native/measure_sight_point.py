@@ -1,6 +1,7 @@
 """Measure a source-hashed sight-opening stop diagnostic without a legal verdict."""
 import hashlib
 import json
+import math
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -45,10 +46,21 @@ def measure(root, case_id):
         actor = view.get('intersecting_actor_xy_m')
         bounds = view.get('occluder_xy_bounds_m')
         if (not isinstance(eye, list) or not isinstance(actor, list) or
-                bounds != [-0.5, 0, -40, -13] or len(eye) != 2 or len(actor) != 2 or
+                not isinstance(bounds, list) or len(bounds) != 4 or
+                len(eye) != 2 or len(actor) != 2 or
+                not all(isinstance(value, (int, float)) and math.isfinite(value)
+                        for value in (*eye, *actor, *bounds)) or
+                not bounds[0] < bounds[1] or not bounds[2] < bounds[3] or
+                abs(eye[0] - sum(vertex[0] for vertex in subject['body_vertices_m']) / 8) > 1e-6 or
                 abs(eye[1] - sum(vertex[1] for vertex in subject['body_vertices_m']) / 8) > 1e-6 or
-                actor[0] != -20 + 0.02 * index or actor[1] != 0):
+                actor[0] >= -7 or actor[0] == eye[0]):
             raise ValueError('Sight observer, actor or occluder source differs')
+        if manifest['source_kind'] == 'native_observation' and (
+                view.get('view_source_kind') != 'native_actor_ray_proxy' or
+                not isinstance(view.get('intersecting_actor_id'), int) or
+                not isinstance(view.get('occluder_actor_id'), int) or
+                view.get('intersecting_actor_velocity_x_mps', 0) <= 0):
+            raise ValueError('Original intersecting actor or occluder observation missing')
         def at_x(x):
             return eye[1] + (x - eye[0]) / (actor[0] - eye[0]) * (actor[1] - eye[1])
         low, high = sorted((at_x(bounds[0]), at_x(bounds[1])))

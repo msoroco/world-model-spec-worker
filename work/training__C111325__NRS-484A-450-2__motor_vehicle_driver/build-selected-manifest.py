@@ -58,16 +58,20 @@ def offline(index, candidate, construction_hash):
 def build():
     draft = json.loads((HERE / 'selected-draft-execution-manifest.json').read_text())
     line_draft = json.loads((HERE / 'selected-line-draft-manifest.json').read_text())
+    sight_draft = json.loads((HERE / 'selected-sight-draft-manifest.json').read_text())
     entries = []
     for index, source in [*enumerate(draft['cases'], start=1),
-                          *[(label, item) for label, item in zip(('line_stop', 'line_pass'), line_draft['cases'])]]:
+                          *[(label, item) for label, item in zip(('line_stop', 'line_pass'), line_draft['cases'])],
+                          *[(label, item) for label, item in zip(('sight_stop', 'sight_pass'), sight_draft['cases'])]]:
         entry = deepcopy(source)
         case = entry['case_id']
         if isinstance(index, int):
             entry['offline'] = offline(index, 'primary', entry['construction_sha256'])
         else:
+            draft_name = 'selected-sight-draft-manifest.json' if index.startswith('sight_') else 'selected-line-draft-manifest.json'
+            output_name = f'offline-sight-v3-{index.removeprefix("sight_")}-primary' if index.startswith('sight_') else f'offline-v2-{index}-primary'
             path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-primary.log'
-            entry['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/selected-line-draft-manifest.json --case {case} --candidate primary --output .runtime-work/c111325-selected/offline-v2-{index}-primary --python $PWD/.venv-cpu/bin/python',
+            entry['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/{draft_name} --case {case} --candidate primary --output .runtime-work/c111325-selected/{output_name} --python $PWD/.venv-cpu/bin/python',
                                 'construction_sha256': entry['construction_sha256'],
                                 'exit_code': 0, 'log': reference(path), 'log_sha256': sha(path)}
         entry['compatibility'] = proof(index, 'primary')
@@ -78,8 +82,10 @@ def build():
             if isinstance(index, int):
                 candidate['offline'] = offline(index, ident, candidate['construction_sha256'])
             else:
+                draft_name = 'selected-sight-draft-manifest.json' if index.startswith('sight_') else 'selected-line-draft-manifest.json'
+                output_name = f'offline-sight-v3-{index.removeprefix("sight_")}-{ident}' if index.startswith('sight_') else f'offline-v2-{index}-{ident}'
                 path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-{ident}.log'
-                candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/selected-line-draft-manifest.json --case {case} --candidate {ident} --output .runtime-work/c111325-selected/offline-v2-{index}-{ident} --python $PWD/.venv-cpu/bin/python',
+                candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/{draft_name} --case {case} --candidate {ident} --output .runtime-work/c111325-selected/{output_name} --python $PWD/.venv-cpu/bin/python',
                                         'construction_sha256': candidate['construction_sha256'],
                                         'exit_code': 0, 'log': reference(path), 'log_sha256': sha(path)}
             candidate['compatibility'] = proof(index, ident)
@@ -91,6 +97,8 @@ def build():
                     'video_frames.jsonl', 'crosswalk_geometry.json',
                     'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                     'driver_reference.mkv']
+        if isinstance(index, str) and index.startswith('sight_'):
+            evidence.append('sight_samples.jsonl')
         required = set(config.get('required_atoms', [])) | {
             channel['name'] for channel in construction['recording_description']['channels']}
         entry['acquisition'] = {
@@ -105,7 +113,9 @@ def build():
                                  'feedback_command': command, 'test_exit_code': 0,
                                  'test_log': reference(log), 'test_log_sha256': sha(log)}
         base = HERE / 'delivery-acceptance' / str(index)
-        audit_script = 'delivery_audit.py' if isinstance(index, int) else 'delivery_line_audit.py'
+        audit_script = ('delivery_audit.py' if isinstance(index, int) else
+                        'delivery_sight_audit.py' if index.startswith('sight_') else
+                        'delivery_line_audit.py')
         audit = f'SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/audit-output PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/{HERE.name}/{audit_script} --case {case} --selftest'
         entry['delivery_acceptance'] = {
             'case_id': case, 'sets': ['demo-train', 'full-train'], 'checks': CHECKS,

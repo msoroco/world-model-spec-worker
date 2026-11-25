@@ -116,6 +116,12 @@ def main():
                                        'output_key': 'cycle_requirement',
                                        'method': 'measure_cycle_requirement',
                                        'value_type': 'object', 'kind': 'measured',
+                                       'inputs': ['native_samples.jsonl', 'road_geometry.json']},
+                                      {'disposition_index': 1, 'requirement': 'NRS-484B-307-9b',
+                                       'source': 'NRS 484B.307(9)(b)',
+                                       'output_key': 'detector_trace',
+                                       'method': 'measure_detector_trace',
+                                       'value_type': 'object', 'kind': 'measured',
                                        'inputs': ['native_samples.jsonl', 'road_geometry.json']}],
                      'negative': {'remove': ['road_geometry.json'],
                                   'error_contains': 'Missing required source: road_geometry.json'}})

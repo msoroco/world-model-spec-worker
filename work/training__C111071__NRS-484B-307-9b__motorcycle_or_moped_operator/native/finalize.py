@@ -41,6 +41,17 @@ def measure_cycle_requirement(analysis: dict) -> dict:
             "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
 
 
+def measure_detector_trace(analysis: dict) -> dict:
+    """Expose the retained request/readback trace without inferring cause."""
+    observed = analysis["case_observation"]
+    sources = analysis["sources"]
+    return {"value": {"entry_frame": observed["entry_frame"],
+                      "detector_request_unserviced_before_entry": observed["detector_failure_command_trace"],
+                      "physical_failure_cause_verified": False},
+            "method": "measure_detector_trace",
+            "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     attempt = attempt.resolve()
     output = output.resolve()
@@ -145,7 +156,8 @@ def finalize(attempt: Path, output: Path) -> dict:
                                              "source_sha256": source_hashes},
               "video_sha256": {path.name: sha(path) for path in video_paths},
               "config_sha256": sha(config_path),
-              "measurements": {"cycle_requirement": measure_cycle_requirement(analysis)},
+              "measurements": {"cycle_requirement": measure_cycle_requirement(analysis),
+                               "detector_trace": measure_detector_trace(analysis)},
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
     if output.suffix == ".json":
         output.parent.mkdir(parents=True, exist_ok=True)

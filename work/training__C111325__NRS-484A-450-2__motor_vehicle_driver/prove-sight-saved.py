@@ -28,11 +28,11 @@ def prove(label, candidate):
         raise ValueError('Unknown sight-point case/candidate')
     case = HERE.name + '__' + label
     source_tag = label.removeprefix('sight_')
-    source = ROOT / f'.runtime-work/c111325-selected/compat-sight-v5-{source_tag}-{candidate}'
+    source = ROOT / f'.runtime-work/c111325-selected/compat-sight-v6-{source_tag}-{candidate}'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or compatibility.get('case_id') != case:
         raise ValueError('Sight-point public compatibility has not passed')
-    scratch = ROOT / f'.runtime-work/c111325-selected/saved-sight-v1-{label}-{candidate}'
+    scratch = ROOT / f'.runtime-work/c111325-selected/saved-sight-v3-{label}-{candidate}'
     if scratch.exists():
         raise ValueError('Recorded-only scratch must be fresh')
     scratch.mkdir(parents=True)

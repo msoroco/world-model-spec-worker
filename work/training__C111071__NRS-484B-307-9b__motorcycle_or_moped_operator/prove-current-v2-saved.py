@@ -14,9 +14,8 @@ if PROBE not in (1, 2):
     raise ValueError('Probe must be 1 or 2')
 CASE = HERE.name + f'__probe_{PROBE}'
 MANIFEST = HERE / f'current-v2-probe-{PROBE}-primary-manifest.json'
-SCRATCH = ROOT / ('.runtime-work/c111071-v2/saved-probe-1b' if PROBE == 1
-                  else '.runtime-work/c111071-v2/saved-probe-2')
-VALIDATOR = ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck'
+SCRATCH = ROOT / f'.runtime-work/c111071-v3-saved-probe-{PROBE}'
+VALIDATOR = ROOT / '.runtime-work/c111250-current-decoder/.lake/build/bin/adapterCheck'
 
 
 def sha(path):
@@ -24,8 +23,7 @@ def sha(path):
 
 
 def main():
-    source_name = 'compat-probe-1f' if PROBE == 1 else 'compat-probe-2c'
-    source = ROOT / '.runtime-work/c111071-v2' / source_name
+    source = ROOT / f'.runtime-work/c111071-v3-probe-{PROBE}-public'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
@@ -51,7 +49,7 @@ def main():
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)
     log = HERE / f'current-v2-probe-{PROBE}-saved-command.log'
-    log.write_text(run.stdout)
+    log.write_text(run.stdout.rstrip() + '\n')
     if run.returncode:
         raise RuntimeError(f'process-saved exit {run.returncode}; see {log}')
     receipt = json.loads(run.stdout)
@@ -71,5 +69,5 @@ def main():
 
 
 if __name__ == '__main__':
-    os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT', str(ROOT / '.runtime-work/c111071-v2'))
+    os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT', str(ROOT / '.runtime-work/c111071-v3-root'))
     main()

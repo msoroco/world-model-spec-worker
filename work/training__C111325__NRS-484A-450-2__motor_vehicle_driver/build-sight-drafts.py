@@ -37,6 +37,59 @@ def files_for_sight(files):
     live = change(live, '__line_pass', '__sight_pass')
     live = change(live, 'line_stop', 'sight_stop')
     live = change(live, "'marked_stop_line_y_m': -11,", "'sight_point_proxy_y_m': -11,")
+    live = change(live, "        owned.append(ego)\n        for _ in range(30):",
+                  "        owned.append(ego)\n"
+                  "        moving_bp = library.find('vehicle.tesla.model3')\n"
+                  "        moving_bp.set_attribute('role_name', 'c111325_intersecting_approach')\n"
+                  "        traffic = world.spawn_actor(moving_bp, carla.Transform(\n"
+                  "            carla.Location(x=-20.02, y=-1.75, z=2.0), carla.Rotation(yaw=0)))\n"
+                  "        traffic.set_simulate_physics(False)\n"
+                  "        owned.append(traffic)\n"
+                  "        occluder_bp = library.find('vehicle.tesla.model3')\n"
+                  "        occluder_bp.set_attribute('role_name', 'c111325_sight_occluder')\n"
+                  "        occluder = world.spawn_actor(occluder_bp, carla.Transform(\n"
+                  "            carla.Location(x=-4.0, y=-35.0, z=2.0), carla.Rotation(yaw=90)))\n"
+                  "        occluder.set_simulate_physics(False)\n"
+                  "        owned.append(occluder)\n"
+                  "        for _ in range(30):")
+    live = change(live,
+                  "        with (output / 'native_samples.jsonl').open('x') as rows, \\\n                FrameMap(output / 'video_frames.jsonl') as frame_map:",
+                  "        with (output / 'native_samples.jsonl').open('x') as rows, \\\n                (output / 'sight_samples.jsonl').open('x') as sight_rows, \\\n                FrameMap(output / 'video_frames.jsonl') as frame_map:\n            last_traffic_x = -20.02")
+    live = change(live,
+                  "                ego.apply_control(command(carla, ego, target, 1.75))\n                frame = world.tick()",
+                  "                ego.apply_control(command(carla, ego, target, 1.75))\n"
+                  "                traffic.set_transform(carla.Transform(\n"
+                  "                    carla.Location(x=-20.0 + .02 * index, y=-1.75, z=2.0),\n"
+                  "                    carla.Rotation(yaw=0)))\n"
+                  "                frame = world.tick()")
+    live = change(live, "                rows.write(json.dumps(observation, allow_nan=False) + '\\n')",
+                  "                rows.write(json.dumps(observation, allow_nan=False) + '\\n')\n"
+                  "                body = observation['body_vertices_m']\n"
+                  "                eye = [sum(vertex[axis] for vertex in body) / 8 for axis in (0, 1)]\n"
+                  "                traffic_pose = traffic.get_transform()\n"
+                  "                actor = [traffic_pose.location.x, traffic_pose.location.y]\n"
+                  "                velocity_x = (actor[0] - last_traffic_x) * RATE_HZ\n"
+                  "                last_traffic_x = actor[0]\n"
+                  "                occluder_vertices = occluder.bounding_box.get_world_vertices(occluder.get_transform())\n"
+                  "                bounds = [min(v.x for v in occluder_vertices), max(v.x for v in occluder_vertices),\n"
+                  "                          min(v.y for v in occluder_vertices), max(v.y for v in occluder_vertices)]\n"
+                  "                ray_low = eye[1] + (bounds[0] - eye[0]) / (actor[0] - eye[0]) * (actor[1] - eye[1])\n"
+                  "                ray_high = eye[1] + (bounds[1] - eye[0]) / (actor[0] - eye[0]) * (actor[1] - eye[1])\n"
+                  "                low, high = sorted((ray_low, ray_high))\n"
+                  "                view_open = not (high >= bounds[2] and low <= bounds[3])\n"
+                  "                sight_rows.write(json.dumps({\n"
+                  "                    'native_frame': frame, 'time_s': elapsed,\n"
+                  "                    'approaching_traffic': actor[0] < -7 and velocity_x > 0,\n"
+                  "                    'view_open': view_open, 'view_source_kind': 'native_actor_ray_proxy',\n"
+                  "                    'intersecting_actor_approach': 'west_to_east',\n"
+                  "                    'intersecting_actor_id': traffic.id,\n"
+                  "                    'intersecting_actor_velocity_x_mps': velocity_x,\n"
+                  "                    'occluder_actor_id': occluder.id,\n"
+                  "                    'intersecting_actor_xy_m': actor, 'observer_eye_xy_m': eye,\n"
+                  "                    'occluder_xy_bounds_m': bounds}, allow_nan=False) + '\\n')")
+    live = change(live, "                   ('road.xodr', 'native_samples.jsonl')}}, indent=2) + '\\n')",
+                  "                   ('road.xodr', 'native_samples.jsonl', 'sight_samples.jsonl',\n"
+                  "                    'video_frames.jsonl')}}, indent=2) + '\\n')")
     files['live_capture.py'] = live
     final = files['finalize.py']
     for old, new in (

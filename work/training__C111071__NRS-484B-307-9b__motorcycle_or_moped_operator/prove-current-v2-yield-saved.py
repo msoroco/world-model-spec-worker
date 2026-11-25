@@ -15,8 +15,8 @@ if VARIANT not in ('wait_for_clearance', 'enter_during_occupancy'):
 LABEL = VARIANT.replace('_', '-')
 CASE = HERE.name + '__yield_' + VARIANT
 MANIFEST = HERE / f'current-v2-yield-{LABEL}-primary-manifest.json'
-SCRATCH = ROOT / f'.runtime-work/c111071-v2/saved-yield-{LABEL}'
-VALIDATOR = ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck'
+SCRATCH = ROOT / f'.runtime-work/c111071-v3-saved-yield-{LABEL}'
+VALIDATOR = ROOT / '.runtime-work/c111250-current-decoder/.lake/build/bin/adapterCheck'
 
 
 def sha(path):
@@ -24,8 +24,7 @@ def sha(path):
 
 
 def main():
-    source_name = 'compat-yield-wait-current' if VARIANT == 'wait_for_clearance' else 'compat-yield-enter-current'
-    source = ROOT / '.runtime-work/c111071-v2' / source_name
+    source = ROOT / f'.runtime-work/c111071-v3-yield-{LABEL}-public'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
@@ -51,7 +50,7 @@ def main():
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)
     log = HERE / f'current-v2-yield-{LABEL}-saved-command.log'
-    log.write_text(run.stdout)
+    log.write_text(run.stdout.rstrip() + '\n')
     if run.returncode:
         raise RuntimeError(f'process-saved exit {run.returncode}; see {log}')
     receipt = json.loads(run.stdout)
@@ -71,5 +70,5 @@ def main():
 
 
 if __name__ == '__main__':
-    os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT', str(ROOT / '.runtime-work/c111071-v2'))
+    os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT', str(ROOT / '.runtime-work/c111071-v3-root'))
     main()

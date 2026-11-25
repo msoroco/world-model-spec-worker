@@ -125,6 +125,12 @@ def main():
                                        'output_key': 'yield_requirement',
                                        'method': 'measure_yield_requirement',
                                        'value_type': 'object', 'kind': 'measured',
+                                       'inputs': ['native_samples.jsonl', 'road_geometry.json']},
+                                      {'disposition_index': 1, 'requirement': 'NRS-484B-307-9b',
+                                       'source': 'NRS 484B.307(9)(b)',
+                                       'output_key': 'detector_trace',
+                                       'method': 'measure_detector_trace',
+                                       'value_type': 'object', 'kind': 'measured',
                                        'inputs': ['native_samples.jsonl', 'road_geometry.json']}],
                      'negative': {'remove': ['road_geometry.json'],
                                   'error_contains': 'Missing required source: road_geometry.json'}})
@@ -169,8 +175,8 @@ def main():
             if anchor not in content:
                 raise ValueError('Yield finalizer insertion anchor missing')
             content = content.replace(anchor, addition + anchor)
-            old = '"measurements": {"cycle_requirement": measure_cycle_requirement(analysis)},'
-            new = '"measurements": {"cycle_requirement": measure_cycle_requirement(analysis), "yield_requirement": measure_yield_requirement(analysis)},'
+            old = '"measurements": {"cycle_requirement": measure_cycle_requirement(analysis),\n                               "detector_trace": measure_detector_trace(analysis)},'
+            new = '"measurements": {"cycle_requirement": measure_cycle_requirement(analysis), "detector_trace": measure_detector_trace(analysis), "yield_requirement": measure_yield_requirement(analysis)},'
             if old not in content:
                 raise ValueError('Yield measurement insertion anchor missing')
             content = content.replace(old, new)

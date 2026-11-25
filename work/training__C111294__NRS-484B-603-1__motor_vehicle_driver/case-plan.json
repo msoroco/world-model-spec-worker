@@ -58,9 +58,11 @@
       "status": "selected_required",
       "case_ids": [
         "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a",
-        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b"
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_b"
       ],
-      "evidence_or_gap": "Same-cell WetCloudyNoon draft constructions bind Native world weather readback and 600-frame weather source measurement; public/saved/physical and original statutory review remain in progress."
+      "evidence_or_gap": "Wet-weather and source-observed roadwork-obstruction comparisons each have exact Native constructions. Synthetic CPU fixtures establish software paths only; physical hazard, actual pixels, necessary reduction and due care require independent original-source review."
     }
   ],
   "cases": [
@@ -111,6 +113,22 @@
       "target_type": "boundary_probe",
       "physical_target": "hold speed near source-observed crossing pedestrian at assigned intersection",
       "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_a",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "decrease speed near an original Native static roadwork barrier at the assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_b",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "hold speed near an original Native static roadwork barrier at the assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
     }
   ],
   "comparisons": [
@@ -156,6 +174,21 @@
       "deliberate_differences": [
         "hazard_approach_speed_profile"
       ]
+    },
+    {
+      "comparison_id": "highway_obstruction_speed_profile",
+      "case_ids": [
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__obstruction_probe_b"
+      ],
+      "fixed_conditions": [
+        "same C111294 authored intersection geometry",
+        "same original static roadwork barrier identity, pose and Native readback",
+        "same other-vehicle route and initial state"
+      ],
+      "deliberate_differences": [
+        "hazard_approach_speed_profile"
+      ]
     }
   ],
   "observations": [
@@ -183,6 +216,11 @@
       "name": "pedestrian_pose",
       "mandatory": true,
       "reason": "Original Native walker position readback for special pedestrian hazard"
+    },
+    {
+      "name": "obstruction_pose",
+      "mandatory": true,
+      "reason": "Original Native static roadwork barrier position readback for other highway condition"
     }
   ],
   "sources": [

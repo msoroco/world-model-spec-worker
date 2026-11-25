@@ -29,6 +29,10 @@ def compare(a, b):
             raise ValueError('Pedestrian trajectory changed')
         if left.get('pedestrian_actor_id') != right.get('pedestrian_actor_id'):
             raise ValueError('Pedestrian actor identity changed')
+        if left.get('obstruction_position_m') != right.get('obstruction_position_m'):
+            raise ValueError('Highway obstruction position changed')
+        if left.get('obstruction_actor_id') != right.get('obstruction_actor_id'):
+            raise ValueError('Highway obstruction actor identity changed')
         if left.get('ego_position_m', [None])[0] != right.get('ego_position_m', [None])[0]:
             raise ValueError('Ego lateral starting or path coordinate changed')
     return {'frames_per_case': 600, 'fixed_other_traffic': True, 'fixed_initial_ego': True}
@@ -47,7 +51,7 @@ def audit(args):
         raise ValueError('Controlled comparison map changed')
     left_context = json.loads((left / 'context.json').read_text())
     right_context = json.loads((right / 'context.json').read_text())
-    for condition in ('weather_parameters', 'pedestrian_hazard'):
+    for condition in ('weather_parameters', 'pedestrian_hazard', 'highway_obstruction'):
         if left_context.get(condition) != right_context.get(condition):
             raise ValueError(f'Controlled comparison {condition} changed')
     lc = json.loads((left / 'candidate-selection.json').read_text())
@@ -95,6 +99,18 @@ def selftest(negative):
         pass
     else:
         raise AssertionError('Changed pedestrian trajectory accepted')
+    with_barrier = json.loads(json.dumps(a))
+    for row in with_barrier:
+        row['obstruction_position_m'] = [1.75, -5.0, 0.25]
+        row['obstruction_actor_id'] = 404
+    changed = json.loads(json.dumps(with_barrier))
+    changed[200]['obstruction_position_m'][1] += 1
+    try:
+        compare(with_barrier, changed)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Changed highway obstruction accepted')
     return dict(result, original_capture_attested=False)
 
 

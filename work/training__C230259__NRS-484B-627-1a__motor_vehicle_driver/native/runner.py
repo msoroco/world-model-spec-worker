@@ -13,9 +13,9 @@ FRAMES=600
 RATE=20
 CAMERAS=(
     ('overview',1280,720,0,-22,18,-40),
-    ('right_margin',1280,720,0,-13,8,-20),
-    ('following_traffic',1280,720,-30,-10,9,-22),
-    ('lateral_position',1280,720,25,-14,10,-30),
+    ('approach',1280,720,0,-13,8,-20),
+    ('reference_corner',1280,720,-30,-10,9,-22),
+    ('driver_reference',1280,720,25,-14,10,-30),
 )
 
 
@@ -58,7 +58,10 @@ def corners(actor):
 
 def execute(output_dir,extreme_right,host,port):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import snapshot,restore
     check()
     output=Path(output_dir).resolve()
@@ -72,6 +75,8 @@ def execute(output_dir,extreme_right,host,port):
             ('vehicle.','walker.','sensor.','controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned,encoders,queues=[],{},{}
+    encoder_exit_codes={}
+    capture=None
     changed=False
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
@@ -89,7 +94,6 @@ def execute(output_dir,extreme_right,host,port):
         readback=survey(world,carla)
         output.mkdir(parents=True,exist_ok=True)
         source_map=world.get_map().to_opendrive().encode()
-        (output/'road.xodr').write_bytes(source_map)
         (output/'slow-traffic-context.json').write_text(json.dumps({
             'assignment_id':'training__C230259__NRS-484B-627-1a__motor_vehicle_driver',
             'source_kind':'native_saved_sample','road_id':'1',
@@ -129,6 +133,10 @@ def execute(output_dir,extreme_right,host,port):
                 '-r',str(RATE),'-i','-','-frames:v',str(FRAMES),
                 '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+        capture=PipelineCapture(client,ego,output,
+            'training__C230259__NRS-484B-627-1a__motor_vehicle_driver__'+
+            ('controlled_1' if extreme_right else 'controlled_2'),
+            required_observations=[])
         with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'slow-traffic-trace.jsonl').open('x') as trace:
             first_elapsed=None
             for index in range(FRAMES):
@@ -164,7 +172,7 @@ def execute(output_dir,extreme_right,host,port):
                     project_to_road=True,lane_type=carla.LaneType.Any)
                 follower_wp=world.get_map().get_waypoint(other.get_transform().location,
                     project_to_road=True,lane_type=carla.LaneType.Any)
-                trace.write(json.dumps({'video_frame':index,'native_frame':native_frame,
+                sample={'video_frame':index,'native_frame':native_frame,
                     'time_s':relative,'native_elapsed_seconds':absolute,
                     'camera_native_frames':mapped,
                     'ego_id':str(ego.id),'traffic_id':str(other.id),
@@ -180,16 +188,23 @@ def execute(output_dir,extreme_right,host,port):
                     'traffic_speed_mps':other.get_velocity().length(),
                     'ego_requested_speed_mps':1.5,'follower_free_flow_request_mps':5.0,
                     'follower_command_mps':follower_command,'pre_tick_gap_m':gap,
-                    'lateral_clearance_rule_active':clear_lateral})+'\n')
+                    'lateral_clearance_rule_active':clear_lateral}
+                capture.capture(native_frame,relative,extra={'c230259_slow_traffic':sample})
+                trace.write(json.dumps(sample,allow_nan=False)+'\n')
         for name,process in encoders.items():
             process.stdin.close()
             stderr=process.stderr.read()
-            if process.wait(timeout=180) or not (output/(name+'.mkv')).is_file():
+            encoder_exit_codes[name]=process.wait(timeout=180)
+            if encoder_exit_codes[name] or not (output/(name+'.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: '+name+': '+stderr.decode()[-400:])
+        capture.close(confirmed=True)
+        capture=None
         return {'frames':FRAMES,'extreme_right_requested':extreme_right,
                 'native_survey':readback,'source_review_required':True,
                 'physical_acceptance_claimed':False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -202,7 +217,13 @@ def execute(output_dir,extreme_right,host,port):
             except Exception:
                 pass
         if changed:
-            restore(client,saved)
+            restored=restore(client,saved)
+            if capture is None and len(encoder_exit_codes)==4:
+                seal_capture(output,frames=FRAMES,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,
+                    context={'case_id':'training__C230259__NRS-484B-627-1a__motor_vehicle_driver__'+
+                             ('controlled_1' if extreme_right else 'controlled_2')})
+                record_native_exit(output)
 
 
 if __name__=='__main__':
