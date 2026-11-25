@@ -12,7 +12,7 @@ import sys
 from build_bundles import HERE, AID
 
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v2"
+SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v4"
 VIDEO_PROBE = REPO / ".runtime-work" / "c135087-fixture-video-probe"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -43,7 +43,9 @@ def run_case(entry):
         src = REPO / item["source"]
         if sha(src) != item["sha256"]:
             raise ValueError("diagnostic fixture source changed")
-        shutil.copy2(src, positive / item["path"])
+        target = positive / item["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, target)
     attempt = json.loads((positive / "attempt-source.json").read_text())
     for name in VIEWS:
         source = VIDEO_PROBE / (name + ".mkv")

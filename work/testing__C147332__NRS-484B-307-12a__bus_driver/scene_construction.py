@@ -51,7 +51,7 @@ def scene(kind, map_sha):
             "bus_blueprint_id": "vehicle.mitsubishi.fusorosa",
             "bus_lane_id": lane, "bus_half_width_m": 1.25,
             "route_waypoint_centers_m": centers,
-            "map_source": MAP.name, "map_source_sha256": map_sha,
+            "map_source": "road.xodr", "map_source_sha256": map_sha,
             "signals": [{"placement": "over_individual_lanes", "facing": "bus_approach",
                          "governed_lane_id": key, "road_lane_id": value["road_lane_id"],
                          "lateral_bounds_m": value["bounds_m"],

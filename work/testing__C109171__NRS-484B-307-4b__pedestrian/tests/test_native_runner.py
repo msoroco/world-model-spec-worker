@@ -38,7 +38,9 @@ class RunnerTest(unittest.TestCase):
         self.ref = {'path': 'site.json',
                     'sha256': hashlib.sha256((self.root / 'site.json').read_bytes()).hexdigest()}
         self.world = World()
-        self.kwargs = dict(attempt=self.root, site_ref=self.ref, case_id='case',
+        self.kwargs = dict(attempt=self.root, site_ref=self.ref,
+                           permission_review_ref={'path': 'review.json', 'sha256': 'fixture'},
+                           case_id='case',
                            map_reader=lambda world: (self.root / 'survey-road.xodr').read_bytes(),
                            walker=object(), sensors={}, original_state_reader=object(),
                            walker_control_factory=object(), vector_factory=object(),
@@ -48,7 +50,8 @@ class RunnerTest(unittest.TestCase):
         self.tmp.cleanup()
 
     def test_borrowed_clock_restored_after_capture(self):
-        with patch('native_runner.verify_site'), patch('native_runner.CarlaAdapter') as adapter, \
+        with patch('native_runner.verify_site'), patch('native_runner.validate_permission_review'), \
+             patch('native_runner.CarlaAdapter') as adapter, \
              patch('native_runner.capture', return_value={'frame_count': 3}) as capture:
             result = run_capture(self.world, **self.kwargs)
         self.assertEqual(result['frame_count'], 3)
@@ -57,7 +60,8 @@ class RunnerTest(unittest.TestCase):
         adapter.return_value.close.assert_called()
 
     def test_restores_clock_when_capture_fails(self):
-        with patch('native_runner.verify_site'), patch('native_runner.CarlaAdapter') as adapter, \
+        with patch('native_runner.verify_site'), patch('native_runner.validate_permission_review'), \
+             patch('native_runner.CarlaAdapter') as adapter, \
              patch('native_runner.capture', side_effect=ValueError('capture failed')):
             with self.assertRaisesRegex(ValueError, 'capture failed'):
                 run_capture(self.world, **self.kwargs)
@@ -66,7 +70,7 @@ class RunnerTest(unittest.TestCase):
 
     def test_rejects_changed_loaded_map_before_world_mutation(self):
         self.kwargs['map_reader'] = lambda world: b'not surveyed map'
-        with patch('native_runner.verify_site'):
+        with patch('native_runner.verify_site'), patch('native_runner.validate_permission_review'):
             with self.assertRaisesRegex(SourceError, 'loaded Native map differs'):
                 run_capture(self.world, **self.kwargs)
         self.assertEqual(self.world.applied, [])

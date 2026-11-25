@@ -13,9 +13,10 @@ from pathlib import Path
 from carla_adapter import CarlaAdapter
 from native_capture import DEFAULT_FRAMES, FPS, capture
 from native_scene import SourceError, verify_site
+from permission_applicability import validate as validate_permission_review
 
 
-def run_capture(world, *, attempt, site_ref, case_id, map_reader,
+def run_capture(world, *, attempt, site_ref, permission_review_ref, case_id, map_reader,
                 walker, sensors, original_state_reader,
                 walker_control_factory, vector_factory,
                 expected_frames=DEFAULT_FRAMES):
@@ -27,6 +28,7 @@ def run_capture(world, *, attempt, site_ref, case_id, map_reader,
         raise SourceError('surveyed site source hash differs')
     site = json.loads(path.read_text(encoding='utf-8'))
     verify_site(site, attempt)
+    validate_permission_review(attempt, site_ref, permission_review_ref)
     road_source = site.get('road_xodr_source_path')
     if not isinstance(road_source, str) or road_source == 'road.xodr' or road_source not in {
             ref['path'] for ref in site['original_sources']}:

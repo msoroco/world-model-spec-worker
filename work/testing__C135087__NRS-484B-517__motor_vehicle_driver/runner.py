@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import importlib
 import json
+import os
 from pathlib import Path
 import shutil
 
@@ -70,7 +71,11 @@ def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=20
     if not hasattr(adapter_module, "open_session"):
         raise SourceError("Native adapter has no open_session")
     root = Path(output).resolve()
-    root.mkdir(parents=True, exist_ok=False)
+    if not root.is_dir() or not (root / "construction.json").is_file():
+        raise SourceError("Native attempt must be materialized by runtime.py capture")
+    if any((root / name).exists() for name in ("site-original.json", "vehicle-original.json",
+                                              "attempt-source.json", "trace.jsonl")):
+        raise SourceError("Native attempt already contains original sources")
     with adapter_module.open_session(host, port, config) as session:
         engineered = dict(case, stand_offset_m=config.get("stand_offset_m", 0.0))
         constructed = construct_case(session.adapter, site_ref, vehicle_ref, engineered)
@@ -108,9 +113,9 @@ def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=20
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--site-ref")
-    parser.add_argument("--vehicle-ref")
-    parser.add_argument("--native-adapter")
+    parser.add_argument("--site-ref", default=os.environ.get("C135087_SITE_REF"))
+    parser.add_argument("--vehicle-ref", default=os.environ.get("C135087_VEHICLE_REF"))
+    parser.add_argument("--native-adapter", default=os.environ.get("C135087_NATIVE_ADAPTER"))
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="localhost")
     parser.add_argument("--port", type=int, default=2000)

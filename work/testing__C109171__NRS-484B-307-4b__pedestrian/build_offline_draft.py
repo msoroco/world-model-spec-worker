@@ -9,7 +9,7 @@ from native_capture import CAMERAS, DEFAULT_FRAMES, FPS
 from saved_measurement import ASSIGNMENT, EXPECTED
 
 HERE = Path(__file__).resolve().parent
-SOURCES = ('native_scene.py', 'pedestrian_control.py', 'carla_adapter.py',
+SOURCES = ('native_scene.py', 'permission_applicability.py', 'pedestrian_control.py', 'carla_adapter.py',
            'native_capture.py', 'native_runner.py', 'saved_measurement.py', 'saved_process.py',
            'comparison_audit.py', 'delivery_media.py', 'analysis.py',
            'native_output_bridge.py')
@@ -61,7 +61,7 @@ def check():
         raise ValueError("C109171 diagnostic timebase changed")
     if config["cameras"] != list(CAMERAS):
         raise ValueError("C109171 diagnostic camera set changed")
-    if config["required_sources"] != ["original_map", "official_arrow_head", "separate_pedestrian_device", "native_event_trace", "original_camera_png"]:
+    if config["required_sources"] != ["original_map", "official_arrow_head", "separate_pedestrian_device", "reviewed_permission_applicability", "native_event_trace", "original_camera_png"]:
         raise ValueError("C109171 original source contract changed")
     return case_id
 
@@ -100,12 +100,13 @@ def main():
     if not isinstance(site_ref, dict) or not site_ref.get("path") or not site_ref.get("sha256"):
         raise ValueError("Operator did not stage a source-hashed original site")
     bindings = module.bind(world=world, case_id=case_id, attempt=attempt, site_ref=site_ref)
-    if not isinstance(bindings, dict):
+    if not isinstance(bindings, dict) or "permission_review_ref" not in bindings:
         raise ValueError("Original Native operator bindings missing")
     result = run_capture(world, attempt=attempt, site_ref=site_ref,
                          case_id=case_id, **bindings)
     (attempt / "pedestrian-source.json").write_text(json.dumps({
         "case_id": case_id, "site_ref": site_ref,
+        "permission_review_ref": bindings["permission_review_ref"],
         "events_ref": result["events_ref"], "frame_map_ref": result["frame_map_ref"],
         "diagnostic_fixture": False}, indent=2) + "\\n")
     (attempt / "capture-result.json").write_text(json.dumps(result, indent=2) + "\\n")
@@ -160,7 +161,8 @@ def build():
                   'fps': FPS, 'frame_count': DEFAULT_FRAMES,
                   'cameras': list(CAMERAS), 'diagnostic_only': True,
                   'required_sources': ['original_map', 'official_arrow_head',
-                                       'separate_pedestrian_device', 'native_event_trace',
+                                       'separate_pedestrian_device', 'reviewed_permission_applicability',
+                                       'native_event_trace',
                                        'original_camera_png'], 'required_atoms': [],
                   'case': {'case_id': case_id,
                            'recording_description': RECORDING_DESCRIPTION}}

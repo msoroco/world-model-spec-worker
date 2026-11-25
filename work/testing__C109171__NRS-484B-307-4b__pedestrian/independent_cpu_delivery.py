@@ -8,6 +8,7 @@ import subprocess
 from pathlib import Path
 
 from saved_measurement import measure_saved
+from permission_applicability import validate as validate_permission_review
 
 VIDEOS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
           'driver_reference.mkv')
@@ -29,6 +30,11 @@ def audit(attempt: Path, case_id: str):
     source = json.loads(source_path.read_text())
     if source.get('case_id') != case_id:
         raise ValueError('wrong exact pedestrian case source')
+    if source.get('diagnostic_fixture') is not True:
+        review_ref = source.get('permission_review_ref')
+        if review_ref is None:
+            raise ValueError('original cited-device permission review missing')
+        validate_permission_review(attempt, source['site_ref'], review_ref)
     for ref in (source['site_ref'], source['events_ref'], source['frame_map_ref']):
         path = attempt / ref['path']
         if not path.is_file() or sha(path) != ref['sha256']:

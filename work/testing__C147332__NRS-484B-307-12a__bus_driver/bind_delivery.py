@@ -34,16 +34,16 @@ def main() -> None:
             raise ValueError('Missing-source negative did not reject ' + kind)
         if 'diagnostic original-source audit and Native guard passed' not in (ROOT / positive).read_text():
             raise ValueError('Independent positive audit did not pass ' + kind)
-        runtime_root = 'c147332-12a-delivery-runtime-v2-' + kind
+        runtime_root = 'c147332-owner-nov25'
         command = ('SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/' + runtime_root + ' '
                    'PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python '
                    'work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_delivery.py'
                    ' --case ' + entry['case_id'])
         receipt = {'case_id': entry['case_id'], 'sets': ['full-test'], 'checks': CHECKS,
                    'script': 'delivery_audit.py', 'script_sha256': script_sha,
-                   'command': command + ' --mode positive --output "$PWD/.runtime-work/c147332-12a-delivery-v2/' + kind + '/positive"',
+                   'command': command + ' --mode positive --output "$PWD/.runtime-work/c147332-12a-comparison-guard-v2-delivery/' + kind + '/positive"',
                    'test_exit_code': 0, 'test_log': positive, 'test_log_sha256': sha(ROOT / positive),
-                   'negative_command': command + ' --mode negative --output "$PWD/.runtime-work/c147332-12a-delivery-v2/' + kind + '/negative"',
+                   'negative_command': command + ' --mode negative --output "$PWD/.runtime-work/c147332-12a-comparison-guard-v2-delivery/' + kind + '/negative"',
                    'negative_exit_code': 1, 'negative_expected_error': ERROR,
                    'negative_log': negative, 'negative_log_sha256': sha(ROOT / negative),
                    'scope': 'Synthetic source audit only; Native physical acceptance requires later original capture'}

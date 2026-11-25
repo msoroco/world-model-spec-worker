@@ -111,7 +111,6 @@ def build():
         folder = ROOT / "cases" / kind
         scene = json.loads((folder / "scene.json").read_text())
         check_scene(scene, MAP)
-        scene["map_source"] = "road.xodr"
         check_bundle_scene(scene, MAP)
         contract_path = folder / "measurement-contract.json"
         write(contract_path, measurement_contract(scene))

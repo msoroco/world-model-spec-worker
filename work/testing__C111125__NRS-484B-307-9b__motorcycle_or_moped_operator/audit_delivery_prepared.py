@@ -21,6 +21,24 @@ def rows(path: Path):
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
+def join_original_frames(events, trace, mapping):
+    if not all(len(items) == 900 for items in (events, trace, mapping)):
+        raise ValueError("Full saved frame history missing")
+    for index, (event, tick, frame) in enumerate(zip(events, trace, mapping)):
+        original_frame = event.get("frame")
+        original_time = event.get("time_s")
+        if (type(original_frame) is not int or type(original_time) not in (int, float) or
+                type(frame.get("video_frame")) is not int or
+                frame["video_frame"] != index or
+                original_frame != tick.get("frame") or
+                original_frame != frame.get("carla_frame") or
+                any(type(item) not in (int, float) for item in
+                    (tick.get("time_s"), frame.get("time_s"))) or
+                abs(original_time - tick["time_s"]) > 1e-6 or
+                abs(original_time - frame["time_s"]) > 1e-6):
+            raise ValueError("Sealed original event/trace/video frame join differs at " + str(index))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", required=True)
@@ -51,11 +69,7 @@ def main() -> int:
         raise ValueError("Original participant inventory incomplete")
     trace = rows(attempt / "trace.jsonl")
     mapping = rows(attempt / "video_frames.jsonl")
-    if len(trace) != 900 or len(mapping) != 900:
-        raise ValueError("Full saved frame history missing")
-    if any(t["frame"] != m["carla_frame"] or abs(t["time_s"] - m["time_s"]) > 1e-6
-           for t, m in zip(trace, mapping)):
-        raise ValueError("Original trace/video time join differs")
+    join_original_frames(events, trace, mapping)
     for name, view in saved["camera_views"].items():
         video = attempt / view["source"]["path"]
         result = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
