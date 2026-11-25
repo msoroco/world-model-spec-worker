@@ -24,7 +24,7 @@ class AuthorityTests(unittest.TestCase):
                 "facing_signal_source_id": "head-1", "controller_source_id": "controller-1",
             },
         }
-        self.put("candidate-corridor.xodr", '<OpenDRIVE><road><signals><signal id="head-1"/></signals></road><controller id="controller-1"/></OpenDRIVE>\n')
+        self.put("candidate-corridor.xodr", '<OpenDRIVE><road><signals><signal id="head-1"/></signals></road><controller id="controller-1"><control signalId="head-1"/></controller></OpenDRIVE>\n')
         self.scene["map_source_sha256"] = self.digest("candidate-corridor.xodr")
         for name, extra in (
             ("official_signal", {"signal_source_id": "head-1"}),
@@ -71,6 +71,12 @@ class AuthorityTests(unittest.TestCase):
         self.scene["production_source_review"]["pedestrian_device_driver"] = {
             "path": "highway_boundary_survey.json", "sha256": self.digest("highway_boundary_survey.json")}
         with self.assertRaisesRegex(ValueError, "device inventory differs"):
+            verify(self.scene, self.root)
+
+    def test_reject_controller_for_another_head(self):
+        self.put("candidate-corridor.xodr", '<OpenDRIVE><road><signals><signal id="head-1"/><signal id="head-2"/></signals></road><controller id="controller-1"><control signalId="head-2"/></controller></OpenDRIVE>\n')
+        self.scene["map_source_sha256"] = self.digest("candidate-corridor.xodr")
+        with self.assertRaisesRegex(ValueError, "does not govern facing signal"):
             verify(self.scene, self.root)
 
 

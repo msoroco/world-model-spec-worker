@@ -31,6 +31,7 @@ def summary(attempt: Path, case_id: str):
     return {'case_suffix': case_id.rsplit('__', 1)[-1],
             'map_source_sha256': refs['map.json'],
             'vehicle_signal_source_sha256': refs['head.json'],
+            'pedestrian_device_source_sha256': refs['device.json'],
             'highway_boundary_source_sha256': refs['map.json'],
             'pedestrian_route_source_sha256': refs['map.json'],
             'camera_profile_sha256': hashlib.sha256(json.dumps({
@@ -47,9 +48,18 @@ def summary(attempt: Path, case_id: str):
 def compare(comparison_id, left_attempt, left_case_id, right_attempt, right_case_id):
     left = summary(Path(left_attempt), left_case_id)
     right = summary(Path(right_attempt), right_case_id)
+    require_fixed_device(left, right)
     result = audit_pair(comparison_id, left, right)
-    return dict(result, source_pairs=[left['source_sha256'], right['source_sha256']],
+    return dict(result, fixed_pedestrian_device_sha256=left['pedestrian_device_source_sha256'],
+                source_pairs=[left['source_sha256'], right['source_sha256']],
                 diagnostic_fixture=True, statutory_permission='unresolved')
+
+
+def require_fixed_device(left, right):
+    """The comparison cannot switch the separate governing device."""
+    source = left.get('pedestrian_device_source_sha256')
+    if not source or source != right.get('pedestrian_device_source_sha256'):
+        raise ValueError('fixed condition differs: pedestrian_device_source_sha256')
 
 
 def main():

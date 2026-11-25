@@ -1,12 +1,16 @@
 """Verify both exact synthetic source-bound comparison pairs and rejections."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from comparison_audit import audit
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-BASE = REPO / '.runtime-work/c147332-12a-delivery-v2'
+BASE = Path(os.environ.get('C147332_COMPARISON_FIXTURES',
+                           REPO / '.runtime-work/c147332-12a-delivery-v2')).resolve()
+if not BASE.is_relative_to((REPO / '.runtime-work').resolve()):
+    raise ValueError('comparison fixture base must remain under .runtime-work')
 PAIRS = (
     ('second_green_arrow', 'adjacent_dark_drive', 'second_green_drive'),
     ('permission_without_motion', 'green_selected_drive', 'green_selected_stand'),

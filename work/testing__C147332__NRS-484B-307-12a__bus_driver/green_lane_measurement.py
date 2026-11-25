@@ -120,11 +120,15 @@ def measure(frames, *, motion_epsilon_m=0.05):
                                                               if value[1] == "down_green_arrow"),
                              "permission_observed": bool(under_green),
                              "bus_center_x_m": sum(p[0] for p in body_points) / 4,
+                             "bus_center_y_m": sum(p[1] for p in body_points) / 4,
+                             "bus_footprint_xy_m": body_points,
                              "body_source_sha256": body["source_sha256"],
                              "signal_source_sha256": signal["source_sha256"],
                              "camera_source_sha256": camera["source_sha256"]})
     moving = [now["frame"] for before, now in zip(observations, observations[1:])
-              if abs(now["bus_center_x_m"] - before["bus_center_x_m"]) > epsilon]
+              if max(math.hypot(ax - bx, ay - by)
+                     for (ax, ay), (bx, by) in zip(before["bus_footprint_xy_m"],
+                                                   now["bus_footprint_xy_m"])) > epsilon]
     return {"highway_id": highway, "official_device_source_sha256": official,
             "mapped_lane_bounds_m": {key: list(value) for key, value in lanes.items()},
             "permission_observed_frames": [row["frame"] for row in observations

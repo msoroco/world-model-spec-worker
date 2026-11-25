@@ -113,6 +113,20 @@ def prove() -> dict:
                 raise ValueError("independent delivery audit accepted altered source hash")
             finally:
                 report_path.write_text(original_report)
+            omitted = json.loads(original_report)
+            omitted["measurements"]["governing_control_context"]["sources"].pop(
+                "nearest-view-saved-packet.json")
+            report_path.write_text(json.dumps(omitted) + "\n")
+            try:
+                audit_delivery(fixture_stage, case_id=selected_case,
+                               diagnostic_fixture=True)
+            except ValueError as error:
+                if "selected measurement source inventory differs" not in str(error):
+                    raise
+            else:
+                raise ValueError("independent delivery audit accepted omitted original source")
+            finally:
+                report_path.write_text(original_report)
             negative = Path(directory) / ("negative-" + kind)
             materialize_fixture(ROOT, HERE / ("fixture-recipe-" + kind + ".json"), negative)
             (negative / "nearest-view-saved-packet.json").unlink()
@@ -129,6 +143,7 @@ def prove() -> dict:
                               "core_and_lean_valid": True,
                               "independent_delivery_audit": True,
                               "altered_source_hash_rejected": True,
+                              "omitted_source_rejected": True,
                               "final_video_frames": final_decode["frames"],
                               "diagnostic_fixture": native["diagnostic_fixture"]}
         return {"case_id": case, "original_frames": 3,

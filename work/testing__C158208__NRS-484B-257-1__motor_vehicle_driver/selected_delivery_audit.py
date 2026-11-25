@@ -11,6 +11,8 @@ from camera_sources import CAMERAS, DIMENSIONS, audit_camera_sources
 from source_tick_capture import verify_seal
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
+BASE_SOURCES = {"capture-identity.json", "nearest-view-tick-seal.json",
+                "nearest-view-original-ticks.jsonl", "nearest-view-saved-packet.json"}
 
 
 def sha(path: Path) -> str:
@@ -50,6 +52,17 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
         raise ValueError("selected delivery identity differs")
     if identity.get("provenance_kind") != ("synthetic_fixture" if diagnostic_fixture else "original_capture"):
         raise ValueError("selected delivery provenance differs")
+    if not diagnostic_fixture:
+        construction = stage / "construction.json"
+        if not construction.is_file() or sha(construction) != identity.get("construction_sha256"):
+            raise ValueError("selected original construction differs")
+        scene = json.loads((stage / "scene.json").read_text())
+        site_name = scene.get("site_source")
+        if not isinstance(site_name, str) or Path(site_name).name != site_name:
+            raise ValueError("selected original site path differs")
+        site = stage / site_name
+        if not site.is_file() or sha(site) != identity.get("site_packet_sha256"):
+            raise ValueError("selected original site differs")
     report_path = stage / "analysis-report.json"
     report = json.loads(report_path.read_text())
     if (report.get("case_id") != case_id or report.get("diagnostic_fixture") is not diagnostic_fixture
@@ -58,13 +71,25 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
     measurements = report.get("measurements", {})
     if set(measurements) != {"nearest_view_history", "governing_control_context"}:
         raise ValueError("selected delivery measurement inventory differs")
+    expected_sources = BASE_SOURCES | ({"diagnostic-compatibility.json"} if diagnostic_fixture and
+        (stage / "diagnostic-compatibility.json").is_file() else {"nearest-view-camera-manifest.json"})
+    expected_sources |= ({name + ".mkv" for name in CAMERAS} if diagnostic_fixture and
+        (stage / "diagnostic-compatibility.json").is_file() else
+        {f"nearest-view-{name}-original-png.zip" for name in CAMERAS})
+    source_maps = []
     for key, item in measurements.items():
         if item.get("case_id") != case_id or item.get("diagnostic_fixture") is not diagnostic_fixture:
             raise ValueError("selected measurement identity differs: " + key)
-        for name, digest in item.get("sources", {}).items():
+        sources = item.get("sources")
+        if not isinstance(sources, dict) or set(sources) != expected_sources:
+            raise ValueError("selected measurement source inventory differs: " + key)
+        source_maps.append(sources)
+        for name, digest in sources.items():
             path = stage / name
             if not path.is_file() or sha(path) != digest:
                 raise ValueError("selected measurement source differs: " + name)
+    if source_maps[0] != source_maps[1]:
+        raise ValueError("selected measurements disagree on original sources")
     result = json.loads((stage / "result.json").read_text())
     if result.get("case_id") != case_id or result.get("diagnostic_fixture") is not diagnostic_fixture:
         raise ValueError("selected Native result identity differs")

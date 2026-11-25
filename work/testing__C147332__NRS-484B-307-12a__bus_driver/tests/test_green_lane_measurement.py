@@ -56,6 +56,22 @@ class GreenLaneMeasurementTests(unittest.TestCase):
         self.assertEqual(result["permission_observed_frames"], [])
         self.assertEqual(result["frame_observations"][0]["full_body_lane_ids"], [])
 
+    def test_lateral_drift_and_rotation_are_bus_motion(self):
+        drifting = frames(moving=False)
+        for point in drifting[1]["body"]["bus_footprint"]:
+            point[1] += 0.2
+        for point in drifting[2]["body"]["bus_footprint"]:
+            point[1] += 0.2
+        self.assertEqual(measurement.measure(drifting)["bus_moving_frames"], [1])
+        with self.assertRaisesRegex(ValueError, "bus lane"):
+            measurement.compare_permission_without_motion(frames(), drifting)
+        turning = frames(moving=False)
+        turning[1]["body"]["bus_footprint"] = [
+            [-1.9, -1.1], [2.1, -0.9], [1.9, 1.1], [-2.1, 0.9]]
+        turning[2]["body"]["bus_footprint"] = copy.deepcopy(
+            turning[1]["body"]["bus_footprint"])
+        self.assertEqual(measurement.measure(turning)["bus_moving_frames"], [1])
+
     def test_missing_or_changed_source_and_join_rejected(self):
         sample = frames()
         sample[1]["lane_signals"]["source_sha256"] = "invalid"

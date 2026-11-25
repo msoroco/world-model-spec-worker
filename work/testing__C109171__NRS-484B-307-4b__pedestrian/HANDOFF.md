@@ -1,3 +1,9 @@
+# 2026-11-25 fixed separate-device comparison checkpoint
+
+Status: partial. The independent saved comparison now requires the same original pedestrian-device packet SHA-256 on both sides of all three controlled pairs, in addition to the existing map, official arrow head, route, camera, duration and realized entry/indication checks. It rejects a changed or absent device source. The four selected constructions and their offline/compatibility/saved-only proofs are unchanged. The refreshed source-script-bound `comparisons/comparison-proofs.json` has three passing positive and three passing missing-source negative receipts; `cpu-fixed-device-tests.log` records 59 passing focused tests. Pinned runtime preflight and scoped static pass. Exact scoped strict exits 1 because the package remains truthful partial.
+
+The selected manifest validator's precise remaining gap is the incomplete `cited_device_permission_applicability` sweep in `proposals/cases.json`. Frozen inputs provide no accepted recording and no reviewed original C109171 map, sole official arrow head, separately governing pedestrian device, or source-backed NRS 484B.283 alternative applicability. Existing diagnostic sources are synthetic and cannot establish legal permission or physical visibility. Resume with those reviewed original packets, expand and bind the sweep to actual applicable alternatives, rerun selected manifest validation and the exact scoped strict gate. No package readiness is claimed.
+
 # 2026-11-24 selected CPU and original-source handoff
 
 Status: partial. Selected manifest SHA-256 `c8e44627381e0dc12a13165cb88789aaa1aa446b6c8a58a5882a8f6d77a7daff`. Exact cases: `arrow_wait`, `arrow_early_entry`, `arrow_walk_entry`, `arrow_walk_wait`.

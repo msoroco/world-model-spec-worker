@@ -51,11 +51,14 @@ def verify(scene, attempt):
     if map_root.tag != "OpenDRIVE":
         raise ValueError("production OpenDRIVE root differs")
     signals = {item.get("id") for item in map_root.findall(".//signal")}
-    controllers = {item.get("id") for item in map_root.findall(".//controller")}
+    controllers = {item.get("id"): item for item in map_root.findall(".//controller")}
     signal_id = review.get("facing_signal_source_id")
     controller_id = review.get("controller_source_id")
     if not signal_id or signal_id not in signals or not controller_id or controller_id not in controllers:
         raise ValueError("production map lacks reviewed signal/controller")
+    controlled = {item.get("signalId") for item in controllers[controller_id].findall("control")}
+    if signal_id not in controlled:
+        raise ValueError("reviewed controller does not govern facing signal")
     for label in ("official_signal", "pedestrian_device_driver", "highway_boundary_survey"):
         data = _source(root, review.get(label), label)
         try:
