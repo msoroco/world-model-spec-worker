@@ -1,5 +1,6 @@
 """Synthetic CPU checks for comparison isolation and source identity."""
 import copy
+import hashlib
 import unittest
 
 from comparison_audit import PAIRS, audit
@@ -20,7 +21,7 @@ def scene(suffix):
             "case_id": ASSIGNMENT + "__" + suffix,
             "site_sha256": "a" * 64, "map_sha256": "b" * 64,
             "rightmost_lane_id": "R", "actors": actors,
-            "cameras": ["overview", "approach", "reference_corner", "conflict"],
+            "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
             "hz": 20, "frames": 900}
 
 
@@ -32,7 +33,7 @@ def result(plan):
                   suffix != "slow_middle_no_immediate_follower"}
     return {"format": "c147344-original-follower-relation-join-v1",
             "case_id": plan["case_id"], "original_trace_id": suffix + "-trace",
-            "original_frame_count": 900, "source": {"trace_sha256": "c" * 64,
+            "original_frame_count": 900, "source": {"trace_sha256": hashlib.sha256(suffix.encode()).hexdigest(),
                                                     "relation_sha256": "d" * 64},
             "observations": [dict(fields) for _ in range(900)]}
 

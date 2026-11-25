@@ -5,6 +5,10 @@ necessity remain human review questions on original Native evidence.
 """
 from __future__ import annotations
 
+import argparse
+import json
+from pathlib import Path
+
 from reviewed_scene import ASSIGNMENT
 
 
@@ -37,6 +41,8 @@ def audit(comparison_id: str, left: dict, right: dict,
             raise ValueError("exact original comparison case or proof missing")
     if left_result["original_trace_id"] == right_result["original_trace_id"]:
         raise ValueError("comparison reuses one original attempt")
+    if left_result["source"]["trace_sha256"] == right_result["source"]["trace_sha256"]:
+        raise ValueError("comparison reuses one original motion packet")
     for key in ("site_sha256", "map_sha256", "cameras", "hz", "frames", "rightmost_lane_id"):
         if left.get(key) != right.get(key):
             raise ValueError("fixed source or capture condition differs: " + key)
@@ -77,3 +83,25 @@ def audit(comparison_id: str, left: dict, right: dict,
             "observed_true_frames": [sum(left_values), sum(right_values)],
             "comparison_isolated": True, "physical_acceptance": False,
             "legal_impediment_or_exception": "unresolved"}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--comparison", choices=tuple(PAIRS), required=True)
+    parser.add_argument("--left-plan", type=Path, required=True)
+    parser.add_argument("--right-plan", type=Path, required=True)
+    parser.add_argument("--left-result", type=Path, required=True)
+    parser.add_argument("--right-result", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise ValueError("fresh comparison audit output required")
+    data = [json.loads(path.read_text(encoding="utf-8")) for path in
+            (args.left_plan, args.right_plan, args.left_result, args.right_result)]
+    result = audit(args.comparison, *data)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

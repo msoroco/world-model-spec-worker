@@ -2,7 +2,7 @@
   "assignment_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver",
   "input_sha256": "10ee814c706ff0a84553204c9c65748b85f7d8405a045eb27b8a88281aeb3709",
   "status": "partial",
-  "readiness_kind": "construction_draft",
+  "readiness_kind": "source_gated_case_measurement_and_semantic_draft",
   "applied_update": 0,
   "tests": [
     {
@@ -10,10 +10,40 @@
       "exit_code": 0,
       "log": "cpu-tests.log",
       "sha256": "9e656a13eb70351fddbac7a089c436360d835abb9a1596a7178f90571faec6e8"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c153046-nov25c/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c153046-nov25c/output MPLCONFIGDIR=$PWD/.runtime-work/c153046-nov25c/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25c-tests.log",
+      "sha256": "43005769f0ee5f5ec059b682ed0718e3db3747539b17b01e32137ff96d586fd8"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/build_semantic_draft.py",
+      "exit_code": 0,
+      "log": "cpu-nov25c-semantic-draft.log",
+      "sha256": "1a3216dd358d165467eaea8f9be4cd23b58e5a0af997362bb42c84ff96891771"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c153046-nov25c/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c153046-nov25c/output MPLCONFIGDIR=$PWD/.runtime-work/c153046-nov25c/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-nov25c-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C153046__NRS-484B-307-8a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov25c-static.log",
+      "sha256": "8bb16916db1560df845744073750f71a0c15a68cc6003456b342c02648a1a047"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C153046__NRS-484B-307-8a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25c-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Eight draft cases and five comparisons planned. Source-custody Native spawn, source-bound controller requests, original-frame measurement and comparison guards pass 20 CPU tests. Real reviewed site packet, case-specific participant controller integration and receiving-road variants, semantic proposals, full saved finalization, per-case offline/compatibility and delivery audit receipts remain CPU preparation."
+  "reason": "Eight exact requested cases and five comparisons have source-gated measurement and semantic draft. Twenty-three CPU tests, preflight and scoped static pass. No reviewed original C153046 Native site, OpenDRIVE, official signal, route and stop-reference source bytes or original 20 Hz capture exists in frozen assignment input. Selected production construction, canonical semantic stages, offline/compatibility/saved, independent delivery and comparisons remain unfinished; no physical or legal acceptance claimed."
 }

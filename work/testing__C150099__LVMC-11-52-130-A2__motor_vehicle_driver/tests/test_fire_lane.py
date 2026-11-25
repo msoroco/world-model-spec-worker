@@ -24,7 +24,7 @@ def site(case):
         'fire_code_designation_sha256', 'posting_authority_sha256',
         'posted_extent_sha256', 'sign_identity_sha256', 'sign_appearance_sha256',
         'curb_geometry_sha256', 'property_source_sha256', 'one_way_source_sha256',
-        'ego_blueprint_sha256', 'camera_plan_sha256')}
+        'route_sha256', 'weather_sha256', 'ego_blueprint_sha256', 'camera_plan_sha256')}
     out.update(cell_id='C150099', layout='one_way_road', property_kind=case.property_kind,
                sign_support='spawned_prop', sign_text='FIRE LANE',
                posted_interval_m=[10.0, 30.0], curb_y_m=2.0,
@@ -87,6 +87,8 @@ class Measurements(unittest.TestCase):
         fixed = {k: s[k] for k in ('map_sha256', 'jurisdiction_sha256', 'fire_code_designation_sha256',
             'posting_authority_sha256', 'posted_extent_sha256', 'sign_identity_sha256',
             'sign_appearance_sha256', 'curb_geometry_sha256', 'property_source_sha256', 'camera_plan_sha256')}
+        fixed['route_sha256'] = s['route_sha256']
+        fixed['weather_sha256'] = s['weather_sha256']
         return [dict(fixed, case_id=case.id, ego_id='ego', sign_id='sign', frame_map_sha256='map',
                     original_frame=i, time_s=i / 20, source_sha256='raw',
                     body_footprint_source_sha256='body', sign_physically_present=True,
@@ -127,6 +129,8 @@ class SavedAudit(unittest.TestCase):
             'jurisdiction_sha256', 'fire_code_designation_sha256', 'posting_authority_sha256',
             'posted_extent_sha256', 'sign_identity_sha256', 'sign_appearance_sha256',
             'property_source_sha256', 'curb_geometry_sha256', 'camera_plan_sha256', 'frame_map_sha256')}
+        fixed['route_sha256'] = 'route-hash'
+        fixed['weather_sha256'] = 'weather-hash'
         rows = [dict(fixed, case_id='a', original_frame=i, time_s=i / 20,
                      source_sha256='raw', body_footprint_source_sha256='body',
                      sign_physically_present=True, sign_text_readback='FIRE LANE',
@@ -134,7 +138,7 @@ class SavedAudit(unittest.TestCase):
                      property_kind='public', posted_interval_m=[10, 30],
                      body_interval_m=[11, 15],
                      camera_frames={name: {'original_frame': i, 'source_sha256': 'a'*64}
-                                    for name in ('front', 'rear', 'left', 'right')},
+                                    for name in ('overview', 'approach', 'reference_corner', 'driver_reference')},
                      exception_kind='none') for i in range(900)]
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / 'history.jsonl'
@@ -145,16 +149,16 @@ class SavedAudit(unittest.TestCase):
             self.assertEqual(saved_audit.audit_original_history(p, digest, 'a', fixed['site_sha256'])['overlap_frames'], 900)
             with self.assertRaisesRegex(ValueError, 'hash mismatch'):
                 saved_audit.audit_original_history(p, '0'*64, 'a', fixed['site_sha256'])
-            rows[500]['camera_frames']['front'] = ''
+            rows[500]['camera_frames']['overview'] = ''
             digest = write()
             with self.assertRaisesRegex(ValueError, 'four-camera'):
                 saved_audit.audit_original_history(p, digest, 'a', fixed['site_sha256'])
-            rows[500]['camera_frames']['front'] = {'original_frame': 499,
+            rows[500]['camera_frames']['overview'] = {'original_frame': 499,
                                                    'source_sha256': 'a'*64}
             digest = write()
             with self.assertRaisesRegex(ValueError, 'four-camera original frame'):
                 saved_audit.audit_original_history(p, digest, 'a', fixed['site_sha256'])
-            rows[500]['camera_frames']['front']['original_frame'] = 500
+            rows[500]['camera_frames']['overview']['original_frame'] = 500
             rows[500]['time_s'] = 30
             digest = write()
             with self.assertRaisesRegex(ValueError, '20 Hz'):

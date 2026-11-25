@@ -51,7 +51,8 @@ def validate_site(site: Mapping, case: Case) -> None:
     for key in ('map_sha256', 'jurisdiction_sha256', 'fire_code_designation_sha256',
                 'posting_authority_sha256', 'posted_extent_sha256', 'sign_identity_sha256',
                 'sign_appearance_sha256', 'curb_geometry_sha256', 'property_source_sha256',
-                'one_way_source_sha256', 'ego_blueprint_sha256', 'camera_plan_sha256'):
+                'one_way_source_sha256', 'route_sha256', 'weather_sha256',
+                'ego_blueprint_sha256', 'camera_plan_sha256'):
         require(bool(site.get(key)), f'{key} source missing')
     require(site.get('sign_support') in ('map_object', 'spawned_prop'), 'sign support missing')
     require(site.get('sign_text') == 'FIRE LANE', 'fire lane sign text mismatch')
@@ -124,7 +125,7 @@ def measure_original_history(rows: list[Mapping], site: Mapping, case: Case) -> 
              'jurisdiction_sha256', 'fire_code_designation_sha256',
              'posting_authority_sha256', 'posted_extent_sha256', 'sign_identity_sha256',
              'sign_appearance_sha256', 'curb_geometry_sha256', 'property_source_sha256',
-             'camera_plan_sha256', 'frame_map_sha256')}
+             'route_sha256', 'weather_sha256', 'camera_plan_sha256', 'frame_map_sha256')}
     require(all(fixed.values()), 'fixed original source missing')
     require(all(fixed[k] == site[k] for k in fixed if k not in ('ego_id', 'sign_id', 'frame_map_sha256')), 'site source mismatch')
     first = rows[0].get('original_frame')

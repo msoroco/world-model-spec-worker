@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from fire_lane import CASES
 
 
 def audit_original_history(path: Path, expected_sha256: str, case_id: str,
@@ -22,6 +23,7 @@ def audit_original_history(path: Path, expected_sha256: str, case_id: str,
                   'posting_authority_sha256', 'posted_extent_sha256',
                   'sign_identity_sha256', 'sign_appearance_sha256',
                   'property_source_sha256', 'curb_geometry_sha256',
+                  'route_sha256', 'weather_sha256',
                   'camera_plan_sha256', 'frame_map_sha256')
     fixed = {k: rows[0].get(k) for k in fixed_keys}
     if not all(fixed.values()) or fixed['site_sha256'] != site_sha256:
@@ -31,7 +33,7 @@ def audit_original_history(path: Path, expected_sha256: str, case_id: str,
         raise ValueError('original frame identity missing')
     previous_t = None
     overlap_frames = 0
-    camera_keys = ('front', 'rear', 'left', 'right')
+    camera_keys = ('overview', 'approach', 'reference_corner', 'driver_reference')
     for index, row in enumerate(rows):
         if row.get('case_id') != case_id or row.get('original_frame') != first + index:
             raise ValueError('original frame or case join mismatch')
@@ -78,3 +80,42 @@ def audit_original_history(path: Path, expected_sha256: str, case_id: str,
             'last_original_frame': first + frames - 1,
             'overlap_frames': overlap_frames, 'fixed_sources': fixed,
             'legal_judgment': None, 'physical_visibility_verified': False}
+
+
+def audit_planned_case(path: Path, expected_sha256: str, full_case_id: str,
+                       site_sha256: str, frames: int = 900) -> dict:
+    """Check a sealed history against the planned variation using original rows.
+
+    The final 100 frames are a measurement window, not a legal threshold. It
+    prevents startup transit from masquerading as a stopped/parked observation.
+    """
+    matches = [case for case in CASES if full_case_id.endswith('__' + case.id)]
+    if len(matches) != 1:
+        raise ValueError('planned case identity missing')
+    case = matches[0]
+    report = audit_original_history(path, expected_sha256, full_case_id,
+                                    site_sha256, frames=frames)
+    rows = [json.loads(line) for line in Path(path).read_text().splitlines() if line]
+    tail = rows[-min(100, frames):]
+    expected_activity = {'stop': 'stopped', 'stand': 'standing', 'park': 'parked'}[case.activity]
+    if not all(row.get('activity_observation') == expected_activity for row in tail):
+        raise ValueError('planned activity absent from original hold')
+    if not all(row.get('attended_observation') is case.attended for row in tail):
+        raise ValueError('planned attendance absent from original hold')
+    if not all(row.get('property_kind') == case.property_kind for row in rows):
+        raise ValueError('planned property source changed')
+    if not all(row.get('exception_kind') == case.exception for row in tail):
+        raise ValueError('planned exception source absent from original hold')
+    overlaps = [min(row['posted_interval_m'][1], row['body_interval_m'][1]) >
+                max(row['posted_interval_m'][0], row['body_interval_m'][0]) for row in tail]
+    if case.target_region == 'inside' and not all(overlaps):
+        raise ValueError('planned inside target absent from original hold')
+    if case.target_region == 'outside' and any(overlaps):
+        raise ValueError('planned outside target absent from original hold')
+    report['observed'] = {
+        'attended': case.attended, 'property_kind': case.property_kind,
+        'activity': case.activity, 'target_region': case.target_region,
+        'exception': case.exception, 'hold_frame_count': len(tail),
+        'hold_overlap_frames': sum(overlaps),
+    }
+    return report

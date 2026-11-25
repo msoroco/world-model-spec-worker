@@ -5,10 +5,12 @@ is a request for local CARLA construction, never a legal or physical finding.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
 from pathlib import Path
+from xml.etree import ElementTree
 
 
 ASSIGNMENT = "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver"
@@ -18,7 +20,7 @@ VARIANTS = {
     "slow_middle_passing": ("middle", True, True),
     "slow_middle_no_immediate_follower": ("middle", False, False),
 }
-CAMERAS = ("overview", "approach", "reference_corner", "conflict")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _linked(root: Path, ref: dict) -> Path:
@@ -47,6 +49,16 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
     if site.get("reviewed_original_site") is not True or site.get("diagnostic_fixture") is True:
         raise ValueError("original reviewed highway site missing")
     map_path = _linked(root, site.get("map_ref"))
+    try:
+        document = ElementTree.fromstring(map_path.read_text(encoding="utf-8"))
+    except ElementTree.ParseError as error:
+        raise ValueError("reviewed OpenDRIVE map is malformed") from error
+    roads = [road for road in document.findall("road")
+             if road.get("id") == site.get("road_id")]
+    if len(roads) != 1:
+        raise ValueError("reviewed highway road absent from OpenDRIVE")
+    driving_lanes = {lane.get("id") for lane in roads[0].findall(".//lane")
+                     if lane.get("type") == "driving"}
     lanes = site.get("same_direction_lanes")
     if (site.get("highway") is not True or site.get("one_way") is not True or
             not isinstance(lanes, list) or len(lanes) < 2 or
@@ -55,10 +67,25 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
                 item.get("direction") != "travel" or item.get("clearly_marked") is not True
                 for item in lanes)):
         raise ValueError("reviewed same-direction marked highway lanes missing")
+    if any(item["id"] not in driving_lanes for item in lanes):
+        raise ValueError("reviewed lane absent from original OpenDRIVE")
     lane_by_role = site.get("lane_roles", {})
     if (lane_by_role.get("right") != lanes[0]["id"] or
             lane_by_role.get("middle") not in [item["id"] for item in lanes[1:]]):
         raise ValueError("extreme-right and adjacent lane ordering missing")
+    cameras = site.get("camera_profiles", {})
+    if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
+        raise ValueError("four original camera profiles missing")
+    for profile in cameras.values():
+        pose = profile.get("pose") if isinstance(profile, dict) else None
+        if (not isinstance(profile, dict) or
+                not _finite_positive(profile.get("width")) or
+                not _finite_positive(profile.get("height")) or
+                not isinstance(pose, dict) or
+                any(not isinstance(pose.get(key), (int, float)) or
+                    isinstance(pose.get(key), bool) or not math.isfinite(pose[key])
+                    for key in ("x", "y", "z", "pitch", "yaw", "roll"))):
+            raise ValueError("reviewed camera dimensions or pose missing")
     controls = site.get("construction_controls", {})
     required = ("ego_speed_mps", "follower_speed_mps", "slower_speed_mps",
                 "ego_start_station_m", "follower_start_station_m", "slower_start_station_m")
@@ -87,7 +114,7 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
             "map_sha256": hashlib.sha256(map_path.read_bytes()).hexdigest(),
             "map_path": str(map_path), "rightmost_lane_id": lane_by_role["right"],
             "requested_immediate_follower": follower,
-            "actors": actors, "cameras": list(CAMERAS), "hz": 20, "frames": 900,
+            "actors": actors, "cameras": cameras, "hz": 20, "frames": 900,
             "physical_acceptance": False, "legal_verdict": None}
 
 
@@ -99,9 +126,35 @@ def execute_native(scene: dict, adapter: object) -> dict:
     actors = {}
     for spec in scene["actors"]:
         actors[spec["role"]] = adapter.spawn_vehicle(**spec)
-    cameras = {name: adapter.attach_camera(name=name, ego=actors["ego"])
-               for name in scene["cameras"]}
+    cameras = {name: adapter.attach_camera(name=name, ego=actors["ego"],
+                                           profile=profile)
+               for name, profile in scene["cameras"].items()}
     for frame in range(scene["frames"]):
         adapter.tick_and_capture(frame=frame, hz=scene["hz"], actors=actors, cameras=cameras)
     return {"case_id": scene["case_id"], "actors": actors, "cameras": cameras,
             "frames_requested": scene["frames"], "physical_acceptance": False}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--authority-root", type=Path, required=True)
+    parser.add_argument("--site-ref", type=Path, required=True)
+    parser.add_argument("--output-root", type=Path, required=True)
+    args = parser.parse_args()
+    output = args.output_root.resolve()
+    if output.is_relative_to(args.authority_root.resolve()) or output.exists():
+        raise ValueError("fresh scene output must be outside reviewed source root")
+    site_ref = json.loads(args.site_ref.read_text(encoding="utf-8"))
+    plans = [plan(args.authority_root, site_ref, ASSIGNMENT + "__" + suffix)
+             for suffix in VARIANTS]
+    output.mkdir(parents=True)
+    for suffix, scene in zip(VARIANTS, plans):
+        (output / (suffix + ".json")).write_text(
+            json.dumps(scene, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(json.dumps({"case_ids": [item["case_id"] for item in plans],
+                      "source_sha256": site_ref["sha256"],
+                      "physical_acceptance": False}))
+
+
+if __name__ == "__main__":
+    main()
