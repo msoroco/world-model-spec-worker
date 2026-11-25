@@ -9,9 +9,13 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-CASE = HERE.name + '__probe_1'
-MANIFEST = HERE / 'current-v2-probe-1-primary-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c111071-v2/saved-probe-1'
+PROBE = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+if PROBE not in (1, 2):
+    raise ValueError('Probe must be 1 or 2')
+CASE = HERE.name + f'__probe_{PROBE}'
+MANIFEST = HERE / f'current-v2-probe-{PROBE}-primary-manifest.json'
+SCRATCH = ROOT / ('.runtime-work/c111071-v2/saved-probe-1b' if PROBE == 1
+                  else '.runtime-work/c111071-v2/saved-probe-2')
 VALIDATOR = ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck'
 
 
@@ -20,7 +24,8 @@ def sha(path):
 
 
 def main():
-    source = ROOT / '.runtime-work/c111071-v2/compat-probe-1d'
+    source_name = 'compat-probe-1f' if PROBE == 1 else 'compat-probe-2c'
+    source = ROOT / '.runtime-work/c111071-v2' / source_name
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
@@ -41,11 +46,11 @@ def main():
     before = {relative: sha(attempt / relative) for relative in compatibility['fixture_manifest']}
     command = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
                '--manifest', str(MANIFEST), '--case', CASE, '--attempt', str(attempt),
-               '--output', str(output), '--library', str(ROOT / 'runtime/pipeline/library'),
+               '--output', str(output), '--library', str(ROOT / 'runtime/library'),
                '--validator', str(VALIDATOR)]
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)
-    log = HERE / 'current-v2-probe-1-saved-command.log'
+    log = HERE / f'current-v2-probe-{PROBE}-saved-command.log'
     log.write_text(run.stdout)
     if run.returncode:
         raise RuntimeError(f'process-saved exit {run.returncode}; see {log}')
@@ -60,7 +65,7 @@ def main():
              'source_hashes_preserved': preserved, 'processing_receipt': receipt,
              'original_native_observed': False, 'selected_delivery': False,
              'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
-    target = HERE / 'current-v2-probe-1-saved-proof.json'
+    target = HERE / f'current-v2-probe-{PROBE}-saved-proof.json'
     target.write_text(json.dumps(proof, indent=2) + '\n')
     print(json.dumps({'passed': True, 'source_files': len(before), 'proof_sha256': sha(target)}))
 

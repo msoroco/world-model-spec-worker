@@ -1,12 +1,16 @@
 """Source-hashed synthetic diagnostic recipe for one current v2 primary."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ID = HERE.name
-CASE = ID + '__probe_1'
+PROBE = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+if PROBE not in (1, 2):
+    raise ValueError('Probe must be 1 or 2')
+CASE = ID + f'__probe_{PROBE}'
 
 
 def sha(path):
@@ -24,16 +28,17 @@ def lines(path, rows):
 
 
 def main():
-    source = HERE / 'current-v2-probe-1-fixture'
+    source = HERE / f'current-v2-probe-{PROBE}-fixture'
     source.mkdir(exist_ok=True)
     native, mapping, trace, evidence, frames, graphs = [], [], [], [], [], []
     for index in range(600):
         frame = 100 + index
         time = index / 20
         phase = ('cross_green', 'cross_yellow', 'cross_red')[(index % 120) // 40]
-        front = -4.0 if index < 250 else 1.0
+        entry_index = 250 if PROBE == 1 else 150
+        front = -4.0 if index < entry_index else 1.0
         body = [[-1, front-2, 0], [1, front-2, 0], [-1, front, 0], [1, front, 0]]
-        speed = 0 if 15 <= index < 250 else 3
+        speed = 0 if 15 <= index < entry_index else 3
         native.append({'native_frame': frame, 'time_s': time,
                        'signal_actor_id': 17, 'cross_signal_actor_id': 18,
                        'ego_face_observed': 'circular_red_green_left_arrow',
@@ -42,7 +47,7 @@ def main():
                        'detector_request_serviced': False, 'other_device_prohibition_observed': False,
                        'body_vertices_m': body, 'speed_mps': speed,
                        'speed_provenance': 'synthetic_native_sample',
-                       'entered_intersection': index >= 250,
+                       'entered_intersection': index >= entry_index,
                        'pedestrians_in_crosswalk': False, 'lawful_traffic_conflict': False})
         mapping.append({'video_frame': index, 'native_frame': frame, 'carla_frame': frame, 'time_s': time})
         trace.append({'frame': frame, 'time_s': time,
@@ -50,6 +55,7 @@ def main():
                       'heading_deg': 90.0, 'speed_mps': speed,
                       'position_m': [0.0, front-1.0, 0.5],
                       'speed_mph': speed / .44704,
+                      'velocity_mps': [0.0, speed, 0.0],
                       'control': {'throttle': 0, 'brake': 0, 'hand_brake': False}})
         evidence.append({'original_frame': frame, 'recording_time_s': time,
                          'replay_frame': frame, 'replay_simulation_time_s': time,
@@ -89,21 +95,21 @@ def main():
         'extraction_confirmed': True, 'frames': 600, 'synthetic_diagnostic': True,
         'sources': {'road.xodr': sha(source / 'road.xodr'),
                     'trace.jsonl': sha(source / 'trace.jsonl')}})
-    spec = HERE / 'current-v2-probe-1-fixture-spec.json'
+    spec = HERE / f'current-v2-probe-{PROBE}-fixture-spec.json'
     write(spec, {'files': {}, 'graphs': graphs,
                  'videos': [{'path': name + '.mkv', 'frames': 600, 'width': width,
                              'height': height, 'fps': 20, 'color': 'black'}
                             for name, width, height in
                             [('overview', 1920, 1080), ('approach', 1280, 720),
                              ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]]})
-    recipe = HERE / 'current-v2-probe-1-fixture-recipe.json'
+    recipe = HERE / f'current-v2-probe-{PROBE}-fixture-recipe.json'
     write(recipe, {'format': 'worker-fixture-recipe',
                    'sources': [{'path': p.relative_to(source).as_posix(),
                                 'source': p.relative_to(ROOT).as_posix(), 'sha256': sha(p)}
                                for p in sorted(source.rglob('*')) if p.is_file()],
                    'generator': {'source': spec.relative_to(ROOT).as_posix(),
                                  'sha256': sha(spec)}})
-    contract = HERE / 'current-v2-probe-1-measurement-contract.json'
+    contract = HERE / f'current-v2-probe-{PROBE}-measurement-contract.json'
     write(contract, {'format': 'worker-measurement-contract', 'case_id': CASE,
                      'requirements': [{'disposition_index': 0, 'requirement': 'NRS-484B-307-9b',
                                        'source': 'NRS 484B.307(9)(b)',
@@ -114,13 +120,13 @@ def main():
                      'negative': {'remove': ['road_geometry.json'],
                                   'error_contains': 'Missing required source: road_geometry.json'}})
     manifest = json.loads((HERE / 'draft-manifest.json').read_text())
-    entry = manifest['cases'][0]
+    entry = manifest['cases'][PROBE - 1]
     entry['fixture_recipe'] = recipe.relative_to(ROOT).as_posix()
     entry['measurement_contract'] = contract.name
     entry['measurement_procedure'] = {'entrypoint': 'finalize.py',
                                       'output_schema': 'c111071-saved-finalizer-report-v1'}
     manifest['cases'] = [entry]
-    destination = HERE / 'current-v2-probe-1-primary-manifest.json'
+    destination = HERE / f'current-v2-probe-{PROBE}-primary-manifest.json'
     write(destination, manifest)
     proposals = HERE / 'proposals/cases.json'
     plan = json.loads((HERE / 'case-plan.json').read_text())

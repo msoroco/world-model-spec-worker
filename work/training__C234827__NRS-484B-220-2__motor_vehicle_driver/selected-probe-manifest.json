@@ -1,0 +1,72 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "diagnostic_selected_probe",
+  "cases": [
+    {
+      "case_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native rotary lane/turn tracking and four-camera framing may fail at target speed"
+      },
+      "measurement_contract": "measurement-contract-reference.json",
+      "measurement_procedure": {
+        "entrypoint": "measure_saved_30s.py",
+        "output_schema": "c234827-rotary-saved-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "0477c4c39ca96a104d1ff0815bc24ce49c9735e1b2ec454d54c442f3241710ea",
+          "trigger": {
+            "source": "original Native body pose, control, lane readback and frame joins",
+            "metric": "sampled rotary-lane body clearance and continuous signed angular motion",
+            "failure_condition": "8 m/s primary leaves claimed rotary lane or reverses/interrupts signed progress"
+          },
+          "changed_knobs": [
+            "requested controller speed 8 m/s to 6 m/s; same 23.75 m lane-center radius"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-construction-reference.json",
+      "fixture_recipe": "work/training__C234827__NRS-484B-220-2__motor_vehicle_driver/selected-recipe-reference.json",
+      "construction_sha256": "0b627409ca4804ea50d60c98110c426880dc0657e23f06278c95241fa69f3342"
+    },
+    {
+      "case_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native rotary lane/turn tracking and four-camera framing may fail at target speed"
+      },
+      "measurement_contract": "measurement-contract-contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "measure_saved_30s.py",
+        "output_schema": "c234827-rotary-saved-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "b1348df9de979e90212fa72f25969b7d732346221e43aea74fcdd2e5d1c5df61",
+          "trigger": {
+            "source": "original Native body pose, control, lane readback and frame joins",
+            "metric": "sampled rotary-lane body clearance and continuous signed angular motion",
+            "failure_condition": "8 m/s primary leaves claimed rotary lane or reverses/interrupts signed progress"
+          },
+          "changed_knobs": [
+            "requested controller speed 8 m/s to 6 m/s; same 23.75 m lane-center radius"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-construction-contrast.json",
+      "fixture_recipe": "work/training__C234827__NRS-484B-220-2__motor_vehicle_driver/selected-recipe-contrast.json",
+      "construction_sha256": "1e8002b1a6007d5279c5195186524e7377224a558c9a9d77f2fe517809369d02"
+    }
+  ]
+}

@@ -1,0 +1,386 @@
+{
+  "cell_id": "C234827",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Outside-island neutral comparison context; unselected.",
+      "variable_assignments": {
+        "requested_island_side": {
+          "kind": "controller",
+          "value": "island_on_left",
+          "unit": "categorical"
+        },
+        "observed_island_side": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical per frame"
+        },
+        "observed_island_identity": {
+          "kind": "context",
+          "value": null,
+          "unit": "source review"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.roundabout",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native rotary road and island map readback, original overview/reference pixels; physical status pending review",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native heading and body position relative to source-hashed island center",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body footprint and lane IDs relative to island polygon",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego heading and velocity across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body pose and island-relative position across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native time-joined ego heading differences across consecutive frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "island_side_passage",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Source-derived continuous left/right island-side passage, not a pinned Core ID",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, velocity and applied control each frame",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Four camera frames joined to original Native frame and time",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rotary_island_source",
+            "unit": "structured",
+            "method": "source-hashed OpenDRIVE rotary road and island geometry plus original Native map readback"
+          }
+        ],
+        "limitations": [
+          "Authored path and CPU diagnostic do not prove original Native circulation",
+          "Physical island, traffic controls, route tracking, pixels and legal result require original Native source review"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-220-2",
+      "target_type": "compliant_attempt",
+      "rationale": "Compare requested island side while holding frozen cell, island, lane radius, actor, cameras and 30-second clock fixed; original motion, physical island and legal outcome remain unobserved.",
+      "variable_assignments": {
+        "requested_island_side": {
+          "kind": "controller",
+          "value": "island_on_left",
+          "unit": "categorical"
+        },
+        "observed_island_side": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical per frame"
+        },
+        "observed_island_identity": {
+          "kind": "context",
+          "value": null,
+          "unit": "source review"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__island_side_pair",
+      "deliberate_differences": [
+        "requested_island_side"
+      ],
+      "probe": {
+        "primary_variable": "requested_island_side",
+        "comparison_or_standard": "island on left versus right throughout the same authored rotary passage",
+        "target_value_or_branch": "island_on_left"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.roundabout",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native rotary road and island map readback, original overview/reference pixels; physical status pending review",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native heading and body position relative to source-hashed island center",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body footprint and lane IDs relative to island polygon",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego heading and velocity across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body pose and island-relative position across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native time-joined ego heading differences across consecutive frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "island_side_passage",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Source-derived continuous left/right island-side passage, not a pinned Core ID",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, velocity and applied control each frame",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Four camera frames joined to original Native frame and time",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rotary_island_source",
+            "unit": "structured",
+            "method": "source-hashed OpenDRIVE rotary road and island geometry plus original Native map readback"
+          }
+        ],
+        "limitations": [
+          "Authored path and CPU diagnostic do not prove original Native circulation",
+          "Physical island, traffic controls, route tracking, pixels and legal result require original Native source review"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-220-2",
+      "target_type": "violating_attempt",
+      "rationale": "Compare requested island side while holding frozen cell, island, lane radius, actor, cameras and 30-second clock fixed; original motion, physical island and legal outcome remain unobserved.",
+      "variable_assignments": {
+        "requested_island_side": {
+          "kind": "controller",
+          "value": "island_on_right",
+          "unit": "categorical"
+        },
+        "observed_island_side": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical per frame"
+        },
+        "observed_island_identity": {
+          "kind": "context",
+          "value": null,
+          "unit": "source review"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "training__C234827__NRS-484B-220-2__motor_vehicle_driver__island_side_pair",
+      "deliberate_differences": [
+        "requested_island_side"
+      ],
+      "probe": {
+        "primary_variable": "requested_island_side",
+        "comparison_or_standard": "island on left versus right throughout the same authored rotary passage",
+        "target_value_or_branch": "island_on_right"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.roundabout",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native rotary road and island map readback, original overview/reference pixels; physical status pending review",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native heading and body position relative to source-hashed island center",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body footprint and lane IDs relative to island polygon",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego heading and velocity across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body pose and island-relative position across all frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native time-joined ego heading differences across consecutive frames",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "island_side_passage",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Source-derived continuous left/right island-side passage, not a pinned Core ID",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, velocity and applied control each frame",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Four camera frames joined to original Native frame and time",
+            "time_window": "all original 600 Native frames / 30 s",
+            "reference_frame": "original Native map and frame, distinct from authored request",
+            "uncertainty": "50 ms sample interval and native pose/camera precision; no legal threshold inferred"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "rotary_island_source",
+            "unit": "structured",
+            "method": "source-hashed OpenDRIVE rotary road and island geometry plus original Native map readback"
+          }
+        ],
+        "limitations": [
+          "Authored path and CPU diagnostic do not prove original Native circulation",
+          "Physical island, traffic controls, route tracking, pixels and legal result require original Native source review"
+        ]
+      }
+    }
+  ],
+  "sweep_specs": []
+}

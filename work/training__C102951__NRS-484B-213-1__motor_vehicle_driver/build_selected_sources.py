@@ -97,8 +97,10 @@ def build(distance):
         json.dumps(row, separators=(',', ':')) + '\n' for row in native_frames),
                       'capture/recorder_info.txt': 'Create 107: vehicle.tesla.model3 (0, 0, 0) at (0, 0, 0)\nC102951 synthetic CPU fixture; no physical acquisition\n'},
             'graphs': graphs,
-            'videos': [{'path': name + '.mkv', 'frames': 600, 'width': 32,
-                        'height': 32, 'fps': 20, 'color': 'black'} for name in CAMERAS]}
+            'videos': [{'path': name + '.mkv', 'frames': 600,
+                        'width': 1920 if name == 'overview' else 1280,
+                        'height': 1080 if name == 'overview' else 720,
+                        'fps': 20, 'color': 'black'} for name in CAMERAS]}
     spec_path = HERE / f'selected-{key}-spec.json'
     save(spec_path, spec)
     names = ('native-observed.jsonl', 'road-readback.json', 'video_frames.jsonl',
