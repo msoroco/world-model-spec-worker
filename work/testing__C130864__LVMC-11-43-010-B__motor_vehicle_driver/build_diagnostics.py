@@ -113,7 +113,8 @@ def build():
             "CPU diagnostic only: synthetic roundabout geometry, body traces and video; not original site evidence",
             "case_id": cid, "frames": len(rows)}, sort_keys=True) + "\n"
         generator = folder / "diagnostic.json"
-        _text(generator, diagnostic)
+        generator.write_text(json.dumps(diagnostic, separators=(",", ":"),
+                                        allow_nan=False) + "\n", encoding="utf-8")
         _text(folder / "fixture-recipe.json", {"format": "worker-fixture-recipe",
             "sources": [{"path": "diagnostic-input.json",
                 "source": str(generator.relative_to(REPO)),

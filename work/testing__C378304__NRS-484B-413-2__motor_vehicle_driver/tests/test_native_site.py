@@ -46,6 +46,7 @@ class NativeSiteTests(unittest.TestCase):
             ({"approach_start_xyz": [-20, 0, 0]}, "too short"),
             ({"district_kind": "other_area"}, "business-district right turn"),
             ({"frontage_source": ""}, "missing original signal site field"),
+            ({"drive_speed_m_s": 8}, "drive speed outside supported source range"),
             ({"business_district_review": {}}, "frontage and use source required"),
             ({"diagnostic_fixture": True}, "diagnostic fixture cannot"),
         ):

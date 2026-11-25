@@ -71,7 +71,11 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
         raise ValueError("original acquisition output already exists")
     streams = {}
     rows = []
+    pipeline_started = False
     try:
+        if not getattr(session, "diagnostic_test_only", False):
+            session.start_pipeline_capture(output, case["case_id"])
+            pipeline_started = True
         for name, path in archives.items():
             streams[name] = ZipFile(path, "x", compression=ZIP_STORED)
         previous = None
@@ -83,7 +87,8 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
             target = outgoing if turned else turn
             session.command_drive(target)
             requested = request_right_signal(tag, remaining, turned,
-                                             speed_m_s=float(before["speed_m_s"]))
+                                             speed_m_s=float(before["speed_m_s"]),
+                                             lead_samples=case.get("controller_lead_samples", 1))
             session.request_right_signal(requested)
             tick = session.tick()
             if type(tick.get("frame")) is not int or not math.isfinite(float(tick.get("time_s"))):
@@ -92,8 +97,14 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
                                          abs(tick["time_s"] - previous["time_s"] - STEP_S) > 1e-4):
                 raise ValueError("original Native tick or 20 Hz clock gap")
             after = _state(session)
+            if pipeline_started:
+                session.capture_pipeline_tick(tick["frame"], tick["time_s"])
             if str(after["actor_id"]) != str(ego["actor_id"]):
                 raise ValueError("original ego identity changed")
+            if (not getattr(session, "diagnostic_test_only", False) and
+                    (not isinstance(after.get("body_vertices_m"), list) or
+                     len(after["body_vertices_m"]) != 8)):
+                raise ValueError("original ego body vertices missing")
             delta = _angle_from_start(heading_start, float(after["heading_deg"]))
             course_change = delta <= -15.0
             weather = session.read_weather()
@@ -106,6 +117,7 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
                    "requested_right_signal": requested,
                    "course_change": course_change,
                    "weather": weather, "actor_id": str(after["actor_id"]),
+                   "body_vertices_m": after.get("body_vertices_m"),
                    "camera_frames": {}}
             if type(row["right_signal"]) is not bool:
                 raise ValueError("missing original right-signal readback")
@@ -126,8 +138,12 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
         for stream in streams.values():
             stream.close()
         streams.clear()
+        if pipeline_started:
+            session.close_pipeline_capture()
+            pipeline_started = False
         context = {key: site[key] for key in ("highway_source", "district_source",
-                   "frontage_source", "building_use_source", "loading_zone_source")}
+                   "frontage_source", "building_use_source", "loading_zone_source",
+                   "route_source", "driver_source", "camera_rig_source")}
         context.update({"district_kind": "business", "maneuver": "right_turn",
                         "weather_source": "original Native weather readback: " +
                                           case["target"]["weather_request"]})
@@ -146,6 +162,8 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
                 "frame_count": frames, "camera_archives": packet["camera_archives"],
                 "original_capture_claimed": not diagnostic}
     except BaseException:
+        if pipeline_started:
+            session.close_pipeline_capture(confirmed=False)
         for stream in streams.values():
             stream.close()
         for path in archives.values():

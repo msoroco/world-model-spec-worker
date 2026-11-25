@@ -40,6 +40,9 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
                  and len(rows) == 900, "incomplete original 20 Hz signal history")
         _require(isinstance(packet.get("site_sha256"), str)
                  and len(packet["site_sha256"]) == 64, "missing original site binding")
+        for key in ("route_source", "driver_source", "camera_rig_source"):
+            _require(isinstance(context.get(key), str) and context[key],
+                     "missing original fixed source: " + key)
         archives = packet.get("camera_archives", {})
         _require(set(archives) == {"overview", "approach", "reference_corner", "driver_reference"},
                  "missing original four-camera source")
@@ -81,6 +84,14 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
     ) for i in range(first + 1, onset + 1))
     feet = metres * FEET_PER_METRE
     prior_interruptions = [r["frame"] for r in rows[:first] if not r["right_signal"]]
+    first_activation = next((i for i, row in enumerate(rows[:onset]) if row["right_signal"]), None)
+    observed_interruptions = ([] if first_activation is None else
+                              [row["frame"] for row in rows[first_activation:onset]
+                               if not row["right_signal"]])
+    if packet.get("source_kind") == "original_native":
+        expected_weather = "rain" if expected_case_id.endswith("__rain") else "clear"
+        _require(all(row.get("weather") == expected_weather for row in rows),
+                 "original weather history differs from selected case")
     return {
         "format": "turn-signal-measurement-v1",
         "case_id": expected_case_id,
@@ -93,8 +104,11 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
         "statutory_reference_ft": BUSINESS_DISTANCE_FEET,
         "sampled_threshold_reached": feet >= BUSINESS_DISTANCE_FEET,
         "prior_inactive_frames": prior_interruptions,
+        "interruption_frames_after_activation": observed_interruptions,
+        "source_kind": packet.get("source_kind", "diagnostic_fixture"),
+        "site_sha256": packet.get("site_sha256"),
         "weather_source": context.get("weather_source"),
-        "context_sources": {key: context[key] for key in ("highway_source", "district_source", "frontage_source", "building_use_source", "loading_zone_source")},
+        "context_sources": {key: context.get(key) for key in ("highway_source", "district_source", "frontage_source", "building_use_source", "loading_zone_source", "route_source", "driver_source", "camera_rig_source")},
         "limitations": ["Sampled path length is a lower bound between retained frames.", "Authored context sources require independent physical and statutory review."],
     }
 
@@ -102,19 +116,28 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
 def compare(left: dict, right: dict, comparison: str, above: dict | None = None) -> dict:
     _require(left["case_id"] != right["case_id"], "comparison duplicates a case")
     _require(left["context_sources"] == right["context_sources"], "fixed context differs")
+    _require(left.get("source_kind") == right.get("source_kind") and
+             left.get("site_sha256") == right.get("site_sha256"),
+             "fixed Native site or provenance differs")
     if comparison == "business_right_distance":
+        _require(left["weather_source"] == right["weather_source"],
+                 "distance pair weather differs")
         _require(left["continuous_distance_ft"] < 100 <= right["continuous_distance_ft"], "distance contrast missing")
         if above is not None:
             _require(above["case_id"] not in (left["case_id"], right["case_id"]),
                      "numeric triple duplicates a case")
             _require(above["context_sources"] == right["context_sources"]
-                     and above["weather_source"] == right["weather_source"],
+                     and above["weather_source"] == right["weather_source"]
+                     and above.get("site_sha256") == right.get("site_sha256")
+                     and above.get("source_kind") == right.get("source_kind"),
                      "numeric triple fixed context differs")
             _require(above["continuous_distance_ft"] > right["continuous_distance_ft"],
                      "above-100-foot measured contrast missing")
     elif comparison == "signal_continuity":
+        _require(left["weather_source"] == right["weather_source"],
+                 "continuity pair weather differs")
         _require(left["sampled_threshold_reached"] and not right["sampled_threshold_reached"], "continuity contrast missing")
-        _require(right["prior_inactive_frames"], "interruption absent")
+        _require(right.get("interruption_frames_after_activation"), "interruption absent")
     elif comparison == "regardless_weather":
         _require(left["sampled_threshold_reached"] and right["sampled_threshold_reached"], "signal distance changed")
         _require(left["weather_source"] != right["weather_source"], "weather contrast missing")

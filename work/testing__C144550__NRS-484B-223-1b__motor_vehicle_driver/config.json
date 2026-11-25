@@ -1,0 +1,112 @@
+{
+  "actor": "motor_vehicle_driver",
+  "authored_test_context": {
+    "core_assumptions": []
+  },
+  "cameras": [
+    {
+      "fov_deg": 90,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "reviewed_original_site_packet",
+      "width": 1920
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "reviewed_original_site_packet",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "reviewed_original_site_packet",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "reviewed_original_site_packet",
+      "width": 1280
+    }
+  ],
+  "cell_id": "C144550",
+  "duration_s": 45,
+  "law_id": "NRS-484B-223-1b",
+  "public_way_road_ids": [],
+  "rate_hz": 20,
+  "recording_description": {
+    "channels": [
+      {
+        "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+        "name": "original_lane_and_pose",
+        "reference_frame": "reviewed source lane and original world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical lane geometry and transition require local review",
+        "unit": "metres and seconds"
+      },
+      {
+        "method": "Original actor.get_light_state each Native world tick",
+        "name": "native_signal_state",
+        "reference_frame": "original world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "API signal state alone does not decide appropriateness",
+        "unit": "boolean API state"
+      },
+      {
+        "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+        "name": "independent_driver_input",
+        "reference_frame": "original world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "observed event does not prove mental ascertainment or safety",
+        "unit": "boolean observed event"
+      },
+      {
+        "method": "Original target actor transform and velocity on each world tick",
+        "name": "target_lane_traffic",
+        "reference_frame": "reviewed destination lane and original world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "relative gap and actual safety require local physical review",
+        "unit": "metres and metres per second"
+      },
+      {
+        "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+        "name": "four_camera_views",
+        "reference_frame": "same-frame Native sensor clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "actual visibility requires local pixel audit",
+        "unit": "original RGB pixels"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "reviewed source, lane marking and live OpenDRIVE hash match",
+        "name": "reviewed_marked_multilane_highway",
+        "unit": "SHA-bound original map packet"
+      }
+    ],
+    "limitations": [
+      "Original accepted traces/video and reviewed map are absent in worker export.",
+      "Driver-input event is not a legal ascertainment finding."
+    ]
+  },
+  "required_atoms": [],
+  "selected_case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing",
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing"
+  ]
+}

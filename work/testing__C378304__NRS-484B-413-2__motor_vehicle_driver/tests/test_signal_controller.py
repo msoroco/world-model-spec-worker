@@ -49,6 +49,15 @@ class SignalControllerTest(unittest.TestCase):
         self.assertLess(starts["interrupted"], 100)
         self.assertEqual(starts["rain"], starts["continuous100"])
 
+    def test_fallback_two_sample_lead_is_concrete_and_bounded(self):
+        distance = 100.8 * MODULE.METRES_PER_FOOT
+        self.assertFalse(MODULE.request_right_signal("continuous100", distance,
+                                                     speed_m_s=4, lead_samples=1))
+        self.assertTrue(MODULE.request_right_signal("continuous100", distance,
+                                                    speed_m_s=4, lead_samples=2))
+        with self.assertRaisesRegex(ValueError, "unsupported signal lead"):
+            MODULE.request_right_signal("continuous100", distance, lead_samples=3)
+
 
 if __name__ == "__main__":
     unittest.main()

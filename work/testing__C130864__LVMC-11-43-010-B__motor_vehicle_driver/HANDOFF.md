@@ -1,6 +1,18 @@
 # testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+## 2026-11-25 selected CPU delivery checkpoint
+
+Status: truthful partial. Six exact connected/adjacent circulating-lane and requested-gap cases are constructed with primary and fallback controllers. Five fixed-source comparisons isolate entry request, circulating lane relation and requested initial gap. `execution-manifest.json` is the selected manifest; SHA256 `a6e2529b8858c4b5c55d76f12e3e2436c9d12894dcb323eb643a17c6b280ba44`. `selected-cpu-delivery-audit.json` joins that hash to all returned proof indexes. Diagnostic sources are synthetic nine-frame CPU fixtures and claim no original physical or legal acceptance.
+
+Current pinned checks: 25 focused tests, runtime preflight and scoped static all pass. Twelve exact offline candidates pass; twelve canonical selected-manifest compatibility checks pass positive and removed-source negatives; six independent source/camera audits pass positives and reject missing original maps; twelve saved-only processing runs pass with originals preserved and classify the missing-map versions as missing evidence; all five source-bound comparison audits pass. Logs and SHA256s are in `cpu-current-tests.log`, `cpu-current-preflight.log`, `cpu-current-scoped-check.log`, `cpu-current-strict-check.log`, `cpu-offline-proofs.json`, `cpu-canonical-compatibility-proofs.json`, `cpu-independent-proofs.json`, `cpu-saved-proofs.json`, and `cpu-comparison-proofs.json`. The exact scoped strict gate exits 1 solely on partial package status.
+
+Original-source gate: frozen inputs list no accepted recordings for this exact law. No reviewed original C130864 multilane roundabout OpenDRIVE/map, connected entry and circulating routes, camera poses, jurisdiction, or legally applicable gap interpretation is supplied. `reviewed_roundabout.py` requires those source hashes before Native world mutation; `native_entry.py` and saved analysis require a 900-frame two-actor, four-camera original capture. A source-backed physical yield and legal gap verdict remain unverified. The six diagnostic fixtures must never be represented as the reviewed site.
+
+Rebuild decoder scratch with `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py build-decoder --library runtime/library --output .runtime-work/c130864-decoder --lake /lustre/fsw/portfolios/av/users/wcong/tools/bin/lake`; all proof scratch, including `.runtime-work/c130864-decoder/.lake/build/bin/adapterCheck`, can be reconstructed outside returned `work/`. Set `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c130864-output` and `TMPDIR=$PWD/.runtime-work/c130864-tmp` for direct runtime imports and saved processing. No source, runtime or batch file was edited.
+
+## Historical checkpoints
+
+Status at initial inventory: partial source inventory. Current selected CPU package is documented above.
 
 Exact law: LVMC 11.43.010(B) — The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle entering a roundabout shall yield the right-of-way to vehicles already in the roundabout and wait for a gap in traffic before entering.
 Assigned branch(es): Multilane roundabout entry with an already-present vehicle..

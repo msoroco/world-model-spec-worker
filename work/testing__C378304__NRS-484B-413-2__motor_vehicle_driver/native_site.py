@@ -35,7 +35,11 @@ def validate(site: dict, *, allow_diagnostic: bool = False) -> dict:
     if site["district_kind"] != "business" or site["maneuver"] != "right_turn":
         raise ValueError("selected business-district right turn differs")
     speed = float(site["drive_speed_m_s"])
-    if not math.isfinite(speed) or not .5 <= speed <= 12:
+    # One 20 Hz sample must travel less than the one-foot separation between
+    # the authored 100 ft and 101 ft probes. This is capture resolution,
+    # never a statutory speed or distance threshold.
+    resolution_speed_max = 0.3048 / .05
+    if not math.isfinite(speed) or not .5 <= speed < resolution_speed_max:
         raise ValueError("reviewed right-turn drive speed outside supported source range")
     from native_capture_contract import CAMERAS, DIMENSIONS
     if set(site["camera_rigs"]) != set(CAMERAS):
@@ -67,6 +71,7 @@ def validate(site: dict, *, allow_diagnostic: bool = False) -> dict:
         raise ValueError("reviewed business-district frontage and use source required")
     return {"map_name": site["map_name"], "approach_length_m": approach,
             "departure_length_m": departure, "signed_turn_angle_deg": angle,
+            "numeric_probe_resolution_speed_max_m_s": resolution_speed_max,
             "turn_vertex_xyz": list(turn),
             "source_citations": {key: site[key] for key in REQUIRED_CITATIONS}}
 

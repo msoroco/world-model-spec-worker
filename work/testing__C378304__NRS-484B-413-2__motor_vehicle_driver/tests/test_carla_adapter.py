@@ -51,6 +51,9 @@ class Actor:
         self.stopped = False
         self.light_state = Lights(0)
         self.velocity = Vec()
+        self.bounding_box = types.SimpleNamespace(get_world_vertices=lambda pose: [
+            Vec(pose.location.x + dx, pose.location.y + dy, pose.location.z)
+            for dx in (-1, 1) for dy in (-.5, .5) for _ in (0, 1)])
 
     def get_transform(self):
         return self.transform
@@ -138,6 +141,7 @@ class AdapterTests(unittest.TestCase):
                 ego = session.spawn_ego(SITE["ego_blueprint_id"], SITE["approach_start_xyz"])
                 self.assertEqual(ego["actor_id"], 1)
                 self.assertEqual(len(session.sensors), 4)
+                self.assertEqual(len(session.read_ego_state()["body_vertices_m"]), 8)
                 session.set_weather("rain")
                 self.assertEqual(session.read_weather(), "rain")
                 session.command_drive(SITE["turn_vertex_xyz"])
@@ -147,6 +151,7 @@ class AdapterTests(unittest.TestCase):
                 self.assertFalse(session.read_right_signal())
                 self.assertEqual(session.tick()["frame"], 1)
             self.assertFalse(world.settings.synchronous_mode)
+            self.assertTrue(session.restoration_verified)
             self.assertEqual(world.weather.precipitation, 0)
             self.assertTrue(all(actor.destroyed for actor in world.actors))
             self.assertTrue(all(sensor.stopped for sensor in world.actors[1:]))

@@ -1,0 +1,119 @@
+"""Materialize five exact, inline, source-gated signal constructions."""
+from __future__ import annotations
+
+import hashlib
+import json
+import copy
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1]
+PLAN = json.loads((ROOT / "case-plan.json").read_text())
+PROPOSALS = json.loads((ROOT / "proposals/cases.json").read_text())
+DESCRIPTION = {item["case_id"]: item["recording_description"]
+               for item in PROPOSALS["cases"] if item["target_law_id"]}
+SOURCES = ("runner.py", "analysis.py", "saved_export.py", "native_capture.py", "native_capture_contract.py",
+           "native_site.py", "carla_adapter.py", "signal_controller.py",
+           "signal_measure.py", "signal_audit.py", "source_audit.py",
+           "case-plan.json")
+TESTS = tuple(sorted(path.relative_to(ROOT).as_posix()
+                     for path in (ROOT / "tests").glob("test*.py")))
+CAMERAS = [
+    {"name": "overview", "width": 1920, "height": 1080,
+     "pose_strategy": "reviewed fixed highway and business-district overview", "fov_deg": 90},
+    {"name": "approach", "width": 1280, "height": 720,
+     "pose_strategy": "reviewed fixed signal approach and right-turn path", "fov_deg": 90},
+    {"name": "reference_corner", "width": 1280, "height": 720,
+     "pose_strategy": "reviewed fixed district frontage and turn corner", "fov_deg": 90},
+    {"name": "driver_reference", "width": 1280, "height": 720,
+     "pose_strategy": "reviewed ego mounted forward and right reference", "fov_deg": 90},
+]
+
+
+def dump(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main() -> None:
+    all_ids = [item["case_id"] for item in PLAN["cases"]]
+    manifest_cases = []
+    for index, item in enumerate(PLAN["cases"]):
+        case_id = item["case_id"]
+        tag = case_id.rsplit("__", 1)[-1]
+        folder = ROOT if index == 0 else ROOT / "cases" / tag
+        config = {"assignment_id": PLAN["assignment_id"],
+                  "selected_case_id": case_id, "supported_case_ids": all_ids,
+                  "law_id": PLAN["law_id"], "cell_id": PLAN["cell_id"],
+                  "actor": PLAN["actor"], "rate_hz": 20, "duration_s": 45,
+                  "required_atoms": [], "source_packets": [], "cameras": CAMERAS,
+                  "controller_lead_samples": 1,
+                  "case": {"case_id": case_id, "target": item["target"],
+                           "recording_description": DESCRIPTION[case_id]},
+                  "course": "right_turn",
+                  "physical_completion": {"criterion": "turn",
+                                          "motion_source": "body_history.jsonl",
+                                          "body_key": "body_vertices_m",
+                                          "heading_key": "heading_deg",
+                                          "turn_degrees": 90,
+                                          "turn_sign": -1,
+                                          "turn_tolerance_deg": 30,
+                                          "minimum_progress_m": 10,
+                                          "minimum_samples": 2,
+                                          "engineering_tolerances_not_legal": True}}
+        config_path = folder / "config.json"
+        dump(config_path, config)
+        files = []
+        for name in (*SOURCES, *TESTS, "config.json"):
+            source = config_path if name == "config.json" else ROOT / name
+            files.append({"path": name, "source": source.relative_to(REPO).as_posix(),
+                          "content": source.read_text()})
+        construction = {"law_id": PLAN["law_id"], "cell_id": PLAN["cell_id"],
+                        "actor": PLAN["actor"], "case_id": case_id,
+                        "entrypoint": "runner.py", "files": files,
+                        "recording_description": DESCRIPTION[case_id],
+                        "mechanisms": ["SHA-verified original business-district site before CARLA import",
+                                       "20 Hz sampled right-signal actuator and original readback",
+                                       "four synchronized original CARLA camera streams"],
+                        "measurement_plan": {"signal_distance": "Saved sampled path length of the last uninterrupted right-signal interval before observed course change; exact 100 ft statutory reference.",
+                                             "numeric_triple": "Reject measured 101 ft probe if its distance equals the measured 100 ft probe."},
+                        "static_checks": ["exact case and source hash", "reviewed right-turn route and district context",
+                                          "900 original frame and four camera joins"],
+                        "termination_rules": ["stop at 900 ticks", "abort on source or camera mismatch"]}
+        construction_path = folder / "construction.json"
+        dump(construction_path, construction)
+        fallback_config = copy.deepcopy(config)
+        fallback_config["controller_lead_samples"] = 2
+        fallback_folder = ROOT / "cases" / tag / "fallback1"
+        fallback_config_path = fallback_folder / "config.json"
+        dump(fallback_config_path, fallback_config)
+        fallback = copy.deepcopy(construction)
+        for entry in fallback["files"]:
+            if entry["path"] == "config.json":
+                entry["source"] = fallback_config_path.relative_to(REPO).as_posix()
+                entry["content"] = fallback_config_path.read_text()
+        fallback["mechanisms"].append("two-sample engineering lead for measured onset drift")
+        fallback_path = fallback_folder / "construction.json"
+        dump(fallback_path, fallback)
+        manifest_cases.append({"case_id": case_id, "kind": "delivery",
+                               "construction": construction_path.relative_to(ROOT).as_posix(),
+                               "construction_sha256": sha(construction_path),
+                               "candidate_risk": item["physical_risk"],
+                               "candidates": [{"id": "fallback1",
+                                               "construction": fallback_path.relative_to(ROOT).as_posix(),
+                                               "construction_sha256": sha(fallback_path),
+                                               "changed_knobs": ["right-signal controller lead: one to two sampled speed steps"],
+                                               "trigger": {"source": "original Native turn signal samples and saved signal_measure.py result",
+                                                           "metric": "sampled uninterrupted preturn signal distance and course-change onset",
+                                                           "failure_condition": "primary signal onset drift leaves measured preturn distance below its selected target or course-change onset outside the reviewed route"}}]})
+    dump(ROOT / "execution-manifest.json",
+         {"assignment_id": PLAN["assignment_id"], "cases": manifest_cases,
+          "comparisons": PLAN["comparisons"]})
+
+
+if __name__ == "__main__":
+    main()

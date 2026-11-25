@@ -61,6 +61,14 @@ class SavedSourceAuditTest(unittest.TestCase):
                                         long_source, "business_right_distance")
         self.assertTrue(result["software_measurement_passed"])
 
+    def test_selected_comparison_rejects_missing_or_wrong_cases(self):
+        source, measurement = self.make("unselected", 0)
+        with self.assertRaisesRegex(ValueError, "source count differs"):
+            AUDIT.audit_selected_comparison("business_right_distance", [(measurement, source)])
+        with self.assertRaisesRegex(ValueError, "case identity differs"):
+            AUDIT.audit_selected_comparison("signal_continuity",
+                                            [(measurement, source), (measurement, source)])
+
 
 if __name__ == "__main__":
     unittest.main()

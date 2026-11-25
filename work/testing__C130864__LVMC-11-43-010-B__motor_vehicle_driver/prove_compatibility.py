@@ -42,7 +42,7 @@ def main():
             if completed.returncode == 0:
                 receipt = json.loads((dest / "compatibility.json").read_text())
                 folder = ROOT / "cases" / short
-                prefix = "compatibility-" + candidate
+                prefix = "proof-compatibility-" + candidate
                 for source, target in (("compatibility.json", prefix + ".json"),
                                        ("compatibility-analysis.log", prefix + "-analysis.log"),
                                        ("negative-analysis.log", prefix + "-negative.log")):

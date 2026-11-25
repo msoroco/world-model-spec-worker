@@ -13,7 +13,7 @@ MODULES = ("runner.py", "analysis.py", "native_entry.py", "reviewed_roundabout.p
            "native_roundabout.py", "capture_roundabout.py",
            "carla_roundabout_readback.py", "roundabout_measurements.py",
            "saved_roundabout_camera_audit.py", "roundabout_delivery_audit.py",
-           "roundabout_comparison_audit.py", "roundabout_video_sources.py")
+           "roundabout_video_sources.py")
 OFFLINE_TEST = '''import json
 import unittest
 from pathlib import Path

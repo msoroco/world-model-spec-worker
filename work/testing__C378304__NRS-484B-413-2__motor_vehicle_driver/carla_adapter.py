@@ -23,6 +23,7 @@ class Session:
         self.host, self.port, self.config = host, int(port), config
         self.site = config["site"]
         self.carla = None
+        self.client = None
         self.world = None
         self.original_settings = None
         self.original_weather = None
@@ -30,6 +31,8 @@ class Session:
         self.sensors = {}
         self.camera_queues = {}
         self._requested_signal = False
+        self.pipeline_capture = None
+        self.restoration_verified = False
 
     def __enter__(self):
         import carla
@@ -37,6 +40,7 @@ class Session:
         try:
             client = carla.Client(self.host, self.port)
             client.set_timeout(15.0)
+            self.client = client
             self.world = client.get_world()
             if self.read_map_name() != self.site["map_name"]:
                 raise ValueError("reviewed map differs before Native mutation")
@@ -53,6 +57,11 @@ class Session:
 
     def __exit__(self, exc_type, exc_value, traceback):
         errors = []
+        if self.pipeline_capture is not None:
+            try:
+                self.close_pipeline_capture(confirmed=False)
+            except Exception as error:
+                errors.append(error)
         for sensor in self.sensors.values():
             try:
                 sensor.stop()
@@ -80,9 +89,40 @@ class Session:
                     self.world.apply_settings(self.original_settings)
                 except Exception as error:
                     errors.append(error)
+            if not errors and self.original_settings is not None and self.original_weather is not None:
+                try:
+                    restored_settings = self.world.get_settings()
+                    restored_weather = self.world.get_weather()
+                    self.restoration_verified = (
+                        restored_settings.synchronous_mode == self.original_settings.synchronous_mode
+                        and restored_settings.fixed_delta_seconds == self.original_settings.fixed_delta_seconds
+                        and all(abs(getattr(restored_weather, key) -
+                                    getattr(self.original_weather, key)) <= .01 for key in
+                                ("cloudiness", "precipitation", "sun_altitude_angle")))
+                    if not self.restoration_verified:
+                        errors.append(ValueError("original world settings or weather not restored"))
+                except Exception as error:
+                    errors.append(error)
         if errors and exc_type is None:
             raise RuntimeError("Native resource restoration failed") from errors[0]
         return False
+
+    def start_pipeline_capture(self, output, case_id: str) -> None:
+        if self.ego is None or self.pipeline_capture is not None:
+            raise ValueError("original ego or converter capture state missing")
+        from pipeline_capture import PipelineCapture
+        self.pipeline_capture = PipelineCapture(self.client, self.ego, output, case_id)
+
+    def capture_pipeline_tick(self, frame: int, time_s: float) -> None:
+        if self.pipeline_capture is None:
+            raise ValueError("original converter capture was not started")
+        self.pipeline_capture.capture(frame, time_s)
+
+    def close_pipeline_capture(self, *, confirmed: bool = True) -> None:
+        if self.pipeline_capture is not None:
+            capture = self.pipeline_capture
+            self.pipeline_capture = None
+            capture.close(confirmed=confirmed)
 
     def read_map_name(self) -> str:
         return self.world.get_map().name
@@ -149,10 +189,14 @@ class Session:
     def read_ego_state(self) -> dict:
         transform = self.ego.get_transform()
         velocity = self.ego.get_velocity()
+        vertices = self.ego.bounding_box.get_world_vertices(transform)
+        if len(vertices) != 8:
+            raise ValueError("original ego bounding box vertices missing")
         return {"actor_id": self.ego.id, "blueprint_id": self.ego.type_id,
                 "x_m": transform.location.x, "y_m": transform.location.y,
                 "heading_deg": transform.rotation.yaw,
-                "speed_m_s": math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)}
+                "speed_m_s": math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2),
+                "body_vertices_m": [[point.x, point.y] for point in vertices]}
 
     def command_drive(self, target: list[float]) -> None:
         state = self.read_ego_state()

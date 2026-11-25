@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
   "input_sha256": "22dd585ca1d8bb3d093053cea0fb8b766f9f14ec4eff378e0282ac315e7c860b",
+  "readiness_kind": "source_gated_native_capture_and_three_offline_bundles_partial",
+  "reason": "Source-gated reviewed marked-lane Native construction, two owned vehicle controllers, four-camera 900-frame capture/encoding, original signal/driver-input readbacks and saved timing finalizer are CPU-tested; 22 focused tests, scoped static, and three controlled-case offline bundles pass. Exact selected semantic/compatibility/saved/delivery/comparison proofs remain CPU work. Accepted original trace/video and reviewed site are absent in the export; no physical or legal result claimed.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
   "status": "partial",
-  "readiness_kind": "timing_measurement_case_decomposition_and_independent_readback_finalizer_partial",
-  "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -52,10 +56,36 @@
       "exit_code": 1,
       "log": "cpu-independent-readback-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "proof-native-construction-tests.log",
+      "sha256": "5037b8546735b8a407f7f957be05648c608c01e24135b71200059f4184e7bf04"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "proof-native-construction-static.log",
+      "sha256": "f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "proof-native-construction-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "proof-native-session-tests.log",
+      "sha256": "bbb826c26a488ec243b4953d684fee92f98e719122bd349da0b5ade1a67d35a0"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "proof-native-session-static.log",
+      "sha256": "f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "CPU-tested source-bound signal and center-departure timing, exact case decomposition and controlled comparisons remain partial. New saved finalizer joins four independently sealed 900-frame original packets for frame map, ego pose/lane offset, Native signal and driver-check readback. It rejects missing/stale readback, frame mismatch and check-packet signal substitution; 10 focused tests pass. Pinned preflight and scoped static pass. Original source review, executable construction, actual driver-check acquisition, case-specific processing, compatibility and delivery proofs remain CPU work. Strict gate truthfully fails on partial status."
+  ]
 }

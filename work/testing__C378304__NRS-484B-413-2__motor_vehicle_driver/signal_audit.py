@@ -52,3 +52,19 @@ def audit_comparison(left_measurement: str | Path, left_source: str | Path,
         audit_measurement(above_measurement, above_source)
         above = json.loads(Path(above_measurement).read_text())
     return MEASURE.compare(left, right, comparison_id, above)
+
+
+def audit_selected_comparison(comparison_id: str, sources: list[tuple[str | Path, str | Path]]) -> dict:
+    """Audit the exact frozen three-way or pairwise comparison case order."""
+    plan = json.loads((HERE / "case-plan.json").read_text())
+    rows = [item for item in plan["comparisons"] if item["comparison_id"] == comparison_id]
+    if len(rows) != 1 or len(sources) != len(rows[0]["case_ids"]):
+        raise ValueError("selected comparison source count differs")
+    for pair, expected_id in zip(sources, rows[0]["case_ids"]):
+        measurement = json.loads(Path(pair[0]).read_text())
+        if measurement.get("case_id") != expected_id:
+            raise ValueError("selected comparison case identity differs")
+    left, right = sources[:2]
+    above = sources[2] if len(sources) == 3 else None
+    return audit_comparison(left[0], left[1], right[0], right[1], comparison_id,
+                            above[0] if above else None, above[1] if above else None)

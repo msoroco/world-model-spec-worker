@@ -13,7 +13,8 @@ PAIRS = {
 }
 
 
-def compare(comparison_id, first, second, first_packet, second_packet):
+def compare(comparison_id, first, second, first_packet, second_packet,
+            *, expected_decoded_images=3600):
     """Enforce common physical source and declared single-variable changes."""
     if comparison_id not in PAIRS:
         raise ValueError("unknown exact roundabout comparison")
@@ -21,7 +22,8 @@ def compare(comparison_id, first, second, first_packet, second_packet):
     if [first.get("case_id"), second.get("case_id")] != [
             ASSIGNMENT_ID + "__" + left_suffix, ASSIGNMENT_ID + "__" + right_suffix]:
         raise ValueError("comparison exact case ordering differs")
-    if first.get("decoded_images") != 3600 or second.get("decoded_images") != 3600:
+    if (first.get("decoded_images") != expected_decoded_images or
+            second.get("decoded_images") != expected_decoded_images):
         raise ValueError("comparison requires two full four-camera attempts")
     left = first.get("motion", {})
     right = second.get("motion", {})
