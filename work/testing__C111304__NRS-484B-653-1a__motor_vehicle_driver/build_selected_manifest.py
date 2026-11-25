@@ -46,6 +46,43 @@ def main() -> None:
                              'log': compatibility_log.name}
         else:
             compatibility = {'status': 'pending_cpu_positive_and_negative'}
+        delivery_script = HERE / 'delivery_audit.py'
+        delivery_positive = HERE / ('cpu-delivery-' + suffix + '.log')
+        delivery_negative = HERE / ('cpu-delivery-negative-' + suffix + '.log')
+        if all(path.is_file() for path in (delivery_script, delivery_positive, delivery_negative)):
+            acceptance = {
+                'case_id': case_id, 'sets': ['full-test'],
+                'checks': ['native_source', 'all_participants', 'time_join',
+                           'full_video_decode', 'actual_pixels', 'physical_completion'],
+                'script': delivery_script.name, 'script_sha256': sha(delivery_script),
+                'command': '.venv-cpu/bin/python work/' + HERE.name +
+                           '/delivery_audit.py --case ' + case_id + ' --self-test',
+                'test_exit_code': 0, 'test_log': delivery_positive.name,
+                'test_log_sha256': sha(delivery_positive),
+                'negative_command': '.venv-cpu/bin/python work/' + HERE.name +
+                                    '/delivery_audit.py --case ' + case_id +
+                                    ' --self-test --tamper',
+                'negative_exit_code': 1,
+                'negative_expected_error': 'actual four-camera participant visibility unconfirmed',
+                'negative_log': delivery_negative.name,
+                'negative_log_sha256': sha(delivery_negative),
+            }
+            if acceptance['negative_expected_error'] not in delivery_negative.read_text():
+                raise ValueError('selected delivery negative proof is stale: ' + case_id)
+        else:
+            acceptance = {'status': 'pending_independent_saved_proof'}
+        saved_log = HERE / ('cpu-process-saved-' + suffix + '.log')
+        post_capture = {
+            'recorded_only': True,
+            'command': '.venv-cpu/bin/python runtime.py process-saved --manifest work/' +
+                       HERE.name + '/execution-manifest.json --case ' + case_id +
+                       ' --attempt "$ATTEMPT" --output "$OUTPUT" --library runtime/library'
+                       ' --validator "$VALIDATOR" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
+            'feedback_command': 'cat "$OUTPUT"/v0001/feedback.json # ' + case_id,
+        }
+        if saved_log.is_file():
+            post_capture.update(test_exit_code=0, test_log=saved_log.name,
+                                test_log_sha256=sha(saved_log))
         cases.append({
             'case_id': case_id, 'kind': 'delivery', 'preparation_status': 'partial',
             'construction': row['construction'],
@@ -80,7 +117,8 @@ def main() -> None:
             'compatibility': compatibility,
             **({'negative': {'log': negative_log.name}}
                if compatibility_receipt.is_file() else {}),
-            'delivery_acceptance': {'status': 'pending_independent_saved_proof'},
+            'delivery_acceptance': acceptance,
+            'post_capture': post_capture,
         })
     manifest = {
         'format': 'worker-execution-manifest', 'assignment_id': HERE.name,

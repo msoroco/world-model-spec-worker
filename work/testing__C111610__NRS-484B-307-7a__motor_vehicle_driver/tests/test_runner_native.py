@@ -105,6 +105,7 @@ class NativeRunnerTests(unittest.TestCase):
             return {"frame_count": frames}
         with patch.dict(sys.modules, {"carla": self.carla}), \
              patch.object(runner, "_adapter", return_value=Adapter()), \
+             patch.object(runner, "seal_native", return_value={}), \
              patch.object(runner, "capture_with_cameras", side_effect=capture):
             return runner.run_native(self.root, self.root / "attempt", "localhost", 2000)
 

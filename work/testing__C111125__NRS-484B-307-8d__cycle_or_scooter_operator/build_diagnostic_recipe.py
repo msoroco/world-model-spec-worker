@@ -79,7 +79,11 @@ def build(suffix="two_cycles_failed_detection"):
         trace_path = root / "trace.jsonl"
         trace_path.write_text("".join(json.dumps({"frame": row["frame"], "time_s": row["timestamp_s"],
                        "position": {"x": row["ego_station_m"], "y": 0, "z": 0},
-                       "heading_deg": 0, "speed_mps": row["ego_speed_mps"]}) + "\n" for row in frames), encoding="utf-8")
+                       "position_m": [row["ego_station_m"], 0, 0],
+                       "heading_deg": 0, "speed_mps": row["ego_speed_mps"],
+                       "speed_mph": row["ego_speed_mps"] / 0.44704,
+                       "velocity_mps": [row["ego_speed_mps"], 0, 0],
+                       "control": {}}) + "\n" for row in frames), encoding="utf-8")
         destination = HERE / "diagnostics" / suffix
         destination.mkdir(parents=True, exist_ok=True)
         source_names = (*test_analysis.analysis.SOURCE_NAMES, "trace.jsonl",

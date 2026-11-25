@@ -46,7 +46,9 @@ def finalize_saved(site_path: Path, attempt: Path, case_id: str, *,
             joined["frame_count"] != event_receipt.get("frame_count")):
         raise ValueError("sealed event receipt differs from original arrow sources")
     measured = measure_original(site, attempt, event_ref)
-    expected = 3 if diagnostic else 900
+    expected = event_receipt["frame_count"] if diagnostic else 900
+    if diagnostic and (type(expected) is not int or not 3 <= expected <= 9):
+        raise ValueError("bounded diagnostic arrow frame count invalid")
     if joined["frame_count"] != measured["frame_count"] or measured["frame_count"] != expected:
         raise ValueError("exact original arrow frame count differs")
     suffix = case_id.removeprefix(ASSIGNMENT + "__")

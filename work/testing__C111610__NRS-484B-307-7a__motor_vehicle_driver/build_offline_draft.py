@@ -16,7 +16,8 @@ SOURCES = (
     "native_arrow.py", "turn_control.py", "aspect_capture.py",
     "event_capture.py", "saved_aspect.py", "saved_finalizer.py",
     "comparison_audit.py", "saved_pair.py", "native_camera_capture.py",
-    "saved_camera_audit.py", "analysis.py", "delivery_audit.py", "runner.py",
+    "saved_camera_audit.py", "analysis.py", "saved_package.py", "delivery_audit.py", "runner.py",
+    "native_seal.py",
 )
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -66,6 +67,13 @@ def build():
             "cameras": list(CAMERAS),
             "required_sources": ["surveyed_map", "official_head", "external_aspect_readback", "actor_events", "original_camera_media"],
             "required_atoms": [], "diagnostic_only": True,
+            "physical_completion": {
+                "criterion": "turn", "motion_source": "body_history.jsonl",
+                "body_key": "body_vertices_m", "heading_key": "heading_deg",
+                "turn_degrees": 90, "turn_tolerance_deg": 30,
+                "turn_sign": 1, "minimum_progress_m": 1.0,
+                "context_sources": [],
+            },
         }
         files = {name: (HERE / name).read_text() for name in SOURCES}
         files.update({"case-plan.json": source.decode(),

@@ -8,11 +8,13 @@ import argparse
 import hashlib
 import json
 import math
+import subprocess
 from pathlib import Path
 
 from native_camera_capture import CAMERAS
 from saved_camera_audit import audit as audit_cameras
 from saved_finalizer import ASSIGNMENT, finalize_saved
+from saved_package import build_result
 
 
 def measure_ego_history(rows: list, *, diagnostic: bool) -> list:
@@ -49,8 +51,8 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
         raise ValueError("Missing required source: site.json")
     site = json.loads(site_path.read_text())
     final = finalize_saved(site_path, attempt, case_id, diagnostic=diagnostic)
-    camera = audit_cameras(site, attempt, diagnostic=diagnostic,
-                           dimensions=dimensions)
+    camera = (audit_diagnostic_cameras(attempt, final) if diagnostic else
+              audit_cameras(site, attempt, diagnostic=False, dimensions=dimensions))
     if (camera["original_event_sha256"] != final["original_event_sha256"] or
             camera["original_aspect_sha256"] != final["original_aspect_sha256"] or
             camera["decoded_frames"] != final["frame_count"] or
@@ -64,8 +66,9 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
                "arrow-events-original.json": final["original_event_sha256"],
                "arrow-camera-receipt.json": hashlib.sha256(camera_receipt.read_bytes()).hexdigest()}
     source_inventory = {ref["path"]: ref["sha256"] for ref in site["original_sources"]}
-    source_inventory.update({name + ".png.zip": ref["sha256"] for name, ref in
-                             json.loads(camera_receipt.read_text())["camera_sources"].items()})
+    for ref in json.loads(camera_receipt.read_text())["camera_sources"].values():
+        source_inventory[ref["path"]] = (hashlib.sha256((attempt / ref["path"]).read_bytes()).hexdigest()
+                                                if diagnostic else ref["sha256"])
     observations = {
         "arrow_display_observation": {"frame_count": final["frame_count"],
             "observed_arrow_transitions": final["observed_arrow_transitions"]},
@@ -85,6 +88,34 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
                             "Physical pixel visibility, cautiousness, lawful presence and right of way remain unconfirmed."]}
 
 
+def audit_diagnostic_cameras(attempt, final):
+    """Decode only explicitly marked generated FFV1 fixtures; never call them original."""
+    receipt = json.loads((attempt / "arrow-camera-receipt.json").read_text())
+    if (receipt.get("format") != "c111610-diagnostic-arrow-cameras-v1" or
+            receipt.get("diagnostic") is not True or
+            receipt.get("event_sha256") != final["original_event_sha256"] or
+            receipt.get("aspect_sha256") != final["original_aspect_sha256"]):
+        raise ValueError("diagnostic camera sources do not bind arrow events")
+    sources = receipt.get("camera_sources", {})
+    if set(sources) != set(CAMERAS):
+        raise ValueError("diagnostic four-camera inventory missing")
+    for name in CAMERAS:
+        ref = sources[name]
+        path = attempt / ref["path"]
+        if (ref.get("path") != name + ".mkv" or
+                ref.get("source_kind") != "generated_diagnostic" or not path.is_file()):
+            raise ValueError("diagnostic camera source changed: " + name)
+        probe = json.loads(subprocess.check_output([
+            "ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+            "-show_entries", "stream=nb_read_frames", "-of", "json", str(path)], text=True))
+        if int(probe["streams"][0]["nb_read_frames"]) != final["frame_count"]:
+            raise ValueError("diagnostic camera frame count differs")
+    return {"original_event_sha256": final["original_event_sha256"],
+            "original_aspect_sha256": final["original_aspect_sha256"],
+            "decoded_frames": final["frame_count"],
+            "decoded_images": final["frame_count"] * len(CAMERAS)}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", type=Path, required=True)
@@ -94,18 +125,33 @@ def main():
     parser.add_argument("--diagnostic-height", type=int)
     args = parser.parse_args()
     dimensions = None
-    if args.diagnostic:
+    provenance_path = args.attempt / "fixture-provenance.json"
+    explicit_fixture = False
+    if provenance_path.is_file():
+        provenance = json.loads(provenance_path.read_text())
+        explicit_fixture = (provenance.get("diagnostic_fixture") is True and
+                            provenance.get("physical_acceptance_claimed") is False)
+        if not explicit_fixture:
+            raise ValueError("untrusted diagnostic fixture provenance")
+    diagnostic = args.diagnostic or explicit_fixture
+    if args.diagnostic and not explicit_fixture:
+        raise ValueError("diagnostic flag requires explicit fixture provenance")
+    if diagnostic and args.diagnostic:
         if not args.diagnostic_width or not args.diagnostic_height:
             raise ValueError("diagnostic camera dimensions required")
         dimensions = {name: (args.diagnostic_width, args.diagnostic_height)
                       for name in CAMERAS}
     elif args.diagnostic_width or args.diagnostic_height:
         raise ValueError("diagnostic camera dimensions cannot be used in delivery")
-    value = report(args.attempt, diagnostic=args.diagnostic,
+    value = report(args.attempt, diagnostic=diagnostic,
                    dimensions=dimensions)
     if args.output.exists():
         raise ValueError("analysis output already exists")
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    result = build_result(args.attempt, value)
+    value["physical_checks"] = result["physical_checks"]
+    value["realized_observables"] = result["realized_observables"]
+    (args.attempt / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     args.output.write_text(json.dumps(value, indent=2) + "\n")
 
 

@@ -53,12 +53,18 @@ def capture_pair(site, attempt_root, step, *, frames=900, diagnostic=False):
             raise AspectError("original actor event source missing")
         if not diagnostic:
             values = [event.get("ego_speed_mps"), event.get("ego_brake"),
-                      event.get("ego_heading_deg")]
+                      event.get("ego_heading_deg"), event.get("ego_z_m")]
             if any(type(value) not in (int, float) or not math.isfinite(value)
                    for value in values):
                 raise AspectError("original ego kinematic source missing")
             if values[0] < 0 or not 0 <= values[1] <= 1:
                 raise AspectError("original ego speed or brake range invalid")
+            body = event.get("ego_body_vertices_m")
+            if (not isinstance(body, list) or len(body) < 4 or
+                any(not isinstance(point, list) or len(point) < 3 or
+                    any(type(v) not in (int, float) or not math.isfinite(v)
+                        for v in point[:3]) for point in body)):
+                raise AspectError("original ego body geometry missing")
             if (event.get("ego_movement") != site["arrow_movement"] and
                     (not event.get("concurrent_indications") or
                      not event.get("concurrent_permission_source") or

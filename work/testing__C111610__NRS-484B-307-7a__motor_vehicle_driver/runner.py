@@ -16,6 +16,7 @@ from pathlib import Path
 
 from native_arrow import original, verify_site, construct_native
 from native_camera_capture import capture_with_cameras
+from native_seal import seal as seal_native
 
 CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
 VARIANTS = {"arrow_clear", "arrow_ped_crosswalk", "arrow_ped_intersection",
@@ -82,6 +83,7 @@ def run_native(root, output, host, port):
     previous = (settings.synchronous_mode, settings.fixed_delta_seconds)
     actors = []
     state = None
+    receipt = None
     try:
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
@@ -119,7 +121,6 @@ def run_native(root, output, host, port):
             return aspect, event, images
 
         receipt = capture_with_cameras(site, output, step, frames=900)
-        return receipt
     finally:
         try:
             if state is not None and callable(getattr(adapter, "close", None)):
@@ -131,6 +132,11 @@ def run_native(root, output, host, port):
             finally:
                 settings.synchronous_mode, settings.fixed_delta_seconds = previous
                 world.apply_settings(settings)
+    restored = world.get_settings()
+    if (restored.synchronous_mode, restored.fixed_delta_seconds) != previous:
+        raise ValueError("Native world settings restoration readback differs")
+    seal_native(output)
+    return receipt
 
 
 def main():
@@ -145,7 +151,16 @@ def main():
     else:
         if not args.output_dir:
             raise ValueError("Native output directory required")
-        run_native(Path(__file__).resolve().parent, args.output_dir, args.host, args.port)
+        try:
+            run_native(Path(__file__).resolve().parent, args.output_dir, args.host, args.port)
+        except BaseException as error:
+            output = Path(args.output_dir)
+            if output.is_dir() and not (output / "native-run-status.json").exists():
+                (output / "native-run-status.json").write_text(json.dumps({
+                    "errors": [type(error).__name__ + ": " + str(error)],
+                    "capture_finished": False, "physical_acceptance_claimed": False},
+                    sort_keys=True) + "\n")
+            raise
 
 
 if __name__ == "__main__":
