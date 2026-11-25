@@ -125,7 +125,7 @@ def finalize(attempt, output):
                 'measurements': {
                     'caravan_context': {'method': 'source_hashed_context',
                                         'value': source_hashed_context(report, context['road_context']),
-                                        'sources': sources('road_context.json', 'site_packet.json')},
+                                        'sources': sources('road_context.json')},
                     'caravan_gap': {'method': 'source_hashed_body_gap',
                                     'value': source_hashed_body_gap(report),
                                     'sources': sources('caravan_history.jsonl', 'video_frames.jsonl')},

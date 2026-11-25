@@ -20,6 +20,10 @@ def lines(rows):
     return ''.join(encoded(row) + '\n' for row in rows)
 
 
+def body3(vertices):
+    return [[x, y, 0] for x, y in vertices]
+
+
 def build(label, suffix):
     construction = json.loads((PACKAGE / 'cases' / (suffix + '-construction.json')).read_text())
     embedded = {entry['path']: entry['content'] for entry in construction['files']}
@@ -46,19 +50,21 @@ def build(label, suffix):
         traces.append({'frame': row['frame'], 'time_s': row['time_s'],
                        'position': {'x': x, 'y': 0, 'z': .3},
                        'position_m': [x, 0, .3], 'heading_deg': 0, 'speed_mps': .2,
-                       'speed_mph': .2 / .44704})
+                       'speed_mph': .2 / .44704, 'velocity_mps': [.2, 0, 0],
+                       'control': {'throttle': .1, 'brake': 0, 'hand_brake': False}})
         packet = {'frame': row['frame'], 'time_s': row['time_s'], 'devices': [],
                   'participants': [{'actor_id': front['actor_id'], 'blueprint': front['blueprint_id'],
                                     'position_m': [x, 0, .3], 'heading_deg': 0, 'speed_mps': .2,
                                     'speed_provenance': 'synthetic_native_sample',
-                                    'velocity_mps': [.2, 0, 0], 'body_vertices_m': front['body_vertices_xy_m']}],
+                                    'velocity_mps': [.2, 0, 0],
+                                    'body_vertices_m': body3(front['body_vertices_xy_m'])}],
                   'relations': [], 'map_context': {}}
         evidence.append({'original_frame': row['frame'], 'replay_frame': row['frame'],
                          'actor_id': front['actor_id'], 'recording_time_s': row['time_s'],
                          'replay_simulation_time_s': row['time_s'],
                          'ego': {'position_m': [x, 0, .3], 'heading_deg': 0, 'speed_mps': .2,
                                  'speed_provenance': 'synthetic_native_sample',
-                                 'body_vertices_m': front['body_vertices_xy_m']},
+                                 'body_vertices_m': body3(front['body_vertices_xy_m'])},
                          'world': {}, 'original_observations': packet, 'timing': {},
                          'visibility': None, 'supporting_only': {}})
         base = 'graphs/base/%08d.adapter.json' % row['frame']
@@ -73,17 +79,21 @@ def build(label, suffix):
                                           'units': {'position': 'm'}, 'observed_evidence': packet},
                            'nodes': [], 'edges': []})
     files = {
+        'road.xodr': '<OpenDRIVE><header revMajor="1" revMinor="4" name="synthetic C160013 road" version="1" north="5" south="-5" east="80" west="0" vendor="worker"/><road name="synthetic highway" length="80" id="7" junction="-1"><link/><planView><geometry s="0" x="0" y="0" hdg="0" length="80"><line/></geometry></planView><elevationProfile><elevation s="0" a="0" b="0" c="0" d="0"/></elevationProfile><lateralProfile/><lanes><laneOffset s="0" a="0" b="0" c="0" d="0"/><laneSection s="0"><left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></left><center><lane id="0" type="none" level="false"/></center><right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></right></laneSection></lanes></road></OpenDRIVE>\n',
         'road_context.json': encoded(context) + '\n',
         'caravan_context.json': encoded({'diagnostic': True, 'source': 'synthetic structural fixture'}) + '\n',
         'caravan_history.jsonl': lines(history), 'video_frames.jsonl': lines(frames),
         'trace.jsonl': lines(traces), 'capture/evidence.jsonl': lines(evidence),
         'capture/native/frames.jsonl': lines(native_frames),
-        'capture/recorder_info.txt': 'Synthetic diagnostic recording; no CARLA execution.\n',
-        'capture/manifest.json': encoded({'status': 'draft', 'acquisition': 'synthetic_diagnostic',
-                                         'case_id': config['selected_case_id'], 'map': 'FixtureMap',
-                                         'frames': 900, 'required_observations': config['required_atoms'],
-                                         'extraction_confirmed': True, 'sources': {}}) + '\n',
+        'capture/recorder_info.txt': 'Create 2: vehicle.tesla.model3 (0) at (0, 0, 0)\nSynthetic diagnostic recording; no CARLA execution.\n',
     }
+    files['capture/manifest.json'] = encoded({
+        'status': 'draft', 'acquisition': 'synthetic_diagnostic',
+        'case_id': config['selected_case_id'], 'map': 'FixtureMap',
+        'frames': 900, 'required_observations': config['required_atoms'],
+        'extraction_confirmed': True, 'sources': {
+            name: hashlib.sha256(files[name].encode()).hexdigest()
+            for name in ('road.xodr', 'trace.jsonl')}}) + '\n'
     videos = [{'path': camera['name'] + '.mkv', 'frames': 900,
                'width': camera['width'], 'height': camera['height'], 'fps': 20, 'color': 'blue'}
               for camera in config['cameras']]

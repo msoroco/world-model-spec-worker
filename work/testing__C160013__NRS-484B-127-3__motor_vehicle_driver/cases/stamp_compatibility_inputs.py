@@ -9,6 +9,8 @@ cases = []
 for entry in manifest['cases']:
     label = 'wide' if entry['case_id'].endswith('__entrant_can_occupy_gap') else 'narrow'
     entry['fixture_recipe'] = 'work/' + PACKAGE.name + '/cases/' + label + '-recipe.json'
+    entry['measurement_contract'] = 'measurement-contract.json'
+    entry['measurement_procedure'] = {'entrypoint': 'finalizer.py'}
     construction = json.loads((PACKAGE / entry['construction']).read_text())
     cases.append({'case_id': entry['case_id'], 'target_law_id': 'NRS-484B-127-3',
                   'target_type': 'diagnostic',
