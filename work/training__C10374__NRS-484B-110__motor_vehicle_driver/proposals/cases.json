@@ -1,10 +1,100 @@
 {
-  "format": "worker-case-proposals",
+  "cell_id": "C10374",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared designated-zone question, body and four-view source contract without an outcome claim.",
+      "variable_assignments": {
+        "safety_zone_designation": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "structured",
+          "source": "original designation and map review pending"
+        },
+        "vehicle_zone_overlap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "original body polygon and zone geometry"
+        },
+        "route_request": {
+          "kind": "controller",
+          "value": null,
+          "unit": "structured",
+          "source": "planned route; observed movement remains separate"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "structured",
+          "source": "requested route speed in m/s; not a legal threshold"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained Native actor body and sampled speed joined to original frame",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled body and speed; official zone and pixels unverified"
+          },
+          {
+            "name": "zone_body",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained Native actor body and sampled speed joined to original frame",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled body and speed; official zone and pixels unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored rectangle is not proof of official safety-zone designation",
+          "Synthetic camera pixels and body motion have no physical acceptance scope"
+        ]
+      }
+    },
     {
       "case_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a",
       "target_law_id": "NRS-484B-110",
       "target_type": "violating_attempt",
+      "rationale": "Controlled planned route; original designation and body overlap require physical review.",
+      "variable_assignments": {
+        "safety_zone_designation": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "structured",
+          "source": "original designation and map review pending"
+        },
+        "vehicle_zone_overlap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "original body polygon and zone geometry"
+        },
+        "route_request": {
+          "kind": "controller",
+          "value": "through_zone",
+          "unit": "structured",
+          "source": "planned route; observed movement remains separate"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "structured",
+          "source": "requested route speed in m/s; not a legal threshold"
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -32,14 +122,48 @@
           "Synthetic camera pixels and body motion have no physical acceptance scope"
         ]
       },
-      "variable_assignments": {},
-      "sweep_measurements": [],
-      "claim": "Diagnostic construction only; official zone designation unverified"
+      "paired_probe_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__comparison",
+      "deliberate_differences": [
+        "route_request"
+      ],
+      "probe": {
+        "primary_variable": "route_request",
+        "comparison_or_standard": "paired outside-zone versus through-zone requested route",
+        "target_value_or_branch": "through_zone"
+      }
     },
     {
       "case_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_b",
       "target_law_id": "NRS-484B-110",
       "target_type": "compliant_attempt",
+      "rationale": "Controlled planned route; original designation and body overlap require physical review.",
+      "variable_assignments": {
+        "safety_zone_designation": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "structured",
+          "source": "original designation and map review pending"
+        },
+        "vehicle_zone_overlap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "original body polygon and zone geometry"
+        },
+        "route_request": {
+          "kind": "controller",
+          "value": "outside_zone",
+          "unit": "structured",
+          "source": "planned route; observed movement remains separate"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "structured",
+          "source": "requested route speed in m/s; not a legal threshold"
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -67,9 +191,17 @@
           "Synthetic camera pixels and body motion have no physical acceptance scope"
         ]
       },
-      "variable_assignments": {},
-      "sweep_measurements": [],
-      "claim": "Diagnostic construction only; official zone designation unverified"
+      "paired_probe_id": "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__comparison",
+      "deliberate_differences": [
+        "route_request"
+      ],
+      "probe": {
+        "primary_variable": "route_request",
+        "comparison_or_standard": "paired outside-zone versus through-zone requested route",
+        "target_value_or_branch": "outside_zone"
+      }
     }
-  ]
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
 }

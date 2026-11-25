@@ -31,7 +31,7 @@
       "source": "NRS 484B.110",
       "source_text": "No vehicle shall at any time be driven through or within a safety zone.",
       "status": "selected_required",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
+      "evidence_or_gap": "Selected source-bound overlap and authored-zone setup readback are prepared; original Native designation, motion and pixel review remain pending.",
       "case_ids": [
         "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a",
         "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_b"
@@ -41,9 +41,12 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "through or within a safety zone",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Selected source-bound overlap and authored-zone setup readback are prepared; original Native designation, motion and pixel review remain pending.",
+      "case_ids": [
+        "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a",
+        "training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_b"
+      ]
     }
   ],
   "cases": [
@@ -114,33 +117,45 @@
         ]
       },
       "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "audit_gap": "Independent comparison predicate tests pass; local original Native source and human review remain pending."
     }
   ],
   "observations": [
     {
       "name": "st.safety_zone",
-      "mandatory": true,
+      "mandatory": false,
       "source_note": "the marked safety zone",
-      "status": "unmapped_to_native_and_core"
+      "status": "represented_by_source_bound_measurement_or_later_original_review"
     },
     {
       "name": "rel.occupies",
-      "mandatory": true,
+      "mandatory": false,
       "source_note": "the subject's footprint overlapping the safety zone",
-      "status": "unmapped_to_native_and_core"
+      "status": "represented_by_source_bound_measurement_or_later_original_review"
     },
     {
       "name": "ru.subject",
-      "mandatory": true,
+      "mandatory": false,
       "source_note": "the vehicle judged",
-      "status": "unmapped_to_native_and_core"
+      "status": "represented_by_source_bound_measurement_or_later_original_review"
     },
     {
       "name": "kin.velocity",
+      "mandatory": false,
+      "source_note": "'driven' \u2014 the vehicle is in motion",
+      "status": "represented_by_source_bound_measurement_or_later_original_review"
+    },
+    {
+      "name": "kin.speed",
       "mandatory": true,
-      "source_note": "'driven' — the vehicle is in motion",
-      "status": "unmapped_to_native_and_core"
+      "source_note": "20 Hz original Native ego velocity",
+      "status": "source_shaped_capture_proven_on_cpu"
+    },
+    {
+      "name": "zone_body",
+      "mandatory": true,
+      "source_note": "20 Hz original Native eight-vertex body",
+      "status": "source_shaped_capture_proven_on_cpu"
     }
   ],
   "sources": [
@@ -159,11 +174,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Establish a physical, marked safety zone and measured moving vehicle footprint overlap; compare otherwise identical paths through/within versus outside the zone.",
-    "Do not treat a graph label or painted overlay as a physical safety zone.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Original official safety-zone designation and physical boundary need source-bound review.",
+    "Original Native vehicle motion, marker placement and body footprint need verification.",
+    "Four original camera pixel streams need full frame decode and independent visibility review."
   ],
   "source_observation_mapping": {
     "st.safety_zone": {
@@ -196,7 +209,34 @@
     }
   },
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
-  "readiness": "planning_only",
+  "readiness": "selected_cpu_preparation_in_progress",
   "physical_prerequisites": "Establish a physical, marked safety zone and measured moving vehicle footprint overlap; compare otherwise identical paths through/within versus outside the zone.",
-  "legal_interpretation_limit": "Do not treat a graph label or painted overlay as a physical safety zone."
+  "legal_interpretation_limit": "Do not treat a graph label or painted overlay as a physical safety zone.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "vehicle body and four zone delimiters",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle route into/outside zone",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "zone boundary and moving vehicle body",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle travel continuity",
+        "interval": "full 30 s"
+      }
+    ]
+  }
 }

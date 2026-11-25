@@ -1,9 +1,8 @@
 {
   "assignment_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver",
   "input_sha256": "a51b94f93305a74714342888b656434ebd886dc06b115cc6ca7e52f7abfd0556",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Selected route diagnostics were corrected to exceed the current-runtime 75 m engineering progress check while preserving a fixed compared path and 100-frame service stop. Four compatibility and two saved-only receipts are being regenerated; strict assignment gate pending.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
   "candidate_count": 4,
   "selected_delivery_case_count": 2,
@@ -64,7 +63,31 @@
       "exit_code": 0,
       "log": "root-runner-check.log",
       "sha256": "a7314861dd66c2aaec977a5c7ae378bc8ba2ad16e66a5904911005a9f4ab80a9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+      "exit_code": 0,
+      "log": "delivery-probe_01-positive.log",
+      "sha256": "1b157cac7eddc68fea71f4181463b726957327a92a1d7324265fd17ebf4d4412"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-delivery.py --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
+      "exit_code": 0,
+      "log": "delivery-probe_02-positive.log",
+      "sha256": "e362d04f5756d651af422fe8aecbbba470233b0fbbaa3ce49aca6aacb3ee1cb6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/audit-selected-comparison.py",
+      "exit_code": 0,
+      "log": "comparison-selected-positive.log",
+      "sha256": "c024ab51762cb36ab74c7729fb10a949dc1639b56ce94b729fb110fab4136a5f"
     }
   ],
-  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C394566__LVMC-11-48-060__motor_vehicle_driver --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C394566__LVMC-11-48-060__motor_vehicle_driver --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Actual CARLA truck motion and traffic controls",
+    "Camera visibility and synchronized capture",
+    "Actual route geometry and 100-frame service stop",
+    "Actual purpose and essential-use judgment"
+  ]
 }

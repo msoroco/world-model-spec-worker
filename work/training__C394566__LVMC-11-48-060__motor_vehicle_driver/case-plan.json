@@ -107,7 +107,7 @@
   "source_observation_terms": [
     {
       "term": "dev.regulatory_sign",
-      "note": "code truck_route \u2014 which streets are truck routes"
+      "note": "code truck_route — which streets are truck routes"
     },
     {
       "term": "ru.truck",
@@ -123,7 +123,7 @@
     },
     {
       "term": "drv.standing_or_parked",
-      "note": "a stop for pick-up or delivery \u2014 the evidence the trip had a purpose en route"
+      "note": "a stop for pick-up or delivery — the evidence the trip had a purpose en route"
     },
     {
       "term": "st.roadway",
@@ -156,7 +156,7 @@
     {
       "name": "dev.regulatory_sign",
       "mandatory": true,
-      "reason": "code truck_route \u2014 which streets are truck routes"
+      "reason": "code truck_route — which streets are truck routes"
     },
     {
       "name": "ru.truck",
@@ -176,7 +176,7 @@
     {
       "name": "drv.standing_or_parked",
       "mandatory": true,
-      "reason": "a stop for pick-up or delivery \u2014 the evidence the trip had a purpose en route"
+      "reason": "a stop for pick-up or delivery — the evidence the trip had a purpose en route"
     },
     {
       "name": "st.roadway",
@@ -218,42 +218,73 @@
       "evidence_or_gap": "Both exact through-route variants and fallbacks passed current-runtime offline and diagnostic compatibility. Independently source-bound saved processing and comparison software proofs are retained; original CARLA route, truck class, required enroute purpose and physical outcome remain for local review."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.regulatory_sign / st.roadway",
-      "measurement": "reviewed entry/exit truck-route designations and intervening non-truck street IDs",
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "Reviewed entry and exit truck-route designations and intervening non-truck street IDs",
+      "channels": [
+        "st.roadway"
+      ],
       "source_refs": [
         "route_context.json:truck_route_designation_source",
         "route_context.json:nontruck_street_designation_source"
       ]
     },
-    {
-      "term": "ru.truck",
-      "measurement": "reviewed truck blueprint/vehicle class and original ego actor identity",
+    "ru.truck": {
+      "evidence": "Reviewed truck blueprint and original ego actor identity",
+      "channels": [],
       "source_refs": [
         "route_context.json:truck_blueprint_source",
         "native_route_trace.jsonl:ego_actor_id"
       ]
     },
-    {
-      "term": "kin.path_length / kin.position",
-      "measurement": "original Native road sequence and summed adjacent pose distance across complete passage",
+    "kin.path_length": {
+      "evidence": "Summed adjacent original Native pose distances across the complete passage",
+      "channels": [
+        "kin.path_length"
+      ],
       "source_refs": [
-        "native_route_trace.jsonl:road_id",
         "native_route_trace.jsonl:ego_x_m",
         "native_route_trace.jsonl:ego_y_m"
       ]
     },
-    {
-      "term": "drv.standing_or_parked / st.driveway_or_alley_entrance",
-      "measurement": "stationary-frame count and independently reviewed enroute pickup/delivery/essential purpose and premises; no purpose inferred from stop",
+    "kin.position": {
+      "evidence": "Original Native positions at non-truck-street entry and exit",
+      "channels": [
+        "kin.position"
+      ],
       "source_refs": [
-        "native_route_trace.jsonl:ego_speed_mps",
-        "route_context.json:enroute_purpose_source",
-        "route_context.json:served_premises_source"
+        "native_route_trace.jsonl:ego_x_m",
+        "native_route_trace.jsonl:ego_y_m"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Stationary frame count; stop alone does not prove lawful purpose",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "native_route_trace.jsonl:ego_speed_mps"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Original Native road sequence and reviewed route IDs",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "native_route_trace.jsonl:road_id",
+        "route_context.json:nontruck_street_designation_source"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Independently reviewed served premises and enroute pickup, delivery, or essential-use purpose",
+      "channels": [],
+      "source_refs": [
+        "route_context.json:served_premises_source",
+        "route_context.json:enroute_purpose_source"
       ]
     }
-  ],
+  },
   "camera_plan": {
     "profile": "overview1080-capability",
     "duration_s": 30,

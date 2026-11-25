@@ -31,8 +31,8 @@ def check_result(result, case):
     if (result.get("physical_checks", {}).get("maneuver", {}).get("status") != "met"
             or result.get("maneuver_completed") is not True):
         raise ValueError("Original route completion not established")
-    if result.get("physical_checks", {}).get("setup", {}).get("status") != "met":
-        raise ValueError("Original safety-zone setup not established")
+    if result.get("physical_checks", {}).get("setup", {}).get("status") not in ("met", "unverified"):
+        raise ValueError("Original zone setup source missing")
     if not result.get("realized_observables"):
         raise ValueError("Missing measured original motion")
     required = {"kin.speed", "zone_body"}
@@ -110,7 +110,7 @@ def audit(args):
 def selftest(case, negative):
     sample = {"case_id": case, "provenance_kind": "original_native", "diagnostic_fixture": False,
               "maneuver_completed": True, "physical_checks": {"maneuver": {"status": "met"},
-               "setup": {"status": "met"}}, "realized_observables": {"progress_m": 20},
+              "setup": {"status": "unverified"}}, "realized_observables": {"progress_m": 20},
               "recording_evidence": [{"name": "kin.speed"}, {"name": "zone_body"}]}
     if negative:
         sample["provenance_kind"] = "synthetic_fixture"

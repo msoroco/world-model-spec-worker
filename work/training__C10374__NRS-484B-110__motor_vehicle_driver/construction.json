@@ -1,0 +1,60 @@
+{
+  "law_id": "NRS-484B-110",
+  "cell_id": "C10374",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "status": "CPU delivery selected; original physical review pending",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.speed",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor body and sampled speed joined to original frame",
+        "time_window": "entire 30 s / 600-frame attempt",
+        "reference_frame": "original Native frame and time",
+        "uncertainty": "50 ms sampled body and speed; official zone and pixels unverified"
+      },
+      {
+        "name": "zone_body",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor body and sampled speed joined to original frame",
+        "time_window": "entire 30 s / 600-frame attempt",
+        "reference_frame": "original Native frame and time",
+        "uncertainty": "50 ms sampled body and speed; official zone and pixels unverified"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Authored rectangle is not proof of official safety-zone designation",
+      "Synthetic camera pixels and body motion have no physical acceptance scope"
+    ]
+  },
+  "measurement_plan": [
+    "source-bound moving body polygon and zone geometry at each original frame"
+  ],
+  "static_checks": [
+    "exact selected cases",
+    "four synchronized capture views",
+    "600 frames at 20 Hz"
+  ],
+  "termination_rules": [
+    "600 joined original Native frames",
+    "abort on missing source or map designation"
+  ],
+  "mechanisms": [
+    "source-shaped Native alley and zone geometry",
+    "case-specific route request and fallback"
+  ],
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Dispatch one exact C10374 case through the pinned prospective runtime.\"\"\"\n\nimport argparse\nimport os\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nROOT = Path(__file__).resolve().parents[2]\nHERE = Path(__file__).resolve().parent\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--case\", required=True)\n    parser.add_argument(\"--candidate\", default=\"primary\")\n    parser.add_argument(\"--output\", required=True)\n    parser.add_argument(\"--python\", default=os.environ.get(\"CARLA_PYTHON\"))\n    parser.add_argument(\"--host\", default=os.environ.get(\"CARLA_HOST\", \"localhost\"))\n    parser.add_argument(\"--port\", default=os.environ.get(\"CARLA_PORT\", \"2000\"))\n    args = parser.parse_args()\n    if not args.python:\n        raise ValueError(\"Supply original CARLA Python\")\n    command = [sys.executable, str(ROOT / \"runtime.py\"), \"capture\", \"--manifest\",\n               str(HERE / \"execution-manifest.json\"), \"--case\", args.case,\n               \"--candidate\", args.candidate, \"--output\", args.output,\n               \"--python\", args.python, \"--host\", args.host, \"--port\", str(args.port)]\n    subprocess.run(command, check=True)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"format\": \"c10374-safety-zone-native-request-v1\",\n  \"assignment_id\": \"training__C10374__NRS-484B-110__motor_vehicle_driver\",\n  \"case_id\": \"training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a\",\n  \"candidate_id\": \"primary\",\n  \"source_branch\": \"NRS 484B.110\",\n  \"source_text\": \"No vehicle shall at any time be driven through or within a safety zone.\",\n  \"assignment_sha256\": \"ddc212161f9ff295bb8cedad4c7d103082120cfc0ed5c152e0b340d6272cce52\",\n  \"case_plan_sha256\": \"8f9a4860221aee97930e1a0d5997496c1fba5e70476264c001ebf39dab9deea8\",\n  \"road_sha256\": \"c53dc964caed51133d9a546d976ac8aada30a4c8c57593127b8e34a9a9562539\",\n  \"tracks_sha256\": \"dc7cef2f5ca83cd7a6a3923f1fb34120d45dc4bf6e05f8d27cfa079c5f44c23d\",\n  \"rate_hz\": 20,\n  \"frames\": 600,\n  \"requested_ego_speed_mps\": 8.0,\n  \"camera_policy\": \"standard\",\n  \"stop_x_m\": null,\n  \"zone_rectangle_xy_m\": [\n    40.0,\n    60.0,\n    -3.5,\n    0.0\n  ],\n  \"requested_zone_route\": true,\n  \"physical_zone_designation_verified\": false,\n  \"actual_zone_overlap_observed\": false,\n  \"original_native_observed\": false,\n  \"status\": \"unselected_native_request\",\n  \"cell_id\": \"C10374\",\n  \"law_id\": \"NRS-484B-110\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"selected_case_id\": \"training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a\",\n  \"duration_s\": 30,\n  \"required_atoms\": [\n    \"kin.speed\"\n  ],\n  \"source_packets\": [],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"source-bound four-view body and zone coverage\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound four-view body and zone coverage\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound four-view body and zone coverage\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound four-view body and zone coverage\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"kin.speed\",\n        \"unit\": \"structured\",\n        \"sampling_rate_hz\": 20,\n        \"method\": \"retained Native actor body and sampled speed joined to original frame\",\n        \"time_window\": \"entire 30 s / 600-frame attempt\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"uncertainty\": \"50 ms sampled body and speed; official zone and pixels unverified\"\n      },\n      {\n        \"name\": \"zone_body\",\n        \"unit\": \"structured\",\n        \"sampling_rate_hz\": 20,\n        \"method\": \"retained Native actor body and sampled speed joined to original frame\",\n        \"time_window\": \"entire 30 s / 600-frame attempt\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"uncertainty\": \"50 ms sampled body and speed; official zone and pixels unverified\"\n      }\n    ],\n    \"context_inputs\": [],\n    \"limitations\": [\n      \"Authored rectangle is not proof of official safety-zone designation\",\n      \"Synthetic camera pixels and body motion have no physical acceptance scope\"\n    ]\n  },\n  \"case\": {\n    \"case_id\": \"training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a\",\n    \"recording_description\": {\n      \"channels\": [\n        {\n          \"name\": \"kin.speed\",\n          \"unit\": \"structured\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained Native actor body and sampled speed joined to original frame\",\n          \"time_window\": \"entire 30 s / 600-frame attempt\",\n          \"reference_frame\": \"original Native frame and time\",\n          \"uncertainty\": \"50 ms sampled body and speed; official zone and pixels unverified\"\n        },\n        {\n          \"name\": \"zone_body\",\n          \"unit\": \"structured\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained Native actor body and sampled speed joined to original frame\",\n          \"time_window\": \"entire 30 s / 600-frame attempt\",\n          \"reference_frame\": \"original Native frame and time\",\n          \"uncertainty\": \"50 ms sampled body and speed; official zone and pixels unverified\"\n        }\n      ],\n      \"context_inputs\": [],\n      \"limitations\": [\n        \"Authored rectangle is not proof of official safety-zone designation\",\n        \"Synthetic camera pixels and body motion have no physical acceptance scope\"\n      ]\n    }\n  },\n  \"supported_case_ids\": [\n    \"training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_a\",\n    \"training__C10374__NRS-484B-110__motor_vehicle_driver__selected_c5852cfd__condition_b\"\n  ]\n}\n"
+    }
+  ]
+}
