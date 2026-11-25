@@ -67,17 +67,17 @@ def build():
         for candidate in ('primary', 'fallback1'):
             case_id = BASE + '__' + suffix
             config = {'case_id': case_id, 'selected_case_id': case_id,
+                      'case': {'case_id': case_id, 'recording_description': desc},
                       'case_suffix': suffix, 'candidate_id': candidate,
                       'cell_id': 'C109166', 'law_id': 'NRS-484B-287-1e', 'actor': 'pedestrian',
                       'duration_s': 30, 'rate_hz': 20, 'supported_case_ids': ids,
                       'required_atoms': ['ru.pedestrian', 'kin.position', 'kin.heading', 'rel.occupies'],
                       'source_packets': [], 'opendrive_signal_id': 'candidate-unverified-203',
                       'entry_proxy_x_m': -5.5,
-                      'driver_reference_fov_deg': 90 if candidate == 'primary' else 70,
+                      'driver_reference_height_m': 3.0 if candidate == 'primary' else 2.2,
                       'cameras': [{'name': name, 'width': width, 'height': height,
                                    'pose_strategy': 'fixed surveyed diagonal view',
-                                   'fov_deg': 90 if name != 'driver_reference' else
-                                   (90 if candidate == 'primary' else 70)}
+                                   'fov_deg': 90}
                                   for name, width, height in CAMERAS],
                       'recording_description': desc}
             files = [{'path': name, 'content': content} for name, content in inline.items()]
@@ -106,25 +106,59 @@ def build():
                 (HERE/'tests').mkdir(exist_ok=True)
                 (HERE/'tests/test_offline.py').write_text(TEST)
             if candidate == 'primary':
+                contract = {'format': 'worker-measurement-contract', 'case_id': case_id,
+                    'requirements': [{'disposition_index': 0,
+                        'requirement': 'NRS-484B-287-1e', 'source': 'NRS 484B.287(1)(e)',
+                        'output_key': 'diagonal_first_entry_instruction',
+                        'method': 'diagonal_entry_measurement', 'value_type': 'object',
+                        'kind': 'measured',
+                        'inputs': ['pedestrian-original.jsonl', 'device-original.jsonl',
+                                   'authority-receipt.json']}],
+                    'negative': {'remove': ['device-original.jsonl'],
+                                 'error_contains': 'Missing required source: device-original.jsonl'}}
+                contract_path = HERE/'cases'/suffix/'measurement-contract.json'
+                write(contract_path, contract)
                 entries.append({'case_id': case_id, 'kind': 'delivery',
                     'construction': str(path.relative_to(HERE)),
                     'construction_sha256': sha(path),
+                    'measurement_contract': str(contract_path.relative_to(HERE)),
+                    'measurement_procedure': {'entrypoint': 'finalize.py',
+                                              'output_schema': 'worker-analysis-report-v1'},
+                    'fixture_recipe': f'work/{BASE}/diagnostic-{suffix}-recipe.json',
                     'candidate_risk': {'status': 'physical',
-                        'reason': 'Original display glyph may be too small in fixed detail view'},
+                        'reason': 'Original display glyph may be vertically foreshortened in the detail view'},
                     'candidates': []})
             else:
                 entries[-1]['candidates'].append({'id': 'fallback1',
                     'construction': str(path.relative_to(HERE)),
                     'construction_sha256': sha(path),
                     'trigger': {'source': 'original driver_reference camera pixels',
-                                'metric': 'diagonal glyph width in pixels',
-                                'failure_condition': 'glyph width below 12 pixels in primary'},
-                    'changed_knobs': ['driver_reference_fov_deg: 90 to 70']})
+                                'metric': 'diagonal glyph visible height in pixels',
+                                'failure_condition': 'glyph visible height below 12 pixels in primary'},
+                    'changed_knobs': ['driver_reference_height_m: 3.0 to 2.2']})
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': BASE,
                 'runtime_manifest_sha256': json.loads((ROOT/'batch.json').read_text())['runtime']['source_manifest_sha256'],
                 'status': 'selected_cpu_draft_no_public_receipt', 'delivery_ready': False,
                 'original_native_observed': False, 'cases': entries}
     write(HERE/'execution-manifest.json', manifest)
+    proposal = {'cell_id': 'C109166', 'actor': 'pedestrian', 'status': 'draft',
+                'sweep_specs': [], 'sweeps_expanded': [], 'cases': []}
+    for suffix, instruction in (('baseline', None), ('controlled_1', 'diagonal_walk'),
+                                ('controlled_2', 'diagonal_dont_walk')):
+        proposal['cases'].append({'case_id': BASE+'__'+suffix,
+            'target_law_id': None if suffix == 'baseline' else 'NRS-484B-287-1e',
+            'target_type': 'baseline' if suffix == 'baseline' else 'judgment_sweep',
+            'rationale': 'Unselected context' if suffix == 'baseline' else
+                         'Source-bound first-entry instruction contrast on one diagonal route',
+            'variable_assignments': {
+                'requested_first_entry_instruction': {'kind': 'world_setup', 'value': instruction},
+                'diagonal_authorization': {'kind': 'sourced_context',
+                                            'value': 'original survey pending'}},
+            'unresolved_judgment_calls': ['authorized to cross diagonally',
+                'official traffic-control devices pertaining to such crossing movements',
+                'Except as provided in NRS 484B.290'],
+            'recording_description': desc})
+    write(HERE/'proposals/cases.json', proposal)
     print(json.dumps({'cases': len(entries), 'constructions': 4,
                       'manifest_sha256': sha(HERE/'execution-manifest.json')}))
 

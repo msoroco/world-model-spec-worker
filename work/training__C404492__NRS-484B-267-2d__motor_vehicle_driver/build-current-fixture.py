@@ -7,6 +7,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 from prove_emergency import fixture
+from prove_preparing_finalizer import setup as preparing_fixture
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -75,7 +76,10 @@ def build(suffix):
     if source.exists():
         raise ValueError('Retain prior source fixture; remove only after review')
     source.parent.mkdir(parents=True, exist_ok=True)
-    fixture(source, suffix in ('controlled_2', 'official_2'))
+    if suffix == 'preparing_movement':
+        preparing_fixture(source)
+    else:
+        fixture(source, suffix in ('controlled_2', 'official_2'))
     context = json.loads((source / 'emergency_context.json').read_text())
     context['case_id'] = HERE.name + '__' + suffix
     if suffix.startswith('official_'):
@@ -166,7 +170,8 @@ def build(suffix):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--case',choices=('controlled_1','controlled_2','official_1','official_2'))
+    parser.add_argument('--case',choices=('controlled_1','controlled_2','official_1','official_2',
+                                           'preparing_movement'))
     args=parser.parse_args()
     output = Path(os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT', '/')).resolve()
     if ROOT / '.runtime-work' not in output.parents:

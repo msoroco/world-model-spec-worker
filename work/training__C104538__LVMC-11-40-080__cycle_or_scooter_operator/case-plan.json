@@ -5,31 +5,31 @@
     "Exact mounted offline and synthetic v1 saved package proofs pass; original Native/sign/posture review, dismount exception, selected strict v2 and accepted delivery remain unverified."
   ],
   "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 30,
     "composition": "synchronized_four_view_primary",
     "coverage": [
       {
-        "view": "overview",
+        "interval": "all 600 frames",
         "subject": "hill approach, sign, bicycle and rider movement",
-        "interval": "all 600 frames"
+        "view": "overview"
       },
       {
-        "view": "approach",
+        "interval": "all 600 frames",
         "subject": "approach lane, rider and source sign pixels",
-        "interval": "all 600 frames"
+        "view": "approach"
       },
       {
-        "view": "reference_corner",
+        "interval": "all 600 frames",
         "subject": "turn prohibition and dismount posture",
-        "interval": "all 600 frames"
+        "view": "reference_corner"
       },
       {
-        "view": "driver_reference",
+        "interval": "all 600 frames",
         "subject": "forward road and pedestrian path context",
-        "interval": "all 600 frames"
+        "view": "driver_reference"
       }
-    ]
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
@@ -61,6 +61,78 @@
       "comparison_variable": "dismount before governed U-turn",
       "kind": "delivery",
       "physical_target": "dismount before turning, walk the bicycle through the turn, and obey pedestrian regulations",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Express dismount exception to sign obedience",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_obey",
+      "comparison_variable": "mounted turn through governed sign",
+      "kind": "delivery",
+      "physical_target": "remain mounted and obey no-U-turn sign",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_turn",
+      "comparison_variable": "mounted turn through governed sign",
+      "kind": "delivery",
+      "physical_target": "remain mounted and execute signed prohibited U-turn",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_dismount",
+      "comparison_variable": "dismount before governed U-turn",
+      "kind": "delivery",
+      "physical_target": "dismount before turning, walk the electric bicycle through the turn, and obey pedestrian regulations",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Express dismount exception to sign obedience",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_obey",
+      "comparison_variable": "mounted turn through governed sign",
+      "kind": "delivery",
+      "physical_target": "remain mounted and obey no-U-turn sign",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_turn",
+      "comparison_variable": "mounted turn through governed sign",
+      "kind": "delivery",
+      "physical_target": "remain mounted and execute signed prohibited U-turn",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "target_law_id": "LVMC-11-40-080"
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_dismount",
+      "comparison_variable": "dismount before governed U-turn",
+      "kind": "delivery",
+      "physical_target": "dismount before turning, walk the electric scooter through the turn, and obey pedestrian regulations",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -99,6 +171,32 @@
         "frozen hill-crest U-turn cell",
         "same no-U-turn approach sign",
         "same bicycle class, camera policy and 600-frame rate"
+      ]
+    },
+    {
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_obey",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_turn"
+      ],
+      "comparison_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_comparison",
+      "deliberate_differences": [
+        "requested mounted U-turn"
+      ],
+      "fixed_conditions": [
+        "C104538 U-turn cell, sign, camera and timebase"
+      ]
+    },
+    {
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_obey",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_turn"
+      ],
+      "comparison_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_comparison",
+      "deliberate_differences": [
+        "requested mounted U-turn"
+      ],
+      "fixed_conditions": [
+        "C104538 U-turn cell, sign, camera and timebase"
       ]
     }
   ],
@@ -292,19 +390,27 @@
     },
     {
       "branch": "electric-bicycle operator",
-      "case_ids": [],
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_obey",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_turn",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_bicycle_dismount"
+      ],
       "evidence_or_gap": "Requires its own physical machine and controlled applicable-sign comparison; bicycle source does not establish this class.",
       "requirement": "LVMC-11-40-080",
       "source": "LVMC 11.40.080",
-      "status": "alternative_pending"
+      "status": "selected_required"
     },
     {
       "branch": "electric-scooter operator",
-      "case_ids": [],
+      "case_ids": [
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_obey",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_turn",
+        "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__electric_scooter_dismount"
+      ],
       "evidence_or_gap": "Requires its own physical machine and controlled applicable-sign comparison; bicycle source does not establish this class.",
       "requirement": "LVMC-11-40-080",
       "source": "LVMC 11.40.080",
-      "status": "alternative_pending"
+      "status": "selected_required"
     }
   ],
   "reuse_count": 0,

@@ -50,9 +50,7 @@ def main():
         second = dict(configs[suffix, 'fallback1'])
         for row in (first, second):
             row.pop('candidate_id')
-            row.pop('driver_reference_fov_deg')
-            row['cameras'] = [dict(camera) for camera in row['cameras']]
-            row['cameras'][-1].pop('fov_deg')
+            row.pop('driver_reference_height_m')
         if first != second:
             fail('fallback changed condition beyond device camera fov')
     left = dict(configs['controlled_1', 'primary'])
@@ -61,12 +59,13 @@ def main():
         row.pop('case_id')
         row.pop('selected_case_id')
         row.pop('case_suffix')
+        row['case'] = {key: value for key, value in row['case'].items() if key != 'case_id'}
     if left != right:
         fail('controlled pair changed construction outside requested device program')
     result = {'format': 'c109166-selected-draft-candidate-audit-v1',
               'passed': True, 'bundles': bundles, 'controlled_variable':
               'governing diagonal device requested instruction on first-entry frames',
-              'fallback_changed_knobs': ['driver_reference_fov_deg: 90 to 70'],
+            'fallback_changed_knobs': ['driver_reference_height_m: 3.0 to 2.2'],
               'official_status_verified': False, 'physical_completion_verified': False,
               'delivery_ready': False}
     target = HERE / 'selected-draft-audit.json'

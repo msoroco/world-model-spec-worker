@@ -34,6 +34,15 @@ def main() -> None:
     PACKAGE.mkdir(parents=True)
     plan = json.loads((ROOT / "case-plan.json").read_text())
     proposals = json.loads((ROOT / "proposals/cases.json").read_text())
+    base_labels = {"controlled_1", "controlled_2", "controlled_3"}
+    plan["cases"] = [item for item in plan["cases"]
+                     if item["case_id"].split("__")[-1] in base_labels]
+    plan["comparisons"] = [item for item in plan["comparisons"]
+                           if "electric_bicycle_comparison" not in item["comparison_id"]
+                           and "electric_scooter_comparison" not in item["comparison_id"]]
+    proposals["cases"] = [item for item in proposals["cases"]
+                          if item["target_type"] == "baseline"
+                          or item["case_id"].split("__")[-1] in base_labels]
     manifest = {"format": "worker-execution-manifest", "assignment_id": ROOT.name,
                 "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
                 "cases": []}
@@ -49,6 +58,9 @@ def main() -> None:
             staged_draft = PACKAGE / "electric-drafts" / label / "construction.json"
             staged_draft.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(draft, staged_draft)
+            staged_fallback = staged_draft.parent / "fallback1/construction.json"
+            staged_fallback.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(draft.parent / "fallback1/construction.json", staged_fallback)
             base_proposal = original_proposals[base_case]
             selected_proposal = json.loads(json.dumps(base_proposal))
             selected_proposal["case_id"] = case_id
@@ -91,6 +103,9 @@ def main() -> None:
             manifest["cases"].append({"case_id": case_id,
                                       "construction": str(staged_draft.relative_to(PACKAGE)),
                                       "construction_sha256": sha(staged_draft),
+                                      "candidates": [{"id": "fallback1",
+                                                      "construction": str(staged_fallback.relative_to(PACKAGE)),
+                                                      "construction_sha256": sha(staged_fallback)}],
                                       "measurement_contract": str(contract_path.relative_to(PACKAGE)),
                                       "fixture_recipe": str(recipe_path.relative_to(STAGE)),
                                       "measurement_procedure": {"entrypoint": "finalize.py"}})

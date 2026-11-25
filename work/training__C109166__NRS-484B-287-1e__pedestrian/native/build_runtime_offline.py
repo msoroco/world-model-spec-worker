@@ -92,7 +92,7 @@ def build():
                               for item in camera_plan()],
                   'opendrive_signal_id': 'candidate-unverified-203',
                   'entry_proxy_x_m': -5.5,
-                  'driver_reference_fov_deg': 90,
+                  'driver_reference_height_m': 3.0,
                   'selected': False, 'original_native_observed': False}
         files = [{'path': name, 'content': content} for name, content in (
             ('assignment-source.json', SOURCE.read_text()),

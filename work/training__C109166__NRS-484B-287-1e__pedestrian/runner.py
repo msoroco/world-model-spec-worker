@@ -34,8 +34,8 @@ def check(config):
         raise ValueError('surveyed OpenDRIVE head identity required')
     if config.get('entry_proxy_x_m') != -5.5:
         raise ValueError('authored road-entry proxy differs; physical boundary review required')
-    if config.get('driver_reference_fov_deg') not in (70, 90):
-        raise ValueError('device camera field of view differs from approved candidates')
+    if config.get('driver_reference_height_m') not in (2.2, 3.0):
+        raise ValueError('device camera height differs from approved candidates')
     return {'case_id': config['case_id'], 'frames': FRAMES, 'camera_count': 4,
             'native_executed': False, 'official_status_verified': False}
 
@@ -149,12 +149,14 @@ def execute(config, output, host, port):
         owned.append(walker)
         for spec in camera_plan():
             bp = world.get_blueprint_library().find('sensor.camera.rgb')
-            fov = config['driver_reference_fov_deg'] if spec['name'] == 'driver_reference' else 90
             for key, value in (('image_size_x', spec['width']), ('image_size_y', spec['height']),
-                               ('fov', fov), ('sensor_tick', 0)):
+                               ('fov', 90), ('sensor_tick', 0)):
                 bp.set_attribute(key, str(value))
+            location = list(spec['location_xyz_m'])
+            if spec['name'] == 'driver_reference':
+                location[2] = config['driver_reference_height_m']
             sensor = world.spawn_actor(bp, carla.Transform(
-                carla.Location(*spec['location_xyz_m']), carla.Rotation(*spec['rotation_pitch_yaw_roll_deg'])))
+                carla.Location(*location), carla.Rotation(*spec['rotation_pitch_yaw_roll_deg'])))
             if sensor is None:
                 raise ValueError('Native camera spawn failed: ' + spec['name'])
             owned.append(sensor)

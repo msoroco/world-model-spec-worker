@@ -7,6 +7,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 KINDS = {'controlled_1': 'mounted-obey', 'controlled_2': 'mounted-turn',
          'controlled_3': 'dismounted-turn'}
+for _machine in ('electric_bicycle', 'electric_scooter'):
+    KINDS.update({f'{_machine}_obey': 'mounted-obey',
+                  f'{_machine}_turn': 'mounted-turn',
+                  f'{_machine}_dismount': 'dismounted-turn'})
 
 
 def sha(path):
@@ -14,6 +18,8 @@ def sha(path):
 
 
 def source(suffix):
+    if suffix.startswith(('electric_bicycle_', 'electric_scooter_')):
+        return HERE / 'electric-drafts' / suffix / 'rider_native_samples.jsonl'
     return HERE / ('v2-' + KINDS[suffix] + '-primary-source') / 'rider_native_samples.jsonl'
 
 
@@ -25,8 +31,13 @@ def read(path):
 
 
 def motion(suffix, kind):
-    alternate = {'controlled_1': 'controlled_2', 'controlled_2': 'controlled_1',
-                 'controlled_3': 'controlled_2'}[suffix]
+    if suffix.startswith(('electric_bicycle_', 'electric_scooter_')):
+        machine, behavior = suffix.rsplit('_', 1)
+        alternate = machine + '_' + {'obey': 'turn', 'turn': 'obey',
+                                     'dismount': 'turn'}[behavior]
+    else:
+        alternate = {'controlled_1': 'controlled_2', 'controlled_2': 'controlled_1',
+                     'controlled_3': 'controlled_2'}[suffix]
     path = source(suffix if kind != 'incomplete_motion' else alternate)
     evidence = [{'path': str(path.relative_to(HERE)), 'sha256': sha(path)}]
     if kind == 'missing_evidence':
@@ -35,17 +46,18 @@ def motion(suffix, kind):
     rows = read(path)
     turns = [r for r in rows if r['u_turn_active']]
     dismount = next((i for i, r in enumerate(rows) if not r['mounted']), None)
-    if suffix == 'controlled_1':
+    if suffix == 'controlled_1' or suffix.endswith('_obey'):
         complete = not turns and dismount is None
         definition = 'remain mounted and avoid the prohibited U-turn'
-    elif suffix == 'controlled_2':
+    elif suffix == 'controlled_2' or suffix.endswith('_turn'):
         complete = bool(turns) and dismount is None and all(r['mounted'] for r in turns)
         definition = 'remain mounted during the requested U-turn'
     else:
         complete = (dismount is not None and bool(turns) and dismount < turns[0]['frame']
                     and all(r['walking_machine'] and not r['mounted'] for r in turns)
                     and all(not r['mounted'] for r in rows[dismount:]))
-        definition = 'dismount before turning and walk the bicycle throughout the turn'
+        machine_name = suffix.rsplit('_', 1)[0].replace('_', ' ') if suffix != 'controlled_3' else 'bicycle'
+        definition = 'dismount before turning and walk the ' + machine_name + ' throughout the turn'
     if complete != (kind == 'complete_motion'):
         raise ValueError('Synthetic fixture does not realize requested outcome')
     return {'status': 'met' if complete else 'not_met',

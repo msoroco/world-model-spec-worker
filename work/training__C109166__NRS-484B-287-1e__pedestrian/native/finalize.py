@@ -103,6 +103,11 @@ def finalize(attempt, output):
     case = config['case_id']
     analysis = report(attempt, case)
     derive_channels(attempt, config)
+    authority_context = {'diagonal_authority_source': {
+        'receipt_sha256': sha(required(attempt, 'authority-receipt.json')),
+        'independent_review_pending': True}}
+    (attempt / 'diagonal-authority-context.json').write_text(
+        json.dumps(authority_context, indent=2, allow_nan=False) + '\n')
     measured = analysis['measurements']['diagonal_first_entry_instruction']['value']
     expected = 'diagonal_walk' if config['case_suffix'] == 'controlled_1' else 'diagonal_dont_walk'
     evidence = [{'name': name, 'unit': 'source', 'reference': name}
@@ -111,6 +116,8 @@ def finalize(attempt, output):
     for channel in config['recording_description']['channels']:
         evidence.append({'name': channel['name'], 'unit': channel['unit'],
                          'reference': channel['source']})
+    evidence.append({'name': 'diagonal_authority_source', 'unit': 'source',
+                     'reference': 'diagonal-authority-context.json'})
     result = {'case_id': case,
               'measured_values': {'first_entry_instruction': measured['first_entry_instruction'],
                                   'first_entry_native_frame': measured['first_entry_native_frame']},
@@ -129,11 +136,7 @@ def finalize(attempt, output):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
               'recording_evidence': evidence,
-              'realized_observables': {'diagonal_first_entry_instruction': {
-                  'value': measured['first_entry_instruction'], 'unit': 'instruction',
-                  'method': 'original Native device readback joined to first entry proxy',
-                  'time_window': 'complete 30-second original capture',
-                  'statistic': 'first entry proxy frame', 'reference': 'device-original.jsonl'}},
+              'realized_observables': {},
               'provenance_kind': 'native_source_shape_unverified',
               'accepted': False, 'legal_verdict_claimed': False}
     validate_result(result)

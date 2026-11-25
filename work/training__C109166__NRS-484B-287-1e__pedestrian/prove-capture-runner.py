@@ -53,7 +53,7 @@ def main():
               'rate_hz': 20, 'duration_s': 30,
               'cameras': native_request.camera_plan(),
               'opendrive_signal_id': 'surveyed-203', 'entry_proxy_x_m': -5.5,
-              'driver_reference_fov_deg': 90}
+              'driver_reference_height_m': 3.0}
     valid = capture_runner.check(config)
     light = Light()
     head = capture_runner.NativeHead(light, Carla, 'surveyed-203')

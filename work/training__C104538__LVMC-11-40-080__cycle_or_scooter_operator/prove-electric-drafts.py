@@ -1,4 +1,4 @@
-"""Run saved-source diagnostics for unselected electric constructions.
+"""Run saved-source diagnostics for electric candidate constructions.
 
 Uses the existing bicycle synthetic motion and camera fixture only as a software
 test of class-specific joins. It never represents an electric Native capture.
@@ -102,7 +102,7 @@ def main() -> None:
                 if bad_run.returncode == 0 or "Rider/sign/frame source join differs" not in bad_run.stderr:
                     raise ValueError("Electric class-tamper diagnostic was not rejected")
                 negatives.append({"case": label, "wrong_machine_class_rejected": True})
-    report = {"format": "c104538-electric-unselected-cpu-diagnostics-v1",
+    report = {"format": "c104538-electric-candidate-cpu-diagnostics-v1",
               "cases": rows, "negative_source_checks": negatives,
               "scope": "synthetic machine-class join and finalizer software test",
               "reviewed_native_asset_observed": False,

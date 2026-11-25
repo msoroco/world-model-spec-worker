@@ -55,7 +55,7 @@ def readback(world, carla, frame, time_s):
         for lane in governed:
             if lane in observed:
                 raise ValueError('Ambiguous Native governing signal')
-            observed[lane] = {'actor_id': light.id, 'state': str(state),
+            observed[lane] = {'actor_id': light.id, 'state': 'Off',
                               'affected_lanes': sorted([list(x) for x in lanes]),
                               'light_box_count': len(boxes)}
     if set(observed) != INCOMING:

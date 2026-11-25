@@ -120,8 +120,9 @@ class AssetSource(unittest.TestCase):
     config["supported_case_ids"] = [new_case_id]
     config["machine_class"] = machine_class
     config["mandatory_channels"] = [f"ru.{machine_class}", "ru.rider_posture"]
-    config["required_atoms"] = [f"ru.{machine_class}" if a == "ru.bicycle" else a
-                                 for a in config["required_atoms"]]
+    # The pinned Core adapter has no acquisition path for either electric atom.
+    # Keep the class in mandatory source channels and saved measurements instead.
+    config["required_atoms"] = [a for a in config["required_atoms"] if a != "ru.bicycle"]
     config["asset_review_source"] = "C104538_ELECTRIC_ASSET_REVIEW"
     config["physical_asset_status"] = "reviewed_source_required_at_native_capture"
     for channel in config["recording_description"]["channels"]:
@@ -174,6 +175,11 @@ class AssetSource(unittest.TestCase):
                                   '"blueprint": (json.loads((root / "electric-asset-binding.json").read_text())["blueprint_id"] if original_mode else "synthetic_class_join_only")')
     finalizer = finalizer.replace('"body_xy_m": n["native_body_xy_m"]}',
                                   '"body_xy_m": n["native_body_xy_m"], "selected_class": False}', 1)
+    finalizer = replace_once(finalizer, '    if original_mode:\n        report["review_source_sha256"]',
+                             '    observation = "dismounted_turn_observation" if kind == "dismounted_turn" else "mounted_turn_observation"\n'
+                             '    report["measurements"][observation]["value"]["machine_class"] = config["machine_class"]\n'
+                             '    report["measurements"][observation]["value"]["reviewed_electric_asset_bound"] = original_mode\n'
+                             '    if original_mode:\n        report["review_source_sha256"]')
     file_map["finalize.py"]["content"] = finalizer
     construction["files"] = list(file_map.values())
     construction["case_id"] = new_case_id

@@ -9,6 +9,10 @@ import tempfile
 ASSIGNMENT = 'training__C104538__LVMC-11-40-080__cycle_or_scooter_operator'
 KINDS = {'controlled_1': 'mounted-obey', 'controlled_2': 'mounted-turn',
          'controlled_3': 'dismounted-turn'}
+for _machine in ('electric_bicycle', 'electric_scooter'):
+    KINDS.update({f'{_machine}_obey': 'mounted-obey',
+                  f'{_machine}_turn': 'mounted-turn',
+                  f'{_machine}_dismount': 'dismounted-turn'})
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -54,6 +58,9 @@ def check_sources(attempt, case, diagnostic=False):
          'rider_native_samples.jsonl', 'pixel_review.jsonl'))
     require(all(len(item) == 600 for item in (trace, mapping, native, rider, marks)),
             'Native/rider/pixel time join incomplete')
+    expected_machine = suffix.rsplit('_', 1)[0] if suffix.startswith(('electric_bicycle_', 'electric_scooter_')) else 'bicycle'
+    require(all(row.get('machine_class') == expected_machine for row in rider),
+            'Delivery machine class differs from selected case')
     for i, (t, m, n, r, pixel) in enumerate(zip(trace, mapping, native, rider, marks)):
         require(m.get('video_frame') == r.get('frame') == pixel.get('frame') == i and
                 m.get('carla_frame') == t.get('frame') == n.get('native_frame') and
@@ -77,17 +84,42 @@ def check_sources(attempt, case, diagnostic=False):
     if diagnostic:
         return {'case_id': case, 'diagnostic_fixture': True, 'join_frames': 600,
                 'original_native_observed': False, 'physical_acceptance_claimed': False}
+    labels_path = source(attempt, 'rider-review.jsonl')
+    labels = rows(labels_path)
+    require(len(labels) == 600 and review.get('rider_review_sha256') == sha(labels_path),
+            'Original rider review source binding differs')
+    require(all(label.get('frame') == i and label.get('actor_id') == rider[i].get('actor_id')
+                for i, label in enumerate(labels)), 'Original rider review actor/frame join differs')
+    if expected_machine != 'bicycle':
+        binding_path = source(attempt, 'electric-asset-binding.json')
+        asset_path = source(attempt, 'electric-asset-review.json')
+        seal = json.loads(source(attempt, 'capture-seal.json').read_text())
+        binding = json.loads(binding_path.read_text())
+        asset = json.loads(asset_path.read_text())
+        require(binding.get('machine_class') == expected_machine and
+                binding.get('blueprint_id') == asset.get('blueprint_id') and
+                binding.get('classification_review_record_bound') is True and
+                binding.get('legal_verdict_claimed') is False and
+                seal.get('sources', {}).get('electric-asset-binding.json') == sha(binding_path) and
+                seal.get('sources', {}).get('electric-asset-review.json') == sha(asset_path),
+                'Reviewed electric Native asset source binding differs')
+        require(bool(binding.get('review_source_sha256')), 'Reviewed electric class sources missing')
+        for relative, digest in binding['review_source_sha256'].items():
+            target = source(attempt, 'electric-asset-sources/' + relative)
+            require(sha(target) == digest and seal.get('sources', {}).get(
+                    'electric-asset-sources/' + relative) == digest,
+                    'Reviewed electric asset source differs')
     require(review.get('source_kind') == 'original_camera_sign_and_rider_review' and
             review.get('reviewed_from_original_pixels') is True and
             review.get('official_device_verified') is True and
             review.get('rider_posture_verified') is True,
             'Original sign/rider pixel and designation review missing')
-    if suffix == 'controlled_3':
-        dismount = next((i for i, row in enumerate(rider) if row['mounted'] is False), None)
-        turning = next((i for i, row in enumerate(rider) if row['u_turn_active'] is True), None)
+    if suffix == 'controlled_3' or suffix.endswith('_dismount'):
+        dismount = next((i for i, row in enumerate(labels) if row['mounted'] is False), None)
+        turning = next((i for i, row in enumerate(labels) if row['u_turn_active'] is True), None)
         require(dismount is not None and turning is not None and dismount < turning and
                 all(row['walking_machine'] is True and row['mounted'] is False
-                    for row in rider if row['u_turn_active'] is True) and
+                    for row in labels if row['u_turn_active'] is True) and
                 review.get('pedestrian_rule_compliance_verified') is True,
                 'Original dismount or pedestrian-rule conduct unverified')
     videos = {view: decode(source(attempt, view + '.mkv')) for view in VIEWS}
@@ -112,11 +144,13 @@ def selftest(case, negative):
     suffix = case.rsplit('__', 1)[-1]
     require(case == ASSIGNMENT + '__' + suffix and suffix in KINDS, 'Wrong selftest case')
     package = here / ('v2-' + KINDS[suffix] + '-primary-source')
+    electric_rider = here / 'electric-drafts' / suffix / 'rider_native_samples.jsonl'
     with tempfile.TemporaryDirectory(dir=repo / '.runtime-work', prefix='c104538-rider-audit-') as tmp:
         stage = Path(tmp)
         for name in ('trace.jsonl', 'video_frames.jsonl', 'native_samples.jsonl',
                      'rider_native_samples.jsonl'):
-            (stage / name).write_bytes((package / name).read_bytes())
+            origin = electric_rider if name == 'rider_native_samples.jsonl' and suffix.startswith(('electric_bicycle_', 'electric_scooter_')) else package / name
+            (stage / name).write_bytes(origin.read_bytes())
         marks = [{'frame': i, 'sign_visible': True, 'rider_visible': True,
                   'machine_visible': True} for i in range(600)]
         (stage / 'pixel_review.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in marks))
