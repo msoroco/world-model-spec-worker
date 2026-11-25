@@ -20,7 +20,7 @@ def sha(path):
 
 def run(slug):
     case_id = WORK.name + '__' + slug
-    base = SCRATCH / 'short-saved-batch' / slug
+    base = SCRATCH / 'short-saved-selected-v2' / slug
     attempt = base / 'attempt'
     saved = base / 'result'
     base.mkdir(parents=True, exist_ok=True)

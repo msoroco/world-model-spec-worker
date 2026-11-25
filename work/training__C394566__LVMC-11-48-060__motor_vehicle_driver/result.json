@@ -3,11 +3,49 @@
   "input_sha256": "a51b94f93305a74714342888b656434ebd886dc06b115cc6ca7e52f7abfd0556",
   "status": "partial",
   "readiness_kind": "implementation_checkpoint",
-  "reason": "Selected exact no-enroute-purpose through-trip probe_01 has survey-gated Native primary and pinned offline pass; saved-source route proof passed four synthetic variants and eight negative mutations. Full compatibility, saved processing, purpose comparison and audits remain. Truck-route designations and purpose require independent source review.",
+  "reason": "Two selected through-route cases with Native primary/fallback1 constructions pass current pinned offline and source-joined purpose/comparison CPU proofs. Full compatibility, saved processing, semantic proposal and delivery audit remain.",
   "planned_case_count": 2,
-  "candidate_count": 1,
-  "selected_delivery_case_count": 1,
+  "candidate_count": 4,
+  "selected_delivery_case_count": 2,
   "reuse_count": 0,
   "source_law_review": "Reviewed exact LVMC 11.48.060: a non-truck street cannot serve as through route from one truck route to another unless pickup, delivery or essential use is required enroute. Stop duration alone cannot establish purpose. The frozen generic motor-vehicle actor needs a reviewed truck blueprint for the witness.",
-  "applied_update": 16
+  "applied_update": 16,
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --candidate primary --output .runtime-work/c394566-current-probe_01-primary",
+      "exit_code": 0,
+      "log": "native/selected-primary-offline.log",
+      "sha256": "18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --candidate fallback1 --output .runtime-work/c394566-current-probe_01-fallback1",
+      "exit_code": 0,
+      "log": "native/selected-primary-fallback1-offline.log",
+      "sha256": "18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --candidate primary --output .runtime-work/c394566-current-probe_02-primary",
+      "exit_code": 0,
+      "log": "native/selected-purpose-offline.log",
+      "sha256": "62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --candidate fallback1 --output .runtime-work/c394566-current-probe_02-fallback1",
+      "exit_code": 0,
+      "log": "native/selected-purpose-fallback1-offline.log",
+      "sha256": "62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/prove_through_route.py",
+      "exit_code": 0,
+      "log": "native/through-route-proof.log",
+      "sha256": "059a50a0947dca56c0c8c80e90da414344881b1a3e7693d2837fa533640ae1e8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/native/prove_comparison.py",
+      "exit_code": 0,
+      "log": "native/comparison-proof.log",
+      "sha256": "57a0cea36d511b0805df0188855d69b21b1cab6ffd7719e0b40d21e34416aad4"
+    }
+  ]
 }

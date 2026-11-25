@@ -47,7 +47,7 @@ def main():
         hashes = {name: hashlib.sha256((name + str(index)).encode()).hexdigest() for name in camera_names}
         samples.append({'native_frame': frame, 'time_s': time, 'pedestrian_id': 11,
                         'pedestrian_xy_m': xy, 'pedestrian_speed_mps': 0 if index >= 300 else 1.8,
-                        'original_frame_sha256': hashes['route_profile']})
+                        'original_frame_sha256': hashes['reference_corner']})
         mapping.append({'video_frame': index, 'native_frame': frame, 'carla_frame': frame,
                         'time_s': time, 'source_rgb_sha256': hashes})
         trace.append({'frame': frame, 'time_s': time})

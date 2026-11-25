@@ -1,4 +1,4 @@
-"""Unselected 30-second Native crossing proposal; --check is CPU only."""
+"""30-second Native crossing implementation; --check is CPU only."""
 import argparse
 import hashlib
 import json
@@ -12,10 +12,10 @@ HERE = Path(__file__).resolve().parent
 RATE = 20
 FRAMES = 600
 CAMERAS = (
-    {'name': 'overview', 'width': 1280, 'height': 720, 'xyz': (-10, 0, 9), 'yaw': 0, 'pitch': -55},
-    {'name': 'entry_curb', 'width': 1280, 'height': 720, 'xyz': (-6, -4, 3), 'yaw': 30, 'pitch': -20},
-    {'name': 'opposite_curb', 'width': 1280, 'height': 720, 'xyz': (6, 4, 3), 'yaw': 210, 'pitch': -20},
-    {'name': 'route_profile', 'width': 1280, 'height': 720, 'xyz': (0, -10, 5), 'yaw': 90, 'pitch': -25},
+    {'name': 'overview', 'width': 1920, 'height': 1080, 'xyz': (-10, 0, 9), 'yaw': 0, 'pitch': -55},
+    {'name': 'approach', 'width': 1280, 'height': 720, 'xyz': (-6, -4, 3), 'yaw': 30, 'pitch': -20},
+    {'name': 'reference_corner', 'width': 1280, 'height': 720, 'xyz': (6, 4, 3), 'yaw': 210, 'pitch': -20},
+    {'name': 'driver_reference', 'width': 1280, 'height': 720, 'xyz': (0, -10, 5), 'yaw': 90, 'pitch': -25},
 )
 
 
@@ -33,6 +33,8 @@ def check(config):
         raise ValueError('Unknown controlled path condition')
     if not (0 < config['walker_speed_mps'] <= 2.5):
         raise ValueError('Walker speed outside engineering bounds')
+    if not (.45 <= config.get('walker_spawn_z_m', .5) <= .8):
+        raise ValueError('Walker spawn clearance outside engineering bounds')
     if config['road_geometry_sha256'] != hashlib.sha256((HERE / 'road.xodr').read_bytes()).hexdigest():
         raise ValueError('Road source hash differs')
     return {'case_id': config['case_id'], 'frames': FRAMES, 'cameras': [x['name'] for x in CAMERAS],
@@ -86,7 +88,7 @@ def execute(config, output, host, port):
         if not walkers:
             raise RuntimeError('Native pedestrian blueprint unavailable')
         walker = world.try_spawn_actor(walkers[0], carla.Transform(
-            carla.Location(x=-3.5, y=0, z=.5), carla.Rotation(yaw=0)))
+            carla.Location(x=-3.5, y=0, z=config.get('walker_spawn_z_m', .5)), carla.Rotation(yaw=0)))
         if walker is None:
             raise RuntimeError('Native walker spawn failed')
         owned.append(walker)
@@ -141,7 +143,7 @@ def execute(config, output, host, port):
                     data = rgb.tobytes()
                     pixels[spec['name']] = hashlib.sha256(data).hexdigest()
                     encoders[spec['name']].stdin.write(data)
-                observed['original_frame_sha256'] = pixels['route_profile']
+                observed['original_frame_sha256'] = pixels['reference_corner']
                 samples.write(json.dumps(observed, allow_nan=False) + '\n')
                 frame_map.write(json.dumps({'video_frame': index, 'native_frame': frame,
                     'carla_frame': frame, 'time_s': time_s, 'source_rgb_sha256': pixels}) + '\n')

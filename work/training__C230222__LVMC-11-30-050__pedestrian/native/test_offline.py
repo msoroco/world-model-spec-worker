@@ -27,7 +27,7 @@ class OfflineRouteTests(unittest.TestCase):
                     'pedestrian_xy_m': [-3.5 + 7 * i / (FRAMES - 1), y * i / (FRAMES - 1)]}
                    for i in range(FRAMES)]
         result = measure(samples, context)
-        self.assertEqual(result['legal_verdict'], 'not_assigned')
+        self.assertNotIn('legal_verdict', result)
         if self.config['condition'] == 'right_angle':
             self.assertLess(result['right_angle_deviation_deg'], 1e-7)
             self.assertLess(result['route_excess_length_m'], 1e-7)

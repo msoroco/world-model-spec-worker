@@ -182,15 +182,14 @@
     "Compare paths across the roadway outside a crosswalk against perpendicular and shortest-to-opposite-curb geometry.",
     "The two permitted route alternatives are disjunctive; a diagonal path may still be shortest in a skewed layout.",
     "No measured saved evidence or independent acceptance audit.",
-    "Three distinct fallbacks, selected manifest, saved processing, compatibility, independent acceptance and comparison audit remain pending.",
-    "Two unselected exact 30-second four-camera Native constructions passed CPU offline on the current runtime; original CARLA motion and source audit remain unverified."
+    "Two unselected exact 30-second four-camera Native constructions passed CPU offline on the current runtime; original CARLA motion and source audit remain unverified.",
+    "Risk-based selected fallback, positive/negative full-resolution compatibility, recorded-only replay, semantic proposals and independent physical/delivery audit remain pending."
   ],
   "source_observation_mapping": {
     "ru.subject": {
       "evidence": "Native runner retains pedestrian identity, transform, frame/time, and four camera frame hashes; saved Native audit is pending.",
       "channels": [
-        "route-samples.jsonl",
-        "video_frames.jsonl"
+        "ru.subject"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -199,8 +198,7 @@
     "st.roadway": {
       "evidence": "Authored road and curb segments are bound in the draft Native config and route context; actual Native map/pixel audit is pending.",
       "channels": [
-        "road.xodr",
-        "route-context.json"
+        "st.roadway"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -209,8 +207,7 @@
     "st.road_edge": {
       "evidence": "Authored road and curb segments are bound in the draft Native config and route context; actual Native map/pixel audit is pending.",
       "channels": [
-        "road.xodr",
-        "route-context.json"
+        "st.road_edge"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -219,8 +216,7 @@
     "kin.heading": {
       "evidence": "Route meter computes full entry-to-exit heading against origin curb tangent from source positions.",
       "channels": [
-        "route-samples.jsonl",
-        "route-context.json"
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -229,8 +225,7 @@
     "kin.path_length": {
       "evidence": "Route meter sums frame-to-frame source positions and compares against nearest point on opposite curb segment.",
       "channels": [
-        "route-samples.jsonl",
-        "route-context.json"
+        "kin.path_length"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -239,9 +234,7 @@
     "st.crosswalk": {
       "evidence": "Crosswalk polygon/absence is retained in authored context; exception needs independent Native map/pixel audit.",
       "channels": [
-        "road.xodr",
-        "route-context.json",
-        "video_frames.jsonl"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -250,8 +243,7 @@
     "kin.position": {
       "evidence": "Native runner retains pedestrian identity, transform, frame/time, and four camera frame hashes; saved Native audit is pending.",
       "channels": [
-        "route-samples.jsonl",
-        "video_frames.jsonl"
+        "kin.position"
       ],
       "source_refs": [
         "inputs/training__C230222__LVMC-11-30-050__pedestrian/assignment.json"
@@ -288,5 +280,11 @@
     "source_kind": "synthetic_cpu_fixture",
     "legal_verdict_assigned": false,
     "real_native_capture_observed": false
+  },
+  "measurement_finalizer": {
+    "source": "native/finalize.py",
+    "source_only_proof": "native/finalizer-proof.json",
+    "synthetic_saved_proof": "native/full-finalizer-proof.json",
+    "original_capture_observed": false
   }
 }

@@ -2,6 +2,7 @@
 import argparse
 import json
 import math
+import os
 import queue
 import subprocess
 from pathlib import Path
@@ -9,7 +10,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C394566__LVMC-11-48-060__motor_vehicle_driver'
 CASE = AID + '__probe_01'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -66,11 +67,15 @@ def steering(ego, target):
 
 def capture(survey, output, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     cfg = config_check()
     survey_check(survey)
     output.mkdir(parents=True, exist_ok=True)
-    if any(output.iterdir()):
-        raise ValueError('Retain prior Native attempt; use an empty output directory')
+    materialized = output/'config.json'
+    if not materialized.is_file() or json.loads(materialized.read_text()) != cfg:
+        raise ValueError('Native attempt needs exact materialized configuration')
+    if any((output/name).exists() for name in ('video_frames.jsonl', 'native_route_trace.jsonl', 'result.json')):
+        raise ValueError('Retain prior Native attempt; use a fresh materialization')
     client = carla.Client(host, port)
     client.set_timeout(120)
     world = client.get_world()
@@ -79,6 +84,8 @@ def capture(survey, output, host, port):
     settings = world.get_settings()
     old_sync, old_step = settings.synchronous_mode, settings.fixed_delta_seconds
     actors, encoders = [], {}
+    pipeline_capture = None
+    completed = False
     try:
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
@@ -89,6 +96,8 @@ def capture(survey, output, host, port):
         if ego is None:
             raise RuntimeError('Surveyed truck spawn failed')
         actors.append(ego)
+        pipeline_capture = PipelineCapture(client, ego, output, CASE, visibility=False,
+                                           required_observations=[])
         queues = {}
         for spec in cfg['cameras']:
             camera = lib.find('sensor.camera.rgb')
@@ -105,7 +114,7 @@ def capture(survey, output, host, port):
                 ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                  '-video_size', f"{spec['width']}x{spec['height']}", '-framerate', '20',
                  '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+                 str(output/(spec['name']+'.mkv'))], stdin=subprocess.PIPE)
         route = survey['route_waypoints_xyz_m']
         waypoint_index, first_elapsed = 1, None
         with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_route_trace.jsonl').open('w') as trace_file:
@@ -131,8 +140,10 @@ def capture(survey, output, host, port):
                                                     lane_type=carla.LaneType.Driving)
                 if road is None:
                     raise RuntimeError('Native vehicle left reviewed roadway')
+                time_s = snapshot.timestamp.elapsed_seconds-first_elapsed
+                pipeline_capture.capture(native_frame, time_s, extra={'truck_route_native_frame': native_frame})
                 frame_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
-                                             'time_s': snapshot.timestamp.elapsed_seconds-first_elapsed})+'\n')
+                                             'carla_frame': native_frame, 'time_s': time_s})+'\n')
                 trace_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
                                              'source_kind': 'original_native_pose',
                                              'ego_actor_id': ego.id, 'road_id': road.road_id,
@@ -147,8 +158,9 @@ def capture(survey, output, host, port):
             proc.stdin.close()
             if proc.wait(timeout=120):
                 raise RuntimeError('Source camera encoding failed')
+        completed = True
         (output/'route_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
+            'assignment_id': AID, 'case_id': CASE, 'review_kind': 'original_source_review',
             'entry_truck_route_id': survey['entry_truck_route_id'],
             'intervening_street_id': survey['intervening_street_id'],
             'exit_truck_route_id': survey['exit_truck_route_id'],
@@ -156,6 +168,12 @@ def capture(survey, output, host, port):
             'enroute_purpose': None, 'camera_sha256': {}, 'review_required': True}, indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT, 'physical_acceptance_claimed': False}
     finally:
+        close_error = None
+        if pipeline_capture is not None:
+            try:
+                pipeline_capture.close(confirmed=completed)
+            except Exception as exc:
+                close_error = exc
         for actor in reversed(actors):
             try:
                 actor.destroy()
@@ -168,6 +186,8 @@ def capture(survey, output, host, port):
         settings.synchronous_mode = old_sync
         settings.fixed_delta_seconds = old_step
         world.apply_settings(settings)
+        if close_error is not None:
+            raise close_error
 
 
 if __name__ == '__main__':
@@ -183,6 +203,9 @@ if __name__ == '__main__':
         print(json.dumps({'case_id': CASE, 'frames': COUNT, 'cameras': list(CAMERAS),
                           'carla_imported': False, 'physical_acceptance_claimed': False}, sort_keys=True))
     else:
-        if args.survey is None or args.output_dir is None:
-            parser.error('Supply reviewed --survey and --output-dir')
-        print(json.dumps(capture(json.loads(args.survey.read_text()), args.output_dir, args.host, args.port)))
+        if args.output_dir is None:
+            parser.error('Supply --output-dir')
+        survey_path = args.survey or (Path(os.environ['TRUCK_ROUTE_SURVEY']) if os.environ.get('TRUCK_ROUTE_SURVEY') else None)
+        if survey_path is None:
+            parser.error('Supply reviewed --survey or TRUCK_ROUTE_SURVEY')
+        print(json.dumps(capture(json.loads(survey_path.read_text()), args.output_dir, args.host, args.port)))

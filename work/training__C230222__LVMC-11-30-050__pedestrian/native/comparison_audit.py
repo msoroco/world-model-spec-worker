@@ -24,7 +24,7 @@ def audit(a, b, context_a, context_b, diagnostic=False):
         require(report['law_id'] == 'LVMC-11-30-050', 'Wrong law')
         require(report['frames'] == context['expected_frames'] == 600, 'Full crossing frames required')
         require(report['source_context_sha256'] == context['source_sha256'], 'Context source hash differs')
-        require(report['legal_verdict'] == 'not_assigned', 'Legal verdict cannot be inferred')
+        require('legal_verdict' not in report, 'Legal verdict cannot be inferred')
         require(report['source_kind'] == context['source_kind'], 'Source kind differs')
         require(not context['crosswalk_polygons_xy_m'] and report['crosswalk_sample_count'] == 0,
                 'Outside-crosswalk fixed condition differs')
@@ -47,7 +47,7 @@ def audit(a, b, context_a, context_b, diagnostic=False):
     require(a['route_excess_length_m'] < b['route_excess_length_m'],
             'Declared route length difference absent')
     return {'format': 'worker-route-comparison-audit-v1', 'passed': True,
-            'diagnostic': diagnostic, 'legal_verdict': 'not_assigned',
+            'diagnostic': diagnostic,
             'fixed_conditions': ['law', 'road', 'curbs', 'crosswalk absence',
                                  'entry', 'duration', 'source schema'],
             'measured_differences': {

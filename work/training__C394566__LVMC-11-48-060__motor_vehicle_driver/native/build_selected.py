@@ -17,7 +17,8 @@ def main():
             ('probe_01', 'selected_primary', 'selected-primary'),
             ('probe_02', 'selected_purpose', 'selected-purpose')):
         case_id = AID + '__' + probe
-        names = ('runner.py', 'config.json', 'tests/test_bundle.py')
+        names = ('runner.py', 'config.json', 'tests/test_bundle.py',
+                 'finalize.py', 'measure_through_route.py', 'measure_purpose_route.py')
         bindings = {}
         for candidate_id, source_name, suffix in (
                 ('primary', bundle_name, ''),

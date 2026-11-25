@@ -3,13 +3,15 @@ import argparse
 import json
 from pathlib import Path
 
-from measure_through_route import measure, rows
+from measure_through_route import AID, measure, rows
 
 
 def measure_purpose(root):
     root = Path(root)
     observation = measure(root)
     context = json.loads((root/'route_context.json').read_text())
+    if observation['case_id'] != AID+'__probe_02':
+        raise ValueError('Purpose comparison has wrong exact case')
     if context['enroute_purpose'] not in ('pickup', 'delivery', 'essential'):
         raise ValueError('Purpose comparison requires reviewed pickup, delivery or essential use')
     trace = rows(root/'native_route_trace.jsonl')

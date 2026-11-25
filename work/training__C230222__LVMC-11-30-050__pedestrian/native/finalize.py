@@ -65,7 +65,7 @@ def verify_join(attempt, count):
             raise ValueError('Original crossing timestamp join differs')
         if s.get('pedestrian_id') != actor_id:
             raise ValueError('Original pedestrian actor identity changed')
-        if len(m.get('source_rgb_sha256', {})) != 4 or s.get('original_frame_sha256') != m['source_rgb_sha256'].get('route_profile'):
+        if len(m.get('source_rgb_sha256', {})) != 4 or s.get('original_frame_sha256') != m['source_rgb_sha256'].get('reference_corner'):
             raise ValueError('Original crossing source RGB hash join differs')
         if [round(v, 3) for v in s['pedestrian_xy_m']] != [round(v, 3) for v in e['ego']['position_m'][:2]]:
             raise ValueError('Original crossing pedestrian pose differs')
@@ -100,7 +100,18 @@ def rebuild_channels(attempt, config, value):
     for index, row in enumerate(samples):
         if index:
             cumulative += distance(positions[index - 1], positions[index])
-        values = {'kin.position': row['pedestrian_xy_m'], 'kin.path_length': cumulative,
+        if index and distance(positions[index - 1], positions[index]) > 1e-6:
+            dx = positions[index][0] - positions[index - 1][0]
+            dy = positions[index][1] - positions[index - 1][1]
+            heading = math.degrees(math.atan2(dy, dx))
+        else:
+            heading = None
+        values = {'ru.subject': {'pedestrian_actor_id': row['pedestrian_id']},
+                  'st.roadway': {'road_geometry_sha256': context['road_geometry_sha256'],
+                                 'original_map_reviewed': False},
+                  'kin.position': row['pedestrian_xy_m'], 'kin.path_length': cumulative,
+                  'kin.heading': {'observed_heading_deg': heading,
+                                  'right_angle_deviation_deg': value['right_angle_deviation_deg']},
                   'st.road_edge': {'origin': context['origin_curb_xy_m'],
                                    'opposite': context['opposite_curb_xy_m']},
                   'st.crosswalk': {'authored_polygons': context['crosswalk_polygons_xy_m'],
@@ -114,6 +125,25 @@ def rebuild_channels(attempt, config, value):
         if path.exists():
             raise ValueError('Derived route channel already exists: ' + name)
         path.write_text(''.join(json.dumps(row, allow_nan=False) + '\n' for row in rows))
+
+
+def physical_completion(value, joined, original_reviewed=False):
+    """Separate measured crossing completion from route legality."""
+    sources = ['route-samples.jsonl', 'route-context.json', 'video_frames.jsonl',
+               'trace.jsonl', 'capture/evidence.jsonl', 'four original camera videos']
+    if not original_reviewed or value.get('source_kind') != 'native_observation' or not joined:
+        status = 'unverified'
+    elif value['frames'] != 600 or joined.get('frames') != 600:
+        status = 'unverified'
+    elif (value['entry_distance_to_origin_curb_m'] <= .75 and
+          value['exit_distance_to_opposite_curb_m'] <= .75 and
+          value['route_length_m'] >= value['shortest_to_opposite_curb_m']):
+        status = 'met'
+    else:
+        status = 'not_met'
+    return {'physical_checks': {'maneuver': {
+                'status': status, 'method': 'source-joined full pedestrian route and independent original map/pixel review',
+                'sources': sources}}, 'maneuver_completed': status == 'met'}
 
 
 def finalize(attempt, output):
@@ -140,8 +170,9 @@ def finalize(attempt, output):
                  'reference': 'channels/' + row['name'] + '.jsonl'}
                 for row in config['recording_description']['channels']]
     native = value['source_kind'] == 'native_observation'
+    completion = physical_completion(value, joins, original_reviewed=False)
     result = {'case_id': config['case_id'],
-              'measured_values': {'route_geometry': value, 'legal_verdict': 'not_assigned',
+              'measured_values': {'route_geometry': value,
                                   'crosswalk_original_reviewed': False},
               'target_checks': [{'target': 'source-bound complete outside-crosswalk route',
                                  'requested': config['condition'],
@@ -152,7 +183,9 @@ def finalize(attempt, output):
                                  'physical_cause_confirmed': False,
                                  'cause_evidence': ['route-samples.jsonl', 'route-context.json']}],
               'setup_confirmed': False, 'behavior_attempted': native,
-              'maneuver_completed': False, 'termination_reason': 'full source interval retained',
+              'maneuver_completed': completion['maneuver_completed'],
+              'physical_checks': completion['physical_checks'],
+              'termination_reason': 'full source interval retained',
               'physical_failure_flags': ['original_crosswalk_and_curb_pixels_unreviewed'],
               'trace_reference': 'trace.jsonl', 'video_references': list(videos),
               'video_frame_map_reference': 'video_frames.jsonl',

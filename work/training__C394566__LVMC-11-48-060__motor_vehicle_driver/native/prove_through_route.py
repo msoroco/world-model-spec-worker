@@ -54,12 +54,13 @@ def main():
         root = Path(tmp)
         for name in CAMERAS:
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=64x48:r=20',
-                            '-frames:v', str(COUNT), '-c:v', 'ffv1', str(root/('camera_'+name+'.mkv'))], check=True)
-        hashes = {('camera_'+name+'.mkv'): hashlib.sha256((root/('camera_'+name+'.mkv')).read_bytes()).hexdigest()
+                            '-frames:v', str(COUNT), '-c:v', 'ffv1', str(root/(name+'.mkv'))], check=True)
+        hashes = {(name+'.mkv'): hashlib.sha256((root/(name+'.mkv')).read_bytes()).hexdigest()
                   for name in CAMERAS}
         frames = [{'video_frame': i, 'native_frame': 1000+i, 'time_s': round(i*.05, 4)} for i in range(COUNT)]
         save(root/'video_frames.jsonl', frames)
-        context = {'assignment_id': AID, 'review_kind': 'synthetic_diagnostic', 'reviewer': 'synthetic-software-test',
+        context = {'assignment_id': AID, 'case_id': AID+'__probe_01',
+                   'review_kind': 'synthetic_diagnostic', 'reviewer': 'synthetic-software-test',
                    'camera_sha256': hashes, 'truck_blueprint_source': 'synthetic fixture',
                    'truck_route_designation_source': 'synthetic fixture',
                    'nontruck_street_designation_source': 'synthetic fixture',
@@ -87,6 +88,7 @@ def main():
             variants.append({'name': label, 'road_sequence': observed['observed_road_sequence'],
                              'complete': observed['complete_truck_to_truck_passage'], 'purpose': purpose})
         context['enroute_purpose'] = 'delivery'
+        context['case_id'] = AID+'__probe_02'
         context['service_stop_complete'] = True
         (root/'route_context.json').write_text(json.dumps(context)+'\n')
         trace = [{'video_frame': i, 'native_frame': 1000+i, 'source_kind': 'synthetic_native_sample',

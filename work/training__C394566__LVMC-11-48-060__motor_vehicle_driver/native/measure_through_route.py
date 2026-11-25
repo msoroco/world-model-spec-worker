@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 AID = 'training__C394566__LVMC-11-48-060__motor_vehicle_driver'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -36,9 +36,11 @@ def measure(root):
     kind = context.get('review_kind')
     if context.get('assignment_id') != AID or kind not in ('synthetic_diagnostic', 'original_source_review'):
         raise ValueError('Assignment or source provenance mismatch')
+    if context.get('case_id') not in (AID+'__probe_01', AID+'__probe_02'):
+        raise ValueError('Exact case identity missing from route context')
     hashes = {}
     for name in CAMERAS:
-        path = root/('camera_'+name+'.mkv')
+        path = root/(name+'.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing source camera: '+name)
         run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -47,7 +49,7 @@ def measure(root):
         if run.returncode:
             raise ValueError('Source camera decode failed: '+name)
         streams = json.loads(run.stdout).get('streams', [])
-        wanted = (1920, 1080) if name == 'forward' else (1280, 720)
+        wanted = (1920, 1080) if name == 'overview' else (1280, 720)
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: '+name)
         if kind == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != wanted:
@@ -103,6 +105,7 @@ def measure(root):
         raise ValueError('Source span less than 30 seconds')
     complete = road_sequence == ids
     return {'format': 'saved-truck-through-route-observation', 'assignment_id': AID,
+            'case_id': context['case_id'],
             'review_kind': kind, 'sources': {**{name: sha(path) for name, path in paths.items()}, **hashes},
             'sample_count': COUNT, 'sample_span_s': previous_t-frames[0]['time_s'],
             'observed_road_sequence': road_sequence, 'reviewed_route_ids': ids,

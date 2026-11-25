@@ -86,7 +86,6 @@ def measure(samples, context):
         'right_angle_deviation_deg': angle_from_right_angle_deg,
         'crosswalk_sample_count': crosswalk_sample_count,
         'alternatives': ['right_angle_to_curb', 'shortest_route_to_opposite_curb'],
-        'legal_verdict': 'not_assigned',
     }
 
 
