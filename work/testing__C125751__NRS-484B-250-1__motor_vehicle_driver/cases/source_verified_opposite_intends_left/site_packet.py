@@ -53,7 +53,7 @@ def verify_site_packet(config, base_dir):
         raise ValueError('Selected site differs from reviewed candidate packet')
     if (not isinstance(site, dict) or
             any(site.get(key) in (None, '') for key in CLAIMS) or
-            (site['ego_highway_id'] == site['other_highway_id'] and not config.get('opposite_left_exception')) or
+            (site['ego_highway_id'] == site['other_highway_id'] and not config.get('source_verified_opposite_intends_left')) or
             site['same_statutory_crossing'] is not True):
         raise ValueError('One sourced crossing of distinct highways required')
     docs = packet.get('source_documents')

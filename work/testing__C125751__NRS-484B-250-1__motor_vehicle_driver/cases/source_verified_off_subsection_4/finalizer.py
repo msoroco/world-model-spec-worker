@@ -273,13 +273,13 @@ def finalize_saved(attempt: Path, output: Path) -> dict:
             not case_id.startswith(prefix) or not config.get("recording_description", {}).get("channels")):
         raise ValueError("Wrong exact C125751 capture identity or description")
     suffix = case_id.removeprefix(prefix)
-    if suffix not in ("off_other_enters_first", "off_ego_enters_first", "off_other_already_inside",
-                      "operative_signal_exclusion", "opposite_left_exception"):
+    if suffix not in ("source_verified_off_subsection_4", "off_ego_enters_first", "off_other_already_inside",
+                      "source_verified_signal_exclusion", "source_verified_opposite_intends_left"):
         raise ValueError("Unknown selected C125751 branch")
     report = analyze(attempt,
-                     signal_mode="operating" if suffix == "operative_signal_exclusion" else "off",
+                     signal_mode="operating" if suffix == "source_verified_signal_exclusion" else "off",
                      allow_other_initially_inside=suffix == "off_other_already_inside",
-                     opposing_left_exception=suffix == "opposite_left_exception")
+                     opposing_left_exception=suffix == "source_verified_opposite_intends_left")
     rows, frames, trace = (_rows(attempt / name) for name in
                            ("crossing_history.jsonl", "video_frames.jsonl", "trace.jsonl"))
     if len(rows) != len(frames) or len(trace) != len(frames) or any(
@@ -328,7 +328,7 @@ def finalize_saved(attempt: Path, output: Path) -> dict:
                             "observed_signal_states": report["observed_signal_states"],
                             "ego_approaching_at_other_entry_observed":
                                 report["ego_approaching_at_other_entry_observed"]},
-        "target_checks": [{"target": "other_enters_before_ego", "requested": suffix == "off_other_enters_first",
+        "target_checks": [{"target": "other_enters_before_ego", "requested": suffix == "source_verified_off_subsection_4",
                            "measured": report["other_entered_before_ego_observed"],
                            "method": "source-hashed complete-body entry and original frame join",
                            "tolerance": 0,

@@ -35,7 +35,7 @@ def validate_config(config, base_dir=Path.cwd()):
         raise ValueError('Exact first Off-state C125751 case required')
     if config.get('rate_hz') != 20 or config.get('duration_s') != 45:
         raise ValueError('Planned 20 Hz, 45-second source capture required')
-    if config.get('other_approach_side') != 'opposite' or config.get('opposite_left_exception') is not True:
+    if config.get('other_approach_side') != 'opposite' or config.get('source_verified_opposite_intends_left') is not True:
         raise ValueError('Opposite left-turn exception setup required')
     if (not isinstance(config.get('required_atoms'), list) or
             not isinstance(config.get('recording_description'), dict)):

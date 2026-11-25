@@ -19,6 +19,7 @@ CASES = (
     ('off_other_enters_first', 'source_verified_off_subsection_4'),
     ('opposite_left_exception', 'source_verified_opposite_intends_left'),
 )
+SUFFIX_MAP = dict(CASES)
 
 
 def sha(path):
@@ -47,6 +48,9 @@ def build():
             content = item['content']
             if path == 'config.json':
                 config = json.loads(content)
+                for old_suffix, new_suffix in SUFFIX_MAP.items():
+                    if old_suffix in config:
+                        config[new_suffix] = config.pop(old_suffix)
                 config['cell_id'] = 'C125751'
                 config['selected_case_id'] = target_id
                 config['supported_case_ids'] = ([NEW_ID + '__' + name for _, name in CASES]
@@ -54,7 +58,8 @@ def build():
                 content = json.dumps(config, indent=2) + '\n'
             elif path.endswith('.py'):
                 content = content.replace(OLD_ID, NEW_ID).replace('C125697', 'C125751')
-                content = content.replace('__' + source_suffix, '__' + target_suffix)
+                for old_suffix, new_suffix in SUFFIX_MAP.items():
+                    content = content.replace(old_suffix, new_suffix)
             # Retain original packet/source-document bytes and their internal
             # hashes. Their C125697 labels disclose the reused candidate.
             target = folder / path
@@ -72,9 +77,47 @@ def build():
             folder / 'config.json').read_text()
         construction = folder / 'construction.json'
         write(construction, proposal)
+        fallback_source = old['candidates'][0]
+        fallback = json.loads((SOURCE / fallback_source['construction']).read_text())
+        fallback['case_id'] = target_id
+        fallback['cell_id'] = 'C125751'
+        fallback['recording_description'] = proposal['recording_description']
+        for item in fallback['files']:
+            path = item['path']
+            content = item['content']
+            if path == 'config.json':
+                config = json.loads(content)
+                for old_suffix, new_suffix in SUFFIX_MAP.items():
+                    if old_suffix in config:
+                        config[new_suffix] = config.pop(old_suffix)
+                config['cell_id'] = 'C125751'
+                config['selected_case_id'] = target_id
+                config['supported_case_ids'] = ([NEW_ID + '__' + name for _, name in CASES]
+                                                if folder == ROOT else [target_id])
+                config['recording_description'] = proposal['recording_description']
+                content = json.dumps(config, indent=2) + '\n'
+            elif path.endswith('.py'):
+                content = content.replace(OLD_ID, NEW_ID).replace('C125697', 'C125751')
+                for old_suffix, new_suffix in SUFFIX_MAP.items():
+                    content = content.replace(old_suffix, new_suffix)
+            # The fallback is self-contained. Its source documents preserve
+            # their original C125697 provenance and pinned hashes.
+            item['content'] = content
+            item.pop('source', None)
+        fallback_path = folder / 'fallback1-construction.json'
+        write(fallback_path, fallback)
         cases.append({'case_id': target_id, 'kind': 'delivery',
                       'construction': str(construction.relative_to(ROOT)),
-                      'construction_sha256': sha(construction)})
+                      'construction_sha256': sha(construction),
+                      'measurement_procedure': {'entrypoint': 'finalizer.py'},
+                      'measurement_contract': str((folder / 'measurement-contract.json').relative_to(ROOT)),
+                      'fixture_recipe': str((folder / 'diagnostic-recipe.json').relative_to(REPO)),
+                      'candidate_risk': old['candidate_risk'],
+                      'candidates': [{'id': 'fallback1',
+                                      'construction': str(fallback_path.relative_to(ROOT)),
+                                      'construction_sha256': sha(fallback_path),
+                                      'trigger': fallback_source['trigger'],
+                                      'changed_knobs': fallback_source['changed_knobs']}]})
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': NEW_ID,
                 'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),
                 'cases': cases}
@@ -83,4 +126,4 @@ def build():
 
 
 if __name__ == '__main__':
-    print('built', len(build()), 'candidate cases')
+    print('built', len(build()['cases']), 'candidate cases')

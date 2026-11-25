@@ -25,6 +25,16 @@
         "subsection_4"
       ],
       "physical_risk": "Native Off state may not mean all installed heads are inoperative"
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left",
+      "target_law_id": "NRS-484B-250-1",
+      "purpose": "Opposite-direction vehicle intends or makes left turn, testing the express subsection-1 exclusion separately from device status",
+      "gap_ids": [
+        "same_crossing_and_entry",
+        "exception_applicability"
+      ],
+      "physical_risk": "opposed approach and turn intent must be visible in original Native sources"
     }
   ],
   "comparisons": [
@@ -35,10 +45,23 @@
         "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
       ],
       "fixed_conditions": [
-        "same median crossing, highway identities, vehicles, entry order and cameras"
+        "same sourced median crossing, different-highway approach pair, vehicle class, camera profile and entry order"
       ],
       "deliberate_differences": [
-        "governing signal active versus source-verified wholly inoperative"
+        "governing installed signal operative versus all-head Off at ego entry"
+      ]
+    },
+    {
+      "comparison_id": "opposite_direction_left_turn_exclusion",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4",
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "fixed_conditions": [
+        "same median crossing, signal-state setup, camera profile and vehicle class"
+      ],
+      "deliberate_differences": [
+        "different-highway nonopposite approach versus opposed approach with left-turn intention/action"
       ]
     }
   ],
@@ -99,11 +122,51 @@
     "supported_reuses": []
   },
   "observations": [
-    "source-backed median crossing and different highways",
-    "governing Native traffic-light actor and original frame state",
-    "complete-body entry order and other occupancy",
-    "subsection-1 official-device exclusion or subsection-4 qualification",
-    "opposite-direction left-turn exclusion"
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_speed",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_approach_distance",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_approach_distance",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_body_inside",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_body_inside",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_position",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_position",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    }
   ],
   "sources": [
     {
@@ -132,5 +195,304 @@
     "Accepted original preserved; no replay or reuse claim.",
     "Exact runner, cameras, saved finalizer, fallbacks, proposals, full proofs and independent audits remain worker-owned CPU work."
   ],
-  "planning_status": "partial; accepted metadata reviewed and signal-exclusion geometry CPU-tested"
+  "planning_status": "partial; three source-bound Native construction candidates pass offline CPU checks; full proof pending",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both complete vehicle bodies and crossing polygon",
+        "interval": "startup through both complete-body clearances"
+      },
+      {
+        "view": "approach",
+        "subject": "ego and other approach lanes with entry order",
+        "interval": "pre-entry through crossing occupancy"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crossing boundaries, signal heads and stop lines",
+        "interval": "setup through restoration"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego approach and both participant identities",
+        "interval": "startup through final observation"
+      }
+    ],
+    "physical_claim": false
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane_enters": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.approaching": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.entering_intersection": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.arrival_order": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.yields_to": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.in_intersection": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.traffic_signal": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.stop_sign": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "dev.yield_sign": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.turning": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.oncoming": {
+      "evidence": "Planned original Native crossing, signal and camera sources; physical applicability remains unverified.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+          "sha256": "9baaabedfa26da92c3fa03927e8c1171002f049cc3831112073df2d61ddfbd00"
+        }
+      ],
+      "status": "planned_unverified"
+    }
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "One identified crossing and two distinct highway approaches",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Other complete body enters before ego while source-recorded official device operates",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Retain other body occupancy and ego action during occupancy without asserting legal yield",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Identify controlling signal and retain operative Green source rows and subsection-4 exclusion",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Keep opposite-direction left-turn exception separate and unresolved",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_signal_exclusion"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "One identified crossing and two distinct highway approaches",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Other complete body enters before ego while ego approaches the same crossing",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Retain other body occupancy and ego action during occupancy without asserting legal yield",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Identify controlling signal and retain its Off source rows and subsection-4 qualification",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Keep opposite-direction left-turn exception separate and unresolved",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_off_subsection_4"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "One identified crossing and original source opposed lane approaches",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Other complete body enters before ego with sourced opposite approach and left-turn intent/action",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Retain other body occupancy and ego action during occupancy without asserting legal yield",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Identify controlling signal and retain its Off source rows and subsection-4 qualification",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    },
+    {
+      "requirement": "Retain opposite-direction left-turn intent, heading and body motion; statutory exception judgment unresolved",
+      "source": "NRS 484B.250(1); inputs/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__source_verified_opposite_intends_left"
+      ],
+      "evidence_or_gap": "No accepted original trace/video is exported; planned source-bound Native capture and physical review."
+    }
+  ]
 }
