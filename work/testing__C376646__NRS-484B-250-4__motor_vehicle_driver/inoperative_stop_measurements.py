@@ -1,0 +1,127 @@
+"""Observe inoperative-signal stop and priority history without legal verdicts."""
+
+import hashlib
+import json
+import math
+from pathlib import Path
+
+from shapely.geometry import MultiPoint, Polygon
+
+
+REQUIRED = ("vehicle_signal_history.jsonl", "video_frames.jsonl", "junction_context.json")
+
+
+def _number(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ValueError("Missing finite numeric source")
+    return float(value)
+
+
+def _rows(path):
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def _body_inside(actor, polygon):
+    vertices = actor.get("body_vertices_xy_m")
+    if not isinstance(vertices, list) or len(vertices) < 4:
+        raise ValueError("Missing complete vehicle body")
+    body = MultiPoint([(_number(v[0]), _number(v[1])) for v in vertices]).convex_hull
+    return body.intersects(polygon)
+
+
+def analyze(root: Path) -> dict:
+    root = Path(root)
+    hashes = {}
+    for name in REQUIRED:
+        path = root / name
+        if not path.is_file():
+            raise ValueError("Missing required source: " + name)
+        hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    context = json.loads((root / "junction_context.json").read_text())
+    for key in ("native_map_id", "intersection_id", "native_signal_id", "other_native_signal_id",
+                "signal_head_video_source", "lane_governance_source"):
+        if not context.get(key):
+            raise ValueError("Missing sourced junction context: " + key)
+    if context.get("installed_uncovered_vehicular_heads") is not True:
+        raise ValueError("Uncovered vehicular heads not sourced")
+    if context.get("stop_line_exists") is True:
+        boundary, source, signed_field = "stop_line", "stop_line_source", "front_to_stop_line_signed_m"
+    elif context.get("stop_line_exists") is False and context.get("crosswalk_exists") is True:
+        boundary, source, signed_field = "crosswalk", "crosswalk_source", "front_to_crosswalk_signed_m"
+    elif context.get("stop_line_exists") is False and context.get("crosswalk_exists") is False:
+        boundary, source, signed_field = "nearest_view", "nearest_view_source", "front_to_nearest_view_signed_m"
+    else:
+        raise ValueError("Stop boundary hierarchy is not sourced")
+    if not context.get(source):
+        raise ValueError("Missing sourced stop boundary: " + source)
+    other_boundary = context.get("other_stop_boundary")
+    if (not isinstance(other_boundary, dict) or
+            other_boundary.get("kind") not in ("stop_line", "crosswalk", "nearest_view") or
+            not other_boundary.get("source")):
+        raise ValueError("Missing sourced other-approach stop boundary")
+    other_signed_field = {"stop_line": "front_to_stop_line_signed_m",
+                          "crosswalk": "front_to_crosswalk_signed_m",
+                          "nearest_view": "front_to_nearest_view_signed_m"}[other_boundary["kind"]]
+    vertices = context.get("intersection_polygon_xy_m")
+    if not isinstance(vertices, list) or len(vertices) < 3:
+        raise ValueError("Missing intersection polygon")
+    polygon = Polygon([(_number(v[0]), _number(v[1])) for v in vertices])
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Invalid intersection polygon")
+    history, frames = _rows(root / "vehicle_signal_history.jsonl"), _rows(root / "video_frames.jsonl")
+    if len(history) < 3 or len(history) != len(frames):
+        raise ValueError("Incomplete stopped-vehicle history")
+    previous = (-1, -math.inf)
+    first_stop, first_entry = {"ego": None, "other": None}, {"ego": None, "other": None}
+    prior_inside = {"ego": False, "other": False}
+    samples = []
+    for index, (row, frame) in enumerate(zip(history, frames)):
+        fid, time = row.get("frame"), _number(row.get("time_s"))
+        if type(fid) is not int or fid <= previous[0] or time <= previous[1]:
+            raise ValueError("Nonmonotone original history")
+        previous = (fid, time)
+        if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
+            raise ValueError("Original video frame join failed")
+        if (row.get("native_signal_id") != context["native_signal_id"] or
+                row.get("other_native_signal_id") != context["other_native_signal_id"] or
+                context["native_signal_id"] == context["other_native_signal_id"] or
+                row.get("signal_state") != "Off" or row.get("other_signal_state") != "Off"):
+            raise ValueError("No observed Off state on both identified signals")
+        sample = {"frame": fid, "time_s": time, "signal_state": "Off",
+                  "other_signal_state": "Off"}
+        for who in ("ego", "other"):
+            actor = row.get(who)
+            if not isinstance(actor, dict) or actor.get("intersection_id") != context["intersection_id"]:
+                raise ValueError("Vehicle on wrong junction")
+            speed = _number(actor.get("speed_mps"))
+            actor_field = signed_field if who == "ego" else other_signed_field
+            signed = _number(actor.get(actor_field))
+            inside = _body_inside(actor, polygon)
+            if index == 0 and inside:
+                raise ValueError("No pre-entry approach observation")
+            if speed == 0 and signed >= 0 and first_stop[who] is None:
+                first_stop[who] = {"frame": fid, "time_s": time, actor_field: signed}
+            if inside and not prior_inside[who] and first_entry[who] is None:
+                first_entry[who] = {"frame": fid, "time_s": time}
+            prior_inside[who] = inside
+            sample[who] = {"speed_mps": speed, actor_field: signed,
+                           "body_in_intersection": inside}
+        samples.append(sample)
+    ego_entry_sample = next((sample for sample in samples if first_entry["ego"] and
+                             sample["frame"] == first_entry["ego"]["frame"]), None)
+    other_inside_at_ego_entry = (ego_entry_sample["other"]["body_in_intersection"]
+                                 if ego_entry_sample else None)
+    return {"format": "worker-inoperative-signal-stop-history", "sources": hashes,
+            "selected_stop_boundary": boundary, "selected_stop_boundary_source": context[source],
+            "other_stop_boundary": other_boundary["kind"],
+            "other_stop_boundary_source": other_boundary["source"],
+            "intersection_id": context["intersection_id"],
+            "first_full_halt_before_or_at_line": first_stop,
+            "first_full_halt_before_or_at_selected_boundary": first_stop,
+            "first_body_entry": first_entry,
+            "ego_stopped_before_entry_observed": bool(first_stop["ego"] and first_entry["ego"] and first_stop["ego"]["time_s"] < first_entry["ego"]["time_s"]),
+            "other_completed_stop_before_ego_observed": bool(first_stop["other"] and first_stop["ego"] and first_stop["other"]["time_s"] < first_stop["ego"]["time_s"]),
+            "other_body_inside_at_ego_entry_observed": other_inside_at_ego_entry,
+            "samples": samples,
+            "cautious_proceeding_judgment": "unresolved", "yield_judgment": "unresolved",
+            "statutory_inoperative_judgment": "unresolved; Native Off and source declarations require physical review"}

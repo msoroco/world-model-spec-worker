@@ -1,19 +1,23 @@
 # C376646 CPU handoff — NRS 484B.250(4)
 
-Status: **partial**. Fixed blind-intersection cell with stop line. The rule requires installed, uncovered vehicular signals to be inoperative when ego enters; then all entrances are treated as stop signs. Ego must stop using the marked-line/crosswalk/nearest-view hierarchy, then proceed cautiously and yield to earlier-stopped or already present vehicles. Frozen accepted-evidence inventory is empty.
+Status: **partial**. Frozen accepted-evidence inventory is empty. Exact blind-intersection branch requires installed, uncovered and wholly inoperative vehicular signal heads; the marked-line, near-side-crosswalk and nearest-view stopping hierarchy; then cautious motion yielding to previously stopped or already present vehicles. No physical or legal outcome is inferred from synthetic diagnostics.
 
-`signal_control.py` inventories every Native entrance head, sets Off with readback and restores prior states. `inoperative_stop.py` joins original frame maps to all-head Off states, complete-body stop-reference position, ego stop and other prior-stop/inside status. Three CPU tests pass across all three reference branches, priority negatives, active-head rejection, stale frame and Native restoration. Off readback and synthetic frames are implementation checks, not proof of physical inoperability or cautious yielding.
+## Current construction
 
-Next CPU work: source installed/uncovered head inventory, blind sight and stop references; construct exact post-stop interactions. Implement runner, four raw cameras, saved finalizer, three distinct fallbacks per selected case, semantic proposals and independent delivery/comparison audits. Run exact offline, compatibility, saved-processing and assignment strict gates. These are worker-owned CPU actions; actual physical state and visibility remain later checks.
+Four selected case IDs are in `case-plan.json`: `stop_line_other_inside`, `crosswalk_other_previously_stopped`, `nearest_view_other_inside`, and the additional prohibited-condition `stop_line_no_halt`, each prefixed by this assignment ID. `runner.py` is a lazy-CARLA Native capture with two sourced approaches, complete-body boundary feedback, all-head Off readback/restoration, and four original cameras. Source-bound `site-review.json`, `site-sources.json` and authored OpenDRIVE files are packaged per case in `cases/<suffix>/construction.json`; `review-draft-manifest.json` binds all four current constructions. Each exact `runtime.py offline` check passed; logs are `cases/<suffix>/primary-offline.log`. All four `runtime.py fixture` materializations passed, with logs in each case folder. Seven package CPU tests pass in `cpu-tests.log`, including the rolling-stop negative and a counterfactual priority-basis measurement. Current diagnostic positive cases show a halt; the no-halt case has no ego full-halt sample. The existing crosswalk diagnostic happens to show both other-priority predicates true, so its physical comparison is not yet isolated. The runner's crosswalk route waits for the other to clear, while the other-inside route waits for entry; this remains to be demonstrated with source-bound saved proof.
 
-Resume commands:
+The authored site packets were adapted from prior C24757 worker source candidates. They are source-bound CPU planning material, not reviewed Native facts for C376646. They retain descriptive C24757 map names. Physical installed and uncovered signal appearance, true blind sight lines, stop-reference visibility, completed yielding and camera quality remain later Native checks. The source-hash and all-head inventory code reject unsourced site changes and uninventoried heads.
+
+## Next CPU actions
+
+Bind the four cases into the canonical semantic proposals and requirement dispositions, then create measurement contracts and per-case saved-only processing receipts. Run source-bound positive/negative compatibility, physical-outcome fixture tests, justified fallbacks and independent delivery/comparison audits. Build the final execution manifest and GPU queue rows. Run the exact scoped strict gate before marking ready. These are worker-owned tasks; no missing runtime dependency or GPU prevents the CPU work.
+
+Resume:
 
 ```sh
 .venv-cpu/bin/python -m unittest discover -s work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/tests -v
 .venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete
-.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready
+.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready
 ```
 
-Pinned CPU preflight passes. No frozen input, runtime or batch file was edited; no Git command was run. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log`.
-
-Checkpoint: assignment-scoped static check passed. All 43 assignments now have `result.json`, but each remains partial. Complete strict gate reports `Preparation acceptance failed: partial/missing packages remain`. No dependency or tool preflight is blocked; exact primary runner, four-camera saved-processing proofs, fallbacks, semantic proposals and independent audits remain worker-owned CPU work.
+No frozen input, runtime or batch file was edited; no Git command was run.
