@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
   "input_sha256": "1c8effff5f2a506f9289b1df1fad05678116c3310d879bdc914b659f3a034f39",
-  "status": "partial",
-  "readiness_kind": "production_audit_fixture_in_progress",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -88,6 +88,36 @@
       "exit_code": 0,
       "log": "cpu-nov25-static.log",
       "sha256": "2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest work/testing__C111125__NRS-484B-307-2b__pedestrian/tests/test_reviewed_site_preflight.py",
+      "exit_code": 0,
+      "log": "cpu-nov25-site-tests.log",
+      "sha256": "2a59171d0417419fd86e31928f403285b3252feabc2cd2942099ab8c599a3383"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest work/testing__C111125__NRS-484B-307-2b__pedestrian/tests/test_crossing.py -k test_reviewed_owner_runs_full_900_frame_wait_capture_and_rejects_fixture",
+      "exit_code": 0,
+      "log": "cpu-nov25-production-full.log",
+      "sha256": "27a5f419473d087b04abc29d592d93aa7afb7a97f60ae62f18d1d2af90cd5d76"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest work/testing__C111125__NRS-484B-307-2b__pedestrian/tests/test_production_comparison.py",
+      "exit_code": 0,
+      "log": "cpu-nov25-production-comparison.log",
+      "sha256": "6ad95e83c7d2c81d4395fd47b013ec0481944dcd169e58b22b34435418b7f428"
+    },
+    {
+      "command": "Assignment unittest discovery excluding the separately run 900-frame saved case",
+      "exit_code": 0,
+      "log": "cpu-nov25-focused.log",
+      "sha256": "9628045fa942028f7eadee58315d0bf5a309bc06f9322a5d3bce999a5fc41b11"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/verify_queue_proposal.py",
+      "exit_code": 0,
+      "log": "cpu-nov25-queue-validation.log",
+      "sha256": "82c47d674b9eadf8bfe47b5afea5a491cfcaab0f606f1e1f87ed174a95adcadc"
     }
   ],
   "remaining_gpu_checks": [
@@ -95,6 +125,6 @@
     "Reviewed NRS 484B.283 pedestrian-device inventory and applicability source for the selected site",
     "Original Native pedestrian motion, 900-frame camera visibility and lifecycle closure after source binding"
   ],
-  "reason": "Scoped strict gate passed before new production audit integration. The 900-frame original-source fixture is running; final delivery audit and comparison command review must finish before ready is restored.",
-  "first_gpu_delivery_command": "SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

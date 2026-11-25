@@ -23,6 +23,15 @@ def run(case, scratch, output, negative):
     manifest = json.loads((ROOT / "execution-manifest.json").read_text())
     if case not in {item["case_id"] for item in manifest["cases"]}:
         raise ValueError("unknown exact case")
+    packet = json.loads((ROOT / "fixtures" / suffix / "original-history.json").read_text())
+    frames = packet.get("frames", [])
+    if packet.get("case_id") != case or len(frames) != 900 or any(
+            frame.get("authority", {}).get("native_frame") != frame.get("native_frame") or
+            not frame.get("ego", {}).get("body_vertices_xy") or
+            not frame.get("counterpart", {}).get("body_vertices_xy") or
+            abs(frame.get("time_s", -1) - (5 + index / 20)) > .001
+            for index, frame in enumerate(frames)):
+        raise ValueError("synthetic participant or frame identity diagnostic differs")
     scratch.mkdir(parents=True, exist_ok=False)
     seal = {"sources": {}}
     joined = {}

@@ -79,6 +79,7 @@ def measure(frames, *, motion_epsilon_m=0.05):
             source_hash(value.get("source_sha256"), name)
         if signal.get("faces_bus") is not True or signal.get("placement") != "over_individual_lanes":
             raise ValueError("bus-facing overhead lane signals required")
+        bus_heading = number(body.get("bus_heading_deg"), "original bus heading")
         h = signal.get("highway_id")
         if not isinstance(h, str) or not h:
             raise ValueError("highway identity required")
@@ -97,6 +98,9 @@ def measure(frames, *, motion_epsilon_m=0.05):
                 raise ValueError("same-direction lane mapping required")
             if lane.get("symbol") not in ("down_green_arrow", "other", "dark"):
                 raise ValueError("observed lane signal symbol required")
+            head_heading = number(lane.get("head_heading_deg"), "original head heading")
+            if math.cos(math.radians(bus_heading - head_heading)) >= 0:
+                raise ValueError("original head orientation does not face bus travel direction")
             current[ident] = (bounds(lane.get("lateral_bounds_m")), lane["symbol"])
         intervals = sorted((v[0][0], v[0][1]) for v in current.values())
         if any(right[0] < left[1] for left, right in zip(intervals, intervals[1:])):

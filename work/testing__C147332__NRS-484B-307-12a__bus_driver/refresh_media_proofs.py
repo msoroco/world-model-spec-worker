@@ -44,7 +44,7 @@ def main():
             construction_hash = sha(ROOT / row["construction"])
             if construction_hash != row["construction_sha256"]:
                 raise ValueError("construction hash mismatch")
-            offline_output = SCRATCH / f"c147332-12a-camera-offline-{kind}-{candidate}"
+            offline_output = SCRATCH / f"c147332-12a-facing-offline-{kind}-{candidate}"
             offline_log = ROOT / "cases" / kind / ("cpu-offline.log" if candidate == "primary" else "cpu-offline-fallback1.log")
             offline_command = [python, str(REPO / "runtime.py"), "offline", "--manifest", str(MANIFEST),
                                "--case", entry["case_id"], "--candidate", candidate,
@@ -57,7 +57,7 @@ def main():
                 "command": " ".join(offline_command), "exit_code": 0,
                 "log": str(offline_log.relative_to(ROOT)), "sha256": sha(offline_log)}
 
-            compat_output = SCRATCH / "c147332-12a-camera-compat" / kind / candidate
+            compat_output = SCRATCH / "c147332-12a-facing-compat" / kind / candidate
             compat_log = ROOT / f"cpu-compat-{kind}-{candidate}.log"
             compat_command = [python, str(REPO / "runtime.py"), "compatibility", "--manifest", str(MANIFEST),
                               "--case", entry["case_id"], "--candidate", candidate,

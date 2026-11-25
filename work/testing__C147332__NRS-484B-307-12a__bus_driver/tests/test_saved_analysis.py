@@ -55,15 +55,18 @@ def fixture(root, *, bus_lane="east", green=("east",), moving=True, case_id=None
         x = float(frame if moving else 0)
         y = 0 if bus_lane == "east" else 4
         payload = {"frame": frame, "elapsed_seconds": t}
-        body = {**payload, "bus_footprint": [[x-1, y-1], [x+1, y-1],
+        body = {**payload, "bus_heading_deg": 0.0,
+                "bus_footprint": [[x-1, y-1], [x+1, y-1],
                                                [x+1, y+1], [x-1, y+1]]}
         signal = {**payload, "highway_id": "fixture-highway",
                   "official_device_source_sha256": device_hash,
                   "faces_bus": True, "placement": "over_individual_lanes",
                   "lanes": [{"lane_id": "east", "direction": "bus_direction",
+                             "head_heading_deg": 180.0,
                              "lateral_bounds_m": [-2, 2],
                              "symbol": "down_green_arrow" if "east" in green else "dark"},
                             {"lane_id": "west", "direction": "bus_direction",
+                             "head_heading_deg": 180.0,
                              "lateral_bounds_m": [2, 6],
                              "symbol": "down_green_arrow" if "west" in green else "dark"}]}
         camera = {**payload, "camera_names": ["overview", "approach",

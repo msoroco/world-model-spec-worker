@@ -224,39 +224,58 @@
   ],
   "observations": [
     {
-      "name": "parking_body_vertices_xy_m",
-      "source": "original Native bus/vehicle body history",
-      "purpose": "measure footprint on roadway and edge distance"
+      "name": "body_vertices_xy_m",
+      "source": "original Native vehicle body history",
+      "purpose": "measure footprint on roadway and edge distance",
+      "mandatory": true
     },
     {
       "name": "vehicle_forward_xy",
       "source": "original Native actor transform at every frame",
-      "purpose": "measure longitudinal axis relative to edge and lawful direction"
+      "purpose": "measure longitudinal axis relative to edge and lawful direction",
+      "mandatory": true
     },
     {
       "name": "road_edge_xy_m",
       "source": "source-reviewed roadway edge geometry",
-      "purpose": "identify nearest roadway edge"
+      "purpose": "identify nearest roadway edge",
+      "mandatory": false
     },
     {
       "name": "roadway_polygon_xy_m",
       "source": "source-reviewed roadway boundary",
-      "purpose": "separate roadway from shoulder/off-road position"
+      "purpose": "separate roadway from shoulder/off-road position",
+      "mandatory": false
     },
     {
       "name": "lawful_travel_xy",
       "source": "source-reviewed one-way traffic direction",
-      "purpose": "measure heading alignment"
+      "purpose": "measure heading alignment",
+      "mandatory": false
     },
     {
-      "name": "halt_speed_and_controls",
-      "source": "original Native speed and controller history",
-      "purpose": "observe stationary interval without assuming purpose"
+      "name": "speed_m_s",
+      "source": "original Native velocity history",
+      "purpose": "observe stationary interval without assuming purpose",
+      "mandatory": true
+    },
+    {
+      "name": "control",
+      "source": "original Native applied controller history",
+      "purpose": "establish the stationary interval and preserved physical attempt",
+      "mandatory": true
     },
     {
       "name": "activity_context",
       "source": "source-reviewed responsible person, standing/parking activity and Chapter provisions",
-      "purpose": "preserve statute scope and exception uncertainty"
+      "purpose": "preserve statute scope and exception uncertainty",
+      "mandatory": false
+    },
+    {
+      "name": "camera_frame_map",
+      "source": "original synchronized Native four-camera/world tick join",
+      "purpose": "bind visual observations to the same vehicle and stationary interval",
+      "mandatory": true
     }
   ],
   "sources": [
@@ -354,5 +373,33 @@
     "potential_exception_law_id": "LVMC-11-52-070",
     "site_status": "unresolved",
     "scope": "exported source inventory only; full Chapter and site markings pending"
+  },
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "whole vehicle, roadway and nearest edge",
+        "interval": "full approach and stationary hold",
+        "view": "overview"
+      },
+      {
+        "subject": "approach path and traffic direction",
+        "interval": "full approach",
+        "view": "approach"
+      },
+      {
+        "subject": "front and rear body corners at roadway edge",
+        "interval": "stationary hold",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "vehicle forward axis and responsible driver context",
+        "interval": "stationary hold",
+        "view": "driver_reference"
+      }
+    ]
   }
 }

@@ -218,7 +218,8 @@ def run_native(scene, road, site, output, host, port, packet_path):
                         raise RuntimeError("original overhead head display state missing or changed")
                     displays.append(str(observed))
                 body_file.write(json.dumps({**common, "source_path": "trace.jsonl",
-                    "bus_actor_id": int(bus.id), "bus_footprint": _footprint(bus)}, allow_nan=False) + "\n")
+                    "bus_actor_id": int(bus.id), "bus_footprint": _footprint(bus),
+                    "bus_heading_deg": float(bus.get_transform().rotation.yaw)}, allow_nan=False) + "\n")
                 signal_file.write(json.dumps({**common, "source_path": "sign-state-original.jsonl",
                     "highway_id": site["highway_id"], "faces_bus": True,
                     "placement": "over_individual_lanes",
@@ -227,8 +228,9 @@ def run_native(scene, road, site, output, host, port, packet_path):
                                "direction": "bus_direction",
                                "lateral_bounds_m": signal["lateral_bounds_m"],
                                "symbol": signal["display"],
-                               "observed_display_value": observed}
-                              for signal, observed in zip(scene["signals"], displays)]}, allow_nan=False) + "\n")
+                               "observed_display_value": observed,
+                               "head_heading_deg": float(head.get_transform().rotation.yaw)}
+                              for head, signal, observed in zip(heads, scene["signals"], displays)]}, allow_nan=False) + "\n")
                 head_file.write(json.dumps({**common, "heads": [
                     {"actor_id": int(head.id),
                      "blueprint_id": site["native_asset_blueprint_id"] if signal["display"] == "down_green_arrow" else site["dark_asset_blueprint_id"],

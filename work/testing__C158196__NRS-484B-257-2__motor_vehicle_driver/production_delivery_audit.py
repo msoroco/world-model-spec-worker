@@ -137,10 +137,19 @@ def run(case, attempt, processed):
     result_path = versions[0] / "analysis/result.json"
     result = read(result_path)
     check = result.get("physical_checks", {}).get("maneuver", {})
+    motion_rows = []
+    for frame in packet["frames"]:
+        motion_rows.append(json.dumps({
+            "frame": frame["native_frame"], "time_s": frame["time_s"],
+            "ego": {"body_vertices_m": frame["ego"]["body_vertices_xy"]},
+            "counterpart": {"body_vertices_m": frame["counterpart"]["body_vertices_xy"]}},
+            allow_nan=False))
+    expected_motion_sha = hashlib.sha256(("\n".join(motion_rows) + "\n").encode()).hexdigest()
     require(result.get("case_id") == case and
             result.get("provenance_kind") == "native" and
             result.get("maneuver_completed") is True and
             check.get("status") == "met" and
+            check.get("sources", {}).get("interaction_history.jsonl") == expected_motion_sha and
             all(check.get("sources", {}).get(name) == sources[name]
                 for name in ("config.json", "trace.jsonl", "video_frames.jsonl")),
             "saved physical crossing lacks source-bound completion")

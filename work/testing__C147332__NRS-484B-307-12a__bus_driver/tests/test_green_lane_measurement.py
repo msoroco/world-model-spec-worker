@@ -20,7 +20,7 @@ def frames(*, bus_lane="east", green=("east",), moving=True, spill=False):
         x = frame if moving else 0
         joined = {"frame": frame, "elapsed_seconds": time, "source_sha256": SHA}
         rows.append({"frame": frame, "elapsed_seconds": time,
-                     "body": {**joined, "bus_footprint": [
+                     "body": {**joined, "bus_heading_deg": 0.0, "bus_footprint": [
                          [x - 2, y - half_width], [x + 2, y - half_width],
                          [x + 2, y + half_width], [x - 2, y + half_width]]},
                      "lane_signals": {**joined, "faces_bus": True,
@@ -30,6 +30,7 @@ def frames(*, bus_lane="east", green=("east",), moving=True, spill=False):
                                       "lanes": [
                                           {"lane_id": lane, "direction": "bus_direction",
                                            "lateral_bounds_m": bounds,
+                                           "head_heading_deg": 180.0,
                                            "symbol": "down_green_arrow" if lane in green else "dark"}
                                           for lane, bounds in (("east", [-2, 2]), ("west", [2, 6]))]},
                      "camera_frame": dict(joined)})
@@ -81,6 +82,20 @@ class GreenLaneMeasurementTests(unittest.TestCase):
         sample = frames()
         sample[1]["frame"] = 3
         with self.assertRaisesRegex(ValueError, "contiguous"):
+            measurement.measure(sample)
+
+    def test_facing_claim_requires_original_opposed_headings(self):
+        sample = frames()
+        sample[1]["lane_signals"]["lanes"][0]["head_heading_deg"] = 0.0
+        with self.assertRaisesRegex(ValueError, "orientation does not face"):
+            measurement.measure(sample)
+        sample = frames()
+        sample[1]["body"]["bus_heading_deg"] = None
+        with self.assertRaisesRegex(ValueError, "original bus heading"):
+            measurement.measure(sample)
+        sample = frames()
+        sample[1]["lane_signals"]["lanes"][0]["head_heading_deg"] = 90.0
+        with self.assertRaisesRegex(ValueError, "orientation does not face"):
             measurement.measure(sample)
 
     def test_controlled_second_green_arrow_comparison(self):

@@ -1,7 +1,7 @@
 {
   "format": "worker-ordered-gpu-queue",
   "status": "partial_current_runtime_ready_assignments",
-  "note": "Partial ordered queue of current-runtime strict-ready packages; physical and local acceptance are pending. For C111610/283-1a, set PROCESSED_ROOT to the process-saved output parent and PROCESSED to its selected versioned vNNNN child before running the additional source audit. For C111610/283-1a and C111278/LVMC-11-16-040, SAVED_ATTEMPT is the saved attempt directory, ATTEMPT is the canonical numeric attempt ID, PROCESSED_ROOT is the process-saved output parent, and PROCESSED is its selected versioned vNNNN child. C202480 and C229404 source audits write SOURCE_AUDIT; canonical local delivery auditor must supply AUDIT for accept-delivery. C229404 now requires full original FFV1 stream decode and independent source review before acceptance; its separate SOURCE_AUDIT is not the canonical AUDIT. C227749 requires reviewed-site.json and original reviewed-source-documents in each exact attempt before Native execution; SOURCE_AUDIT is its separate physical source review, while AUDIT is the canonical local delivery audit for accept-delivery.",
+  "note": "Partial ordered queue of current-runtime strict-ready packages; physical and local acceptance are pending. For C111610/283-1a, set PROCESSED_ROOT to the process-saved output parent and PROCESSED to its selected versioned vNNNN child before running the additional source audit. For C111610/283-1a and C111278/LVMC-11-16-040, SAVED_ATTEMPT is the saved attempt directory, ATTEMPT is the canonical numeric attempt ID, PROCESSED_ROOT is the process-saved output parent, and PROCESSED is its selected versioned vNNNN child. C202480 and C229404 source audits write SOURCE_AUDIT; canonical local delivery auditor must supply AUDIT for accept-delivery. C229404 now requires full original FFV1 stream decode and independent source review before acceptance; its separate SOURCE_AUDIT is not the canonical AUDIT. C227749 requires reviewed-site.json and original reviewed-source-documents in each exact attempt before Native execution; SOURCE_AUDIT is its separate physical source review, while AUDIT is the canonical local delivery audit for accept-delivery. C111125/307-2b requires case-specific reviewed site and original source packet before Native execution; its production source and comparison audits are separate from canonical local AUDIT acceptance.",
   "assignments": [
     "testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
     "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
@@ -57,7 +57,8 @@
     "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
     "testing__C202480__NRS-484B-557__motor_vehicle_driver",
     "testing__C227749__LVMC-11-30-050__pedestrian",
-    "testing__C229404__NRS-484B-477-2__motor_vehicle_driver"
+    "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
+    "testing__C111125__NRS-484B-307-2b__pedestrian"
   ],
   "cases": [
     {
@@ -4273,6 +4274,152 @@
       "candidate_commands": {
         "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap --candidate fallback1"
       }
+    },
+    {
+      "order": 286,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 287,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 288,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --attempt \"$ATTEMPT\"",
+      "candidate_commands": {}
+    },
+    {
+      "order": 289,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 290,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 291,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 292,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --candidate fallback1"
+      }
+    },
+    {
+      "order": 293,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --attempt \"$ATTEMPT\"",
+      "candidate_commands": {}
+    },
+    {
+      "order": 294,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --candidate fallback1"
+      }
+    },
+    {
+      "order": 295,
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue",
+      "execute_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/reviewed_site_preflight.py --site \"$SCENARIO_REVIEWED_SITE_PACKET\" --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue && SCENARIO_REVIEWED_SITE_PACKET=\"$SCENARIO_REVIEWED_SITE_PACKET\" SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER=\"$SCENARIO_PEDESTRIAN_OPERATOR_ADAPTER\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_delivery_audit.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --attempt \"$ATTEMPT\"",
+      "candidate_commands": {
+        "fallback1": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111125__NRS-484B-307-2b__pedestrian --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --candidate fallback1"
+      }
     }
   ],
   "comparison_audit_commands": [
@@ -5990,6 +6137,78 @@
         "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap"
       ],
       "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c229404-comparison\" .venv-cpu/bin/python work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/production_delivery_audit.py --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_clear --attempt \"$ATTEMPT_1\" --review \"$REVIEW_1\" > \"$CLEAR_SOURCE_AUDIT\" && PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c229404-comparison\" .venv-cpu/bin/python work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/production_delivery_audit.py --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap --attempt \"$ATTEMPT_2\" --review \"$REVIEW_2\" > \"$OVERLAP_SOURCE_AUDIT\" && PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c229404-comparison\" .venv-cpu/bin/python work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/comparison_audit.py --kind entrance --clear-attempt \"$ATTEMPT_1/original-attempt\" --overlap-attempt \"$ATTEMPT_2/original-attempt\" --output \"$COMPARISON_AUDIT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "marked_vs_unmarked",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison marked_vs_unmarked --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "contrary_device_choice",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison contrary_device_choice --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "crosswalk_boundary",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison crosswalk_boundary --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "device_alternative_walk_cross",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison device_alternative_walk_cross --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "device_alternative_flashing_countdown_cross",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison device_alternative_flashing_countdown_cross --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "device_alternative_flashing_no_countdown_wait",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison device_alternative_flashing_no_countdown_wait --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "device_alternative_walk_then_flash_continue",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison device_alternative_walk_then_flash_continue --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
+    },
+    {
+      "assignment_id": "testing__C111125__NRS-484B-307-2b__pedestrian",
+      "comparison_id": "device_alternative_walk_then_steady_continue",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/production_comparison_audit.py --comparison device_alternative_walk_then_steady_continue --left \"$LEFT_ATTEMPT\" --right \"$RIGHT_ATTEMPT\""
     }
   ]
 }
