@@ -2,21 +2,18 @@
   "cell_id": "C230241",
   "actor": "motorcycle_or_moped_operator",
   "status": "draft",
-  "sweeps_expanded": true,
-  "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__reference",
-      "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "attempt",
-      "rationale": "Controlled requested lamp-state contrast; measure original lamp and visibility sources before review",
+      "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common motorcycle, site, vendor, weather and capture context.",
       "variable_assignments": {
-        "requested_light_state": "LowBeam|Position"
+        "requested_light_state": {
+          "kind": "controller",
+          "value": null
+        }
       },
-      "unresolved_judgment_calls": [
-        "actual headlamp range and rear discernibility",
-        "original civil time and covered vehicle class"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -199,20 +196,246 @@
           "Sun altitude request does not prove statutory civil time.",
           "Candidate vendor blueprint and site geometry need Native review."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "vehicles covered under this Section, as provided in Section 11.38.080",
+        "white light visible at least three hundred feet",
+        "red light plainly visible from at least five hundred feet to the rear",
+        "one-half hour after sunset to one-half hour before sunrise",
+        "not clearly discernible at a distance of at least five hundred feet ahead"
+      ]
+    },
+    {
+      "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__reference",
+      "target_law_id": "LVMC-11-38-120-B",
+      "target_type": "boundary_probe",
+      "rationale": "Contrast requested forward lamp state while measuring independent original visibility, colour and timing sources.",
+      "paired_probe_id": "c230241-headlamp-state-pair",
+      "deliberate_differences": [
+        "requested_light_state"
+      ],
+      "probe": {
+        "primary_variable": "requested_light_state",
+        "comparison_or_standard": "300-foot original white forward lamp reach and 500-foot original red rear visibility",
+        "target_value_or_branch": "LowBeam|Position"
+      },
+      "variable_assignments": {
+        "requested_light_state": {
+          "kind": "controller",
+          "value": "LowBeam|Position"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "discernible_500ft",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "front_visible_ft",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "headlamp_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "headlamp_lit",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "headlamp_white",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "native_lighting_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "next_sunrise_utc_s",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "rear_visible_ft",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "speed_mps",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "sunset_utc_s",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "tail_lamp_lit",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "tail_lamp_rear_mounted",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "tail_lamp_red",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "utc_s",
+            "unit": "number",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "vehicle_covered",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          },
+          {
+            "name": "visibility_review_source",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native capture or independently calibrated saved review; source provenance required",
+            "time_window": "600 frames",
+            "reference_frame": "Native capture frame and synchronized camera frame",
+            "uncertainty": "Synthetic fixture only; original calibration, lamp reach and discernibility require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "independent_lamp_range_review",
+            "unit": "ft",
+            "method": "calibrated original camera and site review"
+          },
+          {
+            "name": "sunset_sunrise",
+            "unit": "UTC seconds",
+            "method": "source-documented site/date clock"
+          }
+        ],
+        "limitations": [
+          "A requested light state does not prove lit colour or range.",
+          "Sun altitude request does not prove statutory civil time.",
+          "Candidate vendor blueprint and site geometry need Native review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "vehicles covered under this Section, as provided in Section 11.38.080",
+        "white light visible at least three hundred feet",
+        "red light plainly visible from at least five hundred feet to the rear",
+        "one-half hour after sunset to one-half hour before sunrise",
+        "not clearly discernible at a distance of at least five hundred feet ahead"
+      ]
     },
     {
       "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__contrast",
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "attempt",
-      "rationale": "Controlled requested lamp-state contrast; measure original lamp and visibility sources before review",
-      "variable_assignments": {
-        "requested_light_state": "Position"
-      },
-      "unresolved_judgment_calls": [
-        "actual headlamp range and rear discernibility",
-        "original civil time and covered vehicle class"
+      "target_type": "boundary_probe",
+      "rationale": "Contrast requested forward lamp state while measuring independent original visibility, colour and timing sources.",
+      "paired_probe_id": "c230241-headlamp-state-pair",
+      "deliberate_differences": [
+        "requested_light_state"
       ],
+      "probe": {
+        "primary_variable": "requested_light_state",
+        "comparison_or_standard": "300-foot original white forward lamp reach and 500-foot original red rear visibility",
+        "target_value_or_branch": "Position"
+      },
+      "variable_assignments": {
+        "requested_light_state": {
+          "kind": "controller",
+          "value": "Position"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -395,7 +618,49 @@
           "Sun altitude request does not prove statutory civil time.",
           "Candidate vendor blueprint and site geometry need Native review."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "vehicles covered under this Section, as provided in Section 11.38.080",
+        "white light visible at least three hundred feet",
+        "red light plainly visible from at least five hundred feet to the rear",
+        "one-half hour after sunset to one-half hour before sunrise",
+        "not clearly discernible at a distance of at least five hundred feet ahead"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c230241-original-lamp-review",
+      "target_law_id": "LVMC-11-38-120-B",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "vehicles covered under this Section, as provided in Section 11.38.080",
+          "note": "Vehicle coverage under referenced Section 11.38.080 requires legal and original identity review."
+        },
+        {
+          "phrase": "white light visible at least three hundred feet",
+          "note": "Original forward headlamp colour and calibrated 300-foot reach require camera and site review."
+        },
+        {
+          "phrase": "red light plainly visible from at least five hundred feet to the rear",
+          "note": "Original rear lamp colour, mounting and calibrated 500-foot visibility require review."
+        },
+        {
+          "phrase": "one-half hour after sunset to one-half hour before sunrise",
+          "note": "Original site/date civil clock and continuous motion frame join require review."
+        },
+        {
+          "phrase": "not clearly discernible at a distance of at least five hundred feet ahead",
+          "note": "Original visibility and unfavorable atmosphere need independent 500-foot discernibility review."
+        }
+      ],
+      "rationale": "Two software-prepared lamp-state cases await original calibrated source review.",
+      "missing_inputs": [
+        "Original Native lamp pixels and calibrated reach",
+        "Site/date clock and 500-foot discernibility review"
+      ]
     }
   ]
 }

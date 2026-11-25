@@ -24,7 +24,7 @@ def main(suffix, compatibility, saved):
     assert public['passed'] and processing['passed']
     assert public['construction_sha256'] == entry['construction_sha256']
     assert public['fixture_recipe_sha256'] == sha(HERE / ('current-v2-' + suffix + '-recipe.json'))
-    assert public['measurement_contract_sha256'] == sha(HERE / ('current-v2-' + suffix + '-measurement-contract.json'))
+    assert public['measurement_contract_sha256'] == sha(HERE / entry['measurement_contract'])
     assert public['fixture_manifest']['native_samples.jsonl'] == sha(HERE / 'current-v2-case-sources' / suffix / 'native_samples.jsonl')
     assert public['negative_removed'] == 'native_samples.jsonl'
     assert public['negative_error_contains'] == 'Missing required source: native_samples.jsonl'

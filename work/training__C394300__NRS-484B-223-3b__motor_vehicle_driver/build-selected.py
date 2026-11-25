@@ -34,6 +34,7 @@ def main():
         entry['kind'] = 'delivery'
         contract = json.loads((HERE / entry['measurement_contract']).read_text())
         contract['format'] = 'worker-measurement-contract'
+        contract['requirements'][0]['disposition_index'] = 0 if suffix.startswith('witness_') else 1
         contract_path = HERE / f'current-measurement-{suffix}.json'
         write(contract_path, contract)
         entry['measurement_contract'] = contract_path.relative_to(HERE).as_posix()

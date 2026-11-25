@@ -438,5 +438,92 @@
     "selected_delivery_cases": 0,
     "scope": "Full-duration synthetic saved joins, source video decode and negative rejection; exact synthetic v1 compatibility passes, while original Native physical design remains unproved.",
     "native_attempt_validator_pass_count": 5
+  },
+  "source_observation_mapping": {
+    "st.centre_turn_lane": {
+      "evidence": "Authored bidirectional turn-only lane and original Native lane survey with frame/body joins; physical designation awaits local review",
+      "channels": [
+        "st.centre_turn_lane",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Full-body footprint in the surveyed lane at original frame times",
+      "channels": [
+        "rel.occupies",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "body_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Cumulative original-position path interval from body entry to observed turn onset, with 200-foot boundary uncertainty retained",
+      "channels": [
+        "kin.path_length",
+        "kin.position"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "trace.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Observed Native heading, lane and left-turn connector distinct from controller request; actual movement awaits local capture",
+      "channels": [
+        "drv.turning",
+        "kin.heading"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Same-tick original Native center and full-body positions bracketing lane entry",
+      "channels": [
+        "kin.position",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "body_history.jsonl"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full roadway, center turn lane and complete subject body",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "center-lane body entry and lane marking",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "left-turn connector and body exit from center lane",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject approach, lane occupancy and turn onset",
+        "interval": "all 480 frames / 0-24 s"
+      }
+    ]
   }
 }

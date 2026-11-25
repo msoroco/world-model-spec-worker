@@ -70,6 +70,7 @@ def build(case):
         if case == 'contrast':
             native[i]['light_state_observed'] = 1
             review[i]['headlamp_lit'] = False
+            review[i]['front_visible_ft'] = 0.0
     write_rows(dest / 'native-lighting-frames.jsonl', native)
     write_rows(dest / 'video_frames.jsonl', mapping)
     write_rows(dest / 'lighting-review.jsonl', review)

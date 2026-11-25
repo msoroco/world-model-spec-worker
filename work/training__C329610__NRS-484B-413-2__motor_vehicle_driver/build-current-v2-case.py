@@ -109,6 +109,6 @@ def main(suffix):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('suffix', choices=['at_100_ft', 'above_100_ft', 'below_300_ft',
+    parser.add_argument('suffix', choices=['below_100_ft', 'at_100_ft', 'above_100_ft', 'below_300_ft',
                                            'at_300_ft', 'above_300_ft'])
     main(parser.parse_args().suffix)

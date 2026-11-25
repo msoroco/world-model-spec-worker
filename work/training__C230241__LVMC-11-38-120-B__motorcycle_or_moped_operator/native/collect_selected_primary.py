@@ -16,9 +16,11 @@ def sha(path):
 def main():
     DEST.mkdir(exist_ok=True)
     index = []
-    for case, version in (('reference', 'v5'), ('contrast', 'v1')):
-        compat = ROOT / f'.runtime-work/c230241-selected-{case if case == "contrast" else "ref"}-compat-{version}'
-        saved = ROOT / f'.runtime-work/c230241-selected-{case if case == "contrast" else "ref"}-saved-{version}/v0001'
+    for case, compat_name, saved_name in (
+            ('reference', 'c230241-selected-ref-compat-v5', 'c230241-selected-ref-saved-v5'),
+            ('contrast', 'c230241-selected-contrast-primary-compat-v2', 'c230241-selected-contrast-primary-saved-v2')):
+        compat = ROOT / '.runtime-work' / compat_name
+        saved = ROOT / '.runtime-work' / saved_name / 'v0001'
         receipt = json.loads((compat / 'compatibility.json').read_text())
         processing = json.loads((saved / 'processing.json').read_text())
         if not receipt['passed'] or receipt['case_id'] != PACKAGE.name + '__' + case:
