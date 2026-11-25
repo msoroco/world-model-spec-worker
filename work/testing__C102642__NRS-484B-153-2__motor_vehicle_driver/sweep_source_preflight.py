@@ -49,8 +49,14 @@ def _polygon_gap(first: list, second: list) -> float:
     if (len(a) >= 3 and len(b) >= 3 and
             (contains(a[0], b) or contains(b[0], a))):
         return 0.0
-    return min(segment_distance(a[i], a[i + 1], b[j], b[j + 1])
-               for i in range(len(a) - 1) for j in range(len(b) - 1))
+    def edges(vertices):
+        pairs = list(zip(vertices, vertices[1:]))
+        if len(vertices) >= 3 and vertices[0] != vertices[-1]:
+            pairs.append((vertices[-1], vertices[0]))
+        return pairs
+    return min(segment_distance(start_a, end_a, start_b, end_b)
+               for start_a, end_a in edges(a)
+               for start_b, end_b in edges(b))
 
 
 def _source_levels(source: dict, survey: dict, clearance_path: Path) -> tuple[dict, dict]:

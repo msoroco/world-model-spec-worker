@@ -16,6 +16,7 @@ from zipfile import ZIP_STORED, ZipFile
 from PIL import Image
 
 from source_tick_capture import verify_seal
+from yield_control import KINDS
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -59,8 +60,8 @@ def _identity(attempt: Path, diagnostic_fixture: bool) -> tuple[dict, str]:
     identity = json.loads(data)
     if identity.get("format") != "c158208-original-capture-identity-v1":
         raise ValueError("original capture identity format differs")
-    if identity.get("assignment_id") != ASSIGNMENT or identity.get("case_id") not in (
-            ASSIGNMENT + "__nearest_view_response", ASSIGNMENT + "__nearest_view_uninterrupted"):
+    if identity.get("assignment_id") != ASSIGNMENT or identity.get("case_id") not in {
+            ASSIGNMENT + "__" + kind for kind in KINDS}:
         raise ValueError("original capture identity case differs")
     if identity.get("provenance_kind") != ("synthetic_fixture" if diagnostic_fixture else "original_capture"):
         raise ValueError("original capture identity provenance differs")

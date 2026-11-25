@@ -1,0 +1,94 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "identified intersection and different public highways",
+      "source": {
+        "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82"
+      },
+      "output_key": "crossing_highways",
+      "method": "measure_crossing_highways",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "scene.json",
+        "opendrive.xodr",
+        "highway_identity.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "other vehicle enters before ego",
+      "source": {
+        "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82"
+      },
+      "output_key": "other_entry",
+      "method": "measure_other_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_trace.json",
+        "scene.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "ego response relative to other exit",
+      "source": {
+        "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82"
+      },
+      "output_key": "ego_response",
+      "method": "measure_ego_response",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_trace.json",
+        "scene.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "official-device and subsection 4 applicability",
+      "source": {
+        "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82"
+      },
+      "output_key": "device_context",
+      "method": "measure_device_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_trace.json",
+        "scene.json",
+        "device_inventory.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "opposite-direction left-turn exclusion",
+      "source": {
+        "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "sha256": "376db851a59e4205a7414327d4c260b826bfa954601c3170d53abc7f586c4b82"
+      },
+      "output_key": "opposing_turn_context",
+      "method": "measure_opposing_turn_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "scene.json",
+        "native_trace.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native_trace.json"
+    ],
+    "error_contains": "Missing required source: native_trace.json"
+  }
+}

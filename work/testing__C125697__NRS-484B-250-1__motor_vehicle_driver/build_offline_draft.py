@@ -7,14 +7,17 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SUFFIXES = ("precedence", "advance")
 
 RUNNER = '''"""Check one exact median-opening diagnostic bundle."""
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+
+import native_capture
 
 
 def check():
@@ -42,11 +45,11 @@ def check():
         raise ValueError("Exact-case response request changed")
     if (config["rate_hz"] != 20 or config["frame_count"] != 900 or
             config["duration_s"] != 45 or
-            config["cameras"] != ["front", "rear", "left", "right"]):
+            config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]):
         raise ValueError("Original source capture contract changed")
     if config["required_sources"] != ["native_trace", "opendrive", "device_inventory",
-                                       "camera_front", "camera_rear", "camera_left",
-                                       "camera_right"]:
+                                       "camera_overview", "camera_approach", "camera_reference_corner",
+                                       "camera_driver_reference"]:
         raise ValueError("Original median-opening source contract changed")
     return case
 
@@ -55,12 +58,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--packet", default=os.environ.get("C125697_REVIEWED_PACKET"))
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic median-opening bundle passed: " + case)
         return
-    raise ValueError("Reviewed original roadway crossing, governing signal and Native sources required")
+    if not args.output_dir or not args.packet:
+        raise ValueError("Reviewed original roadway crossing, governing signal and Native sources required")
+    import carla
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30)
+    config = json.loads((Path(__file__).resolve().parent / "config.json").read_text())
+    print(json.dumps(native_capture.run(client.get_world(), carla, args.packet,
+                                        args.output_dir, config["requested_ego_response"]),
+                     sort_keys=True))
 
 
 if __name__ == "__main__":
@@ -112,10 +126,13 @@ def build():
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
             "cameras": list(CAMERAS), "required_atoms": [],
             "required_sources": ["native_trace", "opendrive", "device_inventory",
-                                 "camera_front", "camera_rear", "camera_left", "camera_right"],
+                                 "camera_overview", "camera_approach", "camera_reference_corner",
+                                 "camera_driver_reference"],
             "diagnostic_only": True,
         }
         files = {"runner.py": RUNNER, "median_opening.py": (HERE / "median_opening.py").read_text(),
+                 "native_capture.py": (HERE / "native_capture.py").read_text(),
+                 "analysis.py": (HERE / "analysis.py").read_text(),
                  "case-plan.json": raw.decode(), "config.json": json.dumps(config, indent=2) + "\n",
                  "tests/test_bundle.py": TEST}
         construction = {

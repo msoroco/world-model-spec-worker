@@ -58,8 +58,9 @@ class MedianOpeningTests(unittest.TestCase):
             root = pathlib.Path(temporary)
             bodies = {"native_trace": json.dumps(trace(s)).encode(),
                       "opendrive": b"inspected map", "device_inventory": b"source device inventory",
-                      "camera_front": b"front", "camera_rear": b"rear",
-                      "camera_left": b"left", "camera_right": b"right"}
+                      "camera_overview": b"overview", "camera_approach": b"approach",
+                      "camera_reference_corner": b"reference corner",
+                      "camera_driver_reference": b"driver reference"}
             refs = {}
             for name, data in bodies.items():
                 (root / name).write_bytes(data)
@@ -68,10 +69,10 @@ class MedianOpeningTests(unittest.TestCase):
             receipt = MODULE.audit_saved_sources(root, manifest, s)
             self.assertFalse(receipt["physical_pixels_reviewed"])
             self.assertTrue(receipt["observations"]["other_entered_before_ego"])
-            (root / "camera_left").unlink()
+            (root / "camera_reference_corner").unlink()
             with self.assertRaisesRegex(ValueError, "missing original source"):
                 MODULE.audit_saved_sources(root, manifest, s)
-            (root / "camera_left").write_bytes(b"altered")
+            (root / "camera_reference_corner").write_bytes(b"altered")
             with self.assertRaisesRegex(ValueError, "stale original source"):
                 MODULE.audit_saved_sources(root, manifest, s)
 

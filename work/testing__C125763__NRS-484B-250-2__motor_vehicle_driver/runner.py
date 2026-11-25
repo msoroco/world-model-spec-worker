@@ -22,6 +22,9 @@ def check_bundle(root):
         raise ValueError('exact C125763 bundle identity differs')
     if config.get('rate_hz') != 20 or config.get('duration_s') != 45:
         raise ValueError('original capture clock differs')
+    speed = config.get('target_speed_mps', 8.0)
+    if type(speed) not in (int, float) or not 4.0 <= speed <= 12.0:
+        raise ValueError('bounded target speed differs')
     cameras = config.get('cameras', [])
     if {camera.get('name'): [camera.get('width'), camera.get('height')]
             for camera in cameras} != PRODUCTION_DIMENSIONS or len(cameras) != 4:
@@ -46,6 +49,7 @@ def check_bundle(root):
             set(site.get('release_s', {})) != set(CASES)):
         raise ValueError('diagnostic site capture profile or schedules differ')
     return {'case_id': case_id, 'diagnostic_fixture': True,
+            'target_speed_mps': speed,
             'source_packet_sha256': hashlib.sha256((root / 'site.json').read_bytes()).hexdigest(),
             'original_capture_started': False, 'physical_acceptance': False,
             'legal_verdict_claimed': False}
@@ -73,7 +77,7 @@ def main():
     client.set_timeout(30)
     case = checked['case_id'].rsplit('__', 1)[1]
     print(json.dumps(run(client.get_world(), carla, args.packet, args.output_dir,
-                         case), sort_keys=True))
+                         case, target_speed_mps=checked['target_speed_mps']), sort_keys=True))
 
 
 if __name__ == '__main__':

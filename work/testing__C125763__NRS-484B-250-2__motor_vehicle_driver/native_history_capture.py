@@ -166,7 +166,11 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     manifest['video_frames.jsonl'] = {
         "kind": "original_native", "sha256": hashlib.sha256(
             (output / 'video_frames.jsonl').read_bytes()).hexdigest()}
-    _bytes(output / "source-manifest.json", (json.dumps(manifest, sort_keys=True) + "\n").encode())
+    manifest_bytes = (json.dumps(manifest, sort_keys=True) + "\n").encode()
+    _bytes(output / "source-manifest.json", manifest_bytes)
+    # The pinned saved-processing staging skips source-* receipt names. Keep a
+    # byte-identical sealed alias so recorded-only analysis can reopen it.
+    _bytes(output / "original-source-manifest.json", manifest_bytes)
     return {"frame_count": frame_count, "first_frame": histories["ego"][0]["frame"],
             "last_frame": histories["ego"][-1]["frame"], "source_manifest": manifest,
             "camera_view_frames": len(camera_rows) * len(CAMERAS)}

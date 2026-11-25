@@ -10,7 +10,14 @@ from __future__ import annotations
 import math
 
 
-KINDS = {"nearest_view_response", "nearest_view_uninterrupted"}
+KINDS = {
+    "nearest_view_response", "nearest_view_uninterrupted",
+    "marked_stop_line_response", "marked_stop_line_uninterrupted",
+    "near_side_marked_crosswalk_response", "near_side_marked_crosswalk_uninterrupted",
+    "near_side_sidewalk_derived_crosswalk_response",
+    "near_side_sidewalk_derived_crosswalk_uninterrupted",
+    "approaching_phase_probe", "later_history_probe", "nearest_view_stopped",
+}
 
 
 def _finite(value, name):
@@ -35,7 +42,8 @@ def control(kind: str, observation: dict, *, target_speed_mps: float = 4.0) -> d
     if observation.get("viewpoint_source_verified") is not True:
         raise ValueError("source-verified viewpoint required")
     near_view = distance <= 8.0
-    response = kind == "nearest_view_response" and near_view and occupied
+    response = near_view and ((kind.endswith("_response") and occupied) or
+                              kind == "nearest_view_stopped")
     if response:
         return {"throttle": 0.0, "brake": min(1.0, 0.35 + speed / 6.0),
                 "steer": 0.0, "engineering_state": "yield_hold"}

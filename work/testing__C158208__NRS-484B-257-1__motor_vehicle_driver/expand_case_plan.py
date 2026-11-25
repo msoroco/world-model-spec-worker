@@ -71,7 +71,7 @@ def expand(plan: dict, matrix: dict, frozen: dict) -> dict:
         plan["requirement_dispositions"].append({
             "requirement": clause,
             "source": matrix["law_source"]["path"],
-            "status": "selected_required_original_source_pending",
+            "status": "alternative_pending",
             "case_ids": branch["case_ids"],
             "evidence_or_gap": "Accepted metadata identifies these cases but original site, Native traces, camera pixels and legal review are absent from this export.",
         })

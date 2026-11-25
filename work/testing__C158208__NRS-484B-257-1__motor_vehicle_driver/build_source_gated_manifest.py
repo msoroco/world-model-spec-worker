@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from native_attempt import verify_review_sources
+from branch_site_preflight import validate_site_branch
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -43,6 +44,7 @@ def build(assembly_path: Path) -> dict:
         if site.get("cell_id") != "C158208" or site.get("review_status") != "reviewed":
             raise ValueError("Original reviewed C158208 site required: " + case_id)
         verify_review_sources(site, site_path, diagnostic_fixture=False)
+        validate_site_branch(site, case_id)
         construction_path = local(row.get("construction", ""))
         construction = json.loads(construction_path.read_text())
         if (construction.get("case_id") != case_id or

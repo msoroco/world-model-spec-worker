@@ -29,14 +29,20 @@ def _required(root, name):
 
 def _sources(root):
     root = Path(root)
-    # The compatibility stage intentionally excludes source-* acquisition
-    # filenames. Reconstitute the sealed name only for its explicit diagnostic
-    # alias; a Native attempt must bring its own source-manifest.json.
-    if not (root / 'source-manifest.json').exists() and (root / 'fixture-provenance.json').is_file():
-        provenance = json.loads((root / 'fixture-provenance.json').read_text())
-        if provenance.get('diagnostic_fixture') is not True or provenance.get('physical_acceptance_claimed') is not False:
-            raise ValueError('Diagnostic source provenance is incomplete')
+    # The pinned staging excludes source-* receipt names. Reconstitute the
+    # manifest from a retained alias only when diagnostic provenance or the
+    # Native capture seal binds that alias.
+    if not (root / 'source-manifest.json').exists():
         alias = _required(root, 'original-source-manifest.json')
+        if (root / 'fixture-provenance.json').is_file():
+            provenance = json.loads((root / 'fixture-provenance.json').read_text())
+            if provenance.get('diagnostic_fixture') is not True or provenance.get('physical_acceptance_claimed') is not False:
+                raise ValueError('Diagnostic source provenance is incomplete')
+        else:
+            seal = json.loads(_required(root, 'capture-seal.json').read_text())
+            if (seal.get('provenance_kind') != 'native' or
+                    seal.get('sources', {}).get('original-source-manifest.json') != _sha(alias)):
+                raise ValueError('Native source manifest alias is not sealed')
         (root / 'source-manifest.json').write_bytes(alias.read_bytes())
     source = json.loads(_required(root, 'source-manifest.json').read_text())
     paths = {}

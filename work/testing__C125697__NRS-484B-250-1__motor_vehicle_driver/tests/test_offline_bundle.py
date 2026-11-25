@@ -30,7 +30,8 @@ class OfflineBundleTests(unittest.TestCase):
                 (ROOT / 'case-plan.json').read_bytes()).hexdigest())
             self.assertEqual(config['required_sources'],
                              ['native_trace', 'opendrive', 'device_inventory',
-                              'camera_front', 'camera_rear', 'camera_left', 'camera_right'])
+                              'camera_overview', 'camera_approach',
+                              'camera_reference_corner', 'camera_driver_reference'])
             self.assertTrue(package['diagnostic_only'])
             self.assertEqual(config['frame_count'], 900)
             self.assertEqual(config['rate_hz'], 20)

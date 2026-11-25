@@ -14,11 +14,11 @@ from camera_sources import audit_camera_sources
 from nearest_view_measurement import measure
 from physical_completion import assess
 from source_tick_capture import verify_seal
+from yield_control import KINDS
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
-CASES = {ASSIGNMENT + "__nearest_view_response",
-         ASSIGNMENT + "__nearest_view_uninterrupted"}
+CASES = {ASSIGNMENT + "__" + kind for kind in KINDS}
 
 
 def _sha(path: Path) -> str:

@@ -89,7 +89,7 @@ def build() -> None:
     plan["camera_plan"] = {
         "profile": "overview1080-capability", "sampling_rate_hz": 20,
         "duration_s": 45, "frame_count": 900,
-        "views": ["front", "rear", "left", "right"],
+        "views": ["overview", "approach", "reference_corner", "driver_reference"],
         "physical_pixels_verified": False,
     }
     plan["source_observation_mapping"] = {}

@@ -130,6 +130,12 @@ class SweepSourcePreflightTests(unittest.TestCase):
             [[0, 0], [3, 0], [3, 3], [0, 3]],
             [[1, 1], [2, 1], [2, 2], [1, 2]]), 0.0)
 
+    def test_unclosed_outline_includes_last_to_first_edge(self):
+        door = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        passing_body = [[-2, 0.4], [-1, 0.4], [-1, 0.6], [-2, 0.6]]
+        self.assertAlmostEqual(_polygon_gap(door, passing_body), 1.0)
+        self.assertAlmostEqual(_polygon_gap(door + [door[0]], passing_body), 1.0)
+
     def test_stale_clearance_hash_rejected(self):
         survey_sha = write_source(self.survey_path, self.survey)
         write_source(self.clearance_path, self.clearance)

@@ -189,12 +189,15 @@ def audit_comparison(first, second, first_scene, second_scene):
     return {"fixed_conditions_checked": list(fixed), "difference": "measured ego crossing entry relative to other exit"}
 
 
-def audit_saved_sources(root, manifest, scene):
+def audit_saved_sources(root, manifest, scene, *, diagnostic_fixture=False):
     """Reject absent/stale original trace, map, device and four camera sources."""
-    if manifest.get("case_id") != scene["case_id"] or manifest.get("frame_count") != 900:
+    expected = manifest.get("frame_count") if diagnostic_fixture else 900
+    if diagnostic_fixture and expected not in (9, 900):
+        raise ValueError("unsupported diagnostic frame count")
+    if manifest.get("case_id") != scene["case_id"] or manifest.get("frame_count") != expected:
         raise ValueError("source manifest case or frame count mismatch")
-    required = ("native_trace", "opendrive", "device_inventory", "camera_front",
-                "camera_rear", "camera_left", "camera_right")
+    required = ("native_trace", "opendrive", "device_inventory", "camera_overview",
+                "camera_approach", "camera_reference_corner", "camera_driver_reference")
     sources = manifest.get("sources", {})
     if set(sources) != set(required):
         raise ValueError("missing or extraneous original source")
@@ -212,6 +215,6 @@ def audit_saved_sources(root, manifest, scene):
     if bound["opendrive"] != scene["crossing"]["opendrive_sha256"]:
         raise ValueError("original map differs from construction source")
     trace = json.loads((root / sources["native_trace"]["path"]).read_text())
-    observation = measure_saved(trace, scene)
+    observation = measure_saved(trace, scene, expected_frames=expected)
     return {"source_sha256": bound, "observations": observation,
             "physical_pixels_reviewed": False, "legal_judgment": "unresolved"}

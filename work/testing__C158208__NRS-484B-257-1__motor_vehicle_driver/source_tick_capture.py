@@ -184,9 +184,14 @@ def write_capture_identity(attempt: Path, case_id: str, construction: Path,
                            *, diagnostic_fixture: bool = False) -> dict:
     """Bind a sealed attempt to its exact construction and reviewed map sources."""
     prefix = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
-    if case_id not in (prefix + "__nearest_view_response",
-                       prefix + "__nearest_view_uninterrupted"):
-        raise ValueError("capture identity case is outside exact pair")
+    kinds = ("nearest_view_response", "nearest_view_uninterrupted",
+             "marked_stop_line_response", "marked_stop_line_uninterrupted",
+             "near_side_marked_crosswalk_response", "near_side_marked_crosswalk_uninterrupted",
+             "near_side_sidewalk_derived_crosswalk_response",
+             "near_side_sidewalk_derived_crosswalk_uninterrupted",
+             "approaching_phase_probe", "later_history_probe", "nearest_view_stopped")
+    if case_id not in {prefix + "__" + kind for kind in kinds}:
+        raise ValueError("capture identity case is outside exact assignment")
     attempt = Path(attempt)
     output = attempt / "capture-identity.json"
     if output.exists():

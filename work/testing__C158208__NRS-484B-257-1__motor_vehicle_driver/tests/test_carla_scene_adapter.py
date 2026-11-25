@@ -159,10 +159,14 @@ class AdapterTests(unittest.TestCase):
         self.assertFalse(observation["raw_tick"]["visibility_probe"]["occluded"])
         self.assertEqual(set(observation["cameras"]), set(CAMERAS))
         self.assertEqual(set(observation["raw_tick"]["camera_raw_bgra_sha256"]), set(CAMERAS))
+        self.assertEqual(observation["raw_tick"]["through_vehicle"]["velocity_xy_mps"], [3, 0])
         for data in observation["cameras"].values():
             self.assertTrue(data.startswith(b"\x89PNG"))
-        self.adapter.apply_control(owned, {"throttle": .2, "brake": 0, "steer": 0})
+        self.adapter.apply_control(owned, {"throttle": .2, "brake": 0, "steer": 0,
+                                           "through_control": {"throttle": .4, "brake": 0,
+                                                               "steer": 0}})
         self.assertEqual(self.adapter.ego.control["throttle"], .2)
+        self.assertEqual(self.adapter.through.control["throttle"], .4)
         for actor in reversed(owned):
             self.adapter.destroy(actor)
         self.assertTrue(all(actor.destroyed for actor in owned))

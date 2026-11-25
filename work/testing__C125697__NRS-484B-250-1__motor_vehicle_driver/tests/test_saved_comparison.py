@@ -17,16 +17,22 @@ def attempt(root, suffix, ego_entry):
     selected = scene(suffix)
     (root / "scene.json").write_text(json.dumps(selected))
     source = {
-        "native_trace": json.dumps(trace(selected, ego_entry=ego_entry)).encode(),
-        "opendrive": b"inspected map",
-        "device_inventory": b"original device inventory",
-        "camera_front": b"front", "camera_rear": b"rear",
-        "camera_left": b"left", "camera_right": b"right",
+        "native_trace": ("native_trace.json", json.dumps(trace(selected, ego_entry=ego_entry)).encode()),
+        "opendrive": ("opendrive.xodr", b"inspected map"),
+        "device_inventory": ("device_inventory.json", b"original device inventory"),
+        "camera_overview": ("overview.mkv", b"overview"),
+        "camera_approach": ("approach.mkv", b"approach"),
+        "camera_reference_corner": ("reference_corner.mkv", b"reference corner"),
+        "camera_driver_reference": ("driver_reference.mkv", b"driver reference"),
     }
+    (root / "highway_identity.json").write_text(json.dumps({
+        "ego_highway": selected["ego_highway"],
+        "other_highway": selected["other_highway"],
+        "public_access_confirmed": True}))
     refs = {}
-    for name, body in source.items():
-        (root / name).write_bytes(body)
-        refs[name] = {"path": name, "sha256": hashlib.sha256(body).hexdigest()}
+    for name, (path, body) in source.items():
+        (root / path).write_bytes(body)
+        refs[name] = {"path": path, "sha256": hashlib.sha256(body).hexdigest()}
     (root / "source-manifest.json").write_text(json.dumps({
         "case_id": selected["case_id"], "frame_count": 900, "sources": refs}))
 
@@ -50,13 +56,13 @@ class SavedComparisonTests(unittest.TestCase):
             first, second = root / "precedence", root / "advance"
             attempt(first, "precedence", 60)
             attempt(second, "advance", 45)
-            (second / "camera_left").unlink()
+            (second / "reference_corner.mkv").unlink()
             with self.assertRaisesRegex(ValueError, "missing original source"):
                 saved_comparison.audit(first, second)
-            (second / "camera_left").write_bytes(b"tampered")
+            (second / "reference_corner.mkv").write_bytes(b"tampered")
             with self.assertRaisesRegex(ValueError, "stale original source"):
                 saved_comparison.audit(first, second)
-            (second / "camera_left").write_bytes(b"left")
+            (second / "reference_corner.mkv").write_bytes(b"reference corner")
             wrong = copy.deepcopy(json.loads((second / "scene.json").read_text()))
             wrong["other_highway"] = "changed"
             (second / "scene.json").write_text(json.dumps(wrong))
@@ -65,12 +71,12 @@ class SavedComparisonTests(unittest.TestCase):
             (second / "scene.json").write_text(json.dumps(scene("advance")))
             altered = json.loads((second / "source-manifest.json").read_text())
             body = b"different official device inventory"
-            (second / "device_inventory").write_bytes(body)
+            (second / "device_inventory.json").write_bytes(body)
             altered["sources"]["device_inventory"]["sha256"] = hashlib.sha256(body).hexdigest()
             (second / "source-manifest.json").write_text(json.dumps(altered))
             with self.assertRaisesRegex(ValueError, "fixed device inventory"):
                 saved_comparison.audit(first, second)
-            (second / "device_inventory").write_bytes(b"original device inventory")
+            (second / "device_inventory.json").write_bytes(b"original device inventory")
             altered["sources"]["device_inventory"]["sha256"] = hashlib.sha256(b"original device inventory").hexdigest()
             (second / "source-manifest.json").write_text(json.dumps(altered))
             wrong = json.loads((second / "source-manifest.json").read_text())

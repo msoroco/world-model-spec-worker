@@ -14,6 +14,8 @@ from pathlib import Path
 from camera_sources import audit_camera_sources, write_camera_sources
 from source_tick_capture import TickCapture, validate_geometry, write_capture_identity
 from yield_control import KINDS, control
+from through_traffic_control import control as control_through, validate_plan as validate_through_plan
+from branch_site_preflight import validate_site_branch
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
@@ -75,19 +77,28 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
         raise ValueError("reviewed C158208 Native site required")
     geometry = site.get("capture_geometry")
     validate_geometry(geometry)
-    viewpoint_station = site.get("ego_view_station_m")
+    kind = case_id.removeprefix(ASSIGNMENT + "__")
+    viewpoint_station = (site.get("ego_view_station_m") if kind.startswith("nearest_view")
+                         else site.get("stopping_reference_station_m"))
     if (isinstance(viewpoint_station, bool) or
             not isinstance(viewpoint_station, (int, float)) or
             not math.isfinite(viewpoint_station)):
         raise ValueError("reviewed finite viewpoint station required")
     context = site.get("reviewed_context")
-    if not isinstance(context, dict) or not all(context.get(key) is True for key in (
+    if not isinstance(context, dict):
+        raise ValueError("reviewed sign and control context required")
+    if diagnostic_fixture and not all(context.get(key) is True for key in (
             "yield_sign_governs_approach", "no_marked_stop_line", "no_near_side_crosswalk",
             "no_sidewalk_derived_crosswalk", "through_highway_confirmed", "no_officer_control",
             "no_signal_control", "viewpoint_reviewed")):
         raise ValueError("reviewed sign, nearest-view and control context required")
+    if not diagnostic_fixture:
+        validate_site_branch(site, case_id)
     verify_review_sources(site, reviewed_site_packet,
                           diagnostic_fixture=diagnostic_fixture)
+    motion_plan = site.get("native_scene", {}).get("through_vehicle", {}).get("motion_plan")
+    if not diagnostic_fixture:
+        validate_through_plan(motion_plan)
     world = client.get_world()
     actual_map = world.get_map().to_opendrive().encode()
     if hashlib.sha256(actual_map).hexdigest() != site.get("map_opendrive_sha256"):
@@ -104,6 +115,7 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
         if not owned:
             raise ValueError("Native scene spawned no owned actors")
         writer = TickCapture(Path(attempt), geometry, context)
+        first_tick_time = None
         for _ in range(3 if diagnostic_fixture else 900):
             frame = world.tick()
             snapshot = world.get_snapshot()
@@ -111,6 +123,8 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
                 raise ValueError("Native world tick/snapshot frame differs")
             observation = carla_adapter.observe(world, owned, frame)
             raw = observation["raw_tick"]
+            if first_tick_time is None:
+                first_tick_time = raw["time_s"]
             if raw.get("frame") != frame or abs(raw.get("time_s", float("inf")) -
                                                  snapshot.timestamp.elapsed_seconds) > .001:
                 raise ValueError("Native original tick readback differs from world snapshot")
@@ -123,8 +137,15 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
                 "through_vehicle_in_conflict_interval":
                     derived["through_vehicle_within_intersection"],
                 "yield_sign_governs_approach": raw["sign_present"],
-                "viewpoint_source_verified": context["viewpoint_reviewed"],
+                "viewpoint_source_verified": context.get("viewpoint_reviewed", True),
             })
+            if motion_plan is not None:
+                velocity = raw["through_vehicle"].get("velocity_xy_mps")
+                if not isinstance(velocity, list) or len(velocity) != 2:
+                    raise ValueError("original through-vehicle velocity source missing")
+                command["through_control"] = control_through(
+                    motion_plan, raw["time_s"] - first_tick_time,
+                    math.hypot(velocity[0], velocity[1]))
             carla_adapter.apply_control(owned, command)
         writer.close()
         write_capture_identity(Path(attempt), case_id, construction,

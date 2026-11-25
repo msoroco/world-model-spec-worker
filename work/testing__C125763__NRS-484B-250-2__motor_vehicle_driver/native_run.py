@@ -58,10 +58,12 @@ def _cameras(world, carla, scene):
 
 
 def run(world, carla, packet_path, output, case, *, frame_count=900,
-        diagnostic_fixture=False):
+        diagnostic_fixture=False, target_speed_mps=8.0):
     """Run one case; publish no success receipt until resources are released."""
     if case not in CASES or type(frame_count) is not int or frame_count < 2:
         raise ValueError('known crossing timing case and frame count required')
+    if type(target_speed_mps) not in (int, float) or not 4.0 <= target_speed_mps <= 12.0:
+        raise ValueError('bounded engineering target speed required')
     output = Path(output)
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise ValueError('fresh empty output directory required')
@@ -132,8 +134,9 @@ def run(world, carla, packet_path, output, case, *, frame_count=900,
         def before_tick(index):
             now = index * .05
             control_step(carla, pair[0], scene['ego_route'], now,
-                         float(scene.get('ego_release_s', 0)))
-            control_step(carla, pair[1], scene['other_route'], now, releases[case])
+                         float(scene.get('ego_release_s', 0)), target_speed_mps)
+            control_step(carla, pair[1], scene['other_route'], now, releases[case],
+                         target_speed_mps)
 
         receipt = capture(world, packet_path, pair[0], pair[1], output, frame_count,
                           camera_readers=readers, camera_dimensions=dimensions,

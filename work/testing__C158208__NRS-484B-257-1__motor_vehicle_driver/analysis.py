@@ -10,10 +10,13 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from yield_control import KINDS
 import subprocess
 
 from camera_sources import CAMERAS, audit_camera_sources
 from nearest_view_measurement import measure
+from statutory_branch_measurement import measure_branch
+from branch_site_preflight import validate_site_branch
 from native_attempt import verify_review_sources
 from prepare_derived_media import prepare as prepare_derived_media
 from source_tick_capture import verify_seal
@@ -70,8 +73,7 @@ def measure_nearest_view(stage: Path) -> dict:
     packet = verify_seal(root)
     identity = json.loads((root / "capture-identity.json").read_text())
     if identity.get("assignment_id") != ASSIGNMENT or identity.get("case_id") not in {
-            ASSIGNMENT + "__nearest_view_response",
-            ASSIGNMENT + "__nearest_view_uninterrupted"}:
+            ASSIGNMENT + "__" + kind for kind in KINDS}:
         raise ValueError("selected C158208 capture identity differs")
     diagnostic = identity.get("provenance_kind") == "synthetic_fixture"
     config_path = root / "config.json"
@@ -85,6 +87,7 @@ def measure_nearest_view(stage: Path) -> dict:
         raise ValueError("selected construction differs from sealed original capture")
     if not diagnostic and identity.get("provenance_kind") != "original_capture":
         raise ValueError("unknown source provenance")
+    site = None
     if not diagnostic:
         scene_path = root / "scene.json"
         if not scene_path.is_file():
@@ -102,9 +105,33 @@ def measure_nearest_view(stage: Path) -> dict:
             raise ValueError("reviewed site differs from sealed original capture")
         site = json.loads(site_path.read_text())
         verify_review_sources(site, site_path, diagnostic_fixture=False)
+        validate_site_branch(site, identity["case_id"])
         if site.get("capture_geometry") != packet["geometry"] or site.get("reviewed_context") != packet["reviewed_context"]:
             raise ValueError("reviewed site geometry or context differs from sealed original ticks")
-    value = measure(packet)
+    elif (root / "scene.json").is_file():
+        scene = json.loads((root / "scene.json").read_text())
+        if scene.get("source_kind") != "synthetic_reviewed_fixture":
+            raise ValueError("diagnostic branch scene provenance differs")
+        site_name = scene.get("site_source")
+        if not isinstance(site_name, str) or Path(site_name).name != site_name:
+            raise ValueError("diagnostic fixture site path differs")
+        site_path = root / site_name
+        if (_sha(site_path) != scene.get("site_sha256") or
+                _sha(site_path) != identity.get("site_packet_sha256")):
+            raise ValueError("diagnostic fixture site differs from capture identity")
+        site = json.loads(site_path.read_text())
+        if site.get("capture_geometry") != packet["geometry"] or site.get("reviewed_context") != packet["reviewed_context"]:
+            raise ValueError("diagnostic fixture geometry or context differs from sealed ticks")
+    kind = identity["case_id"].rsplit("__", 1)[-1]
+    if kind in ("nearest_view_response", "nearest_view_uninterrupted"):
+        value = measure(packet)
+        method = "measure_nearest_view"
+    else:
+        if site is None:
+            raise ValueError("diagnostic branch measurement requires reviewed fixture site")
+        value = measure_branch(packet, site, identity["case_id"])
+        value["sample_count"] = len(packet["samples"])
+        method = "measure_statutory_branch"
     generated = diagnostic and (root / "diagnostic-compatibility.json").is_file()
     cameras = (_diagnostic_videos(root, identity["case_id"], value["sample_count"])
                if generated else audit_camera_sources(root, diagnostic_fixture=diagnostic))
@@ -118,7 +145,7 @@ def measure_nearest_view(stage: Path) -> dict:
             if not path.is_file():
                 raise ValueError("Missing required source: " + source["path"])
             hashes[source["path"]] = _sha(path)
-    return {"method": "measure_nearest_view", "value": value,
+    return {"method": method, "value": value,
             "sources": hashes, "diagnostic_fixture": diagnostic,
             "case_id": identity["case_id"]}
 
@@ -128,11 +155,8 @@ def measure_governing_control(stage: Path) -> dict:
     joined = measure_nearest_view(root)
     packet = verify_seal(root)
     context = packet["reviewed_context"]
-    observed = {name: context[name] for name in (
-        "yield_sign_governs_approach", "no_marked_stop_line",
-        "no_near_side_crosswalk", "no_sidewalk_derived_crosswalk",
-        "through_highway_confirmed", "no_officer_control", "no_signal_control",
-        "viewpoint_reviewed")}
+    observed = {name: value for name, value in context.items()
+                if isinstance(value, bool) and value}
     return {"method": "measure_governing_control", "value": observed,
             "sources": joined["sources"], "diagnostic_fixture": joined["diagnostic_fixture"],
             "case_id": joined["case_id"]}
@@ -220,8 +244,8 @@ def _native_result(root: Path, nearest: dict, control: dict) -> dict:
                 raise ValueError("sealed original frame stream differs: " + name)
         else:
             target.write_text(content)
-    check = {"target": "sealed original nearest-view source join", "requested": True,
-             "measured": True, "method": "measure_nearest_view", "tolerance": 0,
+    check = {"target": "sealed original statutory branch source join", "requested": True,
+             "measured": True, "method": nearest["method"], "tolerance": 0,
              "matched": True, "physical_cause_confirmed": False,
              "cause_evidence": nearest["sources"]}
     result = {"case_id": nearest["case_id"], "measured_values": nearest["value"],
@@ -243,8 +267,10 @@ def analyze(stage: Path, output: Path) -> dict:
     root = Path(stage)
     nearest = measure_nearest_view(root)
     control = measure_governing_control(root)
+    history_name = ("nearest_view_history" if nearest["method"] == "measure_nearest_view"
+                    else "statutory_branch_history")
     report = {"format": "worker-analysis-report", "case_id": nearest["case_id"],
-              "measurements": {"nearest_view_history": nearest,
+              "measurements": {history_name: nearest,
                                "governing_control_context": control},
               "diagnostic_fixture": nearest["diagnostic_fixture"],
               "legal_judgment": None,

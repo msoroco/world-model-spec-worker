@@ -229,6 +229,7 @@ class CarlaSceneAdapter:
             rgb.save(stream, format="PNG")
             images[name] = stream.getvalue()
         velocity = self.ego.get_velocity()
+        through_velocity = self.through.get_velocity()
         if self.sign_kind == "actor":
             sign_present = self.world.get_actor(self.sign.id) is not None
         elif self.sign_kind == "landmark":
@@ -244,7 +245,9 @@ class CarlaSceneAdapter:
                                            _finite(velocity.y, "ego velocity y")]},
                "through_vehicle": {"center_xy_m": [through_transform.location.x,
                                                      through_transform.location.y],
-                                   "body_vertices_xy_m": through_body},
+                                   "body_vertices_xy_m": through_body,
+                                   "velocity_xy_mps": [_finite(through_velocity.x, "through velocity x"),
+                                                       _finite(through_velocity.y, "through velocity y")]},
                "visibility_probe": {"source": "native_raycast", "occluded": occluded,
                                     "origin_xy_m": [origin.x, origin.y],
                                     "target_xy_m": [target.x, target.y],
@@ -260,6 +263,14 @@ class CarlaSceneAdapter:
             throttle=_finite(command["throttle"], "throttle"),
             brake=_finite(command["brake"], "brake"),
             steer=_finite(command["steer"], "steer")))
+        through = command.get("through_control")
+        if through is not None:
+            if self.through not in actors:
+                raise ValueError("through vehicle not owned")
+            self.through.apply_control(self.carla.VehicleControl(
+                throttle=_finite(through["throttle"], "through throttle"),
+                brake=_finite(through["brake"], "through brake"),
+                steer=_finite(through["steer"], "through steer")))
 
     def destroy(self, actor):
         if actor in self.sensor_actors.values():
