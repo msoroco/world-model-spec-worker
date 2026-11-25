@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +57,25 @@ class RunnerEntrypointTests(unittest.TestCase):
             self.runner.run_native(authority_root=self.authority, site_path=self.site_path,
                                    adapter_path=self.root / "missing_adapter.py",
                                    attempt_root=self.root / "attempt", host="127.0.0.1", port=2000)
+
+    def test_reviewed_source_dispatches_native_loop_with_fixed_capture(self):
+        adapter = self.root / "adapter.py"
+        adapter.write_text(
+            "def connect(**kwargs):\n"
+            "    return {'world': 'fake-world', 'transform': 'fake-transform',\n"
+            "            'apply_device_policy': lambda *args: None,\n"
+            "            'apply_motion': lambda *args: None,\n"
+            "            'read_original': lambda *args: None,\n"
+            "            'camera_pngs': lambda *args: None}\n")
+        with patch.object(self.runner, "execute_case", return_value={"sealed": True}) as native:
+            result = self.runner.run_native(
+                authority_root=self.authority, site_path=self.site_path,
+                adapter_path=adapter, attempt_root=self.root / "attempt",
+                host="127.0.0.1", port=2000)
+        self.assertEqual(result, {"sealed": True})
+        self.assertEqual(native.call_args.kwargs["frame_count"], 900)
+        self.assertFalse(native.call_args.kwargs["diagnostic_fixture"])
+        self.assertEqual(native.call_args.kwargs["case_suffix"], "two_cycles_failed_detection")
 
     def test_missing_or_stale_source_rejected_before_adapter(self):
         (self.authority / "detector.json").unlink()

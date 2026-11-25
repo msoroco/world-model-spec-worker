@@ -11,6 +11,7 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
+from zipfile import ZipFile
 
 PREFIX = "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__"
 VARIANTS = {"nearest_view_hold", "nearest_view_continue", "nearest_view_clear", "active_signal_exception"}
@@ -93,10 +94,35 @@ def audit(case_id: str, attempt: Path, diagnostic: bool = False) -> dict:
         if row.get("frame") != 100 + i or set(hashes) != CAMERAS:
             raise ValueError("camera frame join differs")
         all_pixels &= all(isinstance(h, str) and len(h) == 64 and h != zero for h in hashes.values())
+    original_camera = camera.get("format") == "c158196-original-four-camera-sources-v1"
+    encoding = read(attempt / "camera-video-encoding.json") if original_camera else None
+    if original_camera and (encoding.get("format") != "c158196-original-camera-encoding-v1" or set(encoding.get("sources", {})) != CAMERAS):
+        raise ValueError("original camera encoding receipt missing")
     for name, source in camera["sources"].items():
-        path = attempt / source["path"]
-        if path.is_symlink() or not path.is_file() or source.get("frame_count") != 900:
-            raise ValueError("camera source missing: " + name)
+        if source.get("frame_count") != 900:
+            raise ValueError("camera source count differs: " + name)
+        if original_camera:
+            archive = attempt / source["path"]
+            if archive.is_symlink() or not archive.is_file() or digest(archive) != source.get("sha256"):
+                raise ValueError("original camera archive hash differs: " + name)
+            with ZipFile(archive) as images:
+                expected = [f"{100 + i:08d}.png" for i in range(900)]
+                if images.namelist() != expected:
+                    raise ValueError("original camera archive frame order differs: " + name)
+                for i, frame in enumerate(expected):
+                    pixels = images.read(frame)
+                    if not pixels.startswith(b"\x89PNG\r\n\x1a\n") or hashlib.sha256(pixels).hexdigest() != frame_map[i]["pixel_sha256"][name]:
+                        raise ValueError("original camera pixel hash differs: " + name)
+            video = encoding["sources"][name]
+            if video.get("source_archive_sha256") != source["sha256"] or video.get("frame_count") != 900:
+                raise ValueError("encoded video source binding differs: " + name)
+            path = attempt / video["path"]
+            if path.is_symlink() or not path.is_file() or digest(path) != video.get("sha256"):
+                raise ValueError("encoded video hash differs: " + name)
+        else:
+            path = attempt / source["path"]
+            if path.is_symlink() or not path.is_file():
+                raise ValueError("camera source missing: " + name)
         probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames", "-show_entries", "stream=nb_read_frames", "-of", "default=noprint_wrappers=1:nokey=1", str(path)], capture_output=True, text=True)
         if probe.returncode != 0 or probe.stdout.strip() != "900":
             raise ValueError("camera decode count differs: " + name)
@@ -108,6 +134,43 @@ def audit(case_id: str, attempt: Path, diagnostic: bool = False) -> dict:
             raise ValueError("diagnostic fixture cannot establish Native delivery")
         if not all_pixels:
             raise ValueError("actual camera pixels unverified")
+        if not original_camera:
+            raise ValueError("original camera archives required")
+        review_path = attempt / "independent-pixel-review.json"
+        if not review_path.is_file() or review_path.is_symlink():
+            raise ValueError("independent pixel review missing")
+        review = read(review_path)
+        if (review.get("format") != "c158196-independent-pixel-review-v1" or
+                review.get("case_id") != case_id or review.get("decision") != "accepted" or
+                review.get("independent_of_capture") is not True or
+                not isinstance(review.get("reviewer_id"), str) or not review["reviewer_id"].strip() or
+                not isinstance(review.get("review_method"), str) or not review["review_method"].strip() or
+                review.get("frame_map_sha256") != digest(frame_map_path) or
+                review.get("video_sha256") != {name: encoding["sources"][name]["sha256"] for name in CAMERAS}):
+            raise ValueError("independent pixel review binding incomplete")
+        samples = review.get("reviewed_samples")
+        if not isinstance(samples, list) or len(samples) < 12:
+            raise ValueError("independent pixel samples incomplete")
+        seen = set()
+        visible = set()
+        for sample in samples:
+            name, frame = sample.get("camera"), sample.get("frame")
+            if name not in CAMERAS or frame not in (100, 550, 999) or (name, frame) in seen:
+                raise ValueError("independent pixel sample identity differs")
+            seen.add((name, frame))
+            if sample.get("pixel_sha256") != frame_map[frame - 100]["pixel_sha256"][name]:
+                raise ValueError("independent pixel sample hash differs")
+            roles = sample.get("visible_roles")
+            if not isinstance(roles, list) or not roles or not all(isinstance(role, str) and role for role in roles):
+                raise ValueError("independent pixel visibility review missing")
+            visible.update(roles)
+        if seen != {(name, frame) for name in CAMERAS for frame in (100, 550, 999)}:
+            raise ValueError("independent pixel review coverage differs")
+        required_roles = {"ego", "through_vehicle", "yield_sign"}
+        if case_id.endswith("active_signal_exception"):
+            required_roles.add("governing_signal")
+        if not required_roles <= visible:
+            raise ValueError("independent pixel role visibility incomplete")
         physical = read(attempt / "physical-result.json")
         if physical.get("physical_checks", {}).get("maneuver", {}).get("status") != "met" or physical.get("diagnostic_fixture") is True:
             raise ValueError("physical completion unverified")

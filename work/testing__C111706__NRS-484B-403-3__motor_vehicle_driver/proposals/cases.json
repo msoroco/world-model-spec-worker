@@ -1,0 +1,374 @@
+{
+  "cell_id": "C111706",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Reference U-turn cell; no recording selected.",
+      "variable_assignments": {
+        "turn_location": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "Neutral unsimulated baseline; no legal outcome inferred."
+        },
+        "ego_route": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "Neutral unsimulated baseline; no legal outcome inferred."
+        },
+        "other_start_tick": {
+          "kind": "controller",
+          "value": "reference",
+          "note": "Neutral unsimulated baseline; no legal outcome inferred."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "business_district",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "retain independent district classification evidence and uncertainty; no simulator tag alone establishes statutory context",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "intersection_exception",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original Native map junction and geometry with ego bounding-box sweep; compare physical swept envelope to statutory intersection boundary",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "vehicle_reversal",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original ego lane, road and yaw histories; require opposite heading and lane continuity",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "surrounding_vehicle",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original other-actor identity, route, time and center separation histories",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame identity and image hashes",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "pixel decode establishes data integrity only"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "source-sealed OpenDRIVE map, district frontage and building-use evidence, boundary and route packet"
+          }
+        ],
+        "limitations": [
+          "Original map and district status require independent local review.",
+          "Physical U-turn completion, continuous swept occupancy and camera visibility remain unconfirmed."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near",
+      "target_law_id": "NRS-484B-403-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Intersection U-turn with a separate motor vehicle crossing nearby; intended comparison only, legal interpretation pending original source review.",
+      "variable_assignments": {
+        "turn_location": {
+          "kind": "world_setup",
+          "value": "intersection",
+          "note": "Target location only; actual swept body footprint is measured."
+        },
+        "ego_route": {
+          "kind": "world_setup",
+          "value": "reviewed_intersection_route",
+          "note": "Source-reviewed route identity; physical execution unconfirmed."
+        },
+        "other_start_tick": {
+          "kind": "controller",
+          "value": 80,
+          "note": "Requested controller release tick; actual other-vehicle trajectory measured."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "business_district",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "retain independent district classification evidence and uncertainty; no simulator tag alone establishes statutory context",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "intersection_exception",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original Native map junction and geometry with ego bounding-box sweep; compare physical swept envelope to statutory intersection boundary",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "vehicle_reversal",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original ego lane, road and yaw histories; require opposite heading and lane continuity",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "surrounding_vehicle",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original other-actor identity, route, time and center separation histories",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame identity and image hashes",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "pixel decode establishes data integrity only"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "source-sealed OpenDRIVE map, district frontage and building-use evidence, boundary and route packet"
+          }
+        ],
+        "limitations": [
+          "Original map and district status require independent local review.",
+          "Physical U-turn completion, continuous swept occupancy and camera visibility remain unconfirmed."
+        ]
+      },
+      "paired_probe_id": "location",
+      "deliberate_differences": [
+        "turn_location",
+        "ego_route"
+      ],
+      "probe": {
+        "primary_variable": "turn_location",
+        "comparison_or_standard": "source-reviewed original-frame controlled comparison",
+        "target_value_or_branch": "intersection"
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection",
+      "target_law_id": "NRS-484B-403-3",
+      "target_type": "violating_attempt",
+      "rationale": "U-turn completed on the approach before entering intersection; intended comparison only, legal interpretation pending original source review.",
+      "variable_assignments": {
+        "turn_location": {
+          "kind": "world_setup",
+          "value": "before_intersection",
+          "note": "Target location only; actual swept body footprint is measured."
+        },
+        "ego_route": {
+          "kind": "world_setup",
+          "value": "reviewed_approach_route",
+          "note": "Source-reviewed route identity; physical execution unconfirmed."
+        },
+        "other_start_tick": {
+          "kind": "controller",
+          "value": 80,
+          "note": "Requested controller release tick; actual other-vehicle trajectory measured."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "business_district",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "retain independent district classification evidence and uncertainty; no simulator tag alone establishes statutory context",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "intersection_exception",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original Native map junction and geometry with ego bounding-box sweep; compare physical swept envelope to statutory intersection boundary",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "vehicle_reversal",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original ego lane, road and yaw histories; require opposite heading and lane continuity",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "surrounding_vehicle",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original other-actor identity, route, time and center separation histories",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame identity and image hashes",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "pixel decode establishes data integrity only"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "source-sealed OpenDRIVE map, district frontage and building-use evidence, boundary and route packet"
+          }
+        ],
+        "limitations": [
+          "Original map and district status require independent local review.",
+          "Physical U-turn completion, continuous swept occupancy and camera visibility remain unconfirmed."
+        ]
+      },
+      "paired_probe_id": "location",
+      "deliberate_differences": [
+        "turn_location",
+        "ego_route"
+      ],
+      "probe": {
+        "primary_variable": "turn_location",
+        "comparison_or_standard": "source-reviewed original-frame controlled comparison",
+        "target_value_or_branch": "before_intersection"
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far",
+      "target_law_id": "NRS-484B-403-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Intersection U-turn with the same other-vehicle route and later arrival; intended comparison only, legal interpretation pending original source review.",
+      "variable_assignments": {
+        "turn_location": {
+          "kind": "world_setup",
+          "value": "intersection",
+          "note": "Target location only; actual swept body footprint is measured."
+        },
+        "ego_route": {
+          "kind": "world_setup",
+          "value": "reviewed_intersection_route",
+          "note": "Source-reviewed route identity; physical execution unconfirmed."
+        },
+        "other_start_tick": {
+          "kind": "controller",
+          "value": 220,
+          "note": "Requested controller release tick; actual other-vehicle trajectory measured."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "business_district",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "retain independent district classification evidence and uncertainty; no simulator tag alone establishes statutory context",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "intersection_exception",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original Native map junction and geometry with ego bounding-box sweep; compare physical swept envelope to statutory intersection boundary",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "vehicle_reversal",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original ego lane, road and yaw histories; require opposite heading and lane continuity",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "surrounding_vehicle",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original other-actor identity, route, time and center separation histories",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "20 Hz sampling and source review; physical completion unconfirmed"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame identity and image hashes",
+            "time_window": "full original 45-second attempt",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "pixel decode establishes data integrity only"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "source-sealed OpenDRIVE map, district frontage and building-use evidence, boundary and route packet"
+          }
+        ],
+        "limitations": [
+          "Original map and district status require independent local review.",
+          "Physical U-turn completion, continuous swept occupancy and camera visibility remain unconfirmed."
+        ]
+      },
+      "paired_probe_id": "other_context",
+      "deliberate_differences": [
+        "other_start_tick"
+      ],
+      "probe": {
+        "primary_variable": "other_start_tick",
+        "comparison_or_standard": "source-reviewed original-frame controlled comparison",
+        "target_value_or_branch": "far arrival"
+      },
+      "unresolved_judgment_calls": []
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-403-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-403-3",
+  "actor": "motor_vehicle_driver",
+  "quote": "The driver of a vehicle shall not make a U-turn in a business district, except at an intersection or on a divided highway where an appropriate opening or crossing place exists.",
+  "structure": {
+    "law_id": "NRS-484B-403-3",
+    "activation": {
+      "condition": "A driver makes a U-turn in a source-reviewed business district.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "The driver shall not make that U-turn unless the stated intersection or divided-highway exception applies.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "The full U-turn occurs at an independently reviewed intersection.",
+        "effect": "Intersection location is the stated alternative to the district prohibition.",
+        "replacement_obligation": "No categorical legal verdict follows from the CPU package.",
+        "source_clause": "except at an intersection"
+      },
+      {
+        "trigger": "A divided highway has an appropriate opening or crossing place.",
+        "effect": "This alternative needs a different physical layout and a source-backed review.",
+        "replacement_obligation": "No categorical legal verdict follows from this fixed intersection cell.",
+        "source_clause": "on a divided highway where an appropriate opening or crossing place exists"
+      }
+    ],
+    "timing": {
+      "description": "Original 20 Hz source frames cover approach, full reversal, other-vehicle motion and post-turn observation.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "turn_location",
+      "kind": "world_setup",
+      "range_or_domain": "within reviewed intersection boundary or before it"
+    },
+    {
+      "name": "ego_route",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed connected U-turn route inside intersection or on approach"
+    },
+    {
+      "name": "other_start_tick",
+      "kind": "controller",
+      "range_or_domain": "source-reviewed integer tick within 900-frame attempt"
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "ef106e810d041d277650802bdc2ce9a72a3fa5500b94bed839322dae23a68887",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/intersection_vehicle_near/fallback1-construction.json",
+          "construction_sha256": "4f1d8db53a51bea7c50e583306fe7df2fb4e6797de466ce33fa2f437149f6569",
+          "changed_knobs": [
+            "route-follower arrival radius 1.2 m to 1.5 m for the same reviewed route in every linked case"
+          ],
+          "trigger": {
+            "source": "original Native waypoint tracking and 20 Hz ego route samples",
+            "metric": "consecutive waypoint arrival and cross-track error",
+            "failure_condition": "primary controller misses a reviewed hairpin sample or aborts tracking before destination lane"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near --candidate fallback1 --output .runtime-work/c111706-owner/offline-intersection_vehicle_near-fallback1",
+            "construction_sha256": "4f1d8db53a51bea7c50e583306fe7df2fb4e6797de466ce33fa2f437149f6569",
+            "exit_code": 0,
+            "log": "proof-offline-intersection_vehicle_near-fallback1.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          },
+          "compatibility": {
+            "receipt": "cases/intersection_vehicle_near/compat-fallback1-compatibility.json",
+            "sha256": "5a26fcd43c9922bc97085d5ad64c4faa89aaa0127d94fa688dbe9d2ff05627ce",
+            "log": "cases/intersection_vehicle_near/compat-fallback1-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/intersection_vehicle_near/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111706_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/diagnostics/intersection_vehicle_near/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near --candidate primary --output .runtime-work/c111706-owner/offline-intersection_vehicle_near-primary",
+        "construction_sha256": "ef106e810d041d277650802bdc2ce9a72a3fa5500b94bed839322dae23a68887",
+        "exit_code": 0,
+        "log": "proof-offline-intersection_vehicle_near-primary.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/intersection_vehicle_near/compat-primary-compatibility.json",
+        "sha256": "75e6688ac2c2a5a5412a11f2e21b334a31ed1a2b17bdd074770a8cc7fcc385fd",
+        "log": "cases/intersection_vehicle_near/compat-primary-analysis.log"
+      },
+      "negative": {
+        "log": "cases/intersection_vehicle_near/compat-primary-negative.log"
+      },
+      "acquisition": {
+        "business_district": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "intersection_exception": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "vehicle_reversal": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "surrounding_vehicle": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "capture_cameras.py",
+          "method": "OriginalCameraCollector.add",
+          "evidence": "capture/camera-originals/camera-manifest.json"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection",
+      "kind": "delivery",
+      "construction": "cases/approach_before_intersection/construction.json",
+      "construction_sha256": "5ec8c16dcd9392f6e52c309123ea206346cb0903b6c7abe81f541825218d6898",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approach_before_intersection/fallback1-construction.json",
+          "construction_sha256": "34720693988d63e5c4e2ee2bb369e01dc784684f4cdf6ff01aec20f577a30596",
+          "changed_knobs": [
+            "route-follower arrival radius 1.2 m to 1.5 m for the same reviewed route in every linked case"
+          ],
+          "trigger": {
+            "source": "original Native waypoint tracking and 20 Hz ego route samples",
+            "metric": "consecutive waypoint arrival and cross-track error",
+            "failure_condition": "primary controller misses a reviewed hairpin sample or aborts tracking before destination lane"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection --candidate fallback1 --output .runtime-work/c111706-owner/offline-approach_before_intersection-fallback1",
+            "construction_sha256": "34720693988d63e5c4e2ee2bb369e01dc784684f4cdf6ff01aec20f577a30596",
+            "exit_code": 0,
+            "log": "proof-offline-approach_before_intersection-fallback1.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          },
+          "compatibility": {
+            "receipt": "cases/approach_before_intersection/compat-fallback1-compatibility.json",
+            "sha256": "bbe833cddd3958d1e3278667a6790ecd57afd1f177434621430b743aefc716c8",
+            "log": "cases/approach_before_intersection/compat-fallback1-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/approach_before_intersection/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111706_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/diagnostics/approach_before_intersection/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__approach_before_intersection --candidate primary --output .runtime-work/c111706-owner/offline-approach_before_intersection-primary",
+        "construction_sha256": "5ec8c16dcd9392f6e52c309123ea206346cb0903b6c7abe81f541825218d6898",
+        "exit_code": 0,
+        "log": "proof-offline-approach_before_intersection-primary.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/approach_before_intersection/compat-primary-compatibility.json",
+        "sha256": "40230cf4dcc4f587d114f288400718bf898c79166df944cf0c02d0844ad00cad",
+        "log": "cases/approach_before_intersection/compat-primary-analysis.log"
+      },
+      "negative": {
+        "log": "cases/approach_before_intersection/compat-primary-negative.log"
+      },
+      "acquisition": {
+        "business_district": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "intersection_exception": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "vehicle_reversal": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "surrounding_vehicle": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "capture_cameras.py",
+          "method": "OriginalCameraCollector.add",
+          "evidence": "capture/camera-originals/camera-manifest.json"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far",
+      "kind": "delivery",
+      "construction": "cases/intersection_vehicle_far/construction.json",
+      "construction_sha256": "b376f3166c04742f7c3b3399fc4f899554d062e35be9e0e6c0637645cd558d51",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A map junction flag may not match statutory intersection boundaries and the opposite lane may not admit a full-size U-turn; original map geometry, body footprint, and camera visibility require review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/intersection_vehicle_far/fallback1-construction.json",
+          "construction_sha256": "bb4f89b4421cdd65d839436e9b5330dc7b3430a1cc6631d44e8f4186a552363b",
+          "changed_knobs": [
+            "route-follower arrival radius 1.2 m to 1.5 m for the same reviewed route in every linked case"
+          ],
+          "trigger": {
+            "source": "original Native waypoint tracking and 20 Hz ego route samples",
+            "metric": "consecutive waypoint arrival and cross-track error",
+            "failure_condition": "primary controller misses a reviewed hairpin sample or aborts tracking before destination lane"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far --candidate fallback1 --output .runtime-work/c111706-owner/offline-intersection_vehicle_far-fallback1",
+            "construction_sha256": "bb4f89b4421cdd65d839436e9b5330dc7b3430a1cc6631d44e8f4186a552363b",
+            "exit_code": 0,
+            "log": "proof-offline-intersection_vehicle_far-fallback1.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          },
+          "compatibility": {
+            "receipt": "cases/intersection_vehicle_far/compat-fallback1-compatibility.json",
+            "sha256": "3adcca7e65acfcbd06f59b2b5501ba7a7582e31fb809eb72f9f77468112d3916",
+            "log": "cases/intersection_vehicle_far/compat-fallback1-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/intersection_vehicle_far/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111706_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/diagnostics/intersection_vehicle_far/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/execution-manifest.json --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_far --candidate primary --output .runtime-work/c111706-owner/offline-intersection_vehicle_far-primary",
+        "construction_sha256": "b376f3166c04742f7c3b3399fc4f899554d062e35be9e0e6c0637645cd558d51",
+        "exit_code": 0,
+        "log": "proof-offline-intersection_vehicle_far-primary.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/intersection_vehicle_far/compat-primary-compatibility.json",
+        "sha256": "f73730f8900eba2b099be934b5b0c8190f1cd446a09a519099a85055eb053625",
+        "log": "cases/intersection_vehicle_far/compat-primary-analysis.log"
+      },
+      "negative": {
+        "log": "cases/intersection_vehicle_far/compat-primary-negative.log"
+      },
+      "acquisition": {
+        "business_district": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "intersection_exception": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "vehicle_reversal": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "surrounding_vehicle": {
+          "entrypoint": "capture_uturn.py",
+          "method": "OriginalNativeCapture.add",
+          "evidence": "capture/native-uturn.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "capture_cameras.py",
+          "method": "OriginalCameraCollector.add",
+          "evidence": "capture/camera-originals/camera-manifest.json"
+        }
+      }
+    }
+  ]
+}
