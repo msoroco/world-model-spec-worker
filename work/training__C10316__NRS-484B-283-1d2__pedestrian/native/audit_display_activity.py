@@ -23,7 +23,7 @@ def sha_file(path):
 def audit(attempt, roi, minimum_contrast=15.0):
     attempt = Path(attempt)
     samples_path = attempt / 'countdown_samples.jsonl'
-    video = attempt / 'display_close.mkv'
+    video = attempt / 'driver_reference.mkv'
     if not samples_path.is_file() or not video.is_file():
         raise ValueError('Missing display activity source')
     samples = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]

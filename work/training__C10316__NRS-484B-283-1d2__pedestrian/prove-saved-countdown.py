@@ -37,8 +37,8 @@ def make_base(destination, suffix):
     shutil.copytree(SOURCE, destination)
     for name in ('result.json', 'analysis-report.json', 'native_samples.jsonl', 'crosswalk-context.json'):
         (destination / name).unlink(missing_ok=True)
-    for old, new in (('reference_corner.mkv', 'crosswalk_side.mkv'),
-                     ('pedestrian_reference.mkv', 'display_close.mkv')):
+    for old, new in (('reference_corner.mkv', 'reference_corner.mkv'),
+                     ('pedestrian_reference.mkv', 'driver_reference.mkv')):
         (destination / old).rename(destination / new)
     for path in (destination / 'channels').glob('*.jsonl'):
         path.unlink()

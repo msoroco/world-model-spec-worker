@@ -9,9 +9,11 @@ NATIVE = HERE / 'native'
 IDS = ('primary', 'fallback1', 'fallback2', 'fallback3')
 SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
            'engineering.py': 'engineering.py', 'signal_clock.py': 'signal_clock.py',
+           'signal_head.py': 'signal_head.py',
            'measure_countdown.py': 'measure_countdown.py', 'finalize.py': 'finalize.py',
            'audit_display_frames.py': 'audit_display_frames.py',
            'audit_governing_context.py': 'audit_governing_context.py',
+           'review_countdown.py': 'review_countdown.py',
            'road.xodr': 'road.xodr', 'tests/test_offline.py': 'test_offline.py'}
 
 
@@ -75,7 +77,7 @@ def build():
                       'source_packets': [],
                       'cameras': [{'name': name, 'width': width, 'height': height} for name, width, height in (
                           ('overview', 1920, 1080), ('approach', 1280, 720),
-                          ('crosswalk_side', 1280, 720), ('display_close', 1280, 720))],
+                          ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))],
                       'recording_description': description,
                       'status': 'unselected_native_capture_proposal'}
             assert (e['display_camera_width'], e['display_camera_height']) == (1280, 720)
@@ -92,7 +94,7 @@ def build():
                             'termination_rules': ['600 original frames',
                                                   'retain failure, encoder and world restoration evidence'],
                             'mechanisms': ['same-cell alley crossing', 'moving Native pedestrian',
-                                           'frame-synchronized diagnostic countdown rendering',
+                                           'authored Native head state readback with separate countdown visual proposal',
                                            'original-pixel source hashes with independent audit required'],
                             'status': 'unselected_cpu_draft_physical_display_unverified'}
             path = HERE / 'draft-bundles' / suffix / ident / 'construction.json'

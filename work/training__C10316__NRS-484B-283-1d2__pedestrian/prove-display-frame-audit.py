@@ -41,11 +41,11 @@ def fixture(folder, count):
                             'original_display_frame_sha256': digest})
             mapping.append({'native_frame': index + 100, 'carla_frame': index + 100,
                             'video_frame': index, 'time_s': index / 20,
-                            'source_rgb_sha256': {'display_close': digest}})
+                            'source_rgb_sha256': {'driver_reference': digest}})
     command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
                '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{WIDTH}x{HEIGHT}',
                '-r', '20', '-i', str(raw), '-an', '-c:v', 'ffv1', '-level', '1',
-               str(folder / 'display_close.mkv')]
+               str(folder / 'driver_reference.mkv')]
     subprocess.run(command, check=True, capture_output=True, text=True, timeout=60)
     raw.unlink()
     lines(folder / 'countdown_samples.jsonl', samples)
@@ -70,7 +70,7 @@ def main():
         samples[17]['original_display_frame_sha256'] = '0' * 64
         lines(good / 'countdown_samples.jsonl', samples)
         reject(good, 'Original display RGB hash join differs at 17')
-        samples[17]['original_display_frame_sha256'] = mapping[17]['source_rgb_sha256']['display_close']
+        samples[17]['original_display_frame_sha256'] = mapping[17]['source_rgb_sha256']['driver_reference']
         lines(good / 'countdown_samples.jsonl', samples)
         mapping[17]['native_frame'] += 1
         lines(good / 'video_frames.jsonl', mapping)
@@ -88,7 +88,7 @@ def main():
         changed_map = [dict(row) for row in mapping]
         changed_samples[0]['original_display_frame_sha256'] = samples[1]['original_display_frame_sha256']
         changed_map[0]['source_rgb_sha256'] = {
-            'display_close': samples[1]['original_display_frame_sha256']}
+            'driver_reference': samples[1]['original_display_frame_sha256']}
         lines(changed_video / 'countdown_samples.jsonl', changed_samples)
         lines(changed_video / 'video_frames.jsonl', changed_map)
         reject(changed_video, 'Decoded display pixels differ at 0')

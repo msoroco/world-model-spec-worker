@@ -37,6 +37,12 @@ def check(path=ROAD):
         raise ValueError('Named crosswalk dimensions or station differ')
     if abs(FAR_X-NEAR_X-7) > 1e-8:
         raise ValueError('Authored highway-edge span differs')
+    signals = road.findall('signals/signal')
+    if len(signals) != 1 or signals[0].get('id') != '203' or \
+            signals[0].get('name') != 'C10316-authored-pedestrian-head-east' or \
+            signals[0].get('type') != '1000002' or \
+            signals[0].get('dynamic') != 'yes':
+        raise ValueError('Authored pedestrian head source differs')
     return {'authored_road_id': 1, 'road_length_m': 40, 'road_width_m': 7,
             'crosswalk_id': CROSSWALK_ID, 'crosswalk_station_m': 20,
             'near_edge_x_m': NEAR_X, 'far_edge_x_m': FAR_X,

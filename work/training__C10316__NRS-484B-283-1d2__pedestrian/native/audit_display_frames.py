@@ -52,9 +52,9 @@ def audit(attempt, expected_frames):
     attempt = Path(attempt)
     if type(expected_frames) is not int or expected_frames < 240:
         raise ValueError('Display audit needs a full declared frame window')
-    video = attempt / 'display_close.mkv'
+    video = attempt / 'driver_reference.mkv'
     if not video.is_file():
-        raise ValueError('Missing display source: display_close.mkv')
+        raise ValueError('Missing display source: driver_reference.mkv')
     samples_path = attempt / 'countdown_samples.jsonl'
     map_path = attempt / 'video_frames.jsonl'
     samples, mapping = rows(samples_path), rows(map_path)
@@ -75,7 +75,7 @@ def audit(attempt, expected_frames):
                (sample.get('time_s'), joined.get('time_s'))):
             raise ValueError('Display Native/video time join differs at ' + str(index))
         a = sample.get('original_display_frame_sha256')
-        b = joined.get('source_rgb_sha256', {}).get('display_close')
+        b = joined.get('source_rgb_sha256', {}).get('driver_reference')
         if not isinstance(a, str) or len(a) != 64 or a != b:
             raise ValueError('Original display RGB hash join differs at ' + str(index))
     width, height = dimensions(video)

@@ -11,6 +11,7 @@ import traceback
 from engineering import candidate
 from geometry import CROSSWALK_ID, check as geometry_check
 from signal_clock import frame_state
+from signal_head import resolve as resolve_signal_head, command_and_sample, sample as sample_signal_head
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
@@ -25,9 +26,9 @@ def camera_specs(plan):
          'xyz': [-8, 0, 7], 'yaw': 0, 'pitch': -45},
         {'name': 'approach', 'width': 1280, 'height': 720,
          'xyz': [-6, -4, 3], 'yaw': 35, 'pitch': -20},
-        {'name': 'crosswalk_side', 'width': 1280, 'height': 720,
+        {'name': 'reference_corner', 'width': 1280, 'height': 720,
          'xyz': [0, 5, 3], 'yaw': -90, 'pitch': -25},
-        {'name': 'display_close', 'width': e['display_camera_width'],
+        {'name': 'driver_reference', 'width': e['display_camera_width'],
          'height': e['display_camera_height'],
          'xyz': [-3.7-e['display_camera_distance_m'], -2, 2.4],
          'yaw': 0, 'pitch': 0},
@@ -111,6 +112,7 @@ def execute(config, output, host, port):
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
         native_map_hash = hashlib.sha256(world.get_map().to_opendrive().encode()).hexdigest()
+        signal_head = resolve_signal_head(world.get_actors())
         library = world.get_blueprint_library()
         walkers = sorted(library.filter('walker.pedestrian.*'), key=lambda bp: bp.id)
         if not walkers:
@@ -159,11 +161,15 @@ def execute(config, output, host, port):
                 if abs(source_index-index) > 1:
                     raise RuntimeError('Observed Native display clock diverges from captured frame')
                 proposed = frame_state(source_index, e['countdown_zero_s'])
+                command_and_sample(signal_head, carla, proposed['indication'],
+                                   proposed['display_illuminated'])
                 if proposed['display_illuminated']:
                     world.debug.draw_string(carla.Location(x=-3.7, y=-2, z=2.4),
                         "DON'T WALK " + str(proposed['displayed_countdown_s']),
                         draw_shadow=True, color=carla.Color(255, 0, 0), life_time=.06)
                 frame = world.tick()
+                head_readback = sample_signal_head(signal_head, proposed['indication'],
+                                                   proposed['display_illuminated'])
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 pose = walker.get_transform()
                 direction = pose.get_forward_vector()
@@ -173,10 +179,11 @@ def execute(config, output, host, port):
                             'indication': proposed['indication'],
                             'displayed_countdown_s': proposed['displayed_countdown_s'],
                             'display_illuminated': proposed['display_illuminated'],
+                            'native_signal_head': head_readback,
                             'pedestrian_xy_m': [pose.location.x, pose.location.y],
                             'pedestrian_footprint_xy_m': footprint(walker),
                             'observed_walker_speed_mps': math.hypot(speed.x, speed.y),
-                            'source_scope': 'Native pose plus requested debug display program; original pixel audit pending'}
+                            'source_scope': 'Native pose and head state readback plus requested debug countdown; original symbol, digits, governance and pixel review pending'}
                 capture.capture(frame, time_s, extra={'countdown_proposal': observed})
                 pixels = {}
                 for spec in camera_specs(plan):
@@ -190,7 +197,7 @@ def execute(config, output, host, port):
                     data = rgb.tobytes()
                     pixels[spec['name']] = hashlib.sha256(data).hexdigest()
                     encoders[spec['name']].stdin.write(data)
-                observed['original_display_frame_sha256'] = pixels['display_close']
+                observed['original_display_frame_sha256'] = pixels['driver_reference']
                 samples.write(json.dumps(observed, allow_nan=False) + '\n')
                 frame_map.append(frame, time_s, source_rgb_sha256=pixels)
                 frames += 1
@@ -198,12 +205,14 @@ def execute(config, output, host, port):
             'source_kind': 'native_observation', 'crosswalk_id': CROSSWALK_ID,
             'device_id': DEVICE_ID, 'device_governs_crosswalk': False,
             'device_faces_pedestrian': False,
-            'display_source_kind': 'debug_draw_string',
+            'display_source_kind': 'native_head_with_debug_countdown',
             'near_highway_edge_xy_m': [-3.5, -.65], 'crossing_forward_xy': [1, 0],
             'highway_span_m': 7, 'highway_boundary_source': 'authored_map_pending_native_review',
             'authored_map_sha256': hashlib.sha256((HERE / 'road.xodr').read_bytes()).hexdigest(),
             'native_map_sha256': native_map_hash, 'observed_frame_count': frames,
-            'display_pixel_audit_sha256': None, 'exception_context': 'unreviewed'})
+            'display_pixel_audit_sha256': None, 'exception_context': 'unreviewed',
+            'introductory_exceptions': {'status': 'unreviewed_native_capture',
+                                        'cited_sections': ['NRS 484B.287', 'NRS 484B.290', 'NRS 484B.350']}})
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
                  'traceback': traceback.format_exc()}
@@ -222,7 +231,7 @@ def execute(config, output, host, port):
         if error is None and frames == FRAMES and len(encoders) == 4:
             try:
                 command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n']
-                for name in ('overview', 'approach', 'crosswalk_side', 'display_close'):
+                for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
                     command.extend(['-i', str(output / (name + '.mkv'))])
                 command.extend(['-filter_complex',
                     '[0:v]scale=960:540[a];[1:v]scale=960:540[b];'

@@ -23,8 +23,9 @@ def main():
     assert summary['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256']
     assert len(summary['results']) == 8
     sources = ('runner.py', 'geometry.py', 'engineering.py', 'signal_clock.py',
+               'signal_head.py',
                'measure_countdown.py', 'finalize.py', 'audit_display_frames.py',
-               'audit_governing_context.py', 'road.xodr')
+               'audit_governing_context.py', 'review_countdown.py', 'road.xodr')
     configs = {}
     seen = set()
     for case in manifest['cases']:
@@ -54,7 +55,7 @@ def main():
             assert receipt['exit_code'] == 0
             assert sha(HERE / receipt['command_log']) == receipt['command_log_sha256']
             assert sha(HERE / receipt['unit_log']) == receipt['unit_log_sha256']
-            assert 'Ran 4 tests' in (HERE / receipt['unit_log']).read_text()
+            assert 'Ran 6 tests' in (HERE / receipt['unit_log']).read_text()
             assert '\nOK' in (HERE / receipt['unit_log']).read_text()
             assert 'simulation_started' in (HERE / receipt['command_log']).read_text()
             assert receipt in summary['results']

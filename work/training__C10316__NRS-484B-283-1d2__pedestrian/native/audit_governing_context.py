@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from geometry import check as check_geometry
+from review_countdown import validate as validate_original_countdown_review
 
 
 def sha(path):
@@ -34,36 +35,15 @@ def audit(attempt, *, require_native=False):
         raise ValueError('Unrecognized countdown context source kind')
     if require_native and kind != 'native_observation':
         raise ValueError('Original Native countdown context required')
-    device = context.get('governing_device_evidence')
     supported = False
     if kind == 'native_observation':
         if context.get('display_source_kind') == 'debug_draw_string':
             raise ValueError('Debug text is not a governing pedestrian signal')
-        if not isinstance(device, dict):
-            raise ValueError('Missing original governing pedestrian device evidence')
-        required = ('native_actor_id', 'native_blueprint_id', 'original_pose',
-                    'facing_direction_xy', 'crosswalk_id', 'control_readback_path',
-                    'control_readback_sha256', 'pixel_audit_path', 'pixel_audit_sha256')
-        if any(not device.get(key) for key in required):
-            raise ValueError('Incomplete original governing pedestrian device evidence')
-        if device['crosswalk_id'] != context['crosswalk_id']:
-            raise ValueError('Governing pedestrian device crosswalk differs')
-        for path_key, hash_key in (('control_readback_path', 'control_readback_sha256'),
-                                   ('pixel_audit_path', 'pixel_audit_sha256')):
-            relative = Path(device[path_key])
-            if relative.is_absolute() or '..' in relative.parts:
-                raise ValueError('Governing device evidence path escapes attempt')
-            source = attempt / relative
-            if not source.is_file() or sha(source) != device[hash_key]:
-                raise ValueError('Missing or changed original governing device evidence')
-        readback = json.loads((attempt / device['control_readback_path']).read_text())
-        pixels = json.loads((attempt / device['pixel_audit_path']).read_text())
-        if (readback.get('native_actor_id') != device['native_actor_id'] or
-                readback.get('crosswalk_id') != context['crosswalk_id'] or
-                readback.get('pedestrian_signal_governs') is not True or
-                pixels.get('digit_legibility_verified') is not True or
-                pixels.get('flashing_indication_verified') is not True):
-            raise ValueError('Original governing device control or pixel review failed')
+        samples_path = attempt / 'countdown_samples.jsonl'
+        if not samples_path.is_file():
+            raise ValueError('Missing original countdown samples for governance review')
+        samples = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
+        validate_original_countdown_review(attempt, context, samples)
         supported = True
     return {'format': 'c10316-governing-context-audit-v1',
             'source_kind': kind, 'context_sha256': sha(context_path),

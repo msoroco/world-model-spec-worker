@@ -8,6 +8,7 @@ import json
 import math
 from pathlib import Path
 from geometry import check as check_geometry
+from review_countdown import validate as validate_original_countdown_review
 
 RATE_HZ = 20
 FRAMES = 600
@@ -42,7 +43,10 @@ def measure(samples_path, context_path):
         raise ValueError('Unrecognized countdown source provenance')
     if not context.get('crosswalk_id') or not context.get('device_id') or not context.get('highway_boundary_source'):
         raise ValueError('Missing crosswalk, governing device, or highway boundary source')
-    if context.get('device_governs_crosswalk') is not True or context.get('device_faces_pedestrian') is not True:
+    if kind == 'synthetic_scene_request' and (
+        context.get('device_governs_crosswalk') is not True or
+        context.get('device_faces_pedestrian') is not True
+    ):
         raise ValueError('Governing pedestrian direction not established')
     origin = point(context.get('near_highway_edge_xy_m'), 'near highway edge')
     direction = point(context.get('crossing_forward_xy'), 'crossing direction')
@@ -52,13 +56,14 @@ def measure(samples_path, context_path):
     if type(span) not in (int, float) or not math.isfinite(span) or span < 2:
         raise ValueError('Invalid highway span')
     if kind == 'native_observation' and (
-        not context.get('native_map_sha256') or not context.get('display_pixel_audit_sha256') or
+        not context.get('native_map_sha256') or
         context.get('observed_frame_count') != FRAMES
     ):
-        raise ValueError('Native countdown needs map, original pixel, and frame provenance')
+        raise ValueError('Native countdown needs map and frame provenance')
     rows = [json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
     if len(rows) != FRAMES:
         raise ValueError('Full 600-frame countdown source required')
+    native_review = validate_original_countdown_review(samples_path.parent, context, rows) if kind == 'native_observation' else None
     previous = None
     event_rows = []
     positive_lights = set()
@@ -134,7 +139,8 @@ def measure(samples_path, context_path):
         'source_kind': kind, 'original_frames': len(rows), 'rate_hz': RATE_HZ,
         'entry': bracket(first_entry), 'full_body_clearance': clearance, 'displayed_zero': zero_event,
         'clearance_relative_to_displayed_zero': relation,
-        'governing_device_observed': False,
+        'governing_device_observed': native_review is not None,
+        'independent_original_review': native_review,
         'highway_boundary_observed': False,
         'exceptions_reviewed': False, 'legal_verdict_claimed': False,
     }

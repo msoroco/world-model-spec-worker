@@ -17,7 +17,7 @@ def generate(folder, mode):
     rows = []
     encoder = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
         '-n', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '64x64', '-r', '20',
-        '-i', 'pipe:0', '-an', '-c:v', 'ffv1', str(folder / 'display_close.mkv')],
+        '-i', 'pipe:0', '-an', '-c:v', 'ffv1', str(folder / 'driver_reference.mkv')],
         stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     for index in range(600):
         flashing = index < 200

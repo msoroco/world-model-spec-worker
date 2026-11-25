@@ -68,7 +68,7 @@ def make_attempt(folder, suffix, source):
         x, y = sample['pedestrian_xy_m']
         sample['original_display_frame_sha256'] = display_digest
         mapped = {'video_frame': index, 'native_frame': frame, 'carla_frame': frame,
-                  'time_s': time, 'source_rgb_sha256': {'display_close': display_digest}}
+                  'time_s': time, 'source_rgb_sha256': {'driver_reference': display_digest}}
         mapping.append(mapped)
         trace.append({'frame': frame, 'time_s': time, 'position_m': [x, y, .5],
                       'synthetic_diagnostic': True})
@@ -133,7 +133,7 @@ def main():
             (changed / 'analysis-report.json').unlink()
             shutil.rmtree(changed / 'channels')
             rows = [json.loads(line) for line in (changed / 'video_frames.jsonl').read_text().splitlines()]
-            rows[17]['source_rgb_sha256']['display_close'] = '0' * 64
+            rows[17]['source_rgb_sha256']['driver_reference'] = '0' * 64
             write_rows(changed / 'video_frames.jsonl', rows)
             failed_pixel = run_finalizer(changed)
             assert failed_pixel.returncode and 'Original display RGB hash join differs at 17' in failed_pixel.stderr

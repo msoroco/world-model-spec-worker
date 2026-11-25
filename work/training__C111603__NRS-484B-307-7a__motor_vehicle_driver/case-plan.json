@@ -32,7 +32,29 @@
         "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
         "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+      "evidence_or_gap": "Selected Native primary/fallback1 bundles, four exact offline and compatibility proofs and two saved-only proofs pass current runtime. Original physical and legal findings remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-307-7a",
+      "source": "NRS 484B.307(7)(a)",
+      "branch": "Pedestrian yield duty",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_clearance",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_overlap"
+      ],
+      "evidence_or_gap": "Selected Native primary/fallback1 exact offline passes; public compatibility, saved processing and original physical/legal source review remain."
+    },
+    {
+      "requirement": "NRS-484B-307-7a",
+      "source": "NRS 484B.307(7)(a)",
+      "branch": "Concurrent-indication movement permission",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_absent",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present"
+      ],
+      "evidence_or_gap": "Selected Native primary/fallback1 exact offline passes; public compatibility, saved processing and original physical/legal source review remain."
     }
   ],
   "neutral_baseline": {
@@ -43,7 +65,7 @@
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-307-7a",
-      "kind": "planned_only",
+      "kind": "delivery",
       "source_branch": "Other-traffic yield duty",
       "physical_target": "turn on flashing yellow arrow after yielding to lawful users",
       "comparison_variable": "yield timing under flashing yellow turn arrow",
@@ -55,10 +77,58 @@
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-307-7a",
-      "kind": "planned_only",
+      "kind": "delivery",
       "source_branch": "Other-traffic yield duty",
       "physical_target": "turn on flashing yellow arrow ahead of lawful user",
       "comparison_variable": "yield timing under flashing yellow turn arrow",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_clearance",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "delivery",
+      "source_branch": "Pedestrian yield duty",
+      "physical_target": "request ego entry after adjacent-crosswalk pedestrian clearance",
+      "comparison_variable": "ego release relative to pedestrian traversal",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_overlap",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "delivery",
+      "source_branch": "Pedestrian yield duty",
+      "physical_target": "request ego entry during adjacent-crosswalk pedestrian traversal",
+      "comparison_variable": "ego release relative to pedestrian traversal",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_absent",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "delivery",
+      "source_branch": "Concurrent-indication movement permission",
+      "physical_target": "request straight entry with flashing right arrow alone",
+      "comparison_variable": "concurrent indication request",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present",
+      "target_law_id": "NRS-484B-307-7a",
+      "kind": "delivery",
+      "source_branch": "Concurrent-indication movement permission",
+      "physical_target": "request straight entry with flashing right arrow and concurrent straight indication",
+      "comparison_variable": "concurrent indication request",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -79,6 +149,36 @@
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
         "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_yield_comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_clearance",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_overlap"
+      ],
+      "deliberate_differences": [
+        "ego release relative to pedestrian traversal"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, arrow request and other-vehicle route",
+        "pedestrian traversal and camera policy",
+        "600-frame/20 Hz source window"
+      ]
+    },
+    {
+      "comparison_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_indication_comparison",
+      "case_ids": [
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_absent",
+        "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present"
+      ],
+      "deliberate_differences": [
+        "concurrent straight indication request"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, arrow request and other-vehicle route",
+        "pedestrian traversal and camera policy",
+        "600-frame/20 Hz source window"
       ]
     }
   ],
@@ -222,7 +322,7 @@
   "blockers": [
     "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
   ],
-  "source_context_review": "Arrow may be displayed alone or with other indications; only its indicated movement or one permitted by a concurrent indication is allowed. Pedestrian and other-traffic yield duties are separate branches.",
+  "source_context_review": "Full text split into flashing-arrow indicated right movement and cautious entry, other-traffic yield, pedestrian yield, and concurrent-indication movement permission. Other-traffic selected proofs pass; pedestrian and concurrent request pairs are authored but not yet selected or proven.",
   "cpu_request_checkpoint": {
     "proof_path": "yellow-arrow-cpu-proof.json",
     "proof_sha256": "63bda7782808505b638b8e9b4126a2be6f95dadf14a9f17ae6a67979c82c1444",
