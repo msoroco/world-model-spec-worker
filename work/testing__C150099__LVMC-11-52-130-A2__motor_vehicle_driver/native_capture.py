@@ -28,7 +28,7 @@ def _write(path: Path, value: dict) -> str:
 
 
 def capture(adapter, case_id: str, packet_path: Path, destination: Path,
-            after_tick=None) -> dict:
+            after_tick=None, control_profile: str = 'normal') -> dict:
     """Capture a complete original attempt, or remove the partial attempt.
 
     Adapter methods include get_opendrive_bytes, tick, read_footprint,
@@ -41,6 +41,8 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
         raise ValueError('unknown exact fire-lane case')
     if after_tick is not None and not callable(after_tick):
         raise ValueError('same-tick graph capture callback invalid')
+    if control_profile not in ('normal', 'slow_approach'):
+        raise ValueError('unsupported curb approach control profile')
     case = cases[0]
     site = validate_packet(Path(packet_path), case_id)
     map_bytes = adapter.get_opendrive_bytes()
@@ -81,6 +83,8 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
         body_length = adapter.ego_body_length_m()
         built = build_case(adapter, site, case, body_length)
         started = True
+        if control_profile == 'slow_approach':
+            adapter.set_control_profile(built['ego'], 'slow_approach')
         archives = {name: zipfile.ZipFile(root / (name + '.zip'), 'w', zipfile.ZIP_STORED)
                     for name in CAMERAS}
         previous = None
@@ -179,6 +183,7 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
             'camera_media': {name: hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()
                              for name in CAMERAS},
             'physical_completion': False,
+            'control_profile': control_profile,
         }
         _write(root / 'inventory.json', inventory)
         os.replace(root, destination)

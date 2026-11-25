@@ -45,6 +45,8 @@ def check(root: Path) -> str:
     if [(row.get('name'), row.get('width'), row.get('height')) for row in cameras] != [
             (name, *size) for name, size in zip(NAMES, SIZES)]:
         raise ValueError('four-camera profile changed')
+    if config.get('control_profile') not in ('normal', 'slow_approach'):
+        raise ValueError('unsupported curb approach control profile')
     return case_id
 
 
@@ -71,7 +73,9 @@ def main() -> None:
         raise ValueError('local Native fire-lane adapter module required')
     adapter = importlib.import_module(adapter_name).open_session(
         case_id, Path(packet), args.host, args.port)
-    capture(adapter, case_id, Path(packet), args.output_dir / 'original-attempt')
+    profile = json.loads((root / 'config.json').read_text())['control_profile']
+    capture(adapter, case_id, Path(packet), args.output_dir / 'original-attempt',
+            control_profile=profile)
 
 
 if __name__ == '__main__':

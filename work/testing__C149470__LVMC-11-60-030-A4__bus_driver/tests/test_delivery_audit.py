@@ -9,6 +9,7 @@ from test_bus_curb import probe, rows, scene
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
 from delivery_audit import audit_comparisons
+from reviewed_source import FIELDS
 
 
 class DeliveryAuditTests(unittest.TestCase):
@@ -54,6 +55,23 @@ class DeliveryAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'reviewed.*missing'):
             finalize(root / 'absent-attempt', root / 'diagnostic-source-note.json',
                      'bus_stop_below')
+
+    def test_comparison_rejects_changed_fixed_source(self):
+        # In-memory mock reports exercise rejection only; no original claim is emitted.
+        reports = {}
+        for case in probe.CASES:
+            hashes = {name: 'a' * 64 for name in FIELDS}
+            measured = probe.measure_original(rows(case, scene(case)), scene(case), case)
+            measured['source_hashes'] = hashes
+            reports[root.name + '__' + case.name] = {
+                'format': 'c149470-independent-original-attempt-audit-v1',
+                'case_id': root.name + '__' + case.name,
+                'source_kind': 'original_native_capture',
+                'legal_status': 'unresolved', 'physical_acceptance': False,
+                'source_hashes': hashes, 'measurement': measured}
+        reports[root.name + '__bus_stop_at']['source_hashes']['curb_geometry'] = 'b' * 64
+        with self.assertRaisesRegex(ValueError, 'fixed original source changed'):
+            audit_comparisons(reports)
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, capture
 from source_packet import SOURCES, validate_packet
 from saved_audit import audit_planned_case
+from delivery_audit import audit_capture
 
 PNG = b'\x89PNG\r\n\x1a\n' + b'diagnostic-pixel-source'
 
@@ -23,6 +24,7 @@ class FakeNative:
         self.fail_frame = fail_frame
         self.cleaned = False
         self.braked = False
+        self.control_profile = None
     def get_opendrive_bytes(self): return self.map_bytes
     def ego_body_length_m(self): return 4.0
     def spawn_sign(self, *args): return 'sign'
@@ -33,6 +35,8 @@ class FakeNative:
     def spawn_vehicle(self, *args): return 'ego'
     def set_route(self, *args, **kwargs): pass
     def set_curb_target(self, *args, **kwargs): pass
+    def set_control_profile(self, ego, profile):
+        self.control_profile = (ego, profile)
     def set_attendance(self, *args): pass
     def tick(self):
         if self.frame == self.fail_frame:
@@ -96,9 +100,15 @@ class NativeCaptureTests(unittest.TestCase):
                              inventory['site_sha256'])
             self.assertEqual(validate_packet(copied_packet, case_id),
                              json.loads((destination / 'site.json').read_text()))
+            audited = audit_capture(destination, case_id, allow_diagnostic=True)
+            self.assertEqual(audited['original_frames'], 900)
+            with self.assertRaisesRegex(ValueError, 'synthetic capture'):
+                audit_capture(destination, case_id)
             (destination / 'source-review/posting_authority.txt').write_text('changed\n')
             with self.assertRaisesRegex(ValueError, 'original source hash changed'):
                 validate_packet(copied_packet, case_id)
+            with self.assertRaisesRegex(ValueError, 'original source hash changed'):
+                audit_capture(destination, case_id, allow_diagnostic=True)
             audit = audit_planned_case(destination / 'history.jsonl',
                                        inventory['history_sha256'], case_id,
                                        inventory['site_sha256'])
@@ -116,6 +126,19 @@ class NativeCaptureTests(unittest.TestCase):
                 capture(adapter, case_id, packet, root / 'attempt')
             self.assertTrue(adapter.braked and adapter.cleaned)
             self.assertFalse((root / 'attempt').exists())
+
+    def test_fallback_applies_distinct_control_before_original_ticks(self):
+        scratch = WORKSPACE / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            root = Path(directory)
+            packet, adapter, case_id = self.packet(root)
+            inventory = capture(adapter, case_id, packet, root / 'attempt',
+                                control_profile='slow_approach')
+            self.assertEqual(adapter.control_profile, ('ego', 'slow_approach'))
+            self.assertEqual(inventory['control_profile'], 'slow_approach')
+            self.assertEqual(audit_capture(root / 'attempt', case_id,
+                                           allow_diagnostic=True)['original_frames'], 900)
 
 
 if __name__ == '__main__':

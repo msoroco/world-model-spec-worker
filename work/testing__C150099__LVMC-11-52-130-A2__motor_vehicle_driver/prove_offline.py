@@ -19,7 +19,7 @@ def main() -> None:
                TMPDIR=str(REPO / '.runtime-work'))
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v5' / suffix
+        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v6' / suffix
         if destination.exists():
             raise ValueError('retain prior offline attempt; choose new proof version')
         command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
@@ -37,6 +37,20 @@ def main() -> None:
                             'log': log.name,
                             'log_sha256': hashlib.sha256(log.read_bytes()).hexdigest(),
                             'construction_sha256': entry['construction_sha256']}
+        fallback = entry['candidates'][0]
+        alternate = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v6' / (suffix + '-fallback1')
+        command += ['--candidate', 'fallback1']
+        command[command.index('--output') + 1] = str(alternate)
+        run = subprocess.run(command, cwd=REPO, env=env, text=True,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        alternate_log = ROOT / ('cpu-offline-fallback-' + suffix + '.log')
+        alternate_log.write_text(run.stdout.rstrip() + '\n')
+        if run.returncode:
+            raise ValueError('fallback offline failed for ' + suffix + ': ' + run.stdout[-800:])
+        fallback['offline'] = {'command': ' '.join(command), 'exit_code': 0,
+                               'log': alternate_log.name,
+                               'log_sha256': hashlib.sha256(alternate_log.read_bytes()).hexdigest(),
+                               'construction_sha256': fallback['construction_sha256']}
     MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
     print('exact diagnostic offline proofs:', len(manifest['cases']))
 

@@ -6,10 +6,12 @@ import json
 from pathlib import Path
 import subprocess
 
-from reviewed_source import measure_reviewed, verify
+from reviewed_source import FIELDS, measure_reviewed, verify
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
+FIXED_COMPARISON_SOURCES = ('jurisdiction', 'bus_class', 'tour_exclusion',
+                            'operator', 'curb_geometry', 'bus_route', 'traffic_route')
 
 
 def sha(path):
@@ -78,6 +80,7 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
     return {'format': 'c149470-independent-original-attempt-audit-v1',
             'case_id': expected_case, 'source_kind': 'original_native_capture',
             'reviewed_site_sha256': reviewed['site_sha256'],
+            'source_hashes': reviewed['source_hashes'],
             'frames_sha256': sha(rows_path), 'camera_hashes': camera_hashes,
             'camera_decodes': camera_decodes,
             'measurement': measurement,
@@ -101,8 +104,23 @@ def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
                item.get('format') != 'c149470-independent-original-attempt-audit-v1'
                for item, case_id in zip(selected, pair)):
             raise ValueError('comparison includes nonoriginal or wrong-case audit')
+        source_hashes = [item.get('source_hashes') for item in selected]
+        if any(not isinstance(hashes, dict) or set(hashes) != set(FIELDS) or
+               any(not isinstance(value, str) or len(value) != 64
+                   for value in hashes.values()) for hashes in source_hashes):
+            raise ValueError('comparison source inventory missing')
+        if any(source_hashes[0][name] != source_hashes[1][name]
+               for name in FIXED_COMPARISON_SOURCES):
+            raise ValueError('comparison fixed original source changed')
+        if any(item.get('legal_status') != 'unresolved' or
+               item.get('physical_acceptance') is not False or
+               item.get('measurement', {}).get('source_hashes') != item['source_hashes']
+               for item in selected):
+            raise ValueError('comparison audit provenance or judgment changed')
         output.append({'comparison_id': comparison['comparison_id'],
                        'case_ids': pair,
+                       'fixed_source_hashes': {name: source_hashes[0][name]
+                                               for name in FIXED_COMPARISON_SOURCES},
                        'measured_wheel_curb_upper_bounds_m': [
                            item['measurement']['right_front_wheel_curb_upper_bound_m']
                            for item in selected],

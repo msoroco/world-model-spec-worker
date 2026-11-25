@@ -90,6 +90,7 @@ def build() -> dict:
             'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
             'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
             'diagnostic_only': True, 'recording_description': RECORDING,
+            'control_profile': 'normal',
         }
         config_text = json.dumps(config, indent=2, sort_keys=True) + '\n'
         files = [{'path': 'config.json', 'content': config_text},
@@ -123,6 +124,15 @@ def build() -> dict:
         }
         rel = f'cases/{case.id}/construction.json'
         digest = write(ROOT / rel, construction)
+        fallback_config = dict(config, control_profile='slow_approach')
+        fallback_text = json.dumps(fallback_config, indent=2, sort_keys=True) + '\n'
+        fallback = dict(construction, candidate_id='fallback1',
+                        files=[dict(item, content=fallback_text) if item['path'] == 'config.json'
+                               else item for item in files],
+                        mechanisms=construction['mechanisms'] +
+                        ['lower approach speed before curb target to reduce overshoot'])
+        fallback_rel = f'cases/{case.id}/fallback1/construction.json'
+        fallback_sha = write(ROOT / fallback_rel, fallback)
         (ROOT / f'cases/{case.id}/config.json').write_text(config_text)
         disposition = plan['requirement_dispositions'][0]
         measurement = {
@@ -145,9 +155,16 @@ def build() -> dict:
             'case_id': case_id, 'kind': 'delivery', 'construction': rel,
             'construction_sha256': digest,
             'candidate_risk': {'status': 'physical',
-                'reason': 'Sign or curb target may not be present or visible in loaded map; '
-                          'source review and physical attempt are required.'},
-            'candidates': [], 'diagnostic_only': True,
+                'reason': 'Ego may overshoot the requested curb target region on its one-way approach; '
+                          'measure final original hold position before selecting lower speed.'},
+            'candidates': [{'id': 'fallback1', 'construction': fallback_rel,
+                            'construction_sha256': fallback_sha,
+                            'trigger': {'source': 'original-attempt/history.jsonl',
+                                        'metric': 'final hold position against reviewed posted interval',
+                                        'failure_condition': case.target_region +
+                                        ' target absent from one or more final hold frames'},
+                            'changed_knobs': ['control_profile: normal to slow_approach']}],
+            'diagnostic_only': True,
             'measurement_contract': f'measurement-{case.id}.json',
             'fixture_recipe': f'work/{ASSIGNMENT}/diagnostic-{case.id}-recipe.json',
             'measurement_procedure': {'entrypoint': 'analysis.py'},
