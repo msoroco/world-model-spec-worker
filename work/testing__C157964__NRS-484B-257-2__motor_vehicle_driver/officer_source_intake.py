@@ -6,7 +6,9 @@ authority, legal control, or immediate hazard from a performer blueprint.
 
 import hashlib
 import json
+import math
 from pathlib import Path
+from shapely.geometry import Polygon
 
 
 def _source(root, binding, label):
@@ -64,9 +66,20 @@ def validate(root, packet):
         raise ValueError("Actual officer control source review required")
     if review.get("original_camera_sight_reviewed") is not True:
         raise ValueError("Original camera sight review required")
+    points = review.get("intersection_polygon_xy_m")
+    if (not isinstance(points, list) or len(points) < 3 or
+            any(not isinstance(point, list) or len(point) != 2 or
+                any(type(value) not in (float, int) or not math.isfinite(value)
+                    for value in point)
+                for point in points)):
+        raise ValueError("Reviewed intersection polygon required")
+    polygon = Polygon(points)
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Invalid reviewed intersection polygon")
     return {"format": "worker-officer-subsection-2-source-intake",
             "site_id": site, "source_paths": {key: str(path.relative_to(root)) for key, path in paths.items()},
             "ego_entrance_id": ego, "other_entrance_id": other,
+            "intersection_polygon_xy_m": points,
             "legal_exception_judgment": "unresolved",
             "immediate_hazard_judgment": "unresolved"}
 

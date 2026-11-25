@@ -24,7 +24,10 @@ class OfficerCaptureStepTests(unittest.TestCase):
                                         'raw_source': name + '.mkv#frame-1234'}
                                  for name in CAPTURE.CAMERAS}
         traffic = {'source': 'other-history.jsonl#frame-1233',
-                   'other_inside': True, 'approaching_hazard': False}
+                   'other_inside': True, 'approaching_hazard': False,
+                   'site_id': 'test-site', 'other_actor_id': 33,
+                   'other_body_vertices_xy_m': [[0, 0], [1, 0], [1, 1], [0, 1]],
+                   'hazard_source': 'hazard-review.json#frame-1233'}
         intake = {'format': 'worker-officer-subsection-2-source-intake',
                   'site_id': 'test-site'}
         return carla, world, ego, officer, adapter, cameras, traffic, intake, applied
@@ -58,6 +61,9 @@ class OfficerCaptureStepTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Reviewed officer site intake'):
             CAPTURE.step(carla, world, ego, officer, adapter, case, 1, 10,
                          traffic, cameras, {})
+        with self.assertRaisesRegex(ValueError, 'Native other body and hazard source binding'):
+            CAPTURE.step(carla, world, ego, officer, adapter, case, 1, 10,
+                         {**traffic, 'hazard_source': ''}, cameras, intake)
 
 
 if __name__ == '__main__':

@@ -37,6 +37,13 @@ def step(carla, world, ego, officer, bone_adapter, case_id, frame_index,
         raise ValueError("Original other-traffic source required")
     if type(traffic_sample.get("other_inside")) is not bool or type(traffic_sample.get("approaching_hazard")) is not bool:
         raise ValueError("Sourced other-body and approaching-hazard inputs required")
+    if (traffic_sample.get("site_id") != source_intake["site_id"] or
+            type(traffic_sample.get("other_actor_id")) is not int or
+            not isinstance(traffic_sample.get("other_body_vertices_xy_m"), list) or
+            len(traffic_sample["other_body_vertices_xy_m"]) < 4 or
+            not isinstance(traffic_sample.get("hazard_source"), str) or
+            not traffic_sample["hazard_source"]):
+        raise ValueError("Native other body and hazard source binding required")
     if not callable(camera_readback):
         raise ValueError("Four-camera readback adapter required")
     pose = apply_direction(officer, bone_adapter, case_id, frame_index, frame_count)

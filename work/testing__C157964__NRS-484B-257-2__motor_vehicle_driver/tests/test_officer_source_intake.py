@@ -32,7 +32,9 @@ class OfficerSourceIntakeTests(unittest.TestCase):
                                           'sign_visible': True}],
                            'officer_authority_reviewed': True,
                            'officer_control_reviewed': True,
-                           'original_camera_sight_reviewed': True}}
+                           'original_camera_sight_reviewed': True,
+                           'intersection_polygon_xy_m': [[-5, -5], [5, -5],
+                                                          [5, 5], [-5, 5]]}}
 
     def test_structural_intake_keeps_legal_judgment_unresolved(self):
         with tempfile.TemporaryDirectory() as dirname:
@@ -64,6 +66,10 @@ class OfficerSourceIntakeTests(unittest.TestCase):
             packet = self.fixture(root)
             packet['sources']['road']['path'] = '../outside.txt'
             with self.assertRaisesRegex(ValueError, 'Unsafe source path'):
+                INTAKE.validate(root, packet)
+            packet = self.fixture(root)
+            packet['review']['intersection_polygon_xy_m'] = [[0, 0], [1, 1], [2, 2]]
+            with self.assertRaisesRegex(ValueError, 'Invalid reviewed intersection polygon'):
                 INTAKE.validate(root, packet)
 
 

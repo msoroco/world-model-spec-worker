@@ -1553,3 +1553,19 @@ C157964 subsection 2 scoped `.venv-cpu/bin/python worker_check.py --assignment t
 C157964 NRS 484B.257(2): a synchronous Native step now binds reviewed site intake, programmed officer pose and ego control, source-bound traffic inputs and four exact raw camera frame references. Twelve tests pass, including rejection of absent intake and frame mismatches. Actual observed control stays unreviewed. Full capture, finalizer and proofs remain CPU work; status partial.
 
 C157964 subsection 2 scoped complete `worker_check.py` passes after the synchronous capture-step addition (`assignment-check.log`). Final scan inspected 10,995 files under `work/` with zero UTF-8, size, trailing-whitespace or conflict-marker violations. No Git command was run. Ready count remains 34/43; nine packages remain partial, so the whole strict delivery gate cannot pass yet.
+
+C157964 NRS 484B.257(2): added source-validated synchronous 20 Hz full-frame capture loop with four exact camera references and text receipt. Fifteen tests pass, including changed-source, wrong-world-settings, duplicate-frame and incomplete-receipt rejection. Actual source review and raw media capture remain unfinished; status partial.
+
+The scoped complete check for C157964 subsection 2 passes after the frame-loop addition (`assignment-check.log`). Current `runtime.py verify --runtime runtime` and `runtime.py preflight` both pass; preflight reports Lean 4.28.0, pinned CPU Python and no simulation start. Final file scan: 10,997 files under `work/`, zero non-UTF-8 files, oversize files, trailing whitespace or conflict markers. The whole strict gate remains pending while nine results are partial. No Git command was run.
+
+C157964 NRS 484B.257(2): added Native other-actor bounding-box sampling against a reviewed intersection polygon and separate source-bound approaching-hazard input; integrated it into the synchronous capture fixture. Seventeen package tests pass. Physical source review, raw media, finalizer and exact proofs remain unfinished; status partial.
+
+C157964 subsection 2 scoped complete `worker_check.py` passes after the Native body sampler and polygon intake changes (`assignment-check.log`). Final returned-file scan inspected 10,999 files under `work/`: zero binary, oversized, trailing-whitespace or conflict-marker violations. Ready count stays 34/43; nine assignments remain partial. No Git command was run.
+
+C157964 NRS 484B.257(2): added four synchronized Native camera sensors and lossless FFV1 media with per-frame sources, integrated into the full-loop CPU fixture. `ffprobe` verified all four fixture streams; 20 package tests pass. Binary media is restricted to `.runtime-work/` for repository-local output. Actual physical source/camera review and exact delivery proofs remain; status partial.
+
+C157964 subsection 2 assignment-scoped complete check passes after camera-media integration (`assignment-check.log`). Final file scan inspected 11,002 files under `work/` with zero binary, oversize, trailing-whitespace or conflict-marker violations. Ready count remains 34/43 and nine packages remain partial. No Git command was run.
+
+C157964 NRS 484B.257(2): full capture receipt now includes exact Native snapshot time, ego/other body vertices and speed, programmed officer pose, and four camera source references. Twenty-one tests pass, including stale snapshot and nonmonotone-time rejection. Visual officer control and legal judgment stay unreviewed; saved finalizer and exact proofs remain CPU work. Status partial.
+
+C157964 subsection 2 assignment-scoped complete check passes after Native source-row integration (`assignment-check.log`). Final returned-file scan inspected 11,003 files under `work/` with zero binary, oversize, trailing-whitespace or conflict-marker violations. Thirty-four assignments remain ready and nine partial; the whole strict gate cannot pass yet. No Git command was run.
