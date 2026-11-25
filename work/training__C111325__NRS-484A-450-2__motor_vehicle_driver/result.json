@@ -2,10 +2,10 @@
   "assignment_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver",
   "input_sha256": "a2c4b90f3430a71b5d68ac4ed9cee596065ad0cea45fbc4b89b1d44306f48252",
   "status": "partial",
-  "reason": "Two unselected 600-frame four-camera drafts pass pinned offline. Source-only positive/negative and body-boundary proofs pass. Both synthetic current v2 primary public compatibility runs and actual recorded-only process-saved runs pass with 613 source hashes preserved each, including missing-road-source negatives. Physical Native capture, selected candidates, independent audit, statutory alternative branches, and accepted-recording equivalence remain unfinished; no legal verdict or physical acceptance claimed.",
-  "readiness_kind": "unselected_cpu_draft_with_synthetic_current_v2_compatibility_and_saved_proofs",
+  "reason": "Selected near-side crosswalk pair has 4/4 current-runtime exact offline, positive/missing-source public compatibility and recorded-only saved proofs after fresh Native road-copy repair; source-only marked-line alternative measurement distinguishes 60-frame halt from 1-frame pass and rejects missing/mutated branch sources. No-crosswalk marked-line and no-crosswalk/no-line sight-point alternatives still need separate exact selected construction, comparison and proof chains; the original physical scene remains unverified.",
+  "readiness_kind": "selected_near_side_crosswalk_cpu_prepared_pending_full_branch",
   "planned_case_count": 2,
-  "candidate_count": 0,
+  "candidate_count": 2,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
   "accepted_membership_count": 4,
   "reuse_count": 0,
@@ -37,5 +37,47 @@
       "saved_proof_sha256": "6212cf4b1d99ea859e452a4457dc4bd57516cf368ac91c85ac2d3093c9af6943",
       "saved_source_files": 613
     }
-  }
+  },
+  "selected_crosswalk_checkpoint": {
+    "manifest_sha256": "3c7b7f842dbcee2435177279dced8631017da3345e9408348c5808b4a3859b91",
+    "current_runtime_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+    "selected_case_ids": [
+      "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
+      "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2"
+    ],
+    "public_positive_negative_proofs": 4,
+    "recorded_only_saved_proofs": 4,
+    "physical_fixture_outcomes": 6,
+    "lifecycle_checks": 2,
+    "selected_comparison_sha256": "b6f6b3305eac7a91348407bb8a008f42869ee15615a0c08db7cb0cfb72134fdb",
+    "physical_acceptance_claimed": false,
+    "legal_verdict_claimed": false,
+    "stop_line_source_diagnostic_sha256": "82a7f1fd963b6c71f43af64fb0b1b7108182d33eb8a7cbed2692bf68de17523e"
+  },
+  "tests": [
+    {
+      "command": "cd work/training__C111325__NRS-484A-450-2__motor_vehicle_driver && PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py",
+      "exit_code": 0,
+      "log": "selected-root-tests.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/audit-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/comparison_audit.py",
+      "exit_code": 0,
+      "log": "selected-comparison-test.log",
+      "sha256": "6f991c2897acebc5c5dac03007df7a5cd8babc8d958d74a1e74b8091dc4e6575"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/native/test_live_capture.py",
+      "exit_code": 0,
+      "log": "selected-native-tests.log",
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/prove-stop-line-source.py",
+      "exit_code": 0,
+      "log": "stop-line-source-proof.log",
+      "sha256": "7a1819728f6feda9e003dac48d07fa771284e2c909c191491d9396480ea756ef"
+    }
+  ]
 }

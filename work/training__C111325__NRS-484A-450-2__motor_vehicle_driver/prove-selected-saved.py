@@ -27,12 +27,12 @@ def prove(index, candidate):
     if index not in (1, 2) or candidate not in ('primary', 'fallback1'):
         raise ValueError('Unknown selected case/candidate')
     case = HERE.name + f'__probe_{index}'
-    source_name = f'compat-v3-{index}-{candidate}'
+    source_name = f'compat-v5-{index}-{candidate}'
     source = ROOT / '.runtime-work/c111325-selected' / source_name
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or compatibility.get('case_id') != case:
         raise ValueError('Selected public compatibility has not passed')
-    scratch = ROOT / f'.runtime-work/c111325-selected/saved-v3-{index}-{candidate}'
+    scratch = ROOT / f'.runtime-work/c111325-selected/saved-v5-{index}-{candidate}'
     if scratch.exists():
         raise ValueError('Saved proof scratch must be fresh')
     scratch.mkdir(parents=True)

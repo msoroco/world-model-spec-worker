@@ -59,7 +59,7 @@
     {
       "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "unselected_native_draft",
+      "kind": "selected_delivery",
       "target_type": "below",
       "physical_target": "full stop before near-side crosswalk",
       "comparison_variable": "stop_before_applicable_boundary",
@@ -69,7 +69,7 @@
         "demo-train",
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json",
+      "construction_manifest": "execution-manifest.json",
       "gap_ids": [
         "near_side_crosswalk_source"
       ]
@@ -77,7 +77,7 @@
     {
       "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "unselected_native_draft",
+      "kind": "selected_delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cross near-side crosswalk without full stop",
       "comparison_variable": "stop_before_applicable_boundary",
@@ -87,7 +87,7 @@
         "demo-train",
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json",
+      "construction_manifest": "execution-manifest.json",
       "gap_ids": [
         "near_side_crosswalk_source"
       ]
@@ -113,62 +113,62 @@
     {
       "term": "dev.stop_sign",
       "purpose": "a stop sign at the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "dev.governs",
       "purpose": "the sign faces the subject's approach",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "st.lane_enters",
       "purpose": "the subject's lane is an approach to the intersection the sign governs",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "drv.approaching",
       "purpose": "the subject is approaching that intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "st.crosswalk",
       "purpose": "the near-side crosswalk, marked or unmarked",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "st.stop_line",
       "purpose": "a clearly marked stop line, if there is one",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "st.intersection",
       "purpose": "the intersection region and its boundary",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "st.sight_distance",
       "purpose": "where a view of approaching traffic on the intersecting highway first opens, when there is neither crosswalk nor stop line",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "rel.visible",
       "purpose": "'where the driver has a view of approaching traffic': the traffic on the intersecting highway in the subject's line of sight from the stopping point",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "drv.stopped",
       "purpose": "a full halt",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "drv.crossing_line",
       "purpose": "the footprint crossing the crosswalk / stop line boundary",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     },
     {
       "term": "drv.entering_intersection",
       "purpose": "the footprint entering the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_conditional_review"
     }
   ],
   "candidate_plans": [],
@@ -355,6 +355,150 @@
         "requirement": "NRS-484A-450-2 sight-point alternative when neither crosswalk nor line exists",
         "source": "NRS 484A.450(2)",
         "why_existing_insufficient": "No returned source proves absence of higher-priority references or original sightline opening point."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "dev.stop_sign"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "crosswalk_geometry.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "native_samples.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "st.lane_enters"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "road.xodr"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": [
+        "native_samples.jsonl"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "st.crosswalk"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "crosswalk_geometry.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "st.stop_line"
+      ],
+      "source_refs": [
+        "road.xodr"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "crosswalk_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "st.sight_distance"
+      ],
+      "source_refs": [
+        "road.xodr"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "rel.visible"
+      ],
+      "source_refs": [
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "drv.stopped"
+      ],
+      "source_refs": [
+        "native_samples.jsonl"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "drv.crossing_line"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "crosswalk_geometry.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
+      "channels": [
+        "drv.entering_intersection"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "crosswalk_geometry.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject vehicle, governing stop sign, near-side crosswalk and intersecting approaches",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "approach",
+        "subject": "subject vehicle, governing stop sign, near-side crosswalk and intersecting approaches",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject vehicle, governing stop sign, near-side crosswalk and intersecting approaches",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject vehicle, governing stop sign, near-side crosswalk and intersecting approaches",
+        "interval": "entire 30 s source window"
       }
     ]
   }

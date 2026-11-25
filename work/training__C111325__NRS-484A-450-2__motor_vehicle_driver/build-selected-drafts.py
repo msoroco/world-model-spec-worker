@@ -32,6 +32,25 @@ def build():
         for name, local in source_names.items():
             sources[name] = (HERE / local).read_text()
         config = json.loads(sources['config.json'])
+        description = deepcopy(draft['recording_description'])
+        terms = ('dev.stop_sign', 'dev.governs', 'st.lane_enters',
+                 'drv.approaching', 'st.crosswalk', 'st.stop_line',
+                 'st.intersection', 'st.sight_distance', 'rel.visible',
+                 'drv.stopped', 'drv.crossing_line', 'drv.entering_intersection')
+        description['channels'].extend({
+            'name': term, 'unit': 'structured', 'sampling_rate_hz': 20,
+            'method': 'Original source road/body/velocity/frame join; conditional applicability retained',
+            'time_window': 'entire 30 s / 600-frame attempt',
+            'reference_frame': 'original Native frame identity',
+            'uncertainty': '50 ms sampling; original sign visibility and conditional sight-point branches require local review',
+        } for term in terms)
+        config['recording_description'] = description
+        config['case']['recording_description'] = description
+        config['supported_case_ids'] = [HERE.name + f'__probe_{number}' for number in (1, 2)]
+        for camera in config['cameras']:
+            camera['pose_strategy'] = 'source-synchronous fixed intersection and subject-relative approach review'
+            camera['fov_deg'] = 90
+        config['mandatory_channels'] = [channel['name'] for channel in description['channels']]
         config['status'] = 'selected_cpu_delivery_draft'
         config['physical_completion'] = {
             'criterion': 'intersection_clearance',
@@ -49,7 +68,7 @@ def build():
             'cell_id': draft['cell_id'], 'law_id': draft['law_id'],
             'entrypoint': 'runner.py',
             'files': [{'path': name, 'content': content} for name, content in sorted(sources.items())],
-            'recording_description': draft['recording_description'],
+            'recording_description': description,
             'measurement_plan': {'method': 'source-hashed original body and stop-before-boundary measurement',
                                  'status': 'selected_cpu_draft'},
             'static_checks': ['600 frame/time joins', 'four original source cameras',

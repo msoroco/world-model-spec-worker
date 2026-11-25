@@ -56,7 +56,27 @@ def finalize(attempt, output):
     channels.mkdir()
     values = {'vehicle_body_pose': lambda n, m: n['body_vertices_m'],
               'vehicle_speed': lambda n, m: n['speed_mps'],
-              'frame_join': lambda n, m: m}
+              'frame_join': lambda n, m: m,
+              'dev.stop_sign': lambda n, m: {'road_signal_id': 901, 'source': 'road.xodr',
+                                             'physical_visibility': 'unverified'},
+              'dev.governs': lambda n, m: {'approach_road_id': 1, 'lane_id': -1,
+                                          'physical_governing_status': 'unverified'},
+              'st.lane_enters': lambda n, m: {'road_id': n['road_id'],
+                                              'lane_id': n['lane_id']},
+              'drv.approaching': lambda n, m: max(v[1] for v in n['body_vertices_m']) < -7,
+              'st.crosswalk': lambda n, m: {'near_edge_y_m': -11, 'source': 'road.xodr',
+                                            'physical_rendering': 'unverified'},
+              'st.stop_line': lambda n, m: {'applicable': False,
+                                            'reason': 'near-side crosswalk branch; other branch pending'},
+              'st.intersection': lambda n, m: {'entry_y_m': -7,
+                                               'source': 'crosswalk_geometry.json'},
+              'st.sight_distance': lambda n, m: {'applicable': False,
+                                                 'measurement': None},
+              'rel.visible': lambda n, m: {'applicable': False, 'measurement': None},
+              'drv.stopped': lambda n, m: n['speed_mps'] <= .15,
+              'drv.crossing_line': lambda n, m: max(v[1] for v in n['body_vertices_m']) >= -11,
+              'drv.entering_intersection': lambda n, m:
+                  max(v[1] for v in n['body_vertices_m']) >= -7}
     if set(values) != {c['name'] for c in config['recording_description']['channels']}:
         raise ValueError('Recording channel declaration differs')
     for name, value in values.items():

@@ -52,9 +52,12 @@
       "requirement": "NRS-484B-603-1",
       "source": "NRS 484B.603(1)",
       "branch": "weather or other highway conditions",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Frozen C111294 is intersection/travel/other_vehicle; this alternative needs a compatible source-authorized cell or source-backed existing-evidence disposition. No physical or legal claim."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b"
+      ],
+      "evidence_or_gap": "Same-cell WetCloudyNoon draft constructions bind Native world weather readback and 600-frame weather source measurement; public/saved/physical and original statutory review remain in progress."
     }
   ],
   "cases": [
@@ -73,6 +76,22 @@
       "target_type": "boundary_probe",
       "physical_target": "hold speed approaching the same hazard",
       "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "decrease speed as requested while approaching a source-observed wet highway condition at the assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "decrease speed as requested while approaching a source-observed wet highway condition at the assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
     }
   ],
   "comparisons": [
@@ -87,6 +106,21 @@
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+      ]
+    },
+    {
+      "comparison_id": "wet_weather_speed_profile",
+      "case_ids": [
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b"
+      ],
+      "fixed_conditions": [
+        "same C111294 authored intersection geometry",
+        "same wet-weather preset and source readback",
+        "same other-vehicle route and initial state"
+      ],
+      "deliberate_differences": [
+        "hazard_approach_speed_profile"
       ]
     }
   ],

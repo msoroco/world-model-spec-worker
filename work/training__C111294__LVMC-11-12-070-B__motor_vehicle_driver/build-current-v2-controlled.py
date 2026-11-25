@@ -118,10 +118,6 @@ def main():
     manifest['cases'] = [entry]
     destination = HERE / 'current-v2-probe-2-primary-manifest.json'
     write(destination, manifest)
-    plan = json.loads((HERE / 'case-plan.json').read_text())
-    write(HERE / 'proposals/cases.json',
-          {'cases': [c for c in plan['cases'] if c['case_id'] in
-                     (HERE.name + '__probe_1', CASE)]})
     print(json.dumps({'manifest': sha(destination), 'recipe': sha(recipe),
                       'spec': sha(spec), 'sources': len(json.loads(recipe.read_text())['sources'])}))
 

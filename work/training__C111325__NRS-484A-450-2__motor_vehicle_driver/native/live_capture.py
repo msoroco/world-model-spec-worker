@@ -82,6 +82,7 @@ def acquire(bundle, output, host, port):
     output.mkdir(parents=True, exist_ok=output == bundle)
     if output != bundle:
         (output / 'config.json').write_bytes((bundle / 'config.json').read_bytes())
+        (output / 'road.xodr').write_bytes(road.read_bytes())
     owned, encoders, encoder_logs, camera_queues = [], {}, {}, {}
     capture = None
     changed = False

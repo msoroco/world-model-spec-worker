@@ -1,8 +1,24 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 78 of 253 assignments are ready and 175 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 79 of 253 assignments are ready and 174 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-25 C111294 LVMC fallback public and saved proofs
+
+Both C111294 LVMC paired upstream-spawn fallbacks now pass current-runtime public positive/missing-road negative compatibility, Core/Lean, full four-view decode and recorded-only saved processing. Each saved run preserves all 613 original fixture source hashes. Compatibility receipt SHA-256 values are `e008c78acfa069be4c3c067a7291fb74c945973c993bc25b4467bfdc3570ea65` and `f93381104bada01c58d52684e0ba43d95bb090a4ada3a82926fb703b13389ac7`; saved proof SHA-256 values are `aca92b6f5aa9118fc33ce2aa7a4a768c5be3687fd704d054f522204fc3790829` and `b534e6d425f340c47572832d2c21637e460205635b150bef6d34e260e8e462c8`. Four exact primary/fallback CPU chains are now proven, but the package remains partial because selected candidate/delivery/physical/comparison binding and strict gate remain. No original Native or legal/physical acceptance is claimed. Batch inventory remains **79 ready / 174 partial**.
+
+## 2026-11-25 C111294 LVMC physical fallback checkpoint
+
+The lead built two complete, paired `fallback1` constructions for C111294 LVMC that move the through start 5 m upstream for a source-observed yield-stop overshoot risk while keeping the entrant, road, controller contrast and capture contract fixed. Both pinned offline checks and two source-delta negative tests pass; receipt `physical-fallback-source-proof.json` SHA-256 `f5b4cf95ec57230eb38e1a05b6bc0092a3be98e870e8e4a2f2e39e0e8635a1a9`. These are unselected CPU constructions pending public/saved proofs and selected delivery binding. The assignment stays partial with no original Native, physical or legal acceptance claim. Inventory remains **79 ready / 174 partial**.
+
+## 2026-11-25 C111250 NRS 213(2)(b) ready integration
+
+`training__C111250__NRS-484B-213-2b__motor_vehicle_driver` passed the owner and lead independent exact scoped strict gates with `static_checks_passed: true`. Three selected cases each bind a current-runtime primary and lower-speed fallback; all six final-hash offline/public positive and removed-source negative chains pass. Three recorded-only saved, canonical semantic, physical fixture, independent delivery and comparison CPU checks pass. Selected manifest SHA-256 `e822959e5d907886b15e8a0c1a912b597bff8b7b678d8320ee58b420cbb4d2d3`. The lead rebuilt and audited the ordered, nondispatchable GPU intent queue: 820 planned case rows, 387 comparison rows, zero dispatchable, SHA-256 `903542136581a0b6ee24d655223055f6c6a24bc1f3fba252d39e7f03b2b9511c`. Independent return audit passes with **79 ready / 174 partial**, 366 selected cases, 751 proven candidates and zero errors. Original Native highway, vehicle motion, source pixels and legal outcome remain for later review. The freed owner slot is now assigned to `training__C150142__LVMC-11-52-030-A__motor_vehicle_driver`, still partial, for its remaining long public compatibility chains. Whole-batch strict is unpassed while partial packages remain.
+
+## 2026-11-25 C111294 LVMC canonical semantic checkpoint
+
+The lead added a draft five-stage canonical semantic chain for `training__C111294__LVMC-11-12-070-B__motor_vehicle_driver` from the exact frozen law and cell. Current-runtime `semantic_delivery.validate` passes with both paired construction identities and matching recording descriptions; the index and durable proof are in `proposals/semantic-index.json` and `semantic-proposal-proof.log` (index SHA-256 `7c8aedc31dab42444c35fee874787174101c834aaf5ec6e7edd93c835643a366`). The source-law antecedents stay explicit and original observed outcomes stay unknown. This is a CPU proposal, not selected delivery or physical/legal acceptance. The assignment remains partial; its risk-based fallback, selected manifest and independent delivery/physical/comparison audits still need completion. Batch inventory remains **78 ready / 175 partial** and whole-batch strict is unpassed.
 
 ## 2026-11-25 C111294 LVMC Native acquisition checkpoint
 
