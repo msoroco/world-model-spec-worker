@@ -1,7 +1,7 @@
 import unittest
 
 from geometry import CROSSWALK_RECT, TARGET_X, check as geometry_check
-from runner import check as runner_check, survey, survey_crosswalk
+from runner import check as runner_check, control_for, survey, survey_crosswalk
 
 
 class FakeCarla:
@@ -39,10 +39,17 @@ class NativeDraft(unittest.TestCase):
     def test_geometry_and_camera_plan(self):
         self.assertEqual(geometry_check()['crosswalk_rect_xyxy_m'], CROSSWALK_RECT)
         self.assertEqual(TARGET_X, {'controlled_1': -14.0, 'controlled_2': -5.0,
-                                    'boundary_20ft': -8.096})
+                                    'boundary_20ft': -8.096, 'stop_near': -5.0,
+                                    'stand_near': -5.0})
         self.assertEqual(runner_check()['frames'], 600)
         self.assertEqual(len(runner_check()['camera_names']), 4)
         self.assertFalse(runner_check()['physical_acceptance_claimed'])
+
+    def test_distinct_action_control_policies(self):
+        self.assertTrue(control_for('controlled_2', 250, 1, 0)['hand_brake'])
+        self.assertFalse(control_for('stand_near', 250, 1, 0)['hand_brake'])
+        self.assertEqual(control_for('stop_near', 301, 1, 0)['throttle'], .25)
+        self.assertEqual(control_for('stop_near', 250, 1, 0)['brake'], 1.0)
 
     def test_parking_lane_survey_gate(self):
         self.assertEqual(len(survey(FakeWorld(), FakeCarla)), 5)

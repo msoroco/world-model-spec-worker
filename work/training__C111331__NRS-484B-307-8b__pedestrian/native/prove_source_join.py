@@ -31,7 +31,8 @@ def fixture(config):
     pixels = {name: format(index + 1, '064x') for index, (name, _, _, _) in enumerate(CAMERAS)}
     for index, row in enumerate(samples):
         frame, time_s = index + 100, index / 20
-        row.update(native_frame=frame, time_s=time_s, source_rgb_sha256=pixels)
+        row.update(native_frame=frame, time_s=time_s, walker_id=17,
+                   source_rgb_sha256=pixels)
         frame_map.append({'video_frame': index, 'carla_frame': frame,
                           'native_frame': frame, 'time_s': time_s,
                           'source_rgb_sha256': pixels})

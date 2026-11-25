@@ -43,9 +43,21 @@ def main():
         options = []
         for candidate in ('primary', 'fallback1'):
             config = plan(condition, candidate)
+            description = {'channels': [{
+                'name': name, 'unit': 'structured',
+                'method': 'original Native walker, signal, body and camera source join',
+                'reference_frame': 'original 20 Hz Native frame',
+                'sampling_rate_hz': 20, 'time_window': '30 s / 600 frames',
+                'uncertainty': 'display pixels, head governance and permission need independent review'
+            } for name in [*config['required_atoms'], 'dev.pedestrian_signal',
+                           'camera_frame_join']],
+                           'context_inputs': [{'name': 'native_red_intersection',
+                                               'unit': 'structured',
+                                               'method': 'authored OpenDRIVE and original head readback'}],
+                           'limitations': ['CPU diagnostics do not establish original physical pixels']}
             config.update(selected_case_id=case_id,
                           source_packets=[], case=condition,
-                          recording_description='Pedestrian highway-entry contrast under surveyed steady red and other-device indication.')
+                          recording_description=description)
             files = [{'path': name, 'content': value} for name, value in (
                 ('runner.py', (HERE / 'runner.py').read_text()),
                 ('native_red.py', (HERE / 'native_red.py').read_text()),
@@ -57,7 +69,7 @@ def main():
             construction = {'case_id': case_id, 'cell_id': 'C111331',
                             'law_id': 'NRS-484B-307-8b', 'actor': 'pedestrian',
                             'entrypoint': 'runner.py', 'files': files,
-                            'recording_description': config['recording_description'],
+                            'recording_description': description,
                             'status': 'unselected_native_draft',
                             'measurement_plan': 'Original walker footprint, both signal readbacks, four RGB sources and frame map.',
                             'static_checks': ['exact frozen identity', 'map signal and roadway geometry'],

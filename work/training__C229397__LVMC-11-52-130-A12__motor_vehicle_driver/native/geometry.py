@@ -4,7 +4,8 @@ import xml.etree.ElementTree as ET
 
 CROSSWALK_RECT = [0.0, 4.0, -6.5, 0.0]
 TARGET_X = {'controlled_1': -14.0, 'controlled_2': -5.0,
-            'boundary_20ft': -8.096}
+            'boundary_20ft': -8.096, 'stop_near': -5.0,
+            'stand_near': -5.0}
 
 
 def open_drive():

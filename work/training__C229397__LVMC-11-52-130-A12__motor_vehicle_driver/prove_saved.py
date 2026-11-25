@@ -14,13 +14,23 @@ def write_attempt(path, center_x=-5.0):
     inventory['source_kind'] = 'native_saved_sample'
     poses = []
     frames = []
+    controls = []
     for row in packet['frames']:
         poses.append(row)
         frames.append({'video_frame': row['video_frame'], 'native_frame': row['native_frame'],
                        'carla_frame': row['native_frame'], 'time_s': row['time_s'],
                        'camera_native_frames': {name: row['native_frame'] for name in CAMERAS}})
+        controls.append({'video_frame': row['video_frame'], 'native_frame': row['native_frame'],
+                         'time_s': row['time_s'], 'vehicle_id': row['vehicle_id'],
+                         'engineering_action': 'controlled_2',
+                         'applied_control': {'throttle': 0, 'brake': 1, 'hand_brake': True}})
     (path / 'vehicle-poses.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in poses))
     (path / 'video_frames.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in frames))
+    (path / 'control-intent.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in controls))
+    (path / 'trace.jsonl').write_text(''.join(json.dumps({'frame': row['native_frame'],
+        'time_s': row['time_s'], 'position': {'x': row['vehicle_xy_m'][0],
+        'y': row['vehicle_xy_m'][1], 'z': 8.0}, 'heading_deg': 0,
+        'speed_mps': row['speed_mps']}) + '\n' for row in poses))
     (path / 'crosswalk-inventory.json').write_text(json.dumps(inventory) + '\n')
     source = path / 'synthetic-original-review-source.txt'
     source.write_text('synthetic source shape only; no actual marked crosswalk or exception evidence\n')
@@ -59,7 +69,7 @@ def main():
         bad = root / 'missing_camera'
         bad.mkdir()
         poses, frames, inventory = write_attempt(bad)
-        frames[200]['camera_native_frames'].pop('subject_side')
+        frames[200]['camera_native_frames'].pop('driver_reference')
         (bad / 'video_frames.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in frames))
         reject(bad, 'four original camera identities missing or mismatched')
         bad = root / 'missing_marking'

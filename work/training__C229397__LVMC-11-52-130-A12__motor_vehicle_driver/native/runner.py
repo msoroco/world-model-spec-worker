@@ -10,11 +10,22 @@ from geometry import CROSSWALK_RECT, TARGET_X, check as geometry_check, open_dri
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -19, 25, -45),
-    ('crosswalk', 1280, 720, 3, -15, 14, -35),
-    ('parking_approach', 1280, 720, -20, -15, 14, -35),
-    ('subject_side', 1280, 720, -5, -10, 9, -25),
+    ('overview', 1920, 1080, 0, -19, 25, -45),
+    ('approach', 1280, 720, 3, -15, 14, -35),
+    ('reference_corner', 1280, 720, -20, -15, 14, -35),
+    ('driver_reference', 1280, 720, -5, -10, 9, -25),
 )
+
+
+def control_for(case, index, distance, speed):
+    """Engineering motion intent only; legal stop/stand/park is source reviewed."""
+    if case == 'stop_near' and index >= 300:
+        return {'throttle': .25, 'brake': 0.0, 'hand_brake': False}
+    throttle = .28 if distance > 9 else (.11 if distance > 4 else 0.0)
+    brake = 0.0 if distance > 4 else (1.0 if distance < 2 else .35)
+    return {'throttle': throttle, 'brake': brake,
+            'hand_brake': case in ('controlled_1', 'controlled_2', 'boundary_20ft')
+            and distance < 2 and speed < .1}
 
 
 def check():
@@ -129,16 +140,16 @@ def execute(output_dir, case, host, port):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-poses.jsonl').open('x') as poses:
+        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-poses.jsonl').open('x') as poses, (output / 'control-intent.jsonl').open('x') as intent, (output / 'trace.jsonl').open('x') as trace:
             first_elapsed = None
             for index in range(FRAMES):
                 location = vehicle.get_transform().location
                 velocity = vehicle.get_velocity()
                 distance = TARGET_X[case] - location.x
                 # Engineering brake schedule only; actual parking is measured after capture.
-                throttle = .28 if distance > 9 else (.11 if distance > 4 else 0)
-                brake = 0 if distance > 4 else (1 if distance < 2 else .35)
-                vehicle.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=0))
+                speed_before = (velocity.x**2 + velocity.y**2 + velocity.z**2)**.5
+                command = control_for(case, index, distance, speed_before)
+                vehicle.apply_control(carla.VehicleControl(**command, steer=0))
                 native_frame = world.tick()
                 snap = world.get_snapshot()
                 if snap.frame != native_frame:
@@ -167,6 +178,13 @@ def execute(output_dir, case, host, port):
                     'bbox_half_length_m': bbox.x, 'bbox_half_width_m': bbox.y,
                     'speed_mps': (velocity.x**2 + velocity.y**2 + velocity.z**2)**.5,
                     'native_elapsed_seconds': ts, 'blueprint_id': vehicle.type_id}) + '\n')
+                intent.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
+                    'time_s': elapsed, 'vehicle_id': vehicle.id,
+                    'engineering_action': case, 'applied_control': command}) + '\n')
+                trace.write(json.dumps({'frame': native_frame, 'time_s': elapsed,
+                    'position': {'x': transform.location.x, 'y': transform.location.y,
+                                 'z': transform.location.z}, 'heading_deg': transform.rotation.yaw,
+                    'speed_mps': (velocity.x**2 + velocity.y**2 + velocity.z**2)**.5}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()

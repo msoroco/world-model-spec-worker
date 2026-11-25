@@ -30,9 +30,12 @@
       "status": "selected_required",
       "case_ids": [
         "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1",
-        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2"
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near"
       ],
-      "evidence_or_gap": "Primary CPU drafts and source-shaped saved proof exist; marked crosswalk pixel source and exceptions, selected manifest, fallbacks, runtime process-saved compatibility, independent audits and semantic proposals remain incomplete."
+      "evidence_or_gap": "Five selected Native construction drafts and original-source finalizer; full compatibility, exceptions and acceptance pending."
     },
     {
       "requirement": "LVMC-11-52-130-A12",
@@ -60,7 +63,11 @@
         "full-train"
       ],
       "construction_draft": "draft-crosswalk/controlled_1/primary/construction.json",
-      "draft_status": "primary Native runner, pinned offline and source-shaped saved CPU proofs passed; exact delivery selection incomplete"
+      "draft_status": "selected manifest primary Native offline passed; compatibility and delivery proofs pending",
+      "gap_ids": [
+        "marked-crosswalk-distance",
+        "statutory-action-and-exceptions"
+      ]
     },
     {
       "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
@@ -74,7 +81,64 @@
         "full-train"
       ],
       "construction_draft": "draft-crosswalk/controlled_2/primary/construction.json",
-      "draft_status": "primary Native runner, pinned offline and source-shaped saved CPU proofs passed; exact delivery selection incomplete"
+      "draft_status": "selected manifest primary Native offline passed; compatibility and delivery proofs pending",
+      "gap_ids": [
+        "marked-crosswalk-distance",
+        "statutory-action-and-exceptions"
+      ]
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "kind": "planned_only",
+      "source_branch": "Twenty foot marked-crosswalk boundary",
+      "physical_target": "body gap at 6.096 m engineering target, measured from original extent; no legal measurement convention inferred",
+      "comparison_variable": "measured parking distance to marked crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction_draft": "draft-crosswalk/boundary_20ft/primary/construction.json",
+      "draft_status": "selected manifest primary Native offline passed; compatibility and delivery proofs pending",
+      "gap_ids": [
+        "marked-crosswalk-distance"
+      ]
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "kind": "planned_only",
+      "source_branch": "Stop near marked crosswalk",
+      "physical_target": "stop within 20 feet of marked crosswalk, action classification source-reviewed",
+      "comparison_variable": "observed motion and original applied control policy",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction_draft": "draft-crosswalk/stop_near/primary/construction.json",
+      "draft_status": "selected manifest primary Native offline passed; compatibility and delivery proofs pending",
+      "gap_ids": [
+        "marked-crosswalk-distance",
+        "statutory-action-and-exceptions"
+      ]
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near",
+      "target_law_id": "LVMC-11-52-130-A12",
+      "kind": "planned_only",
+      "source_branch": "Stand near marked crosswalk",
+      "physical_target": "stand within 20 feet of marked crosswalk, action classification source-reviewed",
+      "comparison_variable": "observed motion and original applied control policy",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction_draft": "draft-crosswalk/stand_near/primary/construction.json",
+      "draft_status": "selected manifest primary Native offline passed; compatibility and delivery proofs pending",
+      "gap_ids": [
+        "marked-crosswalk-distance",
+        "statutory-action-and-exceptions"
+      ]
     }
   ],
   "comparisons": [
@@ -90,6 +154,53 @@
       "fixed_conditions": [
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_comparison",
+      "case_ids": [
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "measured parking body and center distance to marked crosswalk"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, marked crosswalk extent and legal jurisdiction",
+        "action type and exception context",
+        "route and controller policy except requested target position",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_comparison",
+      "case_ids": [
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near"
+      ],
+      "deliberate_differences": [
+        "original control command and observed stopped/standing/parking motion interval"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and marked crosswalk extent",
+        "same near-crosswalk target position and source review",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_comparison",
+      "case_ids": [
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+        "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near"
+      ],
+      "deliberate_differences": [
+        "original control command and observed stopped/standing/parking motion interval"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor and marked crosswalk extent",
+        "same near-crosswalk target position and source review",
         "capture channels, rate, camera policy and recording duration"
       ]
     }
@@ -162,7 +273,7 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Primary CPU drafts and source-shaped saved proof exist; marked crosswalk pixel source and exceptions, selected manifest, fallbacks, runtime process-saved compatibility, independent audits and semantic proposals remain incomplete."
+    "Selected compatibility and process-saved receipts, semantic proposals, independent delivery audit and statutory exception constructions remain worker CPU work."
   ],
   "source_context_review": "Measure distance to the marked crosswalk with clear geometry and uncertainty. Traffic-conflict, legal-compliance and officer/device directions are textual exceptions.",
   "source_observation_mapping": {
@@ -241,5 +352,58 @@
         "bbox_half_width_m"
       ]
     }
+  },
+  "evidence_review": {
+    "reviewer": "worker source review",
+    "method": "Inspected frozen assignment membership, witnesses and full law text. The assignment lists no accepted full-train recording and the input directory supplies no evidence.json; equivalence cannot be established from an absent accepted recording. Crosswalk marking, distance convention, action type and exceptions require original sources.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "marked-crosswalk-distance",
+        "requirement": "Observed stop, stand or park position relative to a marked crosswalk, including below, at and above twenty feet",
+        "source": "LVMC 11.52.130(A)(12)",
+        "why_existing_insufficient": "No accepted recording is listed in the frozen assignment."
+      },
+      {
+        "id": "statutory-action-and-exceptions",
+        "requirement": "Separate stop, stand and park observations and the applicable traffic conflict, law, officer and device direction alternatives",
+        "source": "LVMC 11.52.130(A)(12)",
+        "why_existing_insufficient": "No accepted recording or source review establishes these contexts."
+      }
+    ]
+  },
+  "statutory_branch_review": {
+    "source": "LVMC 11.52.130(A)(12)",
+    "source_topic_ids": [
+      "text-0",
+      "text-1",
+      "reviewed-scope-0"
+    ],
+    "action_alternatives": [
+      "stop",
+      "stand",
+      "park"
+    ],
+    "distance_probes": [
+      "below 6.096 m",
+      "at 6.096 m",
+      "above 6.096 m"
+    ],
+    "crosswalk_qualification": [
+      "marked",
+      "marking unestablished or absent"
+    ],
+    "exceptions": [
+      "necessary to avoid conflict with other traffic",
+      "in compliance with law",
+      "directions of a police officer",
+      "directions of a traffic control device"
+    ],
+    "interpretive_limits": [
+      "No exact legal distance measurement convention supplied",
+      "No duration alone defines stop, stand or park",
+      "Exception applicability needs source review, not geometry alone"
+    ],
+    "status": "partial; parking distance CPU construction only"
   }
 }

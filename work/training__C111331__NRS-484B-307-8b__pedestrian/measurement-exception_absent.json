@@ -1,0 +1,50 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.307(8)(b)",
+      "output_key": "steady_red_source",
+      "method": "measure_red_signal",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "red-entry-original.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.307(8)(b)",
+      "output_key": "entry_and_other_device_source",
+      "method": "measure_entry",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "red-entry-original.jsonl",
+        "camera-sources.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "intersection_entry_scope",
+      "method": "measure_scope",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "red-entry-original.jsonl",
+        "capture/evidence.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "red-entry-original.jsonl"
+    ],
+    "error_contains": "Missing required source: red-entry-original.jsonl"
+  }
+}
