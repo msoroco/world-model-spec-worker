@@ -30,7 +30,8 @@ def build():
     base = json.loads((ROOT / 'native/selected-controlled_1-primary-construction.json').read_text())
     template_config = json.loads(next(item['content'] for item in base['files']
                                       if item['path'] == 'config.json'))
-    runner = (ROOT / 'native/native_runner_branches.py').read_text()
+    pedestrian_runner = (ROOT / 'native/native_runner_branches.py').read_text()
+    concurrent_runner = (ROOT / 'native/native_runner_concurrent.py').read_text()
     finalizer = (ROOT / 'native/finalize_branches.py').read_text()
     branch_source = (ROOT / 'native/branch_scenarios.py').read_text()
     branch_keys = tuple(BRANCHES)
@@ -44,10 +45,11 @@ def build():
             case = AID + '__' + branch
             construction['case_id'] = case
             construction['status'] = 'selected_delivery_prepared'
+            names = (('ego_motion', 'pedestrian_motion', 'arrow_request', 'concurrent_request')
+                     if branch.startswith('pedestrian_')
+                     else ('ego_motion', 'arrow_request', 'concurrent_request'))
             construction['recording_description'] = {
-                'channels': [channel(name) for name in
-                             ('ego_motion', 'pedestrian_motion', 'arrow_request',
-                              'concurrent_request')],
+                'channels': [channel(name) for name in names],
                 'context_inputs': [],
                 'limitations': ['Request is not official signal governance or legal status.',
                                 'Original pixels, lawful pedestrian status and cautiousness require review.']}
@@ -64,7 +66,7 @@ def build():
                           case_suffix=branch,
                           ego_release_frame=spec['release_frame'],
                           requested_movement=spec['movement'],
-                          requested_concurrent_straight_indication=spec['concurrent_straight'],
+                          requested_concurrent_left_indication=spec['concurrent_left'],
                           branch_request_sha256=request_sha,
                           ego_throttle=0.22 if candidate == 'primary' else 0.28,
                           pedestrian_lawful_status=None,
@@ -72,6 +74,8 @@ def build():
                           cautiousness_legal_judgment=None,
                           recording_description=construction['recording_description'])
             config['case']['case_id'] = case
+            runner = (pedestrian_runner if branch.startswith('pedestrian_')
+                      else concurrent_runner)
             contents = {'config.json': json.dumps(config, indent=2) + '\n',
                         'runner.py': runner, 'finalize.py': finalizer,
                         'branch_scenarios.py': branch_source}

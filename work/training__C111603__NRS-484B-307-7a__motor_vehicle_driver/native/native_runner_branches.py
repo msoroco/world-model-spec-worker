@@ -40,7 +40,7 @@ def check(config):
         raise ValueError('Statutory branch release differs')
     if config.get('requested_movement') != BRANCHES[branch]['movement']:
         raise ValueError('Statutory branch movement differs')
-    if config.get('requested_concurrent_straight_indication') != BRANCHES[branch]['concurrent_straight']:
+    if config.get('requested_concurrent_left_indication') != BRANCHES[branch]['concurrent_left']:
         raise ValueError('Concurrent indication request differs')
     cameras = config.get('cameras')
     if not isinstance(cameras, list) or [c.get('name') for c in cameras] != list(VIEWS):
@@ -72,7 +72,7 @@ def control_for(config, frame, carla):
     else:
         turn_frame = frame - release
         ego = carla.VehicleControl(throttle=config['ego_throttle'],
-                                   steer=(0.30 if turn_frame < 85 else 0.0) if config['requested_movement'] == 'right' else 0.0,
+                                   steer=(0.30 if turn_frame < 85 else 0.0) if config['requested_movement'] == 'right' else (-0.30 if turn_frame < 85 else 0.0),
                                    brake=0.0)
     other = carla.VehicleControl(throttle=config['other_throttle'],
                                  steer=0.0, brake=0.0)
@@ -187,7 +187,7 @@ def execute(config, output, host, port):
                     'frame': index, 'time_s': index / RATE,
                     'ego': actor_sample(ego), 'other_vehicle': actor_sample(other),
                     'requested_arrow_lit': index % 20 < 10,
-                    'requested_concurrent_straight_indication': config['requested_concurrent_straight_indication'],
+                    'requested_concurrent_left_indication': config['requested_concurrent_left_indication'],
                     'requested_movement': config['requested_movement'],
                     'pedestrian': actor_sample(walker) if walker is not None else None,
                     'branch_request_sha256': config['branch_request_sha256'],
@@ -210,7 +210,7 @@ def execute(config, output, host, port):
             'actual_arrow_pixels_reviewed': False, 'governs_ego_verified': False,
             'other_traffic_lawful_status_verified': False,
             'pedestrian_status_verified': False,
-            'requested_concurrent_straight_indication': config['requested_concurrent_straight_indication'],
+            'requested_concurrent_left_indication': config['requested_concurrent_left_indication'],
             'branch_request_sha256': config['branch_request_sha256'],
             'physical_cautiousness_verified': False}, indent=2) + '\n')
     except BaseException as error:

@@ -2,6 +2,7 @@
 import hashlib
 import json
 import shutil
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from branch_scenarios import BRANCHES, rows
@@ -81,10 +82,24 @@ def build():
         context = json.loads((source / 'arrow-context.json').read_text())
         context.update(case_id=ROOT.name + '__' + case,
                        branch=BRANCHES[case]['branch'],
-                       requested_concurrent_straight_indication=BRANCHES[case]['concurrent_straight'])
+                       requested_concurrent_left_indication=BRANCHES[case]['concurrent_left'])
         dump(source / 'arrow-context.json', context)
+        if case == 'concurrent_present':
+            road = ET.fromstring((source / 'road.xodr').read_text())
+            signals = road.find("./road[@id='1']/signals")
+            primary = signals.find("./signal[@id='601']")
+            if primary is None:
+                raise ValueError('Requested primary signal absent from source road')
+            secondary = ET.fromstring(ET.tostring(primary))
+            secondary.set('id', '602')
+            secondary.set('name', 'south-approach-concurrent-left-turn-indication-request')
+            secondary.set('subtype', '2')
+            secondary.set('t', '-7.0')
+            signals.append(secondary)
+            (source / 'road.xodr').write_text(ET.tostring(road, encoding='unicode') + '\n')
         capture = json.loads((source / 'capture/manifest.json').read_text())
         capture['sources']['trace.jsonl'] = sha(source / 'trace.jsonl')
+        capture['sources']['road.xodr'] = sha(source / 'road.xodr')
         dump(source / 'capture/manifest.json', capture)
         files = [{'path': str(item.relative_to(source)),
                   'source': str(item.relative_to(REPO)), 'sha256': sha(item)}

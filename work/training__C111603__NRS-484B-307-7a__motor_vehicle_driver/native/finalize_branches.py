@@ -52,7 +52,7 @@ def measure(attempt, case, config):
             ego = row['ego']['position_m']
             pedestrian = row['pedestrian']['position_m'] if row.get('pedestrian') else None
             arrow = row['requested_arrow_lit']
-            concurrent = row['requested_concurrent_straight_indication']
+            concurrent = row['requested_concurrent_left_indication']
         else:
             if (row.get('original_native_observed') is not False
                     or row['requested_arrow']['governs_ego'] != 'requested_unverified'
@@ -63,8 +63,8 @@ def measure(attempt, case, config):
             ego = row['requested_ego_xy_m']
             pedestrian = row['requested_pedestrian_xy_m']
             arrow = row['requested_arrow']['flashing_yellow_lit']
-            concurrent = row['requested_concurrent_straight_indication']
-        if concurrent != config['requested_concurrent_straight_indication']:
+            concurrent = row['requested_concurrent_left_indication']
+        if concurrent != config['requested_concurrent_left_indication']:
             raise ValueError('Saved concurrent indication differs from construction')
         values['ego_motion'].append(ego)
         values['pedestrian_motion'].append(pedestrian)
@@ -82,7 +82,7 @@ def measure(attempt, case, config):
               'pedestrian_crosswalk_first_frame': min(crosswalk_frames) if crosswalk_frames else None,
               'pedestrian_crosswalk_last_frame': max(crosswalk_frames) if crosswalk_frames else None,
               'pedestrian_inside_at_ego_entry': first_ego_entry in crosswalk_frames,
-              'requested_concurrent_straight_indication': config['requested_concurrent_straight_indication'],
+              'requested_concurrent_left_indication': config['requested_concurrent_left_indication'],
               'arrow_governance_verified': False, 'pedestrian_lawful_status_verified': False,
               'cautiousness_legal_judgment': None, 'legal_verdict_claimed': False,
               'source_kind': source_kind}

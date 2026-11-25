@@ -115,7 +115,7 @@
       "target_law_id": "NRS-484B-307-7a",
       "kind": "delivery",
       "source_branch": "Concurrent-indication movement permission",
-      "physical_target": "request straight entry with flashing right arrow alone",
+      "physical_target": "request left turn with flashing right arrow alone",
       "comparison_variable": "concurrent indication request",
       "requested_not_measured": true,
       "selection_targets": [
@@ -127,7 +127,7 @@
       "target_law_id": "NRS-484B-307-7a",
       "kind": "delivery",
       "source_branch": "Concurrent-indication movement permission",
-      "physical_target": "request straight entry with flashing right arrow and concurrent straight indication",
+      "physical_target": "request left turn with flashing right arrow and concurrent left-turn indication",
       "comparison_variable": "concurrent indication request",
       "requested_not_measured": true,
       "selection_targets": [
@@ -173,11 +173,11 @@
         "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present"
       ],
       "deliberate_differences": [
-        "concurrent straight indication request"
+        "concurrent left-turn indication request"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, arrow request and other-vehicle route",
-        "pedestrian traversal and camera policy",
+        "frozen cell, actor, flashing right-arrow request and other-vehicle route",
+        "pedestrian absence, ego left-turn path and camera policy",
         "600-frame/20 Hz source window"
       ]
     }
@@ -186,57 +186,57 @@
     {
       "term": "dev.traffic_signal",
       "purpose": "state flashing_yellow_arrow(dir), alone or with another indication",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "dev.governs",
       "purpose": "the head faces the subject",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "st.lane_enters",
       "purpose": "the lane facing the signal enters the intersection turned through",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "drv.turning",
       "purpose": "the movement indicated by the arrow",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "drv.entering_intersection",
       "purpose": "the cautious entry",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "kin.speed",
       "purpose": "the caution, as speed on entry",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "ru.pedestrian",
       "purpose": "pedestrians lawfully in the intersection or adjacent crosswalk",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "st.crosswalk",
       "purpose": "that crosswalk",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "drv.in_intersection",
       "purpose": "other traffic lawfully within",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "drv.yields_to",
       "purpose": "the yield owed to both",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     },
     {
       "term": "drv.time_to_conflict",
       "purpose": "operationalizes 'cautiously'",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapped_requires_original_review"
     }
   ],
   "observations": [
@@ -333,5 +333,103 @@
     ],
     "other_traffic_lawfulness": "unverified",
     "pedestrian_duty": "separate_open_branch"
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Original signal-request history and four camera pixels need independent arrow/concurrent indication review",
+      "channels": [
+        "arrow_request",
+        "concurrent_request"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Signal orientation and controlling approach remain unverified until original scene and pixel review",
+      "channels": [],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/native_runner_concurrent.py",
+        "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Source OpenDRIVE and original ego route support later lane-entry review; requested road does not prove governance",
+      "channels": [],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/request.py"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original ego position/yaw history and four videos support turn-path measurement; legal movement permission remains unverified",
+      "channels": [
+        "ego_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "600-frame source-joined ego position with an engineering intersection bound, not legal cautiousness",
+      "channels": [
+        "ego_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original velocity/position source can measure speed; no legal caution threshold inferred",
+      "channels": [
+        "ego_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/native_runner_concurrent.py"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Pedestrian actor position in selected pedestrian branches; lawful status requires independent source review",
+      "channels": [
+        "pedestrian_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "OpenDRIVE adjacent crosswalk geometry and original video require physical review",
+      "channels": [],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/road-template.xodr"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "Original other-vehicle source history supports occupancy; lawful status requires independent review",
+      "channels": [
+        "other_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_selected.py"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Source-joined relative entry timing is a measurement only; right-of-way judgment remains external",
+      "channels": [
+        "ego_motion",
+        "other_motion",
+        "pedestrian_motion"
+      ],
+      "source_refs": [
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_selected.py",
+        "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Optional engineering relative-timing cue is not a statutory cautiousness definition",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/assignment.json"
+      ]
+    }
   }
 }
