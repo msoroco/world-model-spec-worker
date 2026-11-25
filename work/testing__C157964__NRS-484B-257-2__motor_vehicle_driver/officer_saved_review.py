@@ -26,8 +26,10 @@ def _sha(path):
 
 def _output_root(path):
     path = Path(path).resolve()
-    repo = Path(__file__).resolve().parents[2]
-    if path.is_relative_to(repo) and not path.is_relative_to(repo / ".runtime-work"):
+    roots = [parent for parent in Path(__file__).resolve().parents
+             if (parent / ".runtime-work").is_dir()]
+    repo = roots[-1] if roots else None
+    if repo is not None and path.is_relative_to(repo) and not path.is_relative_to(repo / ".runtime-work"):
         raise ValueError("Saved review sources must stay under .runtime-work")
     return path
 

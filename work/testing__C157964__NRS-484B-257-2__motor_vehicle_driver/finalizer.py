@@ -24,6 +24,39 @@ def _rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def measure_signed_entrance(attempt, observed):
+    packet = json.loads((attempt / "source_review/source-packet.json").read_text())
+    review = packet["review"]
+    return {"site_id": packet["site_id"], "entrances": review["entrances"],
+            "non_through_highway": True}
+
+
+def measure_officer_control(attempt, observed):
+    entry = observed["first_ego_entry"] or observed["first_hold_observation"]
+    return entry["traffic_control_observed"]
+
+
+def measure_officer_direction(attempt, observed):
+    entry = observed["first_ego_entry"] or observed["first_hold_observation"]
+    return entry["officer_direction_observed"]
+
+
+def measure_other_traffic(attempt, observed):
+    entry = observed["first_ego_entry"] or observed["first_hold_observation"]
+    sample = next(row for row in observed["samples"] if row["frame"] == entry["frame"])
+    return {"frame": entry["frame"],
+            "body_in_intersection": sample["other_body_in_intersection"],
+            "approaching_observed": sample["other_approaching_observed"],
+            "immediate_hazard_judgment": "unresolved"}
+
+
+def measure_ego_response(attempt, observed):
+    entry = observed["first_ego_entry"] or observed["first_hold_observation"]
+    sample = next(row for row in observed["samples"] if row["frame"] == entry["frame"])
+    return {"frame": entry["frame"], "body_in_intersection": sample["ego_body_in_intersection"],
+            "speed_mps": sample["ego_speed_mps"], "caution_judgment": "unresolved"}
+
+
 def finalize(attempt, output, *, assessor=None, writer=None):
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
@@ -35,7 +68,7 @@ def finalize(attempt, output, *, assessor=None, writer=None):
     for name in required:
         path = attempt / name
         if not path.is_file() or not path.stat().st_size:
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     if (config.get("assignment_id") != ASSIGNMENT or
             config.get("law_id") != "NRS-484B-257-2" or
@@ -138,10 +171,21 @@ def finalize(attempt, output, *, assessor=None, writer=None):
         writer = write_result
     result = assessor(attempt, result)
     writer(attempt, result)
+    measurement_spec = {
+        "signed_entrance": (measure_signed_entrance, ("source_review/source-packet.json",)),
+        "officer_control": (measure_officer_control, ("officer_review.json", "capture-receipt.json")),
+        "officer_direction": (measure_officer_direction, ("officer_review.json", "video_frames.jsonl")),
+        "other_traffic": (measure_other_traffic, ("officer_review.json", "capture-receipt.json")),
+        "ego_response": (measure_ego_response, ("capture-receipt.json", "video_frames.jsonl")),
+    }
+    measurements = {key: {"method": method.__name__, "value": method(attempt, observed),
+                          "sources": {name: _sha(attempt / name) for name in inputs}}
+                    for key, (method, inputs) in measurement_spec.items()}
     report = {"format": "worker-c157964-subsection-2-saved-analysis",
               "case_id": config["selected_case_id"],
               "source_report": observed,
               "source_sha256": sources,
+              "measurements": measurements,
               "physical_checks": result.get("physical_checks", {}),
               "realized_observables": result.get("realized_observables", {}),
               "analysis_complete": True,

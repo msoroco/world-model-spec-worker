@@ -64,6 +64,12 @@ class OfficerFinalizerTests(unittest.TestCase):
                                         assessor=assessor, writer=writer)
             self.assertTrue(report["analysis_complete"])
             self.assertEqual(report["legal_conclusion"], "unresolved")
+            self.assertEqual(set(report["measurements"]),
+                             {"signed_entrance", "officer_control", "officer_direction",
+                              "other_traffic", "ego_response"})
+            self.assertTrue(report["measurements"]["signed_entrance"]["value"]["non_through_highway"])
+            self.assertEqual(report["measurements"]["other_traffic"]["value"]["immediate_hazard_judgment"],
+                             "unresolved")
             self.assertEqual(len(observed[0]["recording_evidence"]), 8)
             self.assertEqual(len((attempt / "channels/officer_direction_observed.jsonl").read_text().splitlines()), 3)
             with self.assertRaisesRegex(ValueError, "Retain prior saved finalization"):
@@ -76,7 +82,7 @@ class OfficerFinalizerTests(unittest.TestCase):
             attempt.mkdir()
             self._attempt(attempt)
             (attempt / "capture/evidence.jsonl").unlink()
-            with self.assertRaisesRegex(ValueError, "Missing required original source"):
+            with self.assertRaisesRegex(ValueError, "Missing required source"):
                 finalizer.finalize(attempt, attempt / "analysis.json")
             with (attempt / "capture/evidence.jsonl").open("w") as stream:
                 for frame in (100, 999, 102):
