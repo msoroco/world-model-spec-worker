@@ -1,0 +1,603 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first",
+      "kind": "delivery",
+      "construction": "construction-compatibility-exit_yield_first.json",
+      "construction_sha256": "b0b5df0696a8542e7ad47edc70e33ba6f106e5f217da273499c98259d3ac2310",
+      "fixture_recipe": "work/testing__C228302__NRS-484B-263__motor_vehicle_driver/diagnostics/exit_yield_first-recipe.json",
+      "measurement_contract": "diagnostics/exit_yield_first-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original controlled-access road authority, exit map and legal judgment sweeps absent",
+      "acquisition": {
+        "controlled_access_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original public dedication, access restriction and authority determination",
+          "evidence": "channel-controlled_access_designation.jsonl"
+        },
+        "exit_path": {
+          "entrypoint": "analysis.py",
+          "method": "ego original position and exit interaction polygon",
+          "evidence": "channel-exit_path.jsonl"
+        },
+        "all_approaching_vehicles": {
+          "entrypoint": "analysis.py",
+          "method": "all highway vehicle identities, occupancy, range and speed",
+          "evidence": "channel-all_approaching_vehicles.jsonl"
+        },
+        "precedence_duration": {
+          "entrypoint": "analysis.py",
+          "method": "ego wait and entry time joined to approaching vehicles",
+          "evidence": "channel-precedence_duration.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-exit_yield_first/receipt.json",
+        "sha256": "f9b8caf8f36eb90bfbbf62619945bdce611d72d47b509f529c3344b94b42f6c3",
+        "log": "proofs/selected-exit_yield_first/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-exit_yield_first/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "b0b5df0696a8542e7ad47edc70e33ba6f106e5f217da273499c98259d3ac2310",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first --output .runtime-work/c228302/selected-offline-exit_yield_first",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-exit_yield_first.log",
+        "log_sha256": "b628504ece14fb1ebd6f62603bc3a2f1d8c9aaebed8bbe805e35fc4e16c5f8d0"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original map exit connection and approach route may not yield the intended measurable interaction; an upstream ego start can allow a stable approach only after original geometry review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-exit_yield_first.json",
+          "construction_sha256": "1e8609d1e0185b3d1fdb99ae0ce8918a8c7d9a95084dfacc75a6483410a2944a",
+          "trigger": {
+            "source": "original map exit connection, ego spawn readback and 900-frame ego/approaching history",
+            "metric": "ego spawn clearance and stable approach before exit interaction",
+            "failure_condition": "primary ego spawn obstructed or original trace cannot establish the planned exit interaction"
+          },
+          "changed_knobs": [
+            "ego start shifted 2 m upstream on the same reviewed exit route; authority, highway approaches, headway, policy, camera plan and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_original_delivery.py",
+        "script_sha256": "d1777552be51f3efdafce14b8da45186c2d13d4142e9a724bcb6eaf97f76d988",
+        "command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-exit_yield_first.log",
+        "test_log_sha256": "56ea8ff8a5e948b59ab7d79caa1bc0fd5cfd3344bb047eb1a177dc83cd3e83f0",
+        "negative_command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-exit_yield_first.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-exit_yield_first-receipt.json",
+        "sha256": "850948e6f85958da8e1bce3e8da94e695edbe537d4b7636a5075d54fc192c0ab"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-exit_yield_first.log",
+        "test_log_sha256": "c2fa49de1e62893e1941a7ba73d760f6ec346d35248b043e87cf820386b6a74c",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original controlled-access exit or legal acceptance"
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first",
+      "kind": "delivery",
+      "construction": "construction-compatibility-exit_proceed_first.json",
+      "construction_sha256": "9fdb544fdf6ac5a2438bcdc6fb1e67e808874126ef17181e42efec4a37a7cde2",
+      "fixture_recipe": "work/testing__C228302__NRS-484B-263__motor_vehicle_driver/diagnostics/exit_proceed_first-recipe.json",
+      "measurement_contract": "diagnostics/exit_proceed_first-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original controlled-access road authority, exit map and legal judgment sweeps absent",
+      "acquisition": {
+        "controlled_access_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original public dedication, access restriction and authority determination",
+          "evidence": "channel-controlled_access_designation.jsonl"
+        },
+        "exit_path": {
+          "entrypoint": "analysis.py",
+          "method": "ego original position and exit interaction polygon",
+          "evidence": "channel-exit_path.jsonl"
+        },
+        "all_approaching_vehicles": {
+          "entrypoint": "analysis.py",
+          "method": "all highway vehicle identities, occupancy, range and speed",
+          "evidence": "channel-all_approaching_vehicles.jsonl"
+        },
+        "precedence_duration": {
+          "entrypoint": "analysis.py",
+          "method": "ego wait and entry time joined to approaching vehicles",
+          "evidence": "channel-precedence_duration.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-exit_proceed_first/receipt.json",
+        "sha256": "e11fc60310b5cb5031262f57d282470678358ead3ed8243da26aca3b8ebf6cce",
+        "log": "proofs/selected-exit_proceed_first/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-exit_proceed_first/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "9fdb544fdf6ac5a2438bcdc6fb1e67e808874126ef17181e42efec4a37a7cde2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first --output .runtime-work/c228302/selected-offline-exit_proceed_first",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-exit_proceed_first.log",
+        "log_sha256": "7532a3d81f9c7dd5727ef76301a71b2793bf9af41eb10ae77d8c400fc49e7cea"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original map exit connection and approach route may not yield the intended measurable interaction; an upstream ego start can allow a stable approach only after original geometry review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-exit_proceed_first.json",
+          "construction_sha256": "4465c7b16882f87d1855d4e9e4d17e56b7665a230114ada774ab7163beefa95c",
+          "trigger": {
+            "source": "original map exit connection, ego spawn readback and 900-frame ego/approaching history",
+            "metric": "ego spawn clearance and stable approach before exit interaction",
+            "failure_condition": "primary ego spawn obstructed or original trace cannot establish the planned exit interaction"
+          },
+          "changed_knobs": [
+            "ego start shifted 2 m upstream on the same reviewed exit route; authority, highway approaches, headway, policy, camera plan and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_original_delivery.py",
+        "script_sha256": "d1777552be51f3efdafce14b8da45186c2d13d4142e9a724bcb6eaf97f76d988",
+        "command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-exit_proceed_first.log",
+        "test_log_sha256": "444171e949065cebe77a38057151b42c4e69911bc4d0ec33ccc61b4d240ccea4",
+        "negative_command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-exit_proceed_first.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-exit_proceed_first-receipt.json",
+        "sha256": "560b609e4a45a104c4f463b2ceca6898e145452e1dbcbbf8234276865f4dd2ec"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-exit_proceed_first.log",
+        "test_log_sha256": "28f53973160d738c08c6d827dfe413663e60be1c81556cce8aad74be96bf33b7",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original controlled-access exit or legal acceptance"
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second",
+      "kind": "delivery",
+      "construction": "construction-compatibility-exit_yield_second.json",
+      "construction_sha256": "88c655507e35361ac84d549c86a348945e63ef6ce283e161f60e12e8f61c09c4",
+      "fixture_recipe": "work/testing__C228302__NRS-484B-263__motor_vehicle_driver/diagnostics/exit_yield_second-recipe.json",
+      "measurement_contract": "diagnostics/exit_yield_second-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original controlled-access road authority, exit map and legal judgment sweeps absent",
+      "acquisition": {
+        "controlled_access_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original public dedication, access restriction and authority determination",
+          "evidence": "channel-controlled_access_designation.jsonl"
+        },
+        "exit_path": {
+          "entrypoint": "analysis.py",
+          "method": "ego original position and exit interaction polygon",
+          "evidence": "channel-exit_path.jsonl"
+        },
+        "all_approaching_vehicles": {
+          "entrypoint": "analysis.py",
+          "method": "all highway vehicle identities, occupancy, range and speed",
+          "evidence": "channel-all_approaching_vehicles.jsonl"
+        },
+        "precedence_duration": {
+          "entrypoint": "analysis.py",
+          "method": "ego wait and entry time joined to approaching vehicles",
+          "evidence": "channel-precedence_duration.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-exit_yield_second/receipt.json",
+        "sha256": "ef133329a50e820311b8344cfe2d31796ab95182739708f1d3f260013b79998d",
+        "log": "proofs/selected-exit_yield_second/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-exit_yield_second/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "88c655507e35361ac84d549c86a348945e63ef6ce283e161f60e12e8f61c09c4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second --output .runtime-work/c228302/selected-offline-exit_yield_second",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-exit_yield_second.log",
+        "log_sha256": "6ba580691075c24b149a547fce63afb537f0e6a3366067091401ca70c1442e6f"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original map exit connection and approach route may not yield the intended measurable interaction; an upstream ego start can allow a stable approach only after original geometry review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-exit_yield_second.json",
+          "construction_sha256": "1fbdcc053258200b5b3df0696a4fc0ca36ab2fb51fea9da1eae96eb1fcbb7b44",
+          "trigger": {
+            "source": "original map exit connection, ego spawn readback and 900-frame ego/approaching history",
+            "metric": "ego spawn clearance and stable approach before exit interaction",
+            "failure_condition": "primary ego spawn obstructed or original trace cannot establish the planned exit interaction"
+          },
+          "changed_knobs": [
+            "ego start shifted 2 m upstream on the same reviewed exit route; authority, highway approaches, headway, policy, camera plan and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_original_delivery.py",
+        "script_sha256": "d1777552be51f3efdafce14b8da45186c2d13d4142e9a724bcb6eaf97f76d988",
+        "command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-exit_yield_second.log",
+        "test_log_sha256": "a17aff68706222e85574374fbdb5cfb9705744cae46e0375375af82ce5c6dc64",
+        "negative_command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-exit_yield_second.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-exit_yield_second-receipt.json",
+        "sha256": "1db27581e00f2b5b7cf56e992efbbf5e81c987412415d5e510286871fe3d6a71"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-exit_yield_second.log",
+        "test_log_sha256": "6ebddbafd9a1d7acbf062e3ba1b14ff4dc80393ad28a746b046205e0b37ce79d",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original controlled-access exit or legal acceptance"
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between",
+      "kind": "delivery",
+      "construction": "construction-compatibility-exit_proceed_between.json",
+      "construction_sha256": "6d4eca0ddad4ec27d9f177e7811cff38e58d2323b42c9324e31258347e063fcd",
+      "fixture_recipe": "work/testing__C228302__NRS-484B-263__motor_vehicle_driver/diagnostics/exit_proceed_between-recipe.json",
+      "measurement_contract": "diagnostics/exit_proceed_between-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original controlled-access road authority, exit map and legal judgment sweeps absent",
+      "acquisition": {
+        "controlled_access_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original public dedication, access restriction and authority determination",
+          "evidence": "channel-controlled_access_designation.jsonl"
+        },
+        "exit_path": {
+          "entrypoint": "analysis.py",
+          "method": "ego original position and exit interaction polygon",
+          "evidence": "channel-exit_path.jsonl"
+        },
+        "all_approaching_vehicles": {
+          "entrypoint": "analysis.py",
+          "method": "all highway vehicle identities, occupancy, range and speed",
+          "evidence": "channel-all_approaching_vehicles.jsonl"
+        },
+        "precedence_duration": {
+          "entrypoint": "analysis.py",
+          "method": "ego wait and entry time joined to approaching vehicles",
+          "evidence": "channel-precedence_duration.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-exit_proceed_between/receipt.json",
+        "sha256": "c984ac1647fbb4e8edee776ed87fd4dd1f9df035deb4fd3d75d4af57a8235b24",
+        "log": "proofs/selected-exit_proceed_between/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-exit_proceed_between/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "6d4eca0ddad4ec27d9f177e7811cff38e58d2323b42c9324e31258347e063fcd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between --output .runtime-work/c228302/selected-offline-exit_proceed_between",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-exit_proceed_between.log",
+        "log_sha256": "fbbb68d62fae7a519771f8ab8d6ea043acc510e3a57b613c183c5da7a94069e5"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original map exit connection and approach route may not yield the intended measurable interaction; an upstream ego start can allow a stable approach only after original geometry review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-exit_proceed_between.json",
+          "construction_sha256": "4c518e878bcde3e42c3c3b736ca9ba257973614c970d15f3705ad52d42f7f0f8",
+          "trigger": {
+            "source": "original map exit connection, ego spawn readback and 900-frame ego/approaching history",
+            "metric": "ego spawn clearance and stable approach before exit interaction",
+            "failure_condition": "primary ego spawn obstructed or original trace cannot establish the planned exit interaction"
+          },
+          "changed_knobs": [
+            "ego start shifted 2 m upstream on the same reviewed exit route; authority, highway approaches, headway, policy, camera plan and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_original_delivery.py",
+        "script_sha256": "d1777552be51f3efdafce14b8da45186c2d13d4142e9a724bcb6eaf97f76d988",
+        "command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-exit_proceed_between.log",
+        "test_log_sha256": "3c206abec569dde095af987a1ede08446cadd01f99bc3b454104970ac1f06f5e",
+        "negative_command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-exit_proceed_between.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-exit_proceed_between-receipt.json",
+        "sha256": "0920f886602cb5e015462f3ad1570cd621fa0a268e086ed625b6bde0da0aee9e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-exit_proceed_between.log",
+        "test_log_sha256": "3e9e09be54cdb513a7b2520dc3499df2add4a000c7143d85e60eb63bbf1d1712",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original controlled-access exit or legal acceptance"
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach",
+      "kind": "delivery",
+      "construction": "construction-compatibility-exit_distant_approach.json",
+      "construction_sha256": "785e94b68509a1f0cd0880ccecf2bf9b88c094e3b1e9e8ebb2ac7142471c7454",
+      "fixture_recipe": "work/testing__C228302__NRS-484B-263__motor_vehicle_driver/diagnostics/exit_distant_approach-recipe.json",
+      "measurement_contract": "diagnostics/exit_distant_approach-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original controlled-access road authority, exit map and legal judgment sweeps absent",
+      "acquisition": {
+        "controlled_access_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original public dedication, access restriction and authority determination",
+          "evidence": "channel-controlled_access_designation.jsonl"
+        },
+        "exit_path": {
+          "entrypoint": "analysis.py",
+          "method": "ego original position and exit interaction polygon",
+          "evidence": "channel-exit_path.jsonl"
+        },
+        "all_approaching_vehicles": {
+          "entrypoint": "analysis.py",
+          "method": "all highway vehicle identities, occupancy, range and speed",
+          "evidence": "channel-all_approaching_vehicles.jsonl"
+        },
+        "precedence_duration": {
+          "entrypoint": "analysis.py",
+          "method": "ego wait and entry time joined to approaching vehicles",
+          "evidence": "channel-precedence_duration.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-exit_distant_approach/receipt.json",
+        "sha256": "550ada68a5cf6bcf328f2c1e515ffcbfcebae33bfecd890954027ef0644f0959",
+        "log": "proofs/selected-exit_distant_approach/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-exit_distant_approach/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "785e94b68509a1f0cd0880ccecf2bf9b88c094e3b1e9e8ebb2ac7142471c7454",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach --output .runtime-work/c228302/selected-offline-exit_distant_approach",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-exit_distant_approach.log",
+        "log_sha256": "cec3b1cce539935d03ab554a6e5fb958db4f8ed9e6d3230c8de04b1e0eabd7b6"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original map exit connection and approach route may not yield the intended measurable interaction; an upstream ego start can allow a stable approach only after original geometry review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-exit_distant_approach.json",
+          "construction_sha256": "5316135275c5812899ef9d38d619c0f670980a138699caa30fc133eaf6d66195",
+          "trigger": {
+            "source": "original map exit connection, ego spawn readback and 900-frame ego/approaching history",
+            "metric": "ego spawn clearance and stable approach before exit interaction",
+            "failure_condition": "primary ego spawn obstructed or original trace cannot establish the planned exit interaction"
+          },
+          "changed_knobs": [
+            "ego start shifted 2 m upstream on the same reviewed exit route; authority, highway approaches, headway, policy, camera plan and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_original_delivery.py",
+        "script_sha256": "d1777552be51f3efdafce14b8da45186c2d13d4142e9a724bcb6eaf97f76d988",
+        "command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-exit_distant_approach.log",
+        "test_log_sha256": "818e23fb42b77f91e0fc65f589c4271daf8b663a9b0f0da00008d4fde42ac80c",
+        "negative_command": ".venv-cpu/bin/python work/testing__C228302__NRS-484B-263__motor_vehicle_driver/prove_original_delivery.py --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-exit_distant_approach.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-exit_distant_approach-receipt.json",
+        "sha256": "1709e5fc9cd57f1419ea1384933bc4f98a68ba926e5e793af9d682bc7ce52d4d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C228302__NRS-484B-263__motor_vehicle_driver/execution-manifest.json --case testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-exit_distant_approach.log",
+        "test_log_sha256": "ac8762d0a713109011881bc54e06fac377c53263767dfa9873c0f6d9dacd63dd",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original controlled-access exit or legal acceptance"
+      }
+    }
+  ]
+}

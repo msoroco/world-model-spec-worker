@@ -32,7 +32,7 @@ def main() -> None:
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.removeprefix(ROOT.name + '__')
-        attempt = REPO / '.runtime-work' / ('c158208-saved-proof-' + suffix + '-v1') / 'v0001/analysis'
+        attempt = REPO / '.runtime-work' / ('c158208-saved-proof-' + suffix + '-v4') / 'v0001/analysis'
         base = [str(REPO / '.venv-cpu/bin/python'), str(AUDIT), '--attempt', str(attempt),
                 '--case', case]
         positive = ROOT / ('cpu-selected-delivery-' + suffix + '.log')
@@ -43,7 +43,7 @@ def main() -> None:
         if good_code != 0 or bad_code == 0 or expected not in negative.read_text():
             raise ValueError('selected diagnostic/rejection proof failed: ' + suffix)
         entry['delivery_acceptance'] = {
-            'case_id': case, 'sets': ['full-test'],
+            'case_id': case, 'sets': ['demo-test', 'full-test'],
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'script': AUDIT.name, 'script_sha256': sha(AUDIT),

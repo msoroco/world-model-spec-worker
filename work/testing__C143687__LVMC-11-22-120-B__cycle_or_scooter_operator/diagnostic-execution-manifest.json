@@ -8,23 +8,37 @@
       "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_enter",
       "kind": "diagnostic",
       "construction": "construction.json",
-      "construction_sha256": "b6de1f0268089c5c81eac2824dc7e87ffcfb5e230b0cf79a8aed90d45cc46abc",
+      "construction_sha256": "63554c92c6aa1c9516f700627f3191e94fe967f9f409e8e5adcb8686185ca328",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "fixture_recipe": "work/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/cases/posted_enter/diagnostic-recipe.json",
       "candidate_risk": {
-        "status": "none",
-        "reason": "Original source-gated trail junction requires physical preflight; no reviewed alternative site exists."
+        "status": "physical",
+        "reason": "The narrow trail-to-roadway junction may prevent stable entry; a slower source-preserving bicycle control is predeclared."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/posted_enter/fallback1-construction.json",
+          "construction_sha256": "5a08871e5a2b33084242e4a88c17a7b0f9f651b96490dcc7961df0dfe595c8f9",
+          "trigger": {
+            "source": "original Native capture 900-frame bicycle position/segment readback",
+            "metric": "route-entry continuity and junction tracking",
+            "failure_condition": "primary route fails to enter governed roadway after trail or bicycle control deviates at junction"
+          },
+          "changed_knobs": [
+            "engineering_speed_scale: 1.0 to 0.5"
+          ]
+        }
+      ]
     },
     {
       "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_stop",
       "kind": "diagnostic",
       "construction": "cases/posted_stop/construction.json",
-      "construction_sha256": "2011a170241c480252fdf3bb50a568febbf6117f6c7166c8d20192b4584a5e71",
+      "construction_sha256": "7cb8cebbaf23806954246386f0cd3d96d2520127d6b995049f14fdeef1181866",
       "measurement_contract": "cases/posted_stop/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -32,7 +46,7 @@
       "fixture_recipe": "work/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/cases/posted_stop/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "none",
-        "reason": "Original source-gated trail junction requires physical preflight; no reviewed alternative site exists."
+        "reason": "The nonentry route has no additional source-supported alternate geometry; original site and capture still need preflight."
       },
       "candidates": []
     },
@@ -40,7 +54,7 @@
       "case_id": "testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator__posted_remain_trail",
       "kind": "diagnostic",
       "construction": "cases/posted_remain_trail/construction.json",
-      "construction_sha256": "f984d0789d3233ce5850e936ee27ded02cc589326af287fda2a4d402c7d2215a",
+      "construction_sha256": "ac10ed1435af70c5b6e56832a777a138a61d774f4e8879b3c445a2156bf0ca44",
       "measurement_contract": "cases/posted_remain_trail/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -48,7 +62,7 @@
       "fixture_recipe": "work/testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator/cases/posted_remain_trail/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "none",
-        "reason": "Original source-gated trail junction requires physical preflight; no reviewed alternative site exists."
+        "reason": "The nonentry route has no additional source-supported alternate geometry; original site and capture still need preflight."
       },
       "candidates": []
     }

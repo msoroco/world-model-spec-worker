@@ -47,6 +47,11 @@ def build() -> dict:
                   'actor': plan['actor'], 'selected_case_id': case_id,
                   'supported_case_ids': expected, 'rate_hz': 20,
                   'duration_s': 45, 'diagnostic_only': True,
+                  'engineering_speed_scale': 1.0,
+                  'physical_completion': {
+                      'criterion': 'travel_progress', 'motion_source': 'trace.jsonl',
+                      'position_key': 'position_m', 'minimum_progress_m': 8.0,
+                      'completion_goal_method': 'Observed progress across the 10 m source route; engineering milestone only, not a legal threshold'},
                   'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case_id, 'motion': case['motion']}}
         files = [{'path': name, 'content': (HERE / name).read_text(encoding='utf-8')}
@@ -95,14 +100,30 @@ def build() -> dict:
                                  'error_contains': 'Missing required source: site-source.json'}}
         contract_rel = 'measurement-contract.json' if i == 0 else f'cases/{suffix}/measurement-contract.json'
         write(HERE / contract_rel, contract)
+        candidates = []
+        risk = {'status': 'none',
+                'reason': 'The nonentry route has no additional source-supported alternate geometry; original site and capture still need preflight.'}
+        if suffix == 'posted_enter':
+            fallback = json.loads(json.dumps(construction))
+            fallback_config = {**config, 'engineering_speed_scale': 0.5}
+            next(f for f in fallback['files'] if f['path'] == 'config.json')['content'] = json.dumps(fallback_config, indent=2) + '\n'
+            fallback_rel = 'cases/posted_enter/fallback1-construction.json'
+            write(HERE / fallback_rel, fallback)
+            candidates.append({'id': 'fallback1', 'construction': fallback_rel,
+                               'construction_sha256': sha(HERE / fallback_rel),
+                               'trigger': {'source': 'original Native capture 900-frame bicycle position/segment readback',
+                                           'metric': 'route-entry continuity and junction tracking',
+                                           'failure_condition': 'primary route fails to enter governed roadway after trail or bicycle control deviates at junction'},
+                               'changed_knobs': ['engineering_speed_scale: 1.0 to 0.5']})
+            risk = {'status': 'physical',
+                    'reason': 'The narrow trail-to-roadway junction may prevent stable entry; a slower source-preserving bicycle control is predeclared.'}
         entries.append({'case_id': case_id, 'kind': 'diagnostic',
                         'construction': rel, 'construction_sha256': sha(HERE / rel),
                         'measurement_contract': contract_rel,
                         'measurement_procedure': {'entrypoint': 'analysis.py'},
                         'fixture_recipe': f'work/{HERE.name}/cases/{suffix}/diagnostic-recipe.json',
-                        'candidate_risk': {'status': 'none',
-                            'reason': 'Original source-gated trail junction requires physical preflight; no reviewed alternative site exists.'},
-                        'candidates': []})
+                        'candidate_risk': risk,
+                        'candidates': candidates})
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': HERE.name,
                 'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),
                 'diagnostic_only': True, 'cases': entries}

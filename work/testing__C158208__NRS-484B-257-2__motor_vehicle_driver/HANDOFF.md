@@ -1,39 +1,11 @@
-# testing__C158208__NRS-484B-257-2__motor_vehicle_driver
+# C158208 exact yield intersection handoff — 2026-11-25
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Assignment: `testing__C158208__NRS-484B-257-2__motor_vehicle_driver`. Frozen law NRS 484B.257(2), non-through highway at a yield-controlled one-way-to-two-way intersection. Status remains `partial` because the frozen export contains metadata for twelve accepted recordings but no reviewed original site packet, video, or trace needed to measure the three legal judgment ranges. No physical or legal outcome is claimed.
 
-Exact law: NRS 484B.257(2) — Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.
-Assigned branch(es): Within-intersection instance plus unresolved approaching-hazard sweep..
-Cell: C158208 (one_way_to_two_way_intersection, travel, yield_sign); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 12. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 9. Bounds are training coverage targets, not legal cutoffs.
+Selected case IDs: `occupied_response`, `approaching_near_response`, `approaching_far_response`, `approaching_near_uninterrupted`, each prefixed by the assignment ID and `__`. Selected comparisons: `occupied_vs_approaching`, `approach_station_sweep`, `response_vs_uninterrupted`. The first comparison changes both phase and station; its auditor excludes a phase-only causal inference.
 
-## Next CPU actions
+The selected manifest SHA-256 is `de19e94e7a571937be452fb80eeb69623e774c709ec432f6bc4496ddbe1906e7`. It binds four 900-frame/20 Hz, four-view source-gated Native constructions and an earlier-hold fallback for each case. `yield_site.py` verifies fifteen hash-bound site roles and actor/control identity. `native_capture.py` writes a sealed original attempt only after exact frame/camera/trace joins, encoded media closure, owned actor cleanup, and verified world restoration. Its focused fake-adapter test passed; this test uses diagnostic bytes and does not claim original footage.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU proof results after the final source-hash rebuild: eight primary/fallback offline runs passed; four diagnostic physical lifecycle checks passed; eight primary/fallback positive and missing-source negative pinned compatibility checks passed; four recorded-only process-saved runs passed; four independent selected delivery audits passed in diagnostic mode and rejected synthetic inputs as original; three independent comparison audits passed in diagnostic mode and rejected synthetic originals. Eleven focused unit tests passed. Direct `execution_manifest.validate`, `semantic_delivery.validate`, four `delivery_handoff.validate_case`, and `package_compatibility.check_receipts` passed. The three proposal sweep specs remain explicitly `incomplete` pending source-grounded measurement, with no invented numeric legal thresholds.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Judgment probe planning: `judgment-probe-plan.json` records source-hashed below/inside/above targets for 9 exact law/actor ranges. These are unmeasured construction targets. 6 ranges have a domain endpoint that makes an outside probe impossible; review each endpoint_limit and preserve the explicit limitation.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
-
-## CPU construction checkpoint
-
-Added `nonthrough_yield.py` for four selected-branch probes: an independently occupied intersection, approaching vehicle near/far station requests, and yield-response versus uninterrupted policy. The source-gated lazy constructor requests a non-through intersection with all entrance obligations, a yield-sign approach and another vehicle not obligated to yield, with owned-actor cleanup. Original measurement joins 900 frames, first actual leading-body entry, approach speed, other center/min-vertex stations and across-or-within history. Immediate hazard, cautious proceeding and right-of-way remain unresolved.
-
-Four focused CPU tests pass, including all probes and negative source, obligation, identity, crossing and cleanup paths. Pinned preflight and scoped static pass. Exact scoped strict exits 1 because the package remains partial. The 12 frozen accepted recordings have metadata and authored setting descriptions, not original trace/video in this export; the new probes do not claim their physical facts or duplicate their accepted status. Full branch/judgment-range coverage, canonical capture/offline/compatibility, semantic proposals and independent saved delivery/comparison audits remain worker-owned CPU work.
-
-Proof SHA256:
-
-- `nonthrough_yield.py`: `f08a8d23ef30a2f69e417fc5b7b32d68878d6f7f6b114f59a6eade86c1d0f8d6`
-- `tests/test_nonthrough_yield.py`: `2202a79f8a4359e1f8504d251554dbfcef7d74c5a38fd410a55ef75ac45bfa79`
-- `cpu-tests.log`: `0bf66ed4df0aeb82d4499a3a26b47d99d6b6758734145a93b4ca1649525ca38c`
-- `cpu-preflight.log`: `3747878a7d7636776091c2fc5ef7c3a82d38f82fe424ab17c6c0de04b2b1e2ab`
-- `cpu-static-check.log`: `2f2b97aa9bfa6487992b94e8adb4cb0fbd4293ea187fd5e1c4698da1bf9062da`
-- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+`.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-2__motor_vehicle_driver --complete` exited 0. The same command with `--require-delivery-ready` exited 1 with `Preparation acceptance failed: partial/missing packages remain`, matching the truthful partial result. Next work requires a reviewed original site packet and original Native video/trace for the exact four cases, then source-grounded judgment-range decisions and another strict scoped gate. The diagnostic source specs under this directory are UTF-8 text with encoded camera fixtures; no binary camera archives belong under `work/`.

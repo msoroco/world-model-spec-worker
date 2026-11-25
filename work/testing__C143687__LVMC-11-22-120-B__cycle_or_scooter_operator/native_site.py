@@ -78,7 +78,10 @@ def command_bicycle(bike, carla, site: dict, case: dict, elapsed_s: float) -> di
     length = math.hypot(dx, dy)
     if length < 1.0:
         raise ValueError("degenerate route segment")
-    speed = float(site.get("engineering_speed_mps", 3.0))
+    scale = case.get('engineering_speed_scale', 1.0)
+    if not isinstance(scale, (int, float)) or not math.isfinite(scale) or not 0.25 <= scale <= 1.0:
+        raise ValueError('unsafe engineering speed scale')
+    speed = float(site.get("engineering_speed_mps", 3.0)) * scale
     if case['motion'] != 'enter_roadway' and junction_distance <= 1.0:
         speed = 0.0
     if not math.isfinite(speed) or not 0 <= speed <= 8:

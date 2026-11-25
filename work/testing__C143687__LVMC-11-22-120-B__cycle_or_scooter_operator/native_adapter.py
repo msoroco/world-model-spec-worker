@@ -87,7 +87,9 @@ def execute(reviewed: dict, config: dict, output: Path, host: str, port: int) ->
         for name in ('trace.jsonl', 'video_frames.jsonl'):
             (output / name).touch(exist_ok=False)
         for i in range(900):
-            control = command_bicycle(bike, carla, site, config['case'], i / 20)
+            control_case = {**config['case'],
+                            'engineering_speed_scale': config.get('engineering_speed_scale', 1.0)}
+            control = command_bicycle(bike, carla, site, control_case, i / 20)
             frame = world.tick()
             for name, q in sensors.items():
                 image = q.get(timeout=20)

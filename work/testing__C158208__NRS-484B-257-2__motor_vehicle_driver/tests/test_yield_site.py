@@ -110,6 +110,60 @@ class YieldSiteTests(unittest.TestCase):
         self.assertEqual(actors.owned, [])
         self.assertTrue(all(a.destroyed for a in world.actors))
 
+    def test_native_capture_seals_sources_after_restoration(self):
+        from native_capture import capture
+        root = Path(__file__).resolve().parents[1]
+        config = json.loads((root / 'config.json').read_text())
+        self.packet['case_id'] = config['selected_case_id']
+        self.save()
+        output = Path(self.tmp.name) / 'capture'
+        output.mkdir()
+        for name in ('construction.json', 'runner.py'):
+            (output / name).write_bytes((root / name).read_bytes())
+
+        class Adapter:
+            world = World()
+            transform_factory = staticmethod(lambda p, r: (p, r))
+            closed = False
+
+            def attach_cameras(self, actors, cameras):
+                return {item['name']: object() for item in cameras}
+
+            def request_case_control(self, *args):
+                pass
+
+            def tick_and_read(self, actors, cameras):
+                index = getattr(self, 'index', 0)
+                self.index = index + 1
+                time_s = index / 20
+                return {'frame': index, 'time_s': time_s,
+                        'camera_png': {name: b'\x89PNG\r\n\x1a\nfixture' for name in cameras},
+                        'state': {'ego_station_m': 0, 'other_station_m': 0},
+                        'trace': {'frame': index, 'time_s': time_s},
+                        'video_frame': {'video_frame': index, 'carla_frame': index,
+                                        'time_s': time_s}}
+
+            def finalize_media(self, output, views, mappings):
+                media = {}
+                for name in (*views, 'raw'):
+                    path = output / (name + '.mkv')
+                    path.write_bytes(b'diagnostic media placeholder')
+                    media[name] = path
+                return media
+
+            def close(self):
+                self.closed = True
+                return True
+
+        adapter = Adapter()
+        receipt = capture(adapter, config, self.path, output)
+        self.assertEqual(receipt['frame_count'], 900)
+        self.assertTrue(adapter.closed)
+        self.assertTrue(all(actor.destroyed for actor in adapter.world.actors))
+        seal = json.loads((output / 'capture-seal.json').read_text())
+        self.assertEqual(seal['events'][-1], 'restoration_verified')
+        self.assertEqual(len([name for name in seal['sources'] if 'source-review/' in name]), 15)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -31,6 +31,9 @@ def main() -> None:
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--site', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port')
     parser.add_argument('--adapter-module')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
@@ -38,14 +41,24 @@ def main() -> None:
     if args.check:
         print(config['selected_case_id'])
         return
-    if not args.site or not args.output:
+    site = args.site or (Path(os.environ['C158208_SITE_PACKET'])
+                         if os.environ.get('C158208_SITE_PACKET') else None)
+    output = args.output_dir or args.output
+    if not site or not output:
         raise ValueError('reviewed original site packet and output are required')
     module = args.adapter_module or os.environ.get('C158208_NATIVE_ADAPTER_MODULE')
     if not module:
         raise ValueError('Native adapter module is required')
     from native_capture import capture
-    adapter = importlib.import_module(module).create_adapter(config)
-    print(json.dumps(capture(adapter, config, args.site, args.output), sort_keys=True))
+    adapter = importlib.import_module(module).create_adapter(config, args.host, args.port)
+    try:
+        print(json.dumps(capture(adapter, config, site, output), sort_keys=True))
+    except Exception as error:
+        if output.is_dir() and not (output / 'capture-seal.json').exists():
+            (output / 'native-run-status.json').write_text(json.dumps({
+                'case_id': config['selected_case_id'], 'errors': [str(error)],
+                'physical_acceptance_claimed': False}, sort_keys=True) + '\n')
+        raise
 
 
 if __name__ == '__main__':

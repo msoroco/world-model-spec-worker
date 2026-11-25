@@ -82,7 +82,8 @@ def main():
             native = {'ego_id': 'fixture-ego', 'other_id': 'fixture-other',
                       'other_obligated_to_stop_or_yield': False,
                       'officer_controls': False, 'signal_controls': False,
-                      'ego_speed_mps': 3.5 if index < 4 else 2.0,
+                      'ego_speed_mps': 3.5 if index < 4 or
+                      case['approach_policy'] == 'uninterrupted' else 2.0,
                       'ego_leading_station_m': station,
                       'other_center_station_m': case['requested_other_station_m'] - .1 * index,
                       'other_min_vertex_station_m': case['requested_other_station_m'] - 2 - .1 * index,

@@ -82,7 +82,8 @@ def main() -> None:
                   'source': f'work/{ROOT.name}/case-plan.json'},
                  {'path': 'tests/test_bundle.py', 'content': TEST}]
         for name in ('runner.py', 'analysis.py', 'native_capture.py', 'yield_site.py',
-                     'nonthrough_yield.py'):
+                     'nonthrough_yield.py', 'delivery_audit.py',
+                     'selected_delivery.py', 'comparison_audit.py'):
             files.append({'path': name, 'content': (ROOT / name).read_text(),
                           'source': f'work/{ROOT.name}/{name}'})
         construction = {'case_id': case, 'cell_id': plan['cell_id'],
