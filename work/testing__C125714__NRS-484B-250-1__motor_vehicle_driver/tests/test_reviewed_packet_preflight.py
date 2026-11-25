@@ -47,6 +47,9 @@ class ReviewedPacketPreflightTest(unittest.TestCase):
             self.assertFalse(receipt["native_started"])
             self.assertEqual(receipt["source_packet_sha256"],
                              hashlib.sha256(packet.read_bytes()).hexdigest())
+            self.assertEqual(receipt["route_preflight_map_sha256"], receipt["map_sha256"])
+            self.assertIn("110", receipt["route_binding"]["ego"]["road_sequence"])
+            self.assertIn("131", receipt["route_binding"]["other"]["road_sequence"])
             sources["device_inventory_source"].write_text("changed")
             with self.assertRaisesRegex(ValueError, "device_inventory_source original bytes"):
                 preflight(scene, map_path, Path(directory) / "tampered")
@@ -55,6 +58,17 @@ class ReviewedPacketPreflightTest(unittest.TestCase):
                 "synthetic packet protocol fixture: device_inventory_source")
             retried = preflight(scene, map_path, Path(directory) / "tampered")
             self.assertTrue(retried["passed"])
+
+    def test_rejects_a_reviewed_scene_with_an_off_lane_route(self):
+        with TemporaryDirectory() as directory:
+            scene_path, _, _ = self.fixture(directory)
+            scene = json.loads(scene_path.read_text())
+            scene["other_route_xy_m"][2] = [1000.0, 1000.0]
+            scene_path.write_text(json.dumps(scene))
+            output = Path(directory) / "off-lane"
+            with self.assertRaisesRegex(ValueError, "other route anchor is off a driving lane"):
+                preflight(scene_path, ROOT / "candidate-map.xodr", output)
+            self.assertFalse(output.exists())
 
     def test_rejects_diagnostic_and_wrong_map(self):
         with TemporaryDirectory() as directory:

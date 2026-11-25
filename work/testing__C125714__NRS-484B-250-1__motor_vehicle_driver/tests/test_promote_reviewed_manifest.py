@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from promote_reviewed_manifest import REQUIRED, SUFFIXES, assemble
+from opendrive_route_preflight import preflight as route_preflight
 
 
 def write(path, data):
@@ -26,12 +27,16 @@ class PromotionTests(unittest.TestCase):
             folder = base / suffix
             construction = folder / "construction.json"
             packet = '{"reviewed":true}\n'
-            map_text = '<OpenDRIVE/>\n'
+            map_text = (ROOT / "connected-median-candidate.xodr").read_text()
             packet_sha = hashlib.sha256(packet.encode()).hexdigest()
             map_sha = hashlib.sha256(map_text.encode()).hexdigest()
-            scene = {"case_id": case_id, "reviewed_context_source": "packet.json",
-                     "reviewed_context_sha256": packet_sha,
-                     "crossing": {"map_source_sha256": map_sha}}
+            scene_path = ROOT / ("scene.json" if suffix == "precedence" else
+                                 "cases/" + suffix + "/scene.json")
+            scene = json.loads(scene_path.read_text())
+            scene.update(diagnostic_only=False, reviewed_context_source="packet.json",
+                         reviewed_context_sha256=packet_sha)
+            scene["crossing"]["map_source_sha256"] = map_sha
+            route = route_preflight(ROOT / "connected-median-candidate.xodr", [scene_path])
             files = [{"path": "scene.json", "content": json.dumps(scene)},
                      {"path": "packet.json", "content": packet},
                      {"path": "reviewed-map.xodr", "content": map_text}]
@@ -40,6 +45,8 @@ class PromotionTests(unittest.TestCase):
             write(folder / "preflight.json", {"format": "worker-reviewed-packet-cpu-preflight",
                                            "case_id": case_id, "passed": True, "native_started": False,
                                            "source_packet_sha256": packet_sha, "map_sha256": map_sha,
+                                           "route_preflight_map_sha256": map_sha,
+                                           "route_binding": route["cases"][case_id],
                                            "physical_acceptance_claimed": False,
                                            "legal_acceptance_claimed": False})
             cases.append({"case_id": case_id, "kind": "delivery", "construction": suffix + "/construction.json",
@@ -104,6 +111,17 @@ class PromotionTests(unittest.TestCase):
             preflight["map_sha256"] = "0" * 64
             write(path, preflight)
             with self.assertRaisesRegex(ValueError, "does not bind inline sources"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_a_forged_route_receipt(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            path = base / "advance" / "preflight.json"
+            proof = json.loads(path.read_text())
+            proof["route_binding"]["other"]["road_sequence"] = ["31", "31", "31"]
+            write(path, proof)
+            with self.assertRaisesRegex(ValueError, "lacks exact route binding"):
                 assemble(base, receipts, allow_scratch=True)
 
 

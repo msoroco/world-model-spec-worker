@@ -28,8 +28,10 @@ class OfflineBundles(unittest.TestCase):
             self.assertEqual(config['plan_sha256'], hashlib.sha256(plan_source).hexdigest())
             self.assertEqual((config['fps'], config['frame_count'], config['duration_s']),
                              (20, 900, 45))
-            self.assertEqual(config['cameras'],
-                             ['overview', 'approach', 'reference_corner', 'driver_reference'])
+            self.assertEqual([(camera['name'], camera['width'], camera['height'])
+                              for camera in config['cameras']],
+                             [('overview', 1920, 1080), ('approach', 1280, 720),
+                              ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)])
             for name in ('signal_exception.py', 'original_capture.py',
                          'saved_measurement.py', 'comparison_audit.py',
                          'delivery_audit.py', 'media_decode.py',

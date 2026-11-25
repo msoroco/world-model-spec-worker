@@ -11,7 +11,7 @@ import sys
 
 FOLDER = Path(__file__).resolve().parent
 REPO = FOLDER.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c111125_9b_owner_nov24d"
+SCRATCH = REPO / ".runtime-work" / "c111125-9b-owner" / "saved-v1"
 MANIFEST = FOLDER / "execution-manifest.json"
 PYTHON = REPO / ".venv-cpu" / "bin" / "python"
 RUNTIME = REPO / "runtime.py"
@@ -27,6 +27,7 @@ def run(command: list[str], log: Path, env: dict[str, str]) -> None:
 
 
 def main(suffixes: list[str]) -> None:
+    SCRATCH.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, TMPDIR=str(SCRATCH.resolve()),
                SCENARIO_PIPELINE_OUTPUT_ROOT=str((SCRATCH / "output").resolve()),
                PYTHONDONTWRITEBYTECODE="1")

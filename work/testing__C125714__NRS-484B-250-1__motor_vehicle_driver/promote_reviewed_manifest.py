@@ -10,10 +10,13 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
+from opendrive_route_preflight import preflight as route_preflight
 from reviewed_delivery_author import SUFFIXES
 
 ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1]
 REQUIRED = ("offline", "physical_preparation", "compatibility", "negative",
             "saved_processing", "delivery_acceptance")
 
@@ -86,6 +89,16 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
                 or source_check.get("physical_acceptance_claimed") is not False
                 or source_check.get("legal_acceptance_claimed") is not False):
             raise ValueError("reviewed source preflight does not bind inline sources: " + case_id)
+        with TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c125714-route-check-") as temporary:
+            source_dir = Path(temporary)
+            inline_scene = source_dir / "scene.json"
+            inline_map = source_dir / "map.xodr"
+            inline_scene.write_text(scene_text, encoding="utf-8")
+            inline_map.write_text(map_text, encoding="utf-8")
+            route = route_preflight(inline_map, [inline_scene])
+        if (source_check.get("route_preflight_map_sha256") != map_sha
+                or source_check.get("route_binding") != route["cases"][case_id]):
+            raise ValueError("reviewed source preflight lacks exact route binding: " + case_id)
         stage = proof["cases"][case_id]
         for name in REQUIRED:
             item = stage.get(name)

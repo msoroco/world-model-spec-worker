@@ -33,8 +33,18 @@ def check(authority_root=None, site_path=None):
         raise ValueError("Exact red-signal variant changed")
     if config["rate_hz"] != 20 or config["frame_count"] != 900 or config["duration_s"] != 45:
         raise ValueError("Original timebase changed")
-    if config["cameras"] != list(CAMERAS) or config["camera_sizes"] != {k: list(v) for k, v in PROFILE_SIZES.items()}:
+    cameras = config["cameras"]
+    camera_names = [camera["name"] for camera in cameras] if all(
+        isinstance(camera, dict) and "name" in camera for camera in cameras
+    ) else cameras
+    if camera_names != list(CAMERAS) or config["camera_sizes"] != {k: list(v) for k, v in PROFILE_SIZES.items()}:
         raise ValueError("Original camera profile changed")
+    if camera_names is not cameras and any(
+        [camera.get("width"), camera.get("height")] != list(PROFILE_SIZES[camera["name"]])
+        or not camera.get("pose_strategy") or not camera.get("fov_deg")
+        for camera in cameras
+    ):
+        raise ValueError("Original camera pose profile changed")
     if config["required_sources"] != ["map", "device", "detector", "bicycle_blueprint", "native_trace", "original_camera_media"]:
         raise ValueError("Original source requirements changed")
     if (authority_root is None) != (site_path is None):

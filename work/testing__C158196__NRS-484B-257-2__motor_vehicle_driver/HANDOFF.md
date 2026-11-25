@@ -1,6 +1,6 @@
 # testing__C158196__NRS-484B-257-2__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for local Native delivery preparation. CPU strict assignment gate passed 2026-11-25. Historical source-inventory notes follow.
 
 Exact law: NRS 484B.257(2) — Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.
 Assigned branch(es): Within-intersection instance plus unresolved approaching-hazard sweep..
@@ -38,3 +38,9 @@ Six exact NRS 484B.257(2) delivery cases now have semantic proposals, source-has
 The current CPU suite passes 29 tests. All six primary and six fallback offline bundle checks pass. For each case, three synthetic measured physical outcomes and one Native-closure ordering test pass. Six diagnostic delivery checks pass four-view full decoding, sampled pixel comparison and synthetic motion/participant joins; six negative checks reject a missing camera source. These software fixtures claim neither original Native capture nor physical acceptance. Production delivery and pair-comparison auditors require sealed original sources, full original media, sampled original pixel joins, measured crossing and independent review.
 
 The corrected 12-candidate end-to-end compatibility rerun and saved-only process-saved proof are in progress. Status remains partial until each exact compatibility proof and the scoped strict gate pass. The local physical handoff still needs an original reviewed C158196 site bundle, actual CARLA acquisition and independent original-source audit.
+
+## 2026-11-25 exact CPU gate passed
+
+The assignment passed `.venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-257-2__motor_vehicle_driver --complete --require-delivery-ready` against the current pinned runtime. Six exact cases and four controlled comparisons are bound in `execution-manifest.json` and `case-plan.json`. All 12 primary/fallback offline checks, all 12 selected compatibility checks, six saved-only finalizations, 29 unit tests, six positive and six negative delivery component checks passed. The synthetic physical fixtures also passed three measured outcomes per case and one closure test per case. The negative delivery checks returned nonzero with the expected changed-source rejection. All software checks were source hashed; `result.json` is ready for `delivery_prepared`.
+
+This is CPU package readiness. The local operator must supply `C158196_ORIGINAL_SITE_BUNDLE` with source-reviewed original map, lane, device, route and camera locations. Actual CARLA motion and full original four-view FFV1 capture require subsequent local execution. Production audits require independent review of sealed original source, video pixels, physical completion and each comparison's fixed geometry; synthetic diagnostic proofs do not establish those outcomes.

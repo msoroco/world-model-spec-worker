@@ -11,7 +11,7 @@ import sys
 
 FOLDER = Path(__file__).resolve().parent
 REPO = FOLDER.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c111125_9b_owner_nov24d"
+SCRATCH = REPO / ".runtime-work" / "c111125-9b-owner" / "saved-v1"
 MANIFEST = FOLDER / "execution-manifest.json"
 SCRIPT = FOLDER / "audit_delivery_prepared.py"
 

@@ -13,6 +13,7 @@ import shutil
 import tempfile
 
 from native_capture import REVIEW_SOURCES, reviewed_context
+from opendrive_route_preflight import preflight as route_preflight
 from runner import check_scene, resolve_reviewed_source
 
 
@@ -34,6 +35,7 @@ def preflight(scene_path, map_path, output):
         raise ValueError("Native source preflight requires a nondiagnostic packet")
     if sha(map_path) != scene["crossing"]["map_source_sha256"]:
         raise ValueError("proposed OpenDRIVE bytes differ from scene")
+    route_binding = route_preflight(map_path, [scene_path])
     if output.exists():
         raise ValueError("use a fresh CPU preflight output directory")
 
@@ -54,6 +56,8 @@ def preflight(scene_path, map_path, output):
                    "case_id": scene["case_id"], "passed": True,
                    "source_packet_sha256": sha(packet_path),
                    "map_sha256": sha(map_path),
+                   "route_binding": route_binding["cases"][scene["case_id"]],
+                   "route_preflight_map_sha256": route_binding["map_sha256"],
                    "retained_source_hashes": {key: sha(staged / name)
                                               for key, name in REVIEW_SOURCES.items()},
                    "native_started": False, "physical_acceptance_claimed": False,

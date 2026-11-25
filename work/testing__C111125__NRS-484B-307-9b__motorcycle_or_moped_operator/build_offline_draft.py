@@ -57,7 +57,13 @@ def check():
         raise ValueError("C111125 exact case construction changed")
     if config["fps"] != 20 or config["frame_count"] != 900 or config["duration_s"] != 45:
         raise ValueError("C111125 original timebase changed")
-    if config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]:
+    expected_views = [("overview", 1920, 1080), ("approach", 1280, 720),
+                      ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]
+    cameras = config["cameras"]
+    if (not isinstance(cameras, list) or
+            [(item.get("name"), item.get("width"), item.get("height"))
+             for item in cameras] != expected_views or
+            any(not item.get("pose_strategy") or not item.get("fov_deg") for item in cameras)):
         raise ValueError("C111125 pinned camera profile changed")
     if config["required_sources"] != ["loaded_map", "official_composite_head", "stopping_reference", "causal_detector_or_malfunction", "participant_tracks", "original_camera_media"]:
         raise ValueError("C111125 required originals changed")
@@ -172,8 +178,13 @@ def build():
                       'position_key': 'position_m', 'minimum_progress_m': 20,
                       'minimum_samples': 900,
                       'completion_goal_method': '20 m recorded route progress through the authored straight intersection; engineering check only, not a statutory threshold'},
-                  'cameras': ['overview', 'approach', 'reference_corner',
-                              'driver_reference'], 'required_atoms': [],
+                  'cameras': [
+                      {'name': name, 'width': 1920 if name == 'overview' else 1280,
+                       'height': 1080 if name == 'overview' else 720,
+                       'fov_deg': 90,
+                       'pose_strategy': 'source-surveyed fixed or actor attached Native camera'}
+                      for name in ('overview', 'approach', 'reference_corner',
+                                   'driver_reference')], 'required_atoms': [],
                   'required_sources': ['loaded_map', 'official_composite_head',
                                        'stopping_reference', 'causal_detector_or_malfunction',
                                        'participant_tracks', 'original_camera_media'],
