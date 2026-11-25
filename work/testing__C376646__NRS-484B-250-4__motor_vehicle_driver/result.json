@@ -1,19 +1,32 @@
 {
   "assignment_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver",
   "input_sha256": "af0bbba00493089a96711a27f84758b18bb50dc8cc6d9fd29c4d0fb546918f1b",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "758c711974908fa3622b0f7a7fa33cd296038bd6bd7d2a2464c3a8eda5a7663c"
+      "sha256": "77bdf07baec1ce03ff4a69759da51af64289e9c27b9565e8dae14e693f0c4573"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "comparison-proof.log",
+      "sha256": "a5b2841e9d8d6d15c0a5699907b12cb62a1a7c788a3ccf08e0d71ccf70a7660c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c376646-physical .venv-cpu/bin/python work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/prove_physical_fixtures.py",
+      "exit_code": 0,
+      "log": "physical-proof.log",
+      "sha256": "ccd50fd66cadcdd596398cbb42ee1f02709c72b1352b07ecc773171f3d88cad6"
     }
   ],
   "remaining_gpu_checks": [
     "Actual installed uncovered wholly inoperative heads, correct stop reference, blind visibility, post-stop yielding and four-camera coverage."
   ],
-  "reason": "Four exact source-bound Native construction candidates now pass offline checks, including a prohibited rolling-stop attempt; seven focused CPU tests pass. Saved-only processing, canonical semantic proposals, source-bound compatibility/negative proofs, physical-outcome tests, fallbacks, independent audits and strict scoped gate remain worker-owned CPU work. Physical installed/uncovered inoperability, blind sight and cautious yielding require later Native review. See HANDOFF.md."
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --case testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

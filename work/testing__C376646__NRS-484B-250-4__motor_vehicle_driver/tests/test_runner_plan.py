@@ -48,9 +48,12 @@ class RunnerPlanTests(unittest.TestCase):
         cases = ROOT / 'cases'
         inside = json.loads((ROOT / 'config.json').read_text())
         prior = json.loads((cases / 'crosswalk_other_previously_stopped' / 'config.json').read_text())
+        prior_same_reference = json.loads((cases / 'stop_line_other_previously_stopped' / 'config.json').read_text())
         no_halt = json.loads((cases / 'stop_line_no_halt' / 'config.json').read_text())
         self.assertEqual(inside['actor_routes']['ego']['release_rule'], 'after_partner_entry')
         self.assertEqual(prior['actor_routes']['ego']['release_rule'], 'after_other_clear')
+        self.assertEqual(prior_same_reference['actor_routes']['ego']['release_rule'], 'after_other_clear')
+        self.assertEqual(prior_same_reference['site']['stop_boundary']['kind'], 'stop_line')
         self.assertEqual(no_halt['actor_routes']['ego']['stop_policy'], 'rolling')
         self.assertEqual(runner.validate_capture_plan(no_halt, cases / 'stop_line_no_halt')['selected_boundary'], 'stop_line')
 

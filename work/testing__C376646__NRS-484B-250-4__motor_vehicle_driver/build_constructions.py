@@ -7,7 +7,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 SUFFIXES = ('stop_line_other_inside', 'crosswalk_other_previously_stopped',
-            'nearest_view_other_inside', 'stop_line_no_halt')
+            'nearest_view_other_inside', 'stop_line_no_halt',
+            'stop_line_other_previously_stopped')
 MODULES = ('runner.py', 'native_inoperative_control.py', 'native_site_contract.py',
            'native_stop_sources.py', 'saved_finalizer.py',
            'inoperative_stop_measurements.py', 'inoperative_stop.py',
@@ -34,9 +35,9 @@ def build():
         for name in MODULES:
             add(ROOT / name, name)
         for test in sorted((ROOT / 'tests').glob('test*.py')):
-            if test.name == 'test_runner_plan.py':
-                # This package test compares all four source-bound candidates.
-                # Each offline construction contains only its selected candidate.
+            if test.name in ('test_runner_plan.py', 'test_delivery_audit.py'):
+                # These package tests compare candidates or run the independent
+                # auditor, which is outside each selected Native bundle.
                 continue
             add(test, 'tests/' + test.name)
         construction = {

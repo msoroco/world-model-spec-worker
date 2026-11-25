@@ -554,6 +554,119 @@
         "comparison_or_standard": "authored boundary and stop-order contrast",
         "target_value_or_branch": "nearest_view"
       }
+    },
+    {
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Same marked stop line with other vehicle previously stopped; ego waits for other clearance. Physical state pending.",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "stop_line"
+      }
     }
   ],
   "sweep_specs": [

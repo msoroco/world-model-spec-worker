@@ -1,0 +1,288 @@
+{
+  "assignment_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "cell_id": "C376646",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped",
+  "supported_case_ids": [
+    "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
+  ],
+  "rate_hz": 20,
+  "frames": 900,
+  "duration_s": 45,
+  "required_atoms": [
+    "ru.subject",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.intersection",
+    "st.sight_distance"
+  ],
+  "source_packets": [],
+  "physical_completion": {
+    "motion_source": "vehicle_signal_history.jsonl",
+    "body_key": "ego.body_vertices_xy_m",
+    "context_sources": [
+      "junction_context.json"
+    ],
+    "criterion": "intersection_clearance",
+    "intersection_polygon_xy_m": [
+      [
+        -8,
+        -8
+      ],
+      [
+        8,
+        -8
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        -8,
+        8
+      ]
+    ],
+    "exit_axis": 0,
+    "exit_sign": 1,
+    "minimum_progress_m": 0.25,
+    "engineering_tolerances_not_legal": true
+  },
+  "site": {
+    "native_map_name": "C24757 two-head stop-line construction candidate",
+    "native_map_xodr": {
+      "path": "inoperative-stop-line.xodr",
+      "sha256": "36a15c42ccc9ce63623021d8935b094a308aa43fe3f1e4056207b513487d9e41"
+    },
+    "intersection_id": 158191,
+    "native_signal_id": null,
+    "other_native_signal_id": null,
+    "map_signal_id": 2475701,
+    "other_map_signal_id": 2475702,
+    "entrance_road_lanes": [
+      [
+        158190,
+        -1
+      ],
+      [
+        158194,
+        -1
+      ]
+    ],
+    "installed_uncovered_vehicular_heads": true,
+    "intersection_polygon_xy_m": [
+      [
+        -8,
+        -8
+      ],
+      [
+        8,
+        -8
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        -8,
+        8
+      ]
+    ],
+    "stop_line_exists": true,
+    "crosswalk_exists": false,
+    "stop_boundary": {
+      "kind": "stop_line",
+      "source": "inoperative-stop-line.xodr#road=158190,object=15819001; authored marking, pixels pending",
+      "point_xy_m": [
+        -12,
+        -1.8
+      ],
+      "upstream_normal_xy": [
+        -1,
+        0
+      ]
+    },
+    "other_stop_line_exists": true,
+    "other_crosswalk_exists": false,
+    "other_stop_boundary": {
+      "kind": "stop_line",
+      "source": "inoperative-stop-line.xodr#road=158194,object=15819401; authored marking, pixels pending",
+      "point_xy_m": [
+        1.8,
+        -12
+      ],
+      "upstream_normal_xy": [
+        0,
+        -1
+      ]
+    },
+    "approach_visibility_source": "planned overview, approach, reference_corner, driver_reference source cameras; original pixels pending"
+  },
+  "site_review": {
+    "path": "site-review.json",
+    "sha256": "f916fd04499c238ad171c1361f9e2ca3f1b69fefa1ee5478a133b2511f504dab"
+  },
+  "actor_routes": {
+    "ego": {
+      "spawn": [
+        158190,
+        -1,
+        10.0
+      ],
+      "target_xy_m": [
+        [
+          -15,
+          -1.8
+        ],
+        [
+          20,
+          -1.8
+        ]
+      ],
+      "release_frame": 50,
+      "release_rule": "after_other_clear",
+      "target_speed_mps": 4.0,
+      "stop_policy": "full_halt"
+    },
+    "other": {
+      "spawn": [
+        158194,
+        -1,
+        10.0
+      ],
+      "target_xy_m": [
+        [
+          1.8,
+          -15
+        ],
+        [
+          1.8,
+          20
+        ]
+      ],
+      "release_frame": 30,
+      "release_rule": "scheduled",
+      "target_speed_mps": 4.0,
+      "stop_policy": "full_halt"
+    }
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed elevated junction overview",
+      "pose": {
+        "x": 0,
+        "y": 0,
+        "z": 25,
+        "yaw": 0,
+        "pitch": -90
+      }
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed east approach and both stop references",
+      "pose": {
+        "x": -22,
+        "y": -8,
+        "z": 8,
+        "yaw": 20,
+        "pitch": -25
+      }
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed near corner of crossing",
+      "pose": {
+        "x": -12,
+        "y": -12,
+        "z": 10,
+        "yaw": 45,
+        "pitch": -25
+      }
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-mounted forward driver reference",
+      "pose": {
+        "x": 1.0,
+        "y": 0,
+        "z": 1.5,
+        "yaw": 0,
+        "pitch": 0
+      }
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "method": "Original ego complete-body velocity magnitude per Native frame",
+        "time_window": "full original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Actual motion, pixels and legal significance require local source review"
+      },
+      {
+        "name": "other_speed",
+        "unit": "m/s",
+        "method": "Original other complete-body velocity magnitude per Native frame",
+        "time_window": "full original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Actual motion, pixels and legal significance require local source review"
+      },
+      {
+        "name": "ego_stop_boundary_distance",
+        "unit": "m",
+        "method": "Original ego complete-body signed front distance to sourced stop line",
+        "time_window": "full original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Actual motion, pixels and legal significance require local source review"
+      },
+      {
+        "name": "signal_state",
+        "unit": "device state",
+        "method": "Original ego governed signal Off-state readback per Native frame",
+        "time_window": "full original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Actual motion, pixels and legal significance require local source review"
+      },
+      {
+        "name": "ego_position",
+        "unit": "m",
+        "method": "Original complete-body vertex mean XY per Native frame",
+        "time_window": "full original 20 Hz capture",
+        "reference_frame": "Native original frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "Actual motion, pixels and legal significance require local source review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "junction_context",
+        "unit": "structured record",
+        "method": "Authored map and observed Native head IDs joined to original source rows"
+      }
+    ],
+    "limitations": [
+      "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+    ]
+  }
+}

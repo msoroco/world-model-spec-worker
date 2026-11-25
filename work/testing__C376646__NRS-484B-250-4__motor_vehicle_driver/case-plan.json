@@ -47,6 +47,17 @@
         "stop_hierarchy"
       ],
       "physical_risk": "rolling motion and signal appearance require original source review"
+    },
+    {
+      "case_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped",
+      "target_law_id": "NRS-484B-250-4",
+      "purpose": "Marked stop line with other vehicle previously stopped and cleared before ego entry, isolating the prior-stop priority basis",
+      "gap_ids": [
+        "all_head_inoperability",
+        "stop_hierarchy",
+        "post_stop_priority"
+      ],
+      "physical_risk": "other clearance and blind visibility require original Native confirmation"
     }
   ],
   "comparisons": [
@@ -68,13 +79,26 @@
       "comparison_id": "other_priority_basis",
       "case_ids": [
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "fixed_conditions": [
-        "same signal status and ego stop/cautious crossing"
+        "same authored marked-stop-line junction, signal-head inventory, ego full stop, source cameras and duration"
       ],
       "deliberate_differences": [
-        "other already inside versus previously completed stop"
+        "other inside at ego entry versus other previously stopped and clear at ego entry"
+      ]
+    },
+    {
+      "comparison_id": "stop_halt_condition",
+      "case_ids": [
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+      ],
+      "fixed_conditions": [
+        "same marked stop line, signal status, actor routes and cameras"
+      ],
+      "deliberate_differences": [
+        "ego full halt versus ego rolling no-halt attempt"
       ]
     }
   ],
@@ -114,11 +138,48 @@
     "supported_reuses": []
   },
   "observations": [
-    "all installed uncovered entrance vehicular heads original-frame Off at ego entry",
-    "correct stop reference hierarchy and complete ego body before reference",
-    "original-frame ego speed at stop and later entry",
-    "other vehicle prior stop or body inside at ego entry",
-    "cautious yielding and blind sight conditions without invented cutoff"
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "requirement": "installed and uncovered vehicular signal head with Native governance and visible source-camera proof",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "requirement": "Native Off indication at ego body entry",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_stop_boundary_distance",
+      "mandatory": true,
+      "requirement": "stop-line/crosswalk/nearest-view hierarchy from map and camera",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "requirement": "full halt before or at required stop reference",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_position",
+      "mandatory": true,
+      "requirement": "first body entry of both vehicles and prior-stop order",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "other_speed",
+      "mandatory": true,
+      "requirement": "vehicles already within intersection at ego entry",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "requirement": "post-stop approach speed, clearance and cautious motion without invented legal cutoff",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    }
   ],
   "sources": [
     {
@@ -151,7 +212,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     },
@@ -163,7 +225,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     },
@@ -175,7 +238,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     },
@@ -187,7 +251,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     },
@@ -199,7 +264,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     },
@@ -211,7 +277,8 @@
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__crosswalk_other_previously_stopped",
         "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__nearest_view_other_inside",
-        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt"
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+        "testing__C376646__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_previously_stopped"
       ],
       "evidence_or_gap": "No accepted source exists; planned original Native capture, saved-only analysis and physical source review remain pending."
     }

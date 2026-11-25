@@ -14,9 +14,9 @@ SPEC.loader.exec_module(AUDIT)
 
 
 class SourceJoinTests(unittest.TestCase):
-    def test_all_four_exact_sources_and_rejections(self):
+    def test_all_five_exact_sources_and_rejections(self):
         manifest = json.loads((FOLDER / "review-draft-manifest.json").read_text())
-        self.assertEqual(len(manifest["cases"]), 4)
+        self.assertEqual(len(manifest["cases"]), 5)
         for case in manifest["cases"]:
             with self.subTest(case=case["case_id"]):
                 recipe = json.loads((REPO / case["fixture_recipe"]).read_text())
