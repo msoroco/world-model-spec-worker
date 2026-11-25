@@ -10,6 +10,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 REPO = PACKAGE.parents[1]
 sys.path.insert(0, str(PACKAGE))
 from caravan_combination import analyze
+from caravan_towing_saved import CASE_ID, finalize as finalize_towing
 
 
 def main():
@@ -25,6 +26,10 @@ def main():
         data = (json.dumps(relationship, sort_keys=True) + '\n').encode()
         (root / 'towing-source.json').write_bytes(data)
         context = json.loads((root / 'road_context.json').read_text())
+        for key in ('business_district_source', 'caravan_membership_source',
+                    'route_source', 'lane_source'):
+            name = context[key]['path']
+            shutil.copyfile(source / name, root / name)
         context['towing_relationship_source'] = {
             'path': 'towing-source.json', 'sha256': hashlib.sha256(data).hexdigest(),
             'review_status': 'reviewed_native_relationship'}
@@ -44,6 +49,8 @@ def main():
         assert len(positive['samples']) == 900
         assert all(sample['following_actor_id'] == 2 and sample['following_gap_opening_m'] > 0
                    for sample in positive['samples'])
+        saved = finalize_towing(root, CASE_ID, drawing_actor_id=1, drawn_actor_id=8)
+        assert saved['original_frames'] == 900 and saved['entry_observed'] is True
         (root / 'towing-source.json').write_text('changed\n')
         try:
             analyze(root, drawing_actor_id=1, drawn_actor_id=8)
@@ -64,6 +71,7 @@ def main():
                           'frames_checked': 900, 'positive_passed': True,
                           'changed_relationship_source_rejected': True,
                           'changed_frame_link_rejected': True,
+                          'saved_towing_audit_passed': True,
                           'source_sha256': positive['original_source_sha256'],
                           'physical_acceptance_claimed': False,
                           'without_danger_judgment': 'unresolved'}, sort_keys=True))

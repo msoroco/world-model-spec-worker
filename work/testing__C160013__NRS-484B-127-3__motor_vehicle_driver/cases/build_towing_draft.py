@@ -26,6 +26,20 @@ def build():
     config['selected_case_id'] = CASE_ID
     config['supported_case_ids'] = [CASE_ID]
     config['case']['case_id'] = CASE_ID
+    extra_channels = [
+        {'name': 'drawn_unit_body', 'unit': 'polygon metres',
+         'method': 'original Native complete drawn-unit body',
+         'time_window': 'original 45-second Native capture',
+         'reference_frame': 'original Native frame', 'sampling_rate_hz': 20,
+         'uncertainty': 'between-frame motion unresolved'},
+        {'name': 'combination_gap_opening', 'unit': 'metres',
+         'method': 'projected full combination front to next member rear',
+         'time_window': 'original 45-second Native capture',
+         'reference_frame': 'original Native frame', 'sampling_rate_hz': 20,
+         'uncertainty': 'between-frame motion unresolved'}]
+    config['recording_description']['channels'].extend(extra_channels)
+    config['case']['recording_description']['channels'] = config['recording_description']['channels']
+    baseline['recording_description']['channels'].extend(extra_channels)
     config_file['content'] = serialize(config)
     packet_file = next(item for item in files if item['path'] == 'site_packet.json')
     packet = json.loads(packet_file['content'])
@@ -41,12 +55,16 @@ def build():
     packet_file['content'] = serialize(packet)
     files.append({'path': 'towing_design_source.txt', 'content': design})
     for name in ('caravan_towing_native.py', 'caravan_combination_native.py',
-                 'caravan_combination_capture.py', 'caravan_combination.py'):
+                 'caravan_combination_capture.py', 'caravan_combination.py',
+                 'caravan_towing_saved.py', 'caravan_towing_finalizer.py'):
         files.append({'path': name, 'source': str((PACKAGE / name).relative_to(REPO)),
                       'content': (PACKAGE / name).read_text()})
     runner = next(item for item in files if item['path'] == 'runner.py')
     runner['source'] = str((PACKAGE / 'caravan_towing_native.py').relative_to(REPO))
     runner['content'] = (PACKAGE / 'caravan_towing_native.py').read_text()
+    finalizer = next(item for item in files if item['path'] == 'finalizer.py')
+    finalizer['source'] = str((PACKAGE / 'caravan_towing_finalizer.py').relative_to(REPO))
+    finalizer['content'] = (PACKAGE / 'caravan_towing_finalizer.py').read_text()
     test = next(item for item in files if item['path'] == 'tests/test_offline.py')
     test['content'] = test['content'].replace('import caravan_native as native',
                                             'import caravan_towing_native as native')
@@ -57,9 +75,13 @@ def build():
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
                 'runtime_manifest_sha256': hashlib.sha256((REPO / 'runtime/SOURCE-MANIFEST.json').read_bytes()).hexdigest(),
                 'cases': [{'case_id': CASE_ID, 'kind': 'diagnostic',
-                           'construction': path.name,
-                           'construction_sha256': digest}], 'comparisons': []}
-    manifest_path = PACKAGE / 'cases/towing-diagnostic-manifest.json'
+                           'construction': str(path.relative_to(PACKAGE)),
+                           'construction_sha256': digest,
+                           'fixture_recipe': 'work/' + ASSIGNMENT + '/cases/towing-recipe.json',
+                           'measurement_contract': 'measurement-contract.json',
+                           'measurement_procedure': {'entrypoint': 'finalizer.py'}}],
+                'comparisons': []}
+    manifest_path = PACKAGE / 'towing-diagnostic-manifest.json'
     manifest_path.write_text(serialize(manifest))
     print(json.dumps({'case_id': CASE_ID, 'construction_sha256': digest,
                       'manifest': str(manifest_path.relative_to(REPO))}))
