@@ -33,7 +33,7 @@ def _pose(carla, data, name):
                           for key in ("pitch", "yaw", "roll")}))
 
 
-def validate_native_scene_spec(scene):
+def validate_native_scene_spec(scene, geometry=None):
     """Check reviewed scene fields before constructing or owning Native actors."""
     if not isinstance(scene, dict):
         raise ValueError("reviewed Native scene source missing")
@@ -42,6 +42,18 @@ def validate_native_scene_spec(scene):
         if not isinstance(actor, dict) or not isinstance(actor.get("blueprint_id"), str) or not actor["blueprint_id"]:
             raise ValueError(f"reviewed {name} actor source missing")
         _pose_fields(actor.get("transform"), name)
+    ego_xy = scene["ego"]["transform"]["location"]
+    through_xy = scene["through_vehicle"]["transform"]["location"]
+    if math.hypot(ego_xy["x"] - through_xy["x"],
+                  ego_xy["y"] - through_xy["y"]) <= 1.0:
+        raise ValueError("reviewed Native vehicle spawn poses overlap")
+    if geometry is not None:
+        for name, axis_name in (("ego", "ego_route_axis_xy"),
+                                ("through_vehicle", "through_route_axis_xy")):
+            axis = geometry[axis_name]
+            yaw = math.radians(scene[name]["transform"]["rotation"]["yaw"])
+            if math.cos(yaw) * axis[0] + math.sin(yaw) * axis[1] <= 0.7:
+                raise ValueError(f"{name} spawn heading opposes reviewed route direction")
     cameras = scene.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError("four reviewed camera extrinsics required")
@@ -105,7 +117,7 @@ class CarlaSceneAdapter:
 
     def configure(self, world, site):
         scene = site.get("native_scene")
-        validate_native_scene_spec(scene)
+        validate_native_scene_spec(scene, site.get("capture_geometry"))
         for name in ("ego", "through_vehicle"):
             _pose(self.carla, scene[name]["transform"], name)
         cameras = scene["cameras"]

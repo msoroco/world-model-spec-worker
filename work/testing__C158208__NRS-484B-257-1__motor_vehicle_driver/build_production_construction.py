@@ -47,7 +47,7 @@ def build(kind: str, site_path: Path, output: Path) -> dict:
     if isinstance(station, bool) or not isinstance(station, (int, float)) or not math.isfinite(station):
         raise ValueError("reviewed finite nearest-view station required")
     scene_source = site.get("native_scene")
-    validate_native_scene_spec(scene_source)
+    validate_native_scene_spec(scene_source, site["capture_geometry"])
     source_names = [site_path.name]
     if not site_path.name or site_path.name in ("scene.json", "config.json", "runner.py"):
         raise ValueError("reviewed site filename conflicts with construction")

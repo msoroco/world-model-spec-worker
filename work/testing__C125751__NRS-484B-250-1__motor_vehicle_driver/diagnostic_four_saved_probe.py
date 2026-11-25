@@ -118,8 +118,8 @@ def run(base: Path, offline_root: Path, scratch: Path, manifest: Path,
         feedback_path = output / 'v0001/feedback.json'
         processing = json.loads(processing_path.read_text()) if processing_path.is_file() else {}
         feedback = json.loads(feedback_path.read_text()) if feedback_path.is_file() else {}
-        report_path = output / 'v0001/analysis-report.json'
-        report = json.loads(report_path.read_text()) if report_path.is_file() else {}
+        result_path = output / 'v0001/analysis/result.json'
+        result = json.loads(result_path.read_text()) if result_path.is_file() else {}
         adapter_path = output / 'v0001/converted/adapter_report.json'
         adapter = json.loads(adapter_path.read_text()) if adapter_path.is_file() else {}
         negative_attempt = scratch / suffix / 'missing-source-attempt'
@@ -144,12 +144,20 @@ def run(base: Path, offline_root: Path, scratch: Path, manifest: Path,
                          'feedback_error': feedback.get('error'),
                          'source_attempt_preserved': before == after,
                          'atom_gaps': adapter.get('atom_coverage', {}).get('missing'),
-                         'analysis_case_id': report.get('case_id'),
+                         'analysis_case_id': result.get('case_id'),
+                         'target_checks_matched': bool(result.get('target_checks')) and
+                             all(item.get('matched') is True for item in result['target_checks']),
                          'missing_source_rejected': missing_rejected,
                          'missing_source_error': negative_feedback.get('error'),
                          'diagnostic_fixture': True,
                          'original_site_reviewed': False,
                          'physical_delivery_proven': False})
+    if any((row['exit_code'] != 0 or row['passed'] is not True or
+            row['source_attempt_preserved'] is not True or row['atom_gaps'] != [] or
+            row['analysis_case_id'] != row['case_id'] or
+            row['target_checks_matched'] is not True or
+            row['missing_source_rejected'] is not True) for row in receipts):
+        raise ValueError('Four-case diagnostic saved proof incomplete')
     return {'cases': receipts, 'diagnostic_fixture': True,
             'production_acceptance_claimed': False}
 

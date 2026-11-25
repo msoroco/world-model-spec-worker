@@ -21,15 +21,17 @@ class ProductionConstructionTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.site_path = self.root / "reviewed-site.json"
-        pose = {"location": {"x": 0.0, "y": 0.0, "z": 1.0},
+        pose = {"location": {"x": 0.0, "y": 5.0, "z": 1.0},
                 "rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0}}
+        through_pose = {"location": {"x": 5.0, "y": -5.0, "z": 1.0},
+                        "rotation": {"pitch": 0.0, "yaw": 90.0, "roll": 0.0}}
         self.site = {"review_status": "reviewed", "cell_id": "C158208",
                      "source_provenance": "native_operator_review",
                      "capture_geometry": GEOMETRY, "reviewed_context": CONTEXT,
                      "ego_view_station_m": 8.0,
                      "native_scene": {
                          "ego": {"blueprint_id": "vehicle.test.ego", "transform": pose},
-                         "through_vehicle": {"blueprint_id": "vehicle.test.through", "transform": pose},
+                         "through_vehicle": {"blueprint_id": "vehicle.test.through", "transform": through_pose},
                          "cameras": {name: {"attach_to": "ego", "transform": pose,
                                             "fov_degrees": 90.0} for name in CAMERAS},
                          "yield_sign_landmark_id": "synthetic-sign"},
@@ -110,6 +112,22 @@ class ProductionConstructionTests(unittest.TestCase):
         self.site["native_scene"].pop("yield_sign_landmark_id")
         self.write_site()
         with self.assertRaisesRegex(ValueError, "exactly one reviewed Native yield sign"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+
+    def test_rejects_opposed_route_and_overlapping_spawns(self):
+        self.site["native_scene"]["ego"]["transform"]["rotation"]["yaw"] = 180.0
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "ego spawn heading opposes"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+        self.site["native_scene"]["ego"]["transform"]["rotation"]["yaw"] = 0.0
+        self.site["native_scene"]["through_vehicle"]["transform"]["rotation"]["yaw"] = -90.0
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "through_vehicle spawn heading opposes"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+        self.site["native_scene"]["through_vehicle"]["transform"]["rotation"]["yaw"] = 90.0
+        self.site["native_scene"]["through_vehicle"]["transform"]["location"].update(x=0.0, y=5.0)
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "spawn poses overlap"):
             build("nearest_view_response", self.site_path, self.root / "out.json")
 
 

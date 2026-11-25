@@ -9,7 +9,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from reviewed_semantic_sweep import expand
+from reviewed_semantic_sweep import bind_rebound, expand
+from rebind_reviewed_execution import rebind
 from test_bind_reviewed_site import pair
 
 
@@ -47,6 +48,21 @@ class ReviewedSemanticSweepTests(unittest.TestCase):
         source.write_text("changed\n")
         with self.assertRaisesRegex(ValueError, "source hash changed"):
             expand(self.proposal, self.packets["park"], self.packets["stand"])
+
+    def test_six_selected_manifest_bindings_and_tamper_rejection(self):
+        rebound = self.root / "rebound"
+        rebind(self.packets["park"], self.packets["stand"], rebound)
+        expanded = expand(self.proposal, self.packets["park"], self.packets["stand"])
+        bound = bind_rebound(expanded, rebound)["selected_rebound_binding"]
+        self.assertEqual(len(bound["cases"]), 6)
+        self.assertTrue(all({item["candidate"] for item in row["candidates"]}
+                            == {"primary", "fallback1"} for row in bound["cases"]))
+        manifest_path = rebound / "execution-manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["cases"][0]["candidates"][0]["construction_sha256"] = "0" * 64
+        manifest_path.write_text(json.dumps(manifest) + "\n")
+        with self.assertRaisesRegex(ValueError, "construction hash"):
+            bind_rebound(expanded, rebound)
 
 
 if __name__ == "__main__":

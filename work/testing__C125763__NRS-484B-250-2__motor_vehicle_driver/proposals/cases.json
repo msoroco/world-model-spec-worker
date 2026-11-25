@@ -1,0 +1,262 @@
+{
+  "cell_id": "C125763",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c125763-judgment-1",
+      "target_law_id": "NRS-484B-250-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "at approximately the same time",
+          "note": "Original entry brackets are measured; no legal time cutoff is supplied."
+        }
+      ],
+      "rationale": "The selected fixed source and physical outcome are unreviewed; no judgment boundary or legal result is inferred.",
+      "missing_inputs": [
+        "reviewed original source packet and accepted original body histories"
+      ]
+    },
+    {
+      "sweep_id": "c125763-judgment-2",
+      "target_law_id": "NRS-484B-250-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "different highways",
+          "note": "Original road classification and approach geometry require reviewed source records."
+        }
+      ],
+      "rationale": "The selected fixed source and physical outcome are unreviewed; no judgment boundary or legal result is inferred.",
+      "missing_inputs": [
+        "reviewed original source packet and accepted original body histories"
+      ]
+    },
+    {
+      "sweep_id": "c125763-judgment-3",
+      "target_law_id": "NRS-484B-250-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "intersections controlled by official traffic-control devices",
+          "note": "The fixed yield sign requires original device review; subsection 4 condition is unestablished."
+        }
+      ],
+      "rationale": "The selected fixed source and physical outcome are unreviewed; no judgment boundary or legal result is inferred.",
+      "missing_inputs": [
+        "reviewed original source packet and accepted original body histories"
+      ]
+    },
+    {
+      "sweep_id": "c125763-judgment-4",
+      "target_law_id": "NRS-484B-250-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "approaching each other from opposite directions",
+          "note": "Review original approach trajectories and turning intent before applying the exception."
+        }
+      ],
+      "rationale": "The selected fixed source and physical outcome are unreviewed; no judgment boundary or legal result is inferred.",
+      "missing_inputs": [
+        "reviewed original source packet and accepted original body histories"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Physical entry_below timing coverage target from frozen judgment range; no legal threshold is inferred.",
+      "variable_assignments": {
+        "other_release_delay_s": {
+          "kind": "controller",
+          "value": 6.0
+        }
+      },
+      "paired_probe_id": "entry_timing_range",
+      "deliberate_differences": [
+        "other_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "other_release_delay_s",
+        "comparison_or_standard": "source-hashed training range coverage only",
+        "target_value_or_branch": "entry_below"
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "different highways",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_entry_time_difference",
+            "unit": "s",
+            "method": "first original footprint-intersection transition upper timestamp for ego minus other",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 900-frame original episode",
+            "reference_frame": "reviewed intersection bounds",
+            "uncertainty": "original site, motion and pixel coverage unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, traffic-control device and highway records"
+          }
+        ],
+        "limitations": [
+          "Diagnostic packet is synthetic; NRS 484B.250(4) condition is not established by the fixed yield-sign cell."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Physical entry_inside timing coverage target from frozen judgment range; no legal threshold is inferred.",
+      "variable_assignments": {
+        "other_release_delay_s": {
+          "kind": "controller",
+          "value": 3.0
+        }
+      },
+      "paired_probe_id": "entry_timing_range",
+      "deliberate_differences": [
+        "other_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "other_release_delay_s",
+        "comparison_or_standard": "source-hashed training range coverage only",
+        "target_value_or_branch": "entry_inside"
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "different highways",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_entry_time_difference",
+            "unit": "s",
+            "method": "first original footprint-intersection transition upper timestamp for ego minus other",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 900-frame original episode",
+            "reference_frame": "reviewed intersection bounds",
+            "uncertainty": "original site, motion and pixel coverage unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, traffic-control device and highway records"
+          }
+        ],
+        "limitations": [
+          "Diagnostic packet is synthetic; NRS 484B.250(4) condition is not established by the fixed yield-sign cell."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Physical entry_above timing coverage target from frozen judgment range; no legal threshold is inferred.",
+      "variable_assignments": {
+        "other_release_delay_s": {
+          "kind": "controller",
+          "value": 0.0
+        }
+      },
+      "paired_probe_id": "entry_timing_range",
+      "deliberate_differences": [
+        "other_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "other_release_delay_s",
+        "comparison_or_standard": "source-hashed training range coverage only",
+        "target_value_or_branch": "entry_above"
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "different highways",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_entry_time_difference",
+            "unit": "s",
+            "method": "first original footprint-intersection transition upper timestamp for ego minus other",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 900-frame original episode",
+            "reference_frame": "reviewed intersection bounds",
+            "uncertainty": "original site, motion and pixel coverage unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, traffic-control device and highway records"
+          }
+        ],
+        "limitations": [
+          "Diagnostic packet is synthetic; NRS 484B.250(4) condition is not established by the fixed yield-sign cell."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Semantic reference only; no additional recording or GPU job.",
+      "variable_assignments": {
+        "other_release_delay_s": {
+          "kind": "controller",
+          "value": 3.0
+        }
+      },
+      "deliberate_differences": [],
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "different highways",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_entry_time_difference",
+            "unit": "s",
+            "method": "first original footprint-intersection transition upper timestamp for ego minus other",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 900-frame original episode",
+            "reference_frame": "reviewed intersection bounds",
+            "uncertainty": "original site, motion and pixel coverage unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, traffic-control device and highway records"
+          }
+        ],
+        "limitations": [
+          "Diagnostic packet is synthetic; NRS 484B.250(4) condition is not established by the fixed yield-sign cell."
+        ]
+      }
+    }
+  ]
+}

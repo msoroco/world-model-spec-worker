@@ -61,16 +61,39 @@ def build():
                                  'expected_error': 'Missing required source: map.json'}
         offline = case_folder / 'cpu-offline.log'
         if offline.is_file():
-            offline_output = ('offline-' + suffix + '-traffic-v1' if suffix.startswith('pedestrian_')
-                              else 'offline-' + suffix.replace('_', '-') + '-v1')
+            offline_output = 'offline-' + suffix
             entry['offline'] = {
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + aid +
                            '/execution-manifest.json --case ' + case_id +
-                           ' --output .runtime-work/c111301-nov25/' + offline_output +
+                           ' --output .runtime-work/c111301-refresh/' + offline_output +
                            ' --python $PWD/.venv-cpu/bin/python',
                 'construction_sha256': entry['construction_sha256'],
                 'exit_code': 0, 'log': str(offline.relative_to(HERE)),
                 'log_sha256': sha(offline)}
+        saved = case_folder / 'processing.json'
+        saved_log = case_folder / 'cpu-saved.log'
+        if saved.is_file() and saved_log.is_file() and json.loads(saved.read_text()).get('native_revision', {}).get('construction_sha256') == entry['construction_sha256']:
+            command = '.venv-cpu/bin/python runtime.py process-saved --manifest work/' + aid + '/execution-manifest.json --case ' + case_id + ' --attempt .runtime-work/c111301-refresh/saved-' + suffix + '-attempt --output .runtime-work/c111301-refresh/saved-' + suffix + '-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck'
+            entry['post_capture'] = {
+                'command': command, 'feedback_command': command + ' ; inspect feedback.json',
+                'recorded_only': True, 'originals_preserved': True,
+                'synthetic_fixture': True, 'test_exit_code': 0,
+                'test_log': str(saved_log.relative_to(HERE)), 'test_log_sha256': sha(saved_log),
+                'processing_receipt_sha256': sha(saved)}
+        delivery_log = case_folder / 'cpu-independent-delivery.log'
+        negative_log = case_folder / 'cpu-independent-negative.log'
+        if delivery_log.is_file() and negative_log.is_file():
+            command = '.venv-cpu/bin/python work/' + aid + '/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-' + suffix + '-attempt --case ' + case_id + ' --scratch .runtime-work/c111301-refresh/delivery-' + suffix + '-positive --output .runtime-work/c111301-refresh/delivery-' + suffix + '-positive.json'
+            negative_command = '.venv-cpu/bin/python work/' + aid + '/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-' + suffix + '-attempt --case ' + case_id + ' --scratch .runtime-work/c111301-refresh/delivery-' + suffix + '-negative --output .runtime-work/c111301-refresh/delivery-' + suffix + '-negative.json --negative'
+            entry['delivery_acceptance'] = {
+                'case_id': case_id, 'sets': ['full-test'],
+                'checks': ['native_source', 'all_participants', 'time_join', 'full_video_decode', 'actual_pixels', 'physical_completion'],
+                'scope': 'synthetic diagnostic component check; original physical completion unverified',
+                'command': command, 'negative_command': negative_command,
+                'script': 'independent_delivery_cpu.py', 'script_sha256': sha(HERE / 'independent_delivery_cpu.py'),
+                'test_exit_code': 0, 'test_log': str(delivery_log.relative_to(HERE)), 'test_log_sha256': sha(delivery_log),
+                'negative_exit_code': 1, 'negative_expected_error': 'original source changed: approach.mkv',
+                'negative_log': str(negative_log.relative_to(HERE)), 'negative_log_sha256': sha(negative_log)}
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': aid,
                 'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),
                 'cases': cases}

@@ -23,6 +23,10 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "physical_preparation": {
+        "receipt": "cases/pedestrian_yield/physical-preparation.json",
+        "sha256": "290750f48c79434fa5558110a0487f30758a077d25b34de91c80c40c565df83c"
+      },
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
@@ -46,12 +50,58 @@
           ]
         }
       },
+      "compatibility": {
+        "receipt": "cases/pedestrian_yield/compatibility.json",
+        "sha256": "8a225b3c7975352dbf977cb25b5bf46fb155b9d4b9d326ba215f4e8890b4b58c",
+        "log": "cases/pedestrian_yield/cpu-analysis.log"
+      },
+      "negative": {
+        "log": "cases/pedestrian_yield/cpu-negative.log",
+        "expected_error": "Missing required source: map.json"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-nov25/offline-pedestrian_yield-traffic-v1 --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-refresh/offline-pedestrian_yield --python $PWD/.venv-cpu/bin/python",
         "construction_sha256": "30d2fe2fdfeb03e227c53f6feb73954cffd5081ec064e951662c75c90a8e56f2",
         "exit_code": 0,
         "log": "cases/pedestrian_yield/cpu-offline.log",
-        "log_sha256": "f48f0751a0feea863a28660cc45624905121a356f47c74646a9653695a60524f"
+        "log_sha256": "47c22ef3a4fdbe0d54141e0f5f414edb2b8c9be3d4b5e6d6a06f448ff6487927"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --attempt .runtime-work/c111301-refresh/saved-pedestrian_yield-attempt --output .runtime-work/c111301-refresh/saved-pedestrian_yield-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --attempt .runtime-work/c111301-refresh/saved-pedestrian_yield-attempt --output .runtime-work/c111301-refresh/saved-pedestrian_yield-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck ; inspect feedback.json",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "synthetic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/pedestrian_yield/cpu-saved.log",
+        "test_log_sha256": "8a1ddfcaf1c5f40100edbff93fc7be43145e065c04a4d88fe408b561ab3416ed",
+        "processing_receipt_sha256": "8a1ddfcaf1c5f40100edbff93fc7be43145e065c04a4d88fe408b561ab3416ed"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "synthetic diagnostic component check; original physical completion unverified",
+        "command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-pedestrian_yield-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --scratch .runtime-work/c111301-refresh/delivery-pedestrian_yield-positive --output .runtime-work/c111301-refresh/delivery-pedestrian_yield-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-pedestrian_yield-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --scratch .runtime-work/c111301-refresh/delivery-pedestrian_yield-negative --output .runtime-work/c111301-refresh/delivery-pedestrian_yield-negative.json --negative",
+        "script": "independent_delivery_cpu.py",
+        "script_sha256": "39d850c00fcde15516f4cfd47b01cfb20e5edff87f2c5108b6ce3227d7273671",
+        "test_exit_code": 0,
+        "test_log": "cases/pedestrian_yield/cpu-independent-delivery.log",
+        "test_log_sha256": "6d2da92bd70e3ca3b4e18206d780860ef5e542be3ba0d8951a167d6f2afef4ef",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: approach.mkv",
+        "negative_log": "cases/pedestrian_yield/cpu-independent-negative.log",
+        "negative_log_sha256": "53348f57b01a3b67d506f1f27aba908962acafdd963ad75a337b056ce533d543"
       }
     },
     {
@@ -74,6 +124,10 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "physical_preparation": {
+        "receipt": "cases/pedestrian_continue/physical-preparation.json",
+        "sha256": "de2b344a319304d277c37a8f800d2faf09653f3fdb1c0481113fffd7789f2c05"
+      },
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
@@ -97,12 +151,58 @@
           ]
         }
       },
+      "compatibility": {
+        "receipt": "cases/pedestrian_continue/compatibility.json",
+        "sha256": "6dce1507d02cd40ede1deb779b4901c87ed7a51787b429ee2c488d3145a7d2e6",
+        "log": "cases/pedestrian_continue/cpu-analysis.log"
+      },
+      "negative": {
+        "log": "cases/pedestrian_continue/cpu-negative.log",
+        "expected_error": "Missing required source: map.json"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-nov25/offline-pedestrian_continue-traffic-v1 --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-refresh/offline-pedestrian_continue --python $PWD/.venv-cpu/bin/python",
         "construction_sha256": "352a4ea2da2953637e5a92e5246c671bf4ee6c0f2170eb59e1cb9f213f53af07",
         "exit_code": 0,
         "log": "cases/pedestrian_continue/cpu-offline.log",
-        "log_sha256": "9ddee9e6e392d12d44a9f6a43b8b2782197e2f492a2ef0403b459022ff64cb59"
+        "log_sha256": "61c2e619569f24b451ce00336f9f20fd92b3b897ab848db5db9dcf250dbb511d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --attempt .runtime-work/c111301-refresh/saved-pedestrian_continue-attempt --output .runtime-work/c111301-refresh/saved-pedestrian_continue-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --attempt .runtime-work/c111301-refresh/saved-pedestrian_continue-attempt --output .runtime-work/c111301-refresh/saved-pedestrian_continue-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck ; inspect feedback.json",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "synthetic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/pedestrian_continue/cpu-saved.log",
+        "test_log_sha256": "93128aafa686a3aca7ec9a5e1ec1613aa10115ea2bc2b35848fbe693c2bf1d4b",
+        "processing_receipt_sha256": "93128aafa686a3aca7ec9a5e1ec1613aa10115ea2bc2b35848fbe693c2bf1d4b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "synthetic diagnostic component check; original physical completion unverified",
+        "command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-pedestrian_continue-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --scratch .runtime-work/c111301-refresh/delivery-pedestrian_continue-positive --output .runtime-work/c111301-refresh/delivery-pedestrian_continue-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-pedestrian_continue-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --scratch .runtime-work/c111301-refresh/delivery-pedestrian_continue-negative --output .runtime-work/c111301-refresh/delivery-pedestrian_continue-negative.json --negative",
+        "script": "independent_delivery_cpu.py",
+        "script_sha256": "39d850c00fcde15516f4cfd47b01cfb20e5edff87f2c5108b6ce3227d7273671",
+        "test_exit_code": 0,
+        "test_log": "cases/pedestrian_continue/cpu-independent-delivery.log",
+        "test_log_sha256": "6d2da92bd70e3ca3b4e18206d780860ef5e542be3ba0d8951a167d6f2afef4ef",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: approach.mkv",
+        "negative_log": "cases/pedestrian_continue/cpu-independent-negative.log",
+        "negative_log_sha256": "53348f57b01a3b67d506f1f27aba908962acafdd963ad75a337b056ce533d543"
       }
     },
     {
@@ -125,6 +225,10 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "physical_preparation": {
+        "receipt": "cases/traffic_yield/physical-preparation.json",
+        "sha256": "f970c4a214d2d11c35f0216f42e3a3e2c3def8a32b21b3193de2f933981a02d3"
+      },
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
@@ -148,12 +252,58 @@
           ]
         }
       },
+      "compatibility": {
+        "receipt": "cases/traffic_yield/compatibility.json",
+        "sha256": "1062b17c2f86e2b39f0ef1f0690d0b332a09b0f592e054913efc1a29352d7490",
+        "log": "cases/traffic_yield/cpu-analysis.log"
+      },
+      "negative": {
+        "log": "cases/traffic_yield/cpu-negative.log",
+        "expected_error": "Missing required source: map.json"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --output .runtime-work/c111301-nov25/offline-traffic-yield-v1 --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --output .runtime-work/c111301-refresh/offline-traffic_yield --python $PWD/.venv-cpu/bin/python",
         "construction_sha256": "b0718034c1c1e53b6a43f6fd47213eecc1acce85e6966525d57070ee2da535d2",
         "exit_code": 0,
         "log": "cases/traffic_yield/cpu-offline.log",
-        "log_sha256": "b548611ee548b0116a0e4536a1dfbeb567a349251f8f8d8a74c7e321e5ef4ab1"
+        "log_sha256": "7ec35d5d8dca3af6ef1bcfc0f1534a8d7baf176f6f0d8374afdafd05159a0893"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --attempt .runtime-work/c111301-refresh/saved-traffic_yield-attempt --output .runtime-work/c111301-refresh/saved-traffic_yield-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --attempt .runtime-work/c111301-refresh/saved-traffic_yield-attempt --output .runtime-work/c111301-refresh/saved-traffic_yield-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck ; inspect feedback.json",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "synthetic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/traffic_yield/cpu-saved.log",
+        "test_log_sha256": "91e448e809f8fab456d6e3ec035a0cfe2ca63800b9a0d757742e0341f278631c",
+        "processing_receipt_sha256": "91e448e809f8fab456d6e3ec035a0cfe2ca63800b9a0d757742e0341f278631c"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "synthetic diagnostic component check; original physical completion unverified",
+        "command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-traffic_yield-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --scratch .runtime-work/c111301-refresh/delivery-traffic_yield-positive --output .runtime-work/c111301-refresh/delivery-traffic_yield-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-traffic_yield-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --scratch .runtime-work/c111301-refresh/delivery-traffic_yield-negative --output .runtime-work/c111301-refresh/delivery-traffic_yield-negative.json --negative",
+        "script": "independent_delivery_cpu.py",
+        "script_sha256": "39d850c00fcde15516f4cfd47b01cfb20e5edff87f2c5108b6ce3227d7273671",
+        "test_exit_code": 0,
+        "test_log": "cases/traffic_yield/cpu-independent-delivery.log",
+        "test_log_sha256": "6d2da92bd70e3ca3b4e18206d780860ef5e542be3ba0d8951a167d6f2afef4ef",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: approach.mkv",
+        "negative_log": "cases/traffic_yield/cpu-independent-negative.log",
+        "negative_log_sha256": "53348f57b01a3b67d506f1f27aba908962acafdd963ad75a337b056ce533d543"
       }
     },
     {
@@ -176,6 +326,10 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "physical_preparation": {
+        "receipt": "cases/traffic_continue/physical-preparation.json",
+        "sha256": "906f3739a7360887c4218e9217171a5355a5860373d0687795dfaa2862427df8"
+      },
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
@@ -199,12 +353,58 @@
           ]
         }
       },
+      "compatibility": {
+        "receipt": "cases/traffic_continue/compatibility.json",
+        "sha256": "510adf99e81282af3740109d029296ac57a196a6f182b5bb3a661e4062e8c7ee",
+        "log": "cases/traffic_continue/cpu-analysis.log"
+      },
+      "negative": {
+        "log": "cases/traffic_continue/cpu-negative.log",
+        "expected_error": "Missing required source: map.json"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --output .runtime-work/c111301-nov25/offline-traffic-continue-v1 --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --output .runtime-work/c111301-refresh/offline-traffic_continue --python $PWD/.venv-cpu/bin/python",
         "construction_sha256": "5472fcc46f166107cb821ef64d10e15ce9124dbeaa246a9c1ea3f64dedc93240",
         "exit_code": 0,
         "log": "cases/traffic_continue/cpu-offline.log",
-        "log_sha256": "82ba9110050c37178809258e39dae01f7a01a315b3f6667ff40254d49b5d2521"
+        "log_sha256": "8580cd5600dc5ced97d24fe7b38523c5067408ed5454f3b45c37ccd6c0d84366"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --attempt .runtime-work/c111301-refresh/saved-traffic_continue-attempt --output .runtime-work/c111301-refresh/saved-traffic_continue-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --attempt .runtime-work/c111301-refresh/saved-traffic_continue-attempt --output .runtime-work/c111301-refresh/saved-traffic_continue-output --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck ; inspect feedback.json",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "synthetic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/traffic_continue/cpu-saved.log",
+        "test_log_sha256": "53594993f4d8a3bb3089e5b0510a68fcd078321597ce10d2e37236d1d3dd3b3f",
+        "processing_receipt_sha256": "53594993f4d8a3bb3089e5b0510a68fcd078321597ce10d2e37236d1d3dd3b3f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "synthetic diagnostic component check; original physical completion unverified",
+        "command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-traffic_continue-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --scratch .runtime-work/c111301-refresh/delivery-traffic_continue-positive --output .runtime-work/c111301-refresh/delivery-traffic_continue-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/independent_delivery_cpu.py --attempt .runtime-work/c111301-refresh/saved-traffic_continue-attempt --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --scratch .runtime-work/c111301-refresh/delivery-traffic_continue-negative --output .runtime-work/c111301-refresh/delivery-traffic_continue-negative.json --negative",
+        "script": "independent_delivery_cpu.py",
+        "script_sha256": "39d850c00fcde15516f4cfd47b01cfb20e5edff87f2c5108b6ce3227d7273671",
+        "test_exit_code": 0,
+        "test_log": "cases/traffic_continue/cpu-independent-delivery.log",
+        "test_log_sha256": "6d2da92bd70e3ca3b4e18206d780860ef5e542be3ba0d8951a167d6f2afef4ef",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: approach.mkv",
+        "negative_log": "cases/traffic_continue/cpu-independent-negative.log",
+        "negative_log_sha256": "53348f57b01a3b67d506f1f27aba908962acafdd963ad75a337b056ce533d543"
       }
     }
   ]

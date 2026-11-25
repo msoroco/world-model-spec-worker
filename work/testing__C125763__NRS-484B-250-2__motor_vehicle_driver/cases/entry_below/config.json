@@ -1,0 +1,72 @@
+{
+  "law_id": "NRS-484B-250-2",
+  "cell_id": "C125763",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+  "supported_case_ids": [
+    "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+    "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+    "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "both crossing approaches and median opening"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego and other incoming lanes"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "intersection footprints and entry edges"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego-mounted forward view"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+    "physical_target": "measured original footprint crossing-entry timing in a reviewed median-opening intersection",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "intersection_entry_time_difference",
+          "unit": "s",
+          "method": "first original footprint-intersection transition upper timestamp for ego minus other",
+          "sampling_rate_hz": 20,
+          "time_window": "entire 900-frame original episode",
+          "reference_frame": "reviewed intersection bounds",
+          "uncertainty": "original site, motion and pixel coverage unverified"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_site_device_highway_packet",
+          "unit": "source",
+          "method": "source-hashed original OpenDRIVE, traffic-control device and highway records"
+        }
+      ],
+      "limitations": [
+        "Diagnostic packet is synthetic; NRS 484B.250(4) condition is not established by the fixed yield-sign cell."
+      ]
+    }
+  }
+}

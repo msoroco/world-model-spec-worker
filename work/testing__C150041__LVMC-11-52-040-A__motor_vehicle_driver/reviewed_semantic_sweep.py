@@ -72,12 +72,75 @@ def expand(proposal: dict, park_packet: Path, stand_packet: Path) -> dict:
     return result
 
 
+def bind_rebound(expanded: dict, rebound_dir: Path) -> dict:
+    """Seal each selected sweep row to both exact rebound constructions."""
+    rebound_dir = Path(rebound_dir)
+    source_path = rebound_dir / "rebound-manifest.json"
+    execution_path = rebound_dir / "execution-manifest.json"
+    source = json.loads(source_path.read_text())
+    execution = json.loads(execution_path.read_text())
+    sweep = expanded["sweep_specs"][0]
+    rows = {row["case_id"]: row for row in sweep["case_measurements"]}
+    source_cases = {row["case_id"]: row for row in source["cases"]}
+    execution_cases = {row["case_id"]: row for row in execution["cases"]}
+    if (len(rows) != 6 or len(source_cases) != 6 or len(execution_cases) != 6 or
+            set(rows) != set(source_cases) or set(rows) != set(execution_cases) or
+            source.get("packet_sha256") != sweep["source_packets_sha256"] or
+            source.get("native_map") != sweep["native_map"]):
+        raise ValueError("selected sweep and rebound manifest differ")
+    bindings = []
+    for case_id, row in rows.items():
+        source_case = source_cases[case_id]
+        selected = execution_cases[case_id]
+        if source_case["activity"] != row["activity"]:
+            raise ValueError("selected sweep activity differs")
+        variants = {item["id"]: item for item in source_case["variants"]}
+        candidates = {item["id"]: item for item in selected["candidates"]}
+        if set(variants) != {"primary", "fallback1"} or set(candidates) != {"fallback1"}:
+            raise ValueError("selected sweep candidate set differs")
+        candidate_bindings = []
+        for candidate_id in ("primary", "fallback1"):
+            variant = variants[candidate_id]
+            manifest_item = selected if candidate_id == "primary" else candidates[candidate_id]
+            construction_path = rebound_dir / variant["construction"]
+            digest = hashlib.sha256(construction_path.read_bytes()).hexdigest()
+            if (digest != variant["construction_sha256"] or
+                    digest != manifest_item["construction_sha256"] or
+                    variant["construction"] != manifest_item["construction"] or
+                    variant["source_packet_sha256"] != row["source_packet_sha256"]):
+                raise ValueError("selected sweep construction hash or packet differs")
+            package = json.loads(construction_path.read_text())
+            files = {item["path"]: item["content"] for item in package["files"]}
+            scene = json.loads(files["scene.json"])
+            config = json.loads(files["config.json"])
+            if (scene["case_id"] != case_id or
+                    scene["source_packet_sha256"] != row["source_packet_sha256"] or
+                    scene["target_pose"]["target_center_xy_m"] != list(row["target_center_xy_m"]) or
+                    scene["target_pose"]["target_forward_xy"] != list(row["target_forward_xy"]) or
+                    config["selected_case_id"] != case_id or
+                    config["reviewed_source_packet"]["sha256"] != row["source_packet_sha256"]):
+                raise ValueError("selected sweep construction scene differs")
+            candidate_bindings.append({"candidate": candidate_id,
+                                       "construction": variant["construction"],
+                                       "construction_sha256": digest})
+        bindings.append({"case_id": case_id, "candidates": candidate_bindings})
+    result = dict(expanded)
+    result["selected_rebound_binding"] = {
+        "rebound_manifest_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+        "execution_manifest_sha256": hashlib.sha256(execution_path.read_bytes()).hexdigest(),
+        "cases": bindings,
+        "status": "source_bound_construction_only",
+    }
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--proposal", required=True)
     parser.add_argument("--park-packet", required=True)
     parser.add_argument("--stand-packet", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--rebound-dir")
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
     scratch = (repo / ".runtime-work").resolve()
@@ -86,6 +149,8 @@ def main() -> None:
         raise ValueError("fresh .runtime-work output required")
     proposal = json.loads(Path(args.proposal).read_text())
     expanded = expand(proposal, Path(args.park_packet), Path(args.stand_packet))
+    if args.rebound_dir:
+        expanded = bind_rebound(expanded, Path(args.rebound_dir))
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(expanded, indent=2, ensure_ascii=False) + "\n")
     print(json.dumps({"output": str(output), "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
