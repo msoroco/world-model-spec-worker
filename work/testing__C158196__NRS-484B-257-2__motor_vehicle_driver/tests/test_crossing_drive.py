@@ -40,6 +40,8 @@ class DriveTests(unittest.TestCase):
             drive.apply_tick(ego, ego, make, 0, hold_ticks=2)
         with self.assertRaisesRegex(ValueError, "throttle"):
             drive.apply_tick(ego, other, make, 0, hold_ticks=2, other_throttle=1.5)
+        with self.assertRaisesRegex(ValueError, "throttle"):
+            drive.apply_tick(ego, other, make, 0, hold_ticks=2, ego_throttle=float("nan"))
 
 
 if __name__ == "__main__":

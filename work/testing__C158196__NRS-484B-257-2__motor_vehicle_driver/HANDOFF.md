@@ -35,3 +35,31 @@ The ordinary `.venv-cpu/bin/python worker_check.py` finished exit 1 after full-t
 `crossing_drive.py` adds a CPU-tested hold-then-proceed ego script and continuous other-vehicle control, with distinct actors and bounded controls. The fixed hold length is a motion setup parameter, never a legal stop-duration or hazard threshold. Exact route geometry, stop-line/crosswalk reference, collision-free trajectories and physical progress still require construction and Native review. The package suite now passes eleven tests.
 
 Final turn check: assignment-scoped `worker_check.py --complete` exits 0; the full `work/` scan finds 12,147 UTF-8 files with zero size, trailing-whitespace or conflict-marker errors. Keep `result.json` partial until the exact scoped strict delivery gate passes.
+
+## 2026-11-25 six exact constructions and saved-source finalizer
+
+Status remains **partial**. Six exact case IDs are now in `case-plan.json`, `motion-plan.json`, `diagnostic-manifest.json` and `construction-proof-index.json`:
+
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls`
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty`
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control`
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty`
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close`
+- `testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far`
+
+Each exact inline construction passes current-runtime `runtime.py offline` using the command and source hashes in `construction-proof-index.json`; the six retained logs are `cases/<suffix>-offline.log`. `runner.py --check` validates primary config without importing CARLA. Authored signal, stop and visible-but-nongoverning sites, reversible signal state, bounded two-actor control, original body/signal sampling, synchronized four-camera frame mapping and FFV1 encoding are in the construction. The current source inventory flags legal site and Native governance review pending; motion-plan separations are engineering setups, not legal immediate-hazard cutoffs. Physical realization and sign validity are unobserved.
+
+`saved_finalizer.py` checks exact case identity, retained source presence, complete crossing and camera frame joins, trace/evidence joins, and source hashes. It writes eight original-observation channels, a Native result with physical assessment and a separate unresolved-legal analysis. `config.json.physical_completion` binds the runtime physical assessor to `crossing_history.jsonl` and the original entrance polygon. The 18-test focused suite includes saved-only finalization and changed/missing-original-source negatives; it uses a textual fixture placeholder for media, so it does not test real video decoding or physical visibility. Run:
+
+```sh
+SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-257-2-tests PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/tests -v
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-257-2__motor_vehicle_driver --complete
+```
+
+Current-runtime verify and preflight passed. The scoped static checker passed after renaming the diagnostic index to `construction-proof-index.json`, because its reserved `offline-` filename prefix failed return inspection. This is not a delivery-ready gate. Next worker-owned CPU work: canonical requirement dispositions and measurement contracts, source-bound positive/negative compatibility for each exact case, recorded-only process-saved proof, justified risk-based candidates, semantic proposals, independent physical/delivery/comparison audits, selected execution manifest and GPU queue, then scoped strict delivery-ready gate. The whole-batch strict gate remains open with five partial assignments. No prior-ready package was changed.
+
+`comparison_audit.py` now independently rereads both saved source trees and checks exact case order, common camera/rate/duration/actor and ego motion settings, intersection geometry, non-obligated other entrance, and the declared signal, sign or approach-separation difference for all four planned comparison IDs. A positive active-versus-Off fixture and changed fixed-camera negative pass. It makes no immediate-hazard or legal verdict. The implementation is included in all six inline constructions and the current six offline receipts. It still needs source-bound end-to-end receipts for all four comparisons from full compatible saved attempts. The focused suite now passes 19 tests.
+
+Independent law reread: subsection 2 also names police-officer control and incorporates subsection 1's stop/yield manner and stopping-reference hierarchy. The current six cases exercise signal control, signed entrance, within-intersection priority and approaching-distance setups, but do **not** yet construct an officer-control alternative or fully prove the subsection 1 stopping-reference hierarchy. Do not label the branch matrix complete or the assignment ready until those alternatives are mapped to source-backed cases or a justified existing-evidence binding and tested. The current fixture videos are structural placeholders, so compatibility and decode checks remain mandatory.
+
+The motion parser now rejects nonfinite other-vehicle starting coordinates and out-of-range/nonfinite throttle before Native capture; the control call also rejects nonfinite throttle. Negative CPU cases cover both. Six exact offline receipts were refreshed against these changes and remain passing.

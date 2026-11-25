@@ -1,0 +1,68 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Operative signal governance and indication at ego complete-body entry are retained",
+      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "operative_signal_at_entry",
+      "method": "measure_operative_signal_at_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "The ego approach entrance sign type is retained from a complete entrance inventory",
+      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "ego_entrance_device",
+      "method": "measure_ego_entrance_device",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Other non-obligated vehicle occupancy at ego complete-body entry is retained",
+      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "other_inside_at_entry",
+      "method": "measure_other_inside_at_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Ego zero-speed observation before complete-body entry is retained",
+      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "stopped_before_entry",
+      "method": "measure_stopped_before_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "entrance_inventory.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crossing_history.jsonl"
+    ],
+    "error_contains": "Missing required source: crossing_history.jsonl"
+  }
+}

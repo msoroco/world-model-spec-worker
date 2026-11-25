@@ -42,6 +42,11 @@ class PlanTests(unittest.TestCase):
             (temporary / "motion-plan.json").write_text(json.dumps(changed))
             with self.assertRaisesRegex(ValueError, "changed motion"):
                 plan.validate(temporary, site.inventory)
+            changed = copy.deepcopy(original)
+            changed["cases"][0]["other_start_xy_m"][1] = float("nan")
+            (temporary / "motion-plan.json").write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError, "actor route"):
+                plan.validate(temporary, site.inventory)
 
 
 if __name__ == "__main__":

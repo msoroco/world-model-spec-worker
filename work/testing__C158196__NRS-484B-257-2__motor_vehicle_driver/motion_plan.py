@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -49,6 +50,11 @@ def validate(root: Path, site_reader) -> dict:
                 not isinstance(row.get("other_start_xy_m"), list) or
                 len(row["other_start_xy_m"]) != 2 or
                 row["other_start_xy_m"][0] != 1.8 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in row["other_start_xy_m"]) or
+                any(type(row.get(key)) not in (int, float) or
+                    not math.isfinite(row[key]) or not 0 < row[key] <= 1
+                    for key in ("ego_throttle", "other_throttle")) or
                 type(row.get("ego_hold_ticks")) is not int or row["ego_hold_ticks"] < 1 or
                 type(row.get("other_hold_ticks")) is not int or row["other_hold_ticks"] < 0):
             raise ValueError("Authored actor route or phase differs")

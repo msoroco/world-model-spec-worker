@@ -4,6 +4,8 @@ Phase lengths are capture engineering values. They do not define a statutory
 stop duration or an immediate-hazard threshold; original motion is measured.
 """
 
+import math
+
 
 def apply_tick(ego, other, vehicle_control, tick, *, hold_ticks, other_hold_ticks=0,
                ego_throttle=0.3, other_throttle=0.2):
@@ -12,7 +14,8 @@ def apply_tick(ego, other, vehicle_control, tick, *, hold_ticks, other_hold_tick
     if hold_ticks < 1:
         raise ValueError("A pre-entry hold phase is required")
     if any(not isinstance(value, (int, float)) or isinstance(value, bool) or
-           value <= 0 or value > 1 for value in (ego_throttle, other_throttle)):
+           not math.isfinite(value) or value <= 0 or value > 1
+           for value in (ego_throttle, other_throttle)):
         raise ValueError("Invalid vehicle throttle")
     if ego is other:
         raise ValueError("Ego and non-obligated traffic must be distinct actors")
