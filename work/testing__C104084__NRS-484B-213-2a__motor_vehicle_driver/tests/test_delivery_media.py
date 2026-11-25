@@ -13,14 +13,14 @@ spec.loader.exec_module(media)
 
 
 def fixture(directory):
-    source = directory / 'camera-forward.mp4'
+    source = directory / 'overview.mkv'
     subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
                     'color=c=blue:s=32x24:r=20', '-frames:v', '20',
                     '-c:v', 'mpeg4', '-y', str(source)], check=True)
     for camera in media.CAMERAS[1:]:
-        shutil.copyfile(source, directory / f'camera-{camera}.mp4')
-    return {f'camera-{camera}.mp4': hashlib.sha256(
-        (directory / f'camera-{camera}.mp4').read_bytes()).hexdigest()
+        shutil.copyfile(source, directory / f'{camera}.mkv')
+    return {f'{camera}.mkv': hashlib.sha256(
+        (directory / f'{camera}.mkv').read_bytes()).hexdigest()
         for camera in media.CAMERAS}
 
 
@@ -40,7 +40,7 @@ class MediaAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             attempt = Path(temp)
             hashes = fixture(attempt)
-            source = attempt / 'camera-left.mp4'
+            source = attempt / 'approach.mkv'
             source.write_bytes(source.read_bytes() + b'changed')
             with self.assertRaisesRegex(ValueError, 'original changed'):
                 media.audit(attempt, hashes, expected_frames=20)
@@ -54,7 +54,7 @@ class MediaAuditTests(unittest.TestCase):
             hashes = fixture(attempt)
             with self.assertRaisesRegex(ValueError, 'frame count mismatch'):
                 media.audit(attempt, hashes, expected_frames=21)
-            source = attempt / 'camera-forward.mp4'
+            source = attempt / 'overview.mkv'
             source.write_bytes(b'not a video')
             hashes[source.name] = hashlib.sha256(source.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'media decode failed'):
@@ -64,7 +64,7 @@ class MediaAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             attempt = Path(temp)
             hashes = fixture(attempt)
-            source = attempt / 'camera-left.mp4'
+            source = attempt / 'approach.mkv'
             source.unlink()
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
                             'color=c=blue:s=32x24:r=20', '-frames:v', '20',

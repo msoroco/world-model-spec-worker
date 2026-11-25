@@ -5,7 +5,7 @@
     {
       "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
       "construction": "cases/below_50ft/construction.json",
-      "construction_sha256": "255eb5e7b1af3654e76627fdb5fcb98d6609a6c0aed52e8a6932db45c9e787a7",
+      "construction_sha256": "c656e74327ad27b15c16d9277785793964f7ff54d01618bc2ebc6886ce4e870f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch."
@@ -14,7 +14,7 @@
         {
           "id": "fallback1",
           "construction": "cases/below_50ft/fallback1-construction.json",
-          "construction_sha256": "135d8dc8dfbcaf5e6faef9c9e5409ab75dc8c361170e093f7112a137f4f2774f",
+          "construction_sha256": "627ebefa4d9cb5029e437827aff5adf0941c88051d5150c0c9eac423209f8e6c",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-bound center-lane entry and receiving-lane feasibility",
@@ -25,20 +25,26 @@
             "independently reviewed alternate spawn and entry route"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v5/below_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v6/below_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-below_50ft-fallback1.log",
-            "log_sha256": "ae7d9d5eb602788fe16c0b907889034946b91fa89d2e976211744a59bcbaaeb8",
-            "construction_sha256": "135d8dc8dfbcaf5e6faef9c9e5409ab75dc8c361170e093f7112a137f4f2774f"
+            "log_sha256": "de77a1a6e21ccd0267cc78904c382fd3d60bebb8b27a9e9952acbe0366373bc3",
+            "construction_sha256": "627ebefa4d9cb5029e437827aff5adf0941c88051d5150c0c9eac423209f8e6c"
+          },
+          "compatibility": {
+            "receipt": "compat-below_50ft-fallback1.json",
+            "sha256": "02b7837c94e5e82b6790e10f5138ae3d0264e053193bec7faed197b841279d41",
+            "log": "cpu-compat-below_50ft-fallback1-analysis.log",
+            "negative_log": "cpu-compat-below_50ft-fallback1-negative.log"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft --output .runtime-work/c109749-offline-v5/below_50ft-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft --output .runtime-work/c109749-offline-v6/below_50ft-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-below_50ft-primary.log",
-        "log_sha256": "a1d96a290951a307278f72b1ecc9dc8d8a5a30b66428c15f8a37d07b17c9ffb8",
-        "construction_sha256": "255eb5e7b1af3654e76627fdb5fcb98d6609a6c0aed52e8a6932db45c9e787a7"
+        "log_sha256": "b0a9154e41ba7af1f67faefa4273834b79ab2bf8ccf72542b55acb40e4bcf39e",
+        "construction_sha256": "c656e74327ad27b15c16d9277785793964f7ff54d01618bc2ebc6886ce4e870f"
       },
       "kind": "delivery",
       "measurement_contract": "cases/below_50ft/measurement-contract.json",
@@ -51,9 +57,52 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "physical_preparation": {
-        "receipt": "cases/below_50ft/physical-preparation.json",
-        "sha256": "c35ca51c9e7fef762b026e5f960d3a1b50f7005ed64688f6efc79be219c3fbb3"
+      "acquisition": {
+        "public_highway_context": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native original map and highway review"
+        },
+        "center_turn_lane_design": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native lane geometry and designation"
+        },
+        "turn_completion_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original turn event in native/trace.json"
+        },
+        "center_lane_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original body centre samples in native/trace.json"
+        },
+        "through_lane_merge_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original merge event in native/trace.json"
+        },
+        "receiving_vehicle_history": {
+          "entrypoint": "carla_runner.py",
+          "method": "run_capture",
+          "evidence": "original receiving actor readback"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "native/frame_map.json and original camera sources"
+        },
+        "reviewed_highway_and_lane_site": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "hash-bound original site packet"
+        },
+        "reviewed_actor_and_route": {
+          "entrypoint": "native_scene.py",
+          "method": "spawn_scene",
+          "evidence": "hash-bound original spawn plan"
+        }
       },
       "delivery_acceptance": {
         "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
@@ -82,12 +131,25 @@
         "negative_log_sha256": "a85db60b5409cf2404a2d8354e177a4519bc20192d1f75d4bf3104c7c5868c9d",
         "script": "prove_delivery_audit.py",
         "script_sha256": "ae2810471441affaaed85bd5e1cc38ccf65f8f1eaabe13e90a6120de433f520b"
+      },
+      "negative": {
+        "log": "cpu-compat-below_50ft-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/below_50ft/physical-preparation.json",
+        "sha256": "b5da9220e094ad4dadbc37153dd1b50134a5060ae4d4cf86d644dc3f8de702a6"
+      },
+      "compatibility": {
+        "receipt": "compat-below_50ft-primary.json",
+        "sha256": "74e34919fbcbd3f2369a14444a920c8267e837646963d6a4a4816d48f54b4c2d",
+        "log": "cpu-compat-below_50ft-primary-analysis.log",
+        "negative_log": "cpu-compat-below_50ft-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
       "construction": "cases/at_50ft/construction.json",
-      "construction_sha256": "66986e77675d2f5948521326b305610babe947291e7eafb4b1e1e6ea7cfe6341",
+      "construction_sha256": "8fe88c7cf6b10b0009e9aa5ec012449865adf30068fbee37aaca7a7dc001fef1",
       "candidate_risk": {
         "status": "physical",
         "reason": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch."
@@ -96,7 +158,7 @@
         {
           "id": "fallback1",
           "construction": "cases/at_50ft/fallback1-construction.json",
-          "construction_sha256": "79a8d37f22453195c458ebb1181783b259b80b6990b267a1dfe86afd6a4aa6dc",
+          "construction_sha256": "3b1da7f97333aaeaa969f38063c92d0faa19c4f7fd79a118b2d56b70a8e2abf6",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-bound center-lane entry and receiving-lane feasibility",
@@ -107,20 +169,26 @@
             "independently reviewed alternate spawn and entry route"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v5/at_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v6/at_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-at_50ft-fallback1.log",
-            "log_sha256": "7a160752e9328e19642482fa1aa8ea76175985868756bdded2115965db76c50e",
-            "construction_sha256": "79a8d37f22453195c458ebb1181783b259b80b6990b267a1dfe86afd6a4aa6dc"
+            "log_sha256": "53605bdd4781c8c5722b5945100d4d512ab664c5d7d99f9d9aea2db4a27ee8e4",
+            "construction_sha256": "3b1da7f97333aaeaa969f38063c92d0faa19c4f7fd79a118b2d56b70a8e2abf6"
+          },
+          "compatibility": {
+            "receipt": "compat-at_50ft-fallback1.json",
+            "sha256": "4968d42f202a1264146e36b41f736c094f9484b8285d39840200cd0d60c7d238",
+            "log": "cpu-compat-at_50ft-fallback1-analysis.log",
+            "negative_log": "cpu-compat-at_50ft-fallback1-negative.log"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft --output .runtime-work/c109749-offline-v5/at_50ft-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft --output .runtime-work/c109749-offline-v6/at_50ft-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-at_50ft-primary.log",
-        "log_sha256": "e71343b774fc6ac8ff19d85b7f80a9d8bc5721fb29411fce3b91b1b3a2caf0a8",
-        "construction_sha256": "66986e77675d2f5948521326b305610babe947291e7eafb4b1e1e6ea7cfe6341"
+        "log_sha256": "59a54d05e3e174426b8e097c4e2a2f3caf91e010cc5736f2f47b590461c16e9a",
+        "construction_sha256": "8fe88c7cf6b10b0009e9aa5ec012449865adf30068fbee37aaca7a7dc001fef1"
       },
       "kind": "delivery",
       "measurement_contract": "cases/at_50ft/measurement-contract.json",
@@ -133,9 +201,52 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "physical_preparation": {
-        "receipt": "cases/at_50ft/physical-preparation.json",
-        "sha256": "7f6cc7515704d7719d839ab8c672936bf615e95dad1be4339d0f904623bf8893"
+      "acquisition": {
+        "public_highway_context": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native original map and highway review"
+        },
+        "center_turn_lane_design": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native lane geometry and designation"
+        },
+        "turn_completion_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original turn event in native/trace.json"
+        },
+        "center_lane_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original body centre samples in native/trace.json"
+        },
+        "through_lane_merge_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original merge event in native/trace.json"
+        },
+        "receiving_vehicle_history": {
+          "entrypoint": "carla_runner.py",
+          "method": "run_capture",
+          "evidence": "original receiving actor readback"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "native/frame_map.json and original camera sources"
+        },
+        "reviewed_highway_and_lane_site": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "hash-bound original site packet"
+        },
+        "reviewed_actor_and_route": {
+          "entrypoint": "native_scene.py",
+          "method": "spawn_scene",
+          "evidence": "hash-bound original spawn plan"
+        }
       },
       "delivery_acceptance": {
         "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
@@ -164,12 +275,25 @@
         "negative_log_sha256": "a85db60b5409cf2404a2d8354e177a4519bc20192d1f75d4bf3104c7c5868c9d",
         "script": "prove_delivery_audit.py",
         "script_sha256": "ae2810471441affaaed85bd5e1cc38ccf65f8f1eaabe13e90a6120de433f520b"
+      },
+      "negative": {
+        "log": "cpu-compat-at_50ft-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/at_50ft/physical-preparation.json",
+        "sha256": "f47aab4044f8abcb518e617b62e598f69987252332f35d936c391a41fe962b77"
+      },
+      "compatibility": {
+        "receipt": "compat-at_50ft-primary.json",
+        "sha256": "012b66e7ed6c083bc7229faab1ee9cd529b35e0d096296048d794fed971b49b3",
+        "log": "cpu-compat-at_50ft-primary-analysis.log",
+        "negative_log": "cpu-compat-at_50ft-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
       "construction": "cases/above_50ft/construction.json",
-      "construction_sha256": "15020eec9c09b3157b505861af4a14a5215a4c7829456d1b570c9e4f105577ed",
+      "construction_sha256": "4f0afef7960b450a541d40e8e038222a9df90a89a1a0f3be3bef3c7172b50f22",
       "candidate_risk": {
         "status": "physical",
         "reason": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch."
@@ -178,7 +302,7 @@
         {
           "id": "fallback1",
           "construction": "cases/above_50ft/fallback1-construction.json",
-          "construction_sha256": "f34ac6076a0c0af6360d488c48027a479906ef856133f20791160915b050cf60",
+          "construction_sha256": "d739d275e46a804438ce57c0ecfebd7f3e5a54efd0c613773fb30065ade00641",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-bound center-lane entry and receiving-lane feasibility",
@@ -189,20 +313,26 @@
             "independently reviewed alternate spawn and entry route"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v5/above_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft --candidate fallback1 --output .runtime-work/c109749-offline-v6/above_50ft-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-above_50ft-fallback1.log",
             "log_sha256": "90c20a00f4e5cfb385340932d256c190cd0d2466b41d9cc816d4958d40c8db16",
-            "construction_sha256": "f34ac6076a0c0af6360d488c48027a479906ef856133f20791160915b050cf60"
+            "construction_sha256": "d739d275e46a804438ce57c0ecfebd7f3e5a54efd0c613773fb30065ade00641"
+          },
+          "compatibility": {
+            "receipt": "compat-above_50ft-fallback1.json",
+            "sha256": "7515fca7ab768be89c8325eeb1a5e0a4a2a56420d66ab3b2157561f08dd8dbd0",
+            "log": "cpu-compat-above_50ft-fallback1-analysis.log",
+            "negative_log": "cpu-compat-above_50ft-fallback1-negative.log"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft --output .runtime-work/c109749-offline-v5/above_50ft-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft --output .runtime-work/c109749-offline-v6/above_50ft-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-above_50ft-primary.log",
-        "log_sha256": "f737cc679e718ef02ae8d0f5cf65064dea57da2d6b83ed0b7fb471719fbabbcd",
-        "construction_sha256": "15020eec9c09b3157b505861af4a14a5215a4c7829456d1b570c9e4f105577ed"
+        "log_sha256": "0c9f6fa3c14def5a2d8100217efcef835c0b2bdaebfdeaf74be86cfb40bc3e85",
+        "construction_sha256": "4f0afef7960b450a541d40e8e038222a9df90a89a1a0f3be3bef3c7172b50f22"
       },
       "kind": "delivery",
       "measurement_contract": "cases/above_50ft/measurement-contract.json",
@@ -215,9 +345,52 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "physical_preparation": {
-        "receipt": "cases/above_50ft/physical-preparation.json",
-        "sha256": "8a34d765cfeb680022b12819e1a8de091617d91683caecf3e0cefaf2d1312870"
+      "acquisition": {
+        "public_highway_context": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native original map and highway review"
+        },
+        "center_turn_lane_design": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native lane geometry and designation"
+        },
+        "turn_completion_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original turn event in native/trace.json"
+        },
+        "center_lane_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original body centre samples in native/trace.json"
+        },
+        "through_lane_merge_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original merge event in native/trace.json"
+        },
+        "receiving_vehicle_history": {
+          "entrypoint": "carla_runner.py",
+          "method": "run_capture",
+          "evidence": "original receiving actor readback"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "native/frame_map.json and original camera sources"
+        },
+        "reviewed_highway_and_lane_site": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "hash-bound original site packet"
+        },
+        "reviewed_actor_and_route": {
+          "entrypoint": "native_scene.py",
+          "method": "spawn_scene",
+          "evidence": "hash-bound original spawn plan"
+        }
       },
       "delivery_acceptance": {
         "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
@@ -246,12 +419,25 @@
         "negative_log_sha256": "a85db60b5409cf2404a2d8354e177a4519bc20192d1f75d4bf3104c7c5868c9d",
         "script": "prove_delivery_audit.py",
         "script_sha256": "ae2810471441affaaed85bd5e1cc38ccf65f8f1eaabe13e90a6120de433f520b"
+      },
+      "negative": {
+        "log": "cpu-compat-above_50ft-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/above_50ft/physical-preparation.json",
+        "sha256": "50944457cacbdad1508cf0421fcc9daee3f56cc95cfac5fc5f9bcac47e2dbb12"
+      },
+      "compatibility": {
+        "receipt": "compat-above_50ft-primary.json",
+        "sha256": "e945c70ed051976943f0d73015c051e8c31c6127ff0f67c14751ec09db7baa6b",
+        "log": "cpu-compat-above_50ft-primary-analysis.log",
+        "negative_log": "cpu-compat-above_50ft-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge",
       "construction": "cases/no_merge/construction.json",
-      "construction_sha256": "4e609aeae96b665fbc65cef0725d5e09046dd0e96df540831e2ac7a2894f031c",
+      "construction_sha256": "d283301ddea66a15f84bb03db1051150f048d97d3f0b0164d6c75cb6cba70206",
       "candidate_risk": {
         "status": "physical",
         "reason": "Current exported cell does not certify a public highway with a single exclusive bidirectional center turn lane and a mergeable receiving through lane. Native map and lane geometry must be source-gated before dispatch."
@@ -260,7 +446,7 @@
         {
           "id": "fallback1",
           "construction": "cases/no_merge/fallback1-construction.json",
-          "construction_sha256": "d97fab1fab9422d1c28f819f9107bdb923e9580458a33f7e36adcfda4634fab5",
+          "construction_sha256": "8ca3d9bee9796039b3a809579189bdf32f1034b94dd143a029c2fae717d9fd31",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-bound center-lane entry and receiving-lane feasibility",
@@ -271,20 +457,26 @@
             "independently reviewed alternate spawn and entry route"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge --candidate fallback1 --output .runtime-work/c109749-offline-v5/no_merge-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge --candidate fallback1 --output .runtime-work/c109749-offline-v6/no_merge-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-no_merge-fallback1.log",
-            "log_sha256": "3f18915cc97ca191c5d7083547eb8771f64f7b650e57682143770c28fa863a13",
-            "construction_sha256": "d97fab1fab9422d1c28f819f9107bdb923e9580458a33f7e36adcfda4634fab5"
+            "log_sha256": "96fede23ab53963341d3587827ba10804efaec6974d8befa310352878aefc0ce",
+            "construction_sha256": "8ca3d9bee9796039b3a809579189bdf32f1034b94dd143a029c2fae717d9fd31"
+          },
+          "compatibility": {
+            "receipt": "compat-no_merge-fallback1.json",
+            "sha256": "6fa05d4068f1f5952e88990a666e22fe34c78e76f7945ecf15c6011aeb201d84",
+            "log": "cpu-compat-no_merge-fallback1-analysis.log",
+            "negative_log": "cpu-compat-no_merge-fallback1-negative.log"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge --output .runtime-work/c109749-offline-v5/no_merge-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/execution-manifest.draft.json --case testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge --output .runtime-work/c109749-offline-v6/no_merge-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-no_merge-primary.log",
-        "log_sha256": "3f18915cc97ca191c5d7083547eb8771f64f7b650e57682143770c28fa863a13",
-        "construction_sha256": "4e609aeae96b665fbc65cef0725d5e09046dd0e96df540831e2ac7a2894f031c"
+        "log_sha256": "252a493583fea52f2925872b388d7a15431ebce715cee4d31ab7682dbd441f7f",
+        "construction_sha256": "d283301ddea66a15f84bb03db1051150f048d97d3f0b0164d6c75cb6cba70206"
       },
       "kind": "delivery",
       "measurement_contract": "cases/no_merge/measurement-contract.json",
@@ -297,9 +489,52 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "physical_preparation": {
-        "receipt": "cases/no_merge/physical-preparation.json",
-        "sha256": "249bab15cb7c47cbe0395c1e451eec21dfd688ac32f0d8e558a789a19cbefea0"
+      "acquisition": {
+        "public_highway_context": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native original map and highway review"
+        },
+        "center_turn_lane_design": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "native lane geometry and designation"
+        },
+        "turn_completion_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original turn event in native/trace.json"
+        },
+        "center_lane_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original body centre samples in native/trace.json"
+        },
+        "through_lane_merge_event": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "original merge event in native/trace.json"
+        },
+        "receiving_vehicle_history": {
+          "entrypoint": "carla_runner.py",
+          "method": "run_capture",
+          "evidence": "original receiving actor readback"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_original",
+          "evidence": "native/frame_map.json and original camera sources"
+        },
+        "reviewed_highway_and_lane_site": {
+          "entrypoint": "center_lane_site.py",
+          "method": "validate_site",
+          "evidence": "hash-bound original site packet"
+        },
+        "reviewed_actor_and_route": {
+          "entrypoint": "native_scene.py",
+          "method": "spawn_scene",
+          "evidence": "hash-bound original spawn plan"
+        }
       },
       "delivery_acceptance": {
         "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge",
@@ -328,6 +563,19 @@
         "negative_log_sha256": "a85db60b5409cf2404a2d8354e177a4519bc20192d1f75d4bf3104c7c5868c9d",
         "script": "prove_delivery_audit.py",
         "script_sha256": "ae2810471441affaaed85bd5e1cc38ccf65f8f1eaabe13e90a6120de433f520b"
+      },
+      "negative": {
+        "log": "cpu-compat-no_merge-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/no_merge/physical-preparation.json",
+        "sha256": "83a787186c0dd66d414c7651853dfce464a437393da458b578428671fd62a08a"
+      },
+      "compatibility": {
+        "receipt": "compat-no_merge-primary.json",
+        "sha256": "d8c9185600bc7b3278abddf17c6e485069bb22ea92550314d037c5f7c1f8ca08",
+        "log": "cpu-compat-no_merge-primary-analysis.log",
+        "negative_log": "cpu-compat-no_merge-primary-negative.log"
       }
     }
   ],

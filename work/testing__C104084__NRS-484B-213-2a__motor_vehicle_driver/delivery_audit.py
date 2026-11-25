@@ -7,7 +7,7 @@ from pathlib import Path
 
 from delivery_media import audit as audit_media
 from derived_audit import audit as audit_derived
-from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure
+from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure, source_inventory
 
 
 def audit(attempt_dir, receipt_path, *, assignment_id, case_id,
@@ -25,11 +25,7 @@ def audit(attempt_dir, receipt_path, *, assignment_id, case_id,
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
     hashes = json.loads(manifest_bytes)
-    required = set(REQUIRED_SOURCES)
-    if case_id.endswith('__left_one_way_obstructed'):
-        required.add(ONE_WAY_AUTHORITY)
-    if not isinstance(hashes, dict) or set(hashes) != required:
-        raise ValueError('sealed original source inventory differs')
+    source_inventory(hashes, case_id, expected_frames)
     observation = measure(attempt, hashes, assignment_id=assignment_id,
                           case_id=case_id, expected_frames=expected_frames)
     media = audit_media(attempt, hashes, expected_frames=expected_frames,

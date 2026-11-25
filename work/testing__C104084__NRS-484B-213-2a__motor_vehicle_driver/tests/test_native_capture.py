@@ -59,7 +59,7 @@ class FakeAdapter:
     def camera_frames(self, frame):
         result = {name: frame for name in capture.CAMERAS}
         if self.broken_camera:
-            result['left'] = frame - 1
+            result['approach'] = frame - 1
         return result
 
     def write_camera_video(self, camera, path):
@@ -79,7 +79,7 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertEqual(receipt['frame_count'], 3)
             self.assertEqual(len(receipt['source_sha256']), 8)
             frame_map = json.loads((Path(temp) / 'frame-map.json').read_text())
-            self.assertEqual(frame_map['camera_frames']['left'], [0, 1, 2])
+            self.assertEqual(frame_map['camera_frames']['approach'], [0, 1, 2])
             self.assertFalse(receipt['physical_visibility_reviewed'])
             observation = saved.measure(temp, receipt['source_sha256'],
                                         case_id=CASE, assignment_id=ASSIGNMENT,

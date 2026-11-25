@@ -13,15 +13,16 @@ from pathlib import Path
 
 
 REQUIRED_SOURCES = ('frames.jsonl', 'lane-context.json', 'crest-rays.jsonl',
-                    'frame-map.json', 'camera-forward.mp4', 'camera-left.mp4',
-                    'camera-right.mp4', 'camera-rear.mp4')
+                    'frame-map.json', 'overview.mkv', 'approach.mkv',
+                    'reference_corner.mkv', 'driver_reference.mkv')
 ONE_WAY_AUTHORITY = 'one-way-authority.json'
+PNG_MANIFEST = 'original-png-manifest.json'
 CASE_SUFFIXES = ('right_crest_obstructed', 'left_crest_obstructed',
                  'left_crest_clear', 'left_one_way_obstructed')
 
 
 def _original(attempt: Path, name: str, hashes: dict) -> Path:
-    if name not in (*REQUIRED_SOURCES, ONE_WAY_AUTHORITY) or name not in hashes:
+    if name not in (*REQUIRED_SOURCES, ONE_WAY_AUTHORITY, PNG_MANIFEST) or name not in hashes:
         raise ValueError(f'missing required original source: {name}')
     expected = hashes[name]
     if not isinstance(expected, str) or len(expected) != 64 or any(c not in '0123456789abcdef' for c in expected):
@@ -33,6 +34,36 @@ def _original(attempt: Path, name: str, hashes: dict) -> Path:
     if actual != expected:
         raise ValueError(f'original source changed: {name}')
     return path
+
+
+def source_inventory(hashes, case_id, expected_frames):
+    required = set(REQUIRED_SOURCES)
+    if case_id.endswith('__left_one_way_obstructed'):
+        required.add(ONE_WAY_AUTHORITY)
+    if expected_frames == 900:
+        required.add(PNG_MANIFEST)
+    if not isinstance(hashes, dict) or set(hashes) != required:
+        raise ValueError('original source manifest has wrong exact sources')
+
+
+def audit_original_pngs(attempt, hashes, case_id, frames):
+    if PNG_MANIFEST not in hashes:
+        return
+    manifest = json.loads(_original(attempt, PNG_MANIFEST, hashes).read_text())
+    if manifest.get('format') != 'c104084-original-camera-pngs-v1' or manifest.get('case_id') != case_id:
+        raise ValueError('original PNG manifest identity differs')
+    cameras = manifest.get('frames')
+    if not isinstance(cameras, dict) or set(cameras) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
+        raise ValueError('four original PNG archives missing')
+    for camera, rows in cameras.items():
+        if not isinstance(rows, dict) or set(rows) != {str(frame) for frame in frames}:
+            raise ValueError('original PNG frame inventory differs')
+        for frame in frames:
+            path = attempt / 'original-png' / camera / f'{frame:08d}.png'
+            if (path.is_symlink() or not path.is_file() or
+                    path.resolve().parent != (attempt / 'original-png' / camera).resolve() or
+                    hashlib.sha256(path.read_bytes()).hexdigest() != rows[str(frame)]):
+                raise ValueError('original PNG source differs')
 
 
 def _rows(path: Path) -> list[dict]:
@@ -80,8 +111,10 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
         raise ValueError('ray or camera frame map does not join original frames')
     if type(expected_frames) is not int or expected_frames <= 0 or len(frame_ids) != expected_frames:
         raise ValueError('original frame history violates required duration')
+    source_inventory(source_hashes, case_id, expected_frames)
+    audit_original_pngs(attempt, source_hashes, case_id, frame_ids)
     camera_frames = frame_map.get('camera_frames')
-    if not isinstance(camera_frames, dict) or set(camera_frames) != {'forward', 'left', 'right', 'rear'}:
+    if not isinstance(camera_frames, dict) or set(camera_frames) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
         raise ValueError('four-camera frame map missing')
     if any(camera_frames[name] != frame_ids for name in camera_frames):
         raise ValueError('camera frame map has missing or duplicated frames')
@@ -124,7 +157,9 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
     return {
         'case_id': case_id,
         'source_sha256': {name: source_hashes[name] for name in
-                          (*REQUIRED_SOURCES, *([ONE_WAY_AUTHORITY] if lane_allocation == 'one_way' else []))},
+                          (*REQUIRED_SOURCES,
+                           *([ONE_WAY_AUTHORITY] if lane_allocation == 'one_way' else []),
+                           *([PNG_MANIFEST] if PNG_MANIFEST in source_hashes else []))},
         'frame_count': len(frames),
         'first_frame': frame_ids[0],
         'last_frame': frame_ids[-1],

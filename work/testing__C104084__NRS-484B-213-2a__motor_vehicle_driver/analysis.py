@@ -10,7 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from saved_crest import ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure
+from saved_crest import ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure, source_inventory
 
 
 def _write_new(path, value):
@@ -28,11 +28,7 @@ def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
     hashes = json.loads(manifest_bytes)
-    required = set(REQUIRED_SOURCES)
-    if case_id.endswith('__left_one_way_obstructed'):
-        required.add(ONE_WAY_AUTHORITY)
-    if not isinstance(hashes, dict) or set(hashes) != required:
-        raise ValueError('sealed original source manifest has wrong exact sources')
+    source_inventory(hashes, case_id, expected_frames)
     observation = measure(attempt, hashes, case_id=case_id,
                           assignment_id=assignment_id, expected_frames=expected_frames)
     frame_rows = [json.loads(line) for line in (attempt / 'frames.jsonl').read_text().splitlines()]
@@ -57,7 +53,7 @@ def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
                       'opposing_body_corner_ray_hits': ray['body_corner_ray_hits']})
         mapping.append(frame_record(index, frame, time_s,
                                     camera_frames={name: frame for name in
-                                                   ('forward', 'left', 'right', 'rear')}))
+                                                   ('overview', 'approach', 'reference_corner', 'driver_reference')}))
 
     expected_left = not case_id.endswith('__right_crest_obstructed')
     expected_blocked = not case_id.endswith('__left_crest_clear')
@@ -79,8 +75,8 @@ def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
               'behavior_attempted': False, 'maneuver_completed': False,
               'termination_reason': 'Original crest packets measured; physical and legal review pending',
               'physical_failure_flags': [], 'trace_reference': 'trace.jsonl',
-              'video_references': [f'camera-{name}.mp4' for name in
-                                   ('forward', 'left', 'right', 'rear')],
+              'video_references': [f'{name}.mkv' for name in
+                                   ('overview', 'approach', 'reference_corner', 'driver_reference')],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': recording_description,
               'recording_evidence': [], 'realized_observables': {}}

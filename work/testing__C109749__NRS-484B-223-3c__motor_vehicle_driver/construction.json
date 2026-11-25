@@ -1,0 +1,124 @@
+{
+  "law_id": "NRS-484B-223-3c",
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "public_highway_context",
+        "unit": "source record",
+        "method": "Source-hashed public highway review and original Native road identity",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "center_turn_lane_design",
+        "unit": "source record",
+        "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "turn_completion_event",
+        "unit": "frame event",
+        "method": "Original route and body transition into center lane",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "center_lane_body_history",
+        "unit": "m",
+        "method": "Original 20 Hz body center and footprint path after turn completion",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "through_lane_merge_event",
+        "unit": "frame event",
+        "method": "Original first body transition into receiving through lane",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "receiving_vehicle_history",
+        "unit": "frame sequence",
+        "method": "Original receiving actor identity, lane, route and transform",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      },
+      {
+        "name": "frame_and_camera_join",
+        "unit": "frame sequence",
+        "method": "Original synchronized four-camera frame and source hash map",
+        "sampling_rate_hz": 20,
+        "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+        "reference_frame": "Original Native world frame and 20 Hz frame map",
+        "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "reviewed_highway_and_lane_site",
+        "unit": "source record",
+        "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+      },
+      {
+        "name": "reviewed_actor_and_route",
+        "unit": "source record",
+        "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+      }
+    ],
+    "limitations": [
+      "49/50/51 feet are requested engineering probes, not measured outcomes.",
+      "A missing merge is censored; it has no invented distance to merge.",
+      "Physical realization and statutory application remain for independent review."
+    ]
+  },
+  "measurement_plan": {
+    "purpose": "Observe original 900-frame 20 Hz post-turn center-lane travel, turn and merge, and censored no-merge cases",
+    "case_ids": [
+      "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+      "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+      "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+      "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge"
+    ]
+  },
+  "static_checks": [
+    "pinned runtime atom preflight",
+    "four exact construction SHA checks",
+    "source-bound Native runner preflight",
+    "selected CPU compatibility"
+  ],
+  "termination_rules": [
+    "45 seconds or 900 original frames",
+    "fail closed on missing site, camera or frame evidence"
+  ],
+  "mechanisms": [
+    "source-gated left turn into exclusive shared center lane",
+    "same-tick PipelineCapture and four RGB cameras",
+    "saved-only measurement, Core/Lean decode and independent comparison"
+  ],
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Dispatch one exact source-gated Native bundle from the selected manifest.\"\"\"\nfrom __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport subprocess\nimport sys\n\nHERE = Path(__file__).resolve().parent\nREPO = HERE.parents[1]\n\n\ndef check(case_id=None):\n    config = json.loads((HERE / \"config.json\").read_text())\n    manifest = json.loads((HERE / \"execution-manifest.json\").read_text())\n    selected = {row[\"case_id\"]: row for row in manifest[\"cases\"]}\n    if set(selected) != set(config[\"supported_case_ids\"]):\n        raise ValueError(\"Root dispatch and selected exact cases differ\")\n    if case_id is not None and case_id not in selected:\n        raise ValueError(\"Unknown exact case\")\n    for row in selected.values():\n        source = HERE / row[\"construction\"]\n        if hashlib.sha256(source.read_bytes()).hexdigest() != row[\"construction_sha256\"]:\n            raise ValueError(\"Selected exact construction changed: \" + row[\"case_id\"])\n    return selected\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--case\")\n    parser.add_argument(\"--output-dir\")\n    parser.add_argument(\"--host\", default=os.environ.get(\"CARLA_HOST\", \"localhost\"))\n    parser.add_argument(\"--port\", default=os.environ.get(\"CARLA_PORT\", \"2000\"))\n    parser.add_argument(\"--python\", default=os.environ.get(\"CARLA_PYTHON\"))\n    args = parser.parse_args()\n    check(args.case)\n    if args.check:\n        print(\"four exact selected Native bundles verified\")\n        return\n    if not args.case or not args.output_dir or not args.python:\n        raise ValueError(\"Exact case, fresh output and Native Python are required\")\n    subprocess.run([sys.executable, str(REPO / \"runtime.py\"), \"capture\", \"--manifest\",\n                    str(HERE / \"execution-manifest.json\"), \"--case\", args.case,\n                    \"--output\", args.output_dir, \"--host\", args.host,\n                    \"--port\", str(args.port), \"--python\", args.python],\n                   cwd=REPO, check=True)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"testing__C109749__NRS-484B-223-3c__motor_vehicle_driver\",\n  \"law_id\": \"NRS-484B-223-3c\",\n  \"cell_id\": \"C109749\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"supported_case_ids\": [\n    \"testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft\",\n    \"testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft\",\n    \"testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft\",\n    \"testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge\"\n  ],\n  \"rate_hz\": 20,\n  \"duration_s\": 45,\n  \"frame_count\": 900,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 75,\n      \"pose_strategy\": \"reviewed original left-turn and receiving-traffic coverage\"\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 75,\n      \"pose_strategy\": \"reviewed original left-turn and receiving-traffic coverage\"\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 75,\n      \"pose_strategy\": \"reviewed original left-turn and receiving-traffic coverage\"\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 75,\n      \"pose_strategy\": \"reviewed original left-turn and receiving-traffic coverage\"\n    }\n  ]\n}\n"
+    }
+  ]
+}

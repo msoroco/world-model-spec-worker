@@ -14,13 +14,13 @@ from test_saved_crest import fixture
 
 ASSIGNMENT = ROOT.name
 CASE = ASSIGNMENT + '__left_crest_obstructed'
-CAMERAS = ('forward', 'left', 'right', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def video_attempt(attempt):
     hashes = fixture(attempt)
     for camera in CAMERAS:
-        path = attempt / f'camera-{camera}.mp4'
+        path = attempt / f'{camera}.mkv'
         subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
                         'color=c=blue:s=32x24:r=20', '-frames:v', '3',
                         '-c:v', 'mpeg4', '-y', str(path)], check=True)
@@ -41,10 +41,10 @@ class SavedDeliveryTests(unittest.TestCase):
                              case_id=CASE, expected_frames=3,
                              expected_dimensions={camera: (32, 24) for camera in CAMERAS})
             self.assertEqual(result, json.loads(output.read_text()))
-            self.assertEqual(result['observation']['source_sha256']['camera-left.mp4'],
-                             hashes['camera-left.mp4'])
-            self.assertEqual(result['media']['cameras']['left']['sha256'],
-                             hashes['camera-left.mp4'])
+            self.assertEqual(result['observation']['source_sha256']['approach.mkv'],
+                             hashes['approach.mkv'])
+            self.assertEqual(result['media']['cameras']['approach']['sha256'],
+                             hashes['approach.mkv'])
             self.assertFalse(result['physical_visibility_reviewed'])
             with self.assertRaisesRegex(ValueError, 'retain prior'):
                 process(attempt, output, assignment_id=ASSIGNMENT,
@@ -56,7 +56,7 @@ class SavedDeliveryTests(unittest.TestCase):
             attempt.mkdir()
             hashes = video_attempt(attempt)
             output = Path(temporary) / 'saved.json'
-            camera = attempt / 'camera-left.mp4'
+            camera = attempt / 'approach.mkv'
             camera.write_bytes(b'broken original video')
             hashes[camera.name] = hashlib.sha256(camera.read_bytes()).hexdigest()
             (attempt / 'source-hashes.json').write_text(json.dumps(hashes) + '\n')

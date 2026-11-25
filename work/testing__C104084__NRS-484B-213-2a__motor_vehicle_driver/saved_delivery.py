@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 from delivery_media import audit as audit_media
-from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure
+from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure, source_inventory
 
 
 def process(attempt_dir, output_path, *, assignment_id, case_id,
@@ -25,11 +25,7 @@ def process(attempt_dir, output_path, *, assignment_id, case_id,
         raise ValueError('original source manifest missing or escapes attempt')
     manifest_bytes = manifest.read_bytes()
     hashes = json.loads(manifest_bytes)
-    required = set(REQUIRED_SOURCES)
-    if case_id.endswith('left_one_way_obstructed'):
-        required.add(ONE_WAY_AUTHORITY)
-    if not isinstance(hashes, dict) or set(hashes) != required:
-        raise ValueError('original source manifest has wrong exact sources')
+    source_inventory(hashes, case_id, expected_frames)
     observation = measure(attempt, hashes, case_id=case_id,
                           assignment_id=assignment_id,
                           expected_frames=expected_frames)

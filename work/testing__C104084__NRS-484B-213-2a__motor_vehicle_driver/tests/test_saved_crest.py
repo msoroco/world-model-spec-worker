@@ -32,11 +32,11 @@ def fixture(directory):
             'highway_source_ref': 'original road authority',
             'center_reference_source_ref': 'Native road center'}),
         'frame-map.json': json.dumps({'frames': [0, 1, 2],
-            'camera_frames': {name: [0, 1, 2] for name in ('forward', 'left', 'right', 'rear')}}),
-        'camera-forward.mp4': 'forward-camera-source',
-        'camera-left.mp4': 'left-camera-source',
-        'camera-right.mp4': 'right-camera-source',
-        'camera-rear.mp4': 'rear-camera-source',
+            'camera_frames': {name: [0, 1, 2] for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}}),
+        'overview.mkv': 'forward-camera-source',
+        'approach.mkv': 'left-camera-source',
+        'reference_corner.mkv': 'right-camera-source',
+        'driver_reference.mkv': 'rear-camera-source',
     }
     for name, value in sources.items():
         (directory / name).write_text(value, encoding='utf-8')
@@ -53,7 +53,7 @@ class SavedCrestTests(unittest.TestCase):
                 saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT)
             path = attempt / 'frame-map.json'
             frame_map = json.loads(path.read_text())
-            frame_map['camera_frames']['left'] = [0, 2]
+            frame_map['camera_frames']['approach'] = [0, 2]
             path.write_text(json.dumps(frame_map), encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             with self.assertRaisesRegex(ValueError, 'camera frame map'):
@@ -102,7 +102,7 @@ class SavedCrestTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'original source changed'):
                 saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
             hashes = fixture(attempt)
-            (attempt / 'camera-left.mp4').unlink()
+            (attempt / 'approach.mkv').unlink()
             with self.assertRaisesRegex(ValueError, 'source path is missing'):
                 saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT, expected_frames=3)
 

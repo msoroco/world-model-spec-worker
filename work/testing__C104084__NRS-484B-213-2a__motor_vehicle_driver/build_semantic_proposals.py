@@ -12,10 +12,10 @@ LAW = "NRS-484B-213-2a"
 ACTOR = "motor_vehicle_driver"
 TEMPLATE_ID = f"{LAW}@{ACTOR}"
 VALUES = {
-    "right_crest_obstructed": ("right", "obstructed", "two_way"),
-    "left_crest_obstructed": ("left", "obstructed", "two_way"),
-    "left_crest_clear": ("left", "clear", "two_way"),
-    "left_one_way_obstructed": ("left", "obstructed", "one_way"),
+    "right_crest_obstructed": ("reference_corner", "obstructed", "two_way"),
+    "left_crest_obstructed": ("approach", "obstructed", "two_way"),
+    "left_crest_clear": ("approach", "clear", "two_way"),
+    "left_one_way_obstructed": ("approach", "obstructed", "one_way"),
 }
 PAIR_VARIABLES = {"left_side_motion": "requested_ego_side",
                   "crest_view_obstruction": "requested_crest_view",
@@ -37,7 +37,7 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
     if set(cases) != set(VALUES) or len(plan["cases"]) != 4:
         raise ValueError("Four exact crest cases required")
     params = [
-        {"name": "requested_ego_side", "kind": "controller", "range_or_domain": ["right", "left"]},
+        {"name": "requested_ego_side", "kind": "controller", "range_or_domain": ["reference_corner", "approach"]},
         {"name": "requested_crest_view", "kind": "world_setup", "range_or_domain": ["obstructed", "clear"]},
         {"name": "source_road_direction", "kind": "source_context", "range_or_domain": ["two_way", "one_way"]},
     ]

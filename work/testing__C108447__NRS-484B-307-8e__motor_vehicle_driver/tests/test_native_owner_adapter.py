@@ -140,6 +140,26 @@ class OwnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'separately reviewed'):
                 owner.__enter__()
 
+    def test_camera_profile_change_is_rejected_before_capture(self):
+        context = self.context()
+        context['native_setup']['cameras']['overview']['width'] = 1280
+        world = World()
+        client = types.SimpleNamespace(get_world=lambda: world,
+                                       set_timeout=lambda _: None)
+        carla = types.SimpleNamespace(
+            Client=lambda *_: client,
+            Location=lambda **kwargs: types.SimpleNamespace(**kwargs),
+            Rotation=lambda **kwargs: types.SimpleNamespace(**kwargs),
+            Transform=lambda location, rotation: (location, rotation))
+        with tempfile.TemporaryDirectory() as temp:
+            owner = NativeOwner('localhost', 2000,
+                {'native_map': {'map_name': 'site'}}, 'exact-case',
+                Path(temp), context, carla_module=carla,
+                capture_class=Capture)
+            with self.assertRaisesRegex(ValueError, 'selected profile'):
+                owner.__enter__()
+            self.assertFalse(world.settings.synchronous_mode)
+
 
 if __name__ == '__main__':
     unittest.main()

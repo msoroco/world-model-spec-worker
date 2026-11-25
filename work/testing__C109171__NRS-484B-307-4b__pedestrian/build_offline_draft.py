@@ -10,15 +10,31 @@ from saved_measurement import ASSIGNMENT, EXPECTED
 
 HERE = Path(__file__).resolve().parent
 SOURCES = ('native_scene.py', 'pedestrian_control.py', 'carla_adapter.py',
-           'native_capture.py', 'saved_measurement.py', 'saved_process.py',
-           'comparison_audit.py', 'delivery_media.py')
+           'native_capture.py', 'native_runner.py', 'saved_measurement.py', 'saved_process.py',
+           'comparison_audit.py', 'delivery_media.py', 'analysis.py')
+
+RECORDING_DESCRIPTION = {
+    'channels': [
+        {'name': name, 'unit': 'structured',
+         'method': 'source-sealed original Native event, walker pose and four-camera frame join',
+         'sampling_rate_hz': 20, 'time_window': 'all 900 original world ticks',
+         'reference_frame': 'original CARLA world frame',
+         'uncertainty': 'actual device visibility and statutory permission remain unverified'}
+        for name in ('sampled_highway_entry', 'separate_device_timeline',
+                     'official_sole_arrow', 'camera_frame_map')],
+    'context_inputs': [
+        {'name': 'cited_permission_basis', 'unit': 'structured',
+         'method': 'reviewed NRS 484B.283 alternatives and exact governing device source'}],
+    'limitations': ['A fixture WALK indication does not establish legal permission or physical visibility.']}
 
 RUNNER = '''"""Exact C109171 diagnostic preflight; reviewed originals required for capture."""
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 from native_capture import CAMERAS, DEFAULT_FRAMES, FPS
+from native_runner import run_capture
 from saved_measurement import ASSIGNMENT, EXPECTED
 
 
@@ -50,12 +66,36 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--site-ref")
+    parser.add_argument("--operator-path")
+    parser.add_argument("--operator-sha256")
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic C109171 case passed: " + case_id)
         return
-    raise ValueError("Reviewed original C109171 map, signal, device and camera sources required")
+    if not all((args.output_dir, args.site_ref, args.operator_path, args.operator_sha256)):
+        raise ValueError("Reviewed original C109171 map, signal, device and camera sources required")
+    attempt = Path(args.output_dir).resolve()
+    site_ref = json.loads(Path(args.site_ref).read_text(encoding="utf-8"))
+    operator = (attempt / args.operator_path).resolve()
+    if not operator.is_relative_to(attempt) or not operator.is_file():
+        raise ValueError("Source-bound Native operator missing")
+    if hashlib.sha256(operator.read_bytes()).hexdigest() != args.operator_sha256:
+        raise ValueError("Source-bound Native operator changed")
+    spec = importlib.util.spec_from_file_location("c109171_original_operator", operator)
+    if spec is None or spec.loader is None:
+        raise ValueError("Source-bound Native operator cannot load")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    bindings = module.bind(case_id=case_id, attempt=attempt, site_ref=site_ref)
+    result = run_capture(bindings.pop("world"), attempt=attempt, site_ref=site_ref,
+                         case_id=case_id, **bindings)
+    (attempt / "pedestrian-source.json").write_text(json.dumps({
+        "case_id": case_id, "site_ref": site_ref,
+        "events_ref": result["events_ref"], "frame_map_ref": result["frame_map_ref"],
+        "diagnostic_fixture": False}, indent=2) + "\\n")
+    (attempt / "capture-result.json").write_text(json.dumps(result, indent=2) + "\\n")
 
 
 if __name__ == "__main__":
@@ -104,7 +144,9 @@ def build():
                   'cameras': list(CAMERAS), 'diagnostic_only': True,
                   'required_sources': ['original_map', 'official_arrow_head',
                                        'separate_pedestrian_device', 'native_event_trace',
-                                       'original_camera_png'], 'required_atoms': []}
+                                       'original_camera_png'], 'required_atoms': [],
+                  'case': {'case_id': case_id,
+                           'recording_description': RECORDING_DESCRIPTION}}
         files = {name: (HERE / name).read_text(encoding='utf-8') for name in SOURCES}
         files.update({'runner.py': RUNNER, 'case-plan.json': source.decode('utf-8'),
                       'config.json': json.dumps(config, indent=2) + '\n',
@@ -112,8 +154,7 @@ def build():
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],
                         'actor': config['actor'], 'case_id': case_id,
                         'entrypoint': 'runner.py', 'diagnostic_only': True,
-                        'recording_description': {'status': 'original_sources_pending',
-                                                  'channels': list(CAMERAS)},
+                        'recording_description': RECORDING_DESCRIPTION,
                         'files': [{'path': name, 'content': content}
                                   for name, content in files.items()]}
         path = HERE / ('construction-' + suffix + '.json')

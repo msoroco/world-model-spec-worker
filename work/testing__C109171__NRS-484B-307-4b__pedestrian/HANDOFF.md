@@ -1,3 +1,13 @@
+# 2026-11-24 source-gated Native and semantic CPU checkpoint
+
+Status: partial. Four exact cases: `arrow_wait`, `arrow_early_entry`, `arrow_walk_entry`, `arrow_walk_wait`. Each rebound diagnostic construction includes a callable source-gated `native_runner.py` and `runner.py`: a reviewed site packet and source-hashed operator must supply the original CARLA walker, four cameras, official head and separate governing-device reader. The runner checks the original loaded map hash and 20 Hz synchronous world readback, uses original walker/camera callbacks, and restores the borrowed world clock even on failure. Three new fake-world tests cover successful readback/restoration, restoration after capture failure, and changed-map rejection. The full focused suite passes 54 tests; all four current-runtime offline materializations and scoped static check pass. These are CPU software proofs, not physical acceptance.
+
+The six canonical semantic proposals in `proposals/` passed pinned `semantic_delivery.validate` against the four-case draft manifest: six stages and four selected cases, index SHA-256 `664df6a9793c4ec8ace56c1efc8e1ca126bbc0b2cfe1f6bd2d51f5887ad267ba`. The proposal retains an incomplete cited-device permission applicability sweep because the exact NRS 484B.283 alternatives and governing original device have not been source-reviewed. A fixture WALK label is only an observation and does not establish statutory permission.
+
+Next CPU implementation: construct selected current-runtime `execution-manifest.json`, exact measurement contracts and source-shaped diagnostic fixture recipes, implement the finalizer and Native-to-Core publication, run positive and missing-source compatibility for each case, then run pinned saved-only Core/Lean conversion, final video decode and independent delivery/comparison audits. The original intersection map, official sole-arrow head, separate governing pedestrian device and operator hooks must be reviewed before physical capture; preserve the existing source gate and do not claim legal or physical completion from fixtures. Exact scoped strict was rerun and exits 1 on truthful partial status; see `cpu-native-semantic-strict-v3.log`. Complete the CPU deliverables before another readiness claim.
+
+## Earlier checkpoints
+
 # testing__C109171__NRS-484B-307-4b__pedestrian
 
 Status: partial source-gated construction with four exact planned cases. No physical recording is claimed.

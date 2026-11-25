@@ -16,7 +16,7 @@ except ImportError:  # package loading in tests
     CASE_SUFFIXES = ('right_crest_obstructed', 'left_crest_obstructed',
                      'left_crest_clear', 'left_one_way_obstructed')
 
-CAMERAS = ('forward', 'left', 'right', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 ONE_WAY_AUTHORITY = 'one-way-authority.json'
 
 
@@ -24,7 +24,8 @@ def _write_json(path, value):
     path.write_text(json.dumps(value, sort_keys=True) + '\n', encoding='utf-8')
 
 
-def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
+def capture(adapter, output_dir, *, assignment_id, case_id, frames=900,
+            graph_observer=None):
     """Acquire original packets through a caller-supplied CARLA adapter.
 
     Adapter contract: begin(case), tick(), sample(frame), camera_frames(frame),
@@ -78,6 +79,8 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
             if last_time is not None and abs(timestamp - last_time - 0.05) > 0.002:
                 raise ValueError('Native world is not synchronized at 20 Hz')
             last_time = timestamp
+            if graph_observer is not None:
+                graph_observer(frame, timestamp)
             callbacks = adapter.camera_frames(frame)
             if not isinstance(callbacks, dict) or set(callbacks) != set(CAMERAS):
                 raise ValueError('four original camera callbacks missing')
@@ -94,13 +97,15 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
             (output / name).write_text(''.join(json.dumps(row, sort_keys=True) + '\n'
                                                for row in rows), encoding='utf-8')
         for camera in CAMERAS:
-            path = output / f'camera-{camera}.mp4'
+            path = output / f'{camera}.mkv'
             adapter.write_camera_video(camera, path)
             if not path.is_file() or not path.stat().st_size:
                 raise ValueError(f'original camera video missing: {camera}')
         names = ('frames.jsonl', 'crest-rays.jsonl', 'lane-context.json',
-                 'frame-map.json', *(f'camera-{name}.mp4' for name in CAMERAS),
-                 *([ONE_WAY_AUTHORITY] if case_id.endswith('left_one_way_obstructed') else []))
+                 'frame-map.json', *(f'{name}.mkv' for name in CAMERAS),
+                 *([ONE_WAY_AUTHORITY] if case_id.endswith('left_one_way_obstructed') else []),
+                 *(['original-png-manifest.json'] if
+                   (output / 'original-png-manifest.json').is_file() else []))
         hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
                   for name in names}
         _write_json(output / 'source-hashes.json', hashes)

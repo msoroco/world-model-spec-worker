@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C109171__NRS-484B-307-4b__pedestrian",
   "input_sha256": "a4082e592a81342bad302e4274e7d1202d2c700d1718636cf4d30f92bf69a2c4",
-  "readiness_kind": "partial_four_exact_900_frame_offline_bundles",
-  "reason": "Original four-camera frame-map audit now binds each source path to its exact frame and channel, rejecting a rehashed cross-frame source swap. All 51 focused tests, pinned preflight, four exact offline bundles and scoped static pass. Reviewed official head/device and site sources, production Native capture, canonical semantic proposals and manifest, positive/negative compatibility, saved-only delivery receipts, physical visibility and legal permission review remain incomplete.",
+  "readiness_kind": "partial_four_exact_source_gated_native_and_semantic_draft",
+  "reason": "Four exact 900-frame source-gated Native bundles now include a callable Native runner with surveyed map hash, 20 Hz world readback, original walker/camera adapter and clock restoration. Fifty-four focused tests pass, four current-runtime offline materializations pass, and all six source-hashed semantic stages pass pinned semantic_delivery.validate. The selected execution manifest, current-runtime positive/missing-source compatibility, saved-only Core/Lean delivery, independent comparison and physical/lifecycle receipts remain CPU work. Reviewed original official signal head, separately governing pedestrian device and surveyed intersection are also absent; no physical or legal acceptance is claimed.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -169,6 +169,72 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-frame-path-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109171__NRS-484B-307-4b__pedestrian/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-build-v3.log",
+      "sha256": "0dbebc73f48782108fa8a9274836dfd3adf150bebea7ae7a0fa31df335d758f4"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109171__NRS-484B-307-4b__pedestrian/build_semantic_draft.py",
+      "exit_code": 0,
+      "log": "cpu-semantic-build-v3.log",
+      "sha256": "434f9687f90afa9d6f7349c44890a53ac697af944f911c9a2d767da7de7ff9b3"
+    },
+    {
+      "command": "semantic_delivery.validate(assignment, current draft manifest)",
+      "exit_code": 0,
+      "log": "cpu-semantic-validate-v3.log",
+      "sha256": "1c816ffd7f3ba1c81a826ed31996339763a6b2dd2cb0b80857347f43279f1b72"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109171__NRS-484B-307-4b__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-tests-v3.log",
+      "sha256": "c2e69daeab138fa83e42e1cf976a807f4d1ea03833026ec5d4ecf0faffb3dad6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-static-v3.log",
+      "sha256": "2c4e093e0f1887e9048e23e9569eb9ef8191c0ef171690075be4dbc5944a4e3b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109171__NRS-484B-307-4b__pedestrian/execution-manifest.draft.json --case testing__C109171__NRS-484B-307-4b__pedestrian__arrow_wait --output .runtime-work/c109171-owner/offline-v3-arrow_wait --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-offline-arrow_wait-v3.log",
+      "sha256": "225c75228ed63e592754b9ba12ce540299fe7a31bcc1eafb16b0ab1d68e7b9e7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109171__NRS-484B-307-4b__pedestrian/execution-manifest.draft.json --case testing__C109171__NRS-484B-307-4b__pedestrian__arrow_early_entry --output .runtime-work/c109171-owner/offline-v3-arrow_early_entry --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-offline-arrow_early_entry-v3.log",
+      "sha256": "6bc80b43505fcff6ddd7d1665b96957626d93e820b210f4a9db3e9e36aef912a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109171__NRS-484B-307-4b__pedestrian/execution-manifest.draft.json --case testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_entry --output .runtime-work/c109171-owner/offline-v3-arrow_walk_entry --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-offline-arrow_walk_entry-v3.log",
+      "sha256": "60827185e803d3005bd6a6dee9c3ca1ff32c9eb08bf2ffd4c7fa29e8123e56ec"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109171__NRS-484B-307-4b__pedestrian/execution-manifest.draft.json --case testing__C109171__NRS-484B-307-4b__pedestrian__arrow_walk_wait --output .runtime-work/c109171-owner/offline-v3-arrow_walk_wait --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-native-semantic-offline-arrow_walk_wait-v3.log",
+      "sha256": "8327aceee6957ba1f936c2a42c493174c6fb7d29dfa9530274e8752a6df86c27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-semantic-strict-v3.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-native-semantic-strict-v3.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]

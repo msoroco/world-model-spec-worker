@@ -1,3 +1,11 @@
+# 2026-11-24 selected saved-only CPU checkpoint
+
+Status: partial. Current selected manifest SHA-256 `a45cc9c5acfd83858b95672b7717b010b4e7e9c20b9295e94374e86b623cbfb5`. The five exact cases and five delayed-command fallbacks pass current-runtime offline and positive/missing-source compatibility. All five manifest entries now contain `post_capture` with pinned recorded-only `runtime.py process-saved` commands, feedback commands, log hashes and exit code 0. Ten selected saved-only CLI fixture runs passed: five positive Core/Lean/final-video-decode runs and five missing `door-source.json` runs that returned recorded-only incomplete feedback. The 900-frame fake Native publication test and 35-test assignment suite passed separately. These fixture paths establish CPU software behavior and do not assert original CARLA physical or legal acceptance.
+
+The strict scoped command `.venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready` exits 1 on truthful partial status; see `cpu-selected-strict-post-capture.log`. Direct pinned execution-manifest validation still reports `Expand sweeps with the main implementation before manifest generation`. The frozen case plan has no judgment-range inventory. Resume requires reviewed original hill-crest loading-site geometry and governing zone, observed parked/passing poses, and a source-supported realizable door/body clearance range for below/inside/above sweep cases. The selected Native runner's original actor/operator hooks and actual motion, four-camera visibility and lifecycle closure then require physical review. Do not invent an interference cutoff or mark ready before the exact strict command exits 0.
+
+## Earlier checkpoints
+
 # Current C102642 handoff (2026-11-24)
 
 Status: partial. Selected current-runtime manifest SHA-256 `e03a5f7cf439aefcde9959257c94a922e8c1408f82257ab39735a3bfd183b427`. Five exact cases: `open_near_overlap`, `open_near_clear`, `open_far_side`, `board_near`, `alight_near`.

@@ -12,7 +12,7 @@ import subprocess
 from fractions import Fraction
 from pathlib import Path
 
-CAMERAS = ('forward', 'left', 'right', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _run(command):
@@ -35,7 +35,7 @@ def audit(attempt_dir, source_hashes, *, expected_frames=900, expected_fps=20,
         raise ValueError('incomplete camera dimension plan')
     receipts = {}
     for camera in CAMERAS:
-        name = f'camera-{camera}.mp4'
+        name = f'{camera}.mkv'
         expected_hash = source_hashes.get(name)
         if not isinstance(expected_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', expected_hash):
             raise ValueError(f'camera source hash missing: {name}')

@@ -9,7 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure
+from saved_crest import CASE_SUFFIXES, ONE_WAY_AUTHORITY, REQUIRED_SOURCES, measure, source_inventory
 
 
 def _lines(path):
@@ -27,11 +27,7 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
     hashes = json.loads(manifest_bytes)
-    required = set(REQUIRED_SOURCES)
-    if case_id.endswith('__left_one_way_obstructed'):
-        required.add(ONE_WAY_AUTHORITY)
-    if not isinstance(hashes, dict) or set(hashes) != required:
-        raise ValueError('sealed original source manifest has wrong exact sources')
+    source_inventory(hashes, case_id, expected_frames)
     observation = measure(attempt, hashes, case_id=case_id,
                           assignment_id=assignment_id, expected_frames=expected_frames)
     original_body = _lines(attempt / 'frames.jsonl')
@@ -40,7 +36,7 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
     frame_map = _lines(attempt / 'video_frames.jsonl')
     if len(trace) != expected_frames or len(frame_map) != expected_frames:
         raise ValueError('derived frame count differs from sealed originals')
-    cameras = ('forward', 'left', 'right', 'rear')
+    cameras = ('overview', 'approach', 'reference_corner', 'driver_reference')
     for index, (body, ray, row, mapping) in enumerate(zip(original_body, original_rays,
                                                            trace, frame_map)):
         if row != {'frame': body['frame'], 'time_s': body['timestamp_s'],
@@ -60,7 +56,7 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
     if (result.get('case_id') != case_id or result.get('measured_values') != observation
             or result.get('trace_reference') != 'trace.jsonl'
             or result.get('video_frame_map_reference') != 'video_frames.jsonl'
-            or result.get('video_references') != [f'camera-{name}.mp4' for name in cameras]):
+            or result.get('video_references') != [f'{name}.mkv' for name in cameras]):
         raise ValueError('derived Native result differs from sealed observation')
     expected_left = not case_id.endswith('__right_crest_obstructed')
     expected_blocked = not case_id.endswith('__left_crest_clear')

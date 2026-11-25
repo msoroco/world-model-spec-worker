@@ -95,6 +95,9 @@ class ReviewedAdapter:
     def camera_frames(self, frame):
         return self.delegate.camera_frames(frame)
 
+    def graph_observer(self, frame, time_s):
+        return self.delegate.graph_observer(frame, time_s)
+
     def write_camera_video(self, camera, path):
         return self.delegate.write_camera_video(camera, path)
 
