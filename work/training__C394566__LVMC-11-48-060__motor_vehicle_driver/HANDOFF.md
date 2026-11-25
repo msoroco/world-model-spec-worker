@@ -1,6 +1,6 @@
 # training__C394566__LVMC-11-48-060__motor_vehicle_driver
 
-Status: **partial**, current-runtime CPU construction and source diagnostics pass. Exact scoped strict readiness has not passed.
+Status: **partial**. Current-runtime offline constructions and saved-finalizer source proofs pass; exact compatibility and strict readiness remain.
 
 ## Exact law and coverage
 
@@ -10,10 +10,10 @@ LVMC 11.48.060 bars use of a non-truck street as a through route from one truck 
 
 The two selected cases and their faster-cruise `fallback1` candidates have inline bundles under `native/`. `native/selected-offline-manifest.json` binds each exact case and construction. Four-view source camera names now match the current runtime profile (`overview`, `approach`, `reference_corner`, `driver_reference`). The primary and fallback for each case pass `runtime.py offline`; unittest discovery ran 2 tests for `probe_01` and 3 for `probe_02` per candidate. The fallback trigger is failure of original source trace to reach the exit truck route within 600 frames, and its knobs are only speed target and throttle cap. These checks never start CARLA.
 
-- `probe_01` `primary`: `selected-primary-construction.json` SHA-256 `886834532d2d9f3e83818e79b64e2f145713b7800500015e4da21414178b684b`; `selected-primary-offline.log` SHA-256 `18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d`; exit 0.
-- `probe_01` `fallback1`: `selected-primary-fallback1-construction.json` SHA-256 `50cff753b6d5c072a58e35d1b8469f0256acf1106ddbdd07984bbb1657b00da4`; `selected-primary-fallback1-offline.log` SHA-256 `18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d`; exit 0.
-- `probe_02` `primary`: `selected-purpose-construction.json` SHA-256 `14574e81fb27fbae54d0818768d40ba73e8f1818528d3fc4c2a4a0d184c287a6`; `selected-purpose-offline.log` SHA-256 `62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24`; exit 0.
-- `probe_02` `fallback1`: `selected-purpose-fallback1-construction.json` SHA-256 `130e0cd80129a981a4e7e76a113de0fcf1713ed6195876907b6804bddfb993f7`; `selected-purpose-fallback1-offline.log` SHA-256 `62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24`; exit 0.
+- `probe_01` `primary`: `selected-primary-construction.json` SHA-256 `598244756ae06b4addb5d2fe2118dce4cd0bedb804477e14766f3eda8f672f92`; `selected-primary-offline.log` SHA-256 `18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d`; exit 0.
+- `probe_01` `fallback1`: `selected-primary-fallback1-construction.json` SHA-256 `b2326cf5f0ecf5e5c0453a786fa01b62973f0fa625aff51aff39c448c9f6e1eb`; `selected-primary-fallback1-offline.log` SHA-256 `18b93cd3bd407fb07add22b3d4acac11ea486b1883d3d54f3131a3d22b4e275d`; exit 0.
+- `probe_02` `primary`: `selected-purpose-construction.json` SHA-256 `606f73c1ec656b347550a79862291c840ee8dc1bc6e22d0c61ad86c48cb68011`; `selected-purpose-offline.log` SHA-256 `62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24`; exit 0.
+- `probe_02` `fallback1`: `selected-purpose-fallback1-construction.json` SHA-256 `b3ccbf77cee75bd0f29a69ab474228f424c4695a5f8db995f6d8e1b273f19992`; `selected-purpose-fallback1-offline.log` SHA-256 `62f2be104a6f3925639a4d920053414d3950e6a2ad2a983af2a5be020b73ea24`; exit 0.
 
 ## Independent source checks
 
@@ -31,3 +31,10 @@ Build the full current-runtime execution manifest, source-hashed fixture recipes
 ## Local physical review
 
 The operator must survey a real connected two-truck-route journey over an intervening non-truck street, verify a truck blueprint and service premise, then independently inspect original route IDs, actor, purpose sources, camera pixels and physical completion. No CARLA run, original recording, canonical acceptance or legal verdict is claimed.
+
+## Current-runtime diagnostic update (2026-11-24)
+
+Both exact measurement contracts are `measurement-contract-probe_01.json` and `measurement-contract-probe_02.json`. Both source-hashed synthetic recipes are `fixture-recipe-probe_01.json` and `fixture-recipe-probe_02.json`; generated fixtures are kept under `.runtime-work/`. The four Native bundles now contain `finalize.py`, source-join analyzers and complete recording descriptions. `native/finalizer-proof.log` shows both 600-frame saved finalizers pass their case-specific measurement and reject missing `route_context.json`. The current-runtime decoder was built under `.runtime-work/c394566-decoder/`. First full `runtime.py compatibility` reached Core conversion and exposed missing synthetic graph frame and observed-evidence packet, both corrected. The next converter probe exposed missing synthetic `world`; the fixture builder now retains it. Re-run exact compatibility for both cases and fallbacks, then saved processing, physical fixtures, semantic stages and delivery audit. No CARLA or legal outcome is claimed.
+## Current-runtime compatibility checkpoint
+
+All four selected case/candidate pairs passed `.venv-cpu/bin/python runtime.py compatibility` using the current source-manifest runtime and source-hashed exact recipes. The four receipts and positive/negative logs are retained under `compat-p01-pr/`, `compat-p01-fb/`, `compat-p02-pr/`, and `compat-p02-fb/` and bound in `execution-manifest.json`. Each receipt states diagnostic software compatibility only; original physical route, pixels and purpose remain unverified. Saved-only processing, physical outcome fixtures, semantic proposals, delivery acceptance and the strict assignment gate remain CPU work. Status remains partial.

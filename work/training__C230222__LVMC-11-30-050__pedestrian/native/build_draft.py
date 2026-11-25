@@ -66,7 +66,7 @@ def build():
                   'condition': condition, 'duration_s': 30, 'rate_hz': 20,
                   'walker_speed_mps': 1.8, 'walker_spawn_z_m': .5,
                   'road_geometry_sha256': sha(HERE / 'road.xodr'),
-                  'required_atoms': ['ru.pedestrian', 'kin.position', 'st.road_edge'],
+                  'required_atoms': ['ru.pedestrian', 'kin.position'],
                   'source_packets': [],
                   'cameras': [
                       {'name': 'overview', 'width': 1920, 'height': 1080,

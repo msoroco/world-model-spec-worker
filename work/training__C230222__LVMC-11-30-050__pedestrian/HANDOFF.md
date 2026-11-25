@@ -21,3 +21,8 @@ Next CPU work: construct selected manifest and justified fallback, exact full-re
 ## Precise remaining work
 
 Promote only after selected construction and the required CPU proofs pass. Add a justified risk-based fallback where the original physical risk warrants one. The source meter's engineering numbers require reviewer judgment; they are not legal cutoffs. Physical CARLA execution and canonical acceptance remain local-operator work.
+
+## 2026-11-24 selected full compatibility checkpoint
+
+Current runtime SHA 5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3. Both exact cases and their spawn-clearance fallback1 candidates passed `runtime.py compatibility` with 600-frame four-camera source-shaped synthetic fixtures, Native validation, Lean conversion, render/decode, source-bound route and outside-crosswalk measurements and a missing route-source negative. Runtime receipts are `.runtime-work/c230222-lvmc-route/compat-{a,b}-{primary,fallback1}-v4/compatibility.json`. Selected offline checks pass for all four. `native/prove_route_meter.py`, `native/prove_comparison.py`, `native/prove_finalizer.py`, and `native/prove_full_finalizer.py` pass. `native/prove_physical.py` refreshed both construction-bound three-outcome receipts. Selected manifest and semantic/delivery proofs remain to bind. Do not claim ready until exact strict gate passes.
+Recorded-only `runtime.py process-saved` passed for all four v4 selected candidates; receipts are `.runtime-work/c230222-lvmc-route/saved-{a,b}-{primary,fallback1}-v4/v0001/processing.json`. These are diagnostic software proofs, not original CARLA observations.

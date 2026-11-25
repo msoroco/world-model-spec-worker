@@ -23,9 +23,10 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def build_variant(suffix):
+def build_variant(suffix, candidate='primary'):
     CASE = CASE_PREFIX + suffix
-    source = json.loads((ZONE / f'runtime-drafts/selected_c5852cfd__{suffix}/primary/construction.json').read_text())
+    tag = suffix if candidate == 'primary' else f'{suffix}-{candidate}'
+    source = json.loads((ZONE / f'runtime-drafts/selected_c5852cfd__{suffix}/{candidate}/construction.json').read_text())
     construction = json.loads(json.dumps(source))
     construction['case_id'] = CASE
     files = {item['path']: item for item in construction['files']}
@@ -51,13 +52,13 @@ def build_variant(suffix):
     construction['files'].append({'path': 'finalize.py',
                                   'content': (HERE / 'current-v2-finalize.py').read_text()})
     construction['recording_description'] = description
-    construction['status'] = 'unselected_current_v2_primary_probe'
-    output = HERE / f'current-runtime-v2-{suffix}-construction.json'
+    construction['status'] = f'unselected_current_v2_{candidate}_probe'
+    output = HERE / f'current-runtime-v2-{tag}-construction.json'
     write(output, construction)
 
-    old = json.loads((HERE / 'current-graph-fixture' / f'{suffix}-generator.json').read_text())
+    old = json.loads((HERE / 'current-graph-fixture' / f'{tag}-generator.json').read_text())
     generated = json.loads(json.dumps(old))
-    actor_rows = lines(ZONE / f'offline/raw-fixtures/selected_c5852cfd__{suffix}/primary/native-raw-actors.jsonl')
+    actor_rows = lines(ZONE / f'offline/raw-fixtures/selected_c5852cfd__{suffix}/{candidate}/native-raw-actors.jsonl')
     trace = []
     frame_map = []
     for index, actor in enumerate(actor_rows):
@@ -97,15 +98,15 @@ def build_variant(suffix):
          'height': 1080 if name == 'overview' else 720,
          'fps': 20, 'color': 'black'}
         for name in ('overview', 'approach', 'reference_corner', 'driver_reference', 'forward')]
-    spec = HERE / f'current-runtime-v2-{suffix}-generator.json'
+    spec = HERE / f'current-runtime-v2-{tag}-generator.json'
     write(spec, generated)
-    old_recipe = json.loads((HERE / 'current-graph-fixture' / f'{suffix}-recipe.json').read_text())
+    old_recipe = json.loads((HERE / 'current-graph-fixture' / f'{tag}-recipe.json').read_text())
     recipe = {'format': 'worker-fixture-recipe',
               'sources': [item for item in old_recipe['sources'] if item['path'] != 'video_frames.jsonl'] +
                          [{'path': 'road.xodr', 'source': road.relative_to(ROOT).as_posix(),
                            'sha256': sha(road)}],
               'generator': {'source': spec.relative_to(ROOT).as_posix(), 'sha256': sha(spec)}}
-    recipe_path = HERE / f'current-runtime-v2-{suffix}-recipe.json'
+    recipe_path = HERE / f'current-runtime-v2-{tag}-recipe.json'
     write(recipe_path, recipe)
     contract = {'format': 'worker-measurement-contract', 'case_id': CASE,
                 'requirements': [{'disposition_index': 0, 'requirement': 'text-0',
@@ -116,30 +117,50 @@ def build_variant(suffix):
                 'negative': {'remove': ['native-raw-actors.jsonl'],
                              'error_contains': 'Missing required source: native-raw-actors.jsonl'},
                 'status': 'unselected_diagnostic'}
-    contract_path = HERE / f'current-runtime-v2-{suffix}-measurement-contract.json'
+    contract_path = HERE / f'current-runtime-v2-{tag}-measurement-contract.json'
     write(contract_path, contract)
     proposal = {'format': 'worker-case-proposals', 'cases': [{
         'case_id': CASE, 'target_law_id': 'NRS-484B-110',
-        'target_type': 'violating_attempt', 'recording_description': description,
+        'target_type': 'violating_attempt' if suffix == 'condition_a' else 'compliant_attempt',
+        'recording_description': description,
         'variable_assignments': {}, 'sweep_measurements': [],
         'claim': 'Diagnostic construction only; official zone designation unverified',
     }]}
-    write(HERE / f'current-runtime-v2-{suffix}-proposal.json', proposal)
+    write(HERE / f'current-runtime-v2-{tag}-proposal.json', proposal)
     runtime = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
+    primary_path = HERE / f'current-runtime-v2-{suffix}-construction.json'
+    fallback = candidate != 'primary'
+    candidate_spec = []
+    if fallback:
+        trigger = ({'source': 'original Native route and body samples',
+                    'metric': 'zone-path completion at requested 8 m/s',
+                    'failure_condition': 'primary route fails to complete the planned path'}
+                   if candidate == 'fallback1' else
+                   {'source': 'original overview camera frames',
+                    'metric': 'audited moving body and zone-boundary visibility',
+                    'failure_condition': 'primary overview obscures the body or zone boundary'})
+        candidate_spec = [{'id': candidate,
+                           'construction': output.relative_to(HERE).as_posix(),
+                           'construction_sha256': sha(output),
+                           'trigger': trigger,
+                           'changed_knobs': (['requested_ego_speed_mps: 8.0 to 5.0']
+                                             if candidate == 'fallback1' else
+                                             ['camera_policy: standard to elevated_overview'])}]
+    selected_path = primary_path if fallback else output
     manifest = {'format': 'worker-unselected-current-v2-probe-manifest',
                 'assignment_id': config['assignment_id'],
                 'runtime_manifest_sha256': runtime, 'status': 'draft_not_selected',
                 'cases': [{'case_id': CASE, 'kind': 'draft_not_selected',
-                           'id': 'primary', 'construction': output.relative_to(HERE).as_posix(),
-                           'construction_sha256': sha(output),
+                           'id': 'primary', 'construction': selected_path.relative_to(HERE).as_posix(),
+                           'construction_sha256': sha(selected_path),
                            'candidate_risk': {'status': 'physical',
                                               'reason': 'Original zone designation, body and pixels require review'},
-                           'candidates': [],
+                           'candidates': candidate_spec,
                            'measurement_contract': contract_path.relative_to(HERE).as_posix(),
                            'measurement_procedure': {'entrypoint': 'finalize.py',
                                                      'status': 'saved_source_diagnostic'},
                            'fixture_recipe': recipe_path.relative_to(ROOT).as_posix()}]}
-    manifest_path = HERE / f'current-runtime-v2-{suffix}-probe-manifest.json'
+    manifest_path = HERE / f'current-runtime-v2-{tag}-probe-manifest.json'
     write(manifest_path, manifest)
     print(json.dumps({'manifest_sha256': sha(manifest_path),
                       'construction_sha256': sha(output), 'recipe_sha256': sha(recipe_path)}))
@@ -147,4 +168,5 @@ def build_variant(suffix):
 
 if __name__ == '__main__':
     for suffix in ('condition_a', 'condition_b'):
-        build_variant(suffix)
+        for candidate in ('fallback1', 'fallback2'):
+            build_variant(suffix, candidate)

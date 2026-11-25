@@ -33,13 +33,30 @@ def main():
                       "expanded_bytes": len(expanded),
                       "rows": source["rows"],
                       "expanded_sha256": sha(expanded)})
+    def minimum_trace_bytes(count):
+        return sum(len(json.dumps({
+            "frame": frame, "time_s": frame / 20,
+            "position": {"x": 0, "y": 0, "z": 0},
+            "heading_deg": 0, "speed_mps": 0}, separators=(",", ":")).encode()) + 1
+            for frame in range(count))
+
     count = index["frame_count"]
-    minimal_trace_bytes = sum(len(json.dumps({
-        "frame": frame, "time_s": frame / 20,
-        "position": {"x": 0, "y": 0, "z": 0},
-        "heading_deg": 0, "speed_mps": 0}, separators=(",", ":")).encode()) + 1
-        for frame in range(count))
+    minimal_trace_bytes = minimum_trace_bytes(count)
     assert minimal_trace_bytes > LIMIT
+    manifest = json.loads((HERE / "execution-manifest.json").read_text())
+    long_cases = []
+    for case in manifest["cases"]:
+        if case.get("fixture_recipe"):
+            continue
+        construction = json.loads((HERE / case["construction"]).read_text())
+        config = json.loads(next(item["content"] for item in construction["files"]
+                                 if item["path"] == "config.json"))
+        frames = config["capture_frames"]
+        floor = minimum_trace_bytes(frames)
+        assert floor > LIMIT
+        long_cases.append({"case_id": case["case_id"], "frames": frames,
+                           "minimal_runtime_shape_trace_bytes": floor})
+    assert len(long_cases) == 16
     recipe = ROOT / "runtime/scenario_pipeline/worker_exchange/fixture_recipe.py"
     generator = ROOT / "runtime/scenario_pipeline/worker_exchange/fixture_generator.py"
     compatibility = ROOT / "runtime/scenario_pipeline/worker_exchange/package_compatibility.py"
@@ -55,6 +72,7 @@ def main():
             "frame_count": count, "returned_file_limit_bytes": LIMIT,
             "minimal_runtime_shape_trace_bytes": minimal_trace_bytes,
             "minimal_trace_exceeds_limit": minimal_trace_bytes > LIMIT,
+            "all_selected_long_trace_size_floors": long_cases,
             "exact_packed_text_sources": texts,
             "pinned_runtime_sha256": {
                 path.name: sha(path.read_bytes())

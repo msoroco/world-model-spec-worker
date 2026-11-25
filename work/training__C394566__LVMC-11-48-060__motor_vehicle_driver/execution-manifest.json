@@ -1,0 +1,194 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_partial",
+  "cases": [
+    {
+      "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-primary-construction.json",
+      "construction_sha256": "598244756ae06b4addb5d2fe2118dce4cd0bedb804477e14766f3eda8f672f92",
+      "candidates": [
+        {
+          "changed_knobs": [
+            "cruise speed target 6.0 to 7.5 m/s",
+            "throttle cap 0.7 to 0.8"
+          ],
+          "construction": "native/selected-primary-fallback1-construction.json",
+          "construction_sha256": "b2326cf5f0ecf5e5c0453a786fa01b62973f0fa625aff51aff39c448c9f6e1eb",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "primary trace does not reach exit truck route",
+            "metric": "complete three-road passage within 600 frames",
+            "source": "original Native route trace"
+          },
+          "compatibility": {
+            "receipt": "compat-p01-fb/receipt.json",
+            "sha256": "de26d89e4294bc06c811144cb667c865f4eccfd3b4beae136a0a8159ea7d6f30",
+            "log": "compat-p01-fb/analysis.log",
+            "negative_log": "compat-p01-fb/negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b2326cf5f0ecf5e5c0453a786fa01b62973f0fa625aff51aff39c448c9f6e1eb",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --candidate fallback1 --output .runtime-work/c394566-final-offline-p01-fb",
+            "log": "native/selected-primary-fallback1-offline.log",
+            "log_sha256": "cd7f4eda4fd20eb810dca26f643a4b740057c2d30484df2d13b34620421e0448"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "reason": "Surveyed two-truck-route journey may exceed the 30-second capture or lack a safe service stop",
+        "status": "physical"
+      },
+      "measurement_contract": "measurement-contract-probe_01.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "saved-through-route-v1"
+      },
+      "fixture_recipe": "work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/fixture-recipe-probe_01.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "compat-p01-pr/receipt.json",
+        "sha256": "8dde75247f40160bdf9671e74bd3b1fd7b588aad25fccb7249133c3d4c2244a2",
+        "log": "compat-p01-pr/analysis.log",
+        "negative_log": "compat-p01-pr/negative.log"
+      },
+      "negative": {
+        "log": "compat-p01-pr/negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "598244756ae06b4addb5d2fe2118dce4cd0bedb804477e14766f3eda8f672f92",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01 --candidate primary --output .runtime-work/c394566-final-offline-primary",
+        "log": "native/selected-primary-offline.log",
+        "log_sha256": "66033b4769cee900a72e478d3758dbf985e09cfc87954452e40e82151f4267bc"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_01/proof.json",
+        "sha256": "63fc7b20d80392298e8413e5a77297b84b9a377b4a9075959592acea34aa6f14"
+      }
+    },
+    {
+      "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-purpose-construction.json",
+      "construction_sha256": "606f73c1ec656b347550a79862291c840ee8dc1bc6e22d0c61ad86c48cb68011",
+      "candidates": [
+        {
+          "changed_knobs": [
+            "cruise speed target 6.0 to 7.5 m/s",
+            "throttle cap 0.7 to 0.8"
+          ],
+          "construction": "native/selected-purpose-fallback1-construction.json",
+          "construction_sha256": "b3ccbf77cee75bd0f29a69ab474228f424c4695a5f8db995f6d8e1b273f19992",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "primary trace does not reach exit truck route",
+            "metric": "complete three-road passage within 600 frames",
+            "source": "original Native route trace"
+          },
+          "compatibility": {
+            "receipt": "compat-p02-fb/receipt.json",
+            "sha256": "88c73f8916f0db61a7b5db7ee0e2caf9ff526791a200b6f05eaf78793c6045ed",
+            "log": "compat-p02-fb/analysis.log",
+            "negative_log": "compat-p02-fb/negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b3ccbf77cee75bd0f29a69ab474228f424c4695a5f8db995f6d8e1b273f19992",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --candidate fallback1 --output .runtime-work/c394566-final-offline-p02-fb",
+            "log": "native/selected-purpose-fallback1-offline.log",
+            "log_sha256": "8ca7990cef1ac78a334ed0a1f04982a5e418302e6dff976492a4a0c30bc6cc69"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "reason": "Surveyed two-truck-route journey may exceed the 30-second capture or lack a safe service stop",
+        "status": "physical"
+      },
+      "measurement_contract": "measurement-contract-probe_02.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "saved-through-route-v1"
+      },
+      "fixture_recipe": "work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/fixture-recipe-probe_02.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "compat-p02-pr/receipt.json",
+        "sha256": "16aa4e12d5bc4c24d5c9926be7b698ce03b300c6888b87574b73199ecb9ae6fc",
+        "log": "compat-p02-pr/analysis.log",
+        "negative_log": "compat-p02-pr/negative.log"
+      },
+      "negative": {
+        "log": "compat-p02-pr/negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "606f73c1ec656b347550a79862291c840ee8dc1bc6e22d0c61ad86c48cb68011",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/execution-manifest.json --case training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02 --candidate primary --output .runtime-work/c394566-final-offline-p02-primary",
+        "log": "native/selected-purpose-offline.log",
+        "log_sha256": "acaebb5da909da58b9c4f5b9212c6db89949de31ffbfd9c3e6991514a423780d"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captured source and finalized measurement",
+          "evidence": "native route trace, synchronized frame map and source video"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_02/proof.json",
+        "sha256": "b122ce4567d7a50e46123bdfa9611b3eb5be93456a4260679b3a4f5d2515c4e9"
+      }
+    }
+  ]
+}

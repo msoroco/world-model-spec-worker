@@ -1,0 +1,270 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230222__LVMC-11-30-050__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_bound",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a",
+      "kind": "delivery",
+      "construction": "selected/condition_a/primary/construction.json",
+      "construction_sha256": "6280c0e0eea251bb889fe61047397445dfe3011584e4a4101fc8399a0ee16cf6",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/condition_a/fallback1/construction.json",
+          "construction_sha256": "9003f560b62347fcec4aafc3e57ca931fef23c1870ac0e8ea8bf7859d734b810",
+          "trigger": {
+            "source": "original_native_spawn_and_footprint_clearance",
+            "metric": "initial_vertical_ground_clearance_m",
+            "failure_condition": "original walker spawn collision or initial clearance below 0.05 m"
+          },
+          "changed_knobs": [
+            "walker_spawn_z_m: 0.5 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9003f560b62347fcec4aafc3e57ca931fef23c1870ac0e8ea8bf7859d734b810",
+            "log": "selected-proofs/a-fallback1-offline.log",
+            "log_sha256": "709097ae9aba3b95adceb864e938d1de35d76fa6811f2976e8d750e26be1533f"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/a-fallback1-compatibility.json",
+            "sha256": "fabb280a57af77fed4d71181e9a5d25ac6c2a0a8df7f6ad90436728b1e304a1b",
+            "log": "selected-proofs/a-fallback1-analysis.log",
+            "negative_log": "selected-proofs/a-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "selected-proofs/a-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/a-fallback1-saved.json",
+            "sha256": "b2fbdd001978dd7f90780766a528f3790aee1be0a5c3eb670e54cc1777713ee7"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn may overlap the authored curb or road surface; a source-measured initial clearance or collision triggers a higher spawn, with all route conditions fixed."
+      },
+      "measurement_contract": "measurement-contracts/condition_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__LVMC-11-30-050__pedestrian/diagnostic/condition_a/recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "6280c0e0eea251bb889fe61047397445dfe3011584e4a4101fc8399a0ee16cf6",
+        "log": "selected-proofs/a-primary-offline.log",
+        "log_sha256": "709097ae9aba3b95adceb864e938d1de35d76fa6811f2976e8d750e26be1533f"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/a-primary-compatibility.json",
+        "sha256": "0b80c583fa0fc53e5377409bc745e3a9883f27d8f8ce436e6f73f48115272db4",
+        "log": "selected-proofs/a-primary-analysis.log",
+        "negative_log": "selected-proofs/a-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/a-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/a-primary-saved.json",
+        "sha256": "8c0fb7c98bd955a9559c602897e13905ae395612fde7d09067f1ccade88a7629"
+      },
+      "acquisition": {
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "ru.subject": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.crosswalk": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_a/proof.json",
+        "sha256": "035b281489bee10e08691a5a4d45f68a0f3e8f52c851e2130692894752b75df9"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/a-primary-saved.json",
+        "test_log_sha256": "8c0fb7c98bd955a9559c602897e13905ae395612fde7d09067f1ccade88a7629"
+      }
+    },
+    {
+      "case_id": "training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b",
+      "kind": "delivery",
+      "construction": "selected/condition_b/primary/construction.json",
+      "construction_sha256": "bebe6a51e8efebbe346a8e8e79e97dfd49246d08f89c6824c6f170a6ec85331e",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/condition_b/fallback1/construction.json",
+          "construction_sha256": "22421f2fd79079c191ea4cc63f44757ca8b8b76dbb9043797859d837108fd939",
+          "trigger": {
+            "source": "original_native_spawn_and_footprint_clearance",
+            "metric": "initial_vertical_ground_clearance_m",
+            "failure_condition": "original walker spawn collision or initial clearance below 0.05 m"
+          },
+          "changed_knobs": [
+            "walker_spawn_z_m: 0.5 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "22421f2fd79079c191ea4cc63f44757ca8b8b76dbb9043797859d837108fd939",
+            "log": "selected-proofs/b-fallback1-offline.log",
+            "log_sha256": "76d4f61c88a87508f0c413301fe38001df8d85d738800fa2026748a63903286b"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/b-fallback1-compatibility.json",
+            "sha256": "9b1f8f7fb7391f1abbcee4873be0572326fe2e6af3491177f68141567aff0eff",
+            "log": "selected-proofs/b-fallback1-analysis.log",
+            "negative_log": "selected-proofs/b-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "selected-proofs/b-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/b-fallback1-saved.json",
+            "sha256": "f37e852871d17f59c32add7eda306a2ede1c6e43260d5642911b125aafaca5f0"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn may overlap the authored curb or road surface; a source-measured initial clearance or collision triggers a higher spawn, with all route conditions fixed."
+      },
+      "measurement_contract": "measurement-contracts/condition_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230222__LVMC-11-30-050__pedestrian/diagnostic/condition_b/recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "bebe6a51e8efebbe346a8e8e79e97dfd49246d08f89c6824c6f170a6ec85331e",
+        "log": "selected-proofs/b-primary-offline.log",
+        "log_sha256": "76d4f61c88a87508f0c413301fe38001df8d85d738800fa2026748a63903286b"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/b-primary-compatibility.json",
+        "sha256": "ab3d1467cd2acc54d484920d19a922eceb451cdd6fb067379bded6499becffae",
+        "log": "selected-proofs/b-primary-analysis.log",
+        "negative_log": "selected-proofs/b-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/b-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/b-primary-saved.json",
+        "sha256": "c4f6f01df4f07dc309afbdb8f1a6ead02b78a2997c32d620bb6997f5482aa01d"
+      },
+      "acquisition": {
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "ru.subject": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.crosswalk": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "Source-joined Native pedestrian transform and authored curb/crosswalk geometry, with independent original map and pixel review required",
+          "evidence": "route-samples.jsonl, route-context.json, video_frames.jsonl and original four camera sources"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_b/proof.json",
+        "sha256": "780b781eb164b3209dce7bf8fc5a81568fd5cd0daee73c4754c099a14329ec10"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__LVMC-11-30-050__pedestrian/execution-manifest.json --case training__C230222__LVMC-11-30-050__pedestrian__selected_c0238853__condition_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/b-primary-saved.json",
+        "test_log_sha256": "c4f6f01df4f07dc309afbdb8f1a6ead02b78a2997c32d620bb6997f5482aa01d"
+      }
+    }
+  ]
+}

@@ -29,13 +29,24 @@ def route_geometry(folder):
     return measure_files(samples, context, report_path)
 
 
+def outside_crosswalk_context(folder):
+    context = json.loads(required(folder, 'route-context.json').read_text())
+    return {'authored_crosswalk_polygons_xy_m': context['crosswalk_polygons_xy_m'],
+            'original_map_and_pixel_reviewed': context.get('original_map_and_pixel_reviewed') is True,
+            'source_kind': context['source_kind']}
+
+
 def report(folder, case_id):
     value = route_geometry(folder)
+    crosswalk = outside_crosswalk_context(folder)
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'crossing_route_geometry': {
                 'method': 'route_geometry', 'value': value,
                 'sources': {'route-samples.jsonl': value['source_samples_sha256'],
-                            'route-context.json': value['source_context_sha256']}}},
+                            'route-context.json': value['source_context_sha256']}},
+                'outside_crosswalk_context': {'method': 'outside_crosswalk_context',
+                    'value': crosswalk,
+                    'sources': {'route-context.json': value['source_context_sha256']}}},
             'scope': 'measured route alternatives; legal and original pixel status unassigned'}
 
 
