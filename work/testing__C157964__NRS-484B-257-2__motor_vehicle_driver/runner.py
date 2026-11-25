@@ -4,6 +4,7 @@ import argparse
 from contextlib import ExitStack
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -38,6 +39,10 @@ def validate_config(config):
         raise ValueError("Exact subsection 2 officer case identity required")
     if (config.get("rate_hz"), config.get("duration_s")) != (20, 30):
         raise ValueError("Exact officer capture requires 20 Hz and 30 seconds")
+    target_speed = config.get("sweep_controls", {}).get("ego_target_speed_mps", 5.0)
+    if (type(target_speed) not in (int, float) or not math.isfinite(target_speed)
+            or not 0.0 <= target_speed <= 8.0):
+        raise ValueError("Physical ego speed setpoint must be finite in the tested 0-8 m/s range")
     if (config.get("site", {}).get("xodr_sha256") != site["site_sha256"] or
             config["site"].get("native_map_id") != "OpenDriveMap" or
             config["site"].get("ego_lane") != [site["ego_road_id"], site["ego_lane_id"]] or
@@ -201,6 +206,7 @@ def capture(config, output_dir, host, port):
                         source_root=retained, source_packet=retained / "source-packet.json",
                         other_actor=actors["other"], traffic_sampler=traffic,
                         camera_readback=media.readback,
+                        target_speed_mps=config.get("sweep_controls", {}).get("ego_target_speed_mps", 5.0),
                         before_tick=lambda i: actors["other"].apply_control(
                             carla.VehicleControl(**other_control(
                                 i, frames, config["drive"]["other"]))),

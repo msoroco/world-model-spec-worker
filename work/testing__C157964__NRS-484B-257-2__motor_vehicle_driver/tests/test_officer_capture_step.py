@@ -65,6 +65,15 @@ class OfficerCaptureStepTests(unittest.TestCase):
             CAPTURE.step(carla, world, ego, officer, adapter, case, 1, 10,
                          {**traffic, 'hazard_source': ''}, cameras, intake)
 
+    def test_physical_speed_setpoint_changes_native_throttle(self):
+        carla, world, ego, officer, adapter, cameras, traffic, intake, applied = self.fixtures()
+        case = 'testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go'
+        CAPTURE.step(carla, world, ego, officer, adapter, case, 6, 10,
+                     traffic, cameras, intake, target_speed_mps=1.0)
+        CAPTURE.step(carla, world, ego, officer, adapter, case, 6, 10,
+                     traffic, cameras, intake, target_speed_mps=3.0)
+        self.assertEqual([round(control.throttle, 3) for control in applied], [0.25, 0.6])
+
 
 if __name__ == '__main__':
     unittest.main()

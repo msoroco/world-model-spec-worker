@@ -10,7 +10,7 @@ from officer_direction import PREFIX, SUFFIXES
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE_NAMES = ["runner.py", "finalizer.py", "comparison_audit.py", "officer-site.xodr"] + [
+SOURCE_NAMES = ["runner.py", "finalizer.py", "comparison_audit.py", "delivery_audit.py", "officer-site.xodr"] + [
     path.name for path in sorted(ROOT.glob("officer_*.py"))
 ]
 TEST_NAMES = ["tests/" + path.name for path in sorted((ROOT / "tests").glob("test*.py"))]

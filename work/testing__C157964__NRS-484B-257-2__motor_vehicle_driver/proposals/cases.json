@@ -577,11 +577,149 @@
           "note": "The statute supplies no numerical cautious-speed threshold."
         }
       ],
-      "status": "incomplete",
-      "missing_inputs": [
-        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      "status": "complete",
+      "rationale": "Vary a bounded physical ego speed command and measure original Native velocity; whether the observed movement is cautious remains an unresolved statutory judgment.",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "commanded_approach_speed",
+          "observable": "ego_speed_mps",
+          "unit": "m/s",
+          "min": 1.0,
+          "max": 5.0,
+          "spacing": 2.0,
+          "measurement": {
+            "method": "Native ego velocity magnitude in original frame history joined to video_frames.jsonl",
+            "time_window": "original 20 Hz 30-second capture",
+            "statistic": "max"
+          },
+          "range_rationale": "The capture controller accepts a finite 0-8 m/s target; 1, 3 and 5 m/s are bounded low, middle and existing default physical commands. No legal cautious-speed threshold is inferred.",
+          "spacing_rationale": "Two m/s separates physical commands enough for original velocity readback to distinguish intended motion; measured response is retained separately.",
+          "feasibility_evidence": "officer_capture_step.py forwards target_speed_mps to officer_ego_controller.command; tests/test_officer_capture_step.py::test_physical_speed_setpoint_changes_native_throttle exercises two distinct Native control outputs."
+        }
       ],
-      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+      "landmarks": [
+        {
+          "name": "existing_controller_default",
+          "value": 5.0,
+          "unit": "m/s",
+          "source": "officer_ego_controller.py command default target_speed_mps",
+          "verification_evidence": "tests/test_officer_capture_step.py::test_physical_speed_setpoint_changes_native_throttle and 46-test package suite",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "source-reviewed category"
+        },
+        "other_approach_state": {
+          "kind": "world_setup",
+          "value": "within or approaching",
+          "unit": "source-reviewed category"
+        },
+        "other_entrance_sign_governance": {
+          "kind": "world_setup",
+          "value": "review original entrance",
+          "unit": "structured record"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Independent original-camera review at complete ego-body entry",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Original-frame gesture review separate from Native pose command",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "Native complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "Native other complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_approaching_observed",
+            "unit": "count",
+            "method": "Independent original-camera other-vehicle approach review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_speed_mps",
+            "unit": "m/s",
+            "method": "Native other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+            "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+          }
+        ],
+        "limitations": [
+          "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+          "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+          "Physical visibility, motion and device governance require later original capture review."
+        ]
+      }
     },
     {
       "sweep_id": "c157964_sub2_judgment_4",

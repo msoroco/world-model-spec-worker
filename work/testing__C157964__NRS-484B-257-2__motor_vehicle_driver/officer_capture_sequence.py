@@ -18,7 +18,7 @@ from officer_site import validate_site
 
 def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
         source_root, source_packet, other_actor, traffic_sampler, camera_readback,
-        before_tick=None, after_tick=None):
+        before_tick=None, after_tick=None, target_speed_mps=5.0):
     if type(frame_count) is not int or frame_count < 3:
         raise ValueError("Complete 20 Hz frame count required")
     settings = world.get_settings()
@@ -40,7 +40,8 @@ def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
         if before_tick is not None:
             before_tick(frame_index)
         row = step(carla, world, ego, officer, bone_adapter, case_id,
-                   frame_index, frame_count, traffic, camera_readback, intake)
+                   frame_index, frame_count, traffic, camera_readback, intake,
+                   target_speed_mps=target_speed_mps)
         row["native_actor_source"] = record_native_sources(world, ego, other_actor, row)
         native_frame = row["carla_frame"]
         if native_frame <= previous_frame:
