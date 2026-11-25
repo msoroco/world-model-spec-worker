@@ -103,3 +103,25 @@ A source-shaped synthetic diagnostic with 900 law packets and four 900-frame vid
 Thirty-four focused tests pass (`proof-current-tests.log`, SHA256 `29a06a2f8c03fa08a4f6abb5571fda3a0c3f8bcb7da47a6169bc98c51d23aa99`). Scoped static passes (`proof-current-static.log`, SHA256 `f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d`). Exact scoped strict exits 1 because `result.json` is truthfully partial (`proof-current-strict.log`, SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`).
 
 Next CPU action: replace the nine-frame generic converter capture with a 900-frame same-case textual graph/evidence fixture within the 2 MiB per-file return limit; rerun `runtime.py compatibility` for all three controlled cases and their fallbacks, then bind positive/negative receipts, positive saved-process receipts, delivery acceptance checks, and a selected manifest. Keep accepted-source IDs unresolved until their original archive trace/video are independently reviewed. Actual Native execution still requires a SHA-bound reviewed original highway site and separately sourced driver-input event stream absent from this export.
+
+## 2026-11-25 six-case selected delivery readiness
+
+All six exact IDs are selected in `execution-manifest.json` (SHA256 `b7491274035d9eb4629ac2153992ce4d67588e87964e4fb42ba81fda44454d44`): `both_observed`, `signal_missing`, `check_missing`, and `accepted_source_1/2/3`. The three former accepted recordings remain metadata-only and unverified. Their exact IDs have new source-gated primary and fallback constructions; no existing-evidence reuse is claimed. The plan retains both conjunctive comparisons and all three selected requirement dispositions.
+
+Every selected case has primary/fallback offline receipts, a source-shaped 900-frame four-view compatibility positive and missing-independent-driver-source negative, a selected saved-process positive, and independent delivery-audit positive/negative diagnostic fixtures. The 900 original frame/time joins include trace, driver input, evidence rows, adapter graphs, frame map, and four full-decoded videos. Diagnostic fixtures are synthetic and cannot establish physical pixel quality or legal compliance. Six selected saved-process positives and 12 compatibility positives passed. The two comparison controls passed on sealed diagnostic reports.
+
+`comparison_audit.py` now provides a production original-attempt command. For each pair member it requires an exact Native attempt and owner-release receipt, invokes `delivery_audit.audit` in production mode, verifies required original source bytes, recomputes the report's measurements from the attempt, and checks fixed context and the declared/held conjuncts. The report-only command remains a diagnostic comparison and emits `production_original_attempts_audited: false`. The production command rejects diagnostic provenance by default; its direct rejection log is `proof-comparison-production-diagnostic-rejection.log` (SHA256 `4e4855cc6b4f58a13d2394126e6576f6377c90fcf3082b6119fe77d04f066e4b`). Unit tests cover production orchestration with mocked Native audit, missing and tampered original bytes, a forged measurement, and diagnostic rejection. A positive real Native original-attempt audit requires GPU capture and owner release.
+
+Production comparison invocation after original captures:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver \
+  .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/comparison_audit.py \
+  --comparison signal-prerequisite-control \
+  --baseline-attempt "$BOTH_ORIGINAL_ATTEMPT" --baseline-owner-release-receipt "$BOTH_OWNER_RELEASE" \
+  --contrast-attempt "$SIGNAL_MISSING_ORIGINAL_ATTEMPT" --contrast-owner-release-receipt "$SIGNAL_MISSING_OWNER_RELEASE"
+```
+
+For the other declared control, use `--comparison check-prerequisite-control` and the same baseline with the `check_missing` attempt and owner receipt as contrast. Original captures must supply the reviewed site, independent driver-input event stream, original PNGs, native exit, owner release, and independent original-source review. Observed driver input remains evidence of an event, not a legal finding of ascertainment or movement safety. Physical motion, pixel quality, traffic clearance, and local legal judgment remain pending.
+
+The exact scoped command `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c144550-semantic .venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete --require-delivery-ready` exits 0 (`proof-current-strict.log`, SHA256 `f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d`). All 39 focused tests pass (`proof-current-tests.log`, SHA256 `49709272064d395b1b2cbd736424ba3d66b865e7a5be4cda83041a1aec8b5c1e`). Every returned file is at most 2 MiB and text files have no trailing whitespace or blank final line.

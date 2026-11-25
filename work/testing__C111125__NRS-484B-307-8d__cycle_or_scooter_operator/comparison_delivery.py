@@ -10,10 +10,22 @@ import argparse
 import json
 from pathlib import Path
 
+from analysis import analyze_measurements
 from audit_comparison_receipts import ALL_PAIRS, audit_two_vs_three, measured
 from comparison_audit import audit_pair
 from delivery_audit import ASSIGNMENT, audit_processed
 from original_pixel_audit import audit as audit_original_pixels
+
+
+def measured_from_original(attempt: Path, processed: Path, suffix: str) -> dict:
+    """Require the saved comparison report to equal fresh original-source measurement."""
+    path = processed / "analysis/analysis-report.json"
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    fresh = analyze_measurements(attempt)
+    for field in ("case_id", "measurements", "measured_values"):
+        if saved.get(field) != fresh.get(field):
+            raise ValueError("saved comparison measurement differs from original sources: " + field)
+    return measured(path, suffix)
 
 
 def audit(
@@ -62,8 +74,12 @@ def audit(
         ]
         if any(item.get("status") != "original_pixels_reviewed" for item in pixel_reviews):
             raise ValueError("both original pixel reviews must pass")
-    left = measured(left_processed / "analysis/analysis-report.json", left_suffix)
-    right = measured(right_processed / "analysis/analysis-report.json", right_suffix)
+    if diagnostic:
+        left = measured(left_processed / "analysis/analysis-report.json", left_suffix)
+        right = measured(right_processed / "analysis/analysis-report.json", right_suffix)
+    else:
+        left = measured_from_original(left_attempt, left_processed, left_suffix)
+        right = measured_from_original(right_attempt, right_processed, right_suffix)
     contrast = (audit_two_vs_three(left, right) if comparison == "two_vs_three_complete_cycles"
                 else audit_pair(comparison, left, right))
     return {

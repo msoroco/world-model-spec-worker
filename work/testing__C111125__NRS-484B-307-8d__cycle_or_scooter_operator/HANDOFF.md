@@ -190,3 +190,9 @@ The frozen `judgment_ranges.json` and `evidence.json` still provide no reviewed 
 Exact scoped strict gate `cpu-strict-nov25c.log` exits 1 at the truthful partial-status acceptance check. Its SHA-256 is `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`.
 
 The measurement path has an executable CLI: `.venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/sweep_measurement.py --proposal "$EXPANDED_PROPOSAL" --case "$SWEEP_CASE_ID" --attempt "$SEALED_ORIGINAL_ATTEMPT" --output "$MEASUREMENT_RECEIPT"`. The output must be under `.runtime-work/` and outside the sealed attempt. It rejects overwriting a prior receipt. The final 50-test suite and scoped static check pass; the new CLI and original readback path are not yet a selected sweep case because original numeric controls/ranges are absent.
+
+## 2026-11-25 source-sealed numeric control invocation
+
+`sweep_control.py` now applies a generated judgment-sweep setpoint through only the method named by the reviewed numeric-control packet. It verifies the exact generated case and specification, source hash and exact reviewed site, supported adapter method, original readback field and unit, reviewed physical range, and a returned request receipt. It does not infer a realized value from the request; `sweep_measurement.py` still measures original Native readback independently. The 56-test suite passes in `cpu-control-tests.log`, including stale-source, unsupported-method and out-of-range negatives. No reviewed C111125 original control packet is present in the frozen inventory, so the two sweeps remain unexpanded and result status remains partial.
+
+The scoped static gate passes in `cpu-control-static.log`; the scoped strict gate exits 1 at the truthful partial-status acceptance check in `cpu-control-strict.log`. The required reviewed original numeric packet, source-supported physical ranges and corresponding generated-case proofs are still absent.

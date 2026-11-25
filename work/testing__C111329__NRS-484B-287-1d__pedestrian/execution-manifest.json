@@ -2,389 +2,640 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1d__pedestrian",
   "cases": [
     {
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail."
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "capture_export.py",
+          "evidence": "Native camera hashes, video_frames.jsonl and four FFV1 streams",
+          "method": "four original camera frame identities and PNG hashes"
+        },
+        "device_readback": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "reviewed device survey and sealed Native rows",
+          "method": "source-bound official pedestrian device state on each synchronous tick"
+        },
+        "walker_center_xy": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "Native rows, trace and capture/evidence frame joins",
+          "method": "original walker center and body pose on each synchronous tick"
+        }
       },
+      "candidate_risk": {
+        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed from 1.2 to 1.0 m/s"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "cases/adjacent_no_diagonal_authority/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/adjacent_no_diagonal_authority/fallback1-negative-analysis.log",
+            "receipt": "cases/adjacent_no_diagonal_authority/fallback1-compatibility.json",
+            "sha256": "0d4f398406b940c970a1786631e2a5f38a6004688225a52cabd4f253d4f3e949"
+          },
+          "construction": "cases/adjacent_no_diagonal_authority/fallback1-construction.json",
+          "construction_sha256": "4024fa7be8258e220ee82dcfa1f1631ea89409976ac4bff1a8c7ce2eaeb0000e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "4024fa7be8258e220ee82dcfa1f1631ea89409976ac4bff1a8c7ce2eaeb0000e",
+            "exit_code": 0,
+            "log": "cpu-selected-adjacent_no_diagonal_authority-fallback1-offline.log",
+            "log_sha256": "8cef3a77f2fa0da88e6b927da8cb4f4f939e7249d0cd5dc6b6b8ae0d52408257"
+          },
+          "trigger": {
+            "failure_condition": "primary control fails to settle at the surveyed destination",
+            "metric": "distance to surveyed pedestrian destination",
+            "source": "original 20 Hz walker center history"
+          }
+        }
+      ],
       "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority",
       "compatibility": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-primary-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
-        "receipt": "cases/adjacent_no_diagonal_authority/primary-compatibility.json",
-        "sha256": "dcb635e61e26f3e8735b4700daf49176377c63b3a1cdccb3cd2b21fd897d8d0d",
         "log": "cases/adjacent_no_diagonal_authority/primary-compatibility-analysis.log",
-        "negative_log": "cases/adjacent_no_diagonal_authority/primary-negative-analysis.log"
+        "negative_log": "cases/adjacent_no_diagonal_authority/primary-negative-analysis.log",
+        "receipt": "cases/adjacent_no_diagonal_authority/primary-compatibility.json",
+        "sha256": "dcb635e61e26f3e8735b4700daf49176377c63b3a1cdccb3cd2b21fd897d8d0d"
       },
       "construction": "construction-adjacent_no_diagonal_authority.json",
       "construction_sha256": "11d5286b52bbe1bdd4ff55be4029e2938f529c3cf89a8d71d4d4d5eb58381731",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_no_diagonal_authority --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_no_diagonal_authority/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/adjacent_no_diagonal_authority/original-audit-diagnostic.json --allow-diagnostic --expected-frames 3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_no_diagonal_authority --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_no_diagonal_authority/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_no_diagonal_authority-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "unreviewed original site rejected",
+        "negative_log": "cpu-original-audit-adjacent_no_diagonal_authority-negative.log",
+        "negative_log_sha256": "78efccd3458e3f34aecb52d9607c1f0b75d936bfa018d8ff463c5d8c22a3685e",
+        "production_source_audit_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --attempt \"$ATTEMPT\" --refs \"$ATTEMPT/source-refs.json\" --output \"$AUDIT_REPORT\"",
+        "scope": "CPU diagnostic proof; original physical and legal reviews remain pending",
+        "script": "original_attempt_audit.py",
+        "script_sha256": "7af4a75d3ba4e8194717a0a75500eb47585e4185f558a69f6bb98c583d4055ec",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-original-audit-adjacent_no_diagonal_authority-positive.log",
+        "test_log_sha256": "9e9721b4e7b618b6b02f119b31847f287b37fced17d0814ba596a6c2a0a7b5e0"
+      },
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/adjacent_no_diagonal_authority/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/adjacent_no_diagonal_authority/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "kind": "delivery",
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/adjacent_no_diagonal_authority/fallback1-construction.json",
-          "construction_sha256": "4024fa7be8258e220ee82dcfa1f1631ea89409976ac4bff1a8c7ce2eaeb0000e",
-          "trigger": {
-            "source": "original 20 Hz walker center history",
-            "metric": "distance to surveyed pedestrian destination",
-            "failure_condition": "primary control fails to settle at the surveyed destination"
-          },
-          "changed_knobs": [
-            "walker requested speed from 1.2 to 1.0 m/s"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "log": "cpu-selected-adjacent_no_diagonal_authority-fallback1-offline.log",
-            "log_sha256": "8cef3a77f2fa0da88e6b927da8cb4f4f939e7249d0cd5dc6b6b8ae0d52408257",
-            "construction_sha256": "4024fa7be8258e220ee82dcfa1f1631ea89409976ac4bff1a8c7ce2eaeb0000e"
-          },
-          "compatibility": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "receipt": "cases/adjacent_no_diagonal_authority/fallback1-compatibility.json",
-            "sha256": "0d4f398406b940c970a1786631e2a5f38a6004688225a52cabd4f253d4f3e949",
-            "log": "cases/adjacent_no_diagonal_authority/fallback1-compatibility-analysis.log",
-            "negative_log": "cases/adjacent_no_diagonal_authority/fallback1-negative-analysis.log"
-          }
-        }
-      ],
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/adjacent_no_diagonal_authority/primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "11d5286b52bbe1bdd4ff55be4029e2938f529c3cf89a8d71d4d4d5eb58381731",
+        "exit_code": 0,
+        "log": "cpu-selected-adjacent_no_diagonal_authority-primary-offline.log",
+        "log_sha256": "788660c81fb8a9c753765c18117317d671114dc062cf0d7067724be2edec5419"
       },
       "original_source_gate": {
-        "required_at_execution": true,
-        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "device_and_instruction": "official pedestrian device identity, placement and diagonal instruction record",
         "exception": "review original NRS 484B.290 exception source before legal conclusion",
+        "legal_conclusion": "not_assessed",
+        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "original_media": "900 synchronized original frames from four cameras with frame and pixel review",
-        "source_status": "unresolved",
         "physical_completion_claimed": false,
-        "legal_conclusion": "not_assessed"
-      },
-      "acquisition": {
-        "walker_center_xy": {
-          "entrypoint": "native_acquisition.py",
-          "method": "original walker pose per synchronous frame"
-        },
-        "device_readback": {
-          "entrypoint": "native_acquisition.py",
-          "method": "source-bound pedestrian device state per synchronous frame"
-        },
-        "camera_frame_join": {
-          "entrypoint": "capture_export.py",
-          "method": "four original camera frame identities and PNG hashes"
-        }
+        "required_at_execution": true,
+        "source_status": "unresolved"
       },
       "physical_preparation": {
         "receipt": "cases/adjacent_no_diagonal_authority/physical-preparation.json",
         "sha256": "decc41390658abd3e29ee75eb77aa32942e3a64d2d2156557ed25686bfc113b0"
       },
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --output .runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "log": "cpu-selected-adjacent_no_diagonal_authority-primary-offline.log",
-        "log_sha256": "788660c81fb8a9c753765c18117317d671114dc062cf0d7067724be2edec5419",
-        "construction_sha256": "11d5286b52bbe1bdd4ff55be4029e2938f529c3cf89a8d71d4d4d5eb58381731"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_no_diagonal_authority-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-sealed-adjacent_no_diagonal_authority-saved.log",
+        "test_log_sha256": "8cfe34b4bbbdf8d8d8aeb6c09fa96600fb0b822f2600c673cfdeb261200696e2"
       }
     },
     {
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail."
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "capture_export.py",
+          "evidence": "Native camera hashes, video_frames.jsonl and four FFV1 streams",
+          "method": "four original camera frame identities and PNG hashes"
+        },
+        "device_readback": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "reviewed device survey and sealed Native rows",
+          "method": "source-bound official pedestrian device state on each synchronous tick"
+        },
+        "walker_center_xy": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "Native rows, trace and capture/evidence frame joins",
+          "method": "original walker center and body pose on each synchronous tick"
+        }
       },
+      "candidate_risk": {
+        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed from 1.2 to 1.0 m/s"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "cases/diagonal_no_authority/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/diagonal_no_authority/fallback1-negative-analysis.log",
+            "receipt": "cases/diagonal_no_authority/fallback1-compatibility.json",
+            "sha256": "195a404fd28b24a4f80e6774acc15ac3d7e66c43054dd8872b9c6aa5a54ca2c4"
+          },
+          "construction": "cases/diagonal_no_authority/fallback1-construction.json",
+          "construction_sha256": "1245d200365fac1cd42e511492d8ecf3d2e41660be26fc319d68c72b750899f1",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "1245d200365fac1cd42e511492d8ecf3d2e41660be26fc319d68c72b750899f1",
+            "exit_code": 0,
+            "log": "cpu-selected-diagonal_no_authority-fallback1-offline.log",
+            "log_sha256": "11cf080fc8253fa14eb1cb30116a3ef5c74063de259b1fbad32113d8cb383809"
+          },
+          "trigger": {
+            "failure_condition": "primary control fails to settle at the surveyed destination",
+            "metric": "distance to surveyed pedestrian destination",
+            "source": "original 20 Hz walker center history"
+          }
+        }
+      ],
       "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority",
       "compatibility": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-primary-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
-        "receipt": "cases/diagonal_no_authority/primary-compatibility.json",
-        "sha256": "6f216d1e3179ae27df887fd333a9092c5bfe0ff33e0fd1409ace79882be0c8b5",
         "log": "cases/diagonal_no_authority/primary-compatibility-analysis.log",
-        "negative_log": "cases/diagonal_no_authority/primary-negative-analysis.log"
+        "negative_log": "cases/diagonal_no_authority/primary-negative-analysis.log",
+        "receipt": "cases/diagonal_no_authority/primary-compatibility.json",
+        "sha256": "6f216d1e3179ae27df887fd333a9092c5bfe0ff33e0fd1409ace79882be0c8b5"
       },
       "construction": "construction-diagonal_no_authority.json",
       "construction_sha256": "66c4f4f9184017577cc2e190d39196415d2ce8e5cd9fb6964b674b4a72af60ea",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_no_authority --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_no_authority/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/diagonal_no_authority/original-audit-diagnostic.json --allow-diagnostic --expected-frames 3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_no_authority --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_no_authority/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_no_authority-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "unreviewed original site rejected",
+        "negative_log": "cpu-original-audit-diagonal_no_authority-negative.log",
+        "negative_log_sha256": "78efccd3458e3f34aecb52d9607c1f0b75d936bfa018d8ff463c5d8c22a3685e",
+        "production_source_audit_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --attempt \"$ATTEMPT\" --refs \"$ATTEMPT/source-refs.json\" --output \"$AUDIT_REPORT\"",
+        "scope": "CPU diagnostic proof; original physical and legal reviews remain pending",
+        "script": "original_attempt_audit.py",
+        "script_sha256": "7af4a75d3ba4e8194717a0a75500eb47585e4185f558a69f6bb98c583d4055ec",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-original-audit-diagonal_no_authority-positive.log",
+        "test_log_sha256": "3963428a30050248d51b86be2712e4570c865203c6eeffd59530859faefdbdef"
+      },
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/diagonal_no_authority/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/diagonal_no_authority/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "kind": "delivery",
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/diagonal_no_authority/fallback1-construction.json",
-          "construction_sha256": "1245d200365fac1cd42e511492d8ecf3d2e41660be26fc319d68c72b750899f1",
-          "trigger": {
-            "source": "original 20 Hz walker center history",
-            "metric": "distance to surveyed pedestrian destination",
-            "failure_condition": "primary control fails to settle at the surveyed destination"
-          },
-          "changed_knobs": [
-            "walker requested speed from 1.2 to 1.0 m/s"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "log": "cpu-selected-diagonal_no_authority-fallback1-offline.log",
-            "log_sha256": "11cf080fc8253fa14eb1cb30116a3ef5c74063de259b1fbad32113d8cb383809",
-            "construction_sha256": "1245d200365fac1cd42e511492d8ecf3d2e41660be26fc319d68c72b750899f1"
-          },
-          "compatibility": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "receipt": "cases/diagonal_no_authority/fallback1-compatibility.json",
-            "sha256": "195a404fd28b24a4f80e6774acc15ac3d7e66c43054dd8872b9c6aa5a54ca2c4",
-            "log": "cases/diagonal_no_authority/fallback1-compatibility-analysis.log",
-            "negative_log": "cases/diagonal_no_authority/fallback1-negative-analysis.log"
-          }
-        }
-      ],
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/diagonal_no_authority/primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "66c4f4f9184017577cc2e190d39196415d2ce8e5cd9fb6964b674b4a72af60ea",
+        "exit_code": 0,
+        "log": "cpu-selected-diagonal_no_authority-primary-offline.log",
+        "log_sha256": "30f771c51ab3efb6549fbf191eb1cb46f9b1aff6202bc25096ed65ca910eb890"
       },
       "original_source_gate": {
-        "required_at_execution": true,
-        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "device_and_instruction": "official pedestrian device identity, placement and diagonal instruction record",
         "exception": "review original NRS 484B.290 exception source before legal conclusion",
+        "legal_conclusion": "not_assessed",
+        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "original_media": "900 synchronized original frames from four cameras with frame and pixel review",
-        "source_status": "unresolved",
         "physical_completion_claimed": false,
-        "legal_conclusion": "not_assessed"
-      },
-      "acquisition": {
-        "walker_center_xy": {
-          "entrypoint": "native_acquisition.py",
-          "method": "original walker pose per synchronous frame"
-        },
-        "device_readback": {
-          "entrypoint": "native_acquisition.py",
-          "method": "source-bound pedestrian device state per synchronous frame"
-        },
-        "camera_frame_join": {
-          "entrypoint": "capture_export.py",
-          "method": "four original camera frame identities and PNG hashes"
-        }
+        "required_at_execution": true,
+        "source_status": "unresolved"
       },
       "physical_preparation": {
         "receipt": "cases/diagonal_no_authority/physical-preparation.json",
         "sha256": "fca4fece7ee026d7a06ba56a4d876a1aa812b1f6073be3dedf869e5f7240c9a5"
       },
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --output .runtime-work/c111329-2871d-selected/diagonal_no_authority-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "log": "cpu-selected-diagonal_no_authority-primary-offline.log",
-        "log_sha256": "30f771c51ab3efb6549fbf191eb1cb46f9b1aff6202bc25096ed65ca910eb890",
-        "construction_sha256": "66c4f4f9184017577cc2e190d39196415d2ce8e5cd9fb6964b674b4a72af60ea"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_no_authority-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_no_authority-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_no_authority-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_no_authority-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-sealed-diagonal_no_authority-saved.log",
+        "test_log_sha256": "a0a5b0a825e3e4911e600596cb2bc94cd2de4b0c0e04baea2c947b8ee1796cc9"
       }
     },
     {
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail."
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "capture_export.py",
+          "evidence": "Native camera hashes, video_frames.jsonl and four FFV1 streams",
+          "method": "four original camera frame identities and PNG hashes"
+        },
+        "device_readback": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "reviewed device survey and sealed Native rows",
+          "method": "source-bound official pedestrian device state on each synchronous tick"
+        },
+        "walker_center_xy": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "Native rows, trace and capture/evidence frame joins",
+          "method": "original walker center and body pose on each synchronous tick"
+        }
       },
+      "candidate_risk": {
+        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed from 1.2 to 1.0 m/s"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_authorized-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "cases/diagonal_authorized/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/diagonal_authorized/fallback1-negative-analysis.log",
+            "receipt": "cases/diagonal_authorized/fallback1-compatibility.json",
+            "sha256": "6c731577027a65af84e04dfa37d97dd696ba2badc22ca6aa1e176674f2d7fd94"
+          },
+          "construction": "cases/diagonal_authorized/fallback1-construction.json",
+          "construction_sha256": "5ad2939655785821920a4f6359c7f49f807356059088e5957bfc775070ed96f3",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_authorized-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "5ad2939655785821920a4f6359c7f49f807356059088e5957bfc775070ed96f3",
+            "exit_code": 0,
+            "log": "cpu-selected-diagonal_authorized-fallback1-offline.log",
+            "log_sha256": "aeb390db6c77c07ff204abd1c9146815964ea28632469ef23eac1a6e5ee999cc"
+          },
+          "trigger": {
+            "failure_condition": "primary control fails to settle at the surveyed destination",
+            "metric": "distance to surveyed pedestrian destination",
+            "source": "original 20 Hz walker center history"
+          }
+        }
+      ],
       "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized",
       "compatibility": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --output .runtime-work/c111329-2871d-selected/diagonal_authorized-primary-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
-        "receipt": "cases/diagonal_authorized/primary-compatibility.json",
-        "sha256": "81fbd05ffaab4e0e44d1ee7af38458c6b085115ee97bdeac70a919d1d4badb3b",
         "log": "cases/diagonal_authorized/primary-compatibility-analysis.log",
-        "negative_log": "cases/diagonal_authorized/primary-negative-analysis.log"
+        "negative_log": "cases/diagonal_authorized/primary-negative-analysis.log",
+        "receipt": "cases/diagonal_authorized/primary-compatibility.json",
+        "sha256": "81fbd05ffaab4e0e44d1ee7af38458c6b085115ee97bdeac70a919d1d4badb3b"
       },
       "construction": "construction-diagonal_authorized.json",
       "construction_sha256": "da8ac6aecfb333f81ea77a1e78c1fd764c4801f2847b7225d2b5a6d8b4226d6a",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_authorized --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_authorized/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/diagonal_authorized/original-audit-diagnostic.json --allow-diagnostic --expected-frames 3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_authorized --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_authorized/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/diagonal_authorized-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "unreviewed original site rejected",
+        "negative_log": "cpu-original-audit-diagonal_authorized-negative.log",
+        "negative_log_sha256": "78efccd3458e3f34aecb52d9607c1f0b75d936bfa018d8ff463c5d8c22a3685e",
+        "production_source_audit_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --attempt \"$ATTEMPT\" --refs \"$ATTEMPT/source-refs.json\" --output \"$AUDIT_REPORT\"",
+        "scope": "CPU diagnostic proof; original physical and legal reviews remain pending",
+        "script": "original_attempt_audit.py",
+        "script_sha256": "7af4a75d3ba4e8194717a0a75500eb47585e4185f558a69f6bb98c583d4055ec",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-original-audit-diagonal_authorized-positive.log",
+        "test_log_sha256": "5ec64cd6eb301b0d6a01a1d2c4729ca8a823c1f0f57262ca5a109a65bacf0388"
+      },
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/diagonal_authorized/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/diagonal_authorized/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "kind": "delivery",
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/diagonal_authorized/fallback1-construction.json",
-          "construction_sha256": "5ad2939655785821920a4f6359c7f49f807356059088e5957bfc775070ed96f3",
-          "trigger": {
-            "source": "original 20 Hz walker center history",
-            "metric": "distance to surveyed pedestrian destination",
-            "failure_condition": "primary control fails to settle at the surveyed destination"
-          },
-          "changed_knobs": [
-            "walker requested speed from 1.2 to 1.0 m/s"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_authorized-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "log": "cpu-selected-diagonal_authorized-fallback1-offline.log",
-            "log_sha256": "aeb390db6c77c07ff204abd1c9146815964ea28632469ef23eac1a6e5ee999cc",
-            "construction_sha256": "5ad2939655785821920a4f6359c7f49f807356059088e5957bfc775070ed96f3"
-          },
-          "compatibility": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --candidate fallback1 --output .runtime-work/c111329-2871d-selected/diagonal_authorized-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "receipt": "cases/diagonal_authorized/fallback1-compatibility.json",
-            "sha256": "6c731577027a65af84e04dfa37d97dd696ba2badc22ca6aa1e176674f2d7fd94",
-            "log": "cases/diagonal_authorized/fallback1-compatibility-analysis.log",
-            "negative_log": "cases/diagonal_authorized/fallback1-negative-analysis.log"
-          }
-        }
-      ],
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/diagonal_authorized/primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --output .runtime-work/c111329-2871d-selected/diagonal_authorized-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "da8ac6aecfb333f81ea77a1e78c1fd764c4801f2847b7225d2b5a6d8b4226d6a",
+        "exit_code": 0,
+        "log": "cpu-selected-diagonal_authorized-primary-offline.log",
+        "log_sha256": "8b9b8ab6f1cb8b8a0ab8c7925c249c742872003332a68f00385c275ac47a883d"
       },
       "original_source_gate": {
-        "required_at_execution": true,
-        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "device_and_instruction": "official pedestrian device identity, placement and diagonal instruction record",
         "exception": "review original NRS 484B.290 exception source before legal conclusion",
+        "legal_conclusion": "not_assessed",
+        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "original_media": "900 synchronized original frames from four cameras with frame and pixel review",
-        "source_status": "unresolved",
         "physical_completion_claimed": false,
-        "legal_conclusion": "not_assessed"
-      },
-      "acquisition": {
-        "walker_center_xy": {
-          "entrypoint": "native_acquisition.py",
-          "method": "original walker pose per synchronous frame"
-        },
-        "device_readback": {
-          "entrypoint": "native_acquisition.py",
-          "method": "source-bound pedestrian device state per synchronous frame"
-        },
-        "camera_frame_join": {
-          "entrypoint": "capture_export.py",
-          "method": "four original camera frame identities and PNG hashes"
-        }
+        "required_at_execution": true,
+        "source_status": "unresolved"
       },
       "physical_preparation": {
         "receipt": "cases/diagonal_authorized/physical-preparation.json",
         "sha256": "ce9eec6dcfc26d4e4ad72babff7134c1b0afe0e0f93cf894ab02f1a8f4edca93"
       },
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --output .runtime-work/c111329-2871d-selected/diagonal_authorized-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "log": "cpu-selected-diagonal_authorized-primary-offline.log",
-        "log_sha256": "8b9b8ab6f1cb8b8a0ab8c7925c249c742872003332a68f00385c275ac47a883d",
-        "construction_sha256": "da8ac6aecfb333f81ea77a1e78c1fd764c4801f2847b7225d2b5a6d8b4226d6a"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_authorized-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_authorized-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_authorized-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/diagonal_authorized-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-sealed-diagonal_authorized-saved.log",
+        "test_log_sha256": "e986bbd29d676e3d01dab845abc7e6b04464243a80f33c9fe81d434052ff3cdb"
       }
     },
     {
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail."
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "capture_export.py",
+          "evidence": "Native camera hashes, video_frames.jsonl and four FFV1 streams",
+          "method": "four original camera frame identities and PNG hashes"
+        },
+        "device_readback": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "reviewed device survey and sealed Native rows",
+          "method": "source-bound official pedestrian device state on each synchronous tick"
+        },
+        "walker_center_xy": {
+          "entrypoint": "native_acquisition.py",
+          "evidence": "Native rows, trace and capture/evidence frame joins",
+          "method": "original walker center and body pose on each synchronous tick"
+        }
       },
+      "candidate_risk": {
+        "reason": "Original intersection route reachability and device readback are unmeasured; endpoint settling may fail.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed from 1.2 to 1.0 m/s"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "cases/adjacent_authorized_device/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/adjacent_authorized_device/fallback1-negative-analysis.log",
+            "receipt": "cases/adjacent_authorized_device/fallback1-compatibility.json",
+            "sha256": "499cee42f9ce1342826d010179a10e0168396b7ee030c28da1611b50692347c9"
+          },
+          "construction": "cases/adjacent_authorized_device/fallback1-construction.json",
+          "construction_sha256": "051958b8f91618733642fcad45ce213e781b3ec4e0fff076ac0f8e7466aea7ad",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "051958b8f91618733642fcad45ce213e781b3ec4e0fff076ac0f8e7466aea7ad",
+            "exit_code": 0,
+            "log": "cpu-selected-adjacent_authorized_device-fallback1-offline.log",
+            "log_sha256": "84e14a910472f56e1eead6ccc22efc67f96f62d6f6b3fb4c6a902a0ee21cb236"
+          },
+          "trigger": {
+            "failure_condition": "primary control fails to settle at the surveyed destination",
+            "metric": "distance to surveyed pedestrian destination",
+            "source": "original 20 Hz walker center history"
+          }
+        }
+      ],
       "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device",
       "compatibility": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-primary-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
-        "receipt": "cases/adjacent_authorized_device/primary-compatibility.json",
-        "sha256": "b1ebcfe739643d2a3200d1af3df6d5d5a49635447d701b8729696bb0d0b92e75",
         "log": "cases/adjacent_authorized_device/primary-compatibility-analysis.log",
-        "negative_log": "cases/adjacent_authorized_device/primary-negative-analysis.log"
+        "negative_log": "cases/adjacent_authorized_device/primary-negative-analysis.log",
+        "receipt": "cases/adjacent_authorized_device/primary-compatibility.json",
+        "sha256": "b1ebcfe739643d2a3200d1af3df6d5d5a49635447d701b8729696bb0d0b92e75"
       },
       "construction": "construction-adjacent_authorized_device.json",
       "construction_sha256": "fc706f8845dd0bef34a9cddb52ca85e07d3a5847fcc116e0a7f9e82e153dc80d",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_authorized_device --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_authorized_device/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/adjacent_authorized_device/original-audit-diagnostic.json --allow-diagnostic --expected-frames 3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_authorized_device --refs /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_authorized_device/source-refs.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-original-audit-proof/adjacent_authorized_device-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "unreviewed original site rejected",
+        "negative_log": "cpu-original-audit-adjacent_authorized_device-negative.log",
+        "negative_log_sha256": "78efccd3458e3f34aecb52d9607c1f0b75d936bfa018d8ff463c5d8c22a3685e",
+        "production_source_audit_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_attempt_audit.py --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --attempt \"$ATTEMPT\" --refs \"$ATTEMPT/source-refs.json\" --output \"$AUDIT_REPORT\"",
+        "scope": "CPU diagnostic proof; original physical and legal reviews remain pending",
+        "script": "original_attempt_audit.py",
+        "script_sha256": "7af4a75d3ba4e8194717a0a75500eb47585e4185f558a69f6bb98c583d4055ec",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-original-audit-adjacent_authorized_device-positive.log",
+        "test_log_sha256": "01070bfb19d3371ad2f575f0662c7fb45b73acc62c586febf11aa4f2530f0a28"
+      },
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1d__pedestrian/cases/adjacent_authorized_device/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/adjacent_authorized_device/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "kind": "delivery",
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "cases/adjacent_authorized_device/fallback1-construction.json",
-          "construction_sha256": "051958b8f91618733642fcad45ce213e781b3ec4e0fff076ac0f8e7466aea7ad",
-          "trigger": {
-            "source": "original 20 Hz walker center history",
-            "metric": "distance to surveyed pedestrian destination",
-            "failure_condition": "primary control fails to settle at the surveyed destination"
-          },
-          "changed_knobs": [
-            "walker requested speed from 1.2 to 1.0 m/s"
-          ],
-          "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "log": "cpu-selected-adjacent_authorized_device-fallback1-offline.log",
-            "log_sha256": "84e14a910472f56e1eead6ccc22efc67f96f62d6f6b3fb4c6a902a0ee21cb236",
-            "construction_sha256": "051958b8f91618733642fcad45ce213e781b3ec4e0fff076ac0f8e7466aea7ad"
-          },
-          "compatibility": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --candidate fallback1 --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-fallback1-compat --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-            "exit_code": 0,
-            "receipt": "cases/adjacent_authorized_device/fallback1-compatibility.json",
-            "sha256": "499cee42f9ce1342826d010179a10e0168396b7ee030c28da1611b50692347c9",
-            "log": "cases/adjacent_authorized_device/fallback1-compatibility-analysis.log",
-            "negative_log": "cases/adjacent_authorized_device/fallback1-negative-analysis.log"
-          }
-        }
-      ],
       "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/adjacent_authorized_device/primary-negative-analysis.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "fc706f8845dd0bef34a9cddb52ca85e07d3a5847fcc116e0a7f9e82e153dc80d",
+        "exit_code": 0,
+        "log": "cpu-selected-adjacent_authorized_device-primary-offline.log",
+        "log_sha256": "d9eb9bd89aade6a73dc404f3059a0f49a7b97512f4b68d53bed742a34646aa9c"
       },
       "original_source_gate": {
-        "required_at_execution": true,
-        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "device_and_instruction": "official pedestrian device identity, placement and diagonal instruction record",
         "exception": "review original NRS 484B.290 exception source before legal conclusion",
+        "legal_conclusion": "not_assessed",
+        "map_and_corners": "surveyed original C111329 intersection polygon and four pedestrian corners",
         "original_media": "900 synchronized original frames from four cameras with frame and pixel review",
-        "source_status": "unresolved",
         "physical_completion_claimed": false,
-        "legal_conclusion": "not_assessed"
-      },
-      "acquisition": {
-        "walker_center_xy": {
-          "entrypoint": "native_acquisition.py",
-          "method": "original walker pose per synchronous frame"
-        },
-        "device_readback": {
-          "entrypoint": "native_acquisition.py",
-          "method": "source-bound pedestrian device state per synchronous frame"
-        },
-        "camera_frame_join": {
-          "entrypoint": "capture_export.py",
-          "method": "four original camera frame identities and PNG hashes"
-        }
+        "required_at_execution": true,
+        "source_status": "unresolved"
       },
       "physical_preparation": {
         "receipt": "cases/adjacent_authorized_device/physical-preparation.json",
         "sha256": "f576528876b2aaee12d89dced4a758b3e3333c1d029b5e4607f3af64d57face8"
       },
-      "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --output .runtime-work/c111329-2871d-selected/adjacent_authorized_device-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "log": "cpu-selected-adjacent_authorized_device-primary-offline.log",
-        "log_sha256": "d9eb9bd89aade6a73dc404f3059a0f49a7b97512f4b68d53bed742a34646aa9c",
-        "construction_sha256": "fc706f8845dd0bef34a9cddb52ca85e07d3a5847fcc116e0a7f9e82e153dc80d"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_authorized_device-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_authorized_device-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/execution-manifest.json --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_authorized_device-sealed-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111329-2871d-selected/adjacent_authorized_device-sealed-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-sealed-adjacent_authorized_device-saved.log",
+        "test_log_sha256": "d1959677c51815fc98db3cc8d583e5b5c61c21c1de1b1d0a01cf7d268816e062"
       }
     }
   ],
-  "format": "worker-execution-manifest",
-  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_source_gated_originals_pending",
-  "source_audit_protocol": {
-    "positive": "verify SHA-bound original map/corner and pedestrian device records, case route, instruction, and NRS 484B.290 review before Native dispatch",
-    "negative": "reject changed source bytes, missing official diagonal instruction, mismatched case or incomplete original camera frames",
-    "diagnostics": "synthetic test doubles exercise interface only; none are original sources"
-  },
   "comparison_audit_protocol": {
+    "comparison_ids": [
+      "diagonal_path_without_authority",
+      "diagonal_device_authority",
+      "authorized_device_path_control"
+    ],
     "controls": "three exact planned case contrasts, joined on C111329 and NRS 484B.287(1)(d)",
+    "negative": "reject mismatched cell, law, recording source or changed case measurements",
     "positive": "independently compare case measurements only after original source and physical completion audits",
-    "negative": "reject mismatched cell, law, recording source or changed case measurements"
-  }
+    "production_audit_script": "original_comparison_audit.py",
+    "production_audit_script_sha256": "976f37f5a5e34dd7babacb3ca2f5041d57db7a915c5aaa494b72aa945eab6023"
+  },
+  "format": "worker-execution-manifest",
+  "original_comparison_audits": [
+    {
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority"
+      ],
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_comparison_audit.py --comparison diagonal_path_without_authority --first-attempt \"$FIRST_ATTEMPT\" --first-refs \"$FIRST_ATTEMPT/source-refs.json\" --second-attempt \"$SECOND_ATTEMPT\" --second-refs \"$SECOND_ATTEMPT/source-refs.json\" --output \"$COMPARISON_REPORT\"",
+      "comparison_id": "diagonal_path_without_authority",
+      "deliberate_differences": [
+        "measured adjacent-corner versus opposite-corner crossing path"
+      ],
+      "diagnostic_cli_proof": {
+        "negative_log": "cpu-original-comparison-diagonal_path_without_authority-negative.log",
+        "negative_log_sha256": "1cd7a73acb79c950b562fcfa22e11792b9c350923dbaaa6a9ccbaa503893ae85",
+        "positive_log": "cpu-original-comparison-diagonal_path_without_authority-positive.log",
+        "positive_log_sha256": "8afb56e8f57166d7e37847342a64b3ede9b40214accc65debd0ff906da460386",
+        "receipt": "comparisons/diagonal_path_without_authority.original-diagnostic.json",
+        "receipt_sha256": "2a589c4680b7ea835ac48519cb36e7e1fc6e47d0c0512476b5052f69968a794b"
+      },
+      "fixed_conditions": [
+        "same measured intersection polygon and corner coordinate frame",
+        "same absence of official diagonal pedestrian authorization",
+        "same pedestrian blueprint, controller speed, four cameras, 20 Hz and duration"
+      ],
+      "script_sha256": "976f37f5a5e34dd7babacb3ca2f5041d57db7a915c5aaa494b72aa945eab6023"
+    },
+    {
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_no_authority",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized"
+      ],
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_comparison_audit.py --comparison diagonal_device_authority --first-attempt \"$FIRST_ATTEMPT\" --first-refs \"$FIRST_ATTEMPT/source-refs.json\" --second-attempt \"$SECOND_ATTEMPT\" --second-refs \"$SECOND_ATTEMPT/source-refs.json\" --output \"$COMPARISON_REPORT\"",
+      "comparison_id": "diagonal_device_authority",
+      "deliberate_differences": [
+        "source-backed official pedestrian-governing diagonal authorization versus none"
+      ],
+      "diagnostic_cli_proof": {
+        "negative_log": "cpu-original-comparison-diagonal_device_authority-negative.log",
+        "negative_log_sha256": "1cd7a73acb79c950b562fcfa22e11792b9c350923dbaaa6a9ccbaa503893ae85",
+        "positive_log": "cpu-original-comparison-diagonal_device_authority-positive.log",
+        "positive_log_sha256": "40dbb31074b33fd5d7ddceace79838b335dfe74def02c28f7a5535cf38deff5d",
+        "receipt": "comparisons/diagonal_device_authority.original-diagnostic.json",
+        "receipt_sha256": "6912d8619357ebf0f17c162ce05c38eb08cc2ae671cc9ab837e5c5c5dbf18301"
+      },
+      "fixed_conditions": [
+        "same measured opposite-corner route and intersection polygon",
+        "same pedestrian blueprint, controller speed, four cameras, 20 Hz and duration"
+      ],
+      "script_sha256": "976f37f5a5e34dd7babacb3ca2f5041d57db7a915c5aaa494b72aa945eab6023"
+    },
+    {
+      "case_ids": [
+        "testing__C111329__NRS-484B-287-1d__pedestrian__diagonal_authorized",
+        "testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_authorized_device"
+      ],
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/original_comparison_audit.py --comparison authorized_device_path_control --first-attempt \"$FIRST_ATTEMPT\" --first-refs \"$FIRST_ATTEMPT/source-refs.json\" --second-attempt \"$SECOND_ATTEMPT\" --second-refs \"$SECOND_ATTEMPT/source-refs.json\" --output \"$COMPARISON_REPORT\"",
+      "comparison_id": "authorized_device_path_control",
+      "deliberate_differences": [
+        "opposite-corner versus adjacent-corner route"
+      ],
+      "diagnostic_cli_proof": {
+        "negative_log": "cpu-original-comparison-authorized_device_path_control-negative.log",
+        "negative_log_sha256": "1cd7a73acb79c950b562fcfa22e11792b9c350923dbaaa6a9ccbaa503893ae85",
+        "positive_log": "cpu-original-comparison-authorized_device_path_control-positive.log",
+        "positive_log_sha256": "9dc4062ade8a858ab8597c926aaa262e79c234fea069645d8139a870e65f6e6d",
+        "receipt": "comparisons/authorized_device_path_control.original-diagnostic.json",
+        "receipt_sha256": "ef47d97751b175d5e6c42dfebf7894446b7114210970581a67fdc6b7b1d5b568"
+      },
+      "fixed_conditions": [
+        "same official pedestrian-governing diagonal-authorizing device and phase",
+        "same intersection polygon, blueprint, four cameras, 20 Hz and duration"
+      ],
+      "script_sha256": "976f37f5a5e34dd7babacb3ca2f5041d57db7a915c5aaa494b72aa945eab6023"
+    }
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "source_audit_protocol": {
+    "diagnostics": "synthetic test doubles exercise interface only; none are original sources",
+    "negative": "reject changed source bytes, missing official diagonal instruction, mismatched case or incomplete original camera frames",
+    "pinned_profile": "900 original frames, 20 Hz, four source-hashed FFV1 videos and PNG streams",
+    "positive": "verify SHA-bound original map/corner and pedestrian device records, case route, instruction, and NRS 484B.290 review before Native dispatch",
+    "production_audit_script": "original_attempt_audit.py",
+    "production_audit_script_sha256": "7af4a75d3ba4e8194717a0a75500eb47585e4185f558a69f6bb98c583d4055ec",
+    "source_refs_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111329__NRS-484B-287-1d__pedestrian/seal_original_refs.py --attempt \"$ATTEMPT\" --output \"$ATTEMPT/source-refs.json\"",
+    "source_review_command": "reviewed_site.verify against original map and pedestrian device packets"
+  },
+  "status": "selected_source_gated_originals_pending"
 }

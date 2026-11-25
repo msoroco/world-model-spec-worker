@@ -66,6 +66,27 @@ def measure_original_crossing(root: Path) -> dict:
                       "both_devices_operating_during_crossing": motion["both_devices_operating_during_crossing"]}}
 
 
+def measure_official_context(root: Path) -> dict:
+    _, _, site, _ = _inputs(root)
+    paths = ["effective-site-packet.json", "original-site-observation.json"]
+    return {"method": "measure_official_context",
+            "sources": {name: _sha(_required(root, name)) for name in paths},
+            "value": {"device_ids": site["device_ids"],
+                      "source_sha256": site["source_sha256"]["devices"],
+                      "legal_official_status": "undetermined",
+                      "legal_adjacency": "undetermined"}}
+
+
+def measure_exception_context(root: Path) -> dict:
+    _, _, site, _ = _inputs(root)
+    paths = ["effective-site-packet.json", "original-site-observation.json"]
+    return {"method": "measure_exception_context",
+            "sources": {name: _sha(_required(root, name)) for name in paths},
+            "value": {"highway_source_sha256": site["source_sha256"]["highway"],
+                      "nrs_484b_290_exception": "undetermined",
+                      "legal_review_required": True}}
+
+
 def _rows(root: Path, name: str) -> list[dict]:
     return [json.loads(line) for line in _required(root, name).read_text().splitlines() if line]
 
@@ -139,7 +160,9 @@ def analyze(root: Path, output: Path) -> dict:
     (root / "result.json").write_text(json.dumps(native, indent=2, allow_nan=False) + "\n")
     report = {"format": "worker-analysis-report", "case_id": case_id,
         "measurements": {"between_site": measure_between_site(root),
-                         "original_crossing": measure_original_crossing(root)},
+                         "original_crossing": measure_original_crossing(root),
+                         "official_context": measure_official_context(root),
+                         "exception_context": measure_exception_context(root)},
         "limitations": ["Legal adjacency, official device status and NRS 484B.290 exception require independent review."]}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

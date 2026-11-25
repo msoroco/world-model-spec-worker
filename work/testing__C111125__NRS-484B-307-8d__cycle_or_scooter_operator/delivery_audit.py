@@ -70,6 +70,18 @@ def audit(attempt: Path, authority: Path, site_file: Path, case_id: str,
     }
 
 
+def verify_original_measurements(attempt: Path, case_id: str,
+                                 result: dict, report: dict) -> None:
+    """Recompute the selected requirement rows from the sealed original packet."""
+    from analysis import analyze_measurements
+    fresh = analyze_measurements(attempt)
+    if (fresh.get("case_id") != case_id or
+            result.get("measured_values") != fresh.get("measured_values") or
+            report.get("measured_values") != fresh.get("measured_values") or
+            report.get("measurements") != fresh.get("measurements")):
+        raise ValueError("saved delivery measurements differ from original sources")
+
+
 def audit_processed(attempt: Path, processed: Path, case_id: str,
                     diagnostic_protocol: bool = False, *,
                     authority: Path | None = None, site_file: Path | None = None) -> dict:
@@ -87,8 +99,10 @@ def audit_processed(attempt: Path, processed: Path, case_id: str,
         raise ValueError("exact delivery case identity differs")
     receipt_path = processed / "processing.json"
     result_path = processed / "analysis/result.json"
+    report_path = processed / "analysis/analysis-report.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     result = json.loads(result_path.read_text(encoding="utf-8"))
+    report = json.loads(report_path.read_text(encoding="utf-8"))
     joins = receipt.get("timestamp_joins", {})
     media = receipt.get("final_video_checks", {})
     if (receipt.get("format") != "worker-saved-processing" or
@@ -112,6 +126,7 @@ def audit_processed(attempt: Path, processed: Path, case_id: str,
             raise ValueError("original acquisition missing or changed: " + name)
     if not {name + ".mkv" for name in CAMERAS} <= set(originals):
         raise ValueError("four original camera sources missing")
+    verify_original_measurements(attempt, case_id, result, report)
     mapping = attempt / "video_frames.jsonl"
     if mapping.is_file() and "video_frames.jsonl" in originals:
         rows = [json.loads(line) for line in mapping.read_text(encoding="utf-8").splitlines()]

@@ -127,6 +127,9 @@ def main() -> None:
                    expected_frames=args.expected_frames)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+    print(json.dumps({'case_id': result['case_id'], 'source_join_count': result['source_join_count'],
+                      'video_decoded_frames': {name: row['decoded_frames'] for name, row in result['video'].items()},
+                      'production': result['production']}, sort_keys=True))
 
 
 if __name__ == '__main__':

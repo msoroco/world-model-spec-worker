@@ -1,14 +1,26 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C111329__NRS-484B-287-1d__pedestrian",
+  "current_checkpoint": {
+    "comparison_count": 3,
+    "diagnostic_proof": "4 attempt positives, 3 comparison positives, 11 production negatives, changed source and changed media rejects",
+    "legal_verdict": null,
+    "physical_acceptance": false,
+    "production_original_attempt_cli": "original_attempt_audit.py --case CASE --attempt ATTEMPT --refs ATTEMPT/source-refs.json --output REPORT",
+    "production_original_comparison_cli": "original_comparison_audit.py --comparison ID --first-attempt FIRST --first-refs FIRST/source-refs.json --second-attempt SECOND --second-refs SECOND/source-refs.json --output REPORT",
+    "selected_cases": 4,
+    "selected_manifest_sha256": "f8ee165f9d8671ee8157ec3bea36eef6435139a1ee2f84e98f8158a73a6a0ffa"
+  },
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment testing__C111329__NRS-484B-287-1d__pedestrian --case testing__C111329__NRS-484B-287-1d__pedestrian__adjacent_no_diagonal_authority --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "08b4c204ffa107222be5348b86f2ade77eeae2a7675089a2aa0a583e6bad036b",
-  "readiness_kind": "partial_canonical_four_case_cpu_preparation",
-  "reason": "All four canonical selected cases and distinct lower-speed fallbacks pass current-runtime exact offline and positive/negative compatibility proofs; all four canonical-hash saved-only diagnostic runs pass. Full semantic and execution-manifest validation pass. Twelve synthetic physical-outcome fixtures and four lifecycle receipts pass, as do the source-protocol positive/negative test doubles and previously recorded independent delivery/comparison diagnostics. Original C111329 map/intersection/corner survey, official pedestrian-governing diagonal device and instruction, NRS 484B.290 exception source, 900-frame four-camera Native physical attempt and original-source delivery audit remain absent. CPU diagnostics are not original evidence; strict gate remains partial.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
-    "Original map, four pedestrian corners, official device/diagonal instruction and NRS 484B.290 exception source must be reviewed and SHA-bound before Native dispatch.",
-    "Run each selected exact case in CARLA with 900 synchronized original frames from four cameras; independently audit physical completion, pixels, device readback, delivery and comparisons."
+    "Original C111329 map, intersection polygon and four pedestrian corners require survey and source hash",
+    "Official pedestrian-governing diagonal instruction and NRS 484B.290 exception require reviewed original sources before legal conclusion",
+    "900-frame Native walker, device and four-camera capture, restoration, physical completion, original-source and pixel review remain pending"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -267,6 +279,18 @@
       "exit_code": 0,
       "log": "cpu-selected-static.log",
       "sha256": "919f8b6412581054281596ec1e35fb7358841d0580c5df80c3035ab86d498f20"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-original-tests.log",
+      "sha256": "6742ab75a86b01f0571cce24c554663e228fbee7c64bff42dad7acbc4389b58e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1d__pedestrian/prove_original_audits.py",
+      "exit_code": 0,
+      "log": "cpu-original-audits.log",
+      "sha256": "d636055fead996a6389225d150e3d51093f711c399f2566f48bb72f1613809f3"
     }
   ]
 }

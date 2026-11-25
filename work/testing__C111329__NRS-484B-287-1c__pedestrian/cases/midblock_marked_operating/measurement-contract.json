@@ -1,7 +1,13 @@
 {
-  "format": "worker-measurement-contract",
   "assignment_id": "testing__C111329__NRS-484B-287-1c__pedestrian",
   "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: effective-site-packet.json",
+    "remove": [
+      "effective-site-packet.json"
+    ]
+  },
   "requirements": [
     {
       "disposition_index": 0,
@@ -28,13 +34,33 @@
       "requirement": "original crossing route, marked extent and both-device operation",
       "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
       "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "effective-site-packet.json",
+        "original-site-observation.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_official_context",
+      "output_key": "official_context",
+      "requirement": "legal official status and adjacency",
+      "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 3,
+      "inputs": [
+        "effective-site-packet.json",
+        "original-site-observation.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_exception_context",
+      "output_key": "exception_context",
+      "requirement": "NRS 484B.290 exception",
+      "source": "inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json",
+      "value_type": "object"
     }
   ],
-  "negative": {
-    "remove": [
-      "effective-site-packet.json"
-    ],
-    "error_contains": "Missing required source: effective-site-packet.json"
-  },
   "scope": "synthetic CPU compatibility; reviewed Native site and legal review required for delivery"
 }

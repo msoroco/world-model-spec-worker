@@ -28,9 +28,11 @@ def build():
     plan_path = HERE / "case-plan.json"
     plan = json.loads(plan_path.read_text())
     source = "inputs/" + AID + "/assignment.json"
+    case_ids = [case["case_id"] for case in plan["cases"]]
     plan["selected_branch"] = "Passenger loading with a taxicab entrant"
     plan["requirement_dispositions"] = [
         {"requirement": phrase, "source": source, "status": "selected_required",
+         "case_ids": case_ids,
          "evidence_or_gap": "No accepted exact-branch recording; original site, actor and media sources pending review"}
         for phrase, _, _ in REQUIREMENTS
     ]

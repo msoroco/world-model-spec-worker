@@ -65,7 +65,7 @@ def bind():
                 "negative_log": negative,
                 "diagnostic_only": True,
                 "command": (f".venv-cpu/bin/python work/{ROOT.name}/run_compat_deterministic.py --manifest work/{ROOT.name}/execution-manifest.json "
-                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v9-{short}-{cand_id} "
+                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v10-{short}-{cand_id} "
                             "--library runtime/library --validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             }
             if cand_id == "primary":
@@ -95,7 +95,7 @@ def bind():
             "script": script,
             "script_sha256": digest(ROOT / script),
             "command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
-                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v9-{short}-primary "
+                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v10-{short}-primary "
                         f"--output .runtime-work/c111329-287-1c-independent-v9-{short}.json --diagnostic"),
             "negative_command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
                                  f"--case-id {case} --attempt .runtime-work/c111329-287-1c-independent-negative-v9-{short} "
@@ -111,7 +111,7 @@ def bind():
             "diagnostic_only": True,
             "recorded_only": True,
             "positive_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
-                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v9-{short}-primary "
+                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v10-{short}-primary "
                                  f"--output .runtime-work/c111329-287-1c-saved-v9-{short} --library runtime/library "
                                  "--validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             "missing_source_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
@@ -120,6 +120,34 @@ def bind():
                                        "--validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             "positive_receipt": f"cases/{short}/cpu-saved-positive-processing.json",
             "missing_source_receipt": f"cases/{short}/cpu-saved-negative-processing.json",
+        }
+        entry["original_source_gate"] = {
+            "required_at_execution": True,
+            "required_packet": "SHA-bound original fixed-cell map, two junctions, highway banks, complete marking survey, two device authority and operation records",
+            "required_media": "900 synchronized original frames with four PNG archives and four independently decoded encoded cameras",
+            "legal_adjacency": "undetermined",
+            "legal_official_status": "undetermined",
+            "nrs_484b_290_exception": "undetermined",
+            "physical_completion_claimed": False,
+        }
+        entry["production_original_audit"] = {
+            "script": "independent_cpu_delivery.py",
+            "script_sha256": digest(ROOT / "independent_cpu_delivery.py"),
+            "command": (f"PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
+                        f".venv-cpu/bin/python work/{ROOT.name}/independent_cpu_delivery.py "
+                        f"--case-id {case} --attempt \"$ORIGINAL_ATTEMPT\" --output \"$AUDIT_OUTPUT\""),
+            "original_sources_required": True,
+            "diagnostic_fixture_accepted": False,
+            "physical_completion_claimed": False,
+        }
+        entry["post_capture"] = {
+            "recorded_only": True,
+            "command": entry["saved_processing"]["positive_command"],
+            "feedback_command": (f".venv-cpu/bin/python runtime.py feedback --manifest work/{ROOT.name}/execution-manifest.json "
+                                 f"--case {case} --attempt \"$ORIGINAL_ATTEMPT\""),
+            "test_exit_code": 0,
+            "test_log": f"cases/{short}/cpu-saved-positive-analysis.log",
+            "test_log_sha256": digest(case_dir / "cpu-saved-positive-analysis.log"),
         }
     manifest["format"] = "worker-execution-manifest"
     manifest["status"] = "source_gated_cpu_prepared_original_native_pending"
@@ -130,6 +158,22 @@ def bind():
         "receipt": "cpu-comparison-proofs.json",
         "sha256": digest(ROOT / "cpu-comparison-proofs.json"),
         "diagnostic_only": True,
+    }
+    script = "production_comparison.py"
+    manifest["comparison_audit_protocol"] = {
+        "production_original_attempts_required": True,
+        "production_script": script,
+        "production_script_sha256": digest(ROOT / script),
+        "comparison_ids": ["between_intersections_marking", "both_devices_operating"],
+        "production_commands": [
+            (f"PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
+             f".venv-cpu/bin/python work/{ROOT.name}/{script} --comparison-id {comparison_id} "
+             "--reference-attempt \"$REFERENCE_ORIGINAL_ATTEMPT\" --variant-attempt \"$VARIANT_ORIGINAL_ATTEMPT\" "
+             "--output \"$COMPARISON_OUTPUT\"")
+            for comparison_id in ("between_intersections_marking", "both_devices_operating")],
+        "diagnostic_fixture_accepted": False,
+        "physical_realization_claimed": False,
+        "legal_verdict": None,
     }
     write(ROOT / "execution-manifest.json", manifest)
     return manifest

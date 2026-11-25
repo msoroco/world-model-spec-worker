@@ -66,6 +66,13 @@ def audit_saved_pair(left_attempt, left_refs, right_attempt, right_refs, compari
     if (audits[0]['frame_count'] != audits[1]['frame_count'] or
             saved[0]['media_audit']['camera_dimensions'] != saved[1]['media_audit']['camera_dimensions']):
         raise ValueError('fixed capture contract differs')
+    if (natives[0].get('fps') != natives[1].get('fps') or
+            natives[0].get('walker_blueprint_id') != natives[1].get('walker_blueprint_id')):
+        raise ValueError('fixed pedestrian blueprint or frame rate differs')
+    if not allow_diagnostic:
+        blueprints = [row['rows'][0].get('actor_state', {}).get('blueprint') for row in natives]
+        if not blueprints[0] or blueprints[0] != blueprints[1]:
+            raise ValueError('fixed original pedestrian blueprint differs')
     if comparison == 'diagonal_device_authority':
         if (natives[0]['device_inventory_sha256'] == natives[1]['device_inventory_sha256'] or
                 saved[0]['measurement']['authorization_observed_during_inside'] is True or
