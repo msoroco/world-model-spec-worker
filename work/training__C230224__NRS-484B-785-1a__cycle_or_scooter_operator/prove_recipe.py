@@ -12,8 +12,10 @@ from measure_scooter import measure
 def main():
     root = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).parent
     cases = ('controlled_1', 'controlled_at_cap', 'controlled_2')
-    reports = {suffix: measure(root / ('c230224-fixture-' + suffix + '-v2'))
-               for suffix in cases}
+    sources = {'controlled_1': root/'c230224-public-c1-v10',
+               'controlled_at_cap': root/'c230224-public-cap-v2',
+               'controlled_2': root/'c230224-public-c2-v2'}
+    reports = {suffix: measure(sources[suffix]) for suffix in cases}
     if [reports[suffix]['above_15_mph_frames'] for suffix in cases] != [0, 0, 600]:
         raise AssertionError('15 mph continuous boundary mismatch')
     if abs(reports['controlled_at_cap']['max_speed_mph'] - 15) > 1e-10:
@@ -21,7 +23,7 @@ def main():
     audit(reports['controlled_1'], reports['controlled_2'], original_only=False)
     with tempfile.TemporaryDirectory(prefix='scooter-missing-source-', dir=os.environ['TMPDIR']) as temp:
         target = Path(temp)
-        source = root/'c230224-fixture-controlled_1-v2'
+        source = sources['controlled_1']
         for name in ('video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json'):
             shutil.copyfile(source/name, target/name)
         (target/'scooter_context.json').unlink()

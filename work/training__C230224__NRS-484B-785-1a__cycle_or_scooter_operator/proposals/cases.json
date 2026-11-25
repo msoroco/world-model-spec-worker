@@ -2,22 +2,23 @@
   "cell_id": "C230224",
   "actor": "cycle_or_scooter_operator",
   "status": "draft",
-  "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
-      "target_law_id": "NRS-484B-785-1a",
-      "target_type": "delivery",
-      "rationale": "Exact measured path-speed boundary source review",
+      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common source and capture reference; no legal label.",
       "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_speed_mph": {
-          "kind": "world_setup",
-          "value": 12
+          "kind": "controller",
+          "value": 15
         }
       },
-      "unresolved_judgment_calls": [
-        "applicable ordinance exception and physical occupancy"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -40,22 +41,82 @@
         "limitations": [
           "Diagnostic fixture does not establish genuine scooter qualification, applicable ordinance, physical occupancy, or legal status"
         ]
+      }
+    },
+    {
+      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
+      "target_law_id": "NRS-484B-785-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Exact measured path-speed boundary source review",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 12
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "method": "original Native scooter velocity, saved per frame",
+            "time_window": "full 30 s capture",
+            "reference_frame": "scooter center",
+            "uncertainty": "Native velocity readback",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "device_subtype",
+            "unit": "structured",
+            "method": "reviewed electric scooter source context"
+          }
+        ],
+        "limitations": [
+          "Diagnostic fixture does not establish genuine scooter qualification, applicable ordinance, physical occupancy, or legal status"
+        ]
+      },
+      "paired_probe_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__speed_cap_15_mph",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "statutory operating speed <= 15 mph, subject to applicable ordinance",
+        "target_value_or_branch": 12,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 12
+      },
+      "epsilon_used": {
+        "value": 3,
+        "unit": "mph",
+        "rationale": "Selected physical probe spacing; no legal tolerance or expected actual speed."
       }
     },
     {
       "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap",
       "target_law_id": "NRS-484B-785-1a",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Exact measured path-speed boundary source review",
       "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_speed_mph": {
-          "kind": "world_setup",
+          "kind": "controller",
           "value": 15
         }
       },
-      "unresolved_judgment_calls": [
-        "applicable ordinance exception and physical occupancy"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -78,22 +139,42 @@
         "limitations": [
           "Diagnostic fixture does not establish genuine scooter qualification, applicable ordinance, physical occupancy, or legal status"
         ]
+      },
+      "paired_probe_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__speed_cap_15_mph",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "statutory operating speed <= 15 mph, subject to applicable ordinance",
+        "target_value_or_branch": 15,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 15
+      },
+      "epsilon_used": {
+        "value": 0.0,
+        "unit": "mph",
+        "rationale": "Selected physical probe spacing; no legal tolerance or expected actual speed."
       }
     },
     {
       "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2",
       "target_law_id": "NRS-484B-785-1a",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Exact measured path-speed boundary source review",
       "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "requested_speed_mph": {
-          "kind": "world_setup",
+          "kind": "controller",
           "value": 17
         }
       },
-      "unresolved_judgment_calls": [
-        "applicable ordinance exception and physical occupancy"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -116,7 +197,26 @@
         "limitations": [
           "Diagnostic fixture does not establish genuine scooter qualification, applicable ordinance, physical occupancy, or legal status"
         ]
+      },
+      "paired_probe_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__speed_cap_15_mph",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "statutory operating speed <= 15 mph, subject to applicable ordinance",
+        "target_value_or_branch": 17,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 17
+      },
+      "epsilon_used": {
+        "value": 2,
+        "unit": "mph",
+        "rationale": "Selected physical probe spacing; no legal tolerance or expected actual speed."
       }
     }
-  ]
+  ],
+  "sweep_specs": []
 }

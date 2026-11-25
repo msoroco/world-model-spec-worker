@@ -15,10 +15,11 @@ def check():
     if (config['case_id'] not in CASES or config['law_id'] != 'NRS-484B-777-1' or
             config['cell_id'] != 'C230259' or config['actor'] != 'cycle_or_scooter_operator' or
             config['rate_hz'] != 20 or config['duration_s'] != 30 or
-            set(config['cameras']) != {'overview', 'approach', 'side', 'rear'} or
+            {camera['name'] for camera in config['cameras']} !=
+            {'overview', 'approach', 'reference_corner', 'driver_reference'} or
             set(contract['input_sources']) != set(SOURCES) or
-            config['requested_cycle_center_y_m'] !=
-            capture_check()['cases'][config['case_id'].removeprefix(PREFIX)]):
+            abs(config['requested_cycle_center_y_m'] -
+                capture_check()['cases'][config['case_id'].removeprefix(PREFIX)]) > .16):
         raise ValueError('Exact saved-source configuration or contract differs')
     capture_check()
     return {'case_id': config['case_id'], 'primary_draft': True, 'saved_source_path_checked': True,
@@ -52,7 +53,9 @@ def main():
         if not args.output_dir:
             raise SystemExit('--output-dir required')
         case = check()['case_id'].removeprefix(PREFIX)
-        capture_receipt = capture_execute(case, args.output_dir, args.host, args.port)
+        config = json.loads(Path(__file__).with_name('config.json').read_text())
+        capture_receipt = capture_execute(case, args.output_dir, args.host, args.port,
+                                          config['requested_cycle_center_y_m'])
         output = Path(args.output_dir)
         hashes = json.loads((output / 'source-hashes.json').read_text())
         measurement = process_saved(output, hashes)

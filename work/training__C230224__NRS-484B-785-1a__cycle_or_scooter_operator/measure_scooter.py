@@ -151,6 +151,7 @@ def finalize(attempt, output):
                       'position_m': [point[0], point[1], 0],
                       'heading_deg': 0, 'speed_mps': row['device_speed_mps'],
                       'speed_mph': row['device_speed_mps']/.44704,
+                      'velocity_mps': [row['device_speed_mps'], 0, 0],
                       'control': {}})
         speed.append({'time_s': frame['time_s'], 'value': row['device_speed_mps']})
     trace_path = root/'trace.jsonl'

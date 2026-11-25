@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-785-1a@cycle_or_scooter_operator",
+  "law_id": "NRS-484B-785-1a",
+  "actor": "cycle_or_scooter_operator",
+  "quote": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469 [DEF-LVMC-11-40-185-A], an electric scooter may be operated: On a roadway, bicycle lane, path or route at a speed of not more than 15 miles per hour.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-785-1a",
+    "activation": {
+      "condition": "Electric scooter operation on a roadway, bicycle lane, path or route, subject to an applicable ordinance enacted under NRS 484A.469.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Operation on the listed facility at a speed of not more than 15 miles per hour.",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": 15,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "An applicable ordinance enacted pursuant to NRS 484A.469 provides otherwise.",
+        "effect": "Apply the source-proven ordinance provision to the affected operation.",
+        "replacement_obligation": "Source-dependent; no replacement speed is inferred.",
+        "source_clause": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469 [DEF-LVMC-11-40-185-A]"
+      }
+    ],
+    "timing": {
+      "description": "Assess speed during scooter operation on the listed facility.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "Observed scooter speed in mph from original Native velocity"
+    },
+    {
+      "name": "requested_speed_mph",
+      "kind": "controller",
+      "range_or_domain": [
+        0,
+        20
+      ]
+    }
+  ]
+}

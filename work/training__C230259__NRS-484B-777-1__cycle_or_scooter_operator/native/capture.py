@@ -16,7 +16,8 @@ FRAMES = 600
 RATE = 20
 CASES = {'reference': -2.65, 'contrast': -1.45}
 CAMERAS = (('overview', -5, -16, 15, -45), ('approach', 15, -8, 6, -20),
-           ('side', 55, -12, 7, -25), ('rear', 85, -8, 6, -20))
+           ('reference_corner', 55, -12, 7, -25),
+           ('driver_reference', 85, -8, 6, -20))
 
 
 def check():
@@ -62,13 +63,16 @@ def _survey(mapping, carla):
             'readback_opendrive_sha256': hashlib.sha256(mapping.to_opendrive().encode()).hexdigest()}
 
 
-def execute(case, output_dir, host='127.0.0.1', port=2000):
+def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     check()
     if case not in CASES:
         raise ValueError('Unknown exact case setting')
+    cycle_y = CASES[case] if requested_y is None else float(requested_y)
+    if abs(cycle_y - CASES[case]) > .16:
+        raise ValueError('Candidate bicycle offset outside predeclared physical-risk fallback')
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('Use a fresh original Native attempt directory')
@@ -101,7 +105,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
         cycle_bp.set_attribute('role_name', 'c230259_bicycle_subject')
         vehicle_bp.set_attribute('role_name', 'c230259_standing_vehicle')
         cycle = world.spawn_actor(cycle_bp, carla.Transform(
-            carla.Location(x=10, y=CASES[case], z=1), carla.Rotation(yaw=0)))
+            carla.Location(x=10, y=cycle_y, z=1), carla.Rotation(yaw=0)))
         standing = world.spawn_actor(vehicle_bp, carla.Transform(
             carla.Location(x=55, y=-5, z=1), carla.Rotation(yaw=0)))
         owned.extend((cycle, standing))
@@ -118,8 +122,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
             indent=2) + '\n')
         for name, x, y, z, pitch in CAMERAS:
             camera_bp = bp.find('sensor.camera.rgb')
-            camera_bp.set_attribute('image_size_x', '1280')
-            camera_bp.set_attribute('image_size_y', '720')
+            camera_bp.set_attribute('image_size_x', '1920' if name == 'overview' else '1280')
+            camera_bp.set_attribute('image_size_y', '1080' if name == 'overview' else '720')
             camera_bp.set_attribute('fov', '85')
             camera_bp.set_attribute('sensor_tick', str(1 / RATE))
             camera = world.spawn_actor(camera_bp, carla.Transform(
@@ -130,7 +134,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
             camera_queues[name] = stream
             encoders[name] = subprocess.Popen([
                 'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
-                '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', '1280x720', '-r', str(RATE),
+                '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s',
+                '1920x1080' if name == 'overview' else '1280x720', '-r', str(RATE),
                 '-i', '-', '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (

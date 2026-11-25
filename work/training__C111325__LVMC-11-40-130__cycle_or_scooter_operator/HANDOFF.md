@@ -1,6 +1,6 @@
 # training__C111325__LVMC-11-40-130__cycle_or_scooter_operator
 
-Status: **partial CPU implementation checkpoint**. No condition is selected for delivery. No original bicycle execution, physical-condition measurement, or reasonable-and-prudent legal verdict is claimed.
+Status: **ready for CPU delivery preparation**. Two exact conditions and primary/fallback candidates are selected for delivery. No original bicycle execution, physical-condition measurement, or reasonable-and-prudent legal verdict is claimed.
 
 ## Source and current construction
 
@@ -47,3 +47,11 @@ Implement an actual bicycle Native mechanism rather than substituting a motor ve
 ## 2026-11-25 selected proposal checkpoint
 
 `proposals/cases.json` now names the two exact selected bicycle-speed conditions, assigns the statutory text and reviewed stop-sign approach topic to both, and declares the 600-frame measured-source channels. `case-plan.json` maps every original observation term to its proposed channel and retains unverified physical conditions and legal judgment. The unselected offline drafts were rebound to this plan and both passed current-runtime offline again. This is a selected planning checkpoint, not a selected executable delivery manifest; public compatibility, recorded-only saved processing and full delivery checks remain CPU work.
+
+## 2026-11-25 selected current-runtime proof matrix
+
+Two exact selected cases each have primary and physical-risk fallback constructions in `execution-manifest.json`. All four current-runtime offline checks and public compatibility checks passed. Each public receipt binds a positive 600-frame, four-camera synthetic diagnostic source and a missing-source negative. Each candidate also passed recorded-only `process-saved`; its receipt is in `proofs/{condition_a,condition_b}/{primary,fallback1}/processing.json`. The manifest binds all receipt and log hashes. `physical-condition_{a,b}-preparation.json` binds separate synthetic met, not-met and missing-evidence outcomes; none claims original Native execution.
+
+The source-hashed `proposals/semantic-index.json` passed the canonical stage validator with two judgment phrases unresolved and an incomplete sweep plan. `delivery_acceptance.py` independently joined both diagnostic source streams and rejected treating them as physical delivery without a capture seal. `comparison_audit.py` independently measured a 2.0 m/s peak-speed difference with the fixed condition ID unchanged and no legal threshold. The top-level `construction.json`, `config.json`, `runner.py` and CPU unit test are materialized; the unit test and assignment-scoped `--complete` check passed. Current-runtime execution-manifest, semantic, delivery-case and public compatibility validators passed directly.
+
+Original CARLA bicycle/rider classification, displayed pixels, local jurisdiction, physical stop-sign governance and the legal reasonable-and-prudent judgment remain for local review. The exact assignment `--complete --require-delivery-ready` gate passed on 2026-11-25; its output is in `selected-scoped-strict-gate.log`. This certifies the CPU package and does not claim original CARLA physical or legal acceptance.

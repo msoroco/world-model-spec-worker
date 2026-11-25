@@ -47,7 +47,7 @@ def sample(folder, suffix):
                       'carla_frame': i + 1000, 'time_s': t,
                       'source_rgb_sha256': {view: hashlib.sha256(
                           f'{view}:{i}'.encode()).hexdigest()
-                          for view in ('overview', 'approach', 'side', 'rear')}})
+                          for view in ('overview', 'approach', 'reference_corner', 'driver_reference')}})
     rows(folder / 'native-cycle-frames.jsonl', track)
     rows(folder / 'video_frames.jsonl', video)
 
@@ -91,7 +91,7 @@ def main():
                                 'synthetic_as_native'))
         video_path = folder / 'video_frames.jsonl'
         video = [json.loads(line) for line in video_path.read_text().splitlines()]
-        del video[5]['source_rgb_sha256']['rear']
+        del video[5]['source_rgb_sha256']['driver_reference']
         rows(video_path, video)
         negatives.append(reject(lambda: measure(folder, hashes(folder), diagnostic=True),
                                 'missing_camera'))

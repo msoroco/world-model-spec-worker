@@ -27,7 +27,7 @@ def run(suffix, stem, kind):
     (attempt / 'candidate-selection.json').write_text(json.dumps(selected, indent=2) + '\n')
     if kind == 'missing':
         (attempt / ('traffic-actors.jsonl' if stem == 'traffic' else 'device-states.jsonl')).unlink()
-    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v3')
+    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v4')
     command = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
         '--manifest', str(MANIFEST), '--case', ASSIGNMENT + '__' + suffix,
         '--attempt', str(attempt), '--output', str(output),

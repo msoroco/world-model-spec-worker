@@ -26,8 +26,8 @@ def sha(path):
 
 def prepare(suffix, name):
     stem = 'traffic' if suffix == 'traffic_conflict_near' else 'device'
-    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v2')
-    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v4')
+    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v3')
+    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v5')
     if attempt.exists():
         raise ValueError('Retain existing qualifier finalizer proof')
     shutil.copytree(offline, attempt)

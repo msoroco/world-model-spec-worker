@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 
 FRAMES = 600
-VIEWS = {'overview', 'approach', 'side', 'rear'}
+VIEWS = {'overview', 'approach', 'reference_corner', 'driver_reference'}
 SOURCES = ('native-cycle-frames.jsonl', 'native-map-readback.json',
            'standing-vehicle.json', 'video_frames.jsonl')
 

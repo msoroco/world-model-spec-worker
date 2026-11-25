@@ -29,17 +29,18 @@ def main():
         trace = ''.join(json.dumps({'video_frame': i, 'native_frame': 100+i,
                                     'source_kind': 'synthetic_native_sample',
                                     'device_actor_id': 1, 'rider_actor_id': 2,
-                                    'device_center_xy_m': [round(i*.1, 8), 0],
+                                    'device_center_xy_m': [round(i*mph*.44704*.05, 8), 0],
                                     'device_speed_mps': mph*.44704})+'\n' for i in range(600))
         canonical_trace = ''.join(json.dumps({'frame': 100+i, 'time_s': round(i*.05, 8),
-            'position': {'x': round(i*.1, 8), 'y': 0, 'z': 0},
-            'position_m': [round(i*.1, 8), 0, 0], 'heading_deg': 0,
+            'position': {'x': round(i*mph*.44704*.05, 8), 'y': 0, 'z': 0},
+            'position_m': [round(i*mph*.44704*.05, 8), 0, 0], 'heading_deg': 0,
             'speed_mps': mph*.44704, 'speed_mph': (mph*.44704)/.44704,
+            'velocity_mps': [mph*.44704, 0, 0],
             'control': {}})+'\n' for i in range(600))
         road = ('<OpenDRIVE><header revMajor="1" revMinor="4" name="C230224-scooter-route" '
-                'version="1" date="2026-11-25" north="8" south="-8" east="65" west="-5" '
-                'vendor="full-train-worker"/><road id="1" name="route" length="70" junction="-1">'
-                '<link/><planView><geometry s="0" x="-5" y="0" hdg="0" length="70"><line/>'
+                'version="1" date="2026-11-25" north="8" south="-8" east="305" west="-5" '
+                'vendor="full-train-worker"/><road id="1" name="route" length="300" junction="-1">'
+                '<link/><planView><geometry s="0" x="-5" y="0" hdg="0" length="300"><line/>'
                 '</geometry></planView><lanes><laneOffset s="0" a="0" b="0" c="0" d="0"/>'
                 '<laneSection s="0"><left><lane id="1" type="biking" level="false">'
                 '<width sOffset="0" a="2" b="0" c="0" d="0"/><roadMark sOffset="0" '
@@ -52,7 +53,7 @@ def main():
         replay_rows = []
         graphs = []
         for i in range(600):
-            x, t, frame = round(i*.1, 8), round(i*.05, 8), 100+i
+            x, t, frame = round(i*mph*.44704*.05, 8), round(i*.05, 8), 100+i
             bbox = [[x+dx, dy, z] for dx in (-.35, .35)
                     for dy in (-.2, .2) for z in (0, 1.2)]
             graph_path = f'graphs/base/{frame:08d}.adapter.json'
@@ -81,7 +82,7 @@ def main():
                    'requested_speed_mps': mph*.44704,
                    'review_kind': 'synthetic_diagnostic',
                    'device_subtype': 'electric_scooter', 'device_actor_id': 1,
-                   'rider_actor_id': 2, 'path_box_xyxy_m': [-1, -2, 61, 2],
+                   'rider_actor_id': 2, 'path_box_xyxy_m': [-1, -2, 300, 2],
                    'scooter_rider_excluded_mass_lb': 45,
                    'scooter_motor_only_max_mph': 18,
                    'ordinance_exception_reviewed': True,

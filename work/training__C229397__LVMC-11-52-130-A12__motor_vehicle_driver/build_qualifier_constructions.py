@@ -41,6 +41,14 @@ def build(suffix):
         'from finalize_crosswalk import finalize as diagnose\n'
         'from qualifier_source_audit import audit as audit_qualifier')
     finalizer = finalizer.replace(
+        'def finalize(attempt, output):',
+        "def measure_qualifier_context(review, sources):\n"
+        "    return {'value': {'qualifier': review['qualifier'],\n"
+        "                      'finding': review['finding'],\n"
+        "                      'source_frame_count': review['source_frame_count']},\n"
+        "            'method': 'measure_qualifier_context', 'sources': sources}\n\n\n"
+        'def finalize(attempt, output):')
+    finalizer = finalizer.replace(
         '    diagnostic = diagnose(attempt)',
         "    qualifier_name = 'traffic_conflict' if config['crosswalk_case'] == 'traffic_conflict_near' else 'device_direction'\n"
         "    packet_path = attempt / 'qualifier-source-packet.json'\n"
@@ -66,6 +74,12 @@ def build(suffix):
         "'diagnostic': diagnostic, 'source_sha256': sources,",
         "'diagnostic': diagnostic, 'qualifier_source_review': qualifier_review,\n"
         "              'source_sha256': sources,")
+    finalizer = finalizer.replace(
+        "'measurements': {'crosswalk_position': measurement},",
+        "'measurements': {'crosswalk_position': measurement,\n"
+        "                  'qualifier_context': measure_qualifier_context(qualifier_review,\n"
+        "                      {name: sources[name] for name in ('" + source_file + "',\n"
+        "                       'qualifier-source-packet.json')})},")
     files['finalize_delivery.py']['content'] = finalizer
     files['tests/test_native.py']['content'] = (
         "import unittest\nimport runner\nfrom qualifier_geometry import open_drive\n\n"
