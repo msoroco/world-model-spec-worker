@@ -13,7 +13,7 @@ for entry in m['cases']:
  label=entry['case_id'].rsplit('__',1)[-1]
  for cand in ('primary','fallback1'):
   choice=entry if cand=='primary' else entry['candidates'][0]
-  source=R/'.runtime-work/c230259-compat'/f'final-{label}-{cand}'
+  source=R/'.runtime-work/c230259-compat'/f'sealed-{label}-{cand}'
   target=F/'proofs'/label/cand
   target.mkdir(parents=True,exist_ok=True)
   for original,dest in [('compatibility.json','compatibility.json'),('compatibility-analysis.log','analysis.log'),('negative-analysis.log','negative-analysis.log')]:

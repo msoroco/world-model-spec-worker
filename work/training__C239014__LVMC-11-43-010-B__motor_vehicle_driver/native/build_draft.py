@@ -22,6 +22,7 @@ def build():
                   "actor": "motor_vehicle_driver", "rate_hz": 20,
                   "duration_s": 30, "duration_frames": 600,
                   "candidate_id": "primary",
+                  "steer_gain": 1.3, "max_steer": .75,
                   "required_atoms": ["kin.position", "kin.speed"],
                   "cameras": [{"name": name, "fps": 20, "width": width,
                                "height": height} for name, width, height in (
@@ -38,11 +39,18 @@ def build():
                        "time_window": "600 original frames", "method": "source-joined Native readback",
                        "reference_frame": "original Native frame and simulation time",
                        "uncertainty": "50 ms cadence; physical identity and pixels need review"}
-                      for name in ("raw_ego_motion", "raw_circulating_motion", "frame_join")],
+                      for name in ("raw_ego_motion", "raw_circulating_motion", "frame_join",
+                                   "st.roundabout", "drv.approaching",
+                                   "drv.entering_intersection", "rel.occupies",
+                                   "drv.yields_to", "rel.surface_gap",
+                                   "drv.time_to_conflict", "drv.hard_deceleration",
+                                   "drv.stopped", "drv.arrival_order")],
                       "context_inputs": [{"name": "roundabout_map", "unit": "source_record",
                                           "method": "Native map readback and road.xodr"}],
                       "limitations": ["Original motion and pixels require physical review"]},
                   "physical_verified": False, "legal_verdict": None}
+        config["case"] = {"case_id": case,
+                          "recording_description": config["recording_description"]}
         construction = {"format": "worker-inline-construction", "case_id": case,
                         "cell_id": "C239014", "actor": "motor_vehicle_driver",
                         "entrypoint": "runner.py", "files": [
@@ -55,7 +63,15 @@ def build():
                             {"path": "tests/test_native.py", "content":
                              (HERE / "tests/test_native.py").read_text()}],
                         "recording_description": config["recording_description"],
-                        "status": "exact_unselected_offline_draft"}
+                        "measurement_plan": "Retain 600 original actor/map/frame rows and four synchronized camera streams; calculate entry and circulating-traffic brackets after capture.",
+                        "static_checks": ["exact C239014 law/cell/actor", "600 frames at 20 Hz",
+                                          "three actors", "four source cameras", "no legal verdict"],
+                        "termination_rules": ["600 source frames or explicit Native capture failure"],
+                        "mechanisms": ["authored roundabout OpenDRIVE geometry",
+                                       "source-readback actor controllers",
+                                       "PipelineCapture and four Native camera encodes",
+                                       "saved-only actor/map/frame finalizer"],
+                        "status": "selected_delivery_cpu_in_progress"}
         path = HERE / (condition + "-construction.json")
         path.write_text(json.dumps(construction, indent=2) + "\n")
         entries.append({"case_id": case, "construction": path.name,

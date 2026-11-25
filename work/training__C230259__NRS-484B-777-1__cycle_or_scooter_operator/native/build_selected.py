@@ -67,7 +67,8 @@ def main():
     write(FOLDER / 'proposals/cases.json', proposal)
     rows = []
     native_files = ('runner.py', 'capture.py', 'geometry.py', 'measure_right_edge.py',
-                    'measurement-contract.json', 'finalize.py', 'prove_right_edge.py', 'tests/test_saved.py')
+                    'measurement-contract.json', 'finalize.py', 'prove_right_edge.py',
+                    'tests/test_saved.py', 'tests/test_seal.py')
     for case_id, y in zip(IDS, (-2.65, -1.45)):
         label = case_id.rsplit('__', 1)[-1]
         entry = {'case_id': case_id, 'kind': 'delivery', 'id': 'primary',

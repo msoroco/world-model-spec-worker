@@ -68,7 +68,7 @@ def build(condition):
                        "position": {"x": x, "y": y, "z": 0},
                        "position_m": [x, y, 0], "heading_deg": 0,
                        "speed_mps": speed, "speed_mph": speed / .44704,
-                       "velocity_mps": [speed, 0, 0]})
+                       "velocity_mps": [speed, 0, 0], "control": {}})
     files["trace.jsonl"] = "".join(compact(row) + "\n" for row in traces)
     files["capture/evidence.jsonl"] = "".join(compact(row) + "\n" for row in capture)
     files["capture/native/frames.jsonl"] = "".join(compact(row) + "\n" for row in native)

@@ -10,7 +10,7 @@ for entry in m['cases']:
  label=entry['case_id'].rsplit('__',1)[-1]
  for cand in ('primary','fallback1'):
   choice=entry if cand=='primary' else entry['candidates'][0]
-  source=R/'.runtime-work/c230259-saved'/f'{label}-{cand}-derived/v0001/processing.json'
+  source=R/'.runtime-work/c230259-saved'/f'sealed2-{label}-{cand}-derived/v0001/processing.json'
   proof=F/'proofs'/label/cand/'processing.json'
   shutil.copyfile(source,proof)
   receipt=json.loads(proof.read_text())

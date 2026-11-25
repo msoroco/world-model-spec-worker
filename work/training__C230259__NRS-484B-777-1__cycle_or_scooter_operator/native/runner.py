@@ -58,14 +58,9 @@ def main():
         config = json.loads(Path(__file__).with_name('config.json').read_text())
         capture_receipt = capture_execute(case, args.output_dir, args.host, args.port,
                                           config['requested_cycle_center_y_m'])
-        output = Path(args.output_dir)
-        hashes = json.loads((output / 'source-hashes.json').read_text())
-        measurement = process_saved(output, hashes)
-        (output / 'right-edge-measurement.json').write_text(
-            json.dumps(measurement, indent=2) + '\n')
         print(json.dumps({'capture': capture_receipt,
-                          'measurement_source_kind': measurement['source_kind'],
-                          'measurement_written': True}))
+                          'capture_sealed': (Path(args.output_dir) / 'capture-seal.json').is_file(),
+                          'measurement_deferred_to_recorded_only_processing': True}))
     else:
         if not args.source_hashes:
             raise SystemExit('--source-hashes required')

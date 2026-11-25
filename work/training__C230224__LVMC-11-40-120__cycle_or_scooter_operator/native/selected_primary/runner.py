@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C230224__LVMC-11-40-120__cycle_or_scooter_operator'
 CASE = AID + '__probe_01'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -22,6 +22,8 @@ def config_check():
             [c.get('name') for c in cfg.get('cameras', [])] != list(CAMERAS) or
             [(c.get('width'), c.get('height')) for c in cfg['cameras']] !=
             [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)] or
+            cfg.get('spawn_key') not in ('device_spawn_xyz_m', 'roadway_device_spawn_xyz_m',
+                                         'fallback_device_spawn_xyz_m', 'fallback_roadway_device_spawn_xyz_m') or
             cfg.get('physical_acceptance_claimed') is not False or cfg.get('legal_verdict') is not None):
         raise ValueError('Exact adjacent-path capture contract differs')
     return cfg
@@ -32,13 +34,16 @@ def survey_check(survey):
                 'rider_identity_source', 'path_surface_source', 'path_continuity_source',
                 'path_adjacency_source', 'path_obstruction_source', 'path_usability_review_source',
                 'roadway_boundary_source', 'device_blueprint', 'rider_blueprint',
-                'device_spawn_xyz_m', 'device_spawn_yaw_deg', 'rider_attach_xyz_m',
+                'device_spawn_xyz_m', 'roadway_device_spawn_xyz_m',
+                'fallback_device_spawn_xyz_m', 'fallback_roadway_device_spawn_xyz_m',
+                'device_spawn_yaw_deg', 'rider_attach_xyz_m',
                 'travel_unit_xy', 'target_speed_mps', 'camera_world_transforms'):
         if not survey.get(key) and survey.get(key) != 0:
             raise ValueError('Missing reviewed Native survey source: '+key)
     if survey['device_subtype'] not in ('bicycle', 'electric_bicycle', 'electric_scooter'):
         raise ValueError('Unsupported surveyed device subtype')
-    if len(survey['device_spawn_xyz_m']) != 3 or len(survey['rider_attach_xyz_m']) != 3:
+    if any(len(survey[key]) != 3 for key in ('device_spawn_xyz_m', 'roadway_device_spawn_xyz_m',
+           'fallback_device_spawn_xyz_m', 'fallback_roadway_device_spawn_xyz_m', 'rider_attach_xyz_m')):
         raise ValueError('Invalid surveyed actor transform')
     axis = survey['travel_unit_xy']
     if len(axis) != 2 or any(type(v) not in (int, float) or not math.isfinite(v) for v in axis) or abs(math.hypot(*axis)-1) > .01:
@@ -87,7 +92,7 @@ def capture(survey, output, host, port):
         world.apply_settings(settings)
         lib = world.get_blueprint_library()
         device = world.try_spawn_actor(lib.find(survey['device_blueprint']),
-                                       transform(carla, survey['device_spawn_xyz_m'], [0, survey['device_spawn_yaw_deg'], 0]))
+                                       transform(carla, survey[cfg['spawn_key']], [0, survey['device_spawn_yaw_deg'], 0]))
         if device is None:
             raise RuntimeError('Surveyed rideable device spawn failed')
         actors.append(device)

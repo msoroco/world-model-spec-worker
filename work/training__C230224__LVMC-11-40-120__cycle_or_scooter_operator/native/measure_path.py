@@ -9,7 +9,7 @@ from pathlib import Path
 from shapely.geometry import Polygon
 
 AID = 'training__C230224__LVMC-11-40-120__cycle_or_scooter_operator'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -56,7 +56,7 @@ def measure(root):
         if run.returncode:
             raise ValueError('Source camera decode failed: ' + name)
         streams = json.loads(run.stdout).get('streams', [])
-        wanted = (1920, 1080) if name == 'forward' else (1280, 720)
+        wanted = (1920, 1080) if name == 'overview' else (1280, 720)
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: ' + name)
         if kind == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != wanted:

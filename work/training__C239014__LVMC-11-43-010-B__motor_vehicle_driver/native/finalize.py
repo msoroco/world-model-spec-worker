@@ -11,6 +11,8 @@ from pathlib import Path
 
 FRAMES = 600
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+RING_ROADS = {1, 2, 3, 4}
+APPROACH_ROAD = 5
 SOURCES = ("native-raw-actors.jsonl", "control-intent.jsonl", "video_frames.jsonl",
            "trace.jsonl", "roundabout-map-readback.json", "road.xodr")
 
@@ -43,8 +45,9 @@ def analyze(attempt):
     if any(len(stream) != FRAMES for stream in (actor_rows, controls, frames, trace)):
         raise ValueError("Incomplete 600-frame original source join")
     map_readback = json.loads((attempt / "roundabout-map-readback.json").read_text())
-    if map_readback.get("source_kind") != "native_map_readback" or {
-            row.get("road_id") for row in map_readback.get("samples", [])} != {1, 2}:
+    observed_roads = {row.get("road_id") for row in map_readback.get("samples", [])}
+    if (map_readback.get("source_kind") != "native_map_readback" or
+            observed_roads != RING_ROADS | {APPROACH_ROAD}):
         raise ValueError("Native roundabout map readback missing")
     entries = []
     waits = []
@@ -84,11 +87,11 @@ def analyze(attempt):
                                "bbox_half_width_m")):
                 raise ValueError("Original actor motion absent or nonfinite")
         ego = by_role["ego"]
-        if ego.get("road_id") == 1:
+        if ego.get("road_id") in RING_ROADS:
             entries.append(i)
-        elif ego.get("road_id") == 2 and ego["speed_mps"] <= .2:
+        elif ego.get("road_id") == APPROACH_ROAD and ego["speed_mps"] <= .2:
             waits.append(i)
-        if any(actor.get("road_id") != 1 for actor in
+        if any(actor.get("road_id") not in RING_ROADS for actor in
                (by_role["lead"], by_role["follower"])):
             raise ValueError("Circulating actor left the recorded ring")
         if any(math.dist((actor["x_m"], actor["y_m"]), (0, -20)) <= 6
@@ -118,7 +121,7 @@ def analyze(attempt):
 
 
 def measure_roundabout_context(measurement):
-    return {"value": {"map_roads_read_back": [1, 2],
+    return {"value": {"map_roads_read_back": [1, 2, 3, 4, 5],
                       "entry_boundary_review_complete": False},
             "method": "measure_roundabout_context",
             "sources": {name: measurement["source_sha256"][name] for name in

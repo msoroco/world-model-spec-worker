@@ -67,6 +67,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.native_output import seal_capture
     check()
     if case not in CASES:
         raise ValueError('Unknown exact case setting')
@@ -85,6 +86,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
         raise RuntimeError('Exclusive idle asynchronous Native world required')
     owned, encoders, camera_queues = [], {}, {}
     changed = False
+    finished = False
+    encoder_codes = {}
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=40, wall_height=0, additional_width=0,
@@ -217,7 +220,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
         for name, process in encoders.items():
             process.stdin.close()
             errors = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_codes[name] = process.wait(timeout=180)
+            if encoder_codes[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed ' + name + ': ' + errors.decode()[-400:])
         from measure_right_edge import digest
         (capture / 'manifest.json').write_text(json.dumps({
@@ -231,8 +235,14 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
         from measure_right_edge import SOURCES, digest
         (output / 'source-hashes.json').write_text(json.dumps(
             {name: digest(output / name) for name in SOURCES}, indent=2) + '\n')
+        finished = True
         return {'case': case, 'frames': FRAMES, 'native_sources_written': True,
                 'physical_acceptance_claimed': False}
+    except Exception as exc:
+        if output.exists():
+            (output / 'native-run-status.json').write_text(json.dumps({
+                'errors': [str(exc)], 'native_capture_completed': False}, indent=2) + '\n')
+        raise
     finally:
         for process in encoders.values():
             if process.poll() is None:
@@ -246,4 +256,13 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restoration = restore(client, saved)
+            if finished:
+                (output / 'native-capture-report.json').write_text(json.dumps({
+                    'case': case, 'frames': FRAMES, 'encoder_exit_codes': encoder_codes,
+                    'restoration': restoration, 'physical_acceptance_claimed': False}, indent=2) + '\n')
+                (output / 'acquisition-provenance.json').write_text(json.dumps({
+                    'provenance_kind': 'native', 'diagnostic_fixture': False}, indent=2) + '\n')
+                seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                             encoder_exit_codes=encoder_codes,
+                             context={'case': case, 'law_id': 'NRS-484B-777-1'})

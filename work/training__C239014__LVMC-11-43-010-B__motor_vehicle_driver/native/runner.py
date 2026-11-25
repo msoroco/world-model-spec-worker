@@ -41,6 +41,10 @@ def check(config=None):
             raise ValueError("Circulating traffic schedule differs")
         if config.get("physical_verified") is not False or config.get("legal_verdict") is not None:
             raise ValueError("Diagnostic must not claim physical or legal result")
+        steering = {"primary": (1.3, .75), "fallback1": (2.0, .95)}
+        if (config.get("steer_gain"), config.get("max_steer")) != steering.get(
+                config.get("candidate_id")):
+            raise ValueError("Steering candidate knobs differ")
     return {"frames": FRAMES, "rate_hz": RATE, "camera_names": [c[0] for c in CAMERAS],
             "geometry": geometry_check(), "native_executed": False,
             "physical_completion_claimed": False}
@@ -61,7 +65,7 @@ def speed(actor):
     return math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
 
 
-def control(actor, xy, wanted_speed, carla):
+def control(actor, xy, wanted_speed, carla, gain=1.3, max_steer=.75):
     pose = actor.get_transform()
     wanted_yaw = math.atan2(xy[1] - pose.location.y, xy[0] - pose.location.x)
     error = math.atan2(math.sin(wanted_yaw - math.radians(pose.rotation.yaw)),
@@ -69,12 +73,14 @@ def control(actor, xy, wanted_speed, carla):
     delta = wanted_speed - speed(actor)
     return carla.VehicleControl(throttle=max(0, min(.55, delta * .24)),
                                 brake=max(0, min(1, -delta * .42)),
-                                steer=max(-.75, min(.75, error * 1.3)))
+                                steer=max(-max_steer, min(max_steer, error * gain)))
 
 
 def survey(world, carla):
     samples = []
-    for road, x, y in ((2, 0, -46), (2, 0, -23), (1, 0, -20), (1, 20, 0)):
+    for road, x, y in ((5, 0, -46), (5, 0, -23),
+                       (1, 14, -14), (2, 14, 14),
+                       (3, -14, 14), (4, -14, -14)):
         wp = world.get_map().get_waypoint(carla.Location(x=x, y=y, z=1),
             project_to_road=True, lane_type=carla.LaneType.Driving)
         if wp is None or wp.road_id != road:
@@ -167,7 +173,9 @@ def execute(output_dir, condition, host, port):
                 commands = {}
                 for role, actor in actors.items():
                     xy, goal_speed = target(role, frame / RATE, RELEASE[condition])
-                    command = control(actor, xy, goal_speed, carla)
+                    command = control(actor, xy, goal_speed, carla,
+                                      gain=config["steer_gain"],
+                                      max_steer=config["max_steer"])
                     actor.apply_control(command)
                     commands[role] = {"target_xy_m": xy, "target_speed_mps": goal_speed,
                                       "throttle": command.throttle, "brake": command.brake,
@@ -213,7 +221,8 @@ def execute(output_dir, condition, host, port):
                 ego = next(a for a in observed if a["role"] == "ego")
                 trace.write(json.dumps({"frame": native_frame, "time_s": elapsed,
                     "position": {"x": ego["x_m"], "y": ego["y_m"], "z": 0},
-                    "heading_deg": ego["yaw_deg"], "speed_mps": ego["speed_mps"]}) + "\n")
+                    "heading_deg": ego["yaw_deg"], "speed_mps": ego["speed_mps"],
+                    "control": commands["ego"]}) + "\n")
                 completed += 1
         for name, process in encoders.items():
             process.stdin.close()

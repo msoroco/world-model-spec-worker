@@ -10,7 +10,34 @@
         "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_1/fallback1-construction.json",
+          "construction_sha256": "62666fbedb90bbc2a14cd9b0c4648693c0ef56aec2e1d7dc3575f940d6f44f26",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --candidate fallback1 --output .runtime-work/c230224-rebound-offline-controlled_1-fallback1",
+            "construction_sha256": "62666fbedb90bbc2a14cd9b0c4648693c0ef56aec2e1d7dc3575f940d6f44f26",
+            "exit_code": 0,
+            "log": "rebound-offline-controlled_1-fallback1.log",
+            "log_sha256": "a5a58913ec25462f2bcb74b0e29141f93f59db9f8661b7812143d7ff57276a53"
+          },
+          "compatibility": {
+            "receipt": "cases/controlled_1/rebound-fallback1-compatibility.json",
+            "sha256": "dfbe13d6b9b63bd960e37fd14ec6e89c25e2d0e7f40168fb9885143b6e380728",
+            "log": "cases/controlled_1/rebound-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/controlled_1/rebound-fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
       "construction": "selected-primary-construction.json",
       "construction_sha256": "8ed226a2958303cef913a3b4d4d756c484795e449acfc33efc31beb8c38eebb2",
@@ -24,13 +51,38 @@
       "acquisition": {
         "kin.speed": {
           "entrypoint": "runner.py",
-          "method": "Native scooter velocity per-frame readback",
+          "method": "Native per-frame scooter velocity readback",
           "evidence": "native_rider_trace.jsonl"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound device classification and motor/mass review",
+          "evidence": "scooter_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound roadway boundary and Native position",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound path geometry, surface and access",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Native scooter pose joined to surveyed facility bounds",
+          "evidence": "native_rider_trace.jsonl,scooter_context.json"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound ordinance and posting provenance",
+          "evidence": "scooter_context.json"
         }
       },
       "physical_preparation": {
         "receipt": "physical-proof/controlled_1/proof.json",
-        "sha256": "0461c9d206601d03a486169120c752d5931ff7eb156cba4de3fc9235bafc36fe"
+        "sha256": "1ab87b8578a77d8ac61bc02b03f07dbb5ad303aa57f881528a3b9956fee0f825"
       },
       "delivery_acceptance": {
         "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
@@ -59,27 +111,35 @@
         "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --candidate primary --output .runtime-work/c230224-final-offline-controlled_1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --candidate primary --output .runtime-work/c230224-rebound-offline-controlled_1-primary",
         "construction_sha256": "8ed226a2958303cef913a3b4d4d756c484795e449acfc33efc31beb8c38eebb2",
         "exit_code": 0,
-        "log": "selected-offline-controlled_1-v6.log",
-        "log_sha256": "7ad75f1cf2891bd3d499454eafb593fb080e38f0a00de79d9d88949ec2338c23"
+        "log": "rebound-offline-controlled_1-primary.log",
+        "log_sha256": "3a436de91306cbfd0329dca415b2c180d549edb66b559479cfa65b40cf825c93"
       },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": "cat \"$SAVED_VERSION/feedback.json\"",
-        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/public-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --attempt .runtime-work/c230224-public-source-controlled_1 --output .runtime-work/c230224-saved-source-controlled_1 --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --attempt .runtime-work/c230224-rebound-compat-controlled_1-primary --output .runtime-work/c230224-rebound-saved-controlled_1 --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
         "test_exit_code": 0,
-        "test_log": "selected-process-saved-controlled_1-v2.log",
-        "test_log_sha256": "18ae851f6af5f33941d5174da81b71ece4b77898723fab67563a3861f2316861",
-        "test_receipt": "cases/controlled_1/selected-process-saved.json",
-        "test_receipt_sha256": "18ae851f6af5f33941d5174da81b71ece4b77898723fab67563a3861f2316861"
+        "test_log": "rebound-process-saved-controlled_1.log",
+        "test_log_sha256": "7ae6e0ae5c65ef32a2827b462f1aced0ff624356f6dd08819b6b5e6cb35ea11d",
+        "test_receipt": "cases/controlled_1/rebound-process-saved.json",
+        "test_receipt_sha256": "7ae6e0ae5c65ef32a2827b462f1aced0ff624356f6dd08819b6b5e6cb35ea11d"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/controlled_1/rebound-primary-compatibility.json",
+        "sha256": "7bd079f74fe7034bc36e07b0260298752d4fbdf98830061905557f031076e4ee",
+        "log": "cases/controlled_1/rebound-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/controlled_1/rebound-primary-negative-analysis.log"
       }
     },
     {
@@ -87,7 +147,34 @@
         "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_at_cap/fallback1-construction.json",
+          "construction_sha256": "93922ad9323a93251ac7d2b3101668a1e51646b5f15eefbca8b3841aa9dfee11",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --candidate fallback1 --output .runtime-work/c230224-rebound-offline-controlled_at_cap-fallback1",
+            "construction_sha256": "93922ad9323a93251ac7d2b3101668a1e51646b5f15eefbca8b3841aa9dfee11",
+            "exit_code": 0,
+            "log": "rebound-offline-controlled_at_cap-fallback1.log",
+            "log_sha256": "9659fede2505639f6bd5852bcb807bfcaf2840e7ae2154cb469089666c509890"
+          },
+          "compatibility": {
+            "receipt": "cases/controlled_at_cap/rebound-fallback1-compatibility.json",
+            "sha256": "668fab91718770bc9f4d10d5644c4ce1787dc6bb99d541271a5cdd02ef05fa86",
+            "log": "cases/controlled_at_cap/rebound-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/controlled_at_cap/rebound-fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap",
       "construction": "cases/controlled_at_cap/selected-primary-construction.json",
       "construction_sha256": "db0d53db6c62395b18cb10785f720f5a6f33725ae8e290db94f802aa7d140e6f",
@@ -101,13 +188,38 @@
       "acquisition": {
         "kin.speed": {
           "entrypoint": "runner.py",
-          "method": "Native scooter velocity per-frame readback",
+          "method": "Native per-frame scooter velocity readback",
           "evidence": "native_rider_trace.jsonl"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound device classification and motor/mass review",
+          "evidence": "scooter_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound roadway boundary and Native position",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound path geometry, surface and access",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Native scooter pose joined to surveyed facility bounds",
+          "evidence": "native_rider_trace.jsonl,scooter_context.json"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound ordinance and posting provenance",
+          "evidence": "scooter_context.json"
         }
       },
       "physical_preparation": {
         "receipt": "physical-proof/controlled_at_cap/proof.json",
-        "sha256": "70c782ca59c0ec97fd315112376f5a309751a9e8890b65227eb5dccc36108c65"
+        "sha256": "b685ab9d02caf66e5121833bd38cd074982daae7454cb40733c6289932beaa5c"
       },
       "delivery_acceptance": {
         "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap",
@@ -136,27 +248,35 @@
         "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --candidate primary --output .runtime-work/c230224-final-offline-controlled_at_cap",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --candidate primary --output .runtime-work/c230224-rebound-offline-controlled_at_cap-primary",
         "construction_sha256": "db0d53db6c62395b18cb10785f720f5a6f33725ae8e290db94f802aa7d140e6f",
         "exit_code": 0,
-        "log": "selected-offline-controlled_at_cap-v6.log",
-        "log_sha256": "b002af521eb37524e809c7d54cb3180b4b7ace113bb7952f8687fb08204a08f3"
+        "log": "rebound-offline-controlled_at_cap-primary.log",
+        "log_sha256": "f450a9705f987f5c53b42f498538f2ba684a125bebd3ad61cadf24d12ddf61ae"
       },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": "cat \"$SAVED_VERSION/feedback.json\"",
-        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/public-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --attempt .runtime-work/c230224-public-source-controlled_at_cap --output .runtime-work/c230224-saved-source-controlled_at_cap --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --attempt .runtime-work/c230224-rebound-compat-controlled_at_cap-primary --output .runtime-work/c230224-rebound-saved-controlled_at_cap --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
         "test_exit_code": 0,
-        "test_log": "selected-process-saved-controlled_at_cap-v2.log",
-        "test_log_sha256": "c9eb4882d85ec95312628a2af033df095d25f8b561a32645150ec468daf2f571",
-        "test_receipt": "cases/controlled_at_cap/selected-process-saved.json",
-        "test_receipt_sha256": "c9eb4882d85ec95312628a2af033df095d25f8b561a32645150ec468daf2f571"
+        "test_log": "rebound-process-saved-controlled_at_cap.log",
+        "test_log_sha256": "b40cab52d310228feb8d7f3e02778b284f2366dfaf62efbf73e164059c4e6661",
+        "test_receipt": "cases/controlled_at_cap/rebound-process-saved.json",
+        "test_receipt_sha256": "b40cab52d310228feb8d7f3e02778b284f2366dfaf62efbf73e164059c4e6661"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/controlled_at_cap/rebound-primary-compatibility.json",
+        "sha256": "4bbfd0951908432d6e6869b373590c5aa6ec810767165ddc0112b2132075c1fc",
+        "log": "cases/controlled_at_cap/rebound-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/controlled_at_cap/rebound-primary-negative-analysis.log"
       }
     },
     {
@@ -164,7 +284,34 @@
         "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_2/fallback1-construction.json",
+          "construction_sha256": "b5207314f70623bfbfd4902f805bf1b7832a0b9cff0bc1ff86f2dc9040b0d616",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --candidate fallback1 --output .runtime-work/c230224-rebound-offline-controlled_2-fallback1",
+            "construction_sha256": "b5207314f70623bfbfd4902f805bf1b7832a0b9cff0bc1ff86f2dc9040b0d616",
+            "exit_code": 0,
+            "log": "rebound-offline-controlled_2-fallback1.log",
+            "log_sha256": "412ad180b23ded78566b63e71a80a03cde299cef1b1362c4a25dd40c43af4dfb"
+          },
+          "compatibility": {
+            "receipt": "cases/controlled_2/rebound-fallback1-compatibility.json",
+            "sha256": "b6bd3df60cc36ace8f045ce5ccf5f4b6f8c76f125828f94a7cb6162bb1da3fe9",
+            "log": "cases/controlled_2/rebound-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/controlled_2/rebound-fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2",
       "construction": "cases/controlled_2/selected-primary-construction.json",
       "construction_sha256": "78ef4abde625d943f2408275cf4c2d9ee7252f8e9a0093ea88298002cd965b52",
@@ -178,13 +325,38 @@
       "acquisition": {
         "kin.speed": {
           "entrypoint": "runner.py",
-          "method": "Native scooter velocity per-frame readback",
+          "method": "Native per-frame scooter velocity readback",
           "evidence": "native_rider_trace.jsonl"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound device classification and motor/mass review",
+          "evidence": "scooter_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound roadway boundary and Native position",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound path geometry, surface and access",
+          "evidence": "scooter_context.json,native_rider_trace.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Native scooter pose joined to surveyed facility bounds",
+          "evidence": "native_rider_trace.jsonl,scooter_context.json"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "measure_scooter.py",
+          "method": "Source-bound ordinance and posting provenance",
+          "evidence": "scooter_context.json"
         }
       },
       "physical_preparation": {
         "receipt": "physical-proof/controlled_2/proof.json",
-        "sha256": "309d133b7f63cef3326abb67778f01082edde3dda32ecdeb1a89362fb6da0f13"
+        "sha256": "22bb99b243706d042bf3e5ad7e95b2217194f9f485269444da01f44ec339cc7a"
       },
       "delivery_acceptance": {
         "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2",
@@ -213,27 +385,35 @@
         "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --candidate primary --output .runtime-work/c230224-final-offline-controlled_2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --candidate primary --output .runtime-work/c230224-rebound-offline-controlled_2-primary",
         "construction_sha256": "78ef4abde625d943f2408275cf4c2d9ee7252f8e9a0093ea88298002cd965b52",
         "exit_code": 0,
-        "log": "selected-offline-controlled_2-v6.log",
-        "log_sha256": "f1a74339eafec6c3d69f80ab0c52fdaf0471590785da092ff2511416d67e996d"
+        "log": "rebound-offline-controlled_2-primary.log",
+        "log_sha256": "f436082ef03760a4f4968c78049954219d61db30c53a7943c469d999d873b0b0"
       },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/execution-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
         "feedback_command": "cat \"$SAVED_VERSION/feedback.json\"",
-        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/public-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --attempt .runtime-work/c230224-public-source-controlled_2 --output .runtime-work/c230224-saved-source-controlled_2 --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/fallback-draft-manifest.json --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --attempt .runtime-work/c230224-rebound-compat-controlled_2-primary --output .runtime-work/c230224-rebound-saved-controlled_2 --library runtime/library --validator .runtime-work/c230224-decoder-v2/.lake/build/bin/adapterCheck",
         "test_exit_code": 0,
-        "test_log": "selected-process-saved-controlled_2-v2.log",
-        "test_log_sha256": "8f2aa0d92a636dbf197ad2459531b0036de0b519e5e3e9b664c1415345a9e0d4",
-        "test_receipt": "cases/controlled_2/selected-process-saved.json",
-        "test_receipt_sha256": "8f2aa0d92a636dbf197ad2459531b0036de0b519e5e3e9b664c1415345a9e0d4"
+        "test_log": "rebound-process-saved-controlled_2.log",
+        "test_log_sha256": "50ff24687efc0bb1bcb6b69039883e8ad66ec68a758d8b9d76e5034f5239c9f2",
+        "test_receipt": "cases/controlled_2/rebound-process-saved.json",
+        "test_receipt_sha256": "50ff24687efc0bb1bcb6b69039883e8ad66ec68a758d8b9d76e5034f5239c9f2"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/controlled_2/rebound-primary-compatibility.json",
+        "sha256": "24b3b147f010ddaed62cd00c2427f44256c6b6e517dfcda3e6698c51f8e4b57f",
+        "log": "cases/controlled_2/rebound-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/controlled_2/rebound-primary-negative-analysis.log"
       }
     }
   ]

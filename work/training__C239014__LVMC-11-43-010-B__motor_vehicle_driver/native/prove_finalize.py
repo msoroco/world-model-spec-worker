@@ -1,6 +1,7 @@
 """Source-shaped finalizer CPU checks; fixtures are never Native evidence."""
 import argparse
 import json
+import math
 from pathlib import Path
 
 from finalize import analyze, finalize
@@ -10,6 +11,11 @@ from geometry import open_drive
 
 def write_rows(path, rows):
     path.write_text("".join(json.dumps(row, separators=(",", ":")) + "\n" for row in rows))
+
+
+def ring_road(x, y):
+    angle = (math.atan2(y, x) + math.pi / 2) % (2 * math.pi)
+    return 1 + int(angle / (math.pi / 2))
 
 
 def create(root, condition):
@@ -27,7 +33,7 @@ def create(root, condition):
     (root / "road.xodr").write_text(open_drive())
     (root / "roundabout-map-readback.json").write_text(json.dumps({
         "source_kind": "native_map_readback", "samples": [
-            {"road_id": 1}, {"road_id": 2}]}) + "\n")
+            {"road_id": i} for i in range(1, 6)]}) + "\n")
     raw, controls, frames, trace = [], [], [], []
     for i in range(600):
         request = request_row(i, "waited_entry" if condition == "condition_a" else "early_entry")
@@ -39,7 +45,8 @@ def create(root, condition):
                 "blueprint_id": "vehicle.synthetic.cpu", "x_m": source["x_m"],
                 "y_m": source["y_m"], "speed_mps": source["speed_mps"],
                 "bbox_half_length_m": 2.0, "bbox_half_width_m": 1.0,
-                "road_id": 2 if role == "ego" and source["phase"] != "circulation" else 1,
+                "road_id": 5 if role == "ego" and source["phase"] != "circulation" else
+                           ring_road(source["x_m"], source["y_m"]),
                 "lane_id": -1})
         frame = 1000 + i
         t = i / 20

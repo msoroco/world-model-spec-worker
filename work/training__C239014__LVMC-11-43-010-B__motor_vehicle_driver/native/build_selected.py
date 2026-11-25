@@ -42,6 +42,16 @@ def build():
         construction = json.loads((HERE / old["construction"]).read_text())
         config = json.loads(next(file["content"] for file in construction["files"]
                                  if file["path"] == "config.json"))
+        fallback = json.loads(json.dumps(construction))
+        fallback_config = dict(config)
+        fallback_config["candidate_id"] = "fallback1"
+        fallback_config["steer_gain"] = 2.0
+        fallback_config["max_steer"] = .95
+        next(file for file in fallback["files"] if file["path"] == "config.json")["content"] = (
+            json.dumps(fallback_config, indent=2) + "\n")
+        fallback["status"] = "physical_steering_fallback_cpu_request"
+        fallback_rel = "fallbacks/" + condition + "/fallback1/construction.json"
+        write(FOLDER / fallback_rel, fallback)
         requirements = [
             {"disposition_index": 0, "requirement": "text-0",
              "source": "LVMC 11.43.010(B)", "output_key": "roundabout_context",
@@ -63,7 +73,7 @@ def build():
              "negative": {"remove": ["roundabout-map-readback.json"],
                           "error_contains": "Missing required source: roundabout-map-readback.json"}})
         proposals.append({"case_id": case_id, "target_law_id": "LVMC-11-43-010-B",
-            "target_type": "controlled_comparison", "rationale": "Frozen roundabout-entry witness",
+            "target_type": "judgment_sweep", "rationale": "Frozen roundabout-entry witness",
             "paired_probe_id": "c239014_entry_gap", "deliberate_differences": ["entry_release_time"],
             "probe": {"primary_variable": "entry_release_time",
                       "comparison_or_standard": "original source traffic brackets; legal sufficiency unresolved",
@@ -71,13 +81,20 @@ def build():
             "variable_assignments": {"entry_release_time": {
                 "kind": "controller", "value": config["entry_release_s"]}},
             "recording_description": config["recording_description"],
-            "unresolved_judgment_calls": ["full boundary, traffic gap sufficiency and driver duty"]})
+            "unresolved_judgment_calls": ["vehicles already in the roundabout",
+                                           "gap in traffic"]})
         entries.append({"case_id": case_id, "kind": "delivery",
             "construction": "native/" + old["construction"],
             "construction_sha256": old["construction_sha256"],
-            "candidate_risk": {"status": "none",
-                "reason": "Primary map/controller realization needs original Native review before a fallback trigger can be chosen."},
-            "candidates": [], "measurement_procedure": {"entrypoint": "finalize.py"},
+            "candidate_risk": {"status": "physical",
+                "reason": "Primary lane-following may miss the ring lane or overshoot the entry under physical steering dynamics."},
+            "candidates": [{"id": "fallback1", "construction": fallback_rel,
+                "construction_sha256": sha(FOLDER / fallback_rel),
+                "trigger": {"source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
+                            "metric": "ring-road occupancy and entry continuity",
+                            "failure_condition": "primary ego fails to enter a recorded ring road or a circulating actor leaves the ring"},
+                "changed_knobs": ["steer_gain 1.3 to 2.0", "max_steer .75 to .95"]}],
+            "measurement_procedure": {"entrypoint": "finalize.py"},
             "measurement_contract": contract_rel,
             "fixture_recipe": str((FOLDER / ("diagnostic-" + condition + "-recipe.json")).relative_to(HERE.parents[2])),
             "delivery_readiness": "incomplete",
