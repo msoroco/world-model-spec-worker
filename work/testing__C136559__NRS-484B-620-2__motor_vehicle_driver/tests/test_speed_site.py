@@ -108,6 +108,7 @@ class SpeedSiteTest(unittest.TestCase):
                 index = getattr(self, 'index', 0)
                 self.index = index + 1
                 return {'original_frame': index, 'original_time_s': index / 20,
+                        'weather_sha256': 'a' * 64,
                         'camera_png': {name: b'\x89PNG\r\n\x1a\nfixture' for name in cameras},
                         'state': {'ego_id': 'ego', 'inside_zone': True,
                                   'sign_installed': True, 'actual_speed_mps': 9.0},

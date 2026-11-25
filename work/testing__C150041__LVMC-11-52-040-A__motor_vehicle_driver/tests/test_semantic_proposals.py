@@ -28,9 +28,10 @@ class SemanticProposalTests(unittest.TestCase):
         self.assertEqual(template["actor"], ACTOR)
         self.assertIn("Except as otherwise provided in this Chapter",
                       template["structure"]["exceptions"][0]["source_clause"])
-        angle_exception = template["structure"]["exceptions"][1]
-        self.assertEqual(angle_exception["source_law_id"], "LVMC-11-52-070")
-        self.assertEqual(angle_exception["source_inventory_sha256"],
+        self.assertEqual(len(template["structure"]["exceptions"]), 1)
+        inventory = json.loads((ROOT / "diagnostic/chapter-exception-inventory.json").read_text())
+        self.assertEqual(inventory["potential_exception"]["law_id"], "LVMC-11-52-070")
+        self.assertEqual(index["exception_inventory"]["sha256"],
                          hashlib.sha256((ROOT / "diagnostic/chapter-exception-inventory.json").read_bytes()).hexdigest())
         self.assertEqual(template["structure"]["obligation"]["numeric_conditions"], [])
         proposal = json.loads((ROOT / "proposals" / "cases.json").read_text())

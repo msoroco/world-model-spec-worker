@@ -74,6 +74,7 @@ def audit_attempt(attempt, case_id):
     need(case is not None and site.get('source_kind') == 'original_native_capture' and site.get('reviewer'),
          'reviewed original passenger-zone site missing')
     validate_site(site, case)
+    need(site['zone'].get('passenger_anchor_source_sha256'), 'original passenger anchor source missing')
     audit = audit_original_history(history_path, sha(history_path), short,
                                    site['zone']['boundary_source_sha256'], site['regulations']['source_sha256'])
     rows = [json.loads(line) for line in history_path.read_text().splitlines() if line]
@@ -100,6 +101,11 @@ def audit_attempt(attempt, case_id):
              'original camera source changed: ' + name)
         decodes[name] = decode_camera(path, [1920, 1080] if name == 'overview' else [1280, 720])
     fixed = {'site_sha256': sha(site_path),
+             'road_source_sha256': site['road']['source_sha256'],
+             'regulations_source_sha256': site['regulations']['source_sha256'],
+             'effective_hours_source_sha256': site['regulations']['effective_hours_source_sha256'],
+             'clock_source_sha256': site['clock']['source_sha256'],
+             'civil_time_iso': site['clock']['civil_time_iso'],
              'camera_plan_sha256': rows[0]['camera_plan_sha256'],
              'zone_source_sha256': site['zone']['boundary_source_sha256'],
              'vehicle_blueprint': site['vehicle_blueprint'],
@@ -136,8 +142,51 @@ def audit_comparisons(reports):
                  report.get('comparison_record', {}).get('original_history_sha256'),
                  'comparison includes nonoriginal or wrong-case audit')
         for cid in cid_list[1:]:
-            audit_pair(anchor['comparison_record'], reports[cid]['comparison_record'], difference)
+            left, right = anchor['comparison_record'], reports[cid]['comparison_record']
+            if difference == 'regulations_effective':
+                for key in ('road_source_sha256', 'regulations_source_sha256',
+                            'effective_hours_source_sha256', 'zone_source_sha256',
+                            'camera_plan_sha256', 'vehicle_blueprint', 'passenger_blueprint'):
+                    need(left.get(key) and left[key] == right.get(key),
+                         'fixed hours comparison condition changed: ' + key)
+                need(left.get('civil_time_iso') != right.get('civil_time_iso') and
+                     left.get('clock_source_sha256') and right.get('clock_source_sha256') and
+                     left.get('regulations_effective') is True and
+                     right.get('regulations_effective') is False,
+                     'sourced effective-hours difference absent')
+            else:
+                audit_pair(left, right, difference)
         out.append({'comparison_id': comparison['comparison_id'], 'case_ids': cid_list,
                     'measured_difference': difference, 'legal_status': 'unresolved',
                     'physical_acceptance': False})
     return out
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    sub = parser.add_subparsers(dest='command', required=True)
+    case = sub.add_parser('case')
+    case.add_argument('--attempt', type=Path, required=True)
+    case.add_argument('--case', required=True)
+    case.add_argument('--output', type=Path, required=True)
+    comparisons = sub.add_parser('comparisons')
+    comparisons.add_argument('--reports', type=Path, required=True)
+    comparisons.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise ValueError('retain prior independent audit')
+    if args.command == 'case':
+        result = audit_attempt(args.attempt, args.case)
+    else:
+        report_index = read(args.reports)
+        need(isinstance(report_index, dict), 'exact original audit report index required')
+        result = {'format': 'c150116-independent-comparison-audit-v1',
+                  'comparisons': audit_comparisons(report_index),
+                  'legal_status': 'unresolved', 'physical_acceptance': False}
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2) + '\n')
+
+
+if __name__ == '__main__':
+    main()

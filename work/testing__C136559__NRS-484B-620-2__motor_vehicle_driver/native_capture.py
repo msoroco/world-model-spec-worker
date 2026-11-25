@@ -57,6 +57,7 @@ def capture(adapter, config, site_path, output):
     mappings = []
     traces = []
     video_frames = []
+    weather_source = None
     restored = False
     try:
         built = build_case(adapter, site, case)
@@ -75,6 +76,13 @@ def capture(adapter, config, site_path, output):
                     not isinstance(sample.get('original_time_s'), (int, float)) or \
                     abs(sample['original_time_s'] - index / 20) > .005:
                 raise ValueError('original frame/time gap')
+            observed_weather = sample.get('weather_sha256')
+            if not isinstance(observed_weather, str) or len(observed_weather) != 64:
+                raise ValueError('original weather source missing')
+            if weather_source is None:
+                weather_source = observed_weather
+            elif observed_weather != weather_source:
+                raise ValueError('weather changed within original attempt')
             camera_png = sample.get('camera_png', {})
             if set(camera_png) != set(VIEWS):
                 raise ValueError('original camera frame absent')
@@ -127,6 +135,7 @@ def capture(adapter, config, site_path, output):
                          'zone_establishment_source_sha256': site['zone_establishment_source_sha256'],
                          'zone_extent_source_sha256': site['zone_extent_source_sha256'],
                          'sign_instruction_source_sha256': site['sign_instruction_source_sha256'],
+                         'weather_sha256': weather_source,
                          'camera_plan_sha256': hashlib.sha256(json.dumps(config['cameras'],
                                                                           sort_keys=True).encode()).hexdigest(),
                          'ego_blueprint': adapter.ego_blueprint_id(built['ego']),

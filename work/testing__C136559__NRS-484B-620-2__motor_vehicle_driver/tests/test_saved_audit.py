@@ -19,6 +19,7 @@ class SavedAuditTest(unittest.TestCase):
                 'map_source_sha256': 'map', 'zone_establishment_source_sha256': 'order',
                 'zone_extent_source_sha256': 'extent', 'sign_instruction_source_sha256': 'sign',
                 'camera_plan_sha256': 'cameras', 'ego_blueprint': 'car',
+                'weather_sha256': 'a' * 64,
                 'authorized_speed_mph': 25.0,
                 'original_rows': [{'original_frame': i, 'original_time_s': i/20,
                                    'ego_id': 'ego', 'sign_readback_source_sha256': 'native-sign',

@@ -1,6 +1,6 @@
 # testing__C230223__NRS-484B-270-4__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial source-gated CPU package. Four controlled cases and three comparisons are proposed; no original recording is selected.
 
 Exact law: NRS 484B.270(4) — Except as otherwise provided in subsection 3 [NRS-484B-270-3], the driver of a motor vehicle shall not enter or proceed through an intersection while driving within a pathway or lane provided for bicycles, electric bicycles or electric scooters.
 Assigned branch(es): Road-route intersection passage within a designated cycle lane.
@@ -59,3 +59,34 @@ Next CPU work: construct/read back actual designated cycle-lane and intersection
 | `result.json` | `ec3f5a55fcf1d26181131ab827c92ffed91a59da0354c9199ea0b6e85d5f1134` |
 
 Next CPU work: bind a real source map and designation authority to exact route candidates, inspect subsection 3's authoritative exception, implement original saved acquisition and finalizer, prove each exact bundle positive and negative compatibility, then run saved-only processing and delivery/comparison audits. Actual motion and camera quality remain later GPU checks.
+
+## 2026-11-25 source-gated Native and saved audit checkpoint
+
+Added `cycle_lane_native.py` for independently hash-checked public-intersection, cycle-lane designation, subsection 3 and motor-vehicle packets, exact route selection, fixed 45-second four-camera profile and deterministic steering control. The route controller is CPU tested; no Native world/camera capture was run or claimed.
+
+Added `cycle_lane_original.py` for 900 consecutive 20 Hz original-frame, actor and body-polygon joins against the reviewed intersection and designated cycle-lane polygons. `cycle_lane_delivery.py` checks SHA-256 custody and full 900-frame decode for each of four camera views. `cycle_lane_comparison.py` independently re-audits the four original attempts, requires the same site, vehicle, camera policy and authoritative exception clause across each of the three planned pairs, and checks the exact deliberate overlap or exception-status difference. `cycle_lane_finalize.py` exposes a saved-only production CLI using externally supplied reviewed hashes. No legal or physical acceptance verdict is generated.
+
+Draft canonical semantic proposals under `proposals/` bind all four cases and three comparisons while explicitly retaining source review gaps. The synthetic software suite passed 29 tests, including full four-case saved finalization with 900-frame videos, missing-source and corrupted-media negatives, polygon/flag mismatch and comparison-isolation negatives. The source fixtures are synthetic and stay under `.runtime-work/`. Updated preflight and scoped static pass. Exact scoped strict exits 1 because the truthful package status is `partial`.
+
+Exact remaining prerequisites: a reviewed source map with a genuine public intersection, designated cycle-lane polygon and authority, four route candidates, authoritative subsection 3 clause and case-specific applicability, and reviewed motor-vehicle/driver packet. These must supply independently reviewed SHA-256 values to the source-gated construction/finalizer. Remaining CPU implementation after that source binding: materialize the exact Native runner and canonical runtime construction bundles, selected execution manifest, positive/negative pinned compatibility and recorded-only process-saved, physical-risk candidate proofs, and selected delivery/comparison receipt bindings. No source or legal cutoff has been fabricated.
+
+Production saved CLI: `.venv-cpu/bin/python work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/cycle_lane_finalize.py --review /external/reviewed-cycle-lane-attempts.json --output .runtime-work/c230223-original-finalized.json`. The review JSON must contain `attempts` and `reviews` maps keyed by all four case IDs; each review entry has independent `site`, `subsection_3`, and `vehicle` SHA-256 values.
+
+| File | SHA256 |
+| --- | --- |
+| `cycle_lane_native.py` | `eb895c37667195b8a9d5a68bf8a009dcb2dc52d43a400bdef206199477182125` |
+| `cycle_lane_original.py` | `bd5b60bc98413da0c588fea38405fe4ce3ffe63b70da0309608b465c481a2d98` |
+| `cycle_lane_delivery.py` | `735b95382ba769d9606808ca7bd4711c7f13aa55d6312426caf493db53978a5e` |
+| `cycle_lane_comparison.py` | `6da750b4edb53a550e1417c0016956fdf9ff00b91af833089d82606347aaf778` |
+| `cycle_lane_finalize.py` | `a9c0ee48510e8b80788aa4d647548f958f9c6cc75e9f47e032082fedfd735d14` |
+| `tests/test_cycle_lane_native.py` | `7b524eb35e66a2d189164835339be60ba7c41a9c4707247a6a37b48358df5619` |
+| `tests/test_cycle_lane_original.py` | `e20999cbd26f58951861bf97176472f0deeacec4840de1ce991be3e01342812f` |
+| `tests/test_cycle_lane_delivery.py` | `fb1aaf7e660a5bc8e236ab35bee0ed24ab8f72bc3b18b873f028048a46cc9cb6` |
+| `tests/test_cycle_lane_comparison.py` | `4767f1f7a3859014c4a083b803da97edc23dd801e52a11c88e578971c51fa558` |
+| `proposals/semantic-index.json` | `d26427253a36730713cbe457fa2284e50e997ca8c3a0d54a22523828a493a76b` |
+| `cpu-preflight-20261125.log` | `828f94b81ba3dfbdcf5e2a0a1981736667ecc31010f72e746bb652a6fdcfd1e9` |
+| `cpu-tests-20261125.log` | `a4614c36140d623eb0ca93b1a438ff87c3e8467bfd591cfde5cb744f9c6c5eee` |
+| `cpu-static-20261125.log` | `ca883a18ff02814b24d102da8ee269a293ecc2e9a87dad0e273ee93031551a41` |
+| `cpu-strict-20261125.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+The package-local `physical-risk-draft.json` records per-case route/lane failure modes and one shared measurable fallback policy. Its candidate remains unselected and unproved; the draft is not a physical-risk acceptance receipt. SHA256: `514c933f301c46dfcc348df7eca0d2a0e389affac447150f192ac77f4cb27aba`.

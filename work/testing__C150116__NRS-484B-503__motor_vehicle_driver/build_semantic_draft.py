@@ -49,7 +49,7 @@ def main():
         'structure': {'law_id': LAW,
             'activation': {'condition': 'Vehicle is in a marked passenger curb loading zone during hours when applicable regulations are effective.', 'numeric_conditions': []},
             'obligation': {'description': 'Do not stop, stand or park for any purpose or period except expeditious passenger loading or unloading.', 'type': 'must_not', 'numeric_conditions': []},
-            'exceptions': [{'description': 'Expeditious loading or unloading of passengers.', 'numeric_conditions': []}],
+            'exceptions': [{'trigger': 'Actual expeditious passenger loading or unloading', 'effect': 'Limited exception to stop, stand or park prohibition', 'replacement_obligation': 'Use only the time needed for expeditious passenger loading or unloading', 'source_clause': 'except for the expeditious loading or unloading of passengers'}],
             'timing': {'description': 'Observe original effective-hours condition and actual in-zone halt and passenger event history.', 'numeric_conditions': []},
             'judgment_calls_needed': [{'phrase': phrase, 'note': note} for phrase, note, _ in judgments]},
         'parameter_refs': params})
@@ -59,7 +59,7 @@ def main():
             'phrase': phrase, 'note': note, 'status': 'draft',
             'observable_requirements': {'observables': [{'name': channel, 'unit': 'original source observation', 'description': note}],
                 'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
-                'recording_needs': [{'name': channel, 'unit': 'original frame and civil time', 'description': note}],
+                'recording_needs': [{'name': channel, 'unit': {'passenger_activity': 'events', 'zone_marking': 'source context', 'regulation_hours': 'civil time'}[channel], 'description': note}],
                 'limitations': ['No original zone marking, regulation-hours source or reviewed legal judgment ranges supplied.']}}))
     binding_ref = write('bindings.json', {'cell_id': 'C150116', 'actor': ACTOR, 'status': 'draft',
         'law_refs': [{'template_id': TEMPLATE, 'binding_kind': 'direct'}],

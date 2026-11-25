@@ -44,7 +44,9 @@ def main():
                  'limitations': ['No reviewed original C136559 speed-zone site is in frozen input.',
                                  'Requested speed is distinct from original measured speed.']}
     shared = ['runner.py', 'analysis.py', 'speed_zone.py', 'speed_site.py', 'native_capture.py',
-              'saved_audit.py', 'case-plan.json', 'tests/test_speed_zone.py',
+              'saved_audit.py', 'delivery_audit.py', 'selected_delivery.py',
+              'comparison_audit.py', 'selected_comparison.py',
+              'case-plan.json', 'tests/test_speed_zone.py',
               'tests/test_speed_site.py', 'tests/test_saved_audit.py']
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': ID,
                 'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),

@@ -20,7 +20,12 @@ class IndependentAuditTests(unittest.TestCase):
                         'legal_status': 'unresolved', 'physical_acceptance': False,
                         'comparison_record': {'case_id': cid, 'frame_count': 900,
                             'original_history_sha256': 'mock-history-' + case.name,
-                            'site_sha256': 'mock-fixed-site',
+                            'site_sha256': 'mock-outside-hours-site' if case.hours != 'effective' else 'mock-fixed-site',
+                            'road_source_sha256': 'mock-road-authority',
+                            'regulations_source_sha256': 'mock-regulation-authority',
+                            'effective_hours_source_sha256': 'mock-hours-authority',
+                            'clock_source_sha256': 'mock-clock',
+                            'civil_time_iso': '2026-11-25T03:00:00-08:00' if case.hours != 'effective' else '2026-11-25T10:00:00-08:00',
                             'camera_plan_sha256': 'mock-four-camera-plan',
                             'zone_source_sha256': 'mock-zone',
                             'vehicle_blueprint': 'mock-car',
@@ -38,6 +43,12 @@ class IndependentAuditTests(unittest.TestCase):
         reports = self.reports()
         reports[ASSIGNMENT + '__load_prompt']['comparison_record']['site_sha256'] = 'changed'
         with self.assertRaisesRegex(ValueError, 'fixed comparison condition changed'):
+            audit_comparisons(reports)
+
+    def test_changed_regulation_authority_rejected(self):
+        reports = self.reports()
+        reports[ASSIGNMENT + '__park_outside_hours']['comparison_record']['regulations_source_sha256'] = 'changed'
+        with self.assertRaisesRegex(ValueError, 'fixed hours comparison condition changed'):
             audit_comparisons(reports)
 
     def test_synthetic_report_rejected(self):

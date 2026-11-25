@@ -21,7 +21,7 @@ def sha(path):
 
 
 def run(entry, candidate, suffix, env):
-    output = SCRATCH / ('compat-' + suffix + '-' + candidate + '-v4')
+    output = SCRATCH / ('compat-' + suffix + '-' + candidate + '-v6')
     command = [sys.executable, str(REPO / 'runtime.py'), 'compatibility', '--manifest',
                str(MANIFEST), '--case', entry['case_id'], '--candidate', candidate,
                '--output', str(output), '--library', str(REPO / 'runtime/library'),

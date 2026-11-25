@@ -20,7 +20,7 @@ def audit(capture_path, seal_path, case_id):
         raise ValueError('identity mismatch')
     if not all(data.get(k) for k in ('map_source_sha256', 'zone_establishment_source_sha256',
                                      'zone_extent_source_sha256', 'sign_instruction_source_sha256',
-                                     'camera_plan_sha256', 'ego_blueprint')):
+                                     'camera_plan_sha256', 'ego_blueprint', 'weather_sha256')):
         raise ValueError('site source missing')
     if data.get('authorized_speed_mph') != 25.0:
         raise ValueError('authorized speed source changed')

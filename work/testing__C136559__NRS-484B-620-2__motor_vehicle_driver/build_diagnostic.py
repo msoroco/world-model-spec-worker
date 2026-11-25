@@ -102,6 +102,7 @@ def main():
                    'zone_establishment_source_sha256': site['zone_establishment_source_sha256'],
                    'zone_extent_source_sha256': site['zone_extent_source_sha256'],
                    'sign_instruction_source_sha256': site['sign_instruction_source_sha256'],
+                   'weather_sha256': sha(b'synthetic fixed clear weather'),
                    'camera_plan_sha256': sha(text(json.loads((ROOT / 'config.json').read_text())['cameras']).encode()),
                    'ego_blueprint': 'vehicle.diagnostic', 'original_rows': rows,
                    'diagnostic_fixture': True}
