@@ -1,6 +1,7 @@
 """Independent C125751 source-bound comparison audit; legal judgment stays open."""
 import hashlib
 import json
+import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -120,4 +121,15 @@ def audit(root=ROOT, plan=None, manifest=None):
 
 
 if __name__ == '__main__':
-    print(json.dumps(audit(), indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--comparison', choices=sorted(EXPECTED))
+    parser.add_argument('--output', type=Path)
+    args = parser.parse_args()
+    result = audit()
+    if args.comparison:
+        result['comparisons'] = [row for row in result['comparisons']
+                                 if row['comparison_id'] == args.comparison]
+    encoded = json.dumps(result, indent=2) + '\n'
+    if args.output:
+        args.output.write_text(encoded)
+    print(encoded, end='')

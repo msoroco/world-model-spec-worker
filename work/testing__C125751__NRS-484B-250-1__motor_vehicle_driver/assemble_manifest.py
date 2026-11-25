@@ -48,30 +48,41 @@ def bind():
         fallback_receipt = copy_text(fallback_scratch / 'compatibility.json', proof / 'fallback-receipt.json')
         fallback_saved = copy_text(fallback_saved_log, proof / 'fallback-saved-receipt.json')
         entry['offline'] = {
-            'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --output .runtime-work/c125751-offline-v2-' + name + ' --python .venv-cpu/bin/python',
+            'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --output .runtime-work/' + ('c125751-offline-v3-opposite' if name == 'source_verified_opposite_intends_left' else 'c125751-offline-v2-' + name) + ' --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python',
             'exit_code': 0, 'construction_sha256': entry['construction_sha256'],
             'log': str(primary_log.relative_to(ROOT)), 'log_sha256': sha(primary_log),
         }
         entry['compatibility'] = {'receipt': receipt, 'sha256': sha(ROOT / receipt),
-                                  'log': analysis, 'negative_log': negative}
+                                  'log': analysis, 'negative_log': negative,
+                                  'replay_command': '.venv-cpu/bin/python runtime.py compatibility --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --output .runtime-work/c125751-compat-v3-' + name + ' --library runtime/library --validator .runtime-work/c376646-validator/.lake/build/bin/adapterCheck'}
         entry['negative'] = {'log': negative}
         entry['saved_processing_diagnostic'] = {
             'command': '.venv-cpu/bin/python runtime.py process-saved --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --attempt .runtime-work/c125751-compat-v3-' + name + ' --output .runtime-work/c125751-saved-v3-' + name + ' --library runtime/library --validator .runtime-work/c376646-validator/.lake/build/bin/adapterCheck',
             'exit_code': 0, 'receipt': saved, 'sha256': sha(ROOT / saved),
             'recorded_only': True, 'scope': 'synthetic fixture; physical review pending',
         }
+        entry['post_capture'] = {
+            'recorded_only': True,
+            'command': entry['saved_processing_diagnostic']['command'],
+            'feedback_command': 'cat .runtime-work/c125751-saved-v3-' + name + '/v0001/feedback.json',
+            'test_log': str(saved_log.relative_to(ROOT)),
+            'test_log_sha256': sha(saved_log),
+            'test_exit_code': 0,
+        }
         entry['native_handoff'] = previous['native_handoff']
         entry['acquisition'] = previous['acquisition']
         fallback = entry['candidates'][0]
         fallback['offline'] = {
-            'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --candidate fallback1 --output .runtime-work/c125751-fallback-offline-' + name + ' --python .venv-cpu/bin/python',
+            'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --candidate fallback1 --output .runtime-work/c125751-fallback-offline-' + name + ' --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python',
             'exit_code': 0, 'construction_sha256': fallback['construction_sha256'],
             'log': str(fallback_log.relative_to(ROOT)), 'log_sha256': sha(fallback_log),
         }
         fallback['compatibility'] = {'receipt': fallback_receipt,
                                      'sha256': sha(ROOT / fallback_receipt),
-                                     'log': fallback_analysis, 'negative_log': fallback_negative}
-        fallback['saved_processing_diagnostic'] = {'receipt': fallback_saved,
+                                     'log': fallback_analysis, 'negative_log': fallback_negative,
+                                     'replay_command': '.venv-cpu/bin/python runtime.py compatibility --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --candidate fallback1 --output .runtime-work/c125751-fallback-compat-' + name + ' --library runtime/library --validator .runtime-work/c376646-validator/.lake/build/bin/adapterCheck'}
+        fallback['saved_processing_diagnostic'] = {'command': '.venv-cpu/bin/python runtime.py process-saved --manifest work/' + ROOT.name + '/review-draft-manifest.json --case ' + entry['case_id'] + ' --attempt .runtime-work/c125751-fallback-compat-' + name + ' --output .runtime-work/c125751-fallback-saved-' + name + ' --library runtime/library --validator .runtime-work/c376646-validator/.lake/build/bin/adapterCheck',
+                                                   'receipt': fallback_saved,
                                                    'sha256': sha(ROOT / fallback_saved),
                                                    'recorded_only': True, 'exit_code': 0}
         fixture_folder = ROOT / 'physical-proofs' / name
