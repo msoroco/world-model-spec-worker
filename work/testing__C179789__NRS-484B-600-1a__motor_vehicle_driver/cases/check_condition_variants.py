@@ -21,7 +21,7 @@ def check():
         for name in ('runner.py','camera_setup.py','camera_encoder.py',
                      'condition_capture.py','condition_construction.py',
                      'traffic_construction.py','traffic_controller.py',
-                     'conditions_measurements.py'):
+                     'conditions_measurements.py','finalizer.py','measurement-contract.json'):
             if bundle[name]!=d[name]:
                 raise ValueError('Shared construction implementation differs: '+name)
     dc,wc,tc=[json.loads(bundle['config.json']) for bundle in (d,w,t)]

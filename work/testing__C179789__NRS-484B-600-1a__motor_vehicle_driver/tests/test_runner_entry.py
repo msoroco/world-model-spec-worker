@@ -19,7 +19,7 @@ class RunnerEntryTests(unittest.TestCase):
                 'site_packet':'road_packet.json','required_atoms':[],
                 'condition_target':{'surface':'dry','lane_width_m':[3,4],
                     'longitudinal_body_gap_m':[10,35],
-                    'sight_distance_m':[50,120],'precipitation_percent':[0,5]},
+                    'sight_distance_m':[10,120],'precipitation_percent':[0,5]},
                 'cameras':[{'name':name,'width':size[0],'height':size[1],
                             'fov_deg':90} for name,size in RUNNER.PROFILE.items()]}
 
@@ -38,6 +38,12 @@ class RunnerEntryTests(unittest.TestCase):
              'precipitation_percent':0,
              'surrounding_traffic':[{'longitudinal_body_gap_m':20}]}
         self.assertTrue(RUNNER.verify_observed_target(row,target))
+        row['sight_distance_m']=25
+        self.assertTrue(RUNNER.verify_observed_target(row,target))
+        row['sight_distance_m']=5
+        with self.assertRaisesRegex(ValueError,'sight_distance_m'):
+            RUNNER.verify_observed_target(row,target)
+        row['sight_distance_m']=80
         row['lane_width_m']=2.6
         with self.assertRaisesRegex(ValueError,'lane_width_m'):
             RUNNER.verify_observed_target(row,target)

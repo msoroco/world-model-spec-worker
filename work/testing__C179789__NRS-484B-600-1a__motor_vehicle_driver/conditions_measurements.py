@@ -100,6 +100,7 @@ def analyze(root:Path)->dict:
                         "diagnostic_stopping_distance_m":stop_distance,
                         "diagnostic_stop_distance_exceeds_sight":stop_distance>sight})
     return {"format":"worker-basic-speed-conditions-observations","sources":hashes,
+            "surface_source_path":str(rel),
             "engineering_model":{"reaction_time_s":reaction,"braking_deceleration_mps2":decel,
                                  "source":ctx["braking_model_source"],"legal_threshold":False},
             "samples":samples,"reasonable_or_proper_judgment":"unresolved",

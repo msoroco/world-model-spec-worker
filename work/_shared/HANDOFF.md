@@ -912,3 +912,19 @@ C179789 dry/open-traffic exact diagnostic construction passed current-runtime of
 ## 2026-11-24 C179789 three offline cases
 
 Dry/open, wet/same-traffic and dense-traffic exact diagnostic constructions pass current-runtime offline checks; `cases/condition-offline-index.json` binds hashes/logs. Construction comparison checks fixed road, ego and four-camera contract, plus wet versus traffic differences. Status partial; three exact cases and saved/delivery stages remain.
+
+## 2026-11-24 saved speed/conditions finalizer
+
+The current C179789 package adds `finalizer.py` and `measurement-contract.json`. Saved finalization reads original frame-joined ego speed, lead body gap/speed, lane width, surface source, precipitation, sight and curvature, writes a source-hashed Native result and derived speed channel once, and leaves the statutory reasonable-or-proper judgment unresolved. Positive, missing/altered surface and unplanned-case tests pass; all 21 package tests pass. Three exact diagnostic constructions now embed this finalizer/contract and pass current-runtime `runtime.py offline` checks with 21 embedded tests each; current hashes and logs are in `cases/condition-offline-index.json`. The scoped nonready complete check passes (`assignment-check.log`).
+
+C179789 remains **partial**. The exact narrow, low-visibility and ice/snow constructions, reviewed Native site and condition sources, compatibility and recorded-only processing proofs, physical-preparation, risk-based fallbacks, semantic proposals, independent delivery/comparison audits and queue entries remain worker-owned CPU work. No Native, physical, pixel or legal acceptance is claimed. No prior-ready assignment or frozen input was changed.
+
+## 2026-11-24 saved-path diagnostic source proof
+
+`cases/build_saved_diagnostic.py` binds the supplied nine-frame synthetic graph/video fixture to C179789 original frame identities and adds frame-specific speed/condition samples. `runtime.py fixture` materialized it under `.runtime-work/`; the current dry construction was materialized separately and the fixture sources copied without shadowing code or configuration. The saved `finalizer.py` produced a source-hashed Native result with sampled peak speed 0.055294461414037994 m/s, `synthetic_fixture` provenance, `physical_acceptance_claimed: false` and unresolved legal conclusion. Removing `surface.txt` from a fresh negative attempt raised `Original surface document missing`. `cases/saved-finalizer-proof.json` binds the positive/negative logs, diagnostic recipe, finalizer/contract and saved output hashes. This is a saved-source software proof, not full runtime compatibility or recorded-only processing acceptance.
+
+C179789 remains partial. Next worker-owned steps are remaining exact condition constructions, source-reviewed Native packets, full compatibility and saved-processing proofs, physical preparation, fallbacks, semantic proposals, independent audits and queue integration.
+
+## 2026-11-24 first-obstruction sight correction
+
+The original Native cast ray measures distance to its first hit, which may be the lead car. The initial 50 m lower target could reject the planned 25 m lead scene even when construction otherwise works. Dry, wet and dense diagnostic target intervals now allow 10–120 m; a focused runner test accepts a 25 m hit and rejects a 5 m hit. The recording description explicitly says first obstruction includes traffic and does not measure optical weather visibility. All three exact current-runtime offline checks and 21 embedded tests were rerun; the latest hashes and logs are in `cases/condition-offline-index.json`. Actual visibility and safe lead behavior still require physical and pixel review. C179789 remains partial.

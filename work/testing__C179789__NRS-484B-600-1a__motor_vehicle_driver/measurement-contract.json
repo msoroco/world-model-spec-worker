@@ -1,0 +1,21 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "rate greater than is reasonable or proper, having due regard for traffic, surface and width of highway, weather and other highway conditions",
+      "source": "NRS 484B.600(1)(a)",
+      "output_key": "sampled_peak_speed_mps",
+      "method": "measure_peak_speed",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": ["condition_history.jsonl", "video_frames.jsonl", "road_context.json", "surface.txt"]
+    }
+  ],
+  "context_measurements": ["lane_width_m", "longitudinal_body_gap_m", "surface", "precipitation_percent", "sight_distance_m", "curvature_per_m", "diagnostic_stopping_distance_m"],
+  "legal_judgment": "unresolved; engineering stopping distance and target ranges are not statutory thresholds",
+  "negative": {
+    "remove": ["surface.txt"],
+    "error_contains": "Original surface document missing"
+  }
+}
