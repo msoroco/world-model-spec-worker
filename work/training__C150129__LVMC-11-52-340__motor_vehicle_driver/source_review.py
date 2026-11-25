@@ -66,6 +66,9 @@ def join(attempt: Path, inventory: dict, review: dict):
     _require(posting.get('posted_or_marked') is True and
              posting.get('space_id') == inventory['space_id'],
              'Posted-space association unconfirmed')
+    _require(inventory.get('native_marker_actor_id') is not None and
+             posting.get('native_marker_actor_id') == inventory['native_marker_actor_id'],
+             'Posted marker actor association unconfirmed')
     _require(status.get('subject_city_vehicle') is False,
              'Non-City subject vehicle status unconfirmed')
     out = dict(inventory)

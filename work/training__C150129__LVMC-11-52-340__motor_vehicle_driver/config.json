@@ -1,0 +1,104 @@
+{
+  "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
+  "selected_case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
+  "supported_case_ids": [
+    "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
+    "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2"
+  ],
+  "candidate_id": "primary",
+  "law_id": "LVMC-11-52-340",
+  "cell_id": "C150129",
+  "actor": "motor_vehicle_driver",
+  "parking_case": "outside_city_space",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 85,
+      "pose_strategy": "overhead all-space context"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "posted City space and subject approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "other curb space and boundary"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "subject body and parking pose"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "parking-inventory.json",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "per-frame join to retained authored geometry and original Native lane survey with authority fields unresolved",
+        "time_window": "600 captured frames",
+        "reference_frame": "authored one-way street",
+        "uncertainty": "City Council designation, posting and City-street jurisdiction require independent records"
+      },
+      {
+        "name": "vehicle-poses.jsonl",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor transform, velocity and bounding box",
+        "time_window": "600 frames",
+        "reference_frame": "authored one-way street",
+        "uncertainty": "50 ms sampling; vehicle legal classification requires independent source"
+      },
+      {
+        "name": "video_frames.jsonl",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original four-view Native camera frame join",
+        "time_window": "600 frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "pixel visibility unverified until actual capture"
+      },
+      {
+        "name": "subject_vehicle_pose_and_speed",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native vehicle transform and velocity",
+        "time_window": "600 frames",
+        "reference_frame": "authored one-way street",
+        "uncertainty": "50 ms sampling"
+      },
+      {
+        "name": "space_geometry",
+        "unit": "polygon",
+        "sampling_rate_hz": 20,
+        "method": "authored OpenDRIVE and Native lane readback",
+        "time_window": "600 frames",
+        "reference_frame": "authored one-way street",
+        "uncertainty": "pending Native readback"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them"
+    ]
+  },
+  "status": "cpu_draft_not_delivery_prepared"
+}

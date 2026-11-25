@@ -82,6 +82,10 @@ def finalize(attempt,output):
         for row in trace)+'\n')
     provenance=provenance_record(attempt)
     native=provenance['provenance_kind']=='native' and not provenance['diagnostic_fixture']
+    initial_motion=any(row['speed_mps']>1 for row in trace[:100])
+    final_stop=all(row['speed_mps']<=.1 for row in trace[-100:])
+    final_side=all(row['center_xy_m'][1]<0 for row in trace[-100:])
+    completed=native and initial_motion and final_stop and final_side
     value=measured['stationary_min_body_edge_gap_m']
     result={'case_id':config['case_id'],'measured_values':measured,
         'target_checks':[{'target':'sourced stationary fire-station driveway side and extent',
@@ -91,10 +95,11 @@ def finalize(attempt,output):
             'tolerance':'raw distances only; statutory reference method and exceptions remain review',
             'matched':False,'physical_cause_confirmed':False,
             'cause_evidence':['entrance-context.json','native-vehicle.jsonl','video_frames.jsonl']}],
-        'setup_confirmed':native,'behavior_attempted':native,'maneuver_completed':False,
+        'setup_confirmed':native,'behavior_attempted':native,'maneuver_completed':completed,
         'termination_reason':'600 original Native frames retained',
-        'physical_failure_flags':['station_identity_and_entrance_require_independent_review',
-            'statutory_reference_point_and_exception_review_pending'],
+        'physical_failure_flags':([] if completed else ['parking_motion_or_final_stop_unverified'])+
+            ['station_identity_and_entrance_require_independent_review',
+             'statutory_reference_point_and_exception_review_pending'],
         'trace_reference':'trace.jsonl','video_references':list(VIDEOS),
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],

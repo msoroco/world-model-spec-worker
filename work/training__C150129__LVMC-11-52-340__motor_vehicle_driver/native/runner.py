@@ -18,6 +18,19 @@ CAMERAS = (
 TARGET_X = {'outside_city_space': -12.0, 'inside_city_space': 12.0}
 
 
+def spawn_posting_marker(world, carla):
+    """Create a visible sign body; separate source review establishes its meaning."""
+    blueprints = sorted((bp for bp in world.get_blueprint_library().filter('static.prop.*')
+                         if 'sign' in bp.id.lower()), key=lambda bp: bp.id)
+    if not blueprints:
+        raise RuntimeError('No Native street-sign prop blueprint available')
+    marker = world.try_spawn_actor(blueprints[0], carla.Transform(
+        carla.Location(x=12.5, y=-8.2, z=8.2), carla.Rotation(yaw=90)))
+    if marker is None:
+        raise RuntimeError('Parking restriction marker spawn failed')
+    return marker
+
+
 def check():
     g = geometry_check()
     if len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4 or FRAMES / RATE != 30:
@@ -82,12 +95,16 @@ def execute(output_dir, case, host, port):
         readback = survey(world, carla)
         output.mkdir(parents=True, exist_ok=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
+        marker = spawn_posting_marker(world, carla)
+        owned.append(marker)
         inventory = geometry()
         inventory.update({'assignment_id': 'training__C150129__LVMC-11-52-340__motor_vehicle_driver',
                           'source_kind': 'native_saved_sample', 'native_readback': readback,
                           'space_id': 'city-space-01',
                           'space_polygon_xy_m': inventory['city_space_polygon_xy_m'],
                           'posting_space_id': None,
+                          'native_marker_actor_id': marker.id,
+                          'native_marker_blueprint': marker.type_id,
                           'comparison_parking_case': case,
                           'city_street_source_id': None,
                           'council_designation_source_id': None,
@@ -173,8 +190,12 @@ def execute(output_dir, case, host, port):
         return {'frames': FRAMES, 'camera_names': list(queues), 'native_survey': readback,
                 'authority_source_missing': True, 'physical_acceptance_claimed': False}
     finally:
+        capture_close_error = None
         if pipeline is not None:
-            pipeline.close(confirmed=completed)
+            try:
+                pipeline.close(confirmed=completed)
+            except Exception as exc:
+                capture_close_error = exc
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -188,6 +209,8 @@ def execute(output_dir, case, host, port):
                 pass
         if changed:
             restore(client, saved)
+        if capture_close_error is not None:
+            raise RuntimeError('Original capture closure failed') from capture_close_error
 
 
 if __name__ == '__main__':

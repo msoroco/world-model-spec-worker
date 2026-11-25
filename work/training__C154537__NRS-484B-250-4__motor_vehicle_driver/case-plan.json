@@ -69,6 +69,9 @@
       "selection_targets": [
         "demo-train",
         "full-train"
+      ],
+      "gap_ids": [
+        "no_accepted_original"
       ]
     },
     {
@@ -82,6 +85,9 @@
       "selection_targets": [
         "demo-train",
         "full-train"
+      ],
+      "gap_ids": [
+        "no_accepted_original"
       ]
     }
   ],
@@ -273,6 +279,10 @@
       "source_refs": [
         "scene-survey.json",
         "native-motion.jsonl"
+      ],
+      "evidence": "installed uncovered head with official provenance",
+      "channels": [
+        "governing_signal"
       ]
     },
     "dev.inoperative": {
@@ -280,6 +290,10 @@
       "source_refs": [
         "scene-survey.json",
         "native-motion.jsonl"
+      ],
+      "evidence": "same governing head dark at entry and sampled context",
+      "channels": [
+        "governing_signal"
       ]
     },
     "st.lane_enters": {
@@ -287,24 +301,40 @@
       "source_refs": [
         "scene-survey.json",
         "native-motion.jsonl"
+      ],
+      "evidence": "surveyed one-way approach lane and intersection boundary",
+      "channels": [
+        "ego_front"
       ]
     },
     "st.stop_line": {
       "measurement": "absence by original geometric/marking survey",
       "source_refs": [
         "scene-survey.json"
+      ],
+      "evidence": "absence by original geometric/marking survey",
+      "channels": [
+        "ego_front"
       ]
     },
     "st.crosswalk": {
       "measurement": "absence including sidewalk-derived crossing review",
       "source_refs": [
         "scene-survey.json"
+      ],
+      "evidence": "absence including sidewalk-derived crossing review",
+      "channels": [
+        "ego_front"
       ]
     },
     "st.sight_distance": {
       "measurement": "driver-view surveyed points and visibility brackets; no legal cutoff",
       "source_refs": [
         "scene-survey.json"
+      ],
+      "evidence": "driver-view surveyed points and visibility brackets; no legal cutoff",
+      "channels": [
+        "driver_view_rays"
       ]
     },
     "rel.visible": {
@@ -312,12 +342,20 @@
       "source_refs": [
         "scene-survey.json",
         "driver_view.mkv"
+      ],
+      "evidence": "approaching traffic visible from named driver-view samples; legal view judgment open",
+      "channels": [
+        "driver_view_rays"
       ]
     },
     "drv.stopped": {
       "measurement": "Native speed exactly zero before entry in 20-Hz source, no minimum duration",
       "source_refs": [
         "native-motion.jsonl"
+      ],
+      "evidence": "Native speed exactly zero before entry in 20-Hz source, no minimum duration",
+      "channels": [
+        "ego_speed"
       ]
     },
     "drv.entering_intersection": {
@@ -325,18 +363,31 @@
       "source_refs": [
         "scene-survey.json",
         "native-motion.jsonl"
+      ],
+      "evidence": "body-front crossing surveyed boundary",
+      "channels": [
+        "ego_front"
       ]
     },
     "drv.arrival_order": {
       "measurement": "synchronized other vehicle stop-completion histories pending",
       "source_refs": [
         "native-motion.jsonl"
+      ],
+      "evidence": "synchronized other vehicle stop-completion histories pending",
+      "channels": [
+        "other_vehicle",
+        "ego_speed"
       ]
     },
     "drv.in_intersection": {
       "measurement": "synchronized other vehicle body/boundary histories pending",
       "source_refs": [
         "native-motion.jsonl"
+      ],
+      "evidence": "synchronized other vehicle body/boundary histories pending",
+      "channels": [
+        "other_vehicle"
       ]
     },
     "drv.yields_to": {
@@ -344,6 +395,11 @@
       "source_refs": [
         "native-motion.jsonl",
         "video_frames.jsonl"
+      ],
+      "evidence": "post-stop trajectories and precedence review pending",
+      "channels": [
+        "other_vehicle",
+        "ego_speed"
       ]
     }
   },
@@ -358,5 +414,56 @@
       "native/native-cpu-1.log",
       "native/native-cpu-2.log"
     ]
+  },
+  "evidence_review": {
+    "method": "Exact assignment membership and witness review against frozen supplied inputs",
+    "reviewer": "worker CPU preparation",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_original",
+        "requirement": "NRS-484B-250-4 all stop-reference and yielding alternatives",
+        "source": "inputs/training__C154537__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen assignment lists no accepted original recording or set membership; all physical alternatives require source acquisition."
+      }
+    ]
+  },
+  "statutory_alternatives": [
+    {
+      "branch": "clearly marked stop line",
+      "priority": 1,
+      "status": "CPU saved-source assessor tested; construction and delivery cases pending",
+      "source": "NRS 484B.250(4)"
+    },
+    {
+      "branch": "no line; before near-side crosswalk, including sidewalk-derived crossing",
+      "priority": 2,
+      "status": "CPU saved-source assessor tested; construction and delivery cases pending",
+      "source": "NRS 484B.250(4)"
+    },
+    {
+      "branch": "no line/crosswalk; nearest point with view of approaching through-highway traffic",
+      "priority": 3,
+      "status": "two selected stop/rolling cases; continuous nearest-point physical review pending",
+      "source": "NRS 484B.250(4)"
+    },
+    {
+      "branch": "yield to vehicles that previously completed a stop",
+      "status": "saved-source ordering assessor tested; controlled construction and delivery comparison pending",
+      "source": "NRS 484B.250(4)"
+    },
+    {
+      "branch": "yield to vehicles already within intersection",
+      "status": "saved-source occupancy assessor tested; controlled construction and delivery comparison pending",
+      "source": "NRS 484B.250(4)"
+    }
+  ],
+  "source_closure": {
+    "law_text": "inputs/training__C154537__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+    "accepted_original_count": 0,
+    "official_device_authority": "not established by authored OpenDRIVE; must be reviewed from original Native device and image sources",
+    "through_highway_designation": "not established by one-way geometry; must be reviewed from original map/traffic context",
+    "continuous_nearest_view": "nine-ray samples only bracket a surveyed view; continuity and legal clear-view judgment remain unresolved",
+    "cautious_proceeding": "judgment remains unresolved by synthetic source shape"
   }
 }

@@ -37,8 +37,8 @@ def main():
                                   ('driver_reference', 1280, 720, 'subject body and parking pose'))],
                   'recording_description': {'channels': [
                       {'name': 'parking-inventory.json', 'unit': 'structured',
-                       'sampling_rate_hz': 0, 'method': 'authored geometry and original Native lane survey with authority fields unresolved',
-                       'time_window': 'capture context', 'reference_frame': 'authored one-way street',
+                       'sampling_rate_hz': 20, 'method': 'per-frame join to retained authored geometry and original Native lane survey with authority fields unresolved',
+                       'time_window': '600 captured frames', 'reference_frame': 'authored one-way street',
                        'uncertainty': 'City Council designation, posting and City-street jurisdiction require independent records'},
                       {'name': 'vehicle-poses.jsonl', 'unit': 'structured',
                        'sampling_rate_hz': 20, 'method': 'original Native actor transform, velocity and bounding box',
@@ -56,11 +56,12 @@ def main():
                        'sampling_rate_hz': 20, 'method': 'authored OpenDRIVE and Native lane readback',
                        'time_window': '600 frames', 'reference_frame': 'authored one-way street',
                        'uncertainty': 'pending Native readback'}],
+                      'context_inputs': [],
                       'limitations': ['City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them']},
                   'status': 'cpu_draft_not_delivery_prepared'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'tests/test_native.py',
-                              'tests/test_source_review.py')]
+                              'tests/test_source_review.py', 'tests/test_finalize.py')]
         files.append({'path': 'parking_measure.py', 'content': (HERE / 'parking_measure.py').read_text()})
         files.append({'path': 'source_review.py', 'content': (HERE / 'source_review.py').read_text()})
         files.append({'path': 'finalize.py', 'content': (HERE / 'native' / 'finalize.py').read_text()})

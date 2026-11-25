@@ -7,9 +7,11 @@ from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 from live_capture import (HERE, camera_frame, map_check, signal_heads,
-                          signal_states, participant_rows, road_reference,
+                          signal_states, nearby_device_inventory,
+                          participant_rows, road_reference,
                           body_road_relation,
-                          approach_control,
+                          approach_control, near_line_stop_observed,
+                          conflict_occupancy_from_original_bodies,
                           validate_attempt_directory)
 
 
@@ -51,6 +53,10 @@ def prove():
         raise AssertionError("Cycle wait hold request absent")
     if approach_control(.5, 0, True, True)["throttle"] <= 0:
         raise AssertionError("Post-cycle straight entry request absent")
+    if not near_line_stop_observed(relation, .05) or near_line_stop_observed(relation, .051):
+        raise AssertionError("Near-line halt threshold differs from saved measurement")
+    if near_line_stop_observed({"front_to_stop_marking_m": 1.51}, 0):
+        raise AssertionError("Distant halt accepted as near-line stop")
     image = SimpleNamespace(frame=91, width=2, height=1,
                             raw_data=bytes(range(8)))
     if camera_frame(image, 91, 2, 1) != bytes(range(8)):
@@ -64,6 +70,12 @@ def prove():
             rejected.append(name)
         else:
             raise AssertionError("Accepted " + name)
+    try:
+        near_line_stop_observed({"front_to_stop_marking_m": float("nan")}, 0)
+    except ValueError:
+        rejected.append("invalid_near_line_stop_readback")
+    else:
+        raise AssertionError("Accepted invalid near-line stop readback")
     for name, row in (("wrong_ego_route", {"road_id": 3, "lane_id": -1,
                                               "body_vertices_m": body_at_halt}),
                       ("missing_ego_body", {"road_id": 1, "lane_id": -1,
@@ -110,6 +122,19 @@ def prove():
     else:
         raise AssertionError("Accepted wrong arrow readback")
     point = lambda x, y, z: SimpleNamespace(x=x, y=y, z=z)
+    device = SimpleNamespace(id=31, type_id="traffic.stop",
+                             get_transform=lambda: SimpleNamespace(location=point(2, -5, 0)))
+    inventory = nearby_device_inventory([device])
+    if len(inventory) != 1 or not inventory[0]["prohibition_review_required"]:
+        raise AssertionError("Imported other-device survey differs")
+    bad_device = SimpleNamespace(id=32, type_id="traffic.stop",
+                                 get_transform=lambda: SimpleNamespace(location=point(float("nan"), 0, 0)))
+    try:
+        nearby_device_inventory([bad_device])
+    except ValueError:
+        rejected.append("invalid_imported_device_position")
+    else:
+        raise AssertionError("Accepted invalid imported device position")
     body = SimpleNamespace(get_world_vertices=lambda transform: [point(i, 1, 0)
                                                                   for i in range(8)])
     actor = SimpleNamespace(id=21, type_id="walker.pedestrian.0001",
@@ -118,6 +143,19 @@ def prove():
     participants = participant_rows([actor], ego_id=11)
     if len(participants) != 1 or participants[0]["actor_id"] != 21 or not participants[0]["lawful_status_review_required"]:
         raise AssertionError("Original participant source inventory differs")
+    occupied_pedestrian = {**participants[0],
+                           "body_vertices_m": [[0, -10, 0] for _ in range(8)]}
+    occupied_vehicle = {"actor_id": 22, "type_id": "vehicle.other",
+                        "body_vertices_m": [[0, 0, 0] for _ in range(8)]}
+    conflict = conflict_occupancy_from_original_bodies(
+        [occupied_pedestrian, occupied_vehicle], reference)
+    if (conflict["pedestrian_actor_ids"] != [21] or
+            conflict["vehicle_actor_ids"] != [22] or
+            not conflict["lawful_status_review_required"]):
+        raise AssertionError("Original body conflict hold source differs")
+    clear = conflict_occupancy_from_original_bodies([participants[0]], reference)
+    if clear["pedestrian_body_in_adjacent_crosswalk"] or clear["vehicle_body_in_junction"]:
+        raise AssertionError("Clear original body source was declared occupied")
     bad_body = SimpleNamespace(get_world_vertices=lambda transform: [point(0, 0, 0)])
     try:
         participant_rows([SimpleNamespace(**{**vars(actor), "bounding_box": bad_body})], 11)
@@ -132,6 +170,13 @@ def prove():
         rejected.append("invalid_participant_velocity")
     else:
         raise AssertionError("Accepted invalid original participant velocity")
+    try:
+        conflict_occupancy_from_original_bodies(
+            [{**occupied_pedestrian, "body_vertices_m": [[0, 0, 0]]}], reference)
+    except ValueError:
+        rejected.append("missing_conflict_body")
+    else:
+        raise AssertionError("Accepted missing original conflict body")
     scratch = HERE.parents[2] / ".runtime-work"
     scratch.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="c111071-attempt-", dir=scratch) as tmp:
@@ -197,6 +242,8 @@ def prove():
               "participant_readback_positive": True,
               "source_road_relation_positive": True,
               "detector_footprint_overlap_positive": True,
+              "conservative_conflict_body_hold_positive": True,
+              "nearby_device_inventory_positive": True,
               "near_line_stop_controller_positive": True,
               "materialized_attempt_positive": True,
               "negative_rejections": rejected,

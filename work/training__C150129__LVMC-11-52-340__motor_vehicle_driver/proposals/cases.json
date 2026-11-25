@@ -1,0 +1,243 @@
+{
+  "cell_id": "C150129",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral definition; no recording or municipal designation asserted.",
+      "variable_assignments": {
+        "requested_city_space_occupancy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "observed_city_space_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "parking-inventory.json",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "per-frame join to retained authored geometry and original Native lane survey with authority fields unresolved",
+            "time_window": "600 captured frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "City Council designation, posting and City-street jurisdiction require independent records"
+          },
+          {
+            "name": "vehicle-poses.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor transform, velocity and bounding box",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling; vehicle legal classification requires independent source"
+          },
+          {
+            "name": "video_frames.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-view Native camera frame join",
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "pixel visibility unverified until actual capture"
+          },
+          {
+            "name": "subject_vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native vehicle transform and velocity",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "space_geometry",
+            "unit": "polygon",
+            "sampling_rate_hz": 20,
+            "method": "authored OpenDRIVE and Native lane readback",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "pending Native readback"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
+      "target_law_id": "LVMC-11-52-340",
+      "target_type": "compliant_attempt",
+      "rationale": "Controlled requested parking location; Native occupation and legal status require independent review.",
+      "paired_probe_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_city_space_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "requested_city_space_occupancy",
+        "comparison_or_standard": "same posted street space and subject with different requested occupation",
+        "target_value_or_branch": "controlled_1"
+      },
+      "variable_assignments": {
+        "requested_city_space_occupancy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "observed_city_space_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "parking-inventory.json",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "per-frame join to retained authored geometry and original Native lane survey with authority fields unresolved",
+            "time_window": "600 captured frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "City Council designation, posting and City-street jurisdiction require independent records"
+          },
+          {
+            "name": "vehicle-poses.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor transform, velocity and bounding box",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling; vehicle legal classification requires independent source"
+          },
+          {
+            "name": "video_frames.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-view Native camera frame join",
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "pixel visibility unverified until actual capture"
+          },
+          {
+            "name": "subject_vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native vehicle transform and velocity",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "space_geometry",
+            "unit": "polygon",
+            "sampling_rate_hz": 20,
+            "method": "authored OpenDRIVE and Native lane readback",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "pending Native readback"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2",
+      "target_law_id": "LVMC-11-52-340",
+      "target_type": "violating_attempt",
+      "rationale": "Controlled requested parking location; Native occupation and legal status require independent review.",
+      "paired_probe_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_city_space_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "requested_city_space_occupancy",
+        "comparison_or_standard": "same posted street space and subject with different requested occupation",
+        "target_value_or_branch": "controlled_2"
+      },
+      "variable_assignments": {
+        "requested_city_space_occupancy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "observed_city_space_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "parking-inventory.json",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "per-frame join to retained authored geometry and original Native lane survey with authority fields unresolved",
+            "time_window": "600 captured frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "City Council designation, posting and City-street jurisdiction require independent records"
+          },
+          {
+            "name": "vehicle-poses.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor transform, velocity and bounding box",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling; vehicle legal classification requires independent source"
+          },
+          {
+            "name": "video_frames.jsonl",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-view Native camera frame join",
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "pixel visibility unverified until actual capture"
+          },
+          {
+            "name": "subject_vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native vehicle transform and velocity",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "space_geometry",
+            "unit": "polygon",
+            "sampling_rate_hz": 20,
+            "method": "authored OpenDRIVE and Native lane readback",
+            "time_window": "600 frames",
+            "reference_frame": "authored one-way street",
+            "uncertainty": "pending Native readback"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    }
+  ]
+}

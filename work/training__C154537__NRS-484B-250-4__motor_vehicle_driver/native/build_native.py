@@ -57,8 +57,12 @@ def build():
         config['frames'] = 600
         config['required_atoms'] = []
         config['source_packets'] = []
-        config['cameras'] = [{'name': name, 'fps': 20} for name in
-                             ('overview', 'approach', 'reference_corner', 'driver_reference')]
+        config['cameras'] = [
+            {'name': name, 'fps': 20, 'width': width, 'height': height,
+             'fov_deg': 80, 'pose_strategy': 'fixed junction view, original frame join'}
+            for name, width, height in (
+                ('overview', 1920, 1080), ('approach', 1280, 720),
+                ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))]
         config['supported_case_ids'] = [old['case_id']]
         config_item['content'] = json.dumps(config, indent=2) + '\n'
         path = HERE / 'native-bundles' / suffix / 'construction.json'

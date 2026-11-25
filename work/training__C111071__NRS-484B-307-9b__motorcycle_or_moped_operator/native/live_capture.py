@@ -89,6 +89,8 @@ def road_reference(path=ROAD):
             "detector_half_width_m": float(detector.get("width")) / 2,
             "stop_marking_y_m": origin_y + stations["502"],
             "nearest_crosswalk_y_m": origin_y + stations["501"],
+            "crosswalk_half_length_m": 1.0,
+            "crosswalk_half_width_m": 3.5,
             "junction_entry_y_m": origin_y + float(road.get("length")),
             "map_sha256": survey["map_sha256"]}
 
@@ -138,6 +140,42 @@ def approach_control(front_to_stop_m, speed_mps, stop_established, cycles_comple
             "brake": 0.0}
 
 
+def near_line_stop_observed(relation, speed_mps):
+    distance = relation["front_to_stop_marking_m"]
+    if not all(math.isfinite(value) for value in (distance, speed_mps)):
+        raise ValueError("Original near-line stop readback invalid")
+    return 0 <= distance <= 1.5 and speed_mps <= .05
+
+
+def conflict_occupancy_from_original_bodies(participants, reference):
+    """Conservatively hold for original bodies in crosswalk/junction areas."""
+    pedestrian_ids, vehicle_ids = [], []
+    cross_y = reference["nearest_crosswalk_y_m"]
+    for row in participants:
+        vertices = row.get("body_vertices_m")
+        if not isinstance(vertices, list) or len(vertices) != 8 or any(
+                not isinstance(vertex, list) or len(vertex) != 3 or
+                not all(math.isfinite(value) for value in vertex) for vertex in vertices):
+            raise ValueError("Original conflict participant body absent")
+        xs = [vertex[0] for vertex in vertices]
+        ys = [vertex[1] for vertex in vertices]
+        kind = row.get("type_id", "")
+        if kind.startswith("walker.pedestrian."):
+            if (max(xs) >= -reference["crosswalk_half_width_m"] and
+                    min(xs) <= reference["crosswalk_half_width_m"] and
+                    max(ys) >= cross_y - reference["crosswalk_half_length_m"] and
+                    min(ys) <= cross_y + reference["crosswalk_half_length_m"]):
+                pedestrian_ids.append(row["actor_id"])
+        elif kind.startswith("vehicle."):
+            if max(xs) >= -7 and min(xs) <= 7 and max(ys) >= -7 and min(ys) <= 7:
+                vehicle_ids.append(row["actor_id"])
+    return {"pedestrian_body_in_adjacent_crosswalk": bool(pedestrian_ids),
+            "vehicle_body_in_junction": bool(vehicle_ids),
+            "pedestrian_actor_ids": sorted(pedestrian_ids),
+            "vehicle_actor_ids": sorted(vehicle_ids),
+            "lawful_status_review_required": True}
+
+
 def camera_frame(image, native_frame, width, height):
     """Require an exact original-frame BGRA camera sample before encoding."""
     if image.frame != native_frame or image.width != width or image.height != height:
@@ -176,6 +214,26 @@ def signal_states(heads):
             observed["cross"] not in ("green", "yellow", "red"):
         raise ValueError("Original red/arrow/cross signal readback differs")
     return observed
+
+
+def nearby_device_inventory(actors):
+    """Retain every imported traffic device near the junction for review."""
+    devices = []
+    for actor in actors:
+        kind = str(getattr(actor, "type_id", ""))
+        if not kind.startswith(("traffic.traffic_light", "traffic.stop", "traffic.speed_limit")):
+            continue
+        location = actor.get_transform().location
+        if not all(math.isfinite(value) for value in (location.x, location.y, location.z)):
+            raise ValueError("Imported traffic device position invalid")
+        if abs(location.x) > 50 or abs(location.y) > 50:
+            continue
+        getter = getattr(actor, "get_opendrive_id", None)
+        devices.append({"actor_id": actor.id, "type_id": kind,
+                        "opendrive_id": str(getter()) if getter else None,
+                        "position_m": [location.x, location.y, location.z],
+                        "prohibition_review_required": True})
+    return sorted(devices, key=lambda row: row["actor_id"])
 
 
 def participant_rows(actors, ego_id):
@@ -274,6 +332,10 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
         if start is None or start.road_id != 1 or start.lane_id != -1:
             raise RuntimeError("Native straight approach lane differs")
         heads = signal_heads(world.get_actors())
+        device_inventory = nearby_device_inventory(world.get_actors())
+        if not {actor.id for actor in heads.values()}.issubset(
+                {row["actor_id"] for row in device_inventory}):
+            raise RuntimeError("Imported governing device missing from local survey")
         heads["red"].set_state(carla.TrafficLightState.Red)
         heads["arrow"].set_state(carla.TrafficLightState.Green)
         for actor in heads.values():
@@ -291,6 +353,8 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                 "id": actor.id, "type_id": actor.type_id,
                 "xyz_m": [actor.get_transform().location.x, actor.get_transform().location.y,
                           actor.get_transform().location.z]} for role, actor in heads.items()],
+            "nearby_imported_devices": device_inventory,
+            "other_device_prohibition_review_required": True,
             "governing_face_review_required": True,
             "detector_causation_verified": False}, indent=2) + "\n")
         library = world.get_blueprint_library()
@@ -340,6 +404,7 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
             phase_tick = 0
             prior_relation = {"front_to_stop_marking_m": initial_distance}
             prior_speed = 0.0
+            prior_conflict = False
             target_cycles = 1 if config["case_variant"] == "one_cycle" else 2
             for index in range(FRAMES):
                 # Start the requested cycle after the measured near-line halt.
@@ -349,7 +414,8 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                     "green": carla.TrafficLightState.Green,
                     "yellow": carla.TrafficLightState.Yellow,
                     "red": carla.TrafficLightState.Red}[phase])
-                hold = observed_cycles < target_cycles
+                before_entry = prior_relation.get("front_to_crosswalk_m", 1) > 0
+                hold = observed_cycles < target_cycles or (before_entry and prior_conflict)
                 motion = approach_control(
                     prior_relation["front_to_stop_marking_m"],
                     prior_speed, stopped_near_line, not hold)
@@ -371,8 +437,7 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                 prior_cross = cross
                 row = capture_row(index, native_frame, elapsed, ego, waypoint, signal_state)
                 relation = body_road_relation(row, reference)
-                if (not stopped_near_line and .0 <= relation["front_to_stop_marking_m"] <= 1.5
-                        and row["speed_mps"] <= .08):
+                if not stopped_near_line and near_line_stop_observed(relation, row["speed_mps"]):
                     stopped_near_line = True
                     phase_tick = 0
                     prior_cross = "green"
@@ -390,6 +455,11 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                 row["signal_actor_ids"] = {role: actor.id for role, actor in heads.items()}
                 row["other_participant_original_readback"] = participant_rows(
                     world.get_actors(), ego.id)
+                conflict = conflict_occupancy_from_original_bodies(
+                    row["other_participant_original_readback"], reference)
+                row["conservative_conflict_body_occupancy"] = conflict
+                prior_conflict = (conflict["pedestrian_body_in_adjacent_crosswalk"] or
+                                  conflict["vehicle_body_in_junction"])
                 capture_writer.capture(native_frame, elapsed, extra={"c111071_raw": row})
                 mapped = {}
                 for name, width, height in CAMERAS:

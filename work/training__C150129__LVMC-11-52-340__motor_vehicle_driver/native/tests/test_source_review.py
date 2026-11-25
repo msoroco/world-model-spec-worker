@@ -18,6 +18,7 @@ class MunicipalReviewTests(unittest.TestCase):
         (self.attempt / 'source_context').mkdir()
         self.inventory = {
             'assignment_id': ASSIGNMENT, 'space_id': 'city-space-01',
+            'native_marker_actor_id': 17,
             'space_polygon_xy_m': [[0, 0], [4, 0], [4, 3], [0, 3]],
             'city_street_source_id': None, 'council_designation_source_id': None,
             'posting_or_marking_source_id': None, 'subject_status_source_id': None,
@@ -35,7 +36,8 @@ class MunicipalReviewTests(unittest.TestCase):
             'city_street': {'is_city_street': True},
             'council_designation': {'designated_for_city_vehicles': True,
                                     'space_id': 'city-space-01'},
-            'posting_or_marking': {'posted_or_marked': True, 'space_id': 'city-space-01'},
+            'posting_or_marking': {'posted_or_marked': True, 'space_id': 'city-space-01',
+                                   'native_marker_actor_id': 17},
             'subject_vehicle_status': {'subject_city_vehicle': False},
         }
         for field, values in fields.items():
@@ -60,6 +62,7 @@ class MunicipalReviewTests(unittest.TestCase):
             ('city_street', 'is_city_street', None, 'City-street jurisdiction unconfirmed'),
             ('council_designation', 'space_id', 'other', 'City Council designated-space association unconfirmed'),
             ('posting_or_marking', 'space_id', 'other', 'Posted-space association unconfirmed'),
+            ('posting_or_marking', 'native_marker_actor_id', 99, 'Posted marker actor association unconfirmed'),
             ('subject_vehicle_status', 'subject_city_vehicle', None, 'Non-City subject vehicle status unconfirmed'),
             ('posting_or_marking', 'sha256', '0' * 64, 'Independent source hash differs: posting_or_marking'),
         ):

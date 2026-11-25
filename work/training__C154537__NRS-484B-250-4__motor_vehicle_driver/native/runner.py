@@ -124,6 +124,7 @@ def actor_row(actor):
 
 def execute(output, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     from scenario_pipeline.worker_exchange.native_output import FrameMap, seal_capture
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
     check()
@@ -140,6 +141,7 @@ def execute(output, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for actor in previous.get_actors()):
         raise RuntimeError('Exclusive idle asynchronous Native world required')
     owned, queues, encoders = [], {}, {}
+    live_capture = None
     changed = False
     restoration = None
     try:
@@ -197,14 +199,17 @@ def execute(output, host, port):
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         requests = [json.loads(line) for line in Path('request.jsonl').read_text().splitlines()]
         view_samples = []
+        live_capture = PipelineCapture(client, ego, output, config['selected_case_id'],
+                                       required_observations=('st.sight_distance', 'rel.visible'))
         with (output / 'native-motion.jsonl').open('x') as motion, \
-                (output / 'trace.jsonl').open('x') as trace, \
+                (output / 'interaction_history.jsonl').open('x') as interaction, \
                 FrameMap(output / 'video_frames.jsonl') as frame_map:
             for index, request in enumerate(requests):
                 target_speed = 0 if index and request['ego_center_xy_m'][0] == requests[index-1]['ego_center_xy_m'][0] else 4
                 ego.set_target_velocity(carla.Vector3D(x=target_speed, y=0, z=0))
                 other.set_target_velocity(carla.Vector3D(x=0, y=4 if index < 350 else 0, z=0))
                 native_frame = world.tick()
+                live_capture.capture(native_frame, index / 20)
                 ego_source, other_source = actor_row(ego), actor_row(other)
                 if index % 20 == 0 and ego_source['center_xyz_m'][0] < -6:
                     view_samples.append(view_sample(world, ego, other, carla, native_frame))
@@ -219,14 +224,9 @@ def execute(output, host, port):
                     'signal_readback': heads,
                     'source_kind': 'original_native', 'legal_verdict': None}
                 motion.write(json.dumps(pose, allow_nan=False) + '\n')
-                trace.write(json.dumps({'frame': index, 'time_s': index / 20,
-                    'position': dict(zip(('x', 'y', 'z'), ego_source['center_xyz_m'])),
-                    'position_m': ego_source['center_xyz_m'],
-                    'speed_mph': ego_source['speed_mps'] / .44704,
-                    'velocity_mps': ego_source['velocity_xyz_mps'],
-                    'control': {},
-                    'speed_mps': ego_source['speed_mps'],
-                    'heading_deg': ego.get_transform().rotation.yaw,
+                interaction.write(json.dumps({'frame': native_frame, 'time_s': index / 20,
+                    'states': {'ego': {'body_vertices_m': ego_source['body_xyz_m']},
+                               'other': {'body_vertices_m': other_source['body_xyz_m']}},
                     'source_kind': 'original_native'}, allow_nan=False) + '\n')
                 camera_frames = {}
                 for name, *_ in CAMERAS:
@@ -238,6 +238,8 @@ def execute(output, host, port):
                     encoders[name].stdin.write(image.raw_data)
                     camera_frames[name] = image.frame
                 frame_map.append(native_frame, index / 20, camera_native_frames=camera_frames)
+        live_capture.close()
+        live_capture = None
         for name, process in encoders.items():
             process.stdin.close(); stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
@@ -258,12 +260,18 @@ def execute(output, host, port):
                 'official signal authority and uncovering',
                 'through-highway legal designation',
                 'continuous nearest point and driver perception']}, indent=2) + '\n')
+        (output / 'signal_context.json').write_text(json.dumps({
+            'intersection_polygon_xy_m': [[-6, -6], [6, -6], [6, 6], [-6, 6]],
+            'source_kind': 'authored_OpenDRIVE_with_native_lane_readback',
+            'legal_verdict_claimed': False}, indent=2) + '\n')
     except Exception as exc:
         (output / 'native-run-status.json').write_text(json.dumps({
             'errors': [str(exc)], 'frames_requested': FRAMES,
             'physical_acceptance_claimed': False}) + '\n')
         raise
     finally:
+        if live_capture is not None:
+            live_capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill(); process.wait()
