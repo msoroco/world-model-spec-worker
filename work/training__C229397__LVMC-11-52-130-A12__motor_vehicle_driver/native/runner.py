@@ -47,6 +47,12 @@ def survey_crosswalk(world):
     near = [[p.x, p.y, p.z] for p in points if -2 <= p.x <= 6 and -8.5 <= p.y <= 2]
     if len(near) < 4:
         raise RuntimeError('Native marked-crosswalk geometry readback missing')
+    xs, ys = [p[0] for p in near], [p[1] for p in near]
+    if (abs(min(xs) - CROSSWALK_RECT[0]) > .5 or
+            abs(max(xs) - CROSSWALK_RECT[1]) > .5 or
+            abs(min(ys) - CROSSWALK_RECT[2]) > .5 or
+            abs(max(ys) - CROSSWALK_RECT[3]) > .5):
+        raise RuntimeError('Native crosswalk extent differs from distance reference')
     return near
 
 

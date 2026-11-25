@@ -31,7 +31,11 @@ CONDITIONS = {
     'condition_b': {'enter': True, 'other': 'dont_walk'},
     'exception_absent': {'enter': True, 'other': 'dont_walk'},
     'exception_permits': {'enter': True, 'other': 'walk'},
+    'exception_countdown': {'enter': True, 'other': 'flashing_dont_walk_countdown'},
 }
+REQUIRED_ATOMS = ['ru.pedestrian', 'ru.subject', 'kin.position', 'kin.heading',
+                  'st.intersection', 'st.crosswalk', 'rel.occupies',
+                  'dev.traffic_signal', 'dev.governs']
 
 
 def sha(path):
@@ -84,7 +88,9 @@ def plan(condition, candidate='primary'):
             'walker_start_xy_m': [WALKER_X, START_Y + (.8 if candidate == 'fallback1' else 0)],
             'walker_direction_xy': [0, -1],
             'roadway_y_abs_max_m': BOUNDARY_Y,
-            'cameras': [{'name': name, 'width': width, 'height': height}
+            'required_atoms': REQUIRED_ATOMS,
+            'cameras': [{'name': name, 'width': width, 'height': height,
+                         'pose_strategy': 'fixed_crossing_source_view', 'fov_deg': 90}
                         for name, width, height, _ in CAMERAS],
             'native_governance_verified': False,
             'physical_pixels_verified': False,
@@ -129,7 +135,9 @@ def configure_heads(heads, config, carla):
         heads[od_id].set_state(state)
         heads[od_id].freeze(True)
     observed = sample_heads(heads)
-    if observed['traffic']['state'] != 'red' or observed['other']['state'] != config['requested_other_device']:
+    expected_other = ('dont_walk' if config['condition'] == 'exception_countdown'
+                      else config['requested_other_device'])
+    if observed['traffic']['state'] != 'red' or observed['other']['state'] != expected_other:
         raise ValueError('Native head readback differs from request')
     return observed
 
@@ -143,11 +151,12 @@ def sample_heads(heads):
         if str(actor.get_opendrive_id()) != od_id:
             raise ValueError('Original head identity changed')
         raw = str(actor.get_state()).split('.')[-1].lower()
-        if raw not in ('red', 'green'):
+        if raw not in ('red', 'green', 'off'):
             raise ValueError('Unsupported original head state')
         observed[role] = {'named_id': named_id, 'opendrive_id': od_id,
                           'native_actor_id': actor.id,
-                          'state': ('walk' if raw == 'green' else 'dont_walk') if role == 'other' else raw,
+                          'state': ({'green': 'walk', 'red': 'dont_walk', 'off': 'off'}[raw]
+                                    if role == 'other' else raw),
                           'source_kind': 'native_device_readback'}
     return observed
 
@@ -160,14 +169,42 @@ def requested_speed(condition, frame):
     return 1.2
 
 
+def countdown_program(frame):
+    if type(frame) is not int or not 0 <= frame < FRAMES:
+        raise ValueError('Invalid countdown source frame')
+    flashing = 180 <= frame < 380
+    remaining = math.ceil((380 - frame) / 20) if flashing else None
+    illuminated = (frame // 5) % 2 == 0 if flashing else True
+    return {'flashing': flashing, 'countdown_seconds': remaining,
+            'illuminated': illuminated,
+            'source_scope': 'authored_debug_countdown_not_original_pixels'}
+
+
+def command_countdown_head(head, carla, frame):
+    program = countdown_program(frame)
+    head.set_state(carla.TrafficLightState.Red if program['illuminated'] else
+                   carla.TrafficLightState.Off)
+    head.freeze(True)
+    raw = str(head.get_state()).split('.')[-1].lower()
+    if raw != ('red' if program['illuminated'] else 'off'):
+        raise ValueError('Native countdown head readback differs')
+    return program
+
+
 def measure_entry(rows, config):
     check_plan(config)
     if len(rows) != FRAMES:
         raise ValueError('Original walker source incomplete')
     first = None
     for index, row in enumerate(rows):
-        if row.get('video_frame') != index or row.get('traffic', {}).get('state') != 'red' or \
-                row.get('other', {}).get('state') != config['requested_other_device']:
+        if row.get('video_frame') != index or row.get('traffic', {}).get('state') != 'red':
+            raise ValueError('Missing or changed red-entry source')
+        if config['condition'] == 'exception_countdown':
+            program = countdown_program(index)
+            if row.get('display_program') != program or row.get('other', {}).get('state') != (
+                    'dont_walk' if program['illuminated'] else 'off'):
+                raise ValueError('Countdown original-source program differs')
+        elif row.get('other', {}).get('state') != config['requested_other_device']:
             raise ValueError('Missing or changed red-entry source')
         feet = row.get('footprint_xy_m')
         if not isinstance(feet, list) or len(feet) != 4 or any(len(point) != 2 for point in feet):
@@ -178,6 +215,10 @@ def measure_entry(rows, config):
             first = index
     if bool(first is not None) != config['requested_entry']:
         raise ValueError('Pedestrian entry contrast absent')
+    if config['condition'] == 'exception_countdown' and (
+            first is None or not countdown_program(first)['flashing'] or
+            countdown_program(first)['countdown_seconds'] <= 0):
+        raise ValueError('Countdown entry-before-zero contrast absent')
     return {'first_roadway_footprint_frame': first,
             'governing_head_original_review_required': True,
             'other_device_original_review_required': True,

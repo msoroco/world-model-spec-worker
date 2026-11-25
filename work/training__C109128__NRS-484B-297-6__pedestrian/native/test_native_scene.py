@@ -7,7 +7,7 @@ from native_scene import (BYPASS_Y, CAMERAS, FRAMES, apply_control, check,
 
 
 class _FakeCarla:
-    LaneType = SimpleNamespace(Driving="driving", Shoulder="shoulder",
+    LaneType = SimpleNamespace(Driving="driving", Biking="biking", Shoulder="shoulder",
                                Sidewalk="sidewalk")
 
     class Location:
@@ -45,7 +45,10 @@ class _FakeActor:
 
 class _FakeMap:
     def get_waypoint(self, location, project_to_road, lane_type):
-        lane_id = {"driving": -1, "shoulder": -2, "sidewalk": -3}[lane_type]
+        lane_id = ({"driving": -1, "biking": -2, "shoulder": -3, "sidewalk": -4}
+                   if lane_type == "biking" or location.y < -5.5 or
+                      (lane_type == "shoulder" and location.y < -4) else
+                   {"driving": -1, "shoulder": -2, "sidewalk": -3})[lane_type]
         return SimpleNamespace(road_id=2, lane_id=lane_id,
                                lane_type=lane_type,
                                transform=SimpleNamespace(location=location))
@@ -94,6 +97,19 @@ class SceneTests(unittest.TestCase):
         self.assertAlmostEqual(walker.last.speed, command["walker_speed_mps"])
         self.assertFalse(walker.last.jump)
         self.assertAlmostEqual(walker.last.direction.x, 1)
+
+    def test_direction_and_conditional_bicycle_alternatives(self):
+        self.assertTrue(check("direction_west")["passed"])
+        self.assertTrue(check("bike_impassable")["passed"])
+        self.assertLess(request("direction_west", 300)["target_xy_m"][0],
+                        request("direction_west", 100)["target_xy_m"][0])
+        self.assertEqual(request("bike_passable", 250)["target_xy_m"][1], -4.8)
+        self.assertEqual(request("bike_impassable", 250)["target_xy_m"][1], -4.1)
+        world = _FakeWorld()
+        self.assertEqual(set(survey(world, _FakeCarla, "bike_impassable")["lanes"]),
+                         {"roadway", "bicycle", "shoulder", "sidewalk"})
+        self.assertEqual(len(spawn_obstruction(world, _FakeCarla,
+                                               "bike_impassable")), 15)
 
     def test_map_and_obstruction_readback(self):
         world = _FakeWorld()

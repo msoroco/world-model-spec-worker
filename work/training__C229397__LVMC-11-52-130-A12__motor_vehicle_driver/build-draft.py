@@ -6,7 +6,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
-CASES = (('controlled_1', -14.0), ('controlled_2', -5.0))
+CASES = (('controlled_1', -14.0), ('controlled_2', -5.0),
+         ('boundary_20ft', -8.096))
 
 
 def sha(path):
@@ -31,6 +32,18 @@ def main():
                   'cameras': [{'name': name, 'width': 1280, 'height': 720}
                               for name in ('overview', 'crosswalk', 'parking_approach', 'subject_side')],
                   'recording_description': {'channels': [
+                      {'name': 'vehicle-poses.jsonl', 'unit': 'structured',
+                       'sampling_rate_hz': 20, 'method': 'original Native per-frame vehicle state',
+                       'time_window': '600 frames', 'reference_frame': 'Native world',
+                       'uncertainty': '50 ms sampling'},
+                      {'name': 'crosswalk-inventory.json', 'unit': 'structured',
+                       'sampling_rate_hz': 0, 'method': 'original Native map readback',
+                       'time_window': 'before capture', 'reference_frame': 'Native road',
+                       'uncertainty': 'marked status requires independent source review'},
+                      {'name': 'video_frames.jsonl', 'unit': 'structured',
+                       'sampling_rate_hz': 20, 'method': 'original Native frame and four-camera join',
+                       'time_window': '600 frames', 'reference_frame': 'Native frame identity',
+                       'uncertainty': 'requires full video decode after capture'},
                       {'name': 'subject_vehicle_pose_and_extent', 'unit': 'structured',
                        'sampling_rate_hz': 20, 'method': 'original Native transform, velocity and bounding box',
                        'time_window': '600 frames', 'reference_frame': 'authored road and crosswalk',
@@ -45,13 +58,14 @@ def main():
                  for name in ('runner.py', 'geometry.py', 'tests/test_native.py')]
         files.append({'path': 'crosswalk_measure.py', 'content': (HERE / 'crosswalk_measure.py').read_text()})
         files.append({'path': 'finalize_crosswalk.py', 'content': (HERE / 'finalize_crosswalk.py').read_text()})
+        files.append({'path': 'source_review.py', 'content': (HERE / 'source_review.py').read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         proposal = {'case_id': case_id, 'law_id': config['law_id'], 'cell_id': config['cell_id'],
                     'actor': config['actor'], 'entrypoint': 'runner.py', 'files': files,
                     'recording_description': config['recording_description'],
                     'measurement_plan': {'entrypoint': 'finalize_crosswalk.py',
                                          'required_sources': ['vehicle-poses.jsonl', 'crosswalk-inventory.json',
-                                                              'video_frames.jsonl'],
+                                                              'crosswalk-source-review.json', 'video_frames.jsonl'],
                                          'status': 'source_bound_cpu_draft'},
                     'static_checks': ['100 m road with parking lane', 'crosswalk object proposal',
                                       'two controlled parking centers', 'four cameras', '600 frames at 20 Hz'],

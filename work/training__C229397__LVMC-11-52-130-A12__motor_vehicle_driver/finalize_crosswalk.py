@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from crosswalk_measure import ASSIGNMENT, FRAMES, measure
+from source_review import join
 
 CAMERAS = ('overview', 'crosswalk', 'parking_approach', 'subject_side')
 
@@ -33,8 +34,11 @@ def finalize(attempt):
     packet = {'assignment_id': ASSIGNMENT, 'source_kind': 'native_saved_sample',
               'vehicle_id': poses[0]['vehicle_id'], 'frames': poses}
     packet_bytes = json.dumps(packet, sort_keys=True, separators=(',', ':')).encode()
-    diagnostic = measure(packet_bytes, source_paths[2].read_bytes())
+    inventory, review_sha, review_findings = join(attempt, json.loads(source_paths[2].read_bytes()))
+    diagnostic = measure(packet_bytes, json.dumps(inventory, sort_keys=True).encode())
     diagnostic['original_source_sha256'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in source_paths}
+    diagnostic['independent_source_review_sha256'] = review_sha
+    diagnostic['independent_source_review_findings'] = review_findings
     diagnostic['camera_frame_map_validated'] = True
     diagnostic['video_pixels_decoded'] = False
     return diagnostic

@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 
 from native_red import (BOUNDARY_Y, CAMERAS, CONDITIONS, FRAMES, check_map,
-                        check_plan, configure_heads, measure_entry, plan,
-                        requested_speed, resolve_heads, sample_heads, sha)
+                        check_plan, command_countdown_head, configure_heads, countdown_program, measure_entry,
+                        plan, requested_speed, resolve_heads, sample_heads, sha)
 
 HERE = Path(__file__).resolve().parent
 
@@ -36,6 +36,7 @@ class FakeCarla:
     class TrafficLightState:
         Red = 'TrafficLightState.Red'
         Green = 'TrafficLightState.Green'
+        Off = 'TrafficLightState.Off'
 
 
 def reject(function, message):
@@ -54,9 +55,12 @@ def rows_for(config):
     for frame in range(FRAMES):
         y -= requested_speed(config['condition'], frame) / 20
         feet = [[x, y + dy] for x, dy in ((7.8, -.2), (7.8, .2), (8.2, -.2), (8.2, .2))]
+        program = countdown_program(frame) if config['condition'] == 'exception_countdown' else None
+        other = (('dont_walk' if program['illuminated'] else 'off') if program else
+                 config['requested_other_device'])
         rows.append({'video_frame': frame, 'footprint_xy_m': feet,
                      'traffic': {'state': 'red'},
-                     'other': {'state': config['requested_other_device']}})
+                     'other': {'state': other}, 'display_program': program})
     return rows
 
 
@@ -88,6 +92,9 @@ def main():
         positives += 1
     heads = resolve_heads([FakeHead('301', 100), FakeHead('302', 101)])
     assert configure_heads(heads, plan('exception_permits'), FakeCarla)['other']['state'] == 'walk'
+    assert configure_heads(heads, plan('exception_countdown'), FakeCarla)['other']['state'] == 'dont_walk'
+    assert command_countdown_head(heads['302'], FakeCarla, 185)['illuminated'] is False
+    assert sample_heads(heads)['other']['state'] == 'off'
     assert all(head.frozen for head in heads.values())
     positives += 1
     reject(lambda: resolve_heads([FakeHead('301', 100)]), 'Both distinct')

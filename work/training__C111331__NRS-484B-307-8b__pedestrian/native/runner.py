@@ -13,8 +13,10 @@ import subprocess
 import traceback
 from types import SimpleNamespace
 
-from native_red import (CAMERAS, FRAMES, RATE_HZ, check_plan, configure_heads,
-                        measure_entry, requested_speed, resolve_heads, sample_heads)
+from native_red import (CAMERAS, FRAMES, RATE_HZ, OTHER_OD_ID, check_plan,
+                        command_countdown_head, configure_heads, measure_entry,
+                        requested_speed, resolve_heads, sample_heads)
+from source_join import audit_attempt
 
 HERE = Path(__file__).resolve().parent
 
@@ -34,7 +36,7 @@ class WalkerCaptureAdapter:
 
     def get_control(self):
         control = self.walker.get_control()
-        return SimpleNamespace(throttle=float(control.speed), steer=0.0,
+        return SimpleNamespace(throttle=0.0, steer=0.0,
                                brake=0.0, hand_brake=False, reverse=False,
                                manual_gear_shift=False, gear=0,
                                walker_speed_mps=float(control.speed),
@@ -146,6 +148,16 @@ def execute(config, output, host, port):
                 walker.apply_control(carla.WalkerControl(
                     direction=carla.Vector3D(x=0, y=-1),
                     speed=requested_speed(config['condition'], index)))
+                program = None
+                if config['condition'] == 'exception_countdown':
+                    program = command_countdown_head(heads[OTHER_OD_ID], carla, index)
+                    if program['flashing'] and program['illuminated']:
+                        world.debug.draw_string(
+                            carla.Location(x=9.0, y=4.5, z=2.5),
+                            "DON'T WALK " + str(program['countdown_seconds']),
+                            draw_shadow=False,
+                            color=carla.Color(r=240, g=90, b=40),
+                            life_time=.06, persistent_lines=False)
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 observed = sample_heads(heads)
@@ -156,6 +168,7 @@ def execute(config, output, host, port):
                           'footprint_xy_m': _footprint(walker),
                           'traffic': observed['traffic'],
                           'other': observed['other'],
+                          'display_program': program,
                           'requested_entry': config['requested_entry'],
                           'authority_review_pending': True,
                           'pixel_review_pending': True}
@@ -226,6 +239,7 @@ def execute(config, output, host, port):
     seal_capture(output, frames=frames, restoration=restored, errors=[],
                  encoder_exit_codes=encoder_exit,
                  context={'red_entry': measured, 'physical_acceptance_claimed': False})
+    _new_json(output / 'original-source-audit.json', audit_attempt(output, config))
 
 
 def main():

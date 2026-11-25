@@ -140,16 +140,18 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
+      "name": "kin.position",
       "unit": "m,deg",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Actual pose, trajectory and footprint over full event",
+      "description": "Original pedestrian footprint and center joined to Native FrameMap"
     },
     {
-      "name": "crossing_location",
+      "name": "st.crosswalk",
       "unit": "category",
       "mandatory": true,
-      "purpose": "Record physical marking, adjacent control operating state, pedestrian footprint and roadway entry."
+      "purpose": "Record physical marking, adjacent control operating state, pedestrian footprint and roadway entry.",
+      "description": "Surveyed marked polygon and measured roadway-entry footprint"
     }
   ],
   "source_observation_mapping": {
@@ -271,6 +273,33 @@
         "requirement": "NRS-484B-287-1c",
         "source": "inputs/training__C109166__NRS-484B-287-1c__pedestrian/assignment.json",
         "why_existing_insufficient": "No accepted full-train membership or reviewed recording supplied"
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "pedestrian body and roadway entry between two controlled intersections",
+        "interval": "all 600 original frames",
+        "view": "overview"
+      },
+      {
+        "subject": "pedestrian footprint approaching and crossing the roadway boundary",
+        "interval": "startup through final clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "marked crossing polygon and both official control devices",
+        "interval": "before, at and after roadway entry",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "actual control device state pixels and pedestrian crossing context",
+        "interval": "before, at and after roadway entry",
+        "view": "driver_reference"
       }
     ]
   }

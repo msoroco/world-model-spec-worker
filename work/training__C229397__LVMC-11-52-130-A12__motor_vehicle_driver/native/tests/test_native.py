@@ -38,7 +38,8 @@ class FakeWorld:
 class NativeDraft(unittest.TestCase):
     def test_geometry_and_camera_plan(self):
         self.assertEqual(geometry_check()['crosswalk_rect_xyxy_m'], CROSSWALK_RECT)
-        self.assertEqual(TARGET_X, {'controlled_1': -14.0, 'controlled_2': -5.0})
+        self.assertEqual(TARGET_X, {'controlled_1': -14.0, 'controlled_2': -5.0,
+                                    'boundary_20ft': -8.096})
         self.assertEqual(runner_check()['frames'], 600)
         self.assertEqual(len(runner_check()['camera_names']), 4)
         self.assertFalse(runner_check()['physical_acceptance_claimed'])
@@ -50,3 +51,8 @@ class NativeDraft(unittest.TestCase):
             survey(FakeWorld(wrong=True), FakeCarla)
         with self.assertRaisesRegex(RuntimeError, 'marked-crosswalk geometry'):
             survey_crosswalk(FakeWorld(wrong=True))
+        shifted = FakeWorld()
+        shifted.get_crosswalks = lambda: [FakeCarla.Location(x, y, 8)
+                                            for x, y in ((1,-6.5),(5,-6.5),(5,0),(1,0))]
+        with self.assertRaisesRegex(RuntimeError, 'crosswalk extent differs'):
+            survey_crosswalk(shifted)

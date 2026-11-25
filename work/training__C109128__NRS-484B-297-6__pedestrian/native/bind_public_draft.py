@@ -15,8 +15,6 @@ def sha(path):
 def build():
     plan = json.loads((ASSIGNMENT / "case-plan.json").read_text())
     draft = json.loads((HERE / "selected-draft-manifest.json").read_text())
-    source_rows = ((0, "measure_activation"), (1, "measure_subject"),
-                   (2, "measure_near_side"), (5, "measure_return"))
     inputs = ["pedestrian-original.jsonl", "video_frames.jsonl",
               "camera-sources.jsonl", "sidewalk_context.json"]
     proposals = []
@@ -24,6 +22,16 @@ def build():
     for entry in draft["cases"]:
         case = entry["case_id"]
         condition = case.rsplit("__", 1)[-1]
+        source_rows = [(0, "measure_activation"), (1, "measure_subject"),
+                       (2, "measure_near_side"), (5, "measure_return")]
+        if condition.startswith("direction_"):
+            source_rows.append((3, "measure_direction"))
+        elif condition.startswith("bike_"):
+            source_rows.append((4, "measure_bicycle_lane"))
+        else:
+            source_rows.append((6, "measure_scope"))
+        comparison = next(row for row in plan["comparisons"] if case in row["case_ids"])
+        variable = comparison["deliberate_differences"][0]
         config = json.loads(next(file["content"] for file in
             json.loads((HERE / entry["construction"]).read_text())["files"]
             if file["path"] == "config.json"))
@@ -31,13 +39,13 @@ def build():
         proposals.append({"case_id": case, "target_law_id": "NRS-484B-297-6",
             "target_type": "planned_delivery_comparison",
             "rationale": "Original blocked-sidewalk lateral bypass comparison; physical and legal review pending",
-            "variable_assignments": {"pedestrian_bypass_path": {
+            "variable_assignments": {variable: {
                 "kind": "world_setup", "value": condition}},
             "unresolved_judgment_calls": ["due care", "as far to the side as possible",
                 "intervening-area impassability", "as soon as practicable"],
             "recording_description": recording,
-            "paired_probe_id": plan["comparisons"][0]["comparison_id"],
-            "deliberate_differences": ["pedestrian_bypass_path"],
+            "paired_probe_id": comparison["comparison_id"],
+            "deliberate_differences": [variable],
             "probe": condition})
         contract = {"format": "worker-measurement-contract", "case_id": case,
             "requirements": [{"disposition_index": index,

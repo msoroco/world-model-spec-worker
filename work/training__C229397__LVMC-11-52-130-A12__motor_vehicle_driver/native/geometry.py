@@ -3,7 +3,8 @@ import json
 import xml.etree.ElementTree as ET
 
 CROSSWALK_RECT = [0.0, 4.0, -6.5, 0.0]
-TARGET_X = {'controlled_1': -14.0, 'controlled_2': -5.0}
+TARGET_X = {'controlled_1': -14.0, 'controlled_2': -5.0,
+            'boundary_20ft': -8.096}
 
 
 def open_drive():
@@ -44,7 +45,7 @@ def check():
         raise ValueError('road/parking lane inventory differs')
     if crosswalk.attrib['type'] != 'crosswalk' or crosswalk.attrib['s'] != '50' or crosswalk.attrib['length'] != '4':
         raise ValueError('crosswalk proposal differs')
-    if TARGET_X['controlled_1'] >= TARGET_X['controlled_2'] or CROSSWALK_RECT != [0.0, 4.0, -6.5, 0.0]:
+    if not (TARGET_X['controlled_1'] < TARGET_X['boundary_20ft'] < TARGET_X['controlled_2']) or CROSSWALK_RECT != [0.0, 4.0, -6.5, 0.0]:
         raise ValueError('controlled crosswalk targets differ')
     return {'passed': True, 'crosswalk_rect_xyxy_m': CROSSWALK_RECT,
             'target_centers_x_m': TARGET_X, 'road_length_m': 100,

@@ -1,6 +1,14 @@
 # training__C109128__NRS-484B-297-6__pedestrian
 
-Status: **partial CPU implementation checkpoint**. Neither draft condition is selected for delivery. No original Native observation, physical sidewalk obstruction, practicability finding, due-care finding, or legal outcome is claimed.
+Status: **partial CPU implementation checkpoint**. No delivery-ready case, original Native execution, physical obstruction finding, first-practicable-return finding, due-care finding, or legal outcome is claimed.
+
+## 2026-11-25 selected software compatibility and saved processing
+
+Two exact blocked-sidewalk lateral bypass cases now have primary and 8 cm shoulder-target fallback constructions. All four current-revision selected offline checks passed. All four public `runtime.py compatibility` runs passed, including the selected source-bound measurement contract, four source-camera decoding, original acquisition preservation, Native result validation, Core/Lean conversion, final video decoding, and a missing `sidewalk_context.json` negative. The returned `selected-cpu-proof.json` names all four compatibility receipts and their hashes. These are synthetic software diagnostic fixtures and do not establish original CARLA motion, physical blockage or legal compliance.
+
+Actual `runtime.py process-saved` passed on both positive primary diagnostic attempts with `recorded_only=true`, `originals_preserved=true`, `missing_evidence=false`, and no physical or legal acceptance claim. A third saved processing run removed `sidewalk_context.json`; it passed with `missing_evidence=true`, preserved the original sources and requested no Native replay. The three returned processing receipts and analysis logs are named in `selected-cpu-proof.json`. Nine Native fake-actor/source tests still pass on the current files.
+
+The assignment-scoped `--complete` check passes on these returned files. The exact scoped `--complete --require-delivery-ready` check exits 1 on the truthful partial status (`Preparation acceptance failed: partial/missing packages remain`). The work is incomplete. `case-plan.json` still leaves the sidewalk-direction permission, conditional bicycle-lane permission and reviewed witness scope as alternatives pending. Native footage has not been captured or physically reviewed. Canonical delivery files, semantic proposals, physical/camera coverage and comparison audits, public receipt binding into a final execution manifest, and the exact assignment-scoped strict gate remain. Keep `result.json` partial until that gate passes.
 
 ## 2026-11-25 Native construction and original-source checkpoint
 

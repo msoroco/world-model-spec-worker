@@ -7,7 +7,7 @@ import queue
 import subprocess
 import traceback
 
-from native_scene import (CAMERAS, FRAMES, RATE_HZ, SIDEWALK_CENTER_Y,
+from native_scene import (CAMERAS, FRAMES, RATE_HZ, geometry,
                           apply_control, check, open_drive, request,
                           spawn_obstruction, survey)
 
@@ -35,8 +35,10 @@ def execute(config, output, host, port):
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
-    check()
-    if config.get("case_suffix") not in ("condition_a", "condition_b"):
+    condition = config.get("case_suffix")
+    check(condition)
+    if condition not in ("condition_a", "condition_b", "direction_east",
+                         "direction_west", "bike_passable", "bike_impassable"):
         raise ValueError("exact bypass case required")
     if config.get("law_id") != "NRS-484B-297-6" or config.get("cell_id") != "C109128":
         raise ValueError("frozen law/cell identity changed")
@@ -63,7 +65,7 @@ def execute(config, output, host, port):
     restored = None
     completed = 0
     try:
-        world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
+        world = client.generate_opendrive_world(open_drive(condition), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0,
             additional_width=0, smooth_junctions=False,
             enable_mesh_visibility=True, enable_pedestrian_navigation=False))
@@ -76,8 +78,8 @@ def execute(config, output, host, port):
         settings.max_substeps = 10
         world.apply_settings(settings)
         (output / "road.xodr").write_text(world.get_map().to_opendrive())
-        scene = survey(world, carla)
-        obstruction = spawn_obstruction(world, carla,
+        scene = survey(world, carla, condition)
+        obstruction = spawn_obstruction(world, carla, condition,
                                         raise_z_m=config.get("obstruction_raise_z_m", 0.0))
         owned.extend(obstruction)
         scene["obstruction_actors"] = [{"native_actor_id": actor.id,
@@ -102,7 +104,8 @@ def execute(config, output, host, port):
         if not walker_blueprints:
             raise ValueError("Native pedestrian blueprint absent")
         walker = world.try_spawn_actor(walker_blueprints[0], carla.Transform(
-            carla.Location(x=5, y=SIDEWALK_CENTER_Y, z=.5),
+            carla.Location(x=45 if condition == "direction_west" else 5,
+                           y=geometry(condition)["sidewalk_center_y"], z=.5),
             carla.Rotation(yaw=0)))
         if walker is None:
             raise ValueError("Native pedestrian spawn failed")
@@ -228,7 +231,8 @@ def main():
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     if args.check:
-        print(json.dumps(check(), sort_keys=True))
+        config = json.loads(args.config.read_text())
+        print(json.dumps(check(config["case_suffix"]), sort_keys=True))
     else:
         if not args.output_dir:
             raise ValueError("exact config and fresh Native output required")

@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from native_scene import CAMERAS, FRAMES, open_drive, request
+from native_scene import CAMERAS, FRAMES, geometry, open_drive, request
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -40,6 +40,7 @@ def build():
     manifest = json.loads((HERE / "selected-draft-manifest.json").read_text())
     for item in manifest["cases"]:
         condition = item["case_id"].rsplit("__", 1)[-1]
+        layout = geometry(condition)
         for candidate, shift in (("primary", 0.0), ("fallback1", .08)):
             spec = {"files": {key: value for key, value in original["files"].items()
                               if key not in ("no-countdown-context.json",
@@ -58,16 +59,17 @@ def build():
                 frame, time = index + 100, index / 20
                 velocity = [row["walker_direction_xyz"][0] * row["walker_speed_mps"],
                             row["walker_direction_xyz"][1] * row["walker_speed_mps"], 0]
+                heading = 180 if condition == "direction_west" else 0
                 trace[index].update(frame=frame, time_s=time,
                                     position={"x": x, "y": y, "z": .5},
-                                    position_m=[x, y, .5], heading_deg=0,
+                                    position_m=[x, y, .5], heading_deg=heading,
                                     speed_mps=row["walker_speed_mps"],
                                     speed_mph=row["walker_speed_mps"] * 2.2369362921,
                                     velocity_mps=velocity)
                 evidence[index].update(original_frame=frame, replay_frame=frame,
                     recording_time_s=time, replay_simulation_time_s=time)
                 evidence[index]["ego"].update(position_m=[x, y, .5],
-                    heading_deg=0, speed_mps=row["walker_speed_mps"],
+                    heading_deg=heading, speed_mps=row["walker_speed_mps"],
                     body_vertices_m=body3(x, y))
                 graph = spec["graphs"][index]
                 graph["attributes"].update(frame=frame, simulation_time_s=time,
@@ -105,15 +107,38 @@ def build():
                 spec["files"][name] = lines(data)
             scene = {"source_kind": "original_native_map_readback",
                      "synthetic_diagnostic": True,
-                     "lanes": {"roadway": [], "shoulder": [], "sidewalk": []},
-                     "sidewalk_y_m": [-6, -4], "shoulder_y_m": [-4, -3.5],
+                     "lanes": {name: [{"x_requested_m": 25,
+                                       "native_xyz_m": [25, y, .4],
+                                       "lane_type": name}]
+                               for name, y in ([('roadway', -1.75),
+                                                ('bicycle', -4.0),
+                                                ('shoulder', -4.75),
+                                                ('sidewalk', -6.0)] if layout["bicycle"] else
+                                               [('roadway', -1.75),
+                                                ('shoulder', -3.75),
+                                                ('sidewalk', -5.0)])},
+                     "sidewalk_y_m": list(layout["sidewalk"]),
+                     "shoulder_y_m": list(layout["shoulder"]),
                      "roadway_y_m": [-3.5, 0],
-                     "bike_lane_designation": "absent",
+                     "bike_lane_designation": "native_biking_lane" if layout["bicycle"] else "absent",
+                     "bicycle_y_m": list(layout["bicycle"]) if layout["bicycle"] else None,
+                     "road_direction": layout["road_direction"],
+                     "walking_direction_requested": layout["walking_direction"],
+                     "intervening_area_requested_impassable":
+                         layout["intervening_area_requested_impassable"],
                      "legal_highway_status_review_pending": True,
                      "obstruction_actors": [{"native_actor_id": i,
                         "native_type_id": "synthetic.static.prop.streetbarrier",
-                        "native_xyz_m": [21 + i // 2 * 2, -5.4 if i % 2 == 0 else -4.8, .1],
+                        "native_xyz_m": [21 + i // 2 * 2,
+                                         (-6.4 if i % 2 == 0 else -5.8) if layout["bicycle"] else
+                                         (-5.4 if i % 2 == 0 else -4.8), .1],
                         "extent_xyz_m": [1.1, .4, .6]} for i in range(10)]}
+            if layout["intervening_area_requested_impassable"]:
+                scene["obstruction_actors"].extend({
+                    "native_actor_id": 10 + i,
+                    "native_type_id": "synthetic.static.prop.streetbarrier",
+                    "native_xyz_m": [21 + i * 2, -4.75, .1],
+                    "extent_xyz_m": [1.1, .4, .6]} for i in range(5))
             scene["sidewalk_context"] = {
                 "source_kind": "synthetic_diagnostic_map_readback",
                 "roadway_lane_count": 1,
@@ -123,7 +148,7 @@ def build():
             }
             spec["files"]["sidewalk_context.json"] = json.dumps(scene,
                 separators=(",", ":")) + "\n"
-            road = open_drive()
+            road = open_drive(condition)
             spec["files"]["road.xodr"] = road
             spec["files"]["capture/manifest.json"] = json.dumps({
                 "extraction_confirmed": True, "frames": FRAMES,

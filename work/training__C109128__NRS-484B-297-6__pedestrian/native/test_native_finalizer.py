@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from finalize import original_measurement
-from native_scene import CAMERAS, FRAMES, request
+from native_scene import CAMERAS, FRAMES, geometry, request
 
 ROOT = Path(__file__).resolve().parents[3]
 SCRATCH = ROOT / ".runtime-work"
@@ -13,11 +13,20 @@ SCRATCH = ROOT / ".runtime-work"
 
 def _fixture(folder, condition="condition_a"):
     folder = Path(folder)
+    layout = geometry(condition)
+    bicycle = bool(layout["bicycle"])
     context = {"source_kind": "original_native_map_readback",
-               "lanes": {"roadway": [], "shoulder": [], "sidewalk": []},
-               "obstruction_actors": [{"native_actor_id": index} for index in range(10)],
+               "lanes": {name: [] for name in
+                         (("roadway", "bicycle", "shoulder", "sidewalk") if bicycle else
+                          ("roadway", "shoulder", "sidewalk"))},
+               "obstruction_actors": [{"native_actor_id": index} for index in
+                                      range(15 if layout["intervening_area_requested_impassable"] else 10)],
                "legal_highway_status_review_pending": True,
-               "bike_lane_designation": "absent"}
+               "bike_lane_designation": "native_biking_lane" if bicycle else "absent",
+               "road_direction": layout["road_direction"],
+               "walking_direction_requested": layout["walking_direction"],
+               "intervening_area_requested_impassable": layout["intervening_area_requested_impassable"]}
+    (folder / "config.json").write_text(json.dumps({"case_suffix": condition}))
     (folder / "sidewalk_context.json").write_text(json.dumps(context))
     with (folder / "pedestrian-original.jsonl").open("w") as people, \
             (folder / "video_frames.jsonl").open("w") as mapping, \
@@ -47,7 +56,8 @@ class OriginalSourceTests(unittest.TestCase):
     def test_both_native_source_shapes(self):
         SCRATCH.mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
-            for condition in ("condition_a", "condition_b"):
+            for condition in ("condition_a", "condition_b", "direction_east",
+                              "direction_west", "bike_passable", "bike_impassable"):
                 folder = Path(temporary) / condition
                 folder.mkdir()
                 _fixture(folder, condition)

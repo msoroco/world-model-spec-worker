@@ -1,4 +1,4 @@
-"""Materialize source-hashed unselected Native constructions for four contrasts."""
+"""Materialize source-hashed unselected Native constructions for five contrasts."""
 
 import hashlib
 import json
@@ -44,12 +44,13 @@ def main():
         for candidate in ('primary', 'fallback1'):
             config = plan(condition, candidate)
             config.update(selected_case_id=case_id,
-                          required_atoms=[], source_packets=[], case=condition,
+                          source_packets=[], case=condition,
                           recording_description='Pedestrian highway-entry contrast under surveyed steady red and other-device indication.')
             files = [{'path': name, 'content': value} for name, value in (
                 ('runner.py', (HERE / 'runner.py').read_text()),
                 ('native_red.py', (HERE / 'native_red.py').read_text()),
                 ('source_join.py', (HERE / 'source_join.py').read_text()),
+                ('finalize.py', (HERE / 'finalize.py').read_text()),
                 ('road.xodr', (HERE / 'road.xodr').read_text()),
                 ('config.json', json.dumps(config, indent=2) + '\n'),
                 ('tests/test_native.py', TEST))]
@@ -83,7 +84,7 @@ def main():
                 'delivery_ready': False}
     target = HERE / 'draft-native-execution-manifest.json'
     write(target, manifest)
-    print(json.dumps({'cases': len(entries), 'candidates': 8,
+    print(json.dumps({'cases': len(entries), 'candidates': len(entries) * 2,
                       'manifest_sha256': sha(target)}, sort_keys=True))
 
 

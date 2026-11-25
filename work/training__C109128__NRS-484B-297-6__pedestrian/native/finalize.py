@@ -9,7 +9,7 @@ import json
 import math
 from pathlib import Path
 
-from native_scene import CAMERAS, FRAMES, OBSTRUCTION_X, RATE_HZ, SIDEWALK
+from native_scene import CAMERAS, FRAMES, OBSTRUCTION_X, RATE_HZ, geometry
 
 
 def sha(path):
@@ -31,9 +31,18 @@ def _rows(root, name):
 def original_measurement(attempt):
     attempt = Path(attempt)
     scene = json.loads(required(attempt, "sidewalk_context.json").read_text())
+    config = json.loads(required(attempt, "config.json").read_text())
+    condition = config["case_suffix"]
+    layout = geometry(condition)
+    expected_lanes = {"roadway", "shoulder", "sidewalk"} | (
+        {"bicycle"} if layout["bicycle"] else set())
+    expected_obstructions = 15 if layout["intervening_area_requested_impassable"] else 10
     if (scene.get("source_kind") != "original_native_map_readback" or
-            set(scene.get("lanes", {})) != {"roadway", "shoulder", "sidewalk"} or
-            len(scene.get("obstruction_actors", [])) != 10 or
+            set(scene.get("lanes", {})) != expected_lanes or
+            len(scene.get("obstruction_actors", [])) != expected_obstructions or
+            scene.get("road_direction") != layout["road_direction"] or
+            scene.get("walking_direction_requested") != layout["walking_direction"] or
+            scene.get("intervening_area_requested_impassable") != layout["intervening_area_requested_impassable"] or
             scene.get("legal_highway_status_review_pending") is not True):
         raise ValueError("Original Native sidewalk/obstruction source incomplete")
     people = _rows(attempt, "pedestrian-original.jsonl")
@@ -70,12 +79,16 @@ def original_measurement(attempt):
             if step > .6:
                 raise ValueError("Original pedestrian frame discontinuity")
             path_m += step
-            forward_frames += center[0] > prior[0]
+            forward_frames += (center[0] < prior[0] if condition == "direction_west"
+                               else center[0] > prior[0])
         prior = center
-        if min(point[1] for point in feet) > SIDEWALK[1]:
+        if min(point[1] for point in feet) > layout["sidewalk"][1]:
             road_frames.append(index)
-        if min(point[0] for point in feet) > OBSTRUCTION_X[1] and all(
-                SIDEWALK[0] <= point[1] <= SIDEWALK[1] for point in feet):
+        cleared = (max(point[0] for point in feet) < OBSTRUCTION_X[0]
+                   if condition == "direction_west" else
+                   min(point[0] for point in feet) > OBSTRUCTION_X[1])
+        if cleared and all(layout["sidewalk"][0] <= point[1] <= layout["sidewalk"][1]
+                           for point in feet):
             full_return.append(index)
     for row in cameras:
         name, index = row.get("camera"), row.get("video_frame")
@@ -107,10 +120,14 @@ def original_measurement(attempt):
             "forward_motion_frames": forward_frames,
             "sampled_path_length_m": path_m,
             "nearest_road_edge_center_distance_m":
-                min(abs(people[index]["center_xy_m"][1] - SIDEWALK[1])
+                min(abs(people[index]["center_xy_m"][1] - layout["sidewalk"][1])
                     for index in road_frames),
             "obstruction_actor_count": len(scene["obstruction_actors"]),
             "bike_lane_designation": scene["bike_lane_designation"],
+            "intervening_area_requested_impassable": layout["intervening_area_requested_impassable"],
+            "road_direction_native_lane": scene["road_direction"],
+            "walking_direction_observed": ("west" if people[-1]["center_xy_m"][0] <
+                                           people[0]["center_xy_m"][0] else "east"),
             "actual_obstruction_pixels_review_pending": True,
             "due_care_review_pending": True,
             "as_far_as_possible_review_pending": True,
@@ -137,11 +154,16 @@ def measure_near_side(measured):
 
 def measure_direction(measured):
     return {"forward_motion_frames": measured["forward_motion_frames"],
+            "walking_direction_observed": measured["walking_direction_observed"],
+            "road_direction_native_lane": measured["road_direction_native_lane"],
             "traffic_direction_original_review_pending": True}
 
 
 def measure_bicycle_lane(measured):
     return {"native_map_bicycle_lane_designation": measured["bike_lane_designation"],
+            "intervening_area_requested_impassable":
+                measured["intervening_area_requested_impassable"],
+            "obstruction_actor_count": measured["obstruction_actor_count"],
             "intervening_area_impassability_review_pending": True}
 
 
@@ -161,6 +183,7 @@ def derive_channels(attempt, config):
     people = _rows(attempt, "pedestrian-original.jsonl")
     mapping = _rows(attempt, "video_frames.jsonl")
     scene = json.loads(required(attempt, "sidewalk_context.json").read_text())
+    layout = geometry(config["case_suffix"])
     declared = {item["name"] for item in config["recording_description"]["channels"]}
     channels = {name: [] for name in declared}
     path_m = 0.0
@@ -185,8 +208,12 @@ def derive_channels(attempt, config):
                                "physical_impassability_review_pending": True},
             "st.highway": {"native_roadway_readback": scene["lanes"]["roadway"],
                            "public_status_review_pending": True},
-            "st.road_edge": {"sidewalk_side_y_m": SIDEWALK[1],
+            "st.road_edge": {"sidewalk_side_y_m": layout["sidewalk"][1],
                              "source": "sidewalk_context.json"},
+            "st.bicycle_lane_or_path": {
+                "native_lane_readback": scene["lanes"].get("bicycle"),
+                "bicycle_lane_designation": scene["bike_lane_designation"],
+                "physical_passability_review_pending": True},
             "st.intersection": {"junction_source": "road.xodr",
                                 "physical_surface_review_pending": True},
             "rel.occupies": {"original_footprint_xy_m": person["footprint_xy_m"],
@@ -195,6 +222,9 @@ def derive_channels(attempt, config):
             "kin.heading": heading,
             "kin.path_length": path_m,
             "kin.time": frame["time_s"],
+            "drv.time_to_conflict": {"seconds": None,
+                                      "reason": "no original traffic participant source",
+                                      "due_care_review_pending": True},
         }
         if set(values) != declared:
             raise ValueError("declared original channels differ from saved finalizer")

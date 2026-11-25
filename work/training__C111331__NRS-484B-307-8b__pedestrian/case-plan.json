@@ -42,7 +42,8 @@
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_a",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_b",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_absent",
-        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits"
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits",
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown"
       ]
     },
     {
@@ -55,7 +56,8 @@
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_a",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_b",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_absent",
-        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits"
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits",
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown"
       ]
     },
     {
@@ -68,7 +70,8 @@
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_a",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_b",
         "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_absent",
-        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits"
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits",
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown"
       ]
     }
   ],
@@ -160,6 +163,28 @@
       },
       "source_text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
       "claim": "No Native governance, physical permission or legal outcome is asserted."
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "native_debug_display_authored_original_unverified",
+      "source_branch": "intersection_pedestrian_entry",
+      "comparison_variable": "flashing_countdown_permission_under_steady_red",
+      "condition_index": 4,
+      "fixed_conditions": {
+        "cell_id": "C111331",
+        "layout": "intersection",
+        "maneuver": "travel",
+        "control": "traffic_light",
+        "actor": "pedestrian",
+        "law_id": "NRS-484B-307-8b",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+      "claim": "Native Red/Off head timing and debug countdown text are authored; physical pedestrian-device status, displayed original pixels and legal permission remain unverified."
     }
   ],
   "comparisons": [
@@ -206,6 +231,28 @@
       },
       "status": "construction_cpu_tested_original_unverified",
       "audit_gap": "NRS 484B.283 device permission and Native governance require original review."
+    },
+    {
+      "comparison_id": "training__C111331__NRS-484B-307-8b__pedestrian__countdown_permission_contrast",
+      "case_ids": [
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_absent",
+        "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown"
+      ],
+      "deliberate_differences": [
+        "requested_flashing_countdown_other_device_vs_steady_dont_walk"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C111331",
+        "actor": "pedestrian",
+        "law_id": "NRS-484B-307-8b",
+        "steady_red_alone": true,
+        "requested_entry": true,
+        "road_geometry": "native/road.xodr",
+        "camera_profile": "overview1080-capability",
+        "duration_s": 30
+      },
+      "status": "construction_cpu_tested_original_unverified",
+      "audit_gap": "Native debug countdown display is unverified as a pedestrian device; original pixel legibility and entry-before-zero require review."
     }
   ],
   "observations": [
@@ -265,7 +312,8 @@
     "Original CARLA map and two signal actors must exist and read back distinct states.",
     "Original video must show steady red alone facing this pedestrian and inventory all other devices.",
     "Green Native state on the other head needs independent original Walk-symbol and NRS 484B.283 permission review.",
-    "Four source cameras, original FrameMap, capture seal, saved processing and delivery audits remain unverified."
+    "Four source cameras, original FrameMap, capture seal, saved processing and delivery audits remain unverified.",
+    "Authored Red/Off plus debug text countdown needs original display/device review; debug text is not a verified physical pedestrian signal."
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
@@ -334,7 +382,7 @@
       ]
     }
   },
-  "legal_analysis_note": "The exception references NRS 484B.283(1)(d)(1): an actual facing Walk indication may permit proceeding. Authored green Native light readback alone is not proof that the device displays a Walk symbol or governs this crossing. No legal verdict is asserted.",
+  "legal_analysis_note": "NRS 484B.283(1)(d)(1) facing Walk and (2) flashing Dont Walk/Wait with countdown are distinct entry permissions. (3) and (4) concern continuation after lawful entry and do not create fresh entry permission. Original governance, countdown pixels and timing remain unverified.",
   "readiness": "native_construction_cpu_tested_not_delivery_ready",
   "physical_prerequisites": "Track pedestrian entry onto highway while facing actual steady-red signal; separately represent another device that may permit entry.",
   "legal_interpretation_limit": "A vehicle signal facing an unrelated approach does not govern the pedestrian."

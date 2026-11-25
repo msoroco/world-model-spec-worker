@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from crosswalk_measure import ASSIGNMENT, TWENTY_FEET_M, measure
+from crosswalk_measure import ASSIGNMENT, TWENTY_FEET_M, body_rect_distance, measure
 
 
 def encoded(obj):
@@ -59,8 +59,21 @@ def main():
         raise ValueError('far parking entered the 20-foot diagnostic band')
     if b['halt_body_distance_below_20ft_frames'] != list(range(200,500)) or b['halt_center_distance_below_20ft_frames'] != list(range(200,500)):
         raise ValueError('near parking missed the 20-foot diagnostic band')
+    if b['halt_proxy_spans'] != [{'first_frame': 200, 'last_frame_inclusive': 499,
+                                   'sampled_duration_s': 15.0,
+                                   'minimum_body_distance_m': 3.0,
+                                   'maximum_body_distance_m': 3.0}]:
+        raise ValueError('continuous halt span differs')
     if a['body_to_crosswalk_m_by_frame'][250] != 12 or b['body_to_crosswalk_m_by_frame'][250] != 3:
         raise ValueError('full-body distance differs')
+    boundary, inv_boundary = sample(-8.096)
+    at = measure(encoded(boundary), encoded(inv_boundary))
+    if abs(at['body_to_crosswalk_m_by_frame'][250] - TWENTY_FEET_M) > 1e-9:
+        raise ValueError('exact 20-foot body distance differs')
+    if body_rect_distance([(-2, -2), (6, -2), (6, 2), (-2, 2)], [0, 4, -1, 1]) != 0:
+        raise ValueError('contained crosswalk must overlap vehicle body')
+    if body_rect_distance([(-5, -1), (-3, -1), (-3, 1), (-5, 1)], [0, 4, -1, 1]) != 3:
+        raise ValueError('separated body gap differs')
     if a['legal_result'] is not None or b['legal_result'] is not None:
         raise ValueError('legal conclusion asserted')
     packet, inv = sample(-5)
@@ -79,8 +92,12 @@ def main():
                       'assignment_sha256': hashlib.sha256(assignment_raw).hexdigest(),
                       'witness_sha256': hashlib.sha256(witness_raw).hexdigest(),
                       'far_packet_sha256': a['packet_sha256'], 'near_packet_sha256': b['packet_sha256'],
-                      'far_body_gap_m': 12, 'near_body_gap_m': 3, 'twenty_feet_m': TWENTY_FEET_M,
-                      'checks': ['600-frame 20Hz', 'full-body/center/longitudinal distances',
+                      'far_body_gap_m': 12, 'near_body_gap_m': 3,
+                      'boundary_body_gap_m': at['body_to_crosswalk_m_by_frame'][250],
+                      'twenty_feet_m': TWENTY_FEET_M,
+                      'checks': ['600-frame 20Hz', 'continuous sampled halt span',
+                                 'full-body/center/longitudinal distances',
+                                 'exact boundary and polygon containment',
                                  'marked-crosswalk-source rejection', 'exception-source rejection',
                                  'identity rejection', 'missing-frame rejection']}, sort_keys=True))
 

@@ -1,10 +1,12 @@
 """Execute the saved-only join on source-shaped positive and negative samples."""
 import json
+import hashlib
 from pathlib import Path
 import tempfile
 
 from finalize_crosswalk import CAMERAS, finalize
 from prove_crosswalk import sample
+from source_review import FIELDS
 
 
 def write_attempt(path, center_x=-5.0):
@@ -20,6 +22,15 @@ def write_attempt(path, center_x=-5.0):
     (path / 'vehicle-poses.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in poses))
     (path / 'video_frames.jsonl').write_text(''.join(json.dumps(x) + '\n' for x in frames))
     (path / 'crosswalk-inventory.json').write_text(json.dumps(inventory) + '\n')
+    source = path / 'synthetic-original-review-source.txt'
+    source.write_text('synthetic source shape only; no actual marked crosswalk or exception evidence\n')
+    review = {'format': 'c229397-crosswalk-source-review-v1',
+              'assignment_id': inventory['assignment_id'],
+              'findings': {field: {'finding': 'present' if field == 'marked_crosswalk_source_id' else 'unresolved',
+                                   'source': source.name,
+                                   'sha256': hashlib.sha256(source.read_bytes()).hexdigest()}
+                           for field in FIELDS}}
+    (path / 'crosswalk-source-review.json').write_text(json.dumps(review) + '\n')
     return poses, frames, inventory
 
 
@@ -42,7 +53,8 @@ def main():
         result = finalize(good)
         if result['halt_body_distance_below_20ft_frames'] != list(range(200,500)) or not result['camera_frame_map_validated']:
             raise ValueError('saved near-crosswalk diagnostic differs')
-        if result['video_pixels_decoded'] or result['legal_result'] is not None:
+        if (result['video_pixels_decoded'] or result['legal_result'] is not None or
+                result['independent_source_review_findings']['directions_review_source_id'] != 'unresolved'):
             raise ValueError('saved proof claimed pixels or law')
         bad = root / 'missing_camera'
         bad.mkdir()
@@ -53,9 +65,16 @@ def main():
         bad = root / 'missing_marking'
         bad.mkdir()
         poses, frames, inventory = write_attempt(bad)
-        inventory['marked_crosswalk_source_id'] = None
-        (bad / 'crosswalk-inventory.json').write_text(json.dumps(inventory) + '\n')
-        reject(bad, 'marked_crosswalk_source_id missing')
+        review_path = bad / 'crosswalk-source-review.json'
+        review = json.loads(review_path.read_text())
+        review['findings']['marked_crosswalk_source_id']['finding'] = 'absent'
+        review_path.write_text(json.dumps(review) + '\n')
+        reject(bad, 'marked crosswalk has not been established')
+        bad = root / 'stale_review_hash'
+        bad.mkdir()
+        write_attempt(bad)
+        (bad / 'synthetic-original-review-source.txt').write_text('altered\n')
+        reject(bad, 'crosswalk source review hash differs: jurisdiction_source_id')
         bad = root / 'changed_frame'
         bad.mkdir()
         poses, frames, inventory = write_attempt(bad)
@@ -70,7 +89,8 @@ def main():
     print(json.dumps({'passed': True, 'source_shape': '600 Native pose and FrameMap rows with four camera IDs',
                       'positive_body_gap_m': result['body_to_crosswalk_m_by_frame'][250],
                       'checks': ['positive saved-only join', 'camera identity rejection',
-                                 'marked-crosswalk-source rejection', 'Native frame mismatch rejection',
+                                 'marked-crosswalk-source rejection', 'source hash rejection',
+                                 'Native frame mismatch rejection',
                                  'missing source rejection'],
                       'pixels_decoded': False, 'legal_verdict': None}, sort_keys=True))
 

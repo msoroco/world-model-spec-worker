@@ -44,6 +44,29 @@ def point_segment_distance(p, a, b):
 def body_rect_distance(corners, rect):
     x0, x1, y0, y1 = rect
     rectangle = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+    # A rectangle corner can lie inside the vehicle while every edge and
+    # vehicle corner remains away from the crosswalk boundary.
+    def orientation(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    def intersects(a, b, c, d):
+        if (max(min(a[0], b[0]), min(c[0], d[0])) > min(max(a[0], b[0]), max(c[0], d[0])) or
+                max(min(a[1], b[1]), min(c[1], d[1])) > min(max(a[1], b[1]), max(c[1], d[1]))):
+            return False
+        o1, o2 = orientation(a, b, c), orientation(a, b, d)
+        o3, o4 = orientation(c, d, a), orientation(c, d, b)
+        return o1 * o2 <= 0 and o3 * o4 <= 0
+
+    def in_body(p):
+        turns = [orientation(corners[i], corners[(i + 1) % 4], p) for i in range(4)]
+        return all(t >= -1e-9 for t in turns) or all(t <= 1e-9 for t in turns)
+
+    if any(in_body(p) for p in rectangle) or any(point_rect_distance(p, rect) == 0 for p in corners):
+        return 0.0
+    if any(intersects(corners[i], corners[(i + 1) % 4],
+                      rectangle[j], rectangle[(j + 1) % 4])
+           for i in range(4) for j in range(4)):
+        return 0.0
     values = [point_rect_distance(p, rect) for p in corners]
     for p in rectangle:
         values.extend(point_segment_distance(p, corners[i], corners[(i + 1) % 4]) for i in range(4))
@@ -79,6 +102,18 @@ def measure(packet_bytes: bytes, inventory_bytes: bytes):
     bodies = [body_rect_distance(body_corners(r), rect) for r in rows]
     along = [rect[0] - max(p[0] for p in body_corners(r)) for r in rows]
     halt = [i for i, r in enumerate(rows) if r['speed_mps'] <= .1]
+    halt_set = set(halt)
+    spans = []
+    start = None
+    for i in range(FRAMES + 1):
+        if i in halt_set and start is None:
+            start = i
+        elif i not in halt_set and start is not None:
+            spans.append({'first_frame': start, 'last_frame_inclusive': i - 1,
+                          'sampled_duration_s': (i - start) / RATE,
+                          'minimum_body_distance_m': min(bodies[start:i]),
+                          'maximum_body_distance_m': max(bodies[start:i])})
+            start = None
     return {'format': 'c229397-saved-crosswalk-distance-diagnostic-v1',
             'assignment_id': ASSIGNMENT, 'source_kind': kind,
             'packet_sha256': hashlib.sha256(packet_bytes).hexdigest(),
@@ -88,6 +123,7 @@ def measure(packet_bytes: bytes, inventory_bytes: bytes):
             'crosswalk_extent_source_id': inventory['crosswalk_extent_source_id'],
             'crosswalk_rect_xyxy_m': rect,
             'halt_proxy_frames': halt,
+            'halt_proxy_spans': spans,
             'center_to_crosswalk_m_by_frame': centers,
             'body_to_crosswalk_m_by_frame': bodies,
             'along_road_body_gap_m_by_frame': along,

@@ -14,19 +14,20 @@ def sha(path):
 TEST = '''import json
 import unittest
 from pathlib import Path
-from native_scene import check, request, FRAMES, CAMERAS
+from native_scene import check, request, geometry, FRAMES, CAMERAS
 
 class ExactBypassOffline(unittest.TestCase):
     def test_exact_identity_and_geometry(self):
         cfg = json.loads(Path('config.json').read_text())
-        self.assertTrue(check()['passed'])
+        self.assertTrue(check(cfg['case_suffix'])['passed'])
         self.assertEqual(cfg['case_id'], cfg['selected_case_id'])
         self.assertEqual(cfg['case_id'], cfg['case']['case_id'])
         self.assertEqual((cfg['cell_id'], cfg['law_id'], cfg['actor']),
                          ('C109128', 'NRS-484B-297-6', 'pedestrian'))
         self.assertEqual((cfg['rate_hz'], cfg['duration_s']), (20, 30))
         self.assertEqual(len(cfg['cameras']), len(CAMERAS))
-        self.assertEqual(request(cfg['case_suffix'], FRAMES - 1)['target_xy_m'][1], -5)
+        self.assertEqual(request(cfg['case_suffix'], FRAMES - 1)['target_xy_m'][1],
+                         geometry(cfg['case_suffix'])['sidewalk_center_y'])
         self.assertIn(cfg['candidate_id'], ('primary', 'fallback1'))
 '''
 
@@ -34,10 +35,13 @@ class ExactBypassOffline(unittest.TestCase):
 def build():
     plan = json.loads((ASSIGNMENT / "case-plan.json").read_text())
     cases = plan["cases"]
-    if len(cases) != 2 or {case["condition_index"] for case in cases} != {0, 1}:
-        raise ValueError("two exact frozen lateral bypass case identities required")
+    expected = {"condition_a", "condition_b", "direction_east", "direction_west",
+                "bike_passable", "bike_impassable"}
+    if len(cases) != 6 or {case["case_id"].rsplit("__", 1)[-1] for case in cases} != expected:
+        raise ValueError("six exact blocked-sidewalk statutory case identities required")
     names = ("ru.subject", "ru.pedestrian", "st.sidewalk", "st.obstruction",
-             "st.highway", "st.road_edge", "st.intersection", "rel.occupies",
+             "st.highway", "st.road_edge", "st.bicycle_lane_or_path",
+             "st.intersection", "rel.occupies", "drv.time_to_conflict",
              "kin.position", "kin.heading", "kin.path_length", "kin.time")
     recording = {"channels": [{"name": name, "unit": "structured",
                                "sampling_rate_hz": 20,
@@ -68,12 +72,13 @@ def build():
                     ("tests/test_offline.py", TEST)]
     entries = []
     for case in cases:
-        condition = "condition_a" if case["condition_index"] == 0 else "condition_b"
+        condition = case["case_id"].rsplit("__", 1)[-1]
         candidates = []
         for candidate_id, shift in (("primary", 0.0), ("fallback1", .08)):
             config = dict(shared, case_id=case["case_id"],
                           selected_case_id=case["case_id"],
-                          case={"case_id": case["case_id"]},
+                          case={"case_id": case["case_id"],
+                                "recording_description": recording},
                           case_suffix=condition, candidate_id=candidate_id,
                           lateral_shift_m=shift, obstruction_raise_z_m=0.0)
             files = [{"path": path, "content": content} for path, content in common_files]
@@ -99,13 +104,13 @@ def build():
                         "construction": str(primary[1].relative_to(HERE)),
                         "construction_sha256": primary[2],
                         "candidate_risk": {"status": "physical",
-                            "reason": "Native shoulder tracking could leave the intended near-side strip; fallback shifts the controller target laterally by 8 cm while preserving the exact case and comparison variable"},
+                            "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"},
                         "candidates": [{"id": "fallback1",
                             "construction": str(fallback[1].relative_to(HERE)),
                             "construction_sha256": fallback[2],
                             "trigger": {"source": "original pedestrian footprint/map readback",
                                         "metric": "minimum distance to sidewalk-side road edge",
-                                        "failure_condition": "primary full footprint leaves surveyed shoulder strip before obstruction clearance"},
+                                        "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"},
                             "changed_knobs": ["lateral_shift_m: 0.0 to 0.08"]}]})
     manifest = {"format": "worker-selected-cpu-draft-manifest-v1",
                 "assignment_id": ASSIGNMENT.name,
@@ -113,7 +118,7 @@ def build():
                 "delivery_ready": False, "cases": entries}
     target = HERE / "selected-draft-manifest.json"
     target.write_text(json.dumps(manifest, indent=2) + "\n")
-    print(json.dumps({"cases": len(entries), "candidates": 4,
+    print(json.dumps({"cases": len(entries), "candidates": 12,
                       "manifest_sha256": sha(target)}))
 
 

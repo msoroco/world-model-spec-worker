@@ -1,3 +1,18 @@
+# C109166 NRS 484B.287(1)(c) delivery handoff — 2026-11-25
+
+Status: **ready for exact GPU delivery preparation**. The assignment-scoped strict CPU gate passed on the final selected cases and candidate proof bindings. No original CARLA capture, physical or legal acceptance is claimed. Historical checkpoints follow below; their partial status predates this selected package.
+
+- Selected cases: `__marked_crosswalk` and `__unmarked_midblock`, each 600 frames at 20 Hz for 30 seconds, with primary and `fallback1` camera-height candidate.
+- Current Native runner: `native/crossing/original_capture.py`, materialized in each exact construction as `runner.py`. It requires a separately sourced and independently reviewed two-junction map/control survey, captures pedestrian footprint, both operating official controls, four synchronized cameras and full source hashes, then records world restoration.
+- All four selected exact offline checks and all four public compatibility checks passed. The public proofs include selected measurement analysis, four source videos, Lean decoder, full render/decode and a missing-control-source negative. They are synthetic diagnostics, not original capture evidence.
+- Both primary `process-saved` runs passed recorded-only processing with original acquisition preserved. Independent source/video delivery positives passed for both cases; each rejected a removed `controls-original.jsonl`. `comparison-proof.json` checked all 600 source frames and isolated the 20 m crossing-location difference while holding survey, exception source, control states, timing and camera plan fixed.
+- NRS 484B.290 is explicitly bound as selected requirement `text-1` to both cases in `case-plan.json`. Its exact operative text and person-specific applicability are absent from frozen inputs. The source-only measurement outputs `undetermined`, and the production delivery audit requires independent source review before acceptance. No legal verdict is asserted.
+- Physical CPU receipts cover completed, incomplete and missing-evidence outcomes plus capture-finished → encoders-closed → restoration-verified → Native-exit → owner-released → saved-processing ordering. Actual Native physical completion remains for GPU delivery.
+- Exact check: `.venv-cpu/bin/python worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` exited 0. Lead should independently rerun before publishing.
+- Selected manifest SHA-256: `a801db54cd7c0372adc65c8f8d812aaefafea1d547b66989f41cf399bba13a77`. Comparison receipt SHA-256: `1dc7b5d4ae33f75f326212a3eaa271795d1d589d58a7bb2734f35fb91c440368`.
+
+## Historical checkpoints
+
 # C109166 pedestrian crossing checkpoint
 
 Status: partial. No selected delivery case, Native observation, physical acceptance, or legal verdict is claimed.
