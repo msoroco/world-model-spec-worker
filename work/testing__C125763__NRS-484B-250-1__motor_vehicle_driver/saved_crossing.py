@@ -12,7 +12,9 @@ import math
 from pathlib import Path
 
 ASSIGNMENT = "testing__C125763__NRS-484B-250-1__motor_vehicle_driver"
-SOURCES = ("road.xodr", "site-context.json", "ego-body-history.jsonl", "other-body-history.jsonl")
+SOURCES = ("road.xodr", "site-context.json", "ego-body-history.jsonl",
+           "other-body-history.jsonl", "original-device-source.txt",
+           "original-highway-source.txt")
 
 
 def need(ok, text):
@@ -96,6 +98,14 @@ def measure(attempt):
     need(site.get("assignment_id") == ASSIGNMENT and site.get("cell_id") == "C125763",
          "saved assignment/cell identity differs")
     need(site.get("map_sha256") == sha(files["road.xodr"]), "reviewed site map differs")
+    for key, retained in (("device_source", "original-device-source.txt"),
+                          ("highway_source", "original-highway-source.txt")):
+        binding = site.get(key)
+        need(isinstance(binding, dict) and binding.get("citation") and
+             binding.get("sha256") == sha(files[retained]),
+             "reviewed original device/highway source differs: " + key)
+    need(site.get("review_status") in ("diagnostic_fixture", "reviewed_original"),
+         "original site review status missing")
     for key in ("reviewer", "map_source_citation", "highway_source_citation",
                 "device_source_citation", "crossing_id", "roadway_id"):
         need(isinstance(site.get(key), str) and site[key], "missing reviewed context: " + key)

@@ -1,0 +1,95 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "kind": "delivery",
+      "construction": "construction-precedence.json",
+      "construction_sha256": "c0301a709c048bacec1197851e6f33fef8f0f808cda1ccd3425d72e3000d312d",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-precedence.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/fixture-recipe-precedence.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native body history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native governing signal readback",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-precedence-construction.json",
+          "construction_sha256": "3821376176fb96c17ae1211beef1346c8462fb894f01f0f8649acb008e889e3c",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "kind": "delivery",
+      "construction": "construction-advance.json",
+      "construction_sha256": "0c1aef8825f77199697616cb13d0f14ab130ab2227aeb691ef8203c113a83863",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-advance.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/fixture-recipe-advance.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native body history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original Native governing signal readback",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-advance-construction.json",
+          "construction_sha256": "0ae1db29f5b04c04a6487d4f1c72311702f0a2bd59c9685a309628fd87cdc4f4",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          }
+        }
+      ]
+    }
+  ]
+}

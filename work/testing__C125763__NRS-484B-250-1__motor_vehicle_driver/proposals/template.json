@@ -1,0 +1,53 @@
+{
+  "template_id": "NRS-484B-250-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-1",
+  "actor": "motor_vehicle_driver",
+  "quote": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-1",
+    "activation": {
+      "condition": "Ego approaches an intersection after another vehicle entered it from a different highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "If subsection 1 applies, the approaching driver yields right-of-way to the vehicle already entered.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+        "description": "Official-device and opposite-direction left-turn exclusions; subsection 4 is a separate inoperative-signal condition."
+      }
+    ],
+    "timing": {
+      "description": "Measure first original footprint entry and clearance brackets on a joined 20 Hz clock.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "entered the intersection",
+        "note": "Original two-body footprint transitions and crossing geometry determine entry order; no center-only proxy."
+      },
+      {
+        "phrase": "different highway",
+        "note": "Review original OpenDRIVE and highway records for two statutory highways and the same crossing."
+      },
+      {
+        "phrase": "intersections controlled by official traffic-control devices",
+        "note": "A fixed yield sign is present; original device governance and subsection 4 remain source questions."
+      },
+      {
+        "phrase": "approaching each other from opposite directions",
+        "note": "Original approach lanes, headings and any turning intent determine this exception."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_release_delay_s",
+      "kind": "controller",
+      "range_or_domain": "two reviewed physical response schedules; not a legal cutoff"
+    }
+  ]
+}

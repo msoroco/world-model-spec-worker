@@ -59,7 +59,7 @@ class ComparisonTest(unittest.TestCase):
         self.readers = {name: lambda frame, png=png: {'frame': frame, 'png_bytes': png}
                         for name in CAMERAS}
 
-    def _spec(self, *, changed_weather=False):
+    def _spec(self, *, changed_weather=False, identical_realized=False):
         cases = []
         for probe in ('entry_below', 'entry_inside', 'entry_above'):
             world = World()
@@ -69,7 +69,13 @@ class ComparisonTest(unittest.TestCase):
                 scene['weather']['cloudiness'] = 90
             packet.write_text(json.dumps(scene) + '\n')
             ego = Actor(world, 10, [-2, -1, 0, 1])
-            other = Actor(world, 11, [-2, -2, -1, 0])
+            other_positions = {
+                'entry_below': [-2, -2, -1, 0],
+                'entry_inside': [-2, -1, 0, 1],
+                'entry_above': [-2, 0, 1, 2],
+            }
+            other = Actor(world, 11, [-2, -2, -1, 0] if identical_realized
+                          else other_positions[probe])
             attempt = self.root / ('capture-' + probe)
             capture(world, packet, ego, other, attempt, 4,
                     camera_readers=self.readers,
@@ -90,7 +96,15 @@ class ComparisonTest(unittest.TestCase):
         spec, cases = self._spec()
         result = compare(PACKAGE / 'case-plan.json', spec)
         self.assertEqual([item['release_s'] for item in result['observed']], [0, .5, 1])
+        self.assertEqual(
+            [round(item['entry_difference_s'], 2) for item in result['observed']],
+            [-.05, 0, .05])
         self.assertFalse(result['legal_verdict_claimed'])
+
+    def test_distinct_releases_with_identical_realized_entries_rejected(self):
+        spec, _ = self._spec(identical_realized=True)
+        with self.assertRaisesRegex(ValueError, 'source-measured entry differences'):
+            compare(PACKAGE / 'case-plan.json', spec)
 
     def test_source_bound_changed_weather_is_not_isolated_timing(self):
         spec, cases = self._spec(changed_weather=True)

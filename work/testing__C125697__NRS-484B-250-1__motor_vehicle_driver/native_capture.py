@@ -257,6 +257,11 @@ def run(world, carla, packet_path: Path, output: Path, response_mode: str,
                  "frames": frames}
         observation = median_opening.measure_saved(trace, scene)
         (output / "native_trace.json").write_text(json.dumps(trace) + "\n")
+        (output / "crossing_history.jsonl").write_text("".join(json.dumps({
+            "frame": row["native_frame_id"],
+            "time_s": row["native_elapsed_seconds"],
+            "ego_vertices_m": row["ego"]["body_vertices_xy_m"]}) + "\n"
+            for row in frames))
         (output / "trace.jsonl").write_text("".join(json.dumps({
             "frame": row["native_frame_id"], "time_s": row["native_elapsed_seconds"],
             "position": {"x": row["ego"]["position_xyz_m"][0],

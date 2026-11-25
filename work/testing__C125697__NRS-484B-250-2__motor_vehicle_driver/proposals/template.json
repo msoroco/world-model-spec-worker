@@ -1,0 +1,66 @@
+{
+  "template_id": "NRS-484B-250-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-2",
+    "activation": {
+      "condition": "Two vehicles from different highways enter an intersection at approximately the same time, subject to the stated exceptions.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "The driver of the vehicle on the left yields right-of-way to the vehicle on the right when subsection 2 applies.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+        "description": "Official control, opposing left-turn context and subsection 4 qualification require independent review."
+      }
+    ],
+    "timing": {
+      "description": "Measure both original body entry transitions and preserve their 20 Hz sample brackets.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "intersection",
+        "note": "Identify the same physical roadway crossing for both vehicles; a median opening label alone is insufficient."
+      },
+      {
+        "phrase": "different highway",
+        "note": "Review original road and public-highway identity sources for both approaches."
+      },
+      {
+        "phrase": "approximately the same time",
+        "note": "Use original footprint entry brackets and retain timing uncertainty without a numeric legal cutoff."
+      },
+      {
+        "phrase": "driver of the vehicle on the left",
+        "note": "Derive left/right approach relation from original mapped route vectors and actor identity."
+      },
+      {
+        "phrase": "intersections controlled by official traffic-control devices",
+        "note": "Review the governing device and subsection 4 separately; inoperative readback is not an applicability ruling."
+      },
+      {
+        "phrase": "approaching each other from opposite directions",
+        "note": "Review original approach trajectories and left-turn intent for the statutory exclusion."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_entry_offset_s",
+      "kind": "controller",
+      "range_or_domain": "training coverage probes only; requested offset is not a legal threshold or measured result"
+    },
+    {
+      "name": "ego_approach_side",
+      "kind": "world_setup",
+      "range_or_domain": "left or right, verified from original mapped route vectors"
+    }
+  ]
+}

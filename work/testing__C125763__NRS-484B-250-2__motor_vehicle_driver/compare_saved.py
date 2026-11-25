@@ -99,6 +99,9 @@ def compare(plan_path, spec_path):
                          'original_frames': media['joined_original_frames']})
     if len(set(release_s)) != 3:
         raise ValueError('deliberate release schedules are not distinct')
+    deltas = [row['entry_difference_s'] for row in observed]
+    if not (deltas[0] < deltas[1] < deltas[2]):
+        raise ValueError('source-measured entry differences do not realize the planned below/inside/above ordering')
     return {'format': 'c125763-source-bound-comparison-v1',
             'comparison_id': 'entry_timing_range', 'case_ids': expected,
             'fixed_scene': fixed, 'observed': observed,

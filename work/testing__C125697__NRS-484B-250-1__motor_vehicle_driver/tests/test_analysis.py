@@ -24,6 +24,9 @@ def staged(root: Path, suffix: str, ego_entry: int):
         "diagnostic_fixture": True, "physical_acceptance_claimed": False}))
     original = json.loads((root / "native_trace.json").read_text())
     rows = original["frames"]
+    (root / "crossing_history.jsonl").write_text("".join(json.dumps({
+        "frame": row["native_frame_id"], "time_s": row["native_elapsed_seconds"],
+        "ego_vertices_m": row["ego"]["body_vertices_xy_m"]}) + "\n" for row in rows))
     (root / "trace.jsonl").write_text("".join(json.dumps({
         "frame": row["native_frame_id"], "time_s": row["native_elapsed_seconds"],
         "position": {"x": 0, "y": 0, "z": 0}, "heading_deg": 0,

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import median_opening
+from worker_exchange.native_output import physical_result, validate_result
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -96,14 +97,18 @@ def analyze(attempt: Path, output: Path) -> dict:
     frames = original["frames"]
     mapping = [json.loads(line) for line in _required(root, "video_frames.jsonl").read_text().splitlines()]
     trace = [json.loads(line) for line in _required(root, "trace.jsonl").read_text().splitlines()]
-    if len(mapping) != len(trace) or len(trace) != len(frames):
+    crossing_history = [json.loads(line) for line in _required(root, "crossing_history.jsonl").read_text().splitlines()]
+    if len(mapping) != len(trace) or len(trace) != len(frames) or len(crossing_history) != len(frames):
         raise ValueError("original trace/frame-map count differs")
-    for index, (row, frame, video) in enumerate(zip(trace, frames, mapping)):
+    for index, (row, frame, video, crossing) in enumerate(zip(trace, frames, mapping, crossing_history)):
         if (row.get("frame") != frame["native_frame_id"] or
                 row.get("time_s") != frame["native_elapsed_seconds"] or
                 video.get("video_frame") != index or
                 video.get("carla_frame") != row["frame"] or
-                video.get("time_s") != row["time_s"]):
+                video.get("time_s") != row["time_s"] or
+                crossing.get("frame") != row["frame"] or
+                crossing.get("time_s") != row["time_s"] or
+                crossing.get("ego_vertices_m") != frame["ego"]["body_vertices_xy_m"]):
             raise ValueError("original trace/frame-map identity differs")
     description = construction["recording_description"]
     if description != next(c["recording_description"] for c in json.loads(
@@ -158,8 +163,8 @@ def analyze(attempt: Path, output: Path) -> dict:
     result = {
         "case_id": case,
         "measured_values": measured, "target_checks": checks,
-        "setup_confirmed": True, "behavior_attempted": True,
-        "maneuver_completed": True,
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False,
         "termination_reason": f"{len(frames)} source frames analyzed; physical and legal review pending",
         "physical_failure_flags": [],
         "trace_reference": "trace.jsonl",
@@ -172,14 +177,16 @@ def analyze(attempt: Path, output: Path) -> dict:
         "physical_acceptance_claimed": False,
         "legal_judgment": "unresolved",
     }
+    result = physical_result(root, result)
+    validate_result(result)
     (root / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     measurement_specs = {
         "crossing_highways": ("measure_crossing_highways", measure_crossing_highways(scene),
                               ["scene.json", "opendrive.xodr", "highway_identity.json"]),
         "other_entry": ("measure_other_entry", measure_other_entry(measured),
-                        ["native_trace.json", "scene.json"]),
+                        ["native_trace.json", "crossing_history.jsonl", "scene.json"]),
         "ego_response": ("measure_ego_response", measure_ego_response(measured),
-                         ["native_trace.json", "scene.json"]),
+                         ["native_trace.json", "crossing_history.jsonl", "scene.json"]),
         "device_context": ("measure_device_context", measure_device_context(scene, measured),
                            ["native_trace.json", "scene.json", "device_inventory.json"]),
         "opposing_turn_context": ("measure_opposing_turn_context", measure_opposing_turn_context(scene),
@@ -191,6 +198,8 @@ def analyze(attempt: Path, output: Path) -> dict:
     report = {
         "format": "worker-analysis-report", "case_id": case,
         "measurements": measurements,
+        "physical_checks": result["physical_checks"],
+        "realized_observables": result["realized_observables"],
         "diagnostic_fixture": diagnostic,
         "legal_verdict_claimed": False,
         "limitations": [

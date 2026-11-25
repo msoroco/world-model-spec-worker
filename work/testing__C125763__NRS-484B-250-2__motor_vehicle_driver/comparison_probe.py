@@ -15,12 +15,15 @@ from compare_saved import compare  # noqa: E402
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--negative', action='store_true')
+    parser.add_argument('--negative', action='store_true',
+                        help='Keep three release schedules but make all measured entries equal')
+    parser.add_argument('--changed-weather', action='store_true')
     args = parser.parse_args()
     fixture = ComparisonTest('test_source_bound_three_case_comparison_and_fixed_condition_negative')
     fixture.setUp()
     try:
-        spec, _ = fixture._spec(changed_weather=args.negative)
+        spec, _ = fixture._spec(changed_weather=args.changed_weather,
+                                identical_realized=args.negative)
         report = compare(HERE / 'case-plan.json', spec)
         print(json.dumps({'format': report['format'], 'comparison_id': report['comparison_id'],
             'case_ids': report['case_ids'], 'observed': report['observed'],
