@@ -962,3 +962,17 @@ C179789 now has an eight-case reviewed-source intake validator and two structura
 C157964 subsection 2: exact go/hold/inactive officer bone direction program and Native readback tests added. Five package tests and scoped nonready check pass. Integrate with performer, ego and other actor runner and original-camera capture next; status partial.
 
 C157964 subsection 2: bounded ego go/hold/inactive controller and Native apply-control tests added alongside walker bone direction program. Seven tests and scoped nonready check pass; integrate both into exact runner next. Status partial.
+
+## 2026-11-25 current-runtime quick check
+
+The requested unscoped `.venv-cpu/bin/python worker_check.py` was rerun. It passed UTF-8 inspection of all returned files, then exited 1 at `execution_manifest.validate` with `ValueError: Execution manifest binds another runtime` (`.runtime-work/worker-quick-20261125.log`). The direct inventory found 29 retained execution manifests still bound to prior `runtime/SOURCE-MANIFEST.json` SHA-256 `5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3`; the current manifest is `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. These retained prior-ready packages require exact current-runtime reproof before rebinding. `START_HERE.md` explicitly defers ordinary whole-batch migration while `PREVIOUS_READINESS.json` contains retained completions, so no retained manifest or ready status was changed. This is a CPU migration task, not a missing tool or external blocker. Work should continue on the unfinished assignment with scoped gates; when retained-package migration is undertaken, rerun its exact proofs before updating the runtime binding.
+
+The returned-file scan covered 10,991 files under `work/`: zero non-UTF-8 files, oversized files, trailing whitespace lines or conflict markers. No Git command was run.
+
+C157964 NRS 484B.257(2): added SHA-bound officer/site intake with six required reviewed sources and all-entrance checks. Ten package tests pass, including rejection of changed sources and absent authority review. No actual reviewed source was supplied and status remains partial; integrated Native runner and full proofs remain CPU work.
+
+C157964 subsection 2 scoped `.venv-cpu/bin/python worker_check.py --assignment testing__C157964__NRS-484B-257-2__motor_vehicle_driver --complete` passes after the source-intake addition (`assignment-check.log`). Final returned-file scan: 10,993 files, zero UTF-8, size, trailing-whitespace or conflict-marker violations. All 34 prior-ready statuses remain ready; 9 assignments remain partial. The unscoped quick check still fails at retained runtime bindings, as recorded above.
+
+C157964 NRS 484B.257(2): a synchronous Native step now binds reviewed site intake, programmed officer pose and ego control, source-bound traffic inputs and four exact raw camera frame references. Twelve tests pass, including rejection of absent intake and frame mismatches. Actual observed control stays unreviewed. Full capture, finalizer and proofs remain CPU work; status partial.
+
+C157964 subsection 2 scoped complete `worker_check.py` passes after the synchronous capture-step addition (`assignment-check.log`). Final scan inspected 10,995 files under `work/` with zero UTF-8, size, trailing-whitespace or conflict-marker violations. No Git command was run. Ready count remains 34/43; nine packages remain partial, so the whole strict delivery gate cannot pass yet.
