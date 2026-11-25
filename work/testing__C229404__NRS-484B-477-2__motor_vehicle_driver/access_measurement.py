@@ -112,8 +112,10 @@ def measure(root: Path, inventory: dict, case_id: str) -> dict:
     if geometry.get("access_kind") not in ("driveway", "entrance"):
         raise ValueError("access kind must be driveway or entrance")
     frames = packets["frame_map"].get("frames")
-    if not isinstance(frames, list) or len(frames) < 900:
-        raise ValueError("original 900-frame history missing")
+    diagnostic = inventory.get("diagnostic_fixture") is True
+    if not isinstance(frames, list) or len(frames) not in ((9, 900) if diagnostic else (900,)):
+        raise ValueError("original 900-frame history missing" if not diagnostic
+                         else "nine-frame diagnostic history missing")
     first = frames[0].get("frame")
     if type(first) is not int or [r.get("frame") for r in frames] != list(range(first, first + len(frames))):
         raise ValueError("original frames not consecutive")
@@ -148,6 +150,8 @@ def measure(root: Path, inventory: dict, case_id: str) -> dict:
                              "access_intrusion_area_m2": round(_overlap_area(footprint, access), 8)})
     if not any(row["state"] == "parked" for row in measured):
         raise ValueError("actual parked phase absent")
+    if not diagnostic and sum(row["state"] == "parked" for row in measured) < 400:
+        raise ValueError("original parked hold shorter than engineering 20-second target")
     return {"format": "c229404-original-access-measurement-v1", "case_id": case_id,
             "source_sha256": {name: sources[name]["sha256"] for name in SOURCE_NAMES},
             "original_frames": len(frames), "measured_halt_frames": len(measured),

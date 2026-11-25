@@ -28,7 +28,7 @@ def _write(path: Path, value: dict) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def capture(adapter, case_id: str, output: Path) -> dict:
+def capture(adapter, case_id: str, output: Path, after_tick=None) -> dict:
     """Write a complete immutable attempt, or remove it on any acquisition error.
 
     Adapter methods: get_map_packet, start(plan), tick, read_footprint(frame),
@@ -37,6 +37,8 @@ def capture(adapter, case_id: str, output: Path) -> dict:
     alone is insufficient to mark a road legally qualifying.
     """
     suffix = case_id.removeprefix(ASSIGNMENT + "__")
+    if after_tick is not None and not callable(after_tick):
+        raise ValueError("same-tick original graph capture must be callable")
     if not case_id.startswith(ASSIGNMENT + "__") or suffix not in {
             "driveway_clear", "driveway_overlap", "entrance_clear", "entrance_overlap"}:
         raise ValueError("unknown exact alley access case")
@@ -57,7 +59,7 @@ def capture(adapter, case_id: str, output: Path) -> dict:
         raise ValueError("alley/access source provenance missing")
     if geometry.get("highway_status") is not True or geometry.get("cul_de_sac") is not False:
         raise ValueError("qualifying connected highway alley unverified")
-    plan = build_plan(geometry, case_id)
+    plan = build_plan(geometry, case_id, direction=getattr(adapter, "direction", 1))
     map_bytes = adapter.get_opendrive_bytes()
     if not isinstance(map_bytes, bytes) or hashlib.sha256(map_bytes).hexdigest() != geometry["map_sha256"]:
         raise ValueError("Native map bytes differ from alley packet")
@@ -80,6 +82,8 @@ def capture(adapter, case_id: str, output: Path) -> dict:
             if frames and (frame != frames[-1]["frame"] + 1 or
                            abs(time_s - frames[-1]["time_s"] - .05) > .001):
                 raise ValueError("Native frame gap or cadence drift")
+            if after_tick is not None:
+                after_tick(frame, time_s)
             footprint = adapter.read_footprint(frame)
             activity = adapter.read_activity(frame)
             for packet in (footprint, activity):
@@ -102,6 +106,7 @@ def capture(adapter, case_id: str, output: Path) -> dict:
             activities.append(activity)
         if hashlib.sha256(adapter.get_opendrive_bytes()).hexdigest() != geometry["map_sha256"]:
             raise ValueError("Native map changed during attempt")
+        adapter.capture_complete = True
     except BaseException:
         shutil.rmtree(root, ignore_errors=True)
         raise
@@ -135,11 +140,11 @@ def capture(adapter, case_id: str, output: Path) -> dict:
             filename = name + ".zip"
             inventory["media"][name] = {"path": filename,
                                           "sha256": hashlib.sha256((root / filename).read_bytes()).hexdigest()}
-        _write(root / "inventory.json", inventory)
-        measured = measure(root, inventory, case_id)
         if not inventory["diagnostic_fixture"]:
             # Native attestation confirms source origin, not statutory completion.
             inventory["physical_completion"] = False
+        _write(root / "inventory.json", inventory)
+        measured = measure(root, inventory, case_id)
         os.replace(root, destination)
         return {"case_id": case_id, "frame_count": FRAMES,
                 "max_access_intrusion_area_m2": measured["max_access_intrusion_area_m2"],

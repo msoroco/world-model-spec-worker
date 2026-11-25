@@ -7,8 +7,11 @@ from pathlib import Path
 import subprocess
 
 from rail_stop_audit import audit_saved_file
+from native_construction import verify_production_site
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 SOURCES = ("rail-stop-packet.json", "native-crossing-geometry.json",
            "native-authority-record.json", "native-stop-device.json",
            "native-ego-kinematics.json", "native-ego-footprint.json",
@@ -46,6 +49,7 @@ def _verify_native_pixel_samples(attempt: Path, seal: dict, mapping: list) -> di
             camera = joined["cameras"][name]
             if (camera.get("frame") != joined["source_frame"]
                     or camera.get("source_video") != name + ".mkv"
+                    or (camera.get("width"), camera.get("height")) != CAMERA_SIZES[name]
                     or len(camera.get("original_bgra_sha256", "")) != 64):
                 raise ValueError("original camera source hash join differs")
     if {(r.get("camera"), r.get("video_frame")) for r in rows} != expected:
@@ -134,7 +138,21 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
     if (attempt / "native-conflict-history.json").is_file():
         required_sealed.add("native-conflict-history.json")
     if not synthetic:
+        if (seal.get("frames") != 900 or seal.get("diagnostic_fixture") is not False
+                or seal.get("restoration", {}).get("restored") is not True
+                or set(seal.get("encoder_exit_codes", {})) != set(CAMERAS)
+                or any(code != 0 for code in seal["encoder_exit_codes"].values())
+                or not {"capture_finished", "encoders_closed", "restoration_verified"}
+                <= set(seal.get("events", []))
+                or seal.get("physical_acceptance_claimed") is not False):
+            raise ValueError("Native capture seal lacks complete restored acquisition")
         required_sealed |= set(NATIVE_ORIGINALS)
+        required_sealed.add("site/packet.json")
+        site_path = attempt / "site/packet.json"
+        if site_path.is_file():
+            site_packet = json.loads(site_path.read_text())
+            for binding in site_packet.get("sources", {}).values():
+                required_sealed.add("site/" + binding["path"])
         required_sealed |= {f"original-{name}-{index:03d}.png"
                             for name in CAMERAS for index in (0, 450, 899)}
     if not required_sealed <= set(seal["sources"]):
@@ -147,7 +165,11 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
             raise ValueError("sealed original source changed: " + name)
     if config["selected_case_id"] != config["case"]["case_id"]:
         raise ValueError("selected case identity differs")
+    if not synthetic:
+        verify_production_site(attempt / "site/packet.json", config["case"])
     measurement = audit_saved_file(attempt / "rail-stop-packet.json")
+    if measurement.get("status") != "measured":
+        raise ValueError("original rail-stop measurement is incomplete")
     packet = json.loads((attempt / "rail-stop-packet.json").read_text())
     if any(binding.get("path") not in seal["sources"]
            for binding in packet.get("sources", {}).values()):
@@ -167,10 +189,11 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
             raise ValueError("original camera missing: " + name)
         probe = json.loads(subprocess.check_output([
             "ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-            "-show_entries", "stream=nb_read_frames", "-of", "json", str(video)], text=True))
-        count = int(probe["streams"][0]["nb_read_frames"])
-        if count != 900:
-            raise ValueError("original camera frame count differs: " + name)
+            "-show_entries", "stream=nb_read_frames,width,height", "-of", "json", str(video)], text=True))
+        stream = probe["streams"][0]
+        count = int(stream["nb_read_frames"])
+        if count != 900 or (stream.get("width"), stream.get("height")) != CAMERA_SIZES[name]:
+            raise ValueError("original camera frame count or size differs: " + name)
         subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(video),
                         "-f", "null", "-"], check=True, stdout=subprocess.DEVNULL,
                        timeout=180)
@@ -194,3 +217,18 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
             "diagnostic_audit_test_passed": diagnostic_test,
             "delivery_physical_audit_passed": bool(review),
             "actual_carla_capture_claimed": bool(review)}
+
+
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Audit one sealed original rail-stop attempt")
+    parser.add_argument("--attempt", required=True, type=Path)
+    parser.add_argument("--diagnostic-test", action="store_true")
+    args = parser.parse_args()
+    print(json.dumps(audit(args.attempt, diagnostic_test=args.diagnostic_test),
+                     separators=(",", ":")))
+
+
+if __name__ == "__main__":
+    main()

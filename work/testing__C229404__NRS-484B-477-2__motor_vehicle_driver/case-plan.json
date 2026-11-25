@@ -158,7 +158,23 @@
       "audit_rule": "Compare original per-frame footprint polygons; preserve access corridor and provenance; do not assign a legal blocking cutoff."
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "original_body_access_overlap",
+      "mandatory": true,
+      "source": "original vehicle_footprint and alley_geometry packets"
+    },
+    {
+      "name": "parking_activity",
+      "mandatory": true,
+      "source": "original activity and frame_map packets"
+    },
+    {
+      "name": "qualifying_alley_and_access",
+      "mandatory": true,
+      "source": "source-hashed OpenDRIVE and independently reviewed property/access provenance"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/assignment.json",
@@ -184,8 +200,8 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "No accepted original recording is exported for this assignment.",
-    "Four exact capture constructions, finalizers, proposals, compatibility receipts, delivery and comparison audits remain CPU work.",
-    "Actual parking motion, corridor geometry, and camera coverage require later original CARLA capture review."
+    "The CARLA adapter is authored and CPU-tested for source packet validation; exact bundles, compatibility, semantic proposals and independent production acceptance remain CPU work.",
+    "Original alley/highway/parcel status, actual parking footprint, camera visibility and statutory blocking remain pending local original-source review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -204,7 +220,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "exact_cases_authored_measurement_partial",
+  "planning_status": "production_adapter_cpu_tested_partial",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -226,5 +242,52 @@
       ],
       "reason": "The general road layout permits an additional qualifying-alley realization with the fixed parking task and driveway entrance."
     }
-  ]
+  ],
+  "selected_branch": "park_at_driveway",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS 484B.477(2): stopping, standing or parking a vehicle within a qualifying alley in a position blocking a driveway or entrance to abutting property",
+      "source": {
+        "path": "inputs/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/assignment.json",
+        "sha256": "1511cfcf7c15fd69a12f0eb306eb57227be5a0c8d094a83ca67a495188600094"
+      },
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear",
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_overlap",
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_clear",
+        "testing__C229404__NRS-484B-477-2__motor_vehicle_driver__entrance_overlap"
+      ],
+      "evidence_or_gap": "No accepted original recording; all four exact captures target the same selected branch. Original alley qualification, abutting access and blocking judgment remain independent review.",
+      "disposition_index": 0
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "connected alley, ego and abutting property",
+        "interval": "full 45 second original episode"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, stopping and departure",
+        "interval": "full 45 second original episode"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "driveway or entrance and ego footprint",
+        "interval": "full 45 second original episode"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-facing approach and access geometry",
+        "interval": "full 45 second original episode"
+      }
+    ]
+  }
 }

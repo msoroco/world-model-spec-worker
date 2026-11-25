@@ -13,6 +13,7 @@ from native_capture import capture
 from delivery_audit import audit
 from alley_construction import build_plan
 from parking_controller import ParkingController
+from analysis import build
 
 
 class FakeAdapter:
@@ -156,6 +157,43 @@ class CaptureTests(unittest.TestCase):
         packet.pop("end_connection_source")
         with self.assertRaisesRegex(ValueError, "endpoint evidence missing"):
             build_plan(packet, ASSIGNMENT + "__driveway_overlap")
+
+    def test_same_tick_graph_hook_joins_all_original_frames(self):
+        with tempfile.TemporaryDirectory() as directory:
+            adapter = FakeAdapter()
+            seen = []
+            capture(adapter, ASSIGNMENT + "__driveway_overlap",
+                    Path(directory) / "attempt",
+                    after_tick=lambda frame, instant: seen.append((frame, instant)))
+            self.assertEqual(len(seen), 900)
+            self.assertEqual(seen[0], (1000, 0.0))
+            self.assertEqual(seen[-1], (1899, 44.95))
+            self.assertTrue(adapter.capture_complete)
+
+    def test_saved_analysis_joins_original_access_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            case = ASSIGNMENT + "__driveway_overlap"
+            capture(FakeAdapter(), case, root / "original-attempt")
+            config = json.loads((Path(__file__).resolve().parents[1] / "config.json").read_text())
+            config["selected_case_id"] = case
+            config["parking_position"] = "overlap"
+            (root / "config.json").write_text(json.dumps(config) + "\n")
+            (root / "fixture-provenance.json").write_text(json.dumps(
+                {"diagnostic_fixture": True, "physical_acceptance_claimed": False}) + "\n")
+            source = json.loads((root / "original-attempt/frame_map.json").read_text())["frames"]
+            with (root / "video_frames.jsonl").open("w") as mapping, (root / "trace.jsonl").open("w") as trace:
+                for i, row in enumerate(source):
+                    mapping.write(json.dumps({"video_frame": i, "carla_frame": row["frame"],
+                                              "time_s": row["time_s"]}) + "\n")
+                    trace.write(json.dumps({"frame": row["frame"], "time_s": row["time_s"]}) + "\n")
+            report, measurement = build(root)
+            self.assertEqual(measurement["max_access_intrusion_area_m2"], 4)
+            self.assertEqual(report["measurements"]["access_position_measurement"]["value"]
+                             ["statutory_blocking_judgment"], None)
+            (root / "original-attempt/activity.json").unlink()
+            with self.assertRaisesRegex(ValueError, "original alley source missing"):
+                build(root)
 
     def test_controller_requires_real_stop_and_hold_before_departure(self):
         for direction in (-1, 1):
