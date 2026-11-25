@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 CASES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
 SWEEP_CASES = tuple(f"c157964_sub2_judgment_{judgment}-{index:04d}"
-                    for judgment in (3, 5) for index in range(3))
+                    for judgment in (3, 5, 6) for index in range(3))
 
 
 def sha(path):
