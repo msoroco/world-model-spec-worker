@@ -1,0 +1,222 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__semantic_baseline",
+      "rationale": "Reference only; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "vehicle_reverse_response",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "moving_pedestrian_corridor_exposure",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original OpenDRIVE, actor poses and backing route packet",
+            "name": "backing_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "A controller command or synthetic fixture does not prove a lawful yield.",
+          "Moving-traffic alternative and physical participant visibility remain unresolved."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to moving traffic and pedestrians"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "pedestrian_corridor_exposure": {
+          "kind": "world_setup",
+          "value": "same moving pedestrian"
+        },
+        "reverse_response": {
+          "kind": "controller",
+          "value": "hold/brake"
+        },
+        "reverse_route": {
+          "kind": "world_setup",
+          "value": "same source-bound reverse route"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
+      "deliberate_differences": [
+        "reverse_response"
+      ],
+      "paired_probe_id": "pedestrian_yield_response",
+      "probe": {
+        "comparison_or_standard": "same original moving pedestrian corridor exposure",
+        "primary_variable": "reverse_response",
+        "target_value_or_branch": "pedestrian_continue"
+      },
+      "rationale": "Observe backing response with moving pedestrian: pedestrian_continue",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "vehicle_reverse_response",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "moving_pedestrian_corridor_exposure",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original OpenDRIVE, actor poses and backing route packet",
+            "name": "backing_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "A controller command or synthetic fixture does not prove a lawful yield.",
+          "Moving-traffic alternative and physical participant visibility remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-113-3",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to moving traffic and pedestrians"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "pedestrian_corridor_exposure": {
+          "kind": "world_setup",
+          "value": "same moving pedestrian"
+        },
+        "reverse_response": {
+          "kind": "controller",
+          "value": "continue reverse"
+        },
+        "reverse_route": {
+          "kind": "world_setup",
+          "value": "same source-bound reverse route"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+      "deliberate_differences": [
+        "reverse_response"
+      ],
+      "paired_probe_id": "pedestrian_yield_response",
+      "probe": {
+        "comparison_or_standard": "same original moving pedestrian corridor exposure",
+        "primary_variable": "reverse_response",
+        "target_value_or_branch": "pedestrian_yield"
+      },
+      "rationale": "Observe backing response with moving pedestrian: pedestrian_yield",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "vehicle_reverse_response",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native actor readback and four-camera frame join",
+            "name": "moving_pedestrian_corridor_exposure",
+            "reference_frame": "original CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 consecutive original world ticks",
+            "uncertainty": "actual motion, visibility and statutory priority require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original OpenDRIVE, actor poses and backing route packet",
+            "name": "backing_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "A controller command or synthetic fixture does not prove a lawful yield.",
+          "Moving-traffic alternative and physical participant visibility remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-113-3",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to moving traffic and pedestrians"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "pedestrian_corridor_exposure": {
+          "kind": "world_setup",
+          "value": "same moving pedestrian"
+        },
+        "reverse_response": {
+          "kind": "controller",
+          "value": "hold/brake"
+        },
+        "reverse_route": {
+          "kind": "world_setup",
+          "value": "same source-bound reverse route"
+        }
+      }
+    }
+  ],
+  "cell_id": "C111301",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Original motion and priority remain for independent review.",
+          "phrase": "yield the right-of-way to moving traffic and pedestrians"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed original backing site and moving pedestrian source"
+      ],
+      "rationale": "No engineering brake or distance threshold is a legal cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pedestrian_yield_response",
+      "target_law_id": "NRS-484B-113-3"
+    }
+  ]
+}

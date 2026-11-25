@@ -154,6 +154,10 @@ def audit_processed(attempt: Path, processed: Path, case_id: str,
                 raise ValueError("reviewed original source changed: " + key)
         if (result.get("provenance_kind") != "native" or
                 result.get("diagnostic_fixture") is not False or
+                result.get("setup_confirmed") is not True or
+                result.get("behavior_attempted") is not True or
+                result.get("maneuver_completed") is not True or
+                result.get("physical_failure_flags") or
                 measured.get("straight_route_observed") is not True or
                 not isinstance(measured.get("entry_frame"), int) or
                 measured.get("duration_frames") != count):

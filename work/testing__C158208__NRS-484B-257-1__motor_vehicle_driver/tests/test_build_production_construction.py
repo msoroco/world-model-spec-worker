@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from build_production_construction import build
+from camera_sources import CAMERAS
 from native_attempt import REVIEW_SOURCES
 from test_source_tick_capture import CONTEXT, GEOMETRY
 
@@ -20,11 +21,18 @@ class ProductionConstructionTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.site_path = self.root / "reviewed-site.json"
+        pose = {"location": {"x": 0.0, "y": 0.0, "z": 1.0},
+                "rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0}}
         self.site = {"review_status": "reviewed", "cell_id": "C158208",
                      "source_provenance": "native_operator_review",
                      "capture_geometry": GEOMETRY, "reviewed_context": CONTEXT,
                      "ego_view_station_m": 8.0,
-                     "native_scene": {"ego": {}, "through_vehicle": {}, "cameras": {}},
+                     "native_scene": {
+                         "ego": {"blueprint_id": "vehicle.test.ego", "transform": pose},
+                         "through_vehicle": {"blueprint_id": "vehicle.test.through", "transform": pose},
+                         "cameras": {name: {"attach_to": "ego", "transform": pose,
+                                            "fov_degrees": 90.0} for name in CAMERAS},
+                         "yield_sign_landmark_id": "synthetic-sign"},
                      "source_bindings": {}}
         for name in REVIEW_SOURCES:
             data = b"<OpenDRIVE>synthetic test only</OpenDRIVE>" if name == "native_map" else name.encode()
@@ -85,7 +93,23 @@ class ProductionConstructionTests(unittest.TestCase):
         (self.root / "yield_sign.txt").write_text("yield_sign")
         self.site.pop("native_scene")
         self.write_site()
-        with self.assertRaisesRegex(ValueError, "actor and camera scene"):
+        with self.assertRaisesRegex(ValueError, "Native scene source missing"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+
+    def test_rejects_incomplete_actor_camera_and_sign_source(self):
+        self.site["native_scene"]["ego"]["transform"]["location"].pop("x")
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "ego x must be finite"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+        self.site["native_scene"]["ego"]["transform"]["location"]["x"] = 0.0
+        self.site["native_scene"]["cameras"]["approach"]["fov_degrees"] = 180.0
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "fov outside physical range"):
+            build("nearest_view_response", self.site_path, self.root / "out.json")
+        self.site["native_scene"]["cameras"]["approach"]["fov_degrees"] = 90.0
+        self.site["native_scene"].pop("yield_sign_landmark_id")
+        self.write_site()
+        with self.assertRaisesRegex(ValueError, "exactly one reviewed Native yield sign"):
             build("nearest_view_response", self.site_path, self.root / "out.json")
 
 

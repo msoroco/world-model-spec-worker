@@ -15,7 +15,7 @@ import subprocess
 _spec = importlib.util.spec_from_file_location('trail_saved_audit', Path(__file__).with_name('saved_audit.py'))
 _saved = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_saved)
-CAMERAS = ('front', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _sha(path: Path) -> str:

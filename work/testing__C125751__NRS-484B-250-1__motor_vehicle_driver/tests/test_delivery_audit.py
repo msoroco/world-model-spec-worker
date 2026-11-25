@@ -34,6 +34,23 @@ class DeliveryAuditTest(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'lifecycle unverified'):
                         verify_sources(ASSIGNMENT + '__' + suffix, attempt)
 
+    def test_byte_identical_external_symlink_cannot_be_sealed_original(self):
+        with self.fixture() as temporary:
+            scratch = Path(temporary)
+            attempt = scratch / 'attempt'
+            attempt.mkdir()
+            external = scratch / 'external-construction.json'
+            external.write_text('{}\n')
+            (attempt / 'construction.json').symlink_to(external)
+            (attempt / 'capture-seal.json').write_text(json.dumps({
+                'provenance_kind': 'native', 'diagnostic_fixture': False,
+                'events': ['capture_finished', 'encoders_closed',
+                           'restoration_verified'],
+                'restoration': {'restored': True},
+                'sources': {'construction.json': digest(external)}}))
+            with self.assertRaisesRegex(ValueError, 'sealed Native source missing or changed'):
+                verify_sources(ASSIGNMENT + '__precedence', attempt)
+
     def test_decode_and_pixel_receipts_reject_stale_or_missing_observations(self):
         with self.fixture() as temporary:
             attempt = Path(temporary)

@@ -76,10 +76,16 @@
       "exit_code": 1,
       "log": "cpu-native-backing-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output MPLCONFIGDIR=$PWD/.runtime-work/c111301-nov25/mpl PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-native-join-tests.log",
+      "sha256": "d41cbfed69ae9a4d3592de4be1b0629cdfa1ff35200f5c789c4f7cdc24b68212"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "NativeBackingRecorder now reads original vehicle/pedestrian transform, velocity and applied control per Native tick, computes pedestrian corridor from the source-bound reverse route, requires four same-world-frame camera images, and writes only a complete 900-row 20 Hz telemetry/frame-map pair. Twenty-six assignment tests, pinned preflight and scoped static pass; exact strict remains partial. It still needs a full CARLA world/actor/camera/video capture runner, canonical two-case bundles and semantic proposals, exact offline/compatibility/process-saved and independent delivery proof; physical backing and pedestrian visibility remain unverified."
+  "reason": "NativeBackingRecorder binds four original camera timestamps to each 20 Hz sampled tick and rejects skipped Native world frames. Twenty-seven focused CPU tests and scoped static pass. This is a partial construction: full CARLA-owned camera/video lifecycle, canonical two-case bundles and semantic proposals, source-bound offline/positive-negative compatibility/process-saved and independent delivery receipts remain worker-owned; the original reviewed C111301 map/site and physical interaction are unavailable in frozen sources."
 }

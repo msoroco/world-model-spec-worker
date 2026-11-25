@@ -36,14 +36,18 @@ class NativeBackingRecorder:
             raise ValueError('planned backing capture exceeds 900 frames')
         if type(world_frame) is not int or world_frame < 0:
             raise ValueError('original Native world frame required')
-        if self.frame_map and world_frame <= self.frame_map[-1]['world_frame']:
-            raise ValueError('Native world frame must increase')
+        if self.frame_map and world_frame != self.frame_map[-1]['world_frame'] + 1:
+            raise ValueError('Native world frame must be consecutive')
         if type(time_s) not in (int, float) or not math.isfinite(time_s) or abs(time_s-index*.05) > .001:
             raise ValueError('original 20 Hz capture time differs')
         if not isinstance(camera_images, dict) or set(camera_images) != set(CAMERAS):
             raise ValueError('four original camera images required')
         if any(getattr(camera_images[name], 'frame', None) != world_frame for name in CAMERAS):
             raise ValueError('original camera and world tick differ')
+        for name in CAMERAS:
+            stamp = getattr(camera_images[name], 'timestamp', None)
+            if type(stamp) not in (int, float) or not math.isfinite(stamp) or abs(stamp - time_s) > .001:
+                raise ValueError('original camera timestamp and world tick differ: ' + name)
         vehicle_transform = self.vehicle.get_transform()
         pedestrian_transform = self.pedestrian.get_transform()
         vehicle_xy = _xy(vehicle_transform.location)

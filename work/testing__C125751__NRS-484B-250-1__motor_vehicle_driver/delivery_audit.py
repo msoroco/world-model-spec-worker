@@ -46,7 +46,8 @@ def verify_sources(case_id, attempt):
     sealed = seal.get('sources', {})
     for name in REQUIRED:
         path = attempt / name
-        if not path.is_file() or sealed.get(name) != sha(path):
+        if (path.is_symlink() or not path.resolve().is_relative_to(attempt) or
+                not path.is_file() or sealed.get(name) != sha(path)):
             raise ValueError('sealed Native source missing or changed: ' + name)
     acquisition = read(attempt / 'acquisition.json')
     provenance = read(attempt / 'acquisition-provenance.json')
@@ -70,7 +71,9 @@ def verify_sources(case_id, attempt):
     validate_source_packet(source_packet, (attempt / 'map.xodr').read_bytes(),
                            (attempt / 'review.json').read_bytes())
     for ref in validate_review_refs((attempt / 'review.json').read_bytes(), attempt):
-        if sealed.get(ref['path']) != sha(attempt / ref['path']):
+        path = attempt / ref['path']
+        if (path.is_symlink() or not path.resolve().is_relative_to(attempt) or
+                sealed.get(ref['path']) != sha(path)):
             raise ValueError('reviewed original source not sealed: ' + ref['path'])
     signal_packet = read(attempt / 'signal-packet.json')
     if (signal_packet.get('map_sha256') != source_packet['map_sha256'] or

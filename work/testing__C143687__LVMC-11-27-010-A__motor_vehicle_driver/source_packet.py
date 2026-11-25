@@ -11,6 +11,8 @@ from pathlib import Path
 
 
 RECORDS = {
+    'map': ('map_sha256',),
+    'corridor': ('corridor_source_sha256',),
     'official_plan_designation': ('administrative_records', 'official_plan_designation', 'source_sha256'),
     'city_trail_dedication': ('administrative_records', 'city_trail_dedication', 'source_sha256'),
     'sign_face': ('sign', 'face_readback_sha256'),

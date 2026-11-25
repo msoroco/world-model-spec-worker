@@ -33,6 +33,45 @@ def _pose(carla, data, name):
                           for key in ("pitch", "yaw", "roll")}))
 
 
+def validate_native_scene_spec(scene):
+    """Check reviewed scene fields before constructing or owning Native actors."""
+    if not isinstance(scene, dict):
+        raise ValueError("reviewed Native scene source missing")
+    for name in ("ego", "through_vehicle"):
+        actor = scene.get(name)
+        if not isinstance(actor, dict) or not isinstance(actor.get("blueprint_id"), str) or not actor["blueprint_id"]:
+            raise ValueError(f"reviewed {name} actor source missing")
+        _pose_fields(actor.get("transform"), name)
+    cameras = scene.get("cameras")
+    if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
+        raise ValueError("four reviewed camera extrinsics required")
+    for name in CAMERAS:
+        source = cameras[name]
+        if not isinstance(source, dict) or source.get("attach_to") not in ("ego", "through_vehicle"):
+            raise ValueError(f"{name} reviewed camera parent missing")
+        _pose_fields(source.get("transform"), name)
+        fov = _finite(source.get("fov_degrees"), f"{name} fov")
+        if not 0 < fov < 180:
+            raise ValueError(f"{name} reviewed camera fov outside physical range")
+    sign_id = scene.get("yield_sign_actor_id")
+    landmark_id = scene.get("yield_sign_landmark_id")
+    if (sign_id is None) == (landmark_id is None):
+        raise ValueError("exactly one reviewed Native yield sign actor or landmark required")
+    if sign_id is not None and (isinstance(sign_id, bool) or not isinstance(sign_id, int) or sign_id <= 0):
+        raise ValueError("reviewed Native yield sign actor ID required")
+    if landmark_id is not None and (not isinstance(landmark_id, str) or not landmark_id):
+        raise ValueError("reviewed Native yield sign landmark ID required")
+
+
+def _pose_fields(data, name):
+    if not isinstance(data, dict) or not isinstance(data.get("location"), dict) or not isinstance(data.get("rotation"), dict):
+        raise ValueError(f"{name} reviewed location/rotation missing")
+    for key in ("x", "y", "z"):
+        _finite(data["location"].get(key), f"{name} {key}")
+    for key in ("pitch", "yaw", "roll"):
+        _finite(data["rotation"].get(key), f"{name} {key}")
+
+
 def _vertices(actor, name):
     box = actor.bounding_box
     vertices = box.get_world_vertices(actor.get_transform())
@@ -66,21 +105,12 @@ class CarlaSceneAdapter:
 
     def configure(self, world, site):
         scene = site.get("native_scene")
-        if not isinstance(scene, dict):
-            raise ValueError("reviewed Native scene source missing")
+        validate_native_scene_spec(scene)
         for name in ("ego", "through_vehicle"):
-            actor = scene.get(name)
-            if not isinstance(actor, dict) or not isinstance(actor.get("blueprint_id"), str):
-                raise ValueError(f"reviewed {name} actor source missing")
-            _pose(self.carla, actor.get("transform"), name)
-        cameras = scene.get("cameras")
-        if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
-            raise ValueError("four reviewed camera extrinsics required")
+            _pose(self.carla, scene[name]["transform"], name)
+        cameras = scene["cameras"]
         for name in CAMERAS:
-            source = cameras[name]
-            if not isinstance(source, dict) or source.get("attach_to") not in ("ego", "through_vehicle"):
-                raise ValueError(f"{name} reviewed camera parent missing")
-            _pose(self.carla, source.get("transform"), name)
+            _pose(self.carla, cameras[name]["transform"], name)
         sign_id = scene.get("yield_sign_actor_id")
         landmark_id = scene.get("yield_sign_landmark_id")
         if (sign_id is None) == (landmark_id is None):

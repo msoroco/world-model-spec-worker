@@ -60,17 +60,17 @@ class DeliveryAuditTests(unittest.TestCase):
             self.assertTrue(report['full_video_decode'])
             self.assertEqual(report['decoded_view_frames'], 3600)
             self.assertFalse(report['physical_completion'])
-            with (root / 'front.mp4').open('ab') as stream:
+            with (root / 'overview.mp4').open('ab') as stream:
                 stream.write(b'changed')
             with self.assertRaisesRegex(ValueError, 'hash mismatch'):
                 audit.audit_decoded(root, path, data['case_id'])
             completed = subprocess.run([
                 'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
                 'color=c=black:s=16x16:r=10:d=90', '-frames:v', '900',
-                '-c:v', 'mpeg4', '-y', str(root / 'front.mp4')],
+                '-c:v', 'mpeg4', '-y', str(root / 'overview.mp4')],
                 capture_output=True, text=True)
             self.assertEqual(completed.returncode, 0, completed.stderr)
-            data['camera_media']['front']['sha256'] = sha((root / 'front.mp4').read_bytes())
+            data['camera_media']['overview']['sha256'] = sha((root / 'overview.mp4').read_bytes())
             path.write_text(json.dumps(data), encoding='utf-8')
             with self.assertRaisesRegex(ValueError, 'rate differs'):
                 audit.audit_decoded(root, path, data['case_id'])
@@ -89,10 +89,10 @@ class DeliveryAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             path, data = fixture(root)
-            (root / 'front.mp4').write_bytes(b'tampered')
-            with self.assertRaisesRegex(ValueError, 'front camera hash mismatch'):
+            (root / 'overview.mp4').write_bytes(b'tampered')
+            with self.assertRaisesRegex(ValueError, 'overview camera hash mismatch'):
                 audit.audit_saved(root, path, data['case_id'])
-            (root / 'front.mp4').unlink()
+            (root / 'overview.mp4').unlink()
             with self.assertRaisesRegex(ValueError, 'saved source missing'):
                 audit.audit_saved(root, path, data['case_id'])
 

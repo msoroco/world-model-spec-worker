@@ -57,8 +57,12 @@ class CaptureTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.world = World()
         self.vehicle = Vehicle(self.world)
-        self.site, self.packet, _ = fixture(self.root, CASES[0])
-        self.site['map_sha256'] = hashlib.sha256(self.world.get_map().to_opendrive().encode()).hexdigest()
+        self.site, self.packet, packet = fixture(self.root, CASES[0])
+        map_bytes = self.world.get_map().to_opendrive().encode()
+        (self.root / 'map.txt').write_bytes(map_bytes)
+        self.site['map_sha256'] = hashlib.sha256(map_bytes).hexdigest()
+        packet['sources']['map']['sha256'] = self.site['map_sha256']
+        self.packet.write_text(json.dumps(packet), encoding='utf-8')
         self.output = self.root / 'original-history.jsonl'
 
     def run_capture(self, observer=lambda snapshot, sign: snapshot.frame == 112):

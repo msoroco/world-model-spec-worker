@@ -36,8 +36,10 @@ class NativeBackingCaptureTests(unittest.TestCase):
         packet = json.loads((root / 'map.json').read_text())
         return NativeBackingRecorder(packet, Actor(7, 5, 0, True), Actor(8, 2, 0))
 
-    def images(self, frame):
-        return {name: SimpleNamespace(frame=frame)
+    def images(self, frame, time_s=None):
+        if time_s is None:
+            time_s = (frame - 1000) * .05
+        return {name: SimpleNamespace(frame=frame, timestamp=time_s)
                 for name in ('front', 'rear', 'left', 'right')}
 
     def test_complete_original_source_rows(self):
@@ -71,8 +73,20 @@ class NativeBackingCaptureTests(unittest.TestCase):
                 recorder.append(1000, .5, self.images(1000))
             self.assertEqual(recorder.rows, [])
             recorder.append(1000, 0, self.images(1000))
-            with self.assertRaisesRegex(ValueError, 'must increase'):
+            with self.assertRaisesRegex(ValueError, 'must be consecutive'):
                 recorder.append(1000, .05, self.images(1000))
+            with self.assertRaisesRegex(ValueError, 'must be consecutive'):
+                recorder.append(1002, .05, self.images(1002))
+            self.assertEqual(len(recorder.rows), 1)
+
+    def test_rejects_camera_timestamp_drift(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
+            recorder = self.setup_recorder(Path(temp))
+            images = self.images(1000)
+            images['front'].timestamp = .5
+            with self.assertRaisesRegex(ValueError, 'camera timestamp and world tick differ'):
+                recorder.append(1000, 0, images)
+            self.assertEqual(recorder.rows, [])
 
 
 if __name__ == '__main__':

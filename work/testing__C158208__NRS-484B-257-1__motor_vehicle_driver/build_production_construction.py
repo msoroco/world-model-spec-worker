@@ -13,6 +13,7 @@ import math
 from pathlib import Path
 
 from build_semantic_proposals import recording_description
+from carla_scene_adapter import validate_native_scene_spec
 from native_attempt import REVIEW_SOURCES, verify_review_sources
 from source_tick_capture import validate_geometry
 
@@ -46,9 +47,7 @@ def build(kind: str, site_path: Path, output: Path) -> dict:
     if isinstance(station, bool) or not isinstance(station, (int, float)) or not math.isfinite(station):
         raise ValueError("reviewed finite nearest-view station required")
     scene_source = site.get("native_scene")
-    if not isinstance(scene_source, dict) or not all(key in scene_source for key in
-            ("ego", "through_vehicle", "cameras")):
-        raise ValueError("reviewed Native actor and camera scene required")
+    validate_native_scene_spec(scene_source)
     source_names = [site_path.name]
     if not site_path.name or site_path.name in ("scene.json", "config.json", "runner.py"):
         raise ValueError("reviewed site filename conflicts with construction")
@@ -64,6 +63,7 @@ def build(kind: str, site_path: Path, output: Path) -> dict:
     files["analysis.py"] = (HERE / "analysis.py").read_text(encoding="utf-8")
     files["prepare_derived_media.py"] = (HERE / "prepare_derived_media.py").read_text(encoding="utf-8")
     files["native_capture_finalize.py"] = (HERE / "native_capture_finalize.py").read_text(encoding="utf-8")
+    files["carla_scene_adapter.py"] = (HERE / "carla_scene_adapter.py").read_text(encoding="utf-8")
     runner = files["runner.py"]
     old = '    run_native_attempt(client, CarlaSceneAdapter(carla), world_restore,\n'
     new = ('    from native_capture_finalize import close_capture\n'
