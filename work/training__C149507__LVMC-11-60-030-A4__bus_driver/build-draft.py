@@ -31,20 +31,22 @@ def main():
                 ('other_vehicle_motion', 'original Native other-vehicle pose and velocity'),
                 ('camera_frame_join', 'four original RGB streams joined to Native frames'))],
             'limitations': ['Qualifying location, public street, non-tour status, actual loading and undue impedance need independent source review']}
-        config = {'case_id': case_id, 'selected_case_id': case_id,
+        config = {'assignment_id': ASSIGNMENT, 'case_id': case_id, 'selected_case_id': case_id,
                   'supported_case_ids': [ASSIGNMENT + '__' + s for s, _ in CASES],
                   'candidate_id': 'primary', 'law_id': 'LVMC-11-60-030-A4',
                   'cell_id': 'C149507', 'actor': 'bus_driver',
                   'bus_case': bus_case, 'rate_hz': 20, 'duration_s': 30,
                   'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case_id},
-                  'cameras': [{'name': name, 'width': 640, 'height': 360}
-                              for name in ('overview', 'bus_front', 'curb_wheel', 'traffic_rear')],
+                  'cameras': [{'name': name,
+                               'width': 1920 if name == 'overview' else 1280,
+                               'height': 1080 if name == 'overview' else 720}
+                              for name in ('overview', 'approach', 'reference_corner', 'driver_reference')],
                   'recording_description': description,
                   'status': 'cpu_draft_location_loading_unverified'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'entry.py',
-                              'measure_bus.py', 'tests/test_native.py')]
+                              'measure_bus.py', 'finalize_bus.py', 'tests/test_native.py')]
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         proposal = {'case_id': case_id, 'law_id': config['law_id'],
                     'cell_id': config['cell_id'], 'actor': config['actor'],
@@ -66,7 +68,7 @@ def main():
             'construction': str(path.relative_to(HERE)), 'construction_sha256': sha(path),
             'candidate_risk': {'status': 'physical',
                 'reason': 'Native bus stop dynamics, wheel geometry and loading visibility require review'},
-            'candidates': [], 'measurement_procedure': {'entrypoint': 'measure_bus.py'},
+            'candidates': [], 'measurement_procedure': {'entrypoint': 'finalize_bus.py'},
             'preparation_status': 'incomplete'})
     (HERE / 'draft-execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({c['case_id']: c['construction_sha256'] for c in manifest['cases']}))

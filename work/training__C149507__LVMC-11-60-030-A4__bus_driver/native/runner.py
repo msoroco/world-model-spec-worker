@@ -9,7 +9,7 @@ import subprocess
 from entry import FRAMES, RATE_HZ, WHEEL_GAP_M, target
 from geometry import CURB_FACE_Y_M, check as geometry_check, open_drive
 
-CAMERAS = ('overview', 'bus_front', 'curb_wheel', 'traffic_rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -129,8 +129,8 @@ def execute(config, output_dir, host, port):
             'bus_blueprint_id': bus.type_id,
             'non_tour_bus_classification_source': None, 'public_street_source': None,
             'qualifying_location_source': None, 'loading_activity_source': None}, indent=2) + '\n')
-        mounts = {'overview': (20, -20, 24, -35), 'bus_front': (22, -11, 9, -20),
-                  'curb_wheel': (20, -8, 5, -25), 'traffic_rear': (-25, 7, 10, -20)}
+        mounts = {'overview': (20, -20, 24, -35), 'approach': (22, -11, 9, -20),
+                  'reference_corner': (20, -8, 5, -25), 'driver_reference': (-25, 7, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)

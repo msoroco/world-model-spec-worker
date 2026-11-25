@@ -26,7 +26,7 @@ def build(path):
         "fixture_proxy_blueprint_id": "static.prop.box"})
     put(path / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture"})
     for role in ROLES:
-        source = path / "source-review" / (role + ".source.txt")
+        source = path / "fixture-review" / (role + ".source.txt")
         source.parent.mkdir(parents=True, exist_ok=True)
         source.write_text("Synthetic CPU source for " + role + " only\n")
         record = {"role": role, "source_sha256": sha(source),
@@ -40,7 +40,7 @@ def build(path):
             record["sidewalk_bounds_m"] = SIDEWALK_BOUNDS
         else:
             record["front_is_road_facing"] = True
-        put(path / "source-review" / (role + ".json"), record)
+        put(path / "fixture-review" / (role + ".json"), record)
 
 
 def reject(path, expected):
@@ -63,13 +63,13 @@ def main(root):
         raise AssertionError("Diagnostic provenance lost")
     tests = {}
     for label, mutation, expected in (
-        ("missing_identity", lambda p: (p / "source-review/fixture-identity.json").unlink(),
+        ("missing_identity", lambda p: (p / "fixture-review/fixture-identity.json").unlink(),
          "Missing required source"),
-        ("tampered_geometry", lambda p: (p / "source-review/fixture-geometry.source.txt").write_text("tampered\n"),
+        ("tampered_geometry", lambda p: (p / "fixture-review/fixture-geometry.source.txt").write_text("tampered\n"),
          "Source role hash mismatch"),
-        ("unsupported_kind", lambda p: update(p / "source-review/fixture-identity.json", "fixture_kind", "box"),
+        ("unsupported_kind", lambda p: update(p / "fixture-review/fixture-identity.json", "fixture_kind", "box"),
          "identity not sourced"),
-        ("unknown_front", lambda p: update(p / "source-review/front-orientation.json", "front_is_road_facing", False),
+        ("unknown_front", lambda p: update(p / "fixture-review/front-orientation.json", "front_is_road_facing", False),
          "orientation not sourced"),
         ("proxy_original", lambda p: (p / "acquisition-provenance.json").unlink(),
          "Generic fixture proxy")):

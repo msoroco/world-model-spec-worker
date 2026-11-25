@@ -27,11 +27,11 @@ def reviewed_context(attempt):
         raise ValueError("Generic fixture proxy cannot establish sidewalk elevator identity")
     hashes = {}
     for role in ROLES:
-        name = "source-review/" + role
+        name = "fixture-review/" + role
         record_path = attempt / (name + ".json")
         source_path = attempt / (name + ".source.txt")
         if not record_path.is_file() or not source_path.is_file():
-            raise ValueError("Missing required source: " + name)
+            raise ValueError("Missing required source: " + name + ".json")
         record = json.loads(record_path.read_text())
         if record.get("role") != role or record.get("source_sha256") != sha(source_path):
             raise ValueError("Source role hash mismatch: " + role)
@@ -40,10 +40,10 @@ def reviewed_context(attempt):
         if record.get("reviewed") is not True:
             raise ValueError("Source role not reviewed: " + role)
         hashes[role] = sha(record_path)
-    identity = json.loads((attempt / "source-review/fixture-identity.json").read_text())
-    geometry = json.loads((attempt / "source-review/fixture-geometry.json").read_text())
-    sidewalk = json.loads((attempt / "source-review/sidewalk-geometry.json").read_text())
-    front = json.loads((attempt / "source-review/front-orientation.json").read_text())
+    identity = json.loads((attempt / "fixture-review/fixture-identity.json").read_text())
+    geometry = json.loads((attempt / "fixture-review/fixture-geometry.json").read_text())
+    sidewalk = json.loads((attempt / "fixture-review/sidewalk-geometry.json").read_text())
+    front = json.loads((attempt / "fixture-review/front-orientation.json").read_text())
     if identity.get("fixture_kind") not in ("sidewalk_elevator", "sidewalk_chute"):
         raise ValueError("Sidewalk elevator or chute identity not sourced")
     if front.get("front_is_road_facing") is not True:

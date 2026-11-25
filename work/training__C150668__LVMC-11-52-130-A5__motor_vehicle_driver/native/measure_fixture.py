@@ -9,7 +9,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "fixture_side", "traffic_rear"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 SIDE_BAND_M = 1.524  # Statutory five feet, exactly converted to metres.
 
 

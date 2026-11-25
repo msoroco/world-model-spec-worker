@@ -16,14 +16,14 @@
     "text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute.",
     "sha256": "0b6444a09dd25b45c211881eff73d931af416f28afbf43091de0827577fd4af0"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "source_dependency_after_cpu_construction",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
     "stopping or standing near sidewalk elevator"
   ],
   "requirement_dispositions": [
     {
-      "requirement": "LVMC-11-52-130-A5",
+      "requirement": "text-0-side-band",
       "source": "LVMC 11.52.130(A)(5)",
       "branch": "stopping or standing near sidewalk elevator",
       "status": "selected_required",
@@ -31,31 +31,31 @@
         "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
         "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "Two exact selected primary and brake-margin fallback constructions pass pinned offline. Saved 600-frame diagnostics and source-role negatives pass. Original Native fixture is only a generic box proxy; identity as sidewalk elevator or chute and original physical stop remain unverified."
     },
     {
       "requirement": "LVMC-11-52-130-A5",
       "source": "LVMC 11.52.130(A)(5)",
       "branch": "directly in front",
-      "status": "alternative_pending",
+      "status": "alternative_pending_original_source",
       "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "evidence_or_gap": "CPU meter distinguishes front overlap from side-band distance, but original road-facing fixture frontage and identity are missing."
     },
     {
       "requirement": "LVMC-11-52-130-A5",
       "source": "LVMC 11.52.130(A)(5)",
       "branch": "traffic conflict",
-      "status": "alternative_pending",
+      "status": "exception_pending_original_source",
       "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "evidence_or_gap": "No second traffic participant or original conflict source in selected construction."
     },
     {
       "requirement": "LVMC-11-52-130-A5",
       "source": "LVMC 11.52.130(A)(5)",
       "branch": "police or device direction",
-      "status": "alternative_pending",
+      "status": "exception_pending_original_source",
       "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "evidence_or_gap": "No original police officer or traffic-control-device direction source in selected construction."
     }
   ],
   "neutral_baseline": {
@@ -66,7 +66,7 @@
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
       "target_law_id": "LVMC-11-52-130-A5",
-      "kind": "planned_only",
+      "kind": "selected_delivery_cpu_source_pending",
       "target_type": "below",
       "physical_target": "stop more than five feet from sidewalk elevator or chute",
       "comparison_variable": "sidewalk_elevator_clearance_ft",
@@ -74,12 +74,13 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "planning_status": "original_fixture_identity_pending"
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2",
       "target_law_id": "LVMC-11-52-130-A5",
-      "kind": "planned_only",
+      "kind": "selected_delivery_cpu_source_pending",
       "target_type": "controlled_attempt",
       "physical_target": "stop within five feet of sidewalk elevator or chute",
       "comparison_variable": "sidewalk_elevator_clearance_ft",
@@ -87,7 +88,8 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "planning_status": "original_fixture_identity_pending"
     }
   ],
   "comparisons": [
@@ -109,7 +111,7 @@
   "mandatory_observation_terms": [
     {
       "term": "st.obstruction",
-      "purpose": "kind sidewalk_fixture — the sidewalk elevator or chute",
+      "purpose": "kind sidewalk_fixture \u2014 the sidewalk elevator or chute",
       "status": "measurement_mapping_pending"
     },
     {
@@ -138,7 +140,24 @@
       "status": "measurement_mapping_pending"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
+      "primary": "native/probe_1/construction.json",
+      "fallback": "fallbacks/probe_1/fallback1/construction.json",
+      "risk": "Native braking may miss requested rest clearance",
+      "tested_offline": true,
+      "original_physical_verified": false
+    },
+    {
+      "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2",
+      "primary": "native/probe_2/construction.json",
+      "fallback": "fallbacks/probe_2/fallback1/construction.json",
+      "risk": "Native braking may miss requested rest clearance",
+      "tested_offline": true,
+      "original_physical_verified": false
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -147,19 +166,19 @@
     }
   ],
   "unverified_physical_assumptions": [
-    "Native map can realize the fixed cell and legal mechanism",
-    "Actor blueprint and route can realize each requested target",
-    "Cameras can inspect the decisive physical distinction"
+    "Actual Native stop clearance and camera framing remain unobserved",
+    "Original elevator/chute identity and frontage require a source beyond the generic box proxy",
+    "Traffic conflict and officer/device exceptions require separate original source actors or directions"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Original sidewalk elevator/chute identity, geometry and frontage are unavailable: Native runner spawns a generic box proxy. Saved source gate rejects it. Public positive, recorded-only saved and delivery/comparison audits cannot be source-backed until an original fixture source is acquired."
   ],
-  "selected_branch": null,
+  "selected_branch": "stopping or standing near sidewalk elevator",
   "observations": [
     {
       "name": "st.obstruction",
       "mandatory": true,
-      "reason": "kind sidewalk_fixture — the sidewalk elevator or chute"
+      "reason": "kind sidewalk_fixture \u2014 the sidewalk elevator or chute"
     },
     {
       "name": "st.sidewalk",
@@ -192,5 +211,73 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "st.obstruction": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    },
+    "rel.centre_distance": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Saved Native footprint/frame join and separately reviewed fixture role sources; original bytes pending",
+      "source_refs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "source-review/fixture-identity.json",
+        "source-review/fixture-geometry.json",
+        "source-review/sidewalk-geometry.json",
+        "source-review/front-orientation.json"
+      ]
+    }
+  }
 }

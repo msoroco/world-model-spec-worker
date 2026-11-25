@@ -1,0 +1,30 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0-side-band",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "fixture_stop",
+      "method": "measure_fixture_stop",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "fixture-review/fixture-identity.json",
+        "fixture-review/fixture-geometry.json",
+        "fixture-review/sidewalk-geometry.json",
+        "fixture-review/front-orientation.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "fixture-review/fixture-identity.json"
+    ],
+    "error_contains": "Missing required source: fixture-review/fixture-identity.json"
+  }
+}

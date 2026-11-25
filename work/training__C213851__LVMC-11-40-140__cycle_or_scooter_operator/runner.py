@@ -158,6 +158,9 @@ def execute(config, output_dir, survey_path, host, port):
                 rider.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=steer))
                 pedestrian.apply_control(carla.WalkerControl(direction=carla.Vector3D(*survey["pedestrian_direction_xyz"]), speed=survey["pedestrian_speed_mps"]))
                 native_frame = world.tick()
+                pose, velocity = rider.get_transform(), rider.get_velocity()
+                ped_pose = pedestrian.get_transform()
+                speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
                 seen = set()
                 while len(seen) < 4:
                     name, image = images.get(timeout=15)
@@ -184,6 +187,7 @@ def execute(config, output_dir, survey_path, host, port):
             'assignment_id': config['assignment_id'],
             'case_id': config['case_id'],
             'source_kind': 'original_source_review',
+            'review_kind': 'original_source_review',
             'district': survey['district'],
             'district_source_id': survey['district_source_id'],
             'origin_kind': survey['origin_kind'],

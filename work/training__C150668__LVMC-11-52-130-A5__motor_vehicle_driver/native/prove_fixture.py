@@ -76,13 +76,13 @@ if __name__ == "__main__":
     negative.append(reject("fixture_outside_sidewalk", bad, band, "not contained"))
     negative.append(reject("short_capture", source, band[:-1], "Incomplete 30-second"))
     bad_rows = copy.deepcopy(band)
-    bad_rows[250]["source_cameras"].pop("fixture_side")
+    bad_rows[250]["source_cameras"].pop("reference_corner")
     negative.append(reject("missing_camera", source, bad_rows, "Four source camera"))
     bad_rows = copy.deepcopy(band)
     bad_rows[250]["native_frame"] = bad_rows[249]["native_frame"]
     negative.append(reject("repeated_native_frame", source, bad_rows, "Native frame identity"))
     bad_rows = copy.deepcopy(original_join)
-    bad_rows[250]["camera_native_frames"]["fixture_side"] += 1
+    bad_rows[250]["camera_native_frames"]["reference_corner"] += 1
     negative.append(reject("wrong_native_camera_frame", source, bad_rows, "Four source camera"))
     bad_rows = copy.deepcopy(band)
     for row in bad_rows:

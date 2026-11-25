@@ -9,7 +9,7 @@ RATE_HZ = 20
 STOP_X_M = {"outside": 10.0, "side_band": 5.0}
 
 
-def command(case, frame, observed_x_m, observed_speed_mps):
+def command(case, frame, observed_x_m, observed_speed_mps, brake_margin_m=1.5):
     if case not in STOP_X_M or type(frame) is not int or not 0 <= frame < FRAMES:
         raise ValueError("Unknown stop case or frame")
     if any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x)
@@ -18,7 +18,9 @@ def command(case, frame, observed_x_m, observed_speed_mps):
     remaining = STOP_X_M[case] - observed_x_m
     if remaining < -1.0:
         raise ValueError("Vehicle overshot requested stop")
-    brake_distance = observed_speed_mps ** 2 / 4.0 + 1.5
+    if not isinstance(brake_margin_m, (int, float)) or not 0.5 <= brake_margin_m <= 3.0:
+        raise ValueError("Invalid brake margin")
+    brake_distance = observed_speed_mps ** 2 / 4.0 + brake_margin_m
     if remaining <= 0.5:
         return {"throttle": 0.0, "brake": 1.0, "steer": 0.0, "phase": "hold"}
     if remaining <= brake_distance:

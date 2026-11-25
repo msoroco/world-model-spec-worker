@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 MPH_PER_MPS = 1 / 0.44704
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FRAMES = 600
 
 
@@ -46,7 +46,7 @@ def measure(root):
         raise ValueError('Requires all 600 original 20 Hz samples')
     video_hashes = {}
     for camera in CAMERAS:
-        path = root / ('camera_' + camera + '.mkv')
+        path = root / (camera + '.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing nonempty original camera: ' + camera)
         probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -79,10 +79,10 @@ def measure(root):
         for camera in CAMERAS:
             stream = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
                                      '-show_entries', 'stream=width,height', '-of', 'json',
-                                     str(root / ('camera_' + camera + '.mkv'))],
+                                     str(root / (camera + '.mkv'))],
                                     capture_output=True, text=True, check=True)
             dimensions = json.loads(stream.stdout)['streams'][0]
-            if (dimensions['width'], dimensions['height']) != (1920, 1080):
+            if (dimensions['width'], dimensions['height']) != ((1920, 1080) if camera == 'overview' else (1280, 720)):
                 raise ValueError('Original camera profile must be full resolution: ' + camera)
     speeds = []
     previous_native = -1

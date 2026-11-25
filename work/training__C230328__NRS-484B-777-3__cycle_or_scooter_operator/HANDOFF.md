@@ -1,16 +1,22 @@
 # C230328 / NRS 484B.777(3) handoff
 
-Status: **partial**. Accepted memberships: 0. Frozen `road/travel_abreast/cyclist` cell and `cycle_or_scooter_operator` actor retained. Exact source law and hashes remain in `case-plan.json`.
+Status: **ready for delivery preparation**. The exact assignment strict CPU gate passed. Accepted original Native recordings and memberships: 0. The frozen road/travel_abreast/cyclist cell and cycle_or_scooter_operator actor are unchanged.
 
-## Construction and CPU evidence
+## Selected construction
 
-- `selected-primary-construction.json` (SHA-256 `68e8048ad59a14d7fd36b27a7ecf6b4a843a6ef1398e0deddbf3b4caacdf87cb`) is an inline Native primary for two distinct qualifying bicycle riders in `__controlled_1`. `native/runner.py` (SHA-256 `436addbefb8deeb571090e2d3b284620ceec8639e8c0198c676a83fdcb89c0db`) requires reviewed public-roadway, shoulder, bicycle-identity and exclusive-use sources, captures 600 original frames at 20 Hz with four cameras, and records each rider's identity, longitudinal/lateral pose and extent. It has not run in CARLA.
-- `measure_abreast.py` (SHA-256 `10b6b21688c55dab70fff7b499611b7876cf08a152f949650519c517f58841ad`) joins source frames and riders, verifies road/shoulder/exclusive-use occupancy, retains each pair's longitudinal intervals, raw overlap length, lateral delta and bearing, and binds original review to four decoded 600-frame camera hashes. It imposes no numeric overlap, distance or persistence cutoff to define "abreast" and returns no legal verdict.
-- `prove_abreast.py` tested 600-frame two-rider, three-rider and three-rider convoy fixtures. The convoy has zero pairwise longitudinal overlap despite three riders. It rejects missing exclusive-use review, a rider off the roadway and identity drift; optimized mode also passed. `prove_saved.py` joined four synthetic diagnostic FFV1 sources and rejected a tampered camera hash. These are diagnostic fixtures, not Native evidence.
-- Pinned `runtime.py preflight` and selected primary `runtime.py offline` pass (`pinned-preflight.log`, `abreast-cpu-1.log`); offline reports `simulation_started=false`. Assignment-scoped `worker_check.py --complete` passes (`scoped-check.log`). Strict scoped gate fails on truthful partial status (`strict-check.log`).
+- Two-rider `__controlled_1` and three-rider `__controlled_2` are selected with distinct primary and fallback1 Native candidates. The 600-frame 20 Hz runner records four canonical cameras, rider identity and pose, roadway/shoulder and exclusive-use evidence. The fallback shifts the spawn by 0.18 m if physical spawn geometry fails. Original CARLA capture remains pending.
+- `measure_abreast.py` joins saved source frames, rider positions and source-bound camera frames. It retains pairwise longitudinal overlap, lateral delta and bearing without inventing a statutory numeric threshold. A convoy yields zero pairwise overlap. The source law's qualitative scope and exception remain for original review.
+- Current-runtime offline passes for all four candidates. Public compatibility positives and missing rider-source negatives pass for all four. Recorded-only process-saved passes for all four with no physical or legal acceptance claim. Physical complete/incomplete/missing-evidence triads, semantic index, independent delivery positives and missing-seal negatives, and pairwise comparison audit pass. Diagnostic fixture sources remain distinct from original Native evidence.
 
-## Remaining exact work
+## Exact CPU gate and bindings
 
-Build the three-rider `__controlled_2` construction and distinct candidates. Source-review qualifying human-powered bicycles and separate riders, public roadway/shoulder boundaries, exclusive-use designation and occupancy; execute Native capture and independently audit original geometry and statutory outcomes. No three-abreast finding is inferred from a convoy or from an invented cutoff. Electric-bicycle and electric-scooter alternatives remain separate source branches.
+- Command: `.venv-cpu/bin/python worker_check.py --assignment training__C230328__NRS-484B-777-3__cycle_or_scooter_operator --complete --require-delivery-ready`
+- `strict-assignment.log`: SHA-256 `dff32bead850ddbd375c159b8fc1c42163622f5141ccd0084d21d26e2e3b02d7`; exit code 0; `static_checks_passed=true`.
+- `execution-manifest.json`: SHA-256 `0f48c95950af7b0e754581b781f2f738f865344ee99af67107cdf5facaecbdcf`.
+- `proposals/semantic-index.json`: SHA-256 `97a528b488c5a529839747f298779f6b9cf9e0a29aac0711ca44310ca8718425`.
+- `comparison-main-audit.json`: SHA-256 `4f7032ad7d68dcf5880b4d8d3c3964b875ced5375860340de2c145d31506465e`.
+- `result.json`: SHA-256 `d7bdee9eeef9c9d1ab2f31452456e182e65640c3d1612f675aaa473503265357`; readiness_kind `delivery_prepared`, `carla_executed=false`, `recordings_accepted=0`.
 
-Scratch/temporary files are under `.runtime-work/c230328-777-*`; none are under `work/`.
+## First original capture
+
+Run the `first_gpu_delivery_command` in `result.json` with a CARLA host and a sealed original job, then independently review rider identities, roadway and exclusive-use sources, frame geometry and camera originals. No diagnostic pass is a legal three-abreast verdict.

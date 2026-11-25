@@ -10,7 +10,7 @@ sha=lambda path:hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def offline(case,suffix,candidate,construction_hash):
     log=HERE/f'proof-offline-{suffix}-{candidate}.log'
-    return {'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{AID}/selected-offline-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c213851-offline-v5-{suffix}-{candidate}',
+    return {'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{AID}/selected-offline-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c213851-offline-v6-{suffix}-{candidate}',
         'construction_sha256':construction_hash,'exit_code':0,
         'log':log.name,'log_sha256':sha(log)}
 
@@ -70,7 +70,7 @@ def main():
         entry['post_capture']={'recorded_only':True,
             'command':f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{AID}/execution-manifest.json --case {case} --attempt "$ATTEMPT" --output "$SAVED_OUTPUT" --library runtime/library --validator "$ADAPTER_CHECK" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
             'feedback_command':'cat "$SAVED_VERSION/processing.json"',
-            'test_command':f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{AID}/compat-draft-manifest.json --case {case} --attempt .runtime-work/c213851-compat-{suffix}-primary-v5 --output .runtime-work/c213851-saved-v5-{suffix} --library runtime/library --validator "$ADAPTER_CHECK"',
+            'test_command':f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{AID}/compat-draft-manifest.json --case {case} --attempt .runtime-work/c213851-compat-{suffix}-primary-v6 --output .runtime-work/c213851-saved-v6-{suffix} --library runtime/library --validator "$ADAPTER_CHECK"',
             'test_exit_code':0,'test_log':saved.name,'test_log_sha256':sha(saved),
             'test_receipt':str(receipt.relative_to(HERE)),'test_receipt_sha256':sha(receipt)}
     (HERE/'execution-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')

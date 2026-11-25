@@ -9,7 +9,7 @@ import subprocess
 from geometry import FIXTURE_BOUNDS, SIDEWALK_BOUNDS, check as geometry_check, open_drive
 from stop_route import FRAMES, RATE_HZ, STOP_X_M, command
 
-CAMERAS = ('overview', 'ego_front', 'fixture_side', 'traffic_rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -101,8 +101,8 @@ def execute(config, output_dir, host, port):
             'fixture_proxy_blueprint_id': fixture.type_id,
             'fixture_identity_verified': False, 'police_direction_source': None,
             'traffic_control_device_source': None, 'traffic_conflict_source': None}, indent=2) + '\n')
-        mounts = {'overview': (5, -20, 22, -35), 'ego_front': (-20, -8, 9, -15),
-                  'fixture_side': (1, 8, 9, -20), 'traffic_rear': (-30, 7, 10, -20)}
+        mounts = {'overview': (5, -20, 22, -35), 'approach': (-20, -8, 9, -15),
+                  'reference_corner': (1, 8, 9, -20), 'driver_reference': (-30, 7, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -129,7 +129,8 @@ def execute(config, output_dir, host, port):
             for index in range(FRAMES):
                 vt, vv = vehicle.get_transform(), vehicle.get_velocity()
                 speed = math.hypot(vv.x, vv.y)
-                request = command(config['stop_case'], index, vt.location.x, speed)
+                request = command(config['stop_case'], index, vt.location.x, speed,
+                                  config.get('brake_margin_m', 1.5))
                 vehicle.apply_control(carla.VehicleControl(
                     throttle=request['throttle'], brake=request['brake'], steer=request['steer']))
                 native_frame = world.tick()

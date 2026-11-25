@@ -9,7 +9,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "bus_front", "curb_wheel", "traffic_rear"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 LIMIT_M = 0.4572  # The statute's eighteen inches, exactly converted to metres.
 
 

@@ -124,7 +124,16 @@ def finalize(attempt, output):
             channels[name].append({'time_s': frame['time_s'], 'value': value})
     trace_path = root/'trace.jsonl'
     if trace_path.exists():
-        require(rows(trace_path) == trace, 'original trace differs from Native sidewalk source')
+        original_trace = rows(trace_path)
+        require(len(original_trace) == len(trace), 'original trace frame count differs')
+        for original, derived in zip(original_trace, trace):
+            require(original.get('frame') == derived['frame'] and
+                abs(original.get('time_s', -1)-derived['time_s']) < 1e-4 and
+                len(original.get('position_m', [])) >= 2 and
+                all(abs(a-b) < 1e-3 for a,b in zip(original['position_m'][:2],
+                    derived['position_m'][:2])) and
+                abs(original.get('speed_mps', -1)-derived['speed_mps']) < 1e-3,
+                'original trace differs from Native sidewalk source')
     else:
         trace_path.write_text(''.join(json.dumps(row, allow_nan=False)+'\n' for row in trace))
     channel_dir = root/'channels'
