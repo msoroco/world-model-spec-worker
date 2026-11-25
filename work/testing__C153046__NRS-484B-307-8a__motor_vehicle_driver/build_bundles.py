@@ -18,7 +18,7 @@ CHANNELS = [
      'uncertainty': 'physical realization and legal classification remain unresolved'}
     for name, method, unit in (
         ('signal_red_alone', 'official signal actor original state', 'source record'),
-        ('stop_reference', 'reviewed crosswalk/marking/intersection hierarchy', 'metres'),
+        ('stop_reference', 'reviewed crosswalk/marking/intersection hierarchy', 'source record'),
         ('pre_entry_stop', 'original full-body front and speed', 'source record'),
         ('approach_lane', 'reviewed one-way lane and original ego lane', 'source record'),
         ('receiving_direction', 'reviewed route direction', 'source record'),
@@ -67,6 +67,7 @@ def main() -> None:
                            'recording_description': RECORDING},
                   'plan_sha256': hashlib.sha256(plan_path.read_bytes()).hexdigest(),
                   'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
+                  'control': {'approach_hold_margin_m': 1.0},
                   'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
                   'diagnostic_only': True, 'recording_description': RECORDING}
         files = [{'path': 'config.json', 'content': json.dumps(config, indent=2, sort_keys=True) + '\n'},
@@ -74,7 +75,8 @@ def main() -> None:
                   'source': f'work/{ROOT.name}/case-plan.json'},
                  {'path': 'tests/test_bundle.py', 'content': TEST}]
         for name in ('runner.py', 'analysis.py', 'native_capture.py', 'native_setup.py',
-                     'red_left_controller.py', 'red_left_measurement.py', 'comparison_audit.py'):
+                     'red_left_controller.py', 'red_left_measurement.py', 'comparison_audit.py',
+                     'delivery_audit.py'):
             files.append({'path': name, 'content': (ROOT / name).read_text(),
                           'source': f'work/{ROOT.name}/{name}'})
         construction = {'case_id': case, 'cell_id': plan['cell_id'],
@@ -97,20 +99,42 @@ def main() -> None:
         relative = f'cases/{suffix}/construction.json'
         digest = write(ROOT / relative, construction)
         (ROOT / f'cases/{suffix}/config.json').write_text(files[0]['content'])
-        recipe = {'format': 'worker-red-left-diagnostic-recipe', 'case_id': case,
-                  'variables': row['draft_variables'], 'construction_sha256': digest,
-                  'required_reviewed_sources': ['OpenDRIVE', 'official signal',
-                                                'receiving route', 'stop-reference hierarchy'],
-                  'diagnostic_only': True, 'physical_acceptance_claimed': False,
-                  'legal_acceptance_claimed': False}
-        write(ROOT / f'diagnostic-{suffix}-recipe.json', recipe)
+        # build_diagnostic.py owns the canonical, source-inventoried fixture recipe.
+        disposition = plan['requirement_dispositions'][0]
+        contract = {'format': 'worker-measurement-contract', 'case_id': case,
+                    'requirements': [{'disposition_index': 0,
+                                      'requirement': disposition['requirement'],
+                                      'source': disposition['source'],
+                                      'kind': 'measured', 'method': 'build',
+                                      'value_type': 'object',
+                                      'output_key': 'red_left_motion',
+                                      'inputs': ['original-attempt/history.jsonl',
+                                                 'original-attempt/frame-map.json',
+                                                 'original-attempt/site-packet.json']}],
+                    'negative': {'remove': ['original-attempt/site-packet.json'],
+                                 'error_contains': 'Missing required source: original-attempt/site-packet.json'}}
+        write(ROOT / f'measurement-{suffix}.json', contract)
+        fallback_config = dict(config, control={'approach_hold_margin_m': 2.0})
+        fallback_files = [dict(item, content=json.dumps(fallback_config, indent=2,
+                          sort_keys=True) + '\n') if item['path'] == 'config.json'
+                          else item for item in files]
+        fallback = dict(construction, candidate_id='fallback1', files=fallback_files)
+        fallback_path = f'cases/{suffix}/fallback1/construction.json'
+        fallback_sha = write(ROOT / fallback_path, fallback)
         entries.append({'case_id': case, 'kind': 'delivery',
                         'construction': relative, 'construction_sha256': digest,
                         'diagnostic_only': True,
                         'fixture_recipe': f'work/{ROOT.name}/diagnostic-{suffix}-recipe.json',
+                        'measurement_contract': f'measurement-{suffix}.json',
                         'measurement_procedure': {'entrypoint': 'analysis.py'},
                         'candidate_risk': {'status': 'physical',
-                            'reason': 'Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.'},
+                            'reason': 'Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.'},
+                        'candidates': [{'id': 'fallback1', 'construction': fallback_path,
+                                        'construction_sha256': fallback_sha,
+                                        'trigger': {'source': 'original Native history',
+                                                    'metric': 'body-front position at first zero-speed frame',
+                                                    'failure_condition': 'first zero-speed frame crosses reviewed stop reference'},
+                                        'changed_knobs': ['approach_hold_margin_m: 1.0 to 2.0']}],
                         'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                            'host_env_var': 'CARLA_HOST',
                                            'port_env_var': 'CARLA_PORT'}})

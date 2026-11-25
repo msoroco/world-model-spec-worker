@@ -51,6 +51,8 @@ def build() -> dict:
                   'actor': plan['actor'], 'selected_case_id': case_id,
                   'supported_case_ids': sorted(expected), 'rate_hz': 20,
                   'duration_s': 45, 'diagnostic_only': True,
+                  'reverse_motion': case.direction == 'opposed',
+                  'requested_speed_mps': 5.0,
                   'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
                   'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case_id, 'variant': case.name,

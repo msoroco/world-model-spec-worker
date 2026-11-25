@@ -42,6 +42,15 @@ def participant(kind, occupied):
 
 
 class ControllerTests(unittest.TestCase):
+    def test_earlier_hold_fallback_changes_only_trigger(self):
+        primary = mod.RedLeftController('clear', variables(), site(), 1.0)
+        fallback = mod.RedLeftController('clear', variables(), site(), 2.0)
+        row = observation(distance=1.5, speed=1.0)
+        self.assertEqual(primary.step(row)['action'], 'approach_stop_reference')
+        self.assertEqual(fallback.step(row)['action'], 'hold_before_reference')
+        with self.assertRaisesRegex(ValueError, 'outside tested range'):
+            mod.RedLeftController('clear', variables(), site(), 4.0)
+
     def test_complete_stop_then_conflict_yield_then_turn(self):
         c = mod.RedLeftController('pedestrian_yield',
                                   variables(conflict_response_request='pedestrian_yield'), site())

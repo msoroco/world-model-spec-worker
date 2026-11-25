@@ -1,12 +1,15 @@
 {
-  "format": "worker-case-proposals",
-  "assignment_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "cell_id": "C147311",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "source_assignment": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver",
+  "source_law_text": "Upon a highway designated and signposted for one-way traffic a vehicle shall be driven only in the direction designated.",
   "cases": [
     {
-      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
-      "target_law_id": "NRS-484B-220-1",
-      "target_type": "boundary_probe",
-      "rationale": "Diagnostic source-gated direction probe; original sign and motion remain unreviewed.",
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared one-way source observation definition; no separate recording.",
       "recording_description": {
         "channels": [
           {
@@ -49,11 +52,7 @@
           "Actual sign governance and public highway status require independent review."
         ]
       },
-      "probe": {
-        "primary_variable": "actual_direction",
-        "target_value_or_branch": "designated",
-        "comparison_or_standard": "Original velocity projection on reviewed designated direction"
-      },
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
         "selected_lane": {
           "kind": "world_setup",
@@ -65,18 +64,92 @@
           "unit": "categorical",
           "value": "designated"
         }
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "actual_direction_lane1",
+      "deliberate_differences": [
+        "actual_direction"
+      ],
+      "probe": {
+        "primary_variable": "actual_direction",
+        "comparison_or_standard": "Original velocity projected on source-reviewed designated vector",
+        "target_value_or_branch": "designated"
+      },
+      "rationale": "Source-gated requested physical direction probe; no legal outcome is claimed.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original ego position and velocity",
+            "unit": "source observation",
+            "method": "20 Hz original Native source and camera readback",
+            "time_window": "45-second original episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Original motion, sign governance and physical pixels require review",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "same-direction lane and one-way sign governance",
+            "unit": "source observation",
+            "method": "20 Hz original Native source and camera readback",
+            "time_window": "45-second original episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Original motion, sign governance and physical pixels require review",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "method": "20 Hz original Native source and camera readback",
+            "time_window": "45-second original episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Original motion, sign governance and physical pixels require review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed highway, designation and sign authority",
+            "unit": "source record",
+            "method": "SHA-256 sealed original site and sign authority"
+          }
+        ],
+        "limitations": [
+          "Diagnostic fixture pixels and context are not original evidence.",
+          "Actual sign governance and public highway status require independent review."
+        ]
       },
       "unresolved_judgment_calls": [],
-      "deliberate_differences": [
-        "selected_lane",
-        "actual_direction"
-      ]
+      "variable_assignments": {
+        "selected_lane": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": 1
+        },
+        "actual_direction": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "designated"
+        }
+      }
     },
     {
       "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
       "target_law_id": "NRS-484B-220-1",
-      "target_type": "boundary_probe",
-      "rationale": "Diagnostic source-gated direction probe; original sign and motion remain unreviewed.",
+      "target_type": "violating_attempt",
+      "paired_probe_id": "actual_direction_lane1",
+      "deliberate_differences": [
+        "actual_direction"
+      ],
+      "probe": {
+        "primary_variable": "actual_direction",
+        "comparison_or_standard": "Original velocity projected on source-reviewed designated vector",
+        "target_value_or_branch": "opposed"
+      },
+      "rationale": "Source-gated requested physical direction probe; no legal outcome is claimed.",
       "recording_description": {
         "channels": [
           {
@@ -119,11 +192,7 @@
           "Actual sign governance and public highway status require independent review."
         ]
       },
-      "probe": {
-        "primary_variable": "actual_direction",
-        "target_value_or_branch": "opposed",
-        "comparison_or_standard": "Original velocity projection on reviewed designated direction"
-      },
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
         "selected_lane": {
           "kind": "world_setup",
@@ -135,18 +204,22 @@
           "unit": "categorical",
           "value": "opposed"
         }
-      },
-      "unresolved_judgment_calls": [],
-      "deliberate_differences": [
-        "selected_lane",
-        "actual_direction"
-      ]
+      }
     },
     {
       "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated",
       "target_law_id": "NRS-484B-220-1",
-      "target_type": "boundary_probe",
-      "rationale": "Diagnostic source-gated direction probe; original sign and motion remain unreviewed.",
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "actual_direction_lane2",
+      "deliberate_differences": [
+        "actual_direction"
+      ],
+      "probe": {
+        "primary_variable": "actual_direction",
+        "comparison_or_standard": "Original velocity projected on source-reviewed designated vector",
+        "target_value_or_branch": "designated"
+      },
+      "rationale": "Source-gated requested physical direction probe; no legal outcome is claimed.",
       "recording_description": {
         "channels": [
           {
@@ -189,11 +262,7 @@
           "Actual sign governance and public highway status require independent review."
         ]
       },
-      "probe": {
-        "primary_variable": "actual_direction",
-        "target_value_or_branch": "designated",
-        "comparison_or_standard": "Original velocity projection on reviewed designated direction"
-      },
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
         "selected_lane": {
           "kind": "world_setup",
@@ -205,18 +274,22 @@
           "unit": "categorical",
           "value": "designated"
         }
-      },
-      "unresolved_judgment_calls": [],
-      "deliberate_differences": [
-        "selected_lane",
-        "actual_direction"
-      ]
+      }
     },
     {
       "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse",
       "target_law_id": "NRS-484B-220-1",
-      "target_type": "boundary_probe",
-      "rationale": "Diagnostic source-gated direction probe; original sign and motion remain unreviewed.",
+      "target_type": "violating_attempt",
+      "paired_probe_id": "actual_direction_lane2",
+      "deliberate_differences": [
+        "actual_direction"
+      ],
+      "probe": {
+        "primary_variable": "actual_direction",
+        "comparison_or_standard": "Original velocity projected on source-reviewed designated vector",
+        "target_value_or_branch": "opposed"
+      },
+      "rationale": "Source-gated requested physical direction probe; no legal outcome is claimed.",
       "recording_description": {
         "channels": [
           {
@@ -259,11 +332,7 @@
           "Actual sign governance and public highway status require independent review."
         ]
       },
-      "probe": {
-        "primary_variable": "actual_direction",
-        "target_value_or_branch": "opposed",
-        "comparison_or_standard": "Original velocity projection on reviewed designated direction"
-      },
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
         "selected_lane": {
           "kind": "world_setup",
@@ -275,13 +344,55 @@
           "unit": "categorical",
           "value": "opposed"
         }
-      },
-      "unresolved_judgment_calls": [],
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "actual_direction_lane1",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
       "deliberate_differences": [
-        "selected_lane",
-        "actual_direction"
+        "actual lane-one motion direction"
+      ]
+    },
+    {
+      "comparison_id": "actual_direction_lane2",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "actual lane-two motion direction"
+      ]
+    },
+    {
+      "comparison_id": "lane1_vs_lane2_designated",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__designated",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_designated"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "selected designated-direction lane"
+      ]
+    },
+    {
+      "comparison_id": "lane1_vs_lane2_opposed",
+      "case_ids": [
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__opposed_reverse",
+        "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__lane2_opposed_reverse"
+      ],
+      "fixed_conditions": "same designated highway and sign authority/placement, actor, vehicle, camera/duration except declared variable",
+      "deliberate_differences": [
+        "selected opposing-direction lane"
       ]
     }
   ],
-  "diagnostic_only": true
+  "sweep_specs": [],
+  "sweeps_expanded": true
 }

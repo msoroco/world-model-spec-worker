@@ -2,219 +2,851 @@
   "assignment_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_clear.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_clear.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_clear.json",
+            "sha256": "d6269a7dcb1a8be78121cfdb681119450ee15cd061ebca88b4ef95d786d5cfec"
+          },
+          "construction": "cases/stopped_leftmost_clear/fallback1/construction.json",
+          "construction_sha256": "c0275e5770df53d37a02e3f90e0f328f6966a6bf8844038a4d640e19bc580c38",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "c0275e5770df53d37a02e3f90e0f328f6966a6bf8844038a4d640e19bc580c38",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_clear.log",
+            "log_sha256": "844b2d4957c1b80b661c2044e786ecde61a61e91813d625def8374d29bd27d11"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_clear.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_clear.log",
+        "receipt": "cpu-compat-stopped_leftmost_clear.json",
+        "sha256": "401497a5b862da756bb9873e5d36f1fe122ba2fe4244f44e292d9dfed309f49d"
+      },
       "construction": "cases/stopped_leftmost_clear/construction.json",
-      "construction_sha256": "ed7e2f063f8a070469f16b7314d7acb6620b1aa791aa5b517359effe73a2ad6a",
+      "construction_sha256": "c2e18fefcae1ad739411ea152acb44944de1d459d0a07d209a28630951be84be",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_clear-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_clear.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_clear.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "ed7e2f063f8a070469f16b7314d7acb6620b1aa791aa5b517359effe73a2ad6a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_clear-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "c2e18fefcae1ad739411ea152acb44944de1d459d0a07d209a28630951be84be",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_clear.log",
         "log_sha256": "844b2d4957c1b80b661c2044e786ecde61a61e91813d625def8374d29bd27d11"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_clear-receipt.json",
+        "sha256": "984ea173db56b48e0a42a5a41ddd19bbdfc649fd7ace83a24d1fc5cf1d8f6249"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-rolling_leftmost_clear.log",
+            "negative_log": "cpu-compat-negative-fallback-rolling_leftmost_clear.log",
+            "receipt": "cpu-compat-fallback-rolling_leftmost_clear.json",
+            "sha256": "2f381386a0958897dad269c171a8e8500734e8f63a5e04b99bd454ea6c49477a"
+          },
+          "construction": "cases/rolling_leftmost_clear/fallback1/construction.json",
+          "construction_sha256": "5a8a1907e50c8d714f609803f394dbd74a76150eae8753215acac7d24dd516ac",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-rolling_leftmost_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "5a8a1907e50c8d714f609803f394dbd74a76150eae8753215acac7d24dd516ac",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-rolling_leftmost_clear.log",
+            "log_sha256": "263e660ca782913fceb5cdf51d78e09b587fc053718a8b227dc0a642fca95a0c"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear",
+      "compatibility": {
+        "log": "cpu-compat-analysis-rolling_leftmost_clear.log",
+        "negative_log": "cpu-compat-negative-rolling_leftmost_clear.log",
+        "receipt": "cpu-compat-rolling_leftmost_clear.json",
+        "sha256": "40f62f89f9eba6166533ea364c4b2e44cf348ef1679c13eb9b9094e3f40ea6e4"
+      },
       "construction": "cases/rolling_leftmost_clear/construction.json",
-      "construction_sha256": "7e53706fdcf2afb3f1496c1da98813d1e94af9af88099f678831c971793fd0cd",
+      "construction_sha256": "8467c806054c10d22bcacb4daaa9f2808dcb72ca71b0976e20f5ad4a716caaee",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-rolling_leftmost_clear-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-rolling_leftmost_clear.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-rolling_leftmost_clear.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-rolling_leftmost_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "7e53706fdcf2afb3f1496c1da98813d1e94af9af88099f678831c971793fd0cd",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-rolling_leftmost_clear-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "8467c806054c10d22bcacb4daaa9f2808dcb72ca71b0976e20f5ad4a716caaee",
         "exit_code": 0,
         "log": "cpu-offline-rolling_leftmost_clear.log",
         "log_sha256": "263e660ca782913fceb5cdf51d78e09b587fc053718a8b227dc0a642fca95a0c"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-rolling_leftmost_clear-receipt.json",
+        "sha256": "7e1b3f762c845d85f10fd972853319d0f0e97f1420ab56d2b120f6395ac20abd"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_inner_lane_clear.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_inner_lane_clear.log",
+            "receipt": "cpu-compat-fallback-stopped_inner_lane_clear.json",
+            "sha256": "c0691bcecc68e5e252dfe38c86779df7e8bb4338a9958acf99007f892827ee64"
+          },
+          "construction": "cases/stopped_inner_lane_clear/fallback1/construction.json",
+          "construction_sha256": "d0a9842f149de816e59432a0eb04ff64ab4da48a35b1512a445747ac0973f39b",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_inner_lane_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "d0a9842f149de816e59432a0eb04ff64ab4da48a35b1512a445747ac0973f39b",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_inner_lane_clear.log",
+            "log_sha256": "9410626174ea53c125f52412e60f8393eb47a95415c61fceda218cc8181af2c3"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_inner_lane_clear.log",
+        "negative_log": "cpu-compat-negative-stopped_inner_lane_clear.log",
+        "receipt": "cpu-compat-stopped_inner_lane_clear.json",
+        "sha256": "9ba03521bda8e9509a90ea0489f35b4b183b86822a991855f99ae5723dd8134f"
+      },
       "construction": "cases/stopped_inner_lane_clear/construction.json",
-      "construction_sha256": "0494e3d6b2cd631aa4812b2c37c013e26d5f36f316b9c5ba1d4ad9b11c79dd06",
+      "construction_sha256": "05f066954ac0d63a820aa0d943cc74dbfce9ac61cc1a61485d0daa1a21385f6e",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_inner_lane_clear-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_inner_lane_clear.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_inner_lane_clear.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_inner_lane_clear-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "0494e3d6b2cd631aa4812b2c37c013e26d5f36f316b9c5ba1d4ad9b11c79dd06",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_inner_lane_clear-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "05f066954ac0d63a820aa0d943cc74dbfce9ac61cc1a61485d0daa1a21385f6e",
         "exit_code": 0,
         "log": "cpu-offline-stopped_inner_lane_clear.log",
         "log_sha256": "9410626174ea53c125f52412e60f8393eb47a95415c61fceda218cc8181af2c3"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_inner_lane_clear-receipt.json",
+        "sha256": "4bd9395b609d57d84ad5f8186c50a957fbb9daaab6b831952fc0ea4268855f89"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_two_way_receive.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_two_way_receive.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_two_way_receive.json",
+            "sha256": "1cea1fc14d60ba30ea73e789456a68582b46dacb4092c2a89368886f772dcc11"
+          },
+          "construction": "cases/stopped_leftmost_two_way_receive/fallback1/construction.json",
+          "construction_sha256": "431cc6ab228b85dc76cfc81826fd97986a7a4f7d5f892ee5e38cb78fa425d321",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_two_way_receive-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "431cc6ab228b85dc76cfc81826fd97986a7a4f7d5f892ee5e38cb78fa425d321",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_two_way_receive.log",
+            "log_sha256": "0f58d74b58529ad98989bc292b6a27560ac5b5d782a16119476043230eca3619"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_two_way_receive.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_two_way_receive.log",
+        "receipt": "cpu-compat-stopped_leftmost_two_way_receive.json",
+        "sha256": "86d7c68dfb33d489902104bfd169da6fb88eefadd16ac2008055a0a9470ef09c"
+      },
       "construction": "cases/stopped_leftmost_two_way_receive/construction.json",
-      "construction_sha256": "0b61e79786e229034d81559712dab1bb288288fdc0d447823b8cfb3db2a6138a",
+      "construction_sha256": "f14ecb2082a9c784621da4dd42e2d4ca2747eb08cfeb247bca0927de292b52af",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_two_way_receive-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_two_way_receive.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_two_way_receive.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_two_way_receive-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "0b61e79786e229034d81559712dab1bb288288fdc0d447823b8cfb3db2a6138a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_two_way_receive-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "f14ecb2082a9c784621da4dd42e2d4ca2747eb08cfeb247bca0927de292b52af",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_two_way_receive.log",
         "log_sha256": "0f58d74b58529ad98989bc292b6a27560ac5b5d782a16119476043230eca3619"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_two_way_receive-receipt.json",
+        "sha256": "525b0343611a0070b4c866317d6a458984683a64315de2a132dca8260eb36057"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_pedestrian_yield.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_pedestrian_yield.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_pedestrian_yield.json",
+            "sha256": "dd9b07f1fbeea89f9642f03a376cb96657bbb0dd1aaa825c512765c358e4f5e2"
+          },
+          "construction": "cases/stopped_leftmost_pedestrian_yield/fallback1/construction.json",
+          "construction_sha256": "94536699019b5a6d8cb851357d3ea3809d52cfecb35a8e5b08eec39d1207fdf7",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_pedestrian_yield-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "94536699019b5a6d8cb851357d3ea3809d52cfecb35a8e5b08eec39d1207fdf7",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_pedestrian_yield.log",
+            "log_sha256": "f41c3e140566042a3401a1f66fc9c07ce02ebde5e5de0f2f83154182858d6f62"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_pedestrian_yield.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_pedestrian_yield.log",
+        "receipt": "cpu-compat-stopped_leftmost_pedestrian_yield.json",
+        "sha256": "747e530e3d16cffb0af36b5502c659fae3b3c02ee2b86ce5cecf918c23857737"
+      },
       "construction": "cases/stopped_leftmost_pedestrian_yield/construction.json",
-      "construction_sha256": "e761cb588bc223d7a23fd3ddee3fc5b0daf562ef2a493cc935a3f250062eea31",
+      "construction_sha256": "79fdf61b15c0d3868f86e49bdcdae96e1c5b3b540b2f423ebc687d5311ab7aef",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_pedestrian_yield-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_pedestrian_yield.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_pedestrian_yield.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_pedestrian_yield-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "e761cb588bc223d7a23fd3ddee3fc5b0daf562ef2a493cc935a3f250062eea31",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_pedestrian_yield-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "79fdf61b15c0d3868f86e49bdcdae96e1c5b3b540b2f423ebc687d5311ab7aef",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_pedestrian_yield.log",
         "log_sha256": "f41c3e140566042a3401a1f66fc9c07ce02ebde5e5de0f2f83154182858d6f62"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_pedestrian_yield-receipt.json",
+        "sha256": "6df4a059f25c5ca7468d384f1a8fd64f66a21908b40f9b6fab13733af66c77f0"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_pedestrian_advance.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_pedestrian_advance.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_pedestrian_advance.json",
+            "sha256": "a9390e160382d0ce28897fb996ec78ddca6b52090b01a51b33e27eea715d00c5"
+          },
+          "construction": "cases/stopped_leftmost_pedestrian_advance/fallback1/construction.json",
+          "construction_sha256": "83e6a39c2b72cb47f4a0832bcc4edce505c60ae8d329b1e49749b7e344b73057",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_pedestrian_advance-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "83e6a39c2b72cb47f4a0832bcc4edce505c60ae8d329b1e49749b7e344b73057",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_pedestrian_advance.log",
+            "log_sha256": "453925c2c0b797d7010e6b65ed24731603ad25e2e42ae0e1266964262b1d57e7"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_pedestrian_advance.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_pedestrian_advance.log",
+        "receipt": "cpu-compat-stopped_leftmost_pedestrian_advance.json",
+        "sha256": "7bf5a6adf650ab0e4a01164d4946aa63f5260cbae2b65fe56b0a0bd14b474e2a"
+      },
       "construction": "cases/stopped_leftmost_pedestrian_advance/construction.json",
-      "construction_sha256": "3fb51cf486f8845c80ea8d07f8c90a09b9ed64b90a8df96e5feca55fe5037ebf",
+      "construction_sha256": "c7e193f8ac1f4d45f87d26a0daacc3c6beb9077eb5b375c3ffa95faf0e141a6a",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_pedestrian_advance-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_pedestrian_advance.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_pedestrian_advance.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_pedestrian_advance-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "3fb51cf486f8845c80ea8d07f8c90a09b9ed64b90a8df96e5feca55fe5037ebf",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_pedestrian_advance-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "c7e193f8ac1f4d45f87d26a0daacc3c6beb9077eb5b375c3ffa95faf0e141a6a",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_pedestrian_advance.log",
         "log_sha256": "453925c2c0b797d7010e6b65ed24731603ad25e2e42ae0e1266964262b1d57e7"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_pedestrian_advance-receipt.json",
+        "sha256": "1dd1a3d2b4ca1cd0a2b79e04d346ae05bb4a0412e95661152c412c043ac58eb2"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_traffic_yield.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_traffic_yield.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_traffic_yield.json",
+            "sha256": "9f5a22fe2a9638d343307e42d64d6e8cf4b7cb9467eecb7cff6d2f9e35438eff"
+          },
+          "construction": "cases/stopped_leftmost_traffic_yield/fallback1/construction.json",
+          "construction_sha256": "853d8dc1fc5781c1bd37ea82543be8c9869c087d5e2745131d9610f90b0e3c49",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_traffic_yield-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "853d8dc1fc5781c1bd37ea82543be8c9869c087d5e2745131d9610f90b0e3c49",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_traffic_yield.log",
+            "log_sha256": "88054311ef9546947b9f1ab250930b7cda1a4a8765835ec5295d464bbf12c818"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_traffic_yield.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_traffic_yield.log",
+        "receipt": "cpu-compat-stopped_leftmost_traffic_yield.json",
+        "sha256": "8b0a7d53be30855e6dde7d4b96bf4aa2704847ab2ef1f36b3bacde70d3ffc8fe"
+      },
       "construction": "cases/stopped_leftmost_traffic_yield/construction.json",
-      "construction_sha256": "230cfe1c4c2c52c613dd3451c2fadc2e850c608321a7297be9b30a22d61a0095",
+      "construction_sha256": "640fbd820f7bb103517882bd3374b740015249ebeb7463c877c09a72d69e177b",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_traffic_yield-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_traffic_yield.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_traffic_yield.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_traffic_yield-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "230cfe1c4c2c52c613dd3451c2fadc2e850c608321a7297be9b30a22d61a0095",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_traffic_yield-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "640fbd820f7bb103517882bd3374b740015249ebeb7463c877c09a72d69e177b",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_traffic_yield.log",
         "log_sha256": "88054311ef9546947b9f1ab250930b7cda1a4a8765835ec5295d464bbf12c818"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_traffic_yield-receipt.json",
+        "sha256": "0c6264a8b2f0ed2ff94a9f7347be615d041ff6a439e79d42881055cec9ee3461"
       }
     },
     {
+      "acquisition": {
+        "approach_lane": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_lane.jsonl",
+          "method": "saved_original_channel"
+        },
+        "directed_conflict": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/directed_conflict.jsonl",
+          "method": "saved_original_channel"
+        },
+        "pre_entry_stop": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pre_entry_stop.jsonl",
+          "method": "saved_original_channel"
+        },
+        "receiving_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/receiving_direction.jsonl",
+          "method": "saved_original_channel"
+        },
+        "reviewed_red_left_site_packet": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/context.json",
+          "method": "source-sealed original site packet"
+        },
+        "signal_red_alone": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/signal_red_alone.jsonl",
+          "method": "saved_original_channel"
+        },
+        "stop_reference": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/stop_reference.jsonl",
+          "method": "saved_original_channel"
+        }
+      },
       "candidate_risk": {
-        "reason": "Signal phase or ego stopping position may miss the reviewed stop reference; an original-frame trigger and slower approach fallback require testing.",
+        "reason": "Original ego may overshoot the reviewed stop reference; an earlier body-front hold trigger is tested.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_hold_margin_m: 1.0 to 2.0"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-stopped_leftmost_traffic_advance.log",
+            "negative_log": "cpu-compat-negative-fallback-stopped_leftmost_traffic_advance.log",
+            "receipt": "cpu-compat-fallback-stopped_leftmost_traffic_advance.json",
+            "sha256": "49b2b7c26304c446b3cd78280aaaf86ab40890d29a5b8278fea87ddc998ceeb2"
+          },
+          "construction": "cases/stopped_leftmost_traffic_advance/fallback1/construction.json",
+          "construction_sha256": "15279a4ca90b33938632b293dfa7572dea6c2e6b5cc18551150049d694ec040e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/fallback-stopped_leftmost_traffic_advance-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "15279a4ca90b33938632b293dfa7572dea6c2e6b5cc18551150049d694ec040e",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-stopped_leftmost_traffic_advance.log",
+            "log_sha256": "878c286d15787dbcc5dd5634d55be91bedbadeff4680f3bf680fd8ec9db422b1"
+          },
+          "trigger": {
+            "failure_condition": "first zero-speed frame crosses reviewed stop reference",
+            "metric": "body-front position at first zero-speed frame",
+            "source": "original Native history"
+          }
+        }
+      ],
       "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance",
+      "compatibility": {
+        "log": "cpu-compat-analysis-stopped_leftmost_traffic_advance.log",
+        "negative_log": "cpu-compat-negative-stopped_leftmost_traffic_advance.log",
+        "receipt": "cpu-compat-stopped_leftmost_traffic_advance.json",
+        "sha256": "522ea4b3f0bb9f3de88de296588f9d57a7632c3a4f031c981c60a17b3e9b2b3d"
+      },
       "construction": "cases/stopped_leftmost_traffic_advance/construction.json",
-      "construction_sha256": "cd4a8b8b905d2758924a3d746d1dd04aa798dd0c561f1e81bc401e217bf190b4",
+      "construction_sha256": "3a597a6e6f90e65a8a5090ad7099aaa810f1383d76fd81528067599ef0601591",
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/diagnostic-stopped_leftmost_traffic_advance-recipe.json",
       "kind": "delivery",
+      "measurement_contract": "measurement-stopped_leftmost_traffic_advance.json",
       "measurement_procedure": {
-        "entrypoint": "red_left_measurement.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cpu-compat-negative-stopped_leftmost_traffic_advance.log"
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_traffic_advance-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "cd4a8b8b905d2758924a3d746d1dd04aa798dd0c561f1e81bc401e217bf190b4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C153046__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c153046-nov25d/offline-stopped_leftmost_traffic_advance-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "3a597a6e6f90e65a8a5090ad7099aaa810f1383d76fd81528067599ef0601591",
         "exit_code": 0,
         "log": "cpu-offline-stopped_leftmost_traffic_advance.log",
         "log_sha256": "878c286d15787dbcc5dd5634d55be91bedbadeff4680f3bf680fd8ec9db422b1"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-stopped_leftmost_traffic_advance-receipt.json",
+        "sha256": "a20927722e22660da67f2de3dc63ce47ec25fd01261a9d864a8e69a1ec0f0184"
       }
     }
   ],

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 
 from red_left_measurement import measure_exact
@@ -49,6 +50,21 @@ def build(attempt: Path) -> tuple[dict, dict]:
     if any(row.get('case_id') != case or row.get('source_packet_sha256') != inventory['site_sha256']
            for row in rows):
         raise ValueError('original red-left case/source identity differs')
+    for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+        archive = required(attempt, 'original-attempt/' + camera + '.zip')
+        if sha(archive) != inventory.get('camera_media_sha256', {}).get(camera):
+            raise ValueError('sealed original camera changed: ' + camera)
+        with zipfile.ZipFile(archive) as frames:
+            names = frames.namelist()
+            expected = [f'{index:04d}-{row["native_frame"]["frame"]}.png'
+                        for index, row in enumerate(rows)]
+            if names != expected:
+                raise ValueError('original camera/frame inventory differs: ' + camera)
+            for row, name in zip(rows, names):
+                raw = frames.read(name)
+                if not raw.startswith(b'\x89PNG\r\n\x1a\n') or hashlib.sha256(raw).hexdigest() != \
+                        row['camera_frames'][camera]['source_sha256']:
+                    raise ValueError('original camera/frame source changed: ' + camera)
     maps = json.loads(frame_map.read_text())['frames']
     trace = read_rows(required(attempt, 'trace.jsonl'))
     video = read_rows(required(attempt, 'video_frames.jsonl'))
@@ -107,7 +123,7 @@ def build(attempt: Path) -> tuple[dict, dict]:
                'original-attempt/site-packet.json': sha(packet)}
     report = {'format': 'worker-analysis-report', 'case_id': case,
               'measurements': {'red_left_motion': {'value': value,
-                                                 'method': 'measure_exact',
+                                                 'method': 'build',
                                                  'sources': sources}},
               'analysis_complete': True, 'legal_verdict_claimed': False,
               'limitations': ['Original signal and conflict evidence require review.',

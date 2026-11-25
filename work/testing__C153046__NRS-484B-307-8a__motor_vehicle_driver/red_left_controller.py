@@ -15,7 +15,8 @@ def _number(value, name):
 
 
 class RedLeftController:
-    def __init__(self, case_id: str, variables: dict, site: dict):
+    def __init__(self, case_id: str, variables: dict, site: dict,
+                 approach_hold_margin_m: float = 1.0):
         self.case_id = case_id
         self.variables = variables
         self.site = site
@@ -37,6 +38,9 @@ class RedLeftController:
             raise ValueError('reviewed approach lanes missing')
         if site.get('receiving_direction') != variables['receiving_direction']:
             raise ValueError('receiving road differs from exact case')
+        self.approach_hold_margin_m = _number(approach_hold_margin_m, 'approach hold margin')
+        if not 0.5 <= self.approach_hold_margin_m <= 3.0:
+            raise ValueError('approach hold margin outside tested range')
         self.stop_seen = False
         self.previous_frame = None
         self.previous_time = None
@@ -87,7 +91,7 @@ class RedLeftController:
         if target and not any(p['kind'] == target for p in participants):
             raise ValueError('case conflict participant absent')
         self.previous_frame, self.previous_time = frame, time_s
-        if distance > 1.0:
+        if distance > self.approach_hold_margin_m:
             action = 'approach_stop_reference'
         elif not self.stop_seen and self.variables['stop_request'] == 'complete_stop':
             action = 'hold_before_reference'

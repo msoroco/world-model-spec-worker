@@ -54,7 +54,8 @@ def capture(adapter, config: dict, packet_path: Path, destination: Path) -> dict
         (stage / 'site-packet.json').write_text(json.dumps(sealed, sort_keys=True) + '\n')
         site_sha = sha(stage / 'site-packet.json')
         actors = create(adapter.world, packet_path, adapter.transform_factory, variables)
-        controller = RedLeftController(case, variables, site)
+        controller = RedLeftController(case, variables, site,
+                                       config.get('control', {}).get('approach_hold_margin_m', 1.0))
         archives = {name: zipfile.ZipFile(stage / (name + '.zip'), 'w', zipfile.ZIP_STORED)
                     for name in CAMERAS}
         previous = None

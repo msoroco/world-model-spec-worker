@@ -28,6 +28,8 @@ def check_config(config: dict) -> bool:
     case = next(c for c in CASES if config['selected_case_id'].endswith('__' + c.name))
     if config.get('case', {}).get('variant') != case.name or config['case'].get('lane') != case.lane or config['case'].get('direction') != case.direction:
         raise ValueError('one-way selected variant mismatch')
+    if config.get('reverse_motion') is not (case.direction == 'opposed') or config.get('requested_speed_mps') != 5.0:
+        raise ValueError('physical motion direction differs from exact selected route')
     return True
 
 

@@ -1,0 +1,58 @@
+{
+  "law_id": "LVMC-11-40-180-C",
+  "cell_id": "C142510",
+  "actor": "cycle_or_scooter_operator",
+  "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
+  "entrypoint": "runner.py",
+  "diagnostic_only": true,
+  "recording_description": {
+    "channels": [
+      {
+        "name": "sidewalk_body_history",
+        "unit": "m, original frame",
+        "method": "joined rider and pedestrian full-body polygon histories at 20 Hz"
+      },
+      {
+        "name": "pedestrian_audio",
+        "unit": "PCM16 waveform and emitter frame",
+        "method": "microphone onset joined to source-sealed rider emitter events"
+      },
+      {
+        "name": "rider_response",
+        "unit": "m/s and brake state",
+        "method": "original rider speed/brake history through overtake"
+      },
+      {
+        "name": "camera_frame_identity",
+        "unit": "frame ID",
+        "method": "four synchronized original camera streams at 20 Hz"
+      }
+    ],
+    "limitations": [
+      "Synthetic protocol check only; reviewed connected sidewalk and original audio absent.",
+      "Right-of-way yielding, human audibility and legal outcome unresolved."
+    ]
+  },
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Synthetic-only Native construction protocol probe for one exact case.\"\"\"\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\n\nfrom native_overtake import build, request_signal\n\n\nclass FixtureAdapter:\n    def __init__(self):\n        self.calls = []\n\n    def map_opendrive_bytes(self):\n        return b'<OpenDRIVE synthetic sidewalk fixture/>'\n\n    def sidewalk_route_readback(self, route, sidewalk_id):\n        self.calls.append(('route', sidewalk_id, len(route)))\n        return sidewalk_id == 'SYNTHETIC_SIDEWALK'\n\n    def spawn_rider(self, kind, point, **kwargs):\n        self.calls.append(('rider', kind, point))\n        return 'synthetic_rider'\n\n    def spawn_pedestrian(self, point, **kwargs):\n        self.calls.append(('pedestrian', point))\n        return 'synthetic_pedestrian'\n\n    def attach_audible_emitter(self, rider, **kwargs):\n        self.calls.append(('emitter', rider))\n        return 'synthetic_emitter'\n\n    def read_emitter(self, emitter):\n        return {'physically_present': True}\n\n    def attach_pedestrian_microphone(self, pedestrian, **kwargs):\n        self.calls.append(('microphone', pedestrian))\n        return 'synthetic_microphone'\n\n    def read_microphone(self, microphone):\n        return {'recording_enabled': True}\n\n    def set_rider_route(self, rider, route):\n        self.calls.append(('rider_route', len(route)))\n\n    def set_pedestrian_route(self, pedestrian, route):\n        self.calls.append(('pedestrian_route', len(route)))\n\n    def emit_audible_signal(self, emitter):\n        self.calls.append(('emit', emitter))\n\n    def destroy(self, resource):\n        self.calls.append(('destroy', resource))\n\n\ndef check():\n    root = Path(__file__).resolve().parent\n    config = json.loads((root / 'config.json').read_text())\n    site = json.loads((root / 'scene.json').read_text())\n    if (site.get('source_kind') != 'synthetic_diagnostic_fixture' or\n            config['selected_case_id'] != site['case_id'] or\n            config['rate_hz'] != 20 or config['duration_s'] != 45 or\n            config['case']['rider_kind'] != site['rider_kind']):\n        raise ValueError('exact synthetic sidewalk construction changed')\n    expected = hashlib.sha256(b'<OpenDRIVE synthetic sidewalk fixture/>').hexdigest()\n    if site['map_sha256'] != expected:\n        raise ValueError('synthetic map binding changed')\n    adapter = FixtureAdapter()\n    built = build(adapter, site)\n    if len(built['owned']) != 4 or adapter.calls.count(('route', 'SYNTHETIC_SIDEWALK', 2)) != 2:\n        raise ValueError('synthetic rider/pedestrian/audio construction incomplete')\n    signal = config['case']['signal_frame']\n    if signal is not None:\n        if not request_signal(adapter, built['emitter'], signal, signal):\n            raise ValueError('synthetic signal schedule missed')\n    if bool(signal is not None) != any(call[0] == 'emit' for call in adapter.calls):\n        raise ValueError('synthetic signal output changed')\n    return site\n\n\nif __name__ == '__main__':\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--check', action='store_true')\n    parser.add_argument('--output-dir')\n    args = parser.parse_args()\n    scene = check()\n    if not args.check:\n        raise ValueError('Synthetic sidewalk source cannot authorize Native capture')\n    print('synthetic construction protocol passed: ' + scene['case_id'])\n"
+    },
+    {
+      "path": "native_overtake.py",
+      "content": "\"\"\"Lazy Native construction for a physically reviewed connected sidewalk.\n\nThe adapter must provide a real audible emitter and pedestrian microphone;\nstate flags or a sound-command log cannot replace original waveform capture.\n\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport math\n\n\ndef need(ok,message):\n    if not ok:raise ValueError(message)\n\n\ndef build(adapter,site):\n    \"\"\"Spawn rider/pedestrian and audio devices, with owned-resource rollback.\"\"\"\n    need(site.get('cell_id')=='C142510' and\n         site.get('physical_surface_kind')=='sidewalk' and\n         site.get('sidewalk_connected') is True,\n         'reviewed connected physical sidewalk required')\n    need(site.get('rider_kind') in ('bicycle','electric_bicycle','electric_scooter'),\n         'covered rider kind missing')\n    road=adapter.map_opendrive_bytes()\n    need(isinstance(road,bytes) and hashlib.sha256(road).hexdigest()==site.get('map_sha256'),\n         'live map differs from reviewed sidewalk source')\n    for key in ('sidewalk_source_citation','connected_route_citation',\n                'rider_blueprint_sha256','pedestrian_blueprint_sha256',\n                'audible_emitter_source_sha256','microphone_source_sha256'):\n        need(bool(site.get(key)),key+' missing')\n    route=site.get('rider_route_xyz_m');walk=site.get('pedestrian_route_xyz_m')\n    for name,points in (('rider',route),('pedestrian',walk)):\n        need(isinstance(points,list) and len(points)>=2 and\n             all(isinstance(p,list) and len(p)==3 and\n                 all(type(v) in (int,float) and math.isfinite(v) for v in p)\n                 for p in points),name+' reviewed 3D route missing')\n        need(math.dist(points[0],points[-1])>2,name+' route has no progress')\n    need(adapter.sidewalk_route_readback(route,site['sidewalk_id']) is True and\n         adapter.sidewalk_route_readback(walk,site['sidewalk_id']) is True,\n         'live route not on same physical sidewalk')\n    owned=[]\n    try:\n        rider=adapter.spawn_rider(site['rider_kind'],route[0],\n                                  blueprint_sha256=site['rider_blueprint_sha256'])\n        need(rider is not None,'covered rider spawn failed')\n        owned.append(rider)\n        pedestrian=adapter.spawn_pedestrian(walk[0],\n                                            blueprint_sha256=site['pedestrian_blueprint_sha256'])\n        need(pedestrian is not None,'pedestrian spawn failed')\n        owned.append(pedestrian)\n        emitter=adapter.attach_audible_emitter(rider,\n            source_sha256=site['audible_emitter_source_sha256'])\n        need(emitter is not None and adapter.read_emitter(emitter).get('physically_present') is True,\n             'real audible emitter readback missing')\n        owned.append(emitter)\n        microphone=adapter.attach_pedestrian_microphone(pedestrian,\n            source_sha256=site['microphone_source_sha256'])\n        need(microphone is not None and\n             adapter.read_microphone(microphone).get('recording_enabled') is True,\n             'pedestrian microphone readback missing')\n        owned.append(microphone)\n        adapter.set_rider_route(rider,route)\n        adapter.set_pedestrian_route(pedestrian,walk)\n        return {'rider':rider,'pedestrian':pedestrian,'emitter':emitter,\n                'microphone':microphone,'owned':tuple(owned)}\n    except Exception:\n        for resource in reversed(owned):adapter.destroy(resource)\n        raise\n\n\ndef request_signal(adapter,emitter,original_frame,case_signal_frame):\n    \"\"\"Request an audible signal on a declared frame; measure WAV independently.\"\"\"\n    need(type(original_frame) is int and type(case_signal_frame) is int,\n         'original signal frame schedule missing')\n    if original_frame==case_signal_frame:\n        adapter.emit_audible_signal(emitter)\n        return True\n    return False\n"
+    },
+    {
+      "path": "tests/test_bundle.py",
+      "content": "import unittest\n\nfrom runner import check\n\n\nclass BundleTest(unittest.TestCase):\n    def test_exact_synthetic_protocol(self):\n        self.assertEqual(check()['source_kind'], 'synthetic_diagnostic_fixture')\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"law_id\": \"LVMC-11-40-180-C\",\n  \"cell_id\": \"C142510\",\n  \"actor\": \"cycle_or_scooter_operator\",\n  \"selected_case_id\": \"testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield\",\n  \"rate_hz\": 20,\n  \"duration_s\": 45,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"cameras\": [\n    \"overview\",\n    \"approach\",\n    \"reference_corner\",\n    \"driver_reference\"\n  ],\n  \"case\": {\n    \"case_id\": \"testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield\",\n    \"rider_kind\": \"electric_bicycle\",\n    \"signal_frame\": 100,\n    \"rider_response\": \"yield_brake\"\n  }\n}\n"
+    },
+    {
+      "path": "scene.json",
+      "content": "{\n  \"case_id\": \"testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield\",\n  \"source_kind\": \"synthetic_diagnostic_fixture\",\n  \"cell_id\": \"C142510\",\n  \"actor\": \"cycle_or_scooter_operator\",\n  \"physical_surface_kind\": \"sidewalk\",\n  \"sidewalk_connected\": true,\n  \"map_sha256\": \"5209b777f233e737cd5315fd086f9d78d3976eac9f708aad0c6b150e5923af8d\",\n  \"sidewalk_source_citation\": \"synthetic CPU fixture only\",\n  \"connected_route_citation\": \"synthetic CPU fixture only\",\n  \"rider_blueprint_sha256\": \"ed0b80002e208337d55449655c5d7911ae0d711b93ba6dbd84c1e288c268af16\",\n  \"pedestrian_blueprint_sha256\": \"ed0b80002e208337d55449655c5d7911ae0d711b93ba6dbd84c1e288c268af16\",\n  \"audible_emitter_source_sha256\": \"ed0b80002e208337d55449655c5d7911ae0d711b93ba6dbd84c1e288c268af16\",\n  \"microphone_source_sha256\": \"ed0b80002e208337d55449655c5d7911ae0d711b93ba6dbd84c1e288c268af16\",\n  \"rider_kind\": \"electric_bicycle\",\n  \"sidewalk_id\": \"SYNTHETIC_SIDEWALK\",\n  \"rider_route_xyz_m\": [\n    [\n      -4,\n      0,\n      0\n    ],\n    [\n      4,\n      0,\n      0\n    ]\n  ],\n  \"pedestrian_route_xyz_m\": [\n    [\n      -1,\n      0,\n      0\n    ],\n    [\n      3,\n      0,\n      0\n    ]\n  ],\n  \"planned_signal_frame\": 100,\n  \"planned_rider_response\": \"yield_brake\"\n}\n"
+    }
+  ]
+}
