@@ -51,10 +51,13 @@ class ProductionConstructionTests(unittest.TestCase):
         self.assertEqual(files[self.site_path.name], self.site_path.read_text())
         self.assertEqual(files["analysis.py"], (ROOT / "analysis.py").read_text())
         self.assertEqual(files["prepare_derived_media.py"], (ROOT / "prepare_derived_media.py").read_text())
+        self.assertEqual(files["native_capture_finalize.py"], (ROOT / "native_capture_finalize.py").read_text())
+        self.assertIn("close_capture(Path(args.output_dir), release)", files["runner.py"])
         self.assertEqual(set(self.site["source_bindings"][name]["path"] for name in REVIEW_SOURCES),
                          set(files) - set(item["path"] for item in
                                           json.loads((ROOT / "construction-nearest_view_response.json").read_text())["files"])
-                         - {self.site_path.name, "analysis.py", "prepare_derived_media.py"})
+                         - {self.site_path.name, "analysis.py", "prepare_derived_media.py",
+                            "native_capture_finalize.py"})
         with self.assertRaisesRegex(ValueError, "already exists"):
             build("nearest_view_response", self.site_path, output)
 

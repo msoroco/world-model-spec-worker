@@ -22,7 +22,9 @@ class ConstructionPackageTests(unittest.TestCase):
         self.assertEqual(json.loads(files["measurement-contract.json"]), measurement)
         self.assertEqual(set(measurement["requirements"][0]["inputs"]),
                          {"walker-body-history.jsonl", "signal-history.jsonl",
-                          "device-history.jsonl", "video_frames.jsonl", "scene.json"})
+                          "device-history.jsonl", "video_frames.jsonl", "scene.json",
+                          "camera-frame-joins.jsonl", "overview.mkv", "approach.mkv",
+                          "reference_corner.mkv", "driver_reference.mkv"})
 
     def test_missing_mandatory_channel_rejected(self):
         plan = json.loads((ROOT / "case-plan.json").read_text())

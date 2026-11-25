@@ -2,7 +2,7 @@
   "assignment_id": "testing__C227824__NRS-484B-307-8b__pedestrian",
   "input_sha256": "2d1a27525ed380f2e4ba1a4f432ef217ce6f9bfa101df1f0f18a1d0cf91688fe",
   "status": "partial",
-  "readiness_kind": "six_case_semantic_and_standalone_entrypoints_cpu_validated_partial",
+  "readiness_kind": "six_case_full_diagnostic_compatibility_and_saved_processing_cpu_validated_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -33,7 +33,7 @@
       "command": "TMPDIR=$PWD/.runtime-work/c227824-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C227824__NRS-484B-307-8b__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-current.log",
-      "sha256": "cfab370744965eb2f75f4ec471519082b289eff39ac188e08fee9c23b58127a9"
+      "sha256": "4f5d2b149ca3b5713708c71382b8040bb0fe7c437c2b5478417751117a9b38d7"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -52,10 +52,46 @@
       "exit_code": 1,
       "log": "cpu-strict-current.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C227824__NRS-484B-307-8b__pedestrian/prove_compat_diagnostics.py",
+      "log": "cpu-compatibility-current.log",
+      "exit_code": 0,
+      "sha256": "fbd1d813b820c48ae6d6d61a8f348635d1fcb3ffa9840c0284464a85fc539d99"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c227824-verify-output .venv-cpu/bin/python -c \"package_compatibility.check_receipts(...)\"",
+      "log": "cpu-compatibility-receipts.log",
+      "exit_code": 0,
+      "sha256": "cbd5a3d65c7bee3cdedbe12b515a3a0ba364a23e43fa8c60203108df2c77a4b8"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C227824__NRS-484B-307-8b__pedestrian/prove_saved_processing.py",
+      "exit_code": 0,
+      "log": "cpu-saved-processing-current.log",
+      "sha256": "0ab5447f88ddc5c897d864a8dd7c09d6caaed52df122f774e5340496d558ee87"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C227824__NRS-484B-307-8b__pedestrian/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "cpu-comparisons-current.log",
+      "sha256": "327cc2e4cdc341f1ea1c9a9b8894f4c4bcaf72f3ce5dd64c215b71bce869da84"
+    },
+    {
+      "command": "semantic_delivery.validate on current draft execution manifest",
+      "exit_code": 0,
+      "log": "cpu-semantic-current.log",
+      "sha256": "5351f57c3b4c0b094cac3bcf546795b0d4bbee6b465342c2c4300734c4d5a936"
+    },
+    {
+      "command": "prove_delivery_negative.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-negative-current.log",
+      "sha256": "b1a4d61765579d88d98d3fd1fdf93c4b60d79c602b7cd389d1219b1b70d4c58f"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact case-specific draft construction bundles bind current implementation source and measurement contracts. All six pass current-runtime offline materialization with explicitly synthetic reviews, and stale construction SHA is rejected. All six saved finalizers process source-shaped synthetic packets for exact entry/wait/device requests; missing device source is rejected. The focused suite passes 77 tests (one materialized-only skip). Exact reviewed highway extent, official facing signal/device and camera assets, source-backed pedestrian indication driver, six source-reviewed scenes and full positive/negative compatibility and delivery receipts remain CPU work. Physical and legal outcomes are unverified."
+  "reason": "Six exact draft constructions pass current-runtime offline materialization and a six-stage canonical semantic chain. Six full diagnostic compatibility cases pass selected measurements, four real FFV1 source decodes, Native evidence validation, Core conversion, Lean decoder, render/final decode and missing-source negatives; independent receipt revalidation passes. Six recorded-only positive saved processing paths and six missing-device feedback paths pass; five frozen comparison pairs pass synthetic audits. Production delivery audit rejects all six unsealed synthetic attempts and invalid diagnostic seals. Focused suite passes 77 tests with one materialized-only skip; scoped partial checker passes. Exact reviewed highway extent, official route-facing red signal and pedestrian device with actual CARLA readback driver, camera assets, six source-reviewed Native scenes and genuine Native seal/delivery audits remain. Physical and legal outcomes are unverified."
 }

@@ -10,17 +10,18 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import subprocess
 
 from camera_sources import CAMERAS, audit_camera_sources
 from nearest_view_measurement import measure
+from native_attempt import verify_review_sources
 from prepare_derived_media import prepare as prepare_derived_media
 from source_tick_capture import verify_seal
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
 REQUIRED = ("capture-identity.json", "nearest-view-tick-seal.json",
-            "nearest-view-original-ticks.jsonl", "nearest-view-saved-packet.json",
-            "nearest-view-camera-manifest.json")
+            "nearest-view-original-ticks.jsonl", "nearest-view-saved-packet.json")
 
 
 def _sha(path: Path) -> str:
@@ -28,10 +29,39 @@ def _sha(path: Path) -> str:
 
 
 def _sources(root: Path) -> dict:
-    for name in REQUIRED:
+    marker = root / "diagnostic-compatibility.json"
+    names = REQUIRED + ((marker.name,) if marker.is_file() else
+                        ("nearest-view-camera-manifest.json",))
+    for name in names:
         if not (root / name).is_file():
             raise ValueError("Missing required source: " + name)
-    return {name: _sha(root / name) for name in REQUIRED}
+    return {name: _sha(root / name) for name in names}
+
+
+def _diagnostic_videos(root: Path, case_id: str, expected_frames: int) -> dict:
+    marker = json.loads((root / "diagnostic-compatibility.json").read_text())
+    if marker != {"format": "c158208-generated-compatibility-v1", "case_id": case_id,
+                   "frame_count": expected_frames, "source_kind": "synthetic_fixture"}:
+        raise ValueError("diagnostic compatibility source identity differs")
+    dimensions = {"overview": (1920, 1080), "approach": (1280, 720),
+                  "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+    videos = {}
+    for name in CAMERAS:
+        path = root / (name + ".mkv")
+        if not path.is_file():
+            raise ValueError("Missing required source: " + path.name)
+        probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
+                                "-select_streams", "v:0", "-show_entries",
+                                "stream=width,height,nb_read_frames,r_frame_rate", "-of", "json",
+                                str(path)], capture_output=True, text=True, check=True)
+        stream = json.loads(probe.stdout)["streams"][0]
+        if ((stream["width"], stream["height"]) != dimensions[name] or
+                stream["r_frame_rate"] != "20/1" or
+                int(stream["nb_read_frames"]) != expected_frames):
+            raise ValueError("diagnostic camera shape or frames differ: " + name)
+        videos[name] = {"path": path.name, "sha256": _sha(path)}
+    return {"format": "c158208-generated-compatibility-v1", "frame_count": expected_frames,
+            "videos": videos, "diagnostic_fixture": True}
 
 
 def measure_nearest_view(stage: Path) -> dict:
@@ -43,23 +73,51 @@ def measure_nearest_view(stage: Path) -> dict:
             ASSIGNMENT + "__nearest_view_response",
             ASSIGNMENT + "__nearest_view_uninterrupted"}:
         raise ValueError("selected C158208 capture identity differs")
+    diagnostic = identity.get("provenance_kind") == "synthetic_fixture"
     config_path = root / "config.json"
     if config_path.is_file():
         config = json.loads(config_path.read_text())
         if config.get("selected_case_id") != identity["case_id"]:
             raise ValueError("selected Native case differs from sealed capture")
-    diagnostic = identity.get("provenance_kind") == "synthetic_fixture"
+    construction_path = root / "construction.json"
+    if construction_path.is_file() and not diagnostic and \
+            _sha(construction_path) != identity.get("construction_sha256"):
+        raise ValueError("selected construction differs from sealed original capture")
     if not diagnostic and identity.get("provenance_kind") != "original_capture":
         raise ValueError("unknown source provenance")
-    cameras = audit_camera_sources(root, diagnostic_fixture=diagnostic)
+    if not diagnostic:
+        scene_path = root / "scene.json"
+        if not scene_path.is_file():
+            raise ValueError("Missing required source: scene.json")
+        scene = json.loads(scene_path.read_text())
+        if scene.get("source_kind") != "original_reviewed_site":
+            raise ValueError("original capture requires reviewed scene")
+        site_name = scene.get("site_source")
+        if not isinstance(site_name, str) or Path(site_name).name != site_name:
+            raise ValueError("reviewed site source path differs")
+        site_path = root / site_name
+        if not site_path.is_file():
+            raise ValueError("Missing required source: " + site_name)
+        if _sha(site_path) != scene.get("site_sha256") or _sha(site_path) != identity.get("site_packet_sha256"):
+            raise ValueError("reviewed site differs from sealed original capture")
+        site = json.loads(site_path.read_text())
+        verify_review_sources(site, site_path, diagnostic_fixture=False)
+        if site.get("capture_geometry") != packet["geometry"] or site.get("reviewed_context") != packet["reviewed_context"]:
+            raise ValueError("reviewed site geometry or context differs from sealed original ticks")
     value = measure(packet)
+    generated = diagnostic and (root / "diagnostic-compatibility.json").is_file()
+    cameras = (_diagnostic_videos(root, identity["case_id"], value["sample_count"])
+               if generated else audit_camera_sources(root, diagnostic_fixture=diagnostic))
     if value["sample_count"] != cameras["frame_count"]:
         raise ValueError("original tick and camera frame counts differ")
-    for name, source in json.loads((root / "nearest-view-camera-manifest.json").read_text())["sources"].items():
-        path = root / source["path"]
-        if not path.is_file():
-            raise ValueError("Missing required source: " + source["path"])
-        hashes[source["path"]] = _sha(path)
+    if generated:
+        hashes.update({source["path"]: source["sha256"] for source in cameras["videos"].values()})
+    else:
+        for name, source in json.loads((root / "nearest-view-camera-manifest.json").read_text())["sources"].items():
+            path = root / source["path"]
+            if not path.is_file():
+                raise ValueError("Missing required source: " + source["path"])
+            hashes[source["path"]] = _sha(path)
     return {"method": "measure_nearest_view", "value": value,
             "sources": hashes, "diagnostic_fixture": diagnostic,
             "case_id": identity["case_id"]}
@@ -94,8 +152,12 @@ def _native_result(root: Path, nearest: dict, control: dict) -> dict:
         raise ValueError("original tick and saved sample counts differ")
     if len(samples) != config["rate_hz"] * config["duration_s"] and not nearest["diagnostic_fixture"]:
         raise ValueError("incomplete original production frame count")
-    media = prepare_derived_media(root, diagnostic_fixture=nearest["diagnostic_fixture"])
-    camera = json.loads((root / "nearest-view-camera-manifest.json").read_text())
+    generated = nearest["diagnostic_fixture"] and (root / "diagnostic-compatibility.json").is_file()
+    media = (_diagnostic_videos(root, nearest["case_id"], len(samples)) if generated else
+             prepare_derived_media(root, diagnostic_fixture=nearest["diagnostic_fixture"],
+                                   reuse_existing=True))
+    camera = (None if generated else
+              json.loads((root / "nearest-view-camera-manifest.json").read_text()))
     channel_root = root / "channels"
     channel_root.mkdir(exist_ok=False)
     traces = []
@@ -109,7 +171,9 @@ def _native_result(root: Path, nearest: dict, control: dict) -> dict:
             "within_intersection": row["through_vehicle_within_intersection"]},
         "nearest_view_raycast": lambda row, raw, index: {
             "probe": raw["visibility_probe"], "visible": row["through_traffic_visible"]},
-        "camera_pixels": lambda row, raw, index: camera["rows"][index]["cameras"],
+        "camera_pixels": lambda row, raw, index: (
+            {name: item["sha256"] for name, item in media["videos"].items()} if generated
+            else camera["rows"][index]["cameras"]),
     }
     evidence = []
     for channel in description["channels"]:
@@ -138,13 +202,24 @@ def _native_result(root: Path, nearest: dict, control: dict) -> dict:
         velocity = raw["ego"]["velocity_xy_mps"]
         center = [sum(p[axis] for p in vertices) / len(vertices) for axis in (0, 1)]
         traces.append({"frame": row["frame"], "time_s": row["time_s"],
+                       "position_m": [center[0], center[1], 0.0],
                        "position": {"x": center[0], "y": center[1], "z": 0.0},
                        "heading_deg": math.degrees(math.atan2(velocity[1], velocity[0])),
-                       "speed_mps": row["ego_speed_mps"]})
+                       "speed_mps": row["ego_speed_mps"],
+                       "speed_mph": row["ego_speed_mps"] / .44704,
+                       "velocity_mps": [velocity[0], velocity[1], 0.0],
+                       "control": {}})
         mappings.append({"video_frame": index, "carla_frame": row["frame"],
+                         "native_frame": row["frame"],
                          "time_s": row["time_s"]})
-    (root / "trace.jsonl").write_text("".join(json.dumps(row) + "\n" for row in traces))
-    (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in mappings))
+    for name, rows in (("trace.jsonl", traces), ("video_frames.jsonl", mappings)):
+        target = root / name
+        content = "".join(json.dumps(row) + "\n" for row in rows)
+        if target.exists():
+            if target.read_text() != content:
+                raise ValueError("sealed original frame stream differs: " + name)
+        else:
+            target.write_text(content)
     check = {"target": "sealed original nearest-view source join", "requested": True,
              "measured": True, "method": "measure_nearest_view", "tolerance": 0,
              "matched": True, "physical_cause_confirmed": False,

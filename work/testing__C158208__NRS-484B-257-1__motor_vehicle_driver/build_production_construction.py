@@ -63,6 +63,21 @@ def build(kind: str, site_path: Path, output: Path) -> dict:
     files = {item["path"]: item["content"] for item in draft["files"]}
     files["analysis.py"] = (HERE / "analysis.py").read_text(encoding="utf-8")
     files["prepare_derived_media.py"] = (HERE / "prepare_derived_media.py").read_text(encoding="utf-8")
+    files["native_capture_finalize.py"] = (HERE / "native_capture_finalize.py").read_text(encoding="utf-8")
+    runner = files["runner.py"]
+    old = '    run_native_attempt(client, CarlaSceneAdapter(carla), world_restore,\n'
+    new = ('    from native_capture_finalize import close_capture\n'
+           '    release = run_native_attempt(client, CarlaSceneAdapter(carla), world_restore,\n')
+    if runner.count(old) != 1:
+        raise ValueError("diagnostic runner capture handoff changed")
+    runner = runner.replace(old, new)
+    runner = runner.replace('from scenario_pipeline.worker_exchange import world_restore',
+                            'from worker_exchange import world_restore')
+    old_tail = '                       reviewed_site_packet=site, attempt=Path(args.output_dir))\n'
+    new_tail = (old_tail + '    close_capture(Path(args.output_dir), release)\n')
+    if runner.count(old_tail) != 1:
+        raise ValueError("diagnostic runner attempt handoff changed")
+    files["runner.py"] = runner.replace(old_tail, new_tail)
     scene = json.loads(files["scene.json"])
     scene.update({"source_kind": "original_reviewed_site", "site_source": site_path.name,
                   "site_sha256": hashlib.sha256(site_bytes).hexdigest(),

@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Observe the nearest-view fallback and original through-highway approach and crossing history.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "nearest_view_history",
+      "method": "measure_nearest_view",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "capture-identity.json",
+        "nearest-view-tick-seal.json",
+        "nearest-view-original-ticks.jsonl",
+        "nearest-view-saved-packet.json",
+        "diagnostic-compatibility.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Verify governing yield sign, absent stop line and near-side crosswalk, and exclude officer or signal control.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "governing_control_context",
+      "method": "measure_governing_control",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "capture-identity.json",
+        "nearest-view-tick-seal.json",
+        "nearest-view-original-ticks.jsonl",
+        "nearest-view-saved-packet.json",
+        "diagnostic-compatibility.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "nearest-view-saved-packet.json"
+    ],
+    "error_contains": "Missing required source: nearest-view-saved-packet.json"
+  }
+}

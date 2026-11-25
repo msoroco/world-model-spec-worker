@@ -21,17 +21,51 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def build():
+def build(suffix="two_cycles_clear"):
     fixture = test_analysis.AnalysisTests("test_saved_analyzer_emits_canonical_result_from_originals")
     fixture.setUp()
     try:
         root = fixture.root
+        if suffix != "two_cycles_clear":
+            rows = test_analysis.capture_fixture.OriginalCaptureTest().rows()
+            if suffix == "one_cycle_entry":
+                for row in rows[300:600]:
+                    row["lit_aspects"] = ["steady_red", "green_turn_arrow"]
+            elif suffix == "three_cycles_clear":
+                for row in rows[500:550]:
+                    row["lit_aspects"] = ["steady_red"]
+            elif suffix == "rolling_entry":
+                for row in rows[:600]:
+                    row["speed_mps"] = 0.5
+                    row["ego_front_station_m"] = -21 + 15 * row["frame"] / 599
+            elif suffix in ("pedestrian_crosswalk", "lawful_traffic"):
+                region = "adjacent_crosswalk" if suffix == "pedestrian_crosswalk" else "intersection"
+                rows[510]["other_users"] = [{"actor_id": "other-1", "region": region,
+                                                "source_kind": "native_world_snapshot"}]
+            elif suffix == "no_causal_record":
+                fixture.site["unchanged_signal_cause"] = "not_established"
+            else:
+                raise ValueError("Unknown selected diagnostic case: " + suffix)
+            fixture.site["case_id"] = HERE.name + "__" + suffix
+            (root / "native-site.json").write_text(json.dumps(fixture.site) + "\n")
+            receipt = test_analysis.original_capture.capture_original(
+                fixture.site, root, test_analysis.capture_fixture.Adapter(rows),
+                root / "original-events.json", diagnostic_fixture=True)
+            saved_case = json.loads((root / "saved-manifest.json").read_text())
+            saved_case["case_id"] = fixture.site["case_id"]
+            saved_case["sources"]["original_events"] = receipt["event_ref"]
+            (root / "saved-manifest.json").write_text(json.dumps(saved_case) + "\n")
+            (root / "trace.jsonl").write_text("".join(json.dumps({
+                "frame": row["frame"], "time_s": row["time_s"],
+                "position_m": [row["ego_front_station_m"], 0, 0],
+                "speed_mps": row["speed_mps"]}) + "\n" for row in rows))
         trace_path = root / "trace.jsonl"
         trace = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
         for row in trace:
             row.update(heading_deg=0.0, velocity_mps=[row["speed_mps"], 0, 0],
                        position={"x": row["position_m"][0], "y": 0, "z": 0},
-                       speed_mph=row["speed_mps"] / .44704)
+                       speed_mph=row["speed_mps"] / .44704,
+                       control={"throttle": 0.0, "brake": 0.0, "hand_brake": False})
         trace_path.write_text("".join(json.dumps(row) + "\n" for row in trace), encoding="utf-8")
         saved = json.loads((root / "saved-manifest.json").read_text(encoding="utf-8"))
         videos = []
@@ -88,7 +122,7 @@ def build():
         ego = next(item for item in example["graphs"][0]["nodes"] if item["id"] == "ego")
         original = ego["attributes"]["original_observation"]
         graphs = []
-        for item, motion in zip(mapping, trace):
+        for index, (item, motion) in enumerate(zip(mapping, trace)):
             observation = {key: original[key] for key in ("actor_id", "blueprint",
                            "heading_deg", "body_vertices_m")}
             observation.update(position_m=motion["position_m"],
@@ -98,9 +132,10 @@ def build():
                      "entity_id": original["actor_id"],
                      "original_observation": observation}
             graphs.append({"path": f"capture/native/graphs/base/{item['carla_frame']:08d}.adapter.json",
-                           "attributes": {"frame": item["carla_frame"], "bbox": {}},
+                           "attributes": {"frame": item["carla_frame"], "bbox": {},
+                                          "observed_evidence": json.loads(evidence[index])["original_observations"]},
                            "nodes": [{"id": "ego", "attributes": attrs}], "edges": []})
-        destination = HERE / "diagnostics" / "two_cycles_clear"
+        destination = HERE / "diagnostics" / suffix
         destination.mkdir(parents=True, exist_ok=True)
         files = ("native-site.json", "saved-manifest.json", "original-events.json",
                  "video_frames.jsonl", "trace.jsonl", "media-receipt.json",
@@ -109,7 +144,7 @@ def build():
         sources = []
         for name, content in (("capture/evidence.jsonl", "\n".join(evidence) + "\n"),
                               ("capture/native/frames.jsonl", "\n".join(frames) + "\n")):
-            target = HERE / "diagnostics" / "two_cycles_clear" / name
+            target = HERE / "diagnostics" / suffix / name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(content, encoding="utf-8")
             sources.append({"path": name, "source": str(target.relative_to(REPO)),
@@ -120,14 +155,14 @@ def build():
             target.write_bytes(source.read_bytes())
             sources.append({"path": name, "source": str(target.relative_to(REPO)),
                             "sha256": sha(target)})
-        spec_path = HERE / "diagnostics" / "two_cycles_clear-generator.json"
+        spec_path = HERE / "diagnostics" / (suffix + "-generator.json")
         spec_path.write_text(json.dumps({"files": generator_files, "graphs": graphs,
                                          "videos": videos}, separators=(",", ":")) + "\n",
                              encoding="utf-8")
         recipe = {"format": "worker-fixture-recipe", "sources": sources,
                   "generator": {"source": str(spec_path.relative_to(REPO)),
                                 "sha256": sha(spec_path)}}
-        recipe_path = HERE / "diagnostics" / "two_cycles_clear-recipe.json"
+        recipe_path = HERE / "diagnostics" / (suffix + "-recipe.json")
         write(recipe_path, recipe)
         print("two-cycle source-hashed diagnostic recipe", recipe_path.relative_to(REPO))
     finally:
@@ -135,4 +170,4 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    build(sys.argv[1] if len(sys.argv) > 1 else "two_cycles_clear")

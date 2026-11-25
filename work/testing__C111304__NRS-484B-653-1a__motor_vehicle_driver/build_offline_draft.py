@@ -14,7 +14,8 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "encounter.py", "native_acquisition.py", "site_binding.py",
-    "saved_audit.py", "media_audit.py",
+    "saved_audit.py", "media_audit.py", "carla_adapter.py",
+    "native_runner.py",
 )
 
 RUNNER = '''"""Exact C111304 encounter bundle preflight; no unsourced simulation."""

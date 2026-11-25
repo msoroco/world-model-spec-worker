@@ -99,7 +99,7 @@ def main():
     (negative / "result.json").unlink()
     (negative / "analysis-report.json").unlink()
     rejected = _run(negative)
-    if rejected.returncode == 0 or "missing saved source: device-history.jsonl" not in rejected.stderr:
+    if rejected.returncode == 0 or "Missing required source: device-history.jsonl" not in rejected.stderr:
         raise ValueError("missing original device packet not rejected")
     print(json.dumps({"format": "c227824-synthetic-saved-summary", "cases": rows,
                       "missing_device_source_rejected": True,
