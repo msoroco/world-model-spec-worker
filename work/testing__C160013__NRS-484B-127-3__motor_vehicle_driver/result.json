@@ -9,7 +9,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "c6dbfe7d0cbe9e9685be04cdc02464c3b311c1d2fed7b35d60570ad7b326406b"
+      "sha256": "f18f2af012eb4a87a3b99406db26822a78121261f976b42afa4c99ad26afdf86"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-comparison-proof PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_comparison.py",
@@ -94,10 +94,58 @@
       "exit_code": 0,
       "log": "cases/towing-physical-preparation.log",
       "sha256": "012dc3ffc9346d01d242db6123cd053f455864960c08317d3e047eccfe5583ce"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_towing_comparison.py",
+      "exit_code": 0,
+      "log": "cases/towing-comparison-proof.log",
+      "sha256": "b88aec4bca43a5091310374c4875f663425c680831986dc1d7c32b7e959d49bc"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_towing_sweep_geometry.py",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-geometry.log",
+      "sha256": "765d26b557685b9c6563976fbd0bf658a1f978adee24b8bbcab73680eaab5a57"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0000 --candidate primary --output .runtime-work/c160013-towing-sweep-offline-v2-0 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-0-offline.log",
+      "sha256": "088a03d6f77e0f2b3b0454d9417c74fd8b2fd09cba3212b32359471d06040b94"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0001 --candidate primary --output .runtime-work/c160013-towing-sweep-offline-v2-1 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-1-offline.log",
+      "sha256": "09117bcec6abd59dc3a2445848cfe75372c5146634faf49974403b574aa3dcbe"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0002 --candidate primary --output .runtime-work/c160013-towing-sweep-offline-v2-2 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-2-offline.log",
+      "sha256": "f362bb943245bfd6e22e577b60548ce5e023003ed141b11229cae3f0486b6ad4"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0000 --candidate fallback1 --output .runtime-work/c160013-towing-sweep-fallback-offline-v1-0 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-0-fallback1-offline.log",
+      "sha256": "eae072379579310a9bb766855cf4d13291f6581e7fb3cbf1eed185707d77f96c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0001 --candidate fallback1 --output .runtime-work/c160013-towing-sweep-fallback-offline-v1-1 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-1-fallback1-offline.log",
+      "sha256": "f2121713b8bec7267b894db7d36505414fe31722d3c07653398828a78b88f7fa"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-sweep-diagnostic-manifest.json --case caravan_spacing_towed_physical-0002 --candidate fallback1 --output .runtime-work/c160013-towing-sweep-fallback-offline-v1-2 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-sweep-2-fallback1-offline.log",
+      "sha256": "2b7d1b93de06505b4a9bf0f280dbee68abee03290de09fbfbf05d5ca7a960332"
     }
   ],
   "remaining_gpu_checks": [
     "Actual outside-business highway status, caravan membership, gap occupation without danger and camera visibility."
   ],
-  "reason": "The two delivery-selected cases retain prior CPU proofs. An isolated towing candidate now passes exact primary and risk-triggered slower fallback offline materialization, source-bound positive/negative compatibility, 900-frame saved finalization and recorded-only reconstruction, six-stage staged semantic validation, independent positive/negative delivery audit, and synthetic complete/incomplete/missing physical preparation. The fallback and physical receipts validate against the current candidate and physical contracts. The towing case is still diagnostic: selected manifest, canonical on-disk proposals, comparison/delivery integration, judgment sweep and reviewed Native site/pixels remain worker-owned CPU preparation. Actual Native motion and statutory without-danger judgment remain unverified."
+  "reason": "The two delivery-selected cases retain prior CPU proofs. An isolated towing candidate now passes exact primary and risk-triggered slower fallback offline materialization, source-bound positive/negative compatibility, 900-frame saved finalization and recorded-only reconstruction, six-stage staged semantic validation, independent positive/negative delivery audit, and synthetic complete/incomplete/missing physical preparation. The fallback and physical receipts validate against the current candidate and physical contracts. The towing case is still diagnostic: selected manifest, canonical on-disk proposals, selected comparison/delivery integration, sweep compatibility, fallback, saved and selected integration and reviewed Native site/pixels remain worker-owned CPU preparation. Actual Native motion and statutory without-danger judgment remain unverified."
 }

@@ -34,18 +34,31 @@ def main():
                  'construction': towing['construction'], 'kind': 'delivery'}
     manifest['cases'].append(tow_entry)
     shutil.copyfile(PACKAGE / towing['construction'], STAGE / towing['construction'])
+    bindings_path = STAGE / 'proposals/bindings.json'
+    bindings = json.loads(bindings_path.read_text())
+    bindings['variable_parameters'].append({
+        'name': 'drawing_drawn_combination', 'kind': 'world_setup',
+        'range_or_domain': 'original source-backed drawing and drawn actor relationship',
+        'used_by_laws': ['NRS-484B-127-3']})
+    bindings_path.write_text(json.dumps(bindings, indent=2) + '\n')
     cases_path = STAGE / 'proposals/cases.json'
     cases = json.loads(cases_path.read_text())
+    for case in cases['cases']:
+        case['variable_assignments']['drawing_drawn_combination'] = {
+            'kind': 'world_setup', 'value': False}
     wide = next(item for item in cases['cases'] if item['case_id'].endswith('__entrant_can_occupy_gap'))
     tow = deepcopy(wide)
     tow['case_id'] = towing['case_id']
     tow['rationale'] = 'Full drawing-and-drawn body gap and entrant occupancy; statutory danger unresolved.'
-    tow['paired_probe_id'] = 'caravan_gap_occupancy'
+    tow['paired_probe_id'] = 'towing_combination_contrast'
+    tow['variable_assignments']['drawing_drawn_combination']['value'] = True
+    tow['deliberate_differences'] = ['drawing_drawn_combination']
     tow['recording_description'] = json.loads((STAGE / towing['construction']).read_text())['recording_description']
     cases['cases'].append(tow)
     cases_path.write_text(json.dumps(cases, indent=2) + '\n')
     index_path = STAGE / 'proposals/semantic-index.json'
     index = json.loads(index_path.read_text())
+    index['stages']['bindings']['sha256'] = hashlib.sha256(bindings_path.read_bytes()).hexdigest()
     index['stages']['cases']['sha256'] = hashlib.sha256(cases_path.read_bytes()).hexdigest()
     index_path.write_text(json.dumps(index, indent=2) + '\n')
     result = validate(STAGE, assignment, manifest)
