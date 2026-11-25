@@ -32,6 +32,22 @@ def read(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def verify_scene_binding(attempt: Path) -> None:
+    """Reject a scene inserted or changed after the Native capture seal."""
+    attempt = Path(attempt).resolve()
+    scene_path = attempt / "scene.json"
+    if not scene_path.is_file():
+        return
+    seal = read(attempt / "capture-seal.json")
+    if seal.get("sources", {}).get("scene.json") != sha(scene_path):
+        raise ValueError("original scene absent from sealed Native capture")
+    scene = read(scene_path)
+    construction = read(attempt / "construction.json")
+    for key in ("case_id", "source_packet_sha256", "activity_request"):
+        if scene.get(key) != construction.get(key):
+            raise ValueError("sealed scene and construction differ: " + key)
+
+
 def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
                   decode: dict, core: dict, attempt: Path) -> dict:
     """Rejoin physical and human observations to original captured bytes."""
@@ -119,6 +135,7 @@ def main() -> None:
     if args.physical_receipt.resolve() != (args.attempt / "result.json").resolve():
         raise ValueError("physical receipt must be the sealed Native result")
     source = SOURCE.audit_attempt(args.attempt)
+    verify_scene_binding(args.attempt)
     decode = read(args.decode_receipt)
     if decode.get("auditor_sha256") != sha(args.media_auditor):
         raise ValueError("full decode auditor revision changed")

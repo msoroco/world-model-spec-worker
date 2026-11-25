@@ -35,9 +35,17 @@ def audit(attempt: Path, case_id: str):
         if review_ref is None:
             raise ValueError('original cited-device permission review missing')
         validate_permission_review(attempt, source['site_ref'], review_ref)
+    provenance_path = attempt / 'acquisition-provenance.json'
+    if not provenance_path.is_file():
+        raise ValueError('acquisition provenance missing')
+    provenance = json.loads(provenance_path.read_text())
+    diagnostic = (provenance.get('diagnostic_fixture') is True and
+                  provenance.get('provenance_kind') == 'synthetic_fixture')
+    if (source.get('diagnostic_fixture') is True) != diagnostic:
+        raise ValueError('diagnostic source and acquisition provenance differ')
     for ref in (source['site_ref'], source['events_ref'], source['frame_map_ref']):
-        path = attempt / ref['path']
-        if not path.is_file() or sha(path) != ref['sha256']:
+        path = (attempt / ref['path']).resolve()
+        if not path.is_relative_to(attempt.resolve()) or not path.is_file() or sha(path) != ref['sha256']:
             raise ValueError('original pedestrian source hash differs')
     events = json.loads((attempt / source['events_ref']['path']).read_text())
     measured = measure_saved(attempt, source['site_ref'], source['events_ref'],
@@ -83,7 +91,6 @@ def audit(attempt: Path, case_id: str):
         if len(pixels) != len(events):
             raise ValueError('source video frame count differs: ' + name)
         decoded[name] = hashlib.sha256('\n'.join(pixels).encode()).hexdigest()
-    provenance = json.loads((attempt / 'acquisition-provenance.json').read_text())
     return {'format': 'c109171-independent-diagnostic-delivery-v1',
             'case_id': case_id, 'frame_count': len(events),
             'source_sha256': {'pedestrian-source.json': sha(source_path),
@@ -92,7 +99,7 @@ def audit(attempt: Path, case_id: str):
             'decoded_rgb_streams': decoded, 'source_join_checked': True,
             'physical_completion_checked': True,
             'physical_completion_status': 'unverified_synthetic_fixture',
-            'diagnostic_fixture': provenance.get('diagnostic_fixture') is True,
+            'diagnostic_fixture': diagnostic,
             'statutory_permission': 'unresolved'}
 
 

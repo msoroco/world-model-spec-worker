@@ -49,6 +49,28 @@ class DeliveryMeasureTests(unittest.TestCase):
         self.assertEqual(result["legal_interference"], "unresolved_judgment")
         self.assertEqual(result["act_frame_ids"], [101])
 
+    def test_unclosed_outline_closing_edge_is_measured(self):
+        original = trace()
+        frame = original["frames"][1]
+        frame["act_envelope_xy"] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        frame["passing_body_xy"] = [[-2, 0.4], [-1, 0.4], [-1, 0.6], [-2, 0.6]]
+        measured = measure.measure(original, expected_case_id="case-open",
+                                   expected_act="open", expected_side="left")
+        self.assertAlmostEqual(measured["minimum_body_gap_m"], 1.0)
+        frame["act_envelope_xy"].append([0, 0])
+        closed = measure.measure(original, expected_case_id="case-open",
+                                 expected_act="open", expected_side="left")
+        self.assertEqual(closed["minimum_body_gap_m"], measured["minimum_body_gap_m"])
+
+    def test_contained_body_has_zero_gap(self):
+        original = trace()
+        frame = original["frames"][1]
+        frame["act_envelope_xy"] = [[0, 0], [3, 0], [3, 3], [0, 3]]
+        frame["passing_body_xy"] = [[1, 1], [2, 1], [2, 2], [1, 2]]
+        measured = measure.measure(original, expected_case_id="case-open",
+                                   expected_act="open", expected_side="left")
+        self.assertEqual(measured["minimum_body_gap_m"], 0.0)
+
     def test_sealed_source_rejects_stale_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "original.json"

@@ -65,7 +65,7 @@ def bind():
                 "negative_log": negative,
                 "diagnostic_only": True,
                 "command": (f".venv-cpu/bin/python work/{ROOT.name}/run_compat_deterministic.py --manifest work/{ROOT.name}/execution-manifest.json "
-                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v10-{short}-{cand_id} "
+                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v11-{short}-{cand_id} "
                             "--library runtime/library --validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             }
             if cand_id == "primary":
@@ -95,7 +95,7 @@ def bind():
             "script": script,
             "script_sha256": digest(ROOT / script),
             "command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
-                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v10-{short}-primary "
+                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v11-{short}-primary "
                         f"--output .runtime-work/c111329-287-1c-independent-v9-{short}.json --diagnostic"),
             "negative_command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
                                  f"--case-id {case} --attempt .runtime-work/c111329-287-1c-independent-negative-v9-{short} "
@@ -111,7 +111,7 @@ def bind():
             "diagnostic_only": True,
             "recorded_only": True,
             "positive_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
-                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v10-{short}-primary "
+                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v11-{short}-primary "
                                  f"--output .runtime-work/c111329-287-1c-saved-v9-{short} --library runtime/library "
                                  "--validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             "missing_source_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
@@ -131,12 +131,14 @@ def bind():
             "physical_completion_claimed": False,
         }
         entry["production_original_audit"] = {
-            "script": "independent_cpu_delivery.py",
-            "script_sha256": digest(ROOT / "independent_cpu_delivery.py"),
-            "command": (f"PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
-                        f".venv-cpu/bin/python work/{ROOT.name}/independent_cpu_delivery.py "
-                        f"--case-id {case} --attempt \"$ORIGINAL_ATTEMPT\" --output \"$AUDIT_OUTPUT\""),
+            "script": "production_delivery.py",
+            "script_sha256": digest(ROOT / "production_delivery.py"),
+            "command": (f"PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
+                        f".venv-cpu/bin/python work/{ROOT.name}/production_delivery.py "
+                        f"--case-id {case} --attempt \"$ORIGINAL_ATTEMPT\" "
+                        "--physical-review-ref \"$SEALED_REVIEW_REF\" --output \"$AUDIT_OUTPUT\""),
             "original_sources_required": True,
+            "independent_physical_review_required": True,
             "diagnostic_fixture_accepted": False,
             "physical_completion_claimed": False,
         }
@@ -151,7 +153,7 @@ def bind():
         }
     manifest["format"] = "worker-execution-manifest"
     manifest["status"] = "source_gated_cpu_prepared_original_native_pending"
-    manifest["diagnostic_only"] = True
+    manifest["diagnostic_only"] = False
     manifest["physical_acceptance"] = False
     manifest["legal_verdict"] = None
     manifest["comparison_audits"] = {
@@ -164,11 +166,14 @@ def bind():
         "production_original_attempts_required": True,
         "production_script": script,
         "production_script_sha256": digest(ROOT / script),
+        "independent_physical_review_required": True,
         "comparison_ids": ["between_intersections_marking", "both_devices_operating"],
         "production_commands": [
-            (f"PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
+            (f"PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111329-287-1c-production-audit\" "
              f".venv-cpu/bin/python work/{ROOT.name}/{script} --comparison-id {comparison_id} "
              "--reference-attempt \"$REFERENCE_ORIGINAL_ATTEMPT\" --variant-attempt \"$VARIANT_ORIGINAL_ATTEMPT\" "
+             "--reference-review-ref \"$REFERENCE_SEALED_REVIEW_REF\" "
+             "--variant-review-ref \"$VARIANT_SEALED_REVIEW_REF\" "
              "--output \"$COMPARISON_OUTPUT\"")
             for comparison_id in ("between_intersections_marking", "both_devices_operating")],
         "diagnostic_fixture_accepted": False,

@@ -9,8 +9,10 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "independent"))
 from parking_cameras import CAMERAS
 from parking_delivery_audit import ORIGINALS, audit_attempt, verify_native_map_binding
+from delivery_audit import verify_scene_binding
 from parking_pose import construct
 from parking_scene import build
 from source_review import validate
@@ -125,6 +127,26 @@ class ParkingDeliveryAuditTests(unittest.TestCase):
                 put(seal_path, seal)
             with self.assertRaisesRegex(ValueError, "frame join incomplete"):
                 audit_attempt(root, diagnostic=True, decoder=lambda path: 3)
+
+    def test_independent_original_scene_must_be_sealed_and_match_construction(self):
+        with TemporaryDirectory() as tmp:
+            diagnostic(tmp)
+            root = Path(tmp)
+            scene = json.loads((root / "construction.json").read_text())
+            put(root / "scene.json", scene)
+            with self.assertRaisesRegex(ValueError, "original scene absent from sealed Native capture"):
+                verify_scene_binding(root)
+            seal_path = root / "capture-seal.json"
+            seal = json.loads(seal_path.read_text())
+            seal["sources"]["scene.json"] = hashlib.sha256((root / "scene.json").read_bytes()).hexdigest()
+            put(seal_path, seal)
+            verify_scene_binding(root)
+            scene["activity_request"] = "standing"
+            put(root / "scene.json", scene)
+            seal["sources"]["scene.json"] = hashlib.sha256((root / "scene.json").read_bytes()).hexdigest()
+            put(seal_path, seal)
+            with self.assertRaisesRegex(ValueError, "sealed scene and construction differ: activity_request"):
+                verify_scene_binding(root)
 
 
 if __name__ == "__main__":

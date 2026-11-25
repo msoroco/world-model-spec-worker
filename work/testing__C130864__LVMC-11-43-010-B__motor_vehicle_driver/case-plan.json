@@ -1,6 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all original frames",
+        "subject": "ego entry and circulating opponent with full ring geometry",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through observed entry or wait",
+        "subject": "ego approach, entry line and circulating lane conflict",
+        "view": "approach"
+      },
+      {
+        "interval": "all original frames",
+        "subject": "circulating opponent route and connected entry lane",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach through exit or wait",
+        "subject": "ego view of roundabout entry and opponent",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "actor": "motor_vehicle_driver",
@@ -137,19 +164,24 @@
   "law_text": "The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle entering a roundabout shall yield the right-of-way to vehicles already in the roundabout and wait for a gap in traffic before entering.",
   "observations": [
     {
-      "measurement": "two distinct inventoried circulating lanes, connected ego entry lane, ring and entry-conflict surface polygons",
-      "name": "multilane roundabout and jurisdiction",
-      "source": "original Native map and jurisdiction source packet"
+      "measurement": "first sampled ego body entry or complete observed wait, from 20 Hz original body history",
+      "name": "ego_roundabout_entry",
+      "source": "original ego body and map ring polygon"
     },
     {
-      "measurement": "opponent starts inside ring and occupancy/conflict polygon per frame; lane relation and route source retained",
-      "name": "already-present circulating vehicle and potential conflict",
-      "source": "original opponent route/lane and initial world-space body plus 20 Hz actor trace"
+      "measurement": "identified opponent lane and original inside-ring occupancy at ego entry or wait",
+      "name": "circulating_vehicle_presence",
+      "source": "original opponent route and body history"
     },
     {
-      "measurement": "first sampled ego body entry, opponent occupancy and sampled body separation at entry, pre-entry wait history; no legal gap threshold",
-      "name": "ego waits for gap before entry",
-      "source": "original ego/opponent eight-vertex body, speed and control histories"
+      "measurement": "original eight-vertex body separation and entry conflict occupancy",
+      "name": "entry_conflict_motion",
+      "source": "original ego and opponent body histories"
+    },
+    {
+      "measurement": "source-bound temporal spacing and pre-entry wait history, without a legal threshold",
+      "name": "observed_preentry_gap",
+      "source": "original synchronized body, speed and control histories"
     }
   ],
   "planning_status": "exact_cases_and_source_bound_measurement_draft",
@@ -237,6 +269,7 @@
       "source_sha256": "ef81751006469b1263d45bf940e20e082282f08f35aeb5d9743f6bb0952370a3"
     }
   ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json",

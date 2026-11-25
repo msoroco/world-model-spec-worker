@@ -19,7 +19,7 @@ RATE_HZ = 20
 
 def _point(value):
     if not isinstance(value, list) or len(value) != 2 or not all(
-            isinstance(v, (float, int)) and isfinite(v) for v in value):
+            type(v) in (float, int) and isfinite(v) for v in value):
         raise ValueError("original XY point is missing or invalid")
     return float(value[0]), float(value[1])
 
@@ -47,6 +47,37 @@ def _segment_distance(a, b, c, d):
 
     return min(endpoint(a, c, d), endpoint(b, c, d),
                endpoint(c, a, b), endpoint(d, a, b))
+
+
+def _outline_gap(first, second):
+    """Measure complete world-XY outlines, including an implicit closing edge."""
+    a, b = [_point(v) for v in first], [_point(v) for v in second]
+    if len(a) < 2 or len(b) < 2:
+        raise ValueError("original clearance outlines need two vertices")
+
+    def contains(point, polygon):
+        inside = False
+        for start, end in zip(polygon, polygon[1:] + polygon[:1]):
+            if (start[1] > point[1]) != (end[1] > point[1]):
+                crossing = ((end[0] - start[0]) * (point[1] - start[1]) /
+                            (end[1] - start[1]) + start[0])
+                if point[0] < crossing:
+                    inside = not inside
+        return inside
+
+    if (len(a) >= 3 and len(b) >= 3 and
+            (contains(a[0], b) or contains(b[0], a))):
+        return 0.0
+
+    def edges(vertices):
+        pairs = list(zip(vertices, vertices[1:]))
+        if len(vertices) >= 3 and vertices[0] != vertices[-1]:
+            pairs.append((vertices[-1], vertices[0]))
+        return pairs
+
+    return min(_segment_distance(start_a, end_a, start_b, end_b)
+               for start_a, end_a in edges(a)
+               for start_b, end_b in edges(b))
 
 
 def read_sealed_trace(path: Path, expected_sha256: str) -> dict:
@@ -130,12 +161,7 @@ def measure(trace: dict, *, expected_case_id: str, expected_act: str,
             if not isinstance(envelope, list) or not isinstance(vehicle, list) or (
                     len(envelope) < 2 or len(vehicle) < 2):
                 raise ValueError("original act and passing body vertices are required")
-            act_points = [_point(v) for v in envelope]
-            vehicle_points = [_point(v) for v in vehicle]
-            minimum = min(_segment_distance(act_points[i], act_points[i + 1],
-                                            vehicle_points[j], vehicle_points[j + 1])
-                          for i in range(len(act_points) - 1)
-                          for j in range(len(vehicle_points) - 1))
+            minimum = _outline_gap(envelope, vehicle)
             clearances.append({"frame_id": frame["frame_id"], "body_gap_m": minimum})
             response = frame.get("passing_response")
             if not isinstance(response, dict) or not all(isinstance(response.get(k), (int, float))

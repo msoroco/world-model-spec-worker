@@ -51,6 +51,7 @@ def build():
         suffix = cid.removeprefix(AID + "__")
         config = {"assignment_id": AID, "law_id": "NRS-484B-517", "cell_id": "C135087",
                   "actor": "motor_vehicle_driver", "selected_case_id": cid,
+                  "supported_case_ids": [item["case_id"] for item in cases],
                   "case_modes": {key: case[key] for key in ("loading_mode", "entrant_mode", "access_mode")},
                   "plan_sha256": sha(body), "fps": 20, "rate_hz": 20,
                   "frame_count": 900, "duration_s": 45,
@@ -72,6 +73,10 @@ def build():
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": cid, "entrypoint": "runner.py",
                         "diagnostic_only": True, "recording_description": recording_description(),
+                        "measurement_plan": {"purpose": "Record original source observations for the exact taxicab stand branch without assigning legal outcomes", "case_ids": [cid]},
+                        "static_checks": ["pinned runtime preflight", "source and actor identity seal", "exact offline and compatibility receipts"],
+                        "termination_rules": ["45 seconds or 900 original frames", "fail closed on missing source, incomplete capture, or review"],
+                        "mechanisms": ["Native source-bound stand approach", "same-tick four-view acquisition", "saved-only analysis, converter, renderer, and source audits"],
                         "files": [{"path": name, "content": content} for name, content in contents.items()]}
         target = HERE / f"construction-{suffix}.json"
         target.write_text(json.dumps(construction, indent=2) + "\n")

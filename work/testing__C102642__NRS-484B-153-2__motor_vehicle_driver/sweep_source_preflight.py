@@ -87,8 +87,9 @@ def _source_levels(source: dict, survey: dict, clearance_path: Path) -> tuple[di
             raise ValueError("original clearance frame does not join surveyed site")
         case_id = sample.get("case_id")
         if (case_id != ref.get("case_id") or not isinstance(case_id, str) or
-                not case_id.startswith(case_prefix) or
-                not case_id[len(case_prefix):]):
+                case_id not in {case_prefix + kind for kind in (
+                    "open_near_overlap", "open_near_clear", "open_far_side",
+                    "board_near", "alight_near")}):
             raise ValueError("original clearance frame does not join assignment case")
         if not sample.get("source_observation_id"):
             raise ValueError("original clearance frame observation identity is missing")

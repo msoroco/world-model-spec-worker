@@ -92,6 +92,24 @@ def build():
              "sweep_specs": sweeps, "comparisons": plan["comparisons"],
              "source_law_text": quote, "source_assignment": "inputs/" + AID + "/assignment.json"}
     refs["cases"] = write("cases.json", stage)
+    # The four qualitative judgments have no exact-law training ranges. Record
+    # their explicit incompleteness through the pinned main sweep expander;
+    # it adds no cases or numerical thresholds for incomplete specifications.
+    import subprocess
+    import sys
+    import tempfile
+    with tempfile.TemporaryDirectory(dir=HERE.parents[1] / ".runtime-work",
+                                     prefix="c135087-semantic-") as directory:
+        scratch = Path(directory)
+        templates = scratch / "templates.json"
+        expanded = scratch / "expanded.json"
+        templates.write_text(json.dumps([template]) + "\n", encoding="utf-8")
+        subprocess.run([sys.executable, str(HERE.parents[1] / "runtime.py"), "expand",
+                        "--proposal", str(HERE / "proposals/cases.json"),
+                        "--templates", str(templates),
+                        "--bindings", str(HERE / "proposals/bindings.json"),
+                        "--output", str(expanded)], check=True)
+        refs["cases"] = write("cases.json", json.loads(expanded.read_text()))
     write("semantic-index.json", {"format": "worker-semantic-delivery", "assignment_id": AID, "stages": refs})
     print("draft semantic stages:", len(cases) - 1, "selected cases,", len(sweeps), "source-pending judgments")
 

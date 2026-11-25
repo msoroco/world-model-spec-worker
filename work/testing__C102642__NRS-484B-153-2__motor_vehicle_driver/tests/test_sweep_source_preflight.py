@@ -119,6 +119,16 @@ class SweepSourcePreflightTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "observation identity"):
             self.verify()
 
+    def test_unknown_assignment_case_is_not_a_selected_case(self):
+        sample = json.loads(self.source_paths["below"].read_text())
+        sample["case_id"] = ("testing__C102642__NRS-484B-153-2__"
+                             "motor_vehicle_driver__unselected")
+        self.clearance["source_refs"][0]["case_id"] = sample["case_id"]
+        self.clearance["source_refs"][0]["sha256"] = write_source(
+            self.source_paths["below"], sample)
+        with self.assertRaisesRegex(ValueError, "assignment case"):
+            self.verify()
+
     def test_reused_frame_is_not_three_independent_levels(self):
         self.clearance["source_refs"][1]["path"] = self.clearance["source_refs"][0]["path"]
         self.clearance["source_refs"][1]["sha256"] = self.clearance["source_refs"][0]["sha256"]

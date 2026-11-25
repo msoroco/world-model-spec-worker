@@ -29,6 +29,28 @@ def build():
     plan = json.loads(plan_path.read_text())
     source = "inputs/" + AID + "/assignment.json"
     case_ids = [case["case_id"] for case in plan["cases"]]
+    channel_for_term = {
+        "officially designated and appropriately signed": "official stand designation and sign",
+        "passenger vehicle": "subject passenger vehicle and driver",
+        "taxicab entrant": "taxicab entrant and approach",
+        "temporarily stop": "loading, waiting, entry and access",
+        "actually engaged in expeditiously loading": "loading, waiting, entry and access",
+        "waiting or about to enter": "taxicab entrant and approach",
+        "interfere": "loading, waiting, entry and access",
+    }
+    for observation in plan["observations"]:
+        observation["name"] = channel_for_term[observation["term"]]
+    plan["source_observation_mapping"] = {}
+    plan["camera_plan"] = {
+        "profile": "overview1080-capability", "duration_s": 45,
+        "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "stand, sign, subject and entrant", "interval": "original 45-second episode"},
+            {"view": "approach", "subject": "taxicab approach and access", "interval": "original 45-second episode"},
+            {"view": "reference_corner", "subject": "stand sign and curb reference", "interval": "original 45-second episode"},
+            {"view": "driver_reference", "subject": "subject driver and passenger activity", "interval": "original 45-second episode"},
+        ],
+    }
     plan["selected_branch"] = "Passenger loading with a taxicab entrant"
     plan["requirement_dispositions"] = [
         {"requirement": phrase, "source": source, "status": "selected_required",

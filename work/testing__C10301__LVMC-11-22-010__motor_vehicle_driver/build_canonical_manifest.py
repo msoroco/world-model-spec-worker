@@ -36,6 +36,15 @@ def build() -> None:
         physical = HERE / ("physical-preparation-" + kind + ".json")
         acceptance = HERE / ("delivery-acceptance-" + kind + ".json")
         channels = content["recording_description"]["channels"]
+        acceptance_binding = json.loads(acceptance.read_text())
+        acceptance_binding["production_source_audit"] = {
+            "script": "production_audit.py",
+            "script_sha256": digest(HERE / "production_audit.py"),
+            "command": ".venv-cpu/bin/python work/" + AID +
+                       "/production_audit.py --case " + case +
+                       " --attempt $ATTEMPT --output $SOURCE_AUDIT_RECEIPT",
+            "physical_completion": "pending_independent_review",
+            "legal_judgment": "unresolved"}
         cases.append({"case_id": case, "kind": "delivery",
                       "construction": entry["construction"],
                       "construction_sha256": digest(construction),
@@ -46,7 +55,7 @@ def build() -> None:
                                         "log": positive_log.name},
                       "negative": {"log": negative_log.name},
                       "physical_preparation": {"receipt": physical.name, "sha256": digest(physical)},
-                      "delivery_acceptance": json.loads(acceptance.read_text()),
+                      "delivery_acceptance": acceptance_binding,
                       "acquisition": {channel["name"]: {"entrypoint": "runtime_publication.py",
                           "method": "publish_original", "evidence": "operation.jsonl and original Native context"}
                           for channel in channels},
@@ -63,14 +72,22 @@ def build() -> None:
                           "exit_code": 0,
                           "log": "cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log",
                           "log_sha256": digest(HERE / ("cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log"))},
-                      "missing_proofs": ["recorded-only process-saved proof on current analyzer revision",
-                                         "independent delivery audit positive and negative",
-                                         "source-bound comparison audit",
-                                         "reviewed original site source binding"]})
+                      "missing_proofs": ["source-backed interior-attention sweep expansion",
+                                         "reviewed original site and municipal source binding",
+                                         "original Native physical completion review"]})
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,
                 "runtime_manifest_sha256": batch["runtime"]["source_manifest_sha256"],
                 "semantic_index_sha256": digest(HERE / "proposals/semantic-index.json"),
-                "status": "partial", "cases": cases}
+                "status": "partial", "cases": cases,
+                "comparison_audit": {
+                    "comparison_id": "alley_lateral_control_observation",
+                    "script": "production_audit.py",
+                    "script_sha256": digest(HERE / "production_audit.py"),
+                    "command": ".venv-cpu/bin/python work/" + AID +
+                               "/production_audit.py --steady $STEADY_ATTEMPT"
+                               " --variation $VARIATION_ATTEMPT --output $COMPARISON_AUDIT_RECEIPT",
+                    "physical_completion": "pending_independent_review",
+                    "legal_judgment": "unresolved"}}
     (HERE / "execution-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print("selected two exact alley cases; partial proofs remain")
 

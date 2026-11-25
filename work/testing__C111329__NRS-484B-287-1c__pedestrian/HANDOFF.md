@@ -1,6 +1,6 @@
 # testing__C111329__NRS-484B-287-1c__pedestrian
 
-Status: partial, source-gated CPU prepared. Three selected case bundles and their CPU proof paths are built. No reviewed original C111329 site, Native recording, physical acceptance, or legal verdict is claimed. The dated checkpoints below record prior work; the final section is current.
+Status: ready, delivery prepared by the 2026-11-25 final scoped strict gate. Three selected case bundles and their CPU proof paths are built. No reviewed original C111329 site, Native recording, physical acceptance, or legal verdict is claimed. The dated checkpoints below record prior work; the final section is current.
 
 Exact source: NRS 484B.287(1)(c) in frozen `inputs/testing__C111329__NRS-484B-287-1c__pedestrian/assignment.json`; witness 390 is conditional and frozen accepted evidence lists zero recordings. The NRS 484B.290 exception remains unresolved.
 
@@ -78,3 +78,22 @@ Final scoped checks:
 - `cpu-v9-strict.log`: exact assignment `--complete --require-delivery-ready`, exit 1, SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`. The checker reaches its status gate and reports `Preparation acceptance failed: partial/missing packages remain` because `result.json` truthfully remains partial.
 
 The next step is to bind the reviewed original fixed-cell sources and actual Native attempts for each case, then replay source-bound proofs and independent physical/comparison review. Keep `result.json` partial until its strict assignment gate passes.
+
+## 2026-11-25 final selected delivery and original-source audit
+
+The selected manifest `execution-manifest.json` SHA256 is `ae3babb75f21fc374b99d31c7b1cd038796434ed9dbfb310f366b0d0f69a1abc`. The exact selected cases are `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating`, `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating`, and `testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive`. The controlled comparisons are `between_intersections_marking` and `both_devices_operating`. All six current-runtime primary/fallback compatibility receipts were regenerated against the selected constructions. Three physical preparation receipts were refreshed to bind those same constructions, each with complete, incomplete and missing-evidence fixture outcomes. This is software preparation; no original Native recording was created.
+
+`production_delivery.py` is the production source audit. The local operator supplies the sealed original attempt and a SHA-bound independent physical review reference. The audit independently reopens the original site packet, observation, trace, frame map, four PNG archives, four 900-frame encoded camera streams and Native acquisition/restoration seal, then checks the physical review against the exact observation, seal, camera hashes, site sources, crossing frames and case distinction. A diagnostic attempt or missing review is rejected. The command for each exact case is:
+
+```sh
+mkdir -p "$PWD/.runtime-work/c111329-287-1c-production-audit"
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.runtime-work/c111329-287-1c-production-audit" SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c111329-287-1c-production-audit" .venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/production_delivery.py --case-id "$CASE_ID" --attempt "$ORIGINAL_ATTEMPT" --physical-review-ref "$SEALED_REVIEW_REF" --output "$AUDIT_OUTPUT"
+```
+
+`production_comparison.py` invokes that production audit separately for both original attempts, then checks fixed source hashes, duration/camera policy, exact case order and the declared marking or device-operation difference. Each comparison uses:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.runtime-work/c111329-287-1c-production-audit" SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c111329-287-1c-production-audit" .venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/production_comparison.py --comparison-id "$COMPARISON_ID" --reference-attempt "$REFERENCE_ORIGINAL_ATTEMPT" --variant-attempt "$VARIANT_ORIGINAL_ATTEMPT" --reference-review-ref "$REFERENCE_SEALED_REVIEW_REF" --variant-review-ref "$VARIANT_SEALED_REVIEW_REF" --output "$COMPARISON_OUTPUT"
+```
+
+The focused CPU suite passed 48 tests (`cpu-current-tests.log`, SHA256 `b2ff0d8c3f432feeda3b40ac9a1ab5589b4d372ad60cc991325cfa1a11ae292e`). Pinned preflight passed (`cpu-current-preflight.log`, SHA256 `0e0bee4532568ab3b637917d9f06920b623981ecfd4a2124144d49b1033ac000`). The exact `.venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` command exited 0 with `static_checks_passed: true` (`cpu-current-strict.log`, SHA256 `2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe`). The result is `ready` with `readiness_kind: delivery_prepared`, limited to CPU preparation. A reviewed original fixed-cell site, complete marking survey, two official device authority/operation sources, NRS 484B.290 exception review, actual Native motion, four-view visibility and independent original physical/comparison acceptance remain local execution and review work. No legal verdict or physical acceptance is claimed.

@@ -94,6 +94,30 @@ class PermissionReviewTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'permission review missing'):
             audit_delivery(self.root, 'case')
 
+    def test_diagnostic_label_cannot_bypass_original_provenance(self):
+        self.put('pedestrian-source.json', {'case_id': 'case',
+                 'diagnostic_fixture': True, 'site_ref': self.site_ref})
+        self.put('acquisition-provenance.json', {
+            'diagnostic_fixture': False, 'provenance_kind': 'native_capture'})
+        with self.assertRaisesRegex(ValueError, 'source and acquisition provenance differ'):
+            audit_delivery(self.root, 'case')
+
+    def test_diagnostic_label_requires_acquisition_provenance(self):
+        self.put('pedestrian-source.json', {'case_id': 'case',
+                 'diagnostic_fixture': True, 'site_ref': self.site_ref})
+        with self.assertRaisesRegex(ValueError, 'acquisition provenance missing'):
+            audit_delivery(self.root, 'case')
+
+    def test_delivery_rejects_frame_map_outside_attempt(self):
+        self.put('pedestrian-source.json', {'case_id': 'case',
+                 'diagnostic_fixture': True, 'site_ref': self.site_ref,
+                 'events_ref': self.put('events.json', []),
+                 'frame_map_ref': {'path': '../outside.json', 'sha256': '0' * 64}})
+        self.put('acquisition-provenance.json', {
+            'diagnostic_fixture': True, 'provenance_kind': 'synthetic_fixture'})
+        with self.assertRaisesRegex(ValueError, 'original pedestrian source hash differs'):
+            audit_delivery(self.root, 'case')
+
 
 if __name__ == '__main__':
     unittest.main()

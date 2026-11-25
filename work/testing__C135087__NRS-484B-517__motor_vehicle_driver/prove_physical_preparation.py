@@ -9,7 +9,7 @@ import sys
 from build_bundles import HERE, AID
 
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c135087-physical-probes-v13"
+SCRATCH = REPO / ".runtime-work" / "c135087-physical-probes-v15"
 
 
 def sha(path):
