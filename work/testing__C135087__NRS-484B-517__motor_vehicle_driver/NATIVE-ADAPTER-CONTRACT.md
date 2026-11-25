@@ -1,6 +1,9 @@
 # C135087 Native source handoff
 
 `runner.py` requires an adapter module with `open_session(host, port, config)`.
+The two input references must hash-match real, separately reviewed site and
+vehicle JSON; records labeled as synthetic diagnostics are rejected before
+the Native session starts.
 The session supplies the live world, three actors, observer, controller and four
 camera lifecycle methods already used by the case bundle. After the 900th tick
 and camera finalization, it must also implement

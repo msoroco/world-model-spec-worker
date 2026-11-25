@@ -162,9 +162,10 @@
     }
   ],
   "remaining_gpu_checks": [
-    "Run both exact cases on a reviewed original C111301 Native site, then independently review actual camera pixels, source geometry, maneuver and pedestrian exposure."
+    "Run all four exact cases on a reviewed original C111301 Native site, with source-hashed OpenDRIVE, original actor poses and four cameras.",
+    "Independently review actual camera pixels, route geometry, backing, pedestrian and moving-traffic motion, yielding, and both controlled comparisons; legal judgment remains unresolved by CPU diagnostics."
   ],
-  "reason": "Moving-traffic alternative needs selected cases and source-gated CPU proofs; original physical site review remains queued.",
+  "reason": "Four cases pass selected diagnostic compatibility; synthetic physical-outcome and saved-only proof binding remains.",
   "cpu_proof_index": {
     "path": "saved-cpu-proof-index.json",
     "sha256": "1a31f2f187590297e024e820fe826ce0661a4fc05de5fe1a4b8fad4131049ec8"
@@ -175,5 +176,6 @@
     "log": "cpu-native-extraction-strict.log",
     "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638",
     "expected_partial_reason": "Preparation acceptance failed: partial/missing packages remain"
-  }
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

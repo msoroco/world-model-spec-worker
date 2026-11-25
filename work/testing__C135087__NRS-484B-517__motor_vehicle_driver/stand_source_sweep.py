@@ -35,9 +35,16 @@ def extract(root, site_sha256, vehicle_sha256):
                            ("vehicle-original.json", vehicle_sha256)):
         if _sha(root / name) != expected:
             raise SourceError("reviewed source hash differs: " + name)
+        record = json.loads((root / name).read_text(encoding="utf-8"))
+        if (not isinstance(record, dict) or
+                str(record.get("format", "")).startswith("synthetic_") or
+                "DIAGNOSTIC FIXTURE" in json.dumps(record).upper()):
+            raise SourceError("diagnostic source record cannot support a sweep: " + name)
     attempt = json.loads((root / "attempt-source.json").read_text())
     inventory = audit_saved_attempt(attempt, root)
     converter = audit_converter(root, attempt)
+    if json.loads((root / "converter-source-audit.json").read_text()) != converter:
+        raise SourceError("saved Native converter audit differs from original packet")
     delivery = audit_delivery(root)
     if (inventory["case_id"] != converter["case_id"] or
             inventory["case_id"] != delivery["case_id"]):

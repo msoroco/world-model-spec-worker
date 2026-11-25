@@ -125,7 +125,8 @@ def build():
                      'variable_assignments': assignments(kind),
                      'recording_description': case_description,
                      'unresolved_judgment_calls': [PHRASE]})
-    case_stage = {'status': 'draft', 'cell_id': CELL, 'actor': ACTOR, 'cases': rows,
+    case_stage = {'status': 'draft', 'cell_id': CELL, 'actor': ACTOR,
+                  'sweeps_expanded': True, 'cases': rows,
                   'sweep_specs': [{'sweep_id': participant + '_yield_response',
                                    'target_law_id': LAW,
                                    'judgment_refs': [{'phrase': PHRASE,

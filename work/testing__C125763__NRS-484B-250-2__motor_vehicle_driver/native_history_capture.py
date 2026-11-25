@@ -175,7 +175,8 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
 def audit_media(attempt, *, camera_dimensions):
     """Reopen every camera PNG and join its original clock to both bodies."""
     root = Path(attempt)
-    manifest = json.loads((root / 'source-manifest.json').read_text(encoding='utf-8'))
+    manifest = json.loads(_retained_file(root, 'source-manifest.json').read_text(
+        encoding='utf-8'))
     if set(camera_dimensions) != set(CAMERAS):
         raise ValueError('four original camera dimensions required')
     sources = {}

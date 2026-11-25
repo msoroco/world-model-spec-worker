@@ -7,7 +7,7 @@
       "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c8249769c0a0e649824a226eb8fe556814dd868040c19d2e42a21d920bc01ee5",
+      "construction_sha256": "30d2fe2fdfeb03e227c53f6feb73954cffd5081ec064e951662c75c90a8e56f2",
       "measurement_contract": "measurement-pedestrian_yield.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -38,7 +38,7 @@
         },
         "moving_pedestrian_corridor_exposure": {
           "entrypoint": "native_backing_capture.py",
-          "method": "original pedestrian pose and velocity with sealed route geometry",
+          "method": "original conflicting participant pose and velocity with sealed route geometry",
           "evidence": [
             "telemetry.json",
             "map.json",
@@ -46,28 +46,19 @@
           ]
         }
       },
-      "compatibility": {
-        "receipt": "cases/pedestrian_yield/compatibility.json",
-        "sha256": "3b2f252b734a176a20cb560ec6513bd8049baa79e5e60943a2e606e421741483",
-        "log": "cases/pedestrian_yield/cpu-analysis.log"
-      },
-      "negative": {
-        "log": "cases/pedestrian_yield/cpu-negative.log",
-        "expected_error": "Missing required source: map.json"
-      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-nov25/offline-yield-v4 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "c8249769c0a0e649824a226eb8fe556814dd868040c19d2e42a21d920bc01ee5",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-nov25/offline-pedestrian_yield-traffic-v1 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "30d2fe2fdfeb03e227c53f6feb73954cffd5081ec064e951662c75c90a8e56f2",
         "exit_code": 0,
         "log": "cases/pedestrian_yield/cpu-offline.log",
-        "log_sha256": "4df2fd881b0c3a3afc3da1e6cf38baa1e5ac61d7688373dc60afcc7193be40f2"
+        "log_sha256": "f48f0751a0feea863a28660cc45624905121a356f47c74646a9653695a60524f"
       }
     },
     {
       "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
       "kind": "delivery",
       "construction": "construction-pedestrian_continue.json",
-      "construction_sha256": "99531f999c72d07a6f72e85e3c55e26526f894689c60b76b123d336acc9fc2db",
+      "construction_sha256": "352a4ea2da2953637e5a92e5246c671bf4ee6c0f2170eb59e1cb9f213f53af07",
       "measurement_contract": "measurement-pedestrian_continue.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -98,7 +89,7 @@
         },
         "moving_pedestrian_corridor_exposure": {
           "entrypoint": "native_backing_capture.py",
-          "method": "original pedestrian pose and velocity with sealed route geometry",
+          "method": "original conflicting participant pose and velocity with sealed route geometry",
           "evidence": [
             "telemetry.json",
             "map.json",
@@ -106,21 +97,114 @@
           ]
         }
       },
-      "compatibility": {
-        "receipt": "cases/pedestrian_continue/compatibility.json",
-        "sha256": "b77c544ab616d68840bce1658e3ffda245c8cb3ab694823dfd1c3c87b14f5c5c",
-        "log": "cases/pedestrian_continue/cpu-analysis.log"
-      },
-      "negative": {
-        "log": "cases/pedestrian_continue/cpu-negative.log",
-        "expected_error": "Missing required source: map.json"
-      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-nov25/offline-continue-v4 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "99531f999c72d07a6f72e85e3c55e26526f894689c60b76b123d336acc9fc2db",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-nov25/offline-pedestrian_continue-traffic-v1 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "352a4ea2da2953637e5a92e5246c671bf4ee6c0f2170eb59e1cb9f213f53af07",
         "exit_code": 0,
         "log": "cases/pedestrian_continue/cpu-offline.log",
-        "log_sha256": "33ae53e91c26b0221a75722580f04634c8ea3dad1f1f6e88de04c6f930392a36"
+        "log_sha256": "9ddee9e6e392d12d44a9f6a43b8b2782197e2f492a2ef0403b459022ff64cb59"
+      }
+    },
+    {
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+      "kind": "delivery",
+      "construction": "construction-traffic_yield.json",
+      "construction_sha256": "b0718034c1c1e53b6a43f6fd47213eecc1acce85e6966525d57070ee2da535d2",
+      "measurement_contract": "measurement-traffic_yield.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/diagnostic-traffic_yield-recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No site-specific failure mechanism justifies an alternate before original site review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_reverse_response": {
+          "entrypoint": "native_backing_capture.py",
+          "method": "original actor control and velocity readback joined to runtime PipelineCapture on each Native world tick",
+          "evidence": [
+            "telemetry.json",
+            "frame-map.json",
+            "trace.jsonl",
+            "capture/evidence.jsonl",
+            "capture/native/frames.jsonl",
+            "carla_recorder.log"
+          ]
+        },
+        "moving_traffic_corridor_exposure": {
+          "entrypoint": "traffic_capture.py",
+          "method": "original conflicting participant pose and velocity with sealed route geometry",
+          "evidence": [
+            "telemetry.json",
+            "map.json",
+            "road.xodr"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --output .runtime-work/c111301-nov25/offline-traffic-yield-v1 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "b0718034c1c1e53b6a43f6fd47213eecc1acce85e6966525d57070ee2da535d2",
+        "exit_code": 0,
+        "log": "cases/traffic_yield/cpu-offline.log",
+        "log_sha256": "b548611ee548b0116a0e4536a1dfbeb567a349251f8f8d8a74c7e321e5ef4ab1"
+      }
+    },
+    {
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue",
+      "kind": "delivery",
+      "construction": "construction-traffic_continue.json",
+      "construction_sha256": "5472fcc46f166107cb821ef64d10e15ce9124dbeaa246a9c1ea3f64dedc93240",
+      "measurement_contract": "measurement-traffic_continue.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/diagnostic-traffic_continue-recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No site-specific failure mechanism justifies an alternate before original site review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_reverse_response": {
+          "entrypoint": "native_backing_capture.py",
+          "method": "original actor control and velocity readback joined to runtime PipelineCapture on each Native world tick",
+          "evidence": [
+            "telemetry.json",
+            "frame-map.json",
+            "trace.jsonl",
+            "capture/evidence.jsonl",
+            "capture/native/frames.jsonl",
+            "carla_recorder.log"
+          ]
+        },
+        "moving_traffic_corridor_exposure": {
+          "entrypoint": "traffic_capture.py",
+          "method": "original conflicting participant pose and velocity with sealed route geometry",
+          "evidence": [
+            "telemetry.json",
+            "map.json",
+            "road.xodr"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --output .runtime-work/c111301-nov25/offline-traffic-continue-v1 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "5472fcc46f166107cb821ef64d10e15ce9124dbeaa246a9c1ea3f64dedc93240",
+        "exit_code": 0,
+        "log": "cases/traffic_continue/cpu-offline.log",
+        "log_sha256": "82ba9110050c37178809258e39dae01f7a01a315b3f6667ff40254d49b5d2521"
       }
     }
   ]

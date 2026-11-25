@@ -6,6 +6,8 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+from contextlib import redirect_stdout
 
 from PIL import Image
 
@@ -15,8 +17,9 @@ sys.path.insert(0, str(PACKAGE))
 from native_history_capture import capture, audit_media, CAMERAS
 from crossing_timing import measure
 from saved_finalizer import finalize
-from encode_views import encode
+from encode_views import encode, compose_primary, main as encode_main
 from delivery_audit import audit as audit_delivery
+from postprocess import run as postprocess_run
 
 
 class Vertex:
@@ -301,6 +304,74 @@ class CaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'encoded camera bytes differ'):
             audit_delivery(attempt, saved, self.root / 'encoded', damaged,
                            probe_id='entry_inside')
+
+    def test_profile_views_compose_with_pinned_runtime_and_full_decode(self):
+        dims = {'overview': [1920, 1080], 'approach': [1280, 720],
+                'reference_corner': [1280, 720], 'driver_reference': [1280, 720]}
+        self.scene['camera_dimensions'] = dims
+        self.packet.write_text(json.dumps(self.scene) + '\n')
+        images = {}
+        for index, name in enumerate(CAMERAS):
+            stream = io.BytesIO()
+            Image.new('RGB', tuple(dims[name]), (10 + index, 20, 30)).save(stream, format='PNG')
+            images[name] = stream.getvalue()
+        readers = {name: lambda frame, image=images[name]: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        attempt = self.root / 'profile-capture'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4,
+                camera_readers=readers, camera_dimensions=dims)
+        videos = self.root / 'profile-views'
+        receipt = encode(attempt, videos, camera_dimensions=dims)
+        composed = compose_primary(attempt, videos, self.root / 'primary.mkv', receipt)
+        self.assertEqual(composed['frames'], 4)
+        self.assertEqual(composed['dimensions'], [3840, 1800])
+        self.assertTrue(composed['full_video_decode'])
+        self.assertTrue(composed['diagnostic_fixture'])
+        self.assertFalse(composed['physical_acceptance'])
+        encoded_receipt = self.root / 'encoded-receipt.json'
+        encoded_receipt.write_text(json.dumps(receipt) + '\n')
+        cli_receipt = self.root / 'composed-receipt.json'
+        with patch.object(sys, 'argv', ['encode_views.py', '--mode', 'compose',
+                                       '--attempt', str(attempt), '--videos-dir', str(videos),
+                                       '--encoded-receipt', str(encoded_receipt),
+                                       '--output', str(self.root / 'primary-cli.mkv'),
+                                       '--receipt-output', str(cli_receipt)]):
+            with redirect_stdout(io.StringIO()):
+                encode_main()
+        self.assertEqual(json.loads(cli_receipt.read_text())['frames'], 4)
+        digest = hashlib.sha256((attempt / 'source-manifest.json').read_bytes()).hexdigest()
+        saved = self.root / 'profile-result.json'
+        finalize(attempt, saved, expected_manifest_sha256=digest, probe_id='entry_inside')
+        delivered = audit_delivery(attempt, saved, videos, receipt,
+                                   probe_id='entry_inside',
+                                   primary_path=self.root / 'primary.mkv',
+                                   composition_receipt=composed)
+        self.assertEqual(delivered['composed_primary']['decoded_frames'], 4)
+        self.assertTrue(delivered['composed_primary']['full_decode'])
+        altered = dict(composed)
+        altered['frame_map_sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'composed primary source binding differs'):
+            audit_delivery(attempt, saved, videos, receipt, probe_id='entry_inside',
+                           primary_path=self.root / 'primary.mkv',
+                           composition_receipt=altered)
+        package = postprocess_run(attempt, self.root / 'saved-package', 'entry_inside')
+        self.assertEqual(package['original_frames'], 4)
+        self.assertTrue(package['primary_full_decode'])
+        self.assertTrue(package['diagnostic_fixture'])
+        self.assertFalse(package['physical_acceptance'])
+        with self.assertRaisesRegex(ValueError, 'fresh empty postprocessing output'):
+            postprocess_run(attempt, self.root / 'saved-package', 'entry_inside')
+        changed = dict(receipt)
+        changed['videos'] = {name: dict(row) for name, row in receipt['videos'].items()}
+        changed['videos']['overview']['sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'encoded source video differs'):
+            compose_primary(attempt, videos, self.root / 'wrong-primary.mkv', changed)
+        outside = self.root / 'same-site-bytes.json'
+        site_path = attempt / 'site-context.json'
+        site_path.replace(outside)
+        site_path.symlink_to(outside)
+        with self.assertRaisesRegex(ValueError, 'original source is not a retained file'):
+            postprocess_run(attempt, self.root / 'symlinked-site-package', 'entry_inside')
 
 
 if __name__ == "__main__":

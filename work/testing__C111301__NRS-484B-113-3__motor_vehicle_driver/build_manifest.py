@@ -16,7 +16,7 @@ def sha(path):
 def build():
     aid = HERE.name
     cases = []
-    for suffix in ('pedestrian_yield', 'pedestrian_continue'):
+    for suffix in ('pedestrian_yield', 'pedestrian_continue', 'traffic_yield', 'traffic_continue'):
         case_id = aid + '__' + suffix
         construction = ('construction.json' if suffix == 'pedestrian_yield'
                         else 'construction-' + suffix + '.json')
@@ -35,6 +35,11 @@ def build():
                                'host_env_var': 'CARLA_HOST',
                                'port_env_var': 'CARLA_PORT'}})
         entry = cases[-1]
+        physical = HERE / 'cases' / suffix / 'physical-preparation.json'
+        if physical.is_file() and json.loads(physical.read_text()).get('construction_sha256') == entry['construction_sha256']:
+            entry['physical_preparation'] = {
+                'receipt': str(physical.relative_to(HERE)), 'sha256': sha(physical)}
+        participant = 'moving_traffic_corridor_exposure' if suffix.startswith('traffic_') else 'moving_pedestrian_corridor_exposure'
         entry['acquisition'] = {
             'vehicle_reverse_response': {
                 'entrypoint': 'native_backing_capture.py',
@@ -42,9 +47,9 @@ def build():
                 'evidence': ['telemetry.json', 'frame-map.json', 'trace.jsonl',
                              'capture/evidence.jsonl', 'capture/native/frames.jsonl',
                              'carla_recorder.log']},
-            'moving_pedestrian_corridor_exposure': {
-                'entrypoint': 'native_backing_capture.py',
-                'method': 'original pedestrian pose and velocity with sealed route geometry',
+            participant: {
+                'entrypoint': 'traffic_capture.py' if suffix.startswith('traffic_') else 'native_backing_capture.py',
+                'method': 'original conflicting participant pose and velocity with sealed route geometry',
                 'evidence': ['telemetry.json', 'map.json', 'road.xodr']}}
         case_folder = HERE / 'cases' / suffix
         receipt = case_folder / 'compatibility.json'
@@ -56,12 +61,13 @@ def build():
                                  'expected_error': 'Missing required source: map.json'}
         offline = case_folder / 'cpu-offline.log'
         if offline.is_file():
+            offline_output = ('offline-' + suffix + '-traffic-v1' if suffix.startswith('pedestrian_')
+                              else 'offline-' + suffix.replace('_', '-') + '-v1')
             entry['offline'] = {
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + aid +
                            '/execution-manifest.json --case ' + case_id +
-                           ' --output .runtime-work/c111301-nov25/offline-' +
-                           ('yield' if suffix == 'pedestrian_yield' else 'continue') +
-                           '-v4 --python $PWD/.venv-cpu/bin/python',
+                           ' --output .runtime-work/c111301-nov25/' + offline_output +
+                           ' --python $PWD/.venv-cpu/bin/python',
                 'construction_sha256': entry['construction_sha256'],
                 'exit_code': 0, 'log': str(offline.relative_to(HERE)),
                 'log_sha256': sha(offline)}

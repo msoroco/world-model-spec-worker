@@ -17,6 +17,26 @@ from stand_converter_source import audit as audit_converter_sources
 HERE = Path(__file__).resolve().parent
 
 
+def _require_reviewed_source_record(value, label):
+    if not isinstance(value, dict) or not value.get("path") or not value.get("sha256"):
+        raise SourceError("reviewed original " + label + " source reference required")
+    source = Path(value["path"])
+    if source.is_symlink() or not source.is_file():
+        raise SourceError("reviewed original " + label + " source file missing")
+    raw = source.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != value["sha256"]:
+        raise SourceError("reviewed original " + label + " source hash changed")
+    try:
+        record = json.loads(raw)
+    except (UnicodeError, ValueError) as error:
+        raise SourceError("reviewed original " + label + " source is invalid") from error
+    if (not isinstance(record, dict) or
+            str(record.get("format", "")).startswith("synthetic_") or
+            "DIAGNOSTIC FIXTURE" in json.dumps(record).upper()):
+        raise SourceError("diagnostic " + label + " record cannot be an original source")
+    return record
+
+
 def check(root=HERE):
     root = Path(root)
     config = json.loads((root / "config.json").read_text())
@@ -44,6 +64,8 @@ def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=20
         raise SourceError("reviewed original stand, sign and vehicle-role records required")
     site_ref = json.loads(Path(site_ref).read_text()) if isinstance(site_ref, (str, Path)) else site_ref
     vehicle_ref = json.loads(Path(vehicle_ref).read_text()) if isinstance(vehicle_ref, (str, Path)) else vehicle_ref
+    _require_reviewed_source_record(site_ref, "site")
+    _require_reviewed_source_record(vehicle_ref, "vehicle")
     adapter_module = importlib.import_module(native_adapter)
     if not hasattr(adapter_module, "open_session"):
         raise SourceError("Native adapter has no open_session")
