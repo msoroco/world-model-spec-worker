@@ -1,0 +1,673 @@
+{
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared reviewed highway, center lane, actor, receiving route and four-view capture setup.",
+      "variable_assignments": {
+        "merge_station_target": {
+          "kind": "controller",
+          "value": 49,
+          "unit": "ft"
+        },
+        "merge_observed": {
+          "kind": "controller",
+          "value": "merge"
+        },
+        "highway_lane_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "public_highway_context",
+            "unit": "source record",
+            "method": "Source-hashed public highway review and original Native road identity",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_turn_lane_design",
+            "unit": "source record",
+            "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "turn_completion_event",
+            "unit": "frame event",
+            "method": "Original route and body transition into center lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_lane_body_history",
+            "unit": "m",
+            "method": "Original 20 Hz body center and footprint path after turn completion",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "through_lane_merge_event",
+            "unit": "frame event",
+            "method": "Original first body transition into receiving through lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "receiving_vehicle_history",
+            "unit": "frame sequence",
+            "method": "Original receiving actor identity, lane, route and transform",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized four-camera frame and source hash map",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_lane_site",
+            "unit": "source record",
+            "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+          },
+          {
+            "name": "reviewed_actor_and_route",
+            "unit": "source record",
+            "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+          }
+        ],
+        "limitations": [
+          "49/50/51 feet are requested engineering probes, not measured outcomes.",
+          "A missing merge is censored; it has no invented distance to merge.",
+          "Physical realization and statutory application remain for independent review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "single center lane to be used only for turning by traffic moving in both directions",
+        "after making a left-hand turn onto the highway",
+        "before merging with traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__below_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound post-turn travel or no-merge censoring probe; no legal verdict.",
+      "paired_probe_id": "post_turn_center_lane_distance",
+      "deliberate_differences": [
+        "merge_station_target"
+      ],
+      "variable_assignments": {
+        "merge_station_target": {
+          "kind": "controller",
+          "value": 49,
+          "unit": "ft"
+        },
+        "merge_observed": {
+          "kind": "controller",
+          "value": "merge"
+        },
+        "highway_lane_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "single center lane to be used only for turning by traffic moving in both directions",
+        "after making a left-hand turn onto the highway",
+        "before merging with traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "public_highway_context",
+            "unit": "source record",
+            "method": "Source-hashed public highway review and original Native road identity",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_turn_lane_design",
+            "unit": "source record",
+            "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "turn_completion_event",
+            "unit": "frame event",
+            "method": "Original route and body transition into center lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_lane_body_history",
+            "unit": "m",
+            "method": "Original 20 Hz body center and footprint path after turn completion",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "through_lane_merge_event",
+            "unit": "frame event",
+            "method": "Original first body transition into receiving through lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "receiving_vehicle_history",
+            "unit": "frame sequence",
+            "method": "Original receiving actor identity, lane, route and transform",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized four-camera frame and source hash map",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_lane_site",
+            "unit": "source record",
+            "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+          },
+          {
+            "name": "reviewed_actor_and_route",
+            "unit": "source record",
+            "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+          }
+        ],
+        "limitations": [
+          "49/50/51 feet are requested engineering probes, not measured outcomes.",
+          "A missing merge is censored; it has no invented distance to merge.",
+          "Physical realization and statutory application remain for independent review."
+        ]
+      },
+      "probe": {
+        "primary_variable": "merge_station_target",
+        "comparison_or_standard": "Original measured path to first observed merge; no-merge is censored.",
+        "target_value_or_branch": 49,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "ft",
+        "test_value": 49
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering spacing around exact statutory 50-foot boundary."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound post-turn travel or no-merge censoring probe; no legal verdict.",
+      "paired_probe_id": "post_turn_center_lane_distance",
+      "deliberate_differences": [
+        "merge_station_target"
+      ],
+      "variable_assignments": {
+        "merge_station_target": {
+          "kind": "controller",
+          "value": 50,
+          "unit": "ft"
+        },
+        "merge_observed": {
+          "kind": "controller",
+          "value": "merge"
+        },
+        "highway_lane_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "single center lane to be used only for turning by traffic moving in both directions",
+        "after making a left-hand turn onto the highway",
+        "before merging with traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "public_highway_context",
+            "unit": "source record",
+            "method": "Source-hashed public highway review and original Native road identity",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_turn_lane_design",
+            "unit": "source record",
+            "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "turn_completion_event",
+            "unit": "frame event",
+            "method": "Original route and body transition into center lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_lane_body_history",
+            "unit": "m",
+            "method": "Original 20 Hz body center and footprint path after turn completion",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "through_lane_merge_event",
+            "unit": "frame event",
+            "method": "Original first body transition into receiving through lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "receiving_vehicle_history",
+            "unit": "frame sequence",
+            "method": "Original receiving actor identity, lane, route and transform",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized four-camera frame and source hash map",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_lane_site",
+            "unit": "source record",
+            "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+          },
+          {
+            "name": "reviewed_actor_and_route",
+            "unit": "source record",
+            "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+          }
+        ],
+        "limitations": [
+          "49/50/51 feet are requested engineering probes, not measured outcomes.",
+          "A missing merge is censored; it has no invented distance to merge.",
+          "Physical realization and statutory application remain for independent review."
+        ]
+      },
+      "probe": {
+        "primary_variable": "merge_station_target",
+        "comparison_or_standard": "Original measured path to first observed merge; no-merge is censored.",
+        "target_value_or_branch": 50,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "ft",
+        "test_value": 50
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering spacing around exact statutory 50-foot boundary."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__above_50ft",
+      "target_law_id": "NRS-484B-223-3c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound post-turn travel or no-merge censoring probe; no legal verdict.",
+      "paired_probe_id": "post_turn_center_lane_distance",
+      "deliberate_differences": [
+        "merge_station_target"
+      ],
+      "variable_assignments": {
+        "merge_station_target": {
+          "kind": "controller",
+          "value": 51,
+          "unit": "ft"
+        },
+        "merge_observed": {
+          "kind": "controller",
+          "value": "merge"
+        },
+        "highway_lane_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "single center lane to be used only for turning by traffic moving in both directions",
+        "after making a left-hand turn onto the highway",
+        "before merging with traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "public_highway_context",
+            "unit": "source record",
+            "method": "Source-hashed public highway review and original Native road identity",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_turn_lane_design",
+            "unit": "source record",
+            "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "turn_completion_event",
+            "unit": "frame event",
+            "method": "Original route and body transition into center lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_lane_body_history",
+            "unit": "m",
+            "method": "Original 20 Hz body center and footprint path after turn completion",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "through_lane_merge_event",
+            "unit": "frame event",
+            "method": "Original first body transition into receiving through lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "receiving_vehicle_history",
+            "unit": "frame sequence",
+            "method": "Original receiving actor identity, lane, route and transform",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized four-camera frame and source hash map",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_lane_site",
+            "unit": "source record",
+            "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+          },
+          {
+            "name": "reviewed_actor_and_route",
+            "unit": "source record",
+            "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+          }
+        ],
+        "limitations": [
+          "49/50/51 feet are requested engineering probes, not measured outcomes.",
+          "A missing merge is censored; it has no invented distance to merge.",
+          "Physical realization and statutory application remain for independent review."
+        ]
+      },
+      "probe": {
+        "primary_variable": "merge_station_target",
+        "comparison_or_standard": "Original measured path to first observed merge; no-merge is censored.",
+        "target_value_or_branch": 51,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "ft",
+        "test_value": 51
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering spacing around exact statutory 50-foot boundary."
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__no_merge",
+      "target_law_id": "NRS-484B-223-3c",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "Source-bound post-turn travel or no-merge censoring probe; no legal verdict.",
+      "paired_probe_id": "merge_observation",
+      "deliberate_differences": [
+        "merge_observed"
+      ],
+      "variable_assignments": {
+        "merge_station_target": {
+          "kind": "controller",
+          "value": 49,
+          "unit": "ft"
+        },
+        "merge_observed": {
+          "kind": "controller",
+          "value": "no_merge"
+        },
+        "highway_lane_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "single center lane to be used only for turning by traffic moving in both directions",
+        "after making a left-hand turn onto the highway",
+        "before merging with traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "public_highway_context",
+            "unit": "source record",
+            "method": "Source-hashed public highway review and original Native road identity",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_turn_lane_design",
+            "unit": "source record",
+            "method": "Original map lane topology, markings, bidirectional use and exclusive turning designation",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "turn_completion_event",
+            "unit": "frame event",
+            "method": "Original route and body transition into center lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "center_lane_body_history",
+            "unit": "m",
+            "method": "Original 20 Hz body center and footprint path after turn completion",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "through_lane_merge_event",
+            "unit": "frame event",
+            "method": "Original first body transition into receiving through lane",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "receiving_vehicle_history",
+            "unit": "frame sequence",
+            "method": "Original receiving actor identity, lane, route and transform",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized four-camera frame and source hash map",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second left-turn, center-lane and merge episode",
+            "reference_frame": "Original Native world frame and 20 Hz frame map",
+            "uncertainty": "Actual lane design, motion, events and body reference need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_highway_and_lane_site",
+            "unit": "source record",
+            "method": "Hash-bound original OpenDRIVE and independently reviewed highway and lane dedication"
+          },
+          {
+            "name": "reviewed_actor_and_route",
+            "unit": "source record",
+            "method": "Hash-bound actor dimensions, entry turn and receiving traffic route"
+          }
+        ],
+        "limitations": [
+          "49/50/51 feet are requested engineering probes, not measured outcomes.",
+          "A missing merge is censored; it has no invented distance to merge.",
+          "Physical realization and statutory application remain for independent review."
+        ]
+      },
+      "probe": {
+        "primary_variable": "merge_observed",
+        "comparison_or_standard": "Original measured path to first observed merge; no-merge is censored.",
+        "target_value_or_branch": "no_merge"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109749-judgment-1",
+      "target_law_id": "NRS-484B-223-3c",
+      "judgment_refs": [
+        {
+          "phrase": "single center lane to be used only for turning by traffic moving in both directions",
+          "note": "Review original highway designation, lane topology, markings and use in both directions."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original highway and Native site review is pending.",
+      "missing_inputs": [
+        "reviewed original highway/lane evidence and physical Native observations"
+      ]
+    },
+    {
+      "sweep_id": "c109749-judgment-2",
+      "target_law_id": "NRS-484B-223-3c",
+      "judgment_refs": [
+        {
+          "phrase": "after making a left-hand turn onto the highway",
+          "note": "Locate observed turn completion from original body and lane history, not controller intent."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original highway and Native site review is pending.",
+      "missing_inputs": [
+        "reviewed original highway/lane evidence and physical Native observations"
+      ]
+    },
+    {
+      "sweep_id": "c109749-judgment-3",
+      "target_law_id": "NRS-484B-223-3c",
+      "judgment_refs": [
+        {
+          "phrase": "before merging with traffic",
+          "note": "Locate first observed through-lane merge and receiving traffic; absent merge is censored."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original highway and Native site review is pending.",
+      "missing_inputs": [
+        "reviewed original highway/lane evidence and physical Native observations"
+      ]
+    }
+  ]
+}

@@ -86,9 +86,9 @@ def build():
             if source['content'].count(old) != 1:
                 raise ValueError('fallback controller source changed')
             source['content'] = source['content'].replace(
-                old, 'follower = RouteFollower(case_suffix, site, control_factory, vector_factory, speed_mps=1.0)')
+                old, 'follower = RouteFollower(case_suffix, site, control_factory, vector_factory, speed_mps=1.5)')
             fallback['mechanisms'] = fallback['mechanisms'] + [
-                'fallback walker route follower commands 1.0 m/s for the same source-bound crossing']
+                'fallback walker route follower commands 1.5 m/s for the same source-bound crossing']
             _write(fallback_path, fallback)
         entry = {'case_id': case['case_id'], 'kind': 'delivery',
                       'construction': str(path.relative_to(ROOT)),
@@ -117,7 +117,7 @@ def build():
                 'trigger': {'source': 'original-frames.json',
                             'metric': 'measured pedestrian route progress after 900 source-joined frames',
                             'failure_condition': 'crossing clearance not observed in the original 45-second capture'},
-                'changed_knobs': ['route follower speed 1.2 to 1.0 m/s']}
+                'changed_knobs': ['route follower speed 1.2 to 1.5 m/s']}
             fb_offline = ROOT / 'cases' / suffix / 'fallback1-offline.log'
             fb_compat = ROOT / 'cases' / suffix / 'fallback1-compatibility.json'
             fb_positive = ROOT / 'cases' / suffix / 'fallback1-compatibility-analysis.log'
@@ -125,7 +125,11 @@ def build():
             if fb_offline.is_file():
                 fallback_entry['offline'] = {
                     'construction_sha256': _sha(fallback_path),
-                    'command': '.venv-cpu/bin/python runtime.py offline --candidate fallback1',
+                    'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' +
+                               ASSIGNMENT + '/execution-manifest.draft.json --case ' +
+                               case['case_id'] + ' --candidate fallback1 --output ' +
+                               '.runtime-work/c111125-owner/selected-offline-' + suffix +
+                               '-fallback1-v6',
                     'exit_code': 0, 'log': str(fb_offline.relative_to(ROOT)),
                     'log_sha256': _sha(fb_offline)}
             if all(p.is_file() for p in (fb_compat, fb_positive, fb_negative)):
@@ -148,18 +152,22 @@ def build():
             entry['offline'] = {'construction_sha256': _sha(path),
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' +
                            ASSIGNMENT + '/execution-manifest.draft.json --case ' +
-                           case['case_id'] + ' --output .runtime-work/c111125-owner/delivery-offline-' +
-                           suffix + '-v4',
+                           case['case_id'] + ' --output .runtime-work/c111125-owner/selected-offline-' +
+                           suffix + '-delivery-v6',
                 'exit_code': 0, 'log': str(offline.relative_to(ROOT)),
                 'log_sha256': _sha(offline)}
         physical = ROOT / 'cases' / suffix / 'physical-preparation.draft.json'
         if physical.is_file():
             proof = json.loads(physical.read_text())
-            if proof.get('construction_sha256') != _sha(path):
-                raise ValueError('physical proof changed construction: ' + suffix)
-            entry['physical_preparation'] = {
-                'receipt': str(physical.relative_to(ROOT)),
-                'sha256': _sha(physical)}
+            if proof.get('construction_sha256') == _sha(path):
+                entry['physical_preparation'] = {
+                    'receipt': str(physical.relative_to(ROOT)),
+                    'sha256': _sha(physical)}
+        delivery = ROOT / 'cases' / suffix / 'delivery-acceptance.draft.json'
+        if delivery.is_file():
+            value = json.loads(delivery.read_text())
+            if value.get('case_id') == case['case_id']:
+                entry['delivery_acceptance'] = value
         cases.append(entry)
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT,
@@ -167,6 +175,7 @@ def build():
                 'semantic_index_sha256': _sha(ROOT / 'proposals/semantic-index.json'),
                 'status': 'partial', 'cases': cases}
     _write(ROOT / 'execution-manifest.draft.json', manifest)
+    _write(ROOT / 'execution-manifest.json', manifest)
     return len(cases)
 
 

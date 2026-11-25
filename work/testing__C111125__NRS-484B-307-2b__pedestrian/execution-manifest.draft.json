@@ -9,7 +9,7 @@
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
       "kind": "delivery",
       "construction": "cases/marked_cross/delivery-construction.draft.json",
-      "construction_sha256": "201891383740477b490073424b29678936bec2b60595e4c64735166c93fe2125",
+      "construction_sha256": "351d9e99e91361b11d8e5c00ef18ef1e6da05ea5ea6bbb67df0b1730fcec17c3",
       "measurement_contract": "cases/marked_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -24,7 +24,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/marked_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "982bafa70cdf9a5482e61c1034104b17b811513ec0cc69650c44dd11d23b7e6c",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "982bafa70cdf9a5482e61c1034104b17b811513ec0cc69650c44dd11d23b7e6c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-marked_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/marked_cross/fallback1-offline.log",
+            "log_sha256": "5eb9ad8be8cba21dbd711b6584cedf392cc4b44c76cc3bda4229821132e1ad6a"
+          },
+          "compatibility": {
+            "receipt": "cases/marked_cross/fallback1-compatibility.json",
+            "sha256": "6fd22c97c768cc2dccd10e2e55a68f8d85b726c16a2bb32d60324ab715029b4b",
+            "log": "cases/marked_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/marked_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -34,25 +61,58 @@
       },
       "compatibility": {
         "receipt": "cases/marked_cross/delivery-compatibility-draft.json",
-        "sha256": "129b0332269c4e1eeeb687786ba41575ed8e3f3ee59c81a91eab1531a354d19a",
+        "sha256": "ccc11d0cc8c1c49fe7169e8ea120d66803b6958f8a70965613461d3be08ccc48",
         "log": "cases/marked_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/marked_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "201891383740477b490073424b29678936bec2b60595e4c64735166c93fe2125",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --output .runtime-work/c111125-owner/delivery-offline-marked_cross-v4",
+        "construction_sha256": "351d9e99e91361b11d8e5c00ef18ef1e6da05ea5ea6bbb67df0b1730fcec17c3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --output .runtime-work/c111125-owner/selected-offline-marked_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/marked_cross/delivery-offline-draft.log",
-        "log_sha256": "2d0afc7caa61a30992a28cbda6c21236687342976e054c7ccd924b7dc5d119ab"
+        "log_sha256": "d3824e07d2f30173a05ce0bfba0e2d001ce1038fa11dd24e79403414e12d2875"
+      },
+      "physical_preparation": {
+        "receipt": "cases/marked_cross/physical-preparation.draft.json",
+        "sha256": "d2f0a4d37a11fb5d25092871d72896942fac8046ed9023f14d39c9fb2dbd600d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-marked_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/marked_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-marked_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/marked_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/marked_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "4e32c98138b1c5337a1af75d6ab7e2c10a1104aa5c544de25e135533ce63d417",
+        "negative_log": "cases/marked_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
       "kind": "delivery",
       "construction": "cases/unmarked_cross/delivery-construction.draft.json",
-      "construction_sha256": "a130e7ab784301788ce1a953b8afcd476db91ee7ebf3fac0bbecee58a20819f3",
+      "construction_sha256": "8289a08748bd4a415b25317e6d1dc150550d15131b479fb3d40d1bc35123ba45",
       "measurement_contract": "cases/unmarked_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -67,7 +127,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/unmarked_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "38bfd7d9d79a9cfcadd9cc49476b5dd8d58ecfef56913d3695b5772df9138155",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "38bfd7d9d79a9cfcadd9cc49476b5dd8d58ecfef56913d3695b5772df9138155",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-unmarked_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/unmarked_cross/fallback1-offline.log",
+            "log_sha256": "336bd8692d6766548b6734bdd604e8a2b8359d49111af358c268b2711e3e9a0d"
+          },
+          "compatibility": {
+            "receipt": "cases/unmarked_cross/fallback1-compatibility.json",
+            "sha256": "17fe884b9ea1a9a5d8cc187a41a26ea6d0adf933ad0ad170ba28eee699f18603",
+            "log": "cases/unmarked_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/unmarked_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -77,25 +164,58 @@
       },
       "compatibility": {
         "receipt": "cases/unmarked_cross/delivery-compatibility-draft.json",
-        "sha256": "f08a00165006cdc1d51aa535cb5ff559c8a8dbb168cd572b3507912b195ae348",
+        "sha256": "749adc083e667b3b7fac57da847557937117803d5ce4e4fa85a16fb0b30ff97f",
         "log": "cases/unmarked_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/unmarked_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "a130e7ab784301788ce1a953b8afcd476db91ee7ebf3fac0bbecee58a20819f3",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --output .runtime-work/c111125-owner/delivery-offline-unmarked_cross-v4",
+        "construction_sha256": "8289a08748bd4a415b25317e6d1dc150550d15131b479fb3d40d1bc35123ba45",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --output .runtime-work/c111125-owner/selected-offline-unmarked_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/unmarked_cross/delivery-offline-draft.log",
-        "log_sha256": "22399834c6e8283893220513f4b54ab9845d210051fab4e022efd642424cbdea"
+        "log_sha256": "5e53fd28d8ef8d89b897ebee825e919b51f1460c86a966bd2e8f718df8184fdc"
+      },
+      "physical_preparation": {
+        "receipt": "cases/unmarked_cross/physical-preparation.draft.json",
+        "sha256": "46a41386cfa18595ebcc59025b6080ee889a37eb1f0eca693e80d34fd6ec7ae6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-unmarked_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/unmarked_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-unmarked_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/unmarked_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/unmarked_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "4a7c85e860d28a84d08a13e8fa52a0f0803a8c96a720f6261b59a6919f491d10",
+        "negative_log": "cases/unmarked_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
       "kind": "delivery",
       "construction": "cases/other_device_stop/delivery-construction.draft.json",
-      "construction_sha256": "1b62de91326b7ec12e9b8b8c9d0b2302efc927d7cd4b6f97e5b499c503be152f",
+      "construction_sha256": "e7bb058248c9c62871bdb665a3d1d8f0f619565d0df59e6656bd5d957dd655fa",
       "measurement_contract": "cases/other_device_stop/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -107,8 +227,8 @@
         "port_env_var": "CARLA_PORT"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
+        "status": "none",
+        "reason": "No measured Native stop drift; hard zero-speed waiting control has no route-speed fallback."
       },
       "candidates": [],
       "acquisition": {
@@ -120,25 +240,58 @@
       },
       "compatibility": {
         "receipt": "cases/other_device_stop/delivery-compatibility-draft.json",
-        "sha256": "cb97c08346d6c89fb695a3227eeb5ccc2f6f8dc4a91f27c9f32f43560e2c97ad",
+        "sha256": "096a28e71161455803fce470d234e971639cc7234397ec075e583a01b652c226",
         "log": "cases/other_device_stop/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/other_device_stop/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "1b62de91326b7ec12e9b8b8c9d0b2302efc927d7cd4b6f97e5b499c503be152f",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --output .runtime-work/c111125-owner/delivery-offline-other_device_stop-v4",
+        "construction_sha256": "e7bb058248c9c62871bdb665a3d1d8f0f619565d0df59e6656bd5d957dd655fa",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --output .runtime-work/c111125-owner/selected-offline-other_device_stop-delivery-v6",
         "exit_code": 0,
         "log": "cases/other_device_stop/delivery-offline-draft.log",
-        "log_sha256": "f821c29bc74f9045482442393e2fa1931d5b366ecca3287b8bf238913b231f1a"
+        "log_sha256": "da855da3cfe25263593f5135a1298a7f2ea10395f8cf8900458f504a92bf1814"
+      },
+      "physical_preparation": {
+        "receipt": "cases/other_device_stop/physical-preparation.draft.json",
+        "sha256": "76154cc4f8c385f6393bdb6f5072e5d994806b56d9546aa29a1fb7cd72061827"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-other_device_stop-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/other_device_stop/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-other_device_stop-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/other_device_stop/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/other_device_stop/delivery-acceptance-positive.log",
+        "test_log_sha256": "8e56d440db7ee59bc23ec9a04cf38f8bd128687efea1b0fa56245417857aee06",
+        "negative_log": "cases/other_device_stop/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
       "kind": "delivery",
       "construction": "cases/other_device_cross/delivery-construction.draft.json",
-      "construction_sha256": "6c68b179f258c6f89835b472c2f74e3b8d270ec32ceae4116697d8755b9b3f04",
+      "construction_sha256": "aba749c4310a40fef0ef5255f5c725ea7e19901a53937b27f397217054833032",
       "measurement_contract": "cases/other_device_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -153,7 +306,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_device_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "8b44e0e2a9a722c28e4a3da9c6f8f2849c4243df8885dc813f470dfda474d286",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "8b44e0e2a9a722c28e4a3da9c6f8f2849c4243df8885dc813f470dfda474d286",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-other_device_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/other_device_cross/fallback1-offline.log",
+            "log_sha256": "e414fd324773694b50259b2eec23a27b1e995418b13c679da37499b930bffc3b"
+          },
+          "compatibility": {
+            "receipt": "cases/other_device_cross/fallback1-compatibility.json",
+            "sha256": "afea79bce2d4e9a65b94cca4ee3ddfef6f76de7e4d1ec6ea6ed37cced7e81917",
+            "log": "cases/other_device_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/other_device_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -163,25 +343,58 @@
       },
       "compatibility": {
         "receipt": "cases/other_device_cross/delivery-compatibility-draft.json",
-        "sha256": "22315ff3783e4618c33dce54fc5e372067213ba957bcd8a20d3b83788cc74681",
+        "sha256": "161e82f1f57a3b1d59f399c941bbf50864ae867af3d29fc12ae7db5e75a55983",
         "log": "cases/other_device_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/other_device_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "6c68b179f258c6f89835b472c2f74e3b8d270ec32ceae4116697d8755b9b3f04",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --output .runtime-work/c111125-owner/delivery-offline-other_device_cross-v4",
+        "construction_sha256": "aba749c4310a40fef0ef5255f5c725ea7e19901a53937b27f397217054833032",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --output .runtime-work/c111125-owner/selected-offline-other_device_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/other_device_cross/delivery-offline-draft.log",
-        "log_sha256": "60c127fd4b421412af45a4ae7b986da874b5fad488930b9f30c138c227b06b35"
+        "log_sha256": "4ce11d330b147d3e3976307c0a81d172f5cbe71ae4f6a3f7a721b007d39348bf"
+      },
+      "physical_preparation": {
+        "receipt": "cases/other_device_cross/physical-preparation.draft.json",
+        "sha256": "a63dba88f95dc3b57bc9ead283baf6de005e723db930c76ba1ae44c9c542dfaa"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-other_device_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/other_device_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-other_device_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/other_device_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/other_device_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "0175a351a18bedbed0c4ede236785225da71e28c3606f9d76c7bcb84e035519b",
+        "negative_log": "cases/other_device_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
       "kind": "delivery",
       "construction": "cases/outside_cross/delivery-construction.draft.json",
-      "construction_sha256": "9477385fb6fe60d81dda397146e9da9e906581f76559a57831fc39a1c193188c",
+      "construction_sha256": "8f748437ca7c8e21e106151fbf4672628ec020e4efdfd580bf480aa3d1014a45",
       "measurement_contract": "cases/outside_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -196,7 +409,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/outside_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "48463d065333bd28fd216dc9c3ab600738a732da3c619c75ebfc61d0a871c75e",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "48463d065333bd28fd216dc9c3ab600738a732da3c619c75ebfc61d0a871c75e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-outside_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/outside_cross/fallback1-offline.log",
+            "log_sha256": "304e81117997a201f5fd46c86ad8e87f730ab2129fc79cc53ce5cfaa2f978932"
+          },
+          "compatibility": {
+            "receipt": "cases/outside_cross/fallback1-compatibility.json",
+            "sha256": "94ccea712d6952c807d5e6dc4149bd3054a8b416b808b699ff2887f8d3892140",
+            "log": "cases/outside_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/outside_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -206,25 +446,58 @@
       },
       "compatibility": {
         "receipt": "cases/outside_cross/delivery-compatibility-draft.json",
-        "sha256": "159b6db9f96b29f1b5b9cd81776de5ba5f1695c9e7d4aff64e04af67832a64b6",
+        "sha256": "4e5dd1db686bb51747493a9c06ecf1a528faaa3db4f3df887ccd135869347a94",
         "log": "cases/outside_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/outside_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "9477385fb6fe60d81dda397146e9da9e906581f76559a57831fc39a1c193188c",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --output .runtime-work/c111125-owner/delivery-offline-outside_cross-v4",
+        "construction_sha256": "8f748437ca7c8e21e106151fbf4672628ec020e4efdfd580bf480aa3d1014a45",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --output .runtime-work/c111125-owner/selected-offline-outside_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/outside_cross/delivery-offline-draft.log",
-        "log_sha256": "93f7eaea67ab894e78f747889e7c0951bf63297340f259b0b206d62aa15d1a6f"
+        "log_sha256": "a007658c5ad445b1000b2753a33f54baff62f48614458faee87e95b4a6f659ef"
+      },
+      "physical_preparation": {
+        "receipt": "cases/outside_cross/physical-preparation.draft.json",
+        "sha256": "b2a5d3e6a9631594af86143bbc60361161759a15085512fe13a1354b54f01cb7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-outside_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/outside_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-outside_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/outside_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/outside_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "aa6c928df4a4b19a9fe3ea32a44e5eb004cbb2c101d551f36c58104b30604376",
+        "negative_log": "cases/outside_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
       "kind": "delivery",
       "construction": "cases/walk_cross/delivery-construction.draft.json",
-      "construction_sha256": "77a8b80e1542151224578161e588672976e4d42fc6e9f175128911ef45fb7fc5",
+      "construction_sha256": "647ab02b69d7d764d768089fb5fb3c615b1bd3a98d4dbf948671336a1ee5feba",
       "measurement_contract": "cases/walk_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -239,7 +512,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/walk_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "53da705d00e48505c419876fc4cbb29438ffe8980896dc1fd32ef79bb5ce4a82",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "53da705d00e48505c419876fc4cbb29438ffe8980896dc1fd32ef79bb5ce4a82",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-walk_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/walk_cross/fallback1-offline.log",
+            "log_sha256": "089ab9f96968d21503357a12d894b16b35f8b2f83b0d088b1cdd4edcadb074cc"
+          },
+          "compatibility": {
+            "receipt": "cases/walk_cross/fallback1-compatibility.json",
+            "sha256": "415d214a0ee2d034b3e7c0d794351bea5645f391a41801613092286fa080f53c",
+            "log": "cases/walk_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/walk_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -249,25 +549,58 @@
       },
       "compatibility": {
         "receipt": "cases/walk_cross/delivery-compatibility-draft.json",
-        "sha256": "54ee75b0a2b791037745ffb6e91c93bd69258420fd63fa09d3b1f82d57655bca",
+        "sha256": "3c0714e0ce382307b4cd019e6e7f708bd37556775ad332d704f7eb10b87251db",
         "log": "cases/walk_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/walk_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "77a8b80e1542151224578161e588672976e4d42fc6e9f175128911ef45fb7fc5",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --output .runtime-work/c111125-owner/delivery-offline-walk_cross-v4",
+        "construction_sha256": "647ab02b69d7d764d768089fb5fb3c615b1bd3a98d4dbf948671336a1ee5feba",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --output .runtime-work/c111125-owner/selected-offline-walk_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/walk_cross/delivery-offline-draft.log",
-        "log_sha256": "1856de9a6826110d01a4627ba4ebeac6f056f755f0641b29ad0ded5c8c800e05"
+        "log_sha256": "b0c866c6bc5331701b84f0199c6d3165471dfdd3244b9672c81a7514a967a71d"
+      },
+      "physical_preparation": {
+        "receipt": "cases/walk_cross/physical-preparation.draft.json",
+        "sha256": "f330d804980f65e1bd25ffd76118ab6210c6a68302a1d741dee15c381c701fba"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/walk_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "de404fbc7ea903b4ab2c923c20eb66889d268b2722bb62bd1ea9fd726cb555fa",
+        "negative_log": "cases/walk_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
       "kind": "delivery",
       "construction": "cases/flashing_countdown_cross/delivery-construction.draft.json",
-      "construction_sha256": "6161751efd7891cd2176c9b4457c1aa5c5f3108e227f3c38deea218bb673d24f",
+      "construction_sha256": "81fb49561c5c41d94b5907ab8331d6850526d1d50e6f85c3a72197d8c0b233bd",
       "measurement_contract": "cases/flashing_countdown_cross/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -282,7 +615,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/flashing_countdown_cross/delivery-fallback1.draft.json",
+          "construction_sha256": "501bd6f5e57410165f1e8f428724329c6443184648f3a28a6860b63e2cdc6976",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "501bd6f5e57410165f1e8f428724329c6443184648f3a28a6860b63e2cdc6976",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-flashing_countdown_cross-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/flashing_countdown_cross/fallback1-offline.log",
+            "log_sha256": "4ec10b613b94a7d3503c568da6acbb03d779bad1cf3c693cd4195ee8128dee35"
+          },
+          "compatibility": {
+            "receipt": "cases/flashing_countdown_cross/fallback1-compatibility.json",
+            "sha256": "846275b5d53eb2858da27d47377f249160fe2ab3f894c9a94c7f02caec149fa1",
+            "log": "cases/flashing_countdown_cross/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/flashing_countdown_cross/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -292,25 +652,58 @@
       },
       "compatibility": {
         "receipt": "cases/flashing_countdown_cross/delivery-compatibility-draft.json",
-        "sha256": "8e277e010d06001507442541b7f95a6c0909b709a4d6c31338827132108ad287",
+        "sha256": "9dd247f553bc66763df9358617e25f0ec28b9d046f9fec6fd5298ef9df1c9541",
         "log": "cases/flashing_countdown_cross/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/flashing_countdown_cross/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "6161751efd7891cd2176c9b4457c1aa5c5f3108e227f3c38deea218bb673d24f",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --output .runtime-work/c111125-owner/delivery-offline-flashing_countdown_cross-v4",
+        "construction_sha256": "81fb49561c5c41d94b5907ab8331d6850526d1d50e6f85c3a72197d8c0b233bd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --output .runtime-work/c111125-owner/selected-offline-flashing_countdown_cross-delivery-v6",
         "exit_code": 0,
         "log": "cases/flashing_countdown_cross/delivery-offline-draft.log",
-        "log_sha256": "ceaacb816ef8e8f9db9d1ba64885ccb644f6b934c4e6de78328188f5f05b0c50"
+        "log_sha256": "b4dd0553bc2bb847a4259cc976ca8e904f462bc590649c8bd8b4603213bf0961"
+      },
+      "physical_preparation": {
+        "receipt": "cases/flashing_countdown_cross/physical-preparation.draft.json",
+        "sha256": "3fc671f6ee27b27595098aecf64d633161e511a0c6f57bcdc683fb33b7c564fa"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-flashing_countdown_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/flashing_countdown_cross/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-flashing_countdown_cross-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/flashing_countdown_cross/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/flashing_countdown_cross/delivery-acceptance-positive.log",
+        "test_log_sha256": "e524660acbdd34be11c7f805f216c17cf91e576133c8f3746a75ab319fb2fb74",
+        "negative_log": "cases/flashing_countdown_cross/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
       "kind": "delivery",
       "construction": "cases/flashing_no_countdown_wait/delivery-construction.draft.json",
-      "construction_sha256": "0d540f31a89505679e4b1052c7a88914e7a076bc70fec184ed65658284dab90a",
+      "construction_sha256": "c44e01692c4e3275483bf3e01e5f6bdfae51cac1c0f57afbcbdae058593d4e35",
       "measurement_contract": "cases/flashing_no_countdown_wait/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -322,8 +715,8 @@
         "port_env_var": "CARLA_PORT"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
+        "status": "none",
+        "reason": "No measured Native stop drift; hard zero-speed waiting control has no route-speed fallback."
       },
       "candidates": [],
       "acquisition": {
@@ -335,25 +728,58 @@
       },
       "compatibility": {
         "receipt": "cases/flashing_no_countdown_wait/delivery-compatibility-draft.json",
-        "sha256": "86717aabb1e7b945d8a6d3e00415159032bb289e3f75a0de9e9061adb960da19",
+        "sha256": "9395f665aeb5a31dabfe26244d936f9f399a4009ec5b51b4218fe2985b7f8fa1",
         "log": "cases/flashing_no_countdown_wait/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/flashing_no_countdown_wait/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "0d540f31a89505679e4b1052c7a88914e7a076bc70fec184ed65658284dab90a",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --output .runtime-work/c111125-owner/delivery-offline-flashing_no_countdown_wait-v4",
+        "construction_sha256": "c44e01692c4e3275483bf3e01e5f6bdfae51cac1c0f57afbcbdae058593d4e35",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --output .runtime-work/c111125-owner/selected-offline-flashing_no_countdown_wait-delivery-v6",
         "exit_code": 0,
         "log": "cases/flashing_no_countdown_wait/delivery-offline-draft.log",
-        "log_sha256": "e7eda4a799ef1512d2374761bc376c7a7351f61b227318e79f77ea0214d70593"
+        "log_sha256": "7d657c5abbd7b0b7099366d7f07d6aaf64f961f29daae16be7faea93cc7a319c"
+      },
+      "physical_preparation": {
+        "receipt": "cases/flashing_no_countdown_wait/physical-preparation.draft.json",
+        "sha256": "ad0573ae602738b994cd38df89d25f710edfdc7a18ca6c4fc7c1980c77d926c1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-flashing_no_countdown_wait-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/flashing_no_countdown_wait/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-flashing_no_countdown_wait-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/flashing_no_countdown_wait/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/flashing_no_countdown_wait/delivery-acceptance-positive.log",
+        "test_log_sha256": "6f021963bba397a78fb153c0fdf65f44cd87ec0a8c52209c231d66a319dc7a41",
+        "negative_log": "cases/flashing_no_countdown_wait/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
       "kind": "delivery",
       "construction": "cases/walk_then_flash_continue/delivery-construction.draft.json",
-      "construction_sha256": "68fbec92e255374f70ece07e42622aed3898c13fe7021ec1711619a24bdfcddd",
+      "construction_sha256": "f534b96c678f6a8c16e5e3a8584c601f427bfe0f128f8ff503539a3784e6f02e",
       "measurement_contract": "cases/walk_then_flash_continue/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -368,7 +794,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/walk_then_flash_continue/delivery-fallback1.draft.json",
+          "construction_sha256": "cb3d6a5b52a0b1135ac934bd9049942d40f1053b29a1f124d7a16335a1cc43bc",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "cb3d6a5b52a0b1135ac934bd9049942d40f1053b29a1f124d7a16335a1cc43bc",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-walk_then_flash_continue-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/walk_then_flash_continue/fallback1-offline.log",
+            "log_sha256": "628abdbaf170ba84428fb87e3b0b0222bcffa6dfd22163b207740d2b0f826a22"
+          },
+          "compatibility": {
+            "receipt": "cases/walk_then_flash_continue/fallback1-compatibility.json",
+            "sha256": "20f8afc43adaeddfd2b221834417e7d46ae57edd85db4f49f040d20d408918d2",
+            "log": "cases/walk_then_flash_continue/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/walk_then_flash_continue/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -378,25 +831,58 @@
       },
       "compatibility": {
         "receipt": "cases/walk_then_flash_continue/delivery-compatibility-draft.json",
-        "sha256": "60c936c76e9061a8067831a480185ad731f38b97027c5f7a99d66bea234f7d0c",
+        "sha256": "22856e8cd9026491e00cf2440da0a27cb60c6ec74a0e25947d237700a9a6db3c",
         "log": "cases/walk_then_flash_continue/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/walk_then_flash_continue/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "68fbec92e255374f70ece07e42622aed3898c13fe7021ec1711619a24bdfcddd",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --output .runtime-work/c111125-owner/delivery-offline-walk_then_flash_continue-v4",
+        "construction_sha256": "f534b96c678f6a8c16e5e3a8584c601f427bfe0f128f8ff503539a3784e6f02e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --output .runtime-work/c111125-owner/selected-offline-walk_then_flash_continue-delivery-v6",
         "exit_code": 0,
         "log": "cases/walk_then_flash_continue/delivery-offline-draft.log",
-        "log_sha256": "674af4ba3e484978f40eac7e7f49f26117a1e8112f1a49e206529c652bc09811"
+        "log_sha256": "2490aa236007e2ac221bd919d7bfa6bfadeb820fedc4824945985787d7d1cee2"
+      },
+      "physical_preparation": {
+        "receipt": "cases/walk_then_flash_continue/physical-preparation.draft.json",
+        "sha256": "47ad636f129540b31e3a9f297929166abff4d9d964dccf04755da57de3143fa6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_then_flash_continue-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_then_flash_continue/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_then_flash_continue-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_then_flash_continue/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/walk_then_flash_continue/delivery-acceptance-positive.log",
+        "test_log_sha256": "dcbcbb6a2775140f353fe9ecaf906ce2ee6b783f144c87bb0a7f337122daa0ab",
+        "negative_log": "cases/walk_then_flash_continue/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue",
       "kind": "delivery",
       "construction": "cases/walk_then_steady_continue/delivery-construction.draft.json",
-      "construction_sha256": "55a28ef6ef89cdd749bbfc9bd75fbfc82aa8bedac8f2b71283a1947bb3de73ec",
+      "construction_sha256": "b0bdae341516165ba9214c7e1ab94b937cc237b0d0ad63c64c5a0aeb60b9931d",
       "measurement_contract": "cases/walk_then_steady_continue/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
@@ -411,7 +897,34 @@
         "status": "physical",
         "reason": "The exported cell has no Native map, official facing signal-head phase, qualified crosswalk boundary, or complete other-device inventory. Site selection must bind original sources and verify exact geometry and timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/walk_then_steady_continue/delivery-fallback1.draft.json",
+          "construction_sha256": "cdfcc7db4f97a3502281d6dd2364e96b278dc89663daceb2b93066a8781e903e",
+          "trigger": {
+            "source": "original-frames.json",
+            "metric": "measured pedestrian route progress after 900 source-joined frames",
+            "failure_condition": "crossing clearance not observed in the original 45-second capture"
+          },
+          "changed_knobs": [
+            "route follower speed 1.2 to 1.5 m/s"
+          ],
+          "offline": {
+            "construction_sha256": "cdfcc7db4f97a3502281d6dd2364e96b278dc89663daceb2b93066a8781e903e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --candidate fallback1 --output .runtime-work/c111125-owner/selected-offline-walk_then_steady_continue-fallback1-v6",
+            "exit_code": 0,
+            "log": "cases/walk_then_steady_continue/fallback1-offline.log",
+            "log_sha256": "5db6a0ed7600ad7c867c5d9981f7062e87b7628dd5add668d079b3335b1abf20"
+          },
+          "compatibility": {
+            "receipt": "cases/walk_then_steady_continue/fallback1-compatibility.json",
+            "sha256": "03b163811205fe35e6a80ce6b15a00b90245d09806ef9e4ac7a7aa7dea33d401",
+            "log": "cases/walk_then_steady_continue/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/walk_then_steady_continue/fallback1-compatibility-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "pedestrian_body_center_xy_m": {
           "entrypoint": "native_publication.py",
@@ -421,18 +934,51 @@
       },
       "compatibility": {
         "receipt": "cases/walk_then_steady_continue/delivery-compatibility-draft.json",
-        "sha256": "a3997f0ed60b19ae47ed413a4873c67f5ab06cb0ab887c259bbc29a145d12315",
+        "sha256": "65105e60ee91439fca6f535546bcc7b2eb2691563c5919d87b77a121feef9140",
         "log": "cases/walk_then_steady_continue/delivery-compatibility-analysis-draft.log"
       },
       "negative": {
         "log": "cases/walk_then_steady_continue/delivery-compatibility-negative-draft.log"
       },
       "offline": {
-        "construction_sha256": "55a28ef6ef89cdd749bbfc9bd75fbfc82aa8bedac8f2b71283a1947bb3de73ec",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --output .runtime-work/c111125-owner/delivery-offline-walk_then_steady_continue-v4",
+        "construction_sha256": "b0bdae341516165ba9214c7e1ab94b937cc237b0d0ad63c64c5a0aeb60b9931d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --output .runtime-work/c111125-owner/selected-offline-walk_then_steady_continue-delivery-v6",
         "exit_code": 0,
         "log": "cases/walk_then_steady_continue/delivery-offline-draft.log",
-        "log_sha256": "629084b6e5519081de18837e8eb25e910170742b7fa6136e4dbfaca75f3027b4"
+        "log_sha256": "f66d736975455f9f54ed857d3f97653d99b2a9b96dffdae1a1f8ba87344dcaeb"
+      },
+      "physical_preparation": {
+        "receipt": "cases/walk_then_steady_continue/physical-preparation.draft.json",
+        "sha256": "2e107d77a46e2eea1966a5ab40484c3f45835c615b2bcd9c0589a59a89ecd338"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU source and classifier protocol test only; actual reviewed Native delivery pending",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_then_steady_continue-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_then_steady_continue/delivery-compatibility-draft.json --mode positive --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_delivery_acceptance.py --case testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/selected-compat-walk_then_steady_continue-delivery-v6 --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/cases/walk_then_steady_continue/delivery-compatibility-draft.json --mode negative --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-owner/delivery-audit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved diagnostic source changed: frames.json",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "cb1994a6be8ed0a80e67332054084e405854be461d0556805cb7d154a2f51b2f",
+        "audit_module_sha256": "de0d7c9da0a86230878a230bb531878ed618ec51a3e86a8b3659cc27768c98f6",
+        "test_log": "cases/walk_then_steady_continue/delivery-acceptance-positive.log",
+        "test_log_sha256": "d28ee68a1e2dbee58089ae1b0d50f78c0f2bff2b67ade8293bd74a939dde2fc0",
+        "negative_log": "cases/walk_then_steady_continue/delivery-acceptance-negative.log",
+        "negative_log_sha256": "602095d84d157b9a7a7ee973349f12cf552a101a746b6965adae7af962a12ce6",
+        "reviewed_native_site_accepted": false,
+        "physical_acceptance_claimed": false
       }
     }
   ]

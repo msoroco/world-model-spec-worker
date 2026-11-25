@@ -166,6 +166,25 @@ class NativeAttemptTests(unittest.TestCase):
         self.assertEqual(self.restore.calls, ["snapshot", "restore"])
         self.assertFalse((self.output / "lifecycle-receipt.json").exists())
 
+    def test_owned_camera_factory_runs_after_snapshot_and_closes_before_restore(self):
+        client = Client()
+        calls = self.restore.calls
+        rig = type("Rig", (), {})()
+        rig.recorder = Recorder()
+        rig.close = lambda: calls.append("close rig")
+        def factory(world):
+            self.assertIs(world, client.world)
+            calls.append("create rig")
+            return rig
+        with patch("native_attempt.construct_native", return_value={"owned_handles": ["walker"]}), \
+             patch("native_attempt.capture_constructed_sources", side_effect=ValueError("stale frame")):
+            with self.assertRaisesRegex(ValueError, "stale frame"):
+                run_native_attempt(client, object(), {}, self.case, self.survey,
+                    "c" * 64, self.adapter, lambda *args: lambda sample: {},
+                    None, self.output, camera_rig_factory=factory, **self.kwargs)
+        self.assertEqual(calls, ["snapshot", "create rig", "close rig", "restore"])
+        self.assertTrue(rig.recorder.aborted)
+
 
 if __name__ == "__main__":
     unittest.main()

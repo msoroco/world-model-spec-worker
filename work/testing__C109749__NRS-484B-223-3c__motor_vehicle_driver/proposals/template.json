@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484B-223-3c@motor_vehicle_driver",
+  "law_id": "NRS-484B-223-3c",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 50 feet in a center turn lane after making a left-hand turn onto the highway before merging with traffic.",
+  "structure": {
+    "law_id": "NRS-484B-223-3c",
+    "activation": {
+      "condition": "A left turn onto a highway with one exclusive shared bidirectional center turn lane is completed in that lane.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Merge with traffic without traveling more than 50 feet in the center turn lane after the left turn.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "post_turn_center_lane_travel",
+          "operator": ">",
+          "value": 50,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Measure original center-lane path from turn completion to the first through-lane merge; censor if no merge is observed.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "single center lane to be used only for turning by traffic moving in both directions",
+        "note": "Review original highway designation, lane topology, markings and use in both directions."
+      },
+      {
+        "phrase": "after making a left-hand turn onto the highway",
+        "note": "Locate observed turn completion from original body and lane history, not controller intent."
+      },
+      {
+        "phrase": "before merging with traffic",
+        "note": "Locate first observed through-lane merge and receiving traffic; absent merge is censored."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "merge_station_target",
+      "kind": "controller",
+      "range_or_domain": "requested 49, 50 or 51 feet after turn; original distance separately measured"
+    },
+    {
+      "name": "merge_observed",
+      "kind": "controller",
+      "range_or_domain": "merge target or no-merge probe"
+    },
+    {
+      "name": "highway_lane_site",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed single exclusive bidirectional center turn lane"
+    }
+  ]
+}

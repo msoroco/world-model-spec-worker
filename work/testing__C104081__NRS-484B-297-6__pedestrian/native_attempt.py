@@ -33,15 +33,18 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
                        survey_sha256: str, adapter, source_reader_factory,
                        camera_recorder, output: Path, *, restore_api,
                        camera_profile_sha256: str, traffic_plan_sha256: str,
-                       pedestrian_blueprint: str, camera_rig=None) -> dict:
+                       pedestrian_blueprint: str, camera_rig=None,
+                       camera_rig_factory=None) -> dict:
     """Capture, audit, destroy owned actors and verify original world restore.
 
     ``restore_api`` is the pinned runtime worker_exchange.world_restore module.
     The acquisition packet is never called physically accepted here. All
     restoration failures propagate; a success receipt requires readback.
     """
-    if camera_recorder is None:
+    if camera_recorder is None and camera_rig_factory is None:
         raise ValueError("four-camera original recorder required")
+    if camera_rig is not None and camera_rig_factory is not None:
+        raise ValueError("supply an owned rig or a factory, not both")
     output = Path(output)
     if output.exists() and any(output.iterdir()):
         raise ValueError("Native attempt output must be empty")
@@ -53,6 +56,11 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
     try:
         world = client.get_world()
         configure_original_clock(world)
+        if camera_rig_factory is not None:
+            camera_rig = camera_rig_factory(world)
+            camera_recorder = camera_rig.recorder
+        if camera_recorder is None:
+            raise ValueError("four-camera original recorder required")
         constructed = construct_native(plan, case_id, Path(survey_path),
                                        survey_sha256, adapter)
         owned = constructed["owned_handles"]
@@ -80,7 +88,7 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
     except BaseException as exc:
         primary_error = exc
     finally:
-        if primary_error is not None:
+        if primary_error is not None and camera_recorder is not None:
             try:
                 camera_recorder.abort()
             except BaseException as exc:

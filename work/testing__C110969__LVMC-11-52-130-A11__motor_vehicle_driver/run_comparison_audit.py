@@ -9,6 +9,8 @@ from pathlib import Path
 from comparison_audit import ASSIGNMENT, SUFFIXES, audit as audit_comparisons
 from saved_delivery import audit as audit_original
 
+COMPARISON_IDS = ("fifteen_foot_boundary", "stop_vs_stand", "exception_cause")
+
 
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -20,7 +22,10 @@ def _load_original(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
-def run(attempts: dict[str, Path], output: Path, source_audit=audit_original) -> dict:
+def run(attempts: dict[str, Path], output: Path, comparison_id: str,
+        source_audit=audit_original) -> dict:
+    if comparison_id not in COMPARISON_IDS:
+        raise ValueError("Unknown exact comparison ID")
     if set(attempts) != set(SUFFIXES):
         raise ValueError("Seven independent exact attempts required")
     roots = {suffix: (path.parent if path.name == "attempt.json" else path).resolve()
@@ -62,6 +67,9 @@ def run(attempts: dict[str, Path], output: Path, source_audit=audit_original) ->
     packet_path = output / "comparison-sources.json"
     packet_path.write_text(json.dumps(packet, indent=2) + "\n")
     receipt = audit_comparisons(packet_path)
+    if comparison_id not in receipt.get("comparison_ids", []):
+        raise ValueError("Requested comparison ID absent from source-bound audit")
+    receipt["requested_comparison_id"] = comparison_id
     receipt["scope"] = "original Native source comparison; legal necessity and physical acceptance remain unresolved"
     receipt["packet_sha256"] = _sha(packet_path)
     (output / "comparison-audit.json").write_text(json.dumps(receipt, indent=2) + "\n")
@@ -72,9 +80,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     for suffix in SUFFIXES:
         parser.add_argument("--" + suffix.replace("_", "-"), required=True, type=Path)
+    parser.add_argument("--comparison", required=True, choices=COMPARISON_IDS)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
-    receipt = run({suffix: getattr(args, suffix) for suffix in SUFFIXES}, args.output)
+    receipt = run({suffix: getattr(args, suffix) for suffix in SUFFIXES}, args.output,
+                  args.comparison)
     print(json.dumps(receipt, sort_keys=True))
 
 

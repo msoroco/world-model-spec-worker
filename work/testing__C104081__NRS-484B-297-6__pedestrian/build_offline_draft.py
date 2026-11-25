@@ -9,7 +9,8 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "geometry.py", "native_construction.py", "native_walking.py", "native_source_packet.py",
-    "native_readback.py", "native_camera_capture.py", "native_camera_rig.py", "native_attempt.py",
+    "native_readback.py", "native_actor_adapter.py", "native_camera_capture.py", "native_camera_rig.py", "native_attempt.py",
+    "native_bound_attempt.py",
     "saved_measurement.py", "delivery_audit.py", "comparison_audit.py",
 )
 

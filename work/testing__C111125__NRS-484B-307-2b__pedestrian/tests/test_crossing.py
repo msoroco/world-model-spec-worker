@@ -452,6 +452,7 @@ class CrossingTests(unittest.TestCase):
             trace.append({'frame': frame, 'time_s': row['elapsed_seconds'],
                           'position': {'x': x, 'y': y, 'z': 0},
                           'position_m': [x, y, 0], 'actor_id': 42,
+                          'heading_deg': 0,
                           'speed_mps': 0, 'speed_mph': 0,
                           'velocity_mps': [0, 0, 0], 'control': {}})
         (native / 'frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in graph_index))

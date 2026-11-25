@@ -77,6 +77,8 @@ def analyze_original(root, case_id):
         sort_keys=True) + '\n')
     config = json.loads((root / 'config.json').read_text())
     recording = json.loads((root / 'construction.json').read_text())['recording_description']
+    measured_timeline = dict(protocol['device_timeline'])
+    measured_timeline.pop('legal_verdict', None)
     measurements = {
         'c111125_signal': {'method': 'measure_signal',
                            'value': {'green_alone_frames': [r['frame'] for r in rows if r['green_alone']],
@@ -90,7 +92,7 @@ def analyze_original(root, case_id):
                               'sources': {'site-source.json': site_ref['sha256'],
                                           'original-frames.json': receipt['original_frames']['sha256']}},
         'c111125_other_device': {'method': 'measure_device',
-                                 'value': protocol['device_timeline'],
+                                 'value': measured_timeline,
                                  'sources': {'site-source.json': site_ref['sha256'],
                                              'original-frames.json': receipt['original_frames']['sha256']}},
     }

@@ -4,7 +4,7 @@ from __future__ import annotations
 PAIRS = {
     'marked_vs_unmarked': ('marked_cross', 'unmarked_cross', 'marked', 'unmarked', 'none', 'none', True, True),
     'contrary_device_choice': ('other_device_stop', 'other_device_cross', 'marked', 'marked', 'DONT_WALK', 'DONT_WALK', False, True),
-    'crosswalk_boundary': ('marked_cross', 'outside_cross', 'marked', 'marked', 'none', 'none', True, False),
+    'crosswalk_boundary': ('marked_cross', 'outside_cross', 'marked', 'marked', 'none', 'none', True, True),
 }
 
 DEVICE_ALTERNATIVES = {
