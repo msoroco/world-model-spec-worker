@@ -21,7 +21,8 @@ from native_capture import CAMERAS, OriginalTickRecorder, original_cameras
 ASSIGNMENT = 'testing__C126120__NRS-484B-227-1__motor_vehicle_driver'
 CASE = ASSIGNMENT + '__source_verified_single_movement_uturn'
 MULTIPLE_CASE = ASSIGNMENT + '__source_verified_multiple_movement_uturn'
-CASE_IDS = {CASE, MULTIPLE_CASE}
+ENCROACHMENT_CASE = ASSIGNMENT + '__divider_encroachment_before_opening_uturn'
+CASE_IDS = {CASE, MULTIPLE_CASE, ENCROACHMENT_CASE}
 
 
 def _pose(carla, values):
@@ -76,7 +77,8 @@ def load_plan(path):
         raise ValueError('Separate source-hashed public-authority review required')
     validate_plan(context, plan['ego_segments'],
                   plan['planned_barrier_footprints_xy_m'],
-                  body_radius_m=plan['ego_body_radius_m'])
+                  body_radius_m=plan['ego_body_radius_m'],
+                  outside_opening_expected=plan['selected_case_id'] == ENCROACHMENT_CASE)
     if len(plan.get('other_route_xy_m', [])) < 2:
         raise ValueError('Other vehicle route required')
     return plan
@@ -171,7 +173,8 @@ def run(world, client, carla, plan, output, source_root):
                                    plan['barrier_axis_xy']) as barrier:
             validate_plan(context, plan['ego_segments'],
                           barrier['barrier_footprints_xy_m'],
-                          body_radius_m=plan['ego_body_radius_m'])
+                          body_radius_m=plan['ego_body_radius_m'],
+                          outside_opening_expected=plan['selected_case_id'] == ENCROACHMENT_CASE)
             context = dict(context)
             context['barrier_actors_source'] = 'Native barrier actor world vertices in barrier_receipt.json'
             (output / 'divider_context.json').write_text(json.dumps(context, indent=2) + '\n')

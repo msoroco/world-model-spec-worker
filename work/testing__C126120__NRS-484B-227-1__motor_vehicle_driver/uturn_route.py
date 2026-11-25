@@ -16,7 +16,8 @@ def _polygon(points, name):
     return value
 
 
-def validate_plan(context, segments, barrier_footprints, *, body_radius_m):
+def validate_plan(context, segments, barrier_footprints, *, body_radius_m,
+                  outside_opening_expected=False):
     if not 0 < body_radius_m < 5 or not segments or len(segments) not in (1, 3):
         raise ValueError('One forward or forward-reverse-forward route required')
     gears = [segment.get('gear') for segment in segments]
@@ -32,6 +33,7 @@ def validate_plan(context, segments, barrier_footprints, *, body_radius_m):
     if any(barrier.intersects(opening) for barrier in barriers):
         raise ValueError('Barrier closes the opening')
     lines = []
+    outside_opening_area = 0.0
     for index, segment in enumerate(segments):
         points = segment.get('waypoints_xy_m')
         if not isinstance(points, list) or len(points) < 2:
@@ -42,11 +44,14 @@ def validate_plan(context, segments, barrier_footprints, *, body_radius_m):
         if index and math.dist(segments[index - 1]['waypoints_xy_m'][-1], points[0]) > 1e-6:
             raise ValueError('U-turn movement phases do not join')
         swept = line.buffer(body_radius_m, cap_style=2, join_style=2)
-        if swept.intersection(divider.difference(opening)).area > 1e-7:
+        outside_opening_area += swept.intersection(divider.difference(opening)).area
+        if not outside_opening_expected and outside_opening_area > 1e-7:
             raise ValueError('Complete body crosses divider outside opening')
         if any(swept.intersects(barrier) for barrier in barriers):
             raise ValueError('Route collides with physical barrier')
         lines.append(line)
+    if outside_opening_expected and outside_opening_area <= 1e-7:
+        raise ValueError('Prohibited-condition attempt misses divider outside opening')
     first = segments[0]['waypoints_xy_m'][0]
     last = segments[-1]['waypoints_xy_m'][-1]
     if not right.covers(Point(first)) or not destination.covers(Point(last)):
@@ -63,7 +68,9 @@ def validate_plan(context, segments, barrier_footprints, *, body_radius_m):
         raise ValueError('Final direction is not a U-turn')
     return {'gear_sequence': gears, 'route_length_m': sum(line.length for line in lines),
             'body_radius_m': body_radius_m, 'opening_traversed': True,
-            'blocked_space_clearance': True, 'turn_angle_degrees': angle,
+            'blocked_space_clearance': not outside_opening_expected,
+            'outside_opening_area_m2': outside_opening_area,
+            'turn_angle_degrees': angle,
             'public_authority_judgment': 'unresolved', 'legal_conclusion': 'unresolved'}
 
 

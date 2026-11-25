@@ -63,7 +63,8 @@ def finalize(root, *, probe=_video_info):
     case_id = site.get('case_id')
     allowed = {'testing__C126120__NRS-484B-227-1__motor_vehicle_driver__' + name
                for name in ('source_verified_single_movement_uturn',
-                            'source_verified_multiple_movement_uturn')}
+                            'source_verified_multiple_movement_uturn',
+                            'divider_encroachment_before_opening_uturn')}
     if case_id not in allowed:
         raise ValueError('Exact C126120 source case identity required')
     authority = site.get('authority_source_ref')

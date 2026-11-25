@@ -1,4 +1,4 @@
-"""Build two exact source-bound U-turn CPU constructions."""
+"""Build three exact source-bound U-turn CPU constructions."""
 
 import json
 from pathlib import Path
@@ -7,7 +7,8 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 ASSIGNMENT = ROOT.name
 SUFFIXES = ('source_verified_single_movement_uturn',
-            'source_verified_multiple_movement_uturn')
+            'source_verified_multiple_movement_uturn',
+            'divider_encroachment_before_opening_uturn')
 MODULES = ('runner.py', 'uturn_route.py', 'barrier_construction.py',
            'native_capture.py', 'camera_encoder.py', 'uturn_measurements.py',
            'saved_finalizer.py')

@@ -37,6 +37,18 @@ class RouteTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'divider outside opening'):
             ROUTE.validate_plan(source['divider_context'], source['segments'],
                                 source['barrier_footprints_xy_m'], body_radius_m=.4)
+
+    def test_encroachment_attempt_is_observable_without_barrier_collision(self):
+        source = plan('divider_encroachment_before_opening_uturn')
+        measured = ROUTE.validate_plan(source['divider_context'], source['segments'],
+                                       source['barrier_footprints_xy_m'], body_radius_m=.4,
+                                       outside_opening_expected=True)
+        self.assertGreater(measured['outside_opening_area_m2'], 0)
+        self.assertFalse(measured['blocked_space_clearance'])
+        self.assertEqual(measured['legal_conclusion'], 'unresolved')
+        with self.assertRaisesRegex(ValueError, 'divider outside opening'):
+            ROUTE.validate_plan(source['divider_context'], source['segments'],
+                                source['barrier_footprints_xy_m'], body_radius_m=.4)
         source = plan('source_verified_multiple_movement_uturn')
         source['segments'][1]['waypoints_xy_m'][0] = [17, -1]
         with self.assertRaisesRegex(ValueError, 'phases do not join'):

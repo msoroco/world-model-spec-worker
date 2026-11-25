@@ -1,3 +1,15 @@
+## 2026-11-25 final handoff state
+
+C80909 remains ready: its exact current-runtime strict assignment gate passed again after the shared queue changes. C126120 remains partial: its assignment-scoped `--complete` check and focused tests pass, with the semantic pair requirement and later CPU proof work recorded in its handoff. C125751 and C376646 remain partial. A final scan of 13,401 returned files found zero UTF-8, size, binary-extension, trailing-whitespace or conflict-marker violations. Whole-tree no-flags check exited on the retained runtime-manifest mismatch, and the batch strict gate has not passed. No Git command or frozen input/runtime/batch edit was made.
+
+## 2026-11-25 C126120 fixture and semantic result
+
+Both exact C126120 synthetic fixture recipes materialize under `.runtime-work/` with passing logs. The draft canonical stage chain is authored but its validator reports `Missing plain-rule attempt pair: NRS-484B-227-1@motor_vehicle_driver`. The worker must construct a prohibited-condition comparison case and continue compatibility and saved proofs; C126120 remains partial. This validation failure is retained in `semantic-validation.log` and is not treated as an external blocker.
+
+## 2026-11-25 final validation note
+
+The C80909 exact scoped strict delivery gate exited 0 after queue integration. C126120's scoped `--complete` partial check exited 0. The no-flags whole-tree `worker_check.py` was run after a 13,385-file returned-tree scan found zero invalid UTF-8, binary extensions, oversized files, trailing whitespace or conflict markers. The whole-tree command no longer raises UnicodeDecodeError; it exits 1 at `ValueError: Execution manifest binds another runtime` on retained prior-ready work. A read-only manifest comparison found 29 manifests bound to the prior runtime revision. Per START_HERE and AGENT_PROMPT, those retained completions were preserved and bulk migration was deferred while unfinished assignments remain. The batch strict delivery gate has not passed; C125751, C126120 and C376646 remain partial. Exact log: `.runtime-work/quick-worker-check-20261125.log`.
+
 ## 2026-11-25 C126120 construction checkpoint
 
 After C80909 readiness and queue integration, the next partial C126120 gained two exact U-turn constructions. Both runner checks and current-runtime primary offline proofs pass. The single forward and forward–reverse–forward route plans clear the authored opening at a complete-body radius; tests reject blocked crossing and disconnected reverse phases. The Native recorder now captures four original cameras and gear readback, and saved finalizer plus per-case measurement contracts are authored. C126120 remains partial with compatibility, saved processing, physical, fallback, semantic and independent audit CPU work outstanding. No physical or public-authority claim is made. Runtime verify and CPU preflight both passed this turn.
