@@ -37,6 +37,10 @@ def _build_once():
                               for name, width, height in (
                                   ('overview',1920,1080), ('approach',1280,720),
                                   ('reference_corner',1280,720), ('driver_reference',1280,720))]}
+        if suffix == 'left_right_roadway_continuation':
+            # The planned right-roadway route has 20 m of sampled progress.
+            # This 10 m engineering milestone is attainable within that route.
+            config['physical_completion']['minimum_progress_m'] = 10.0
         config_path = ROOT / 'config.json' if suffix == SUFFIXES[0] else folder / 'config.json'
         config_path.write_text(json.dumps(config, indent=2) + '\n')
         files = []
@@ -55,6 +59,7 @@ def _build_once():
         for variant in SUFFIXES:
             for source in sorted((ROOT / 'cases' / variant).glob('*')):
                 if (source.name in ('construction.json', 'config.json') or
+                        source.name.startswith(('primary-', 'physical-')) or
                         source.suffix == '.log' or
                         source.name.endswith(('-diagnostic-sources.json', '-fixture-recipe.json'))):
                     continue

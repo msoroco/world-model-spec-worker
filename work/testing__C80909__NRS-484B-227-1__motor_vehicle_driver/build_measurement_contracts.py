@@ -26,7 +26,7 @@ def build():
             requirements.append({
                 'disposition_index': index, 'requirement': disposition['requirement'],
                 'source': disposition['source'], 'output_key': key,
-                'method': 'saved_finalizer.finalize original-source measurement',
+                'method': 'finalize_delivery',
                 'value_type': value_type,
                 'kind': 'sourced_context' if index in (0,3) else 'measured',
                 'inputs': inputs})

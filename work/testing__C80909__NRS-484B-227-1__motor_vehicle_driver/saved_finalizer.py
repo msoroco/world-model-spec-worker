@@ -203,9 +203,25 @@ def finalize_delivery(attempt, output, *, probe=_video_info):
     from worker_exchange.native_output import physical_result, write_result
     result = physical_result(attempt, result)
     write_result(attempt, result)
+    selected_measurements = {
+        'site_context_sources': (observations['site_context_sources'],
+                                 ('divider_context.json', 'site_source_receipt.json')),
+        'starts_on_right_hand_roadway': (observations['starts_on_right_hand_roadway'],
+                                         ('divider_context.json', 'movement_history.jsonl', 'video_frames.jsonl')),
+        'any_body_overlap_outside_opening': (observations['any_body_overlap_outside_opening'],
+                                             ('divider_context.json', 'barrier_receipt.json',
+                                              'movement_history.jsonl', 'video_frames.jsonl')),
+        'public_authority_establishment_judgment': (
+            observations['public_authority_establishment_judgment'], ('site_source_receipt.json',)),
+        'observed_turn_angle_degrees': (observations['observed_turn_angle_degrees'],
+                                        ('movement_history.jsonl', 'video_frames.jsonl')),
+        'samples': (observations['samples'], ('movement_history.jsonl', 'video_frames.jsonl'))}
+    measurements = {name: {'method': 'finalize_delivery', 'value': value,
+                           'sources': {source: _sha256(attempt / source) for source in inputs}}
+                    for name, (value, inputs) in selected_measurements.items()}
     report = {'format': 'worker-divided-highway-left-turn-analysis',
               'case_id': config['selected_case_id'], 'source_sha256': source_hashes,
-              'measurements': measured, 'source_observations': observations,
+              'measurements': measurements, 'source_observations': observations,
               'physical_checks': result['physical_checks'],
               'legal_conclusion': 'unresolved', 'analysis_complete': True}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
