@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from camera_media import verify_media_receipt
 from crossing_audit import audit_history
 from diagonal_crossing import validate_site
 
@@ -19,7 +20,7 @@ CASE_STATES = {
     ASSIGNMENT + "__prohibitive_whole_crossing": "prohibitive",
     ASSIGNMENT + "__instruction_changes_during_crossing": "change",
 }
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sealed_json(attempt: Path, reference: dict, name: str):
@@ -111,13 +112,19 @@ def process_saved(attempt_dir: str | Path, case_id: str, output: str | Path,
             raise ValueError("camera original-frame readback mismatch")
     measured = audit_history(plan, footprint, walker, device)
     _case_instruction(CASE_STATES[case_id], measured["observed_instructions"])
+    media = manifest.get("camera_media")
+    if not manifest.get("diagnostic") and not media:
+        raise ValueError("original four-camera pixel media missing")
+    media_receipt = (verify_media_receipt(
+        attempt, media, manifest.get("camera_media_audit"), len(frames),
+        diagnostic=bool(manifest.get("diagnostic"))) if media else None)
     result = {"assignment_id": ASSIGNMENT, "case_id": case_id,
               "measurement": measured, "fps": 20, "original_frames": len(frames),
               "camera_ids": list(CAMERAS), "diagnostic": bool(manifest.get("diagnostic")),
               "source_sha256": {"site": site_hash, "walker": walker_hash,
                                 "device": device_hash, "camera_frames": cameras_hash,
                                 "crossing_polygon": footprint_hash},
-              "full_video_decode": False, "actual_pixels_verified": False,
+              "full_video_decode": bool(media_receipt), "actual_pixels_verified": False,
               "physical_completion_verified": False, "legal_conclusion": "not_assessed"}
     target = Path(output)
     target.parent.mkdir(parents=True, exist_ok=True)

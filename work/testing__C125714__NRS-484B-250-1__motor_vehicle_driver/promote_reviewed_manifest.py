@@ -43,6 +43,8 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
     index = json.loads((candidate_root / "candidate-index.json").read_text())
     if index.get("format") != "worker-reviewed-delivery-candidates" or index.get("assignment_id") != ROOT.name:
         raise ValueError("reviewed candidate index identity mismatch")
+    if index.get("runtime_manifest_sha256") != sha(REPO / "runtime/SOURCE-MANIFEST.json"):
+        raise ValueError("reviewed candidate runtime binding changed")
     cases = index.get("cases", [])
     exact = {ROOT.name + "__" + suffix for suffix in SUFFIXES}
     if len(cases) != len(exact) or {row.get("case_id") for row in cases} != exact:
@@ -115,7 +117,10 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
         promoted["construction"] = str(construction.relative_to(returned_root))
         promoted["measurement_contract"] = str(bound(candidate_root, entry.get("measurement_contract")).relative_to(returned_root))
         for alternate in promoted.get("candidates", []):
-            alternate["construction"] = str(bound(candidate_root, alternate.get("construction")).relative_to(returned_root))
+            alternate_path = bound(candidate_root, alternate.get("construction"))
+            if sha(alternate_path) != alternate.get("construction_sha256"):
+                raise ValueError("reviewed fallback construction hash changed: " + case_id)
+            alternate["construction"] = str(alternate_path.relative_to(returned_root))
         result["cases"].append(promoted)
     return result
 

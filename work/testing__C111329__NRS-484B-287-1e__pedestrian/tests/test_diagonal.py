@@ -13,7 +13,9 @@ from crossing_audit import audit_comparison, audit_history
 
 class SiteTest(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work/c111329-site-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         sources = {}
         for name in ("map", "corner_survey", "authorization", "device_inventory", "exception_review"):

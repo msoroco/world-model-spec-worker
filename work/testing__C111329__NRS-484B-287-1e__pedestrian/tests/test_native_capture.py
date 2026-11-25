@@ -4,12 +4,15 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 import native_capture
-from saved_crossing import ASSIGNMENT, CAMERAS
+from saved_crossing import ASSIGNMENT, CAMERAS, process_saved
+from delivery_audit import audit_delivery
+from comparison_audit import audit_attempt_pair
 
 
 class World:
@@ -94,6 +97,33 @@ class NativeCaptureTests(unittest.TestCase):
                                    diagnostic=True)
         self.assertFalse((self.attempt / 'acquisition.json').exists())
 
+    def test_original_camera_pixels_are_encoded_and_fully_decoded(self):
+        walker, device, cameras = self.readers()
+        profile = {name: (2, 2) for name in CAMERAS}
+        def images(snapshot):
+            return {name: SimpleNamespace(frame=snapshot.frame, width=2, height=2,
+                                          raw_data=bytes((snapshot.frame % 251, 25, 40, 255)) * 4)
+                    for name in CAMERAS}
+        result = native_capture.capture(World(), self.site, self.case, self.attempt,
+                                        walker, device, cameras,
+                                        [[2, 2], [8, 2], [8, 8], [2, 8]],
+                                        diagnostic=True, camera_image_reader=images,
+                                        diagnostic_camera_profile=profile)
+        self.assertEqual(result['acquisition']['camera_media_status'], 'full_original_decode')
+        audit = json.loads((self.attempt / 'camera-media-audit.json').read_text())
+        self.assertTrue(all(row['frames'] == 900 for row in audit['cameras'].values()))
+        self.assertEqual(audit['physical_visibility'], 'unverified')
+        self.assertTrue(result['measurement']['full_video_decode'])
+        diagnostic = audit_delivery(self.attempt, self.case, allow_diagnostic=True)
+        self.assertTrue(diagnostic['software_checks_passed'])
+        self.assertFalse(diagnostic['physical_completion'])
+        with self.assertRaisesRegex(ValueError, 'diagnostic attempt'):
+            audit_delivery(self.attempt, self.case)
+        (self.attempt / 'camera-media-audit.json').write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'receipt hash mismatch'):
+            process_saved(self.attempt, self.case, self.attempt / 'second-measurement.json',
+                          allow_diagnostic=True)
+
     def test_non_diagnostic_capture_requires_adapter_attestation(self):
         walker, device, cameras = self.readers()
         with self.assertRaisesRegex(ValueError, 'attestation required'):
@@ -102,6 +132,30 @@ class NativeCaptureTests(unittest.TestCase):
                                    [[2, 2], [8, 2], [8, 8], [2, 8]],
                                    diagnostic=False)
         self.assertEqual(list(self.attempt.iterdir()), [])
+
+    def test_exact_saved_comparison_replays_two_original_attempts(self):
+        walker, device, cameras = self.readers()
+        reference_case = ASSIGNMENT + '__permissive_whole_crossing'
+        variant_case = ASSIGNMENT + '__prohibitive_whole_crossing'
+        def instruction_reader(instruction):
+            def read(snapshot, identity):
+                return {**device(snapshot, identity), 'instruction': instruction}
+            return read
+        native_capture.capture(World(), self.site, reference_case, self.attempt,
+                               walker, instruction_reader('diagonal_walk'), cameras,
+                               [[2, 2], [8, 2], [8, 8], [2, 8]], diagnostic=True)
+        variant = self.root / 'variant'
+        variant.mkdir()
+        native_capture.capture(World(), self.site, variant_case, variant,
+                               walker, instruction_reader('diagonal_dont_walk'), cameras,
+                               [[2, 2], [8, 2], [8, 8], [2, 8]], diagnostic=True)
+        receipt = audit_attempt_pair('diagonal_instruction_permissive_vs_prohibitive',
+                                     self.attempt, variant, allow_diagnostic=True)
+        self.assertTrue(receipt['comparison_verified'])
+        self.assertEqual(receipt['physical_realization'], 'unconfirmed')
+        with self.assertRaisesRegex(ValueError, 'diagnostic'):
+            audit_attempt_pair('diagonal_instruction_permissive_vs_prohibitive',
+                               self.attempt, variant)
 
 
 if __name__ == '__main__':

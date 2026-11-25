@@ -12,7 +12,9 @@ from saved_crossing import ASSIGNMENT, CAMERAS, audit_saved_comparison, process_
 
 class SavedCrossingTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work/c111329-saved-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temp.cleanup)
         self.attempt = Path(self.temp.name)
         sources = {}
@@ -79,7 +81,7 @@ class SavedCrossingTest(unittest.TestCase):
         variants = (
             ("walker", lambda: self.walker[2].update(original_frame=31), "frame gap"),
             ("walker", lambda: self.walker[2].update(elapsed_s=1.0), "20 Hz"),
-            ("camera", lambda: self.cameras[2]["cameras"].update(front=31), "camera original-frame"),
+            ("camera", lambda: self.cameras[2]["cameras"].update(overview=31), "camera original-frame"),
             ("device", lambda: self.device[2].update(source_sha256="wrong"), "inventoried source"),
         )
         for _, mutate, expected in variants:

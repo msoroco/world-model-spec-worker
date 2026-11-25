@@ -74,6 +74,17 @@ def measure_acquisition(site: dict, packet: dict, *, case_id: str,
     for row in rows:
         frame = row["original_frame"]
         times.append(row["elapsed_seconds"])
+        if packet.get('diagnostic') is False:
+            state = row.get('actor_state')
+            if not isinstance(state, dict) or state.get('actor_id') != packet.get('walker_id'):
+                raise ValueError('saved original pedestrian body identity missing')
+            vertices = state.get('body_vertices_m')
+            velocity = state.get('velocity_mps')
+            if (not isinstance(vertices, list) or len(vertices) < 4 or
+                    any(not isinstance(v, list) or len(v) != 3 or not all(math.isfinite(float(n)) for n in v) for v in vertices) or
+                    not isinstance(velocity, list) or len(velocity) != 3 or
+                    not all(math.isfinite(float(n)) for n in velocity)):
+                raise ValueError('saved original pedestrian body and velocity missing')
         if set(row.get("camera_frames", {})) != set(CAMERAS) or any(row["camera_frames"][name] != frame for name in CAMERAS):
             raise ValueError("saved four-camera original frame mismatch")
         devices = row.get("devices", [])

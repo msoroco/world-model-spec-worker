@@ -51,6 +51,9 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
     for device in devices:
         if not device.get("official_source") or not device.get("instruction_source"):
             raise ValueError("official device and instruction source required")
+    diagnostic = getattr(adapter, 'is_diagnostic', None)
+    if not isinstance(diagnostic, bool):
+        raise ValueError('adapter diagnostic provenance missing')
     actor, plan = construct_walker(adapter, site, route_kind, authorization, blueprint_id)
     rows = []
     if capture_root is not None:
@@ -71,6 +74,18 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
             if walker_id != original_id:
                 raise ValueError("Native walker identity discontinuity")
             xy = point(adapter.walker_xy(actor))
+            actor_state = None if diagnostic else adapter.actor_state(actor)
+            if not diagnostic:
+                vertices = actor_state.get('body_vertices_m') if isinstance(actor_state, dict) else None
+                velocity = actor_state.get('velocity_mps') if isinstance(actor_state, dict) else None
+                if (actor_state.get('actor_id') != original_id or
+                        not str(actor_state.get('blueprint', '')).startswith('walker.pedestrian.') or
+                        not isinstance(vertices, list) or len(vertices) < 4 or
+                        any(len(v) != 3 or not all(math.isfinite(float(x)) for x in v) for v in vertices) or
+                        not isinstance(velocity, list) or len(velocity) != 3 or
+                        not all(math.isfinite(float(x)) for x in velocity) or
+                        not math.isfinite(float(actor_state.get('heading_deg')))):
+                    raise ValueError('Native full pedestrian body and velocity readback missing')
             raw_devices = adapter.read_devices()
             if not isinstance(raw_devices, list) or {d.get("id") for d in raw_devices} != set(by_id) or len(raw_devices) != len(by_id):
                 raise ValueError("Native device inventory readback incomplete")
@@ -100,6 +115,7 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
                     png_hashes[name] = hashlib.sha256(raw).hexdigest()
             rows.append({"original_frame": frame, "elapsed_seconds": time_s,
                          "walker_id": walker_id, "walker_center_xy": xy,
+                         "actor_state": actor_state,
                          "devices": sorted(device_rows, key=lambda d: d["id"]),
                          "camera_frames": {name: cameras[name] for name in CAMERAS},
                          "camera_png_sha256": png_hashes})
@@ -109,9 +125,6 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
         adapter.destroy_actor(actor)
     if not any(math.dist(row["walker_center_xy"], plan["end"]) <= 1.5 for row in rows):
         raise ValueError("Native walker endpoint never observed")
-    diagnostic = getattr(adapter, "is_diagnostic", None)
-    if not isinstance(diagnostic, bool):
-        raise ValueError("adapter diagnostic provenance missing")
     return {"format": "crossing-native-acquisition-v1", "case_id": case_id,
             "site_sha256": site_sha256, "plan_sha256": _sha(plan),
             "device_inventory_sha256": plan["device_inventory_sha256"],

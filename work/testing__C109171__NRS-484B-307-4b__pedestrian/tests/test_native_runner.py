@@ -75,6 +75,12 @@ class RunnerTest(unittest.TestCase):
                 run_capture(self.world, **self.kwargs)
         self.assertEqual(self.world.applied, [])
 
+    def test_rejects_missing_permission_review_before_world_mutation(self):
+        with patch('native_runner.verify_site'), patch('permission_applicability.verify_site'):
+            with self.assertRaisesRegex(SourceError, 'review source missing'):
+                run_capture(self.world, **self.kwargs)
+        self.assertEqual(self.world.applied, [])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -41,6 +41,9 @@ class PromotionTests(unittest.TestCase):
                      {"path": "packet.json", "content": packet},
                      {"path": "reviewed-map.xodr", "content": map_text}]
             digest = write(construction, {"case_id": case_id, "diagnostic_only": False, "files": files})
+            alternate = folder / "fallback1-construction.json"
+            alternate_digest = write(alternate, {"case_id": case_id, "diagnostic_only": False,
+                                                 "candidate": "fallback1", "files": files})
             write(folder / "measurement-contract.json", {"case_id": case_id})
             write(folder / "preflight.json", {"format": "worker-reviewed-packet-cpu-preflight",
                                            "case_id": case_id, "passed": True, "native_started": False,
@@ -51,14 +54,19 @@ class PromotionTests(unittest.TestCase):
                                            "legal_acceptance_claimed": False})
             cases.append({"case_id": case_id, "kind": "delivery", "construction": suffix + "/construction.json",
                           "construction_sha256": digest, "measurement_contract": suffix + "/measurement-contract.json",
-                          "source_preflight": suffix + "/preflight.json", "candidates": []})
+                          "source_preflight": suffix + "/preflight.json",
+                          "candidates": [{"id": "fallback1",
+                                          "construction": suffix + "/fallback1-construction.json",
+                                          "construction_sha256": alternate_digest}]})
             proof["cases"][case_id] = {}
             for stage in REQUIRED:
                 rel = suffix + "/" + stage + ".json"
                 stage_hash = write(base / rel, {"case_id": case_id, "construction_sha256": digest})
                 proof["cases"][case_id][stage] = {"receipt": rel, "sha256": stage_hash}
         write(base / "candidate-index.json", {"format": "worker-reviewed-delivery-candidates",
-                                               "assignment_id": ROOT.name, "runtime_manifest_sha256": "a" * 64,
+                                               "assignment_id": ROOT.name,
+                                               "runtime_manifest_sha256": hashlib.sha256(
+                                                   (REPO / "runtime/SOURCE-MANIFEST.json").read_bytes()).hexdigest(),
                                                "cases": cases})
         receipt = base / "receipt-index.json"
         write(receipt, proof)
@@ -122,6 +130,21 @@ class PromotionTests(unittest.TestCase):
             proof["route_binding"]["other"]["road_sequence"] = ["31", "31", "31"]
             write(path, proof)
             with self.assertRaisesRegex(ValueError, "lacks exact route binding"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_changed_runtime_or_fallback_bytes(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            index_path = base / "candidate-index.json"
+            index = json.loads(index_path.read_text())
+            index["runtime_manifest_sha256"] = "0" * 64
+            write(index_path, index)
+            with self.assertRaisesRegex(ValueError, "runtime binding changed"):
+                assemble(base, receipts, allow_scratch=True)
+            receipts = self.fixture(base)
+            (base / "advance" / "fallback1-construction.json").write_text("{}\n")
+            with self.assertRaisesRegex(ValueError, "fallback construction hash changed"):
                 assemble(base, receipts, allow_scratch=True)
 
 

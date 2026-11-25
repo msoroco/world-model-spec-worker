@@ -25,10 +25,17 @@ def summary(attempt: Path, case_id: str):
     measured = measure_saved(attempt, source['site_ref'], source['events_ref'],
                              case_id, len(events))
     config = json.loads((attempt / 'config.json').read_text())
+    provenance = json.loads((attempt / 'acquisition-provenance.json').read_text())
+    diagnostic = provenance.get('diagnostic_fixture') is True
+    review_ref = source.get('permission_review_ref')
+    if not diagnostic and not review_ref:
+        raise ValueError('original cited-device permission review missing')
     refs = {ref['path']: ref['sha256'] for ref in site['original_sources']}
     if not all(name in refs for name in ('map.json', 'head.json', 'device.json')):
         raise ValueError('original intersection source set differs')
     return {'case_suffix': case_id.rsplit('__', 1)[-1],
+            'diagnostic_fixture': diagnostic,
+            'permission_review_sha256': review_ref['sha256'] if review_ref else None,
             'map_source_sha256': refs['map.json'],
             'vehicle_signal_source_sha256': refs['head.json'],
             'pedestrian_device_source_sha256': refs['device.json'],
@@ -49,10 +56,12 @@ def compare(comparison_id, left_attempt, left_case_id, right_attempt, right_case
     left = summary(Path(left_attempt), left_case_id)
     right = summary(Path(right_attempt), right_case_id)
     require_fixed_device(left, right)
+    require_fixed_review(left, right)
     result = audit_pair(comparison_id, left, right)
     return dict(result, fixed_pedestrian_device_sha256=left['pedestrian_device_source_sha256'],
                 source_pairs=[left['source_sha256'], right['source_sha256']],
-                diagnostic_fixture=True, statutory_permission='unresolved')
+                diagnostic_fixture=left['diagnostic_fixture'], statutory_permission='unresolved',
+                fixed_permission_review_sha256=left['permission_review_sha256'])
 
 
 def require_fixed_device(left, right):
@@ -60,6 +69,16 @@ def require_fixed_device(left, right):
     source = left.get('pedestrian_device_source_sha256')
     if not source or source != right.get('pedestrian_device_source_sha256'):
         raise ValueError('fixed condition differs: pedestrian_device_source_sha256')
+
+
+def require_fixed_review(left, right):
+    """A production pair must retain one cited-device applicability review."""
+    if left.get('diagnostic_fixture') != right.get('diagnostic_fixture'):
+        raise ValueError('comparison mixes diagnostic and original attempts')
+    if left.get('diagnostic_fixture') is not True:
+        source = left.get('permission_review_sha256')
+        if not source or source != right.get('permission_review_sha256'):
+            raise ValueError('fixed condition differs: permission_review_sha256')
 
 
 def main():

@@ -107,5 +107,38 @@ class NativeAcquisitionTests(unittest.TestCase):
                             blueprint_id="walker.pedestrian.0001", frames=3)
                 self.assertTrue(adapter.cleaned)
 
+    def test_production_requires_full_body_and_velocity(self):
+        class Production(Adapter):
+            is_diagnostic = False
+            def actor_state(self, actor):
+                return {"actor_id": 7, "blueprint": "walker.pedestrian.0001",
+                        "body_vertices_m": [[0,0,0], [1,0,0], [0,1,0], [1,1,0]],
+                        "velocity_mps": [1,0,0], "heading_deg": 0}
+        s = site()
+        packet = acquire(Production(), site=s, site_sha256=digest(s),
+                         case_id="diagnostic-exact-case", route_kind="opposite",
+                         authorization=True, blueprint_id="walker.pedestrian.0001",
+                         frames=3)
+        self.assertFalse(packet["diagnostic"])
+        self.assertEqual(packet["rows"][1]["actor_state"]["actor_id"], 7)
+        measured = measure_acquisition(s, packet, case_id="diagnostic-exact-case",
+                                       route_kind="opposite", authorization=True, expected_frames=3)
+        self.assertTrue(measured["camera_frames_verified"])
+        packet["rows"][1]["actor_state"]["body_vertices_m"] = []
+        packet["rows_sha256"] = __import__("native_acquisition")._sha(packet["rows"])
+        with self.assertRaisesRegex(ValueError, "body and velocity"):
+            measure_acquisition(s, packet, case_id="diagnostic-exact-case",
+                                route_kind="opposite", authorization=True, expected_frames=3)
+        class Bad(Production):
+            def actor_state(self, actor):
+                value = super().actor_state(actor)
+                value["body_vertices_m"] = []
+                return value
+        with self.assertRaisesRegex(ValueError, "body and velocity"):
+            acquire(Bad(), site=s, site_sha256=digest(s),
+                    case_id="diagnostic-exact-case", route_kind="opposite",
+                    authorization=True, blueprint_id="walker.pedestrian.0001",
+                    frames=3)
+
 
 if __name__ == "__main__": unittest.main()
