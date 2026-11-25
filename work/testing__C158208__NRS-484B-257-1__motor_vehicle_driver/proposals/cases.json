@@ -1,0 +1,343 @@
+{
+  "status": "draft",
+  "cell_id": "C158208",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source-dependent setup reference; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_and_speed",
+            "unit": "structured",
+            "method": "Original ego bounding-box vertices and velocity sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "through_vehicle_body_and_occupancy",
+            "unit": "structured",
+            "method": "Original through body and intersection overlap sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "nearest_view_raycast",
+            "unit": "structured",
+            "method": "Original Native raycast and first view sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "camera_pixels",
+            "unit": "structured",
+            "method": "Four synchronized original camera images sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site",
+            "unit": "structured",
+            "method": "eight source-hashed original C158208 surveys and loaded OpenDRIVE"
+          },
+          {
+            "name": "governing_control",
+            "unit": "structured",
+            "method": "reviewed sign and exclusion of officer or signal control"
+          }
+        ],
+        "limitations": [
+          "Diagnostic fixtures do not establish actual motion, sign visibility or legal right of way."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs have been erected",
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way"
+      ],
+      "variable_assignments": {
+        "response_mode": {
+          "kind": "controller",
+          "value": "response"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "source-reviewed C158208 site"
+        },
+        "through_traffic": {
+          "kind": "world_setup",
+          "value": "fixed original through-highway route and schedule"
+        },
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original camera streams, 20 Hz, 900 frames"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "yield_nearest_view",
+      "deliberate_differences": [
+        "response_mode"
+      ],
+      "probe": {
+        "primary_variable": "response_mode",
+        "comparison_or_standard": "yield_nearest_view",
+        "target_value_or_branch": "nearest_view_response"
+      },
+      "rationale": "Source-bound comparison of realized response near the reviewed first view.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_and_speed",
+            "unit": "structured",
+            "method": "Original ego bounding-box vertices and velocity sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "through_vehicle_body_and_occupancy",
+            "unit": "structured",
+            "method": "Original through body and intersection overlap sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "nearest_view_raycast",
+            "unit": "structured",
+            "method": "Original Native raycast and first view sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "camera_pixels",
+            "unit": "structured",
+            "method": "Four synchronized original camera images sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site",
+            "unit": "structured",
+            "method": "eight source-hashed original C158208 surveys and loaded OpenDRIVE"
+          },
+          {
+            "name": "governing_control",
+            "unit": "structured",
+            "method": "reviewed sign and exclusion of officer or signal control"
+          }
+        ],
+        "limitations": [
+          "Diagnostic fixtures do not establish actual motion, sign visibility or legal right of way."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs have been erected",
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way"
+      ],
+      "variable_assignments": {
+        "response_mode": {
+          "kind": "controller",
+          "value": "response"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "source-reviewed C158208 site"
+        },
+        "through_traffic": {
+          "kind": "world_setup",
+          "value": "fixed original through-highway route and schedule"
+        },
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original camera streams, 20 Hz, 900 frames"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "yield_nearest_view",
+      "deliberate_differences": [
+        "response_mode"
+      ],
+      "probe": {
+        "primary_variable": "response_mode",
+        "comparison_or_standard": "yield_nearest_view",
+        "target_value_or_branch": "nearest_view_uninterrupted"
+      },
+      "rationale": "Source-bound comparison of realized response near the reviewed first view.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_and_speed",
+            "unit": "structured",
+            "method": "Original ego bounding-box vertices and velocity sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "through_vehicle_body_and_occupancy",
+            "unit": "structured",
+            "method": "Original through body and intersection overlap sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "nearest_view_raycast",
+            "unit": "structured",
+            "method": "Original Native raycast and first view sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          },
+          {
+            "name": "camera_pixels",
+            "unit": "structured",
+            "method": "Four synchronized original camera images sealed to the original world tick",
+            "time_window": "all 900 original world ticks",
+            "reference_frame": "reviewed C158208 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "realized motion and visibility await original capture review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site",
+            "unit": "structured",
+            "method": "eight source-hashed original C158208 surveys and loaded OpenDRIVE"
+          },
+          {
+            "name": "governing_control",
+            "unit": "structured",
+            "method": "reviewed sign and exclusion of officer or signal control"
+          }
+        ],
+        "limitations": [
+          "Diagnostic fixtures do not establish actual motion, sign visibility or legal right of way."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs have been erected",
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way"
+      ],
+      "variable_assignments": {
+        "response_mode": {
+          "kind": "controller",
+          "value": "uninterrupted"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "source-reviewed C158208 site"
+        },
+        "through_traffic": {
+          "kind": "world_setup",
+          "value": "fixed original through-highway route and schedule"
+        },
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original camera streams, 20 Hz, 900 frames"
+        }
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "pending-1",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "proper signs have been erected",
+          "note": "Governing sign identity and physical placement need independent review."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Reviewed original site and feasible source-grounded physical range"
+      ],
+      "rationale": "No engineering range is treated as a legal cutoff."
+    },
+    {
+      "sweep_id": "pending-2",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+          "note": "Nearest available view depends on original geometry, road users and raycasts."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Reviewed original site and feasible source-grounded physical range"
+      ],
+      "rationale": "No engineering range is treated as a legal cutoff."
+    },
+    {
+      "sweep_id": "pending-3",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "approaching so closely on such through highway as to constitute an immediate hazard",
+          "note": "Immediate hazard is a legal judgment over original through-vehicle history."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Reviewed original site and feasible source-grounded physical range"
+      ],
+      "rationale": "No engineering range is treated as a legal cutoff."
+    },
+    {
+      "sweep_id": "pending-4",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Priority remains unresolved from a controller label."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Reviewed original site and feasible source-grounded physical range"
+      ],
+      "rationale": "No engineering range is treated as a legal cutoff."
+    }
+  ],
+  "sweeps_expanded": false
+}

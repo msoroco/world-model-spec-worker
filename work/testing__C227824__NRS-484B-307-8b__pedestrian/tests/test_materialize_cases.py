@@ -78,6 +78,11 @@ class MaterializeTests(unittest.TestCase):
             check=False)
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn('"cpu_precheck": "passed"', completed.stdout)
+        tests = subprocess.run(
+            [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
+            cwd=selected, capture_output=True, text=True, check=False)
+        self.assertEqual(tests.returncode, 0, tests.stderr)
+        self.assertIn("Ran 1 test", tests.stderr)
 
     def test_changed_review_rejected_without_output(self):
         (self.source / "one-device-review.json").write_text('{"complete": false}\n')

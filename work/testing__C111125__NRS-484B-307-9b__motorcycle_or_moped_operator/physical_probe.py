@@ -68,6 +68,7 @@ def main():
             "cause_evidence": "diagnostic CPU fixture only"}]})
         if value["physical_checks"]["maneuver"]["status"] != expected:
             raise ValueError("C111125 physical fixture expected " + expected)
+        write(folder / "physical-result.json", value)
         results[kind] = value
         print(kind, expected)
     complete = root / "complete_motion"

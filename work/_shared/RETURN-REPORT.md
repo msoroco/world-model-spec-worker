@@ -3608,3 +3608,27 @@ Current runtime verification, pinned CPU preflight and update check passed: `run
 The reported whole-batch `Partial construction content mismatch: analysis.py` belonged to C227824 NRS-484B-307-8b. Its owner rebuilt the root construction snapshot and passed the scoped partial checker, then continued editing `native_signal.py`, which requires a final snapshot rebuild. The owner has added original-frame signal/device authority and requested-state drift rejection and now passes 75 focused tests. C158208 NRS-484B-257-1 and C111125 NRS-484B-307-9b owners are also continuing source-bound CPU work. All three remain partial until their exact strict assignment gates pass. No ready/physical acceptance claim is made for them.
 
 A non-Git returned-work scan covered 28,276 files. The largest is 2,088,012 bytes, below the 2 MiB limit. The sole apparent conflict-marker match was a unittest `======` separator in a C227824 test log; no actual conflict marker, oversize, invalid UTF-8, trailing whitespace, blank EOF or bytecode problem was found. No Git or checkpoint script was run.
+
+## 2026-11-24 owner construction continuation
+
+C227824 root construction content now matches all embedded source files after the owner rebuilt it. Its 76 focused tests, pinned preflight and scoped partial checker pass. The owner added original-world device inventory and per-frame authority/indication rejection, then authored six exact case-specific draft construction/configuration/measurement bundles with a SHA-bound selection index. The original official pedestrian signal and reviewed source packet are still absent; the selected semantic, compatibility, saved and delivery proofs remain worker-owned CPU work. Its exact strict gate exits 1 on truthful partial status.
+
+C158208 rebuilt both exact diagnostic bundles after adding an exact-case construction seal and rejection of diagnostic construction on the production capture path. Fifty-six focused tests, both pinned offline checks, physical-preparation validation, CPU preflight and scoped static pass. The selected semantic, source-bound compatibility, saved-only and independent delivery/comparison proofs are still being built, so status stays partial.
+
+C111125 NRS-484B-307-9b rebuilt seven constructions with pinned 20 Hz rate and a 20 m diagnostic straight-route motion criterion. Seven offline checks, 39 focused tests, seven source-shaped 900-frame physical/lifecycle probes, pinned physical validation and scoped static pass. Selected compatibility/saved/delivery proofs and two source-dependent lawful-status sweeps remain; exact strict exits 1 on truthful partial. No physical capture or legal result is claimed for any of these packages. No Git or checkpoint script was run.
+
+## 2026-11-24 construction mismatch resolved and selected-proof progress
+
+The lead scanned every partial root `construction.json` embedded source: zero content mismatches remain, resolving the reported `analysis.py` failure and the transient `native_signal.py` mismatch while C227824 was being edited. The lead also independently ran C227824's exact scoped `--complete` static checker; it exited 0. Its owner continues six selected case bundles and source-bound proofs; the exact strict gate is still 1 on truthful partial.
+
+C111125 NRS-484B-307-9b now has a source-hashed 900-frame, two-cycle diagnostic compatibility fixture with pinned full-size four-view camera sources. The pinned compatibility command passed recipe materialization, composition, selected analysis and Native validation, then reached Core conversion and identified missing `capture/evidence.jsonl`. The owner is constructing the required source-shaped capture/evidence/graph packet and will rerun conversion, Lean and rendering. This is a worker-owned CPU gap, not a GPU limitation; status remains partial.
+
+C158208 began a source-gated production construction builder and canonical semantic stage work for its nearest-view pair; it remains unselected pending proof and reviewed original site sources. No new assignment was marked ready. No Git or checkpoint script was run.
+
+## 2026-11-24 selected draft and saved CPU milestones
+
+C227824's six exact draft construction/configuration/measurement bundles now pass six current-runtime offline materializations, including stale construction-hash rejection. The owner then ran all six source-shaped three-frame saved finalizers through `analysis.py` and proved a missing device packet is rejected. Seventy-seven focused tests, scoped static and exact partial checker pass; full compatibility/media/Core/Lean and canonical source-bound delivery are still incomplete, so its strict gate remains 1 on truthful partial. The synthetic three-frame packets are diagnostic only.
+
+C158208's source-gated production builder now has a synthetic positive materialized-runner check and a tampered-sign negative. Nine draft semantic stages pass the pinned `semantic_delivery.validate` schema path against temporary aligned constructions; 58 focused tests, two offline diagnostics, physical validation and scoped static pass. The owner is implementing a selected handoff builder that refuses diagnostic or incomplete source inputs before binding a canonical manifest and saved proofs. Status remains partial.
+
+A non-Git hygiene scan of 171 files modified in the recent 20-minute interval found zero size, UTF-8, trailing-whitespace, blank-EOF or actual conflict-marker issues. No Git or checkpoint script was run.

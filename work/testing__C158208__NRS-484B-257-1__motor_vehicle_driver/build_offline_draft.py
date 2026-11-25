@@ -24,6 +24,7 @@ import json
 from pathlib import Path
 from yield_control import control
 from source_tick_capture import validate_geometry
+from native_attempt import verify_review_sources
 
 
 def check():
@@ -49,6 +50,9 @@ def check():
         site = json.loads(site_bytes)
         if site.get("review_status") != "reviewed" or site.get("cell_id") != "C158208":
             raise ValueError("genuine reviewed Native site required")
+        verify_review_sources(site, root / site_path, diagnostic_fixture=False)
+        if scene["capture_geometry"] != site.get("capture_geometry"):
+            raise ValueError("reviewed Native geometry changed")
     elif scene["source_kind"] != "diagnostic_review_context":
         raise ValueError("unknown Native source kind")
     validate_geometry(scene["capture_geometry"])

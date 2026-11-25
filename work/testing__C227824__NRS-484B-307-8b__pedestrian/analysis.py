@@ -62,7 +62,7 @@ def _evidence(root, description, report):
                          "reference": str(target.relative_to(root))})
     context = root / "channels" / "context.json"
     with context.open("x") as stream:
-        stream.write(json.dumps({"highway_polygon_xy_m": json.loads(
+        stream.write(json.dumps({"highway_boundary": json.loads(
             (root / "scene.json").read_text())["highway_polygon_xy_m"],
             "source_sha256": report["source_sha256"]["scene.json"]},
             allow_nan=False) + "\n")
@@ -124,7 +124,7 @@ def finalize(attempt):
     validate_result(result)
     report.update({"format": "worker-analysis-report",
                    "measurements": {"pedestrian_highway_entry": {
-                       "value": report["measurement"], "method": "measure",
+                       "value": report["measurement"], "method": "finalize",
                        "sources": report["source_sha256"]}},
                    "physical_checks": result["physical_checks"],
                    "realized_observables": result["realized_observables"],

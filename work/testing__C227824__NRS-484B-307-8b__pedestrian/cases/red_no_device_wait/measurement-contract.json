@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
+  "law_id": "NRS-484B-307-8b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Steady-red pedestrian highway entry subject to another-device permission under NRS 484B.283",
+      "source": {
+        "path": "inputs/testing__C227824__NRS-484B-307-8b__pedestrian/assignment.json",
+        "quote": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
+      },
+      "output_key": "pedestrian_highway_entry",
+      "method": "finalize",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "scene.json",
+        "walker-body-history.jsonl",
+        "signal-history.jsonl",
+        "device-history.jsonl",
+        "video_frames.jsonl",
+        "camera-frame-joins.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device-history.jsonl"
+    ],
+    "error_contains": "Missing required source: device-history.jsonl"
+  },
+  "legal_judgment": "unresolved"
+}

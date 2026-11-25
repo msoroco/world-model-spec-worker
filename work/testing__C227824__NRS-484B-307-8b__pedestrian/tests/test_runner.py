@@ -27,7 +27,9 @@ class RunnerTests(unittest.TestCase):
                             ("construction.json", construction)):
             (self.root / name).write_text(json.dumps(value) + "\n")
         for item in construction["files"]:
-            (self.root / item["path"]).write_text(item["content"])
+            target = self.root / item["path"]
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(item["content"])
         (self.root / "device-review.json").write_text('{"complete": true}\n')
         (self.root / "camera-review.json").write_text('{"complete": true}\n')
         self.scene = {

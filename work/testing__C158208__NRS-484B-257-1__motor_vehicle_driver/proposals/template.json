@@ -1,0 +1,70 @@
+{
+  "status": "draft",
+  "law_id": "NRS-484B-257-1",
+  "actor": "motor_vehicle_driver",
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver",
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Driver approaches a properly signed yield intersection without officer or signal control.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "yield",
+      "description": "Slow or stop at the applicable reference and yield to protected through-highway vehicles during crossing.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal",
+        "trigger": "officer or signal control",
+        "effect": "this signed-intersection rule does not govern",
+        "description": "Independently verify actual governing control."
+      }
+    ],
+    "timing": {
+      "description": "Original approach, first view and full across-or-within intersection history.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "proper signs have been erected",
+        "note": "Governing sign identity and physical placement need independent review."
+      },
+      {
+        "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "note": "Nearest available view depends on original geometry, road users and raycasts."
+      },
+      {
+        "phrase": "approaching so closely on such through highway as to constitute an immediate hazard",
+        "note": "Immediate hazard is a legal judgment over original through-vehicle history."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Priority remains unresolved from a controller label."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "response_mode",
+      "kind": "controller",
+      "range_or_domain": "observed-conflict response or uninterrupted engineering controller"
+    },
+    {
+      "name": "reviewed_site",
+      "kind": "world_setup",
+      "range_or_domain": "single reviewed C158208 nearest-view site"
+    },
+    {
+      "name": "through_traffic",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed through-highway actor route and schedule"
+    },
+    {
+      "name": "capture_profile",
+      "kind": "world_setup",
+      "range_or_domain": "four original camera streams, 20 Hz, 900 frames"
+    }
+  ]
+}

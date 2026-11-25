@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parent
 CASE = ROOT.name + "__red_no_device_entry"
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
-MODULES = ("runner.py", "case-plan.json", "materialize_cases.py", "native_case_bundles.py",
+MODULES = ("runner.py", "case-plan.json", "materialize_cases.py", "build_selected.py",
+           "native_case_bundles.py",
            "crossing_map.py",
            "native_world.py", "native_attempt.py",
            "native_packets.py", "native_signal.py", "native_cameras.py",
@@ -61,20 +62,26 @@ def build(case_id=CASE):
         "case_id": case_id,
         "law_id": plan["law_id"],
         "requirements": [{
-            "requirement": "Steady-red pedestrian highway entry and separate-device exception",
-            "source": "inputs/" + ROOT.name + "/assignment.json",
+            "disposition_index": 0,
+            "requirement": plan["requirement_dispositions"][0]["requirement"],
+            "source": plan["requirement_dispositions"][0]["source"],
             "output_key": "pedestrian_highway_entry",
-            "method": "source-joined original walker body/highway contact and device snapshot",
+            "method": "finalize",
             "value_type": "object", "kind": "measured",
-            "inputs": ["walker-body-history.jsonl", "signal-history.jsonl",
-                       "device-history.jsonl", "video_frames.jsonl", "scene.json"],
+            "inputs": ["scene.json", "walker-body-history.jsonl", "signal-history.jsonl",
+                       "device-history.jsonl", "video_frames.jsonl",
+                       "camera-frame-joins.jsonl", "overview.mkv", "approach.mkv",
+                       "reference_corner.mkv", "driver_reference.mkv"],
         }],
         "negative": {"remove": ["device-history.jsonl"],
-                     "error_contains": "Missing required source"},
+                     "error_contains": "Missing required source: device-history.jsonl"},
         "legal_judgment": "unresolved",
     }
     files = [{"path": name, "content": (ROOT / name).read_text()}
              for name in MODULES]
+    files.append({"path": "tests/test_bundle.py",
+                  "content": (ROOT / "tests/test_bundle.py").read_text(),
+                  "source": "work/" + ROOT.name + "/tests/test_bundle.py"})
     files.extend(({"path": name, "content": json.dumps(value, indent=2) + "\n"}
                   for name, value in (("config.json", config),
                                       ("measurement-contract.json", measurement))))

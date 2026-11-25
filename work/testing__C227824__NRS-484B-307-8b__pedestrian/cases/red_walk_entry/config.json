@@ -1,0 +1,152 @@
+{
+  "law_id": "NRS-484B-307-8b",
+  "cell_id": "C227824",
+  "actor": "pedestrian",
+  "selected_case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+  "supported_case_ids": [
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry"
+  ],
+  "case": {
+    "target_law_id": "NRS-484B-307-8b",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "walker_body_history",
+          "unit": "source packet",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA walker world-body vertices and XY envelope",
+          "time_window": "all original recorded frames",
+          "reference_frame": "Native CARLA world frame/time",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review"
+        },
+        {
+          "name": "facing_signal_history",
+          "unit": "source packet",
+          "sampling_rate_hz": 20,
+          "method": "Original route-facing official head state and identity",
+          "time_window": "all original recorded frames",
+          "reference_frame": "Native CARLA world frame/time",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review"
+        },
+        {
+          "name": "other_device_history",
+          "unit": "source packet",
+          "sampling_rate_hz": 20,
+          "method": "Original complete other-device inventory, indication and countdown",
+          "time_window": "all original recorded frames",
+          "reference_frame": "Native CARLA world frame/time",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "source packet",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame and time joined to four camera streams",
+          "time_window": "all original recorded frames",
+          "reference_frame": "Native CARLA world frame/time",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "highway_boundary",
+          "unit": "m",
+          "method": "Source-hashed reviewed full-highway polygon in original scene"
+        }
+      ],
+      "limitations": [
+        "Requested entry or waiting does not establish realized movement.",
+        "Another device indication does not itself establish legal permission.",
+        "Actual pixel visibility and official device authority require independent source review."
+      ]
+    },
+    "unresolved_judgment_calls": [
+      {
+        "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
+        "note": "Permission depends on verified source authority, indication, timing and applicable subsection; no legal verdict is assigned."
+      }
+    ],
+    "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+    "target_type": "boundary_probe",
+    "rationale": "Enter while facing steady red alone and a separate official WALK indication. Original signal, body, device and camera sources determine the physical event; legal permission remains unresolved.",
+    "variable_assignments": {
+      "entry_request": {
+        "kind": "controller",
+        "value": "entry",
+        "unit": "categorical request"
+      },
+      "other_device_indication": {
+        "kind": "world_setup",
+        "value": "walk",
+        "unit": "categorical indication"
+      }
+    },
+    "paired_probe_id": "red_entry_device_condition_group",
+    "deliberate_differences": [
+      "entry_request",
+      "other_device_indication"
+    ],
+    "probe": {
+      "primary_variable": "other_device_indication",
+      "comparison_or_standard": "red_no_device_entry",
+      "target_value_or_branch": "walk"
+    },
+    "physical_risk_assessment": {
+      "status": "physical",
+      "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
+      "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
+      "fallback_construction": null
+    },
+    "comparison_overrides_from_baseline": [
+      "entry_request",
+      "other_device_indication"
+    ]
+  },
+  "duration_s": 12,
+  "rate_hz": 20,
+  "capture_provenance": "original Native samples required",
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    }
+  ],
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 1.0,
+    "engineering_tolerances_not_legal": true
+  }
+}
