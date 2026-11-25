@@ -50,7 +50,8 @@ def main():
     client.set_timeout(20.0)
     try:
         receipt = run(client.get_world(), attempt=output, packet_path=output / 'map.json',
-                      case_id=selected, control_factory=carla.VehicleControl, carla=carla)
+                      case_id=selected, control_factory=carla.VehicleControl,
+                      carla=carla, client=client)
     except BaseException as exc:
         status = output / 'native-run-status.json'
         if not status.exists():

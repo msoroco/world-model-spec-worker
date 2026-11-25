@@ -107,7 +107,7 @@ class ComparisonTest(unittest.TestCase):
         result.write_bytes(original)
         camera = Path(cases[2]['attempt']) / 'original-frames/overview-000001.png'
         camera.unlink()
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaisesRegex(ValueError, 'not a retained file'):
             compare(PACKAGE / 'case-plan.json', spec)
 
 

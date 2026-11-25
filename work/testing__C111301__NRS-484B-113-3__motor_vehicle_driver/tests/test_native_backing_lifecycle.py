@@ -5,6 +5,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRATCH = ROOT.parents[1] / '.runtime-work'
@@ -58,6 +59,18 @@ class Encoder:
         self.path.write_bytes(f'fixture:{self.frames}'.encode())
     def abort(self):
         self.aborted = True
+
+
+def complete_fake_capture(output):
+    capture = Path(output) / 'capture'
+    (capture / 'native').mkdir(parents=True)
+    (capture / 'manifest.json').write_text(json.dumps({
+        'acquisition': 'original_live_run', 'extraction_confirmed': True,
+        'frames': 900}) + '\n')
+    (capture / 'evidence.jsonl').write_text('{}\n')
+    (capture / 'native/frames.jsonl').write_text('{}\n')
+    (capture / 'recorder_info.txt').write_text('fake-world test only\n')
+    (Path(output) / 'carla_recorder.log').write_text('fake-world test only\n')
 
 
 class World:
@@ -218,6 +231,47 @@ class NativeBackingLifecycleTests(unittest.TestCase):
                 run(world, **kwargs)
             self.assertFalse(world.actors)
 
+    def test_fake_reviewed_capture_joins_pipeline_trace_and_restores(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
+            root = Path(temp)
+            world, kwargs = self.run_case(root)
+            packet = json.loads((root / 'map.json').read_text())
+            pose = {'location': {'x': 0.0, 'y': 0.0, 'z': 0.0},
+                    'rotation': {'pitch': 0.0, 'yaw': 0.0, 'roll': 0.0}}
+            packet['review_status'] = 'reviewed_original'
+            packet['actor_transforms'] = {'vehicle': pose, 'pedestrian': pose}
+            packet['camera_extrinsics'] = {name: dict(pose, fov_deg=90) for name in CAMERAS}
+            (root / 'map.json').write_text(json.dumps(packet) + '\n')
+            (root / 'construction.json').write_text('{}\n')
+            (root / 'runner.py').write_text('# fake-world test only\n')
+
+            class FakeCapture:
+                def __init__(self, client, ego, output, case_id):
+                    self.path = Path(output) / 'trace.jsonl'
+                    self.stream = self.path.open('x')
+                    self.output = Path(output)
+                    self.closed = False
+                def capture(self, frame, time_s):
+                    self.stream.write(json.dumps({'frame': frame, 'time_s': time_s,
+                                                  'position_m': [5.0, 0.0, 0.0]}) + '\n')
+                def close(self, confirmed=True):
+                    if not self.closed:
+                        self.stream.close()
+                        complete_fake_capture(self.output)
+                        self.closed = True
+
+            carla = SimpleNamespace(Transform=lambda location, rotation: (location, rotation),
+                                    Location=lambda **values: values,
+                                    Rotation=lambda **values: values)
+            kwargs.update(diagnostic_fixture=False, transforms=None, camera_factory=None,
+                          carla=carla, client=object())
+            with patch.dict(sys.modules, {'pipeline_capture': SimpleNamespace(PipelineCapture=FakeCapture)}):
+                receipt = run(world, **kwargs)
+            self.assertEqual(receipt['source_kind'], 'native_original')
+            self.assertTrue((root / 'capture-seal.json').is_file())
+            self.assertFalse(world.get_settings().synchronous_mode)
+            self.assertTrue(all(actor.destroyed for actor in world.actors))
+
     def test_reviewed_packet_runs_production_owned_lifecycle(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
@@ -237,8 +291,23 @@ class NativeBackingLifecycleTests(unittest.TestCase):
                                     Rotation=lambda **values: values)
             kwargs.pop('transforms')
             kwargs.pop('camera_factory')
-            kwargs.update(carla=carla, diagnostic_fixture=False)
-            receipt = run(world, **kwargs)
+            class FakeCapture:
+                def __init__(self, client, ego, output, case_id):
+                    self.stream = (Path(output) / 'trace.jsonl').open('x')
+                    self.output = Path(output)
+                    self.closed = False
+                def capture(self, frame, time_s):
+                    self.stream.write(json.dumps({'frame': frame, 'time_s': time_s,
+                                                  'position_m': [5.0, 0.0, 0.0]}) + '\n')
+                def close(self, confirmed=True):
+                    if not self.closed:
+                        self.stream.close()
+                        complete_fake_capture(self.output)
+                        self.closed = True
+            kwargs.update(carla=carla, diagnostic_fixture=False,
+                          client=object())
+            with patch.dict(sys.modules, {'pipeline_capture': SimpleNamespace(PipelineCapture=FakeCapture)}):
+                receipt = run(world, **kwargs)
             self.assertEqual(receipt['source_kind'], 'native_original')
             self.assertTrue((root / 'capture-seal.json').is_file())
             self.assertEqual(json.loads((root / 'capture-seal.json').read_text())['frames'], 900)

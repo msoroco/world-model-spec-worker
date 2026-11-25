@@ -7,7 +7,7 @@
       "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c81c3913f0cb024c17936eb8d24485b30c40382b3a44e5d3a997997cc70118c6",
+      "construction_sha256": "c8249769c0a0e649824a226eb8fe556814dd868040c19d2e42a21d920bc01ee5",
       "measurement_contract": "measurement-pedestrian_yield.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -26,11 +26,14 @@
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
-          "method": "original actor control and velocity readback on each Native world tick",
+          "method": "original actor control and velocity readback joined to runtime PipelineCapture on each Native world tick",
           "evidence": [
             "telemetry.json",
             "frame-map.json",
-            "trace.jsonl"
+            "trace.jsonl",
+            "capture/evidence.jsonl",
+            "capture/native/frames.jsonl",
+            "carla_recorder.log"
           ]
         },
         "moving_pedestrian_corridor_exposure": {
@@ -45,7 +48,7 @@
       },
       "compatibility": {
         "receipt": "cases/pedestrian_yield/compatibility.json",
-        "sha256": "4425f03acdda89cfee10d4ecfcf78c993f0740220b7d460867c24b497dfd5ed1",
+        "sha256": "3b2f252b734a176a20cb560ec6513bd8049baa79e5e60943a2e606e421741483",
         "log": "cases/pedestrian_yield/cpu-analysis.log"
       },
       "negative": {
@@ -53,18 +56,18 @@
         "expected_error": "Missing required source: map.json"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-nov25/offline-pedestrian_yield-v1 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "c81c3913f0cb024c17936eb8d24485b30c40382b3a44e5d3a997997cc70118c6",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-nov25/offline-yield-v4 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "c8249769c0a0e649824a226eb8fe556814dd868040c19d2e42a21d920bc01ee5",
         "exit_code": 0,
         "log": "cases/pedestrian_yield/cpu-offline.log",
-        "log_sha256": "39629af9b69c149bd9b944ef95544994eb0d8791f528a33a83e4fb9e17d7e387"
+        "log_sha256": "4df2fd881b0c3a3afc3da1e6cf38baa1e5ac61d7688373dc60afcc7193be40f2"
       }
     },
     {
       "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
       "kind": "delivery",
       "construction": "construction-pedestrian_continue.json",
-      "construction_sha256": "46ec6d96e30bfcd80463d4e921dff08d33efd6382bc7b23d807ae2e1dfe7bcb2",
+      "construction_sha256": "99531f999c72d07a6f72e85e3c55e26526f894689c60b76b123d336acc9fc2db",
       "measurement_contract": "measurement-pedestrian_continue.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -83,11 +86,14 @@
       "acquisition": {
         "vehicle_reverse_response": {
           "entrypoint": "native_backing_capture.py",
-          "method": "original actor control and velocity readback on each Native world tick",
+          "method": "original actor control and velocity readback joined to runtime PipelineCapture on each Native world tick",
           "evidence": [
             "telemetry.json",
             "frame-map.json",
-            "trace.jsonl"
+            "trace.jsonl",
+            "capture/evidence.jsonl",
+            "capture/native/frames.jsonl",
+            "carla_recorder.log"
           ]
         },
         "moving_pedestrian_corridor_exposure": {
@@ -102,7 +108,7 @@
       },
       "compatibility": {
         "receipt": "cases/pedestrian_continue/compatibility.json",
-        "sha256": "6c2c18acf92b501d780d4e3cf78dc4da5fdae4635a094f4bc51f1228ce0a0ec0",
+        "sha256": "b77c544ab616d68840bce1658e3ffda245c8cb3ab694823dfd1c3c87b14f5c5c",
         "log": "cases/pedestrian_continue/cpu-analysis.log"
       },
       "negative": {
@@ -110,11 +116,11 @@
         "expected_error": "Missing required source: map.json"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-nov25/offline-pedestrian_continue-v1 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "46ec6d96e30bfcd80463d4e921dff08d33efd6382bc7b23d807ae2e1dfe7bcb2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-nov25/offline-continue-v4 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "99531f999c72d07a6f72e85e3c55e26526f894689c60b76b123d336acc9fc2db",
         "exit_code": 0,
         "log": "cases/pedestrian_continue/cpu-offline.log",
-        "log_sha256": "b1f631955fd0efd78a2678b9c00e50e18fb0d55170b6b0ca8a81c42343f08a47"
+        "log_sha256": "33ae53e91c26b0221a75722580f04634c8ea3dad1f1f6e88de04c6f930392a36"
       }
     }
   ]

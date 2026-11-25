@@ -76,31 +76,36 @@ class NativeBackingRecorder:
         self.frame_map.append(mapping)
         return mapping
 
-    def write(self, directory):
+    def write(self, directory, *, external_trace=False):
         if len(self.rows) != 900:
             raise ValueError('complete 900-frame Native backing capture required')
         root = Path(directory)
-        if not root.is_dir() or any((root / name).exists() for name in
-                                    ('telemetry.json', 'frame-map.json',
-                                     'trace.jsonl', 'video_frames.jsonl')):
+        owned = ('telemetry.json', 'frame-map.json', 'video_frames.jsonl')
+        if not external_trace:
+            owned += ('trace.jsonl',)
+        if not root.is_dir() or any((root / name).exists() for name in owned):
             raise ValueError('fresh Native source destination required')
+        trace = root / 'trace.jsonl'
+        if external_trace:
+            if not trace.is_file():
+                raise ValueError('original Native pipeline trace missing')
+            original = [json.loads(line) for line in trace.read_text().splitlines()]
+            if (len(original) != 900 or any(
+                    point.get('frame') != row['native_world_frame'] or
+                    abs(point.get('time_s', -1) - row['time_s']) > 1e-6 or
+                    not isinstance(point.get('position_m'), list) or
+                    len(point['position_m']) != 3 or
+                    any(abs(point['position_m'][axis] - row['vehicle_xy'][axis]) > .001
+                        for axis in (0, 1))
+                    for point, row in zip(original, self.rows))):
+                raise ValueError('original Native pipeline trace/frame join differs')
         telemetry = root / 'telemetry.json'
         frame_map = root / 'frame-map.json'
         telemetry.write_text(json.dumps(self.rows, allow_nan=False) + '\n', encoding='utf-8')
         frame_map.write_text(json.dumps(self.frame_map, allow_nan=False) + '\n', encoding='utf-8')
-        trace = root / 'trace.jsonl'
         video_map = root / 'video_frames.jsonl'
-        with trace.open('x', encoding='utf-8') as trace_stream, video_map.open('x', encoding='utf-8') as map_stream:
+        with video_map.open('x', encoding='utf-8') as map_stream:
             for row, mapping in zip(self.rows, self.frame_map):
-                trace_stream.write(json.dumps({
-                    'frame': row['native_world_frame'], 'time_s': row['time_s'],
-                    'position_m': row['vehicle_xy'],
-                    'vehicle_velocity_xy_mps': row['vehicle_velocity_xy'],
-                    'pedestrian_position_m': row['pedestrian_xy'],
-                    'pedestrian_velocity_xy_mps': row['pedestrian_velocity_xy'],
-                    'reverse_gear': row['reverse_gear'], 'brake': row['brake'],
-                    'pedestrian_in_corridor': row['pedestrian_in_corridor']},
-                    allow_nan=False) + '\n')
                 map_stream.write(json.dumps({
                     'video_frame': mapping['frame'],
                     'carla_frame': mapping['world_frame'],
@@ -108,6 +113,18 @@ class NativeBackingRecorder:
                     'time_s': row['time_s'],
                     'camera_world_frames': mapping['camera_world_frames']},
                     allow_nan=False) + '\n')
+        if not external_trace:
+            with trace.open('x', encoding='utf-8') as trace_stream:
+                for row in self.rows:
+                    trace_stream.write(json.dumps({
+                        'frame': row['native_world_frame'], 'time_s': row['time_s'],
+                        'position_m': row['vehicle_xy'],
+                        'vehicle_velocity_xy_mps': row['vehicle_velocity_xy'],
+                        'pedestrian_position_m': row['pedestrian_xy'],
+                        'pedestrian_velocity_xy_mps': row['pedestrian_velocity_xy'],
+                        'reverse_gear': row['reverse_gear'], 'brake': row['brake'],
+                        'pedestrian_in_corridor': row['pedestrian_in_corridor']},
+                        allow_nan=False) + '\n')
         return {'telemetry': str(telemetry), 'frame_map': str(frame_map),
                 'trace': str(trace), 'video_frame_map': str(video_map),
                 'frame_count': 900,

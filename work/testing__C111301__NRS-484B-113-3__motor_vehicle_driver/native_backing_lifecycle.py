@@ -127,7 +127,7 @@ class CarlaCameraFactory:
 def run(world, *, attempt, packet_path, case_id, control_factory,
         carla=None, transforms=None, camera_factory=None,
         encoder_factory=FFV1Encoder, diagnostic_fixture=False,
-        expected_frames=900):
+        expected_frames=900, client=None):
     """Capture into a fresh attempt, releasing all owned actors before receipt."""
     if case_id not in CASES or expected_frames != 900:
         raise ValueError('exact 900-frame backing case required')
@@ -145,6 +145,9 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
             raise ValueError('two reviewed original actor transforms required')
         transforms = {name: _pose(carla, poses[name], name) for name in poses}
         camera_factory = CarlaCameraFactory(carla, packet)
+        if client is None:
+            raise ValueError('original Native CARLA client required for source capture')
+        from pipeline_capture import PipelineCapture
     elif transforms is None or camera_factory is None:
         raise ValueError('diagnostic Native fixture requires explicit actor and camera adapters')
     loaded_map = world.get_map().to_opendrive().encode()
@@ -161,12 +164,15 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
     first_time = None
     capture_error = None
     receipt = None
+    pipeline_capture = None
     try:
         world.apply_settings(settings)
         readback = world.get_settings()
         if readback.synchronous_mode is not True or readback.fixed_delta_seconds != .05:
             raise ValueError('Native 20 Hz world settings readback differs')
         actors = construct(world, packet, transforms)
+        if not diagnostic_fixture:
+            pipeline_capture = PipelineCapture(client, actors['vehicle'], root, case_id)
         recorder = NativeBackingRecorder(packet, actors['vehicle'], actors['pedestrian'])
         controller = BackingController(yield_for_pedestrian=case_id.endswith('pedestrian_yield'),
                                        control_factory=control_factory)
@@ -204,9 +210,22 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
                                                      timestamp=image.timestamp - first_time)
                                for name, image in images.items()}
             recorder.append(frame, stamp - first_time, recorder_images)
+            if pipeline_capture is not None:
+                pipeline_capture.capture(frame, stamp - first_time)
             for name in CAMERAS:
                 encoders[name].append(images[name])
-        source = recorder.write(root)
+        if pipeline_capture is not None:
+            pipeline_capture.close(confirmed=True)
+            capture_manifest = json.loads((root / 'capture/manifest.json').read_text())
+            if (capture_manifest.get('acquisition') != 'original_live_run' or
+                    capture_manifest.get('extraction_confirmed') is not True or
+                    capture_manifest.get('frames') != expected_frames):
+                raise ValueError('original Native graph/evidence extraction incomplete')
+            for source_name in ('capture/evidence.jsonl', 'capture/native/frames.jsonl',
+                                'capture/recorder_info.txt', 'carla_recorder.log'):
+                if not (root / source_name).is_file():
+                    raise ValueError('original Native capture source missing: ' + source_name)
+        source = recorder.write(root, external_trace=pipeline_capture is not None)
         for encoder in encoders.values():
             encoder.close()
         encoders.clear()
@@ -228,6 +247,11 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
         capture_error = exc
     finally:
         cleanup_errors = []
+        if pipeline_capture is not None:
+            try:
+                pipeline_capture.close(confirmed=False)
+            except BaseException as exc:
+                cleanup_errors.append('source capture close: ' + str(exc))
         for encoder in encoders.values():
             try:
                 encoder.abort()
@@ -283,7 +307,7 @@ def main():
     client.set_timeout(20.0)
     receipt = run(client.get_world(), attempt=args.attempt,
                   packet_path=args.packet, case_id=args.case,
-                  control_factory=carla.VehicleControl, carla=carla)
+                  control_factory=carla.VehicleControl, carla=carla, client=client)
     print(json.dumps(receipt, sort_keys=True))
 
 

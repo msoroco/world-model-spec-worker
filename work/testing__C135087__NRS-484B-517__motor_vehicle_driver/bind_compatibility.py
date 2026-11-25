@@ -27,18 +27,20 @@ def bind():
             receipt = json.loads((source / "compatibility.json").read_text())
             assert receipt["passed"] is True and receipt["case_id"] == entry["case_id"]
             assert receipt["candidate_id"] == candidate
-            target = HERE / "proofs" / ("compatibility-" + suffix + "-" + candidate)
+            target = HERE / "proofs" / ("selected-" + suffix + "-" + candidate)
             target.mkdir(parents=True, exist_ok=True)
-            names = ("compatibility.json", "compatibility-analysis.log", "negative-analysis.log")
-            for name in names:
-                shutil.copyfile(source / name, target / name)
-            assert receipt["log_sha256"] == sha(target / "compatibility-analysis.log")
-            assert receipt["negative_log_sha256"] == sha(target / "negative-analysis.log")
+            names = {"compatibility.json": "receipt.json",
+                     "compatibility-analysis.log": "analysis.log",
+                     "negative-analysis.log": "negative.log"}
+            for original, renamed in names.items():
+                shutil.copyfile(source / original, target / renamed)
+            assert receipt["log_sha256"] == sha(target / "analysis.log")
+            assert receipt["negative_log_sha256"] == sha(target / "negative.log")
             relative = target.relative_to(HERE)
-            spec = {"receipt": str(relative / "compatibility.json"),
-                    "sha256": sha(target / "compatibility.json"),
-                    "log": str(relative / "compatibility-analysis.log"),
-                    "negative_log": str(relative / "negative-analysis.log")}
+            spec = {"receipt": str(relative / "receipt.json"),
+                    "sha256": sha(target / "receipt.json"),
+                    "log": str(relative / "analysis.log"),
+                    "negative_log": str(relative / "negative.log")}
             if candidate == "primary":
                 entry["compatibility"] = {key: spec[key] for key in ("receipt", "sha256", "log")}
                 entry["negative"] = {"log": spec["negative_log"]}

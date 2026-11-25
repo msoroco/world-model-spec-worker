@@ -38,8 +38,10 @@ def build():
         entry['acquisition'] = {
             'vehicle_reverse_response': {
                 'entrypoint': 'native_backing_capture.py',
-                'method': 'original actor control and velocity readback on each Native world tick',
-                'evidence': ['telemetry.json', 'frame-map.json', 'trace.jsonl']},
+                'method': 'original actor control and velocity readback joined to runtime PipelineCapture on each Native world tick',
+                'evidence': ['telemetry.json', 'frame-map.json', 'trace.jsonl',
+                             'capture/evidence.jsonl', 'capture/native/frames.jsonl',
+                             'carla_recorder.log']},
             'moving_pedestrian_corridor_exposure': {
                 'entrypoint': 'native_backing_capture.py',
                 'method': 'original pedestrian pose and velocity with sealed route geometry',
@@ -57,8 +59,9 @@ def build():
             entry['offline'] = {
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + aid +
                            '/execution-manifest.json --case ' + case_id +
-                           ' --output .runtime-work/c111301-nov25/offline-' + suffix +
-                           '-v1 --python $PWD/.venv-cpu/bin/python',
+                           ' --output .runtime-work/c111301-nov25/offline-' +
+                           ('yield' if suffix == 'pedestrian_yield' else 'continue') +
+                           '-v4 --python $PWD/.venv-cpu/bin/python',
                 'construction_sha256': entry['construction_sha256'],
                 'exit_code': 0, 'log': str(offline.relative_to(HERE)),
                 'log_sha256': sha(offline)}

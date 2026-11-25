@@ -16,6 +16,7 @@ from native_history_capture import capture, audit_media, CAMERAS
 from crossing_timing import measure
 from saved_finalizer import finalize
 from encode_views import encode
+from delivery_audit import audit as audit_delivery
 
 
 class Vertex:
@@ -215,6 +216,24 @@ class CaptureTest(unittest.TestCase):
                     self.root / 'wrong-camera', 4, camera_readers=readers,
                     camera_dimensions={name: (2, 2) for name in CAMERAS})
 
+    def test_original_camera_symlink_is_not_retained_capture(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2)).save(stream, format='PNG')
+        image = stream.getvalue()
+        readers = {name: lambda frame, image=image: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        attempt = self.root / 'camera-symlink'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4,
+                camera_readers=readers,
+                camera_dimensions={name: (2, 2) for name in CAMERAS})
+        frame = attempt / 'original-frames/overview-000001.png'
+        external = self.root / 'same-original-bytes.png'
+        external.write_bytes(frame.read_bytes())
+        frame.unlink()
+        frame.symlink_to(external)
+        with self.assertRaisesRegex(ValueError, 'not a retained file'):
+            audit_media(attempt, camera_dimensions={name: (2, 2) for name in CAMERAS})
+
     def test_saved_finalizer_reopens_four_camera_source(self):
         stream = io.BytesIO()
         Image.new('RGB', (2, 2), (4, 5, 6)).save(stream, format='PNG')
@@ -251,6 +270,20 @@ class CaptureTest(unittest.TestCase):
         self.assertEqual([item['decoded_frames'] for item in receipt['videos'].values()],
                          [4] * 4)
         self.assertFalse(receipt['physical_acceptance'])
+        digest = hashlib.sha256((attempt / 'source-manifest.json').read_bytes()).hexdigest()
+        saved = self.root / 'encode-saved-result.json'
+        finalize(attempt, saved, expected_manifest_sha256=digest, probe_id='entry_inside')
+        delivered = audit_delivery(attempt, saved, self.root / 'encoded', receipt,
+                                   probe_id='entry_inside')
+        self.assertEqual(delivered['decoded_view_frames'], 16)
+        self.assertTrue(delivered['full_video_decode'])
+        self.assertFalse(delivered['actual_pixels_verified'])
+        damaged = dict(receipt)
+        damaged['videos'] = {name: dict(row) for name, row in receipt['videos'].items()}
+        damaged['videos']['overview']['sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'encoded camera bytes differ'):
+            audit_delivery(attempt, saved, self.root / 'encoded', damaged,
+                           probe_id='entry_inside')
 
 
 if __name__ == "__main__":

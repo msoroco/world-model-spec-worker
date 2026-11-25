@@ -88,6 +88,40 @@ class NativeBackingCaptureTests(unittest.TestCase):
                 recorder.append(1000, 0, images)
             self.assertEqual(recorder.rows, [])
 
+    def test_external_pipeline_trace_joins_exact_source_rows(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
+            root = Path(temp)
+            recorder = self.setup_recorder(root)
+            for index in range(900):
+                recorder.append(1000 + index, index * .05, self.images(1000 + index))
+            source_root = root / 'native-source'
+            source_root.mkdir()
+            trace = source_root / 'trace.jsonl'
+            trace.write_text(''.join(json.dumps({
+                'frame': row['native_world_frame'], 'time_s': row['time_s'],
+                'position_m': [*row['vehicle_xy'], 0.0]}) + '\n'
+                for row in recorder.rows))
+            receipt = recorder.write(source_root, external_trace=True)
+            self.assertEqual(receipt['frame_count'], 900)
+            self.assertEqual(len(trace.read_text().splitlines()), 900)
+
+    def test_external_pipeline_trace_rejects_changed_pose_before_publish(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
+            root = Path(temp)
+            recorder = self.setup_recorder(root)
+            for index in range(900):
+                recorder.append(1000 + index, index * .05, self.images(1000 + index))
+            source_root = root / 'native-source'
+            source_root.mkdir()
+            trace = source_root / 'trace.jsonl'
+            trace.write_text(''.join(json.dumps({
+                'frame': row['native_world_frame'], 'time_s': row['time_s'],
+                'position_m': [*row['vehicle_xy'], 0.0] if i else [6.0, 0.0, 0.0]}) + '\n'
+                for i, row in enumerate(recorder.rows)))
+            with self.assertRaisesRegex(ValueError, 'pipeline trace/frame join'):
+                recorder.write(source_root, external_trace=True)
+            self.assertFalse((source_root / 'telemetry.json').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

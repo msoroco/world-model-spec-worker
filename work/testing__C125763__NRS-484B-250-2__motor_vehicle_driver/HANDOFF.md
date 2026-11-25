@@ -72,3 +72,29 @@ A 900-frame synthetic fixture now remains labeled diagnostic in saved finalizati
 The FFV1 SHA-256 pass now streams from disk in 1 MiB chunks, so a production-length view is not loaded wholly into memory. The 24-test suite, scoped static and exact partial strict were rerun after this change.
 
 The acquisition sealer now writes canonical `video_frames.jsonl` identities during capture, binds its hash in the original source manifest, and has the independent media audit join every video index and Native frame/time to both body histories and the four camera rows. Tampering with that retained map is rejected. The 24-test suite and scoped static pass; exact strict remains truthful partial.
+
+## 2026-11-25 independent timing comparison checkpoint
+
+`compare_saved.py` now accepts only the three exact `entry_timing_range` case IDs in plan order. For each case it verifies the saved result SHA and original source-manifest SHA, reruns `crossing_timing.measure` from sealed Native histories, reopens all four original camera streams through `audit_media`, and checks the saved measurement and camera audit against those independent results. It requires identical map, cell, device/highway sources, side/approach roles, intersection bounds, routes, lanes, blueprints, weather, camera poses/mounts/dimensions, and reviewed release schedule; the selected release values must be distinct. It records achieved entry differences and brackets without treating the training range as a legal threshold or claiming subsection 4 applicability. Diagnostic fixtures test a valid comparison plus changed-weather, changed-saved-result and missing-camera negatives.
+
+The 27-test focused suite and scoped static check pass; exact scoped strict exits 1 on truthful partial. SHA-bound `cpu-comparison-*.log` entries are in `result.json`. Remaining CPU work is reviewed original site/device/highway applicability and subsection 4 source review, three canonical selected case bundles, semantic proposals, exact offline/compatibility/process-saved proofs, and complete independent delivery audits. Actual physical motion and pixels are unverified.
+
+## 2026-11-25 subsection 4 source review
+
+The exported exact NRS 484B.250(4) text in `inputs/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment.json` (SHA-256 `d0afc649d28555d1535da13f39962bde8c74ade07655bbb87668f0e0acdaaa86`) requires an installed, uncovered, inoperative vehicular traffic-control signal. The frozen C125763 cell in this assignment specifies a yield sign. That fixed description does not establish the subsection 4 condition, so the planned timing probes cannot claim a subsection 2 priority outcome. Original site/device evidence still needs review before a physical applicability finding. `case-plan.json.legal_applicability_review`, `crossing_timing.py`, and `compare_saved.py` now state that distinction while preserving measured entry-time brackets and no legal verdict.
+
+After the source review, the 27-test focused suite and scoped static check pass; exact scoped strict exits 1 on truthful partial. The `cpu-applicability-*.log` hashes are in `result.json`. Continue construction, exact CPU compatibility/saved proofs, and delivery audit; do not resolve the fixed cell by inventing an inoperative signal.
+
+## 2026-11-25 independent encoded delivery checkpoint
+
+`delivery_audit.py` now reopens the exact saved result and original manifest, recomputes the entry timing from sealed body histories, decodes every source PNG through the four-camera/body/frame-map audit, checks each FFV1 video against its encoded receipt and source profile, and runs a complete ffmpeg video decode for all four views. It records diagnostic provenance and explicitly leaves actual pixel visibility, physical acceptance and legal judgment unclaimed. The diagnostic integration test proves a 16-view-frame positive and rejects a corrupted video hash. It is independent CPU audit code, not an original accepted recording.
+
+The 27-test suite and scoped static check pass, while exact scoped strict exits 1 on truthful partial. SHA-bound `cpu-delivery-*.log` entries are in `result.json`. Continue three selected canonical cases, semantic proposals, exact offline/compatibility/process-saved proofs and selected delivery/comparison bindings. The reviewed original site/device/highway source and full physical capture remain unverified.
+
+## 2026-11-25 canonical runtime frame writer checkpoint
+
+`native_history_capture.capture` now imports the pinned `worker_exchange.native_output.FrameMap` only inside the capture call and appends each original video/native/CARLA frame identity and timestamp during its world tick. The source manifest seals the closed canonical map file; `audit_media` independently checks every entry against both body histories and all four original camera rows. The runtime import was exercised with `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/`. The 27-test focused suite and scoped static check pass; exact strict remains truthful partial. Hash-bound `cpu-frame-map-*.log` entries are in `result.json`.
+
+## 2026-11-25 retained-camera source path check
+
+The independent `audit_media` now rejects symlinked or absent original body, frame-map and camera files before hashing and decoding. A diagnostic negative substitutes a symlink to identical PNG bytes outside the attempt and is rejected. This preserves the source boundary beyond checksum equality. The 28-test focused suite and scoped static pass; exact scoped strict exits 1 on truthful partial. `cpu-source-path-*.log` hashes are bound in `result.json`.

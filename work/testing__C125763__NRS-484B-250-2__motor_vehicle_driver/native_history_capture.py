@@ -11,6 +11,7 @@ import io
 import json
 import math
 from pathlib import Path
+import sys
 
 from PIL import Image
 
@@ -89,43 +90,49 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     previous = None
     if before_tick is not None and not callable(before_tick):
         raise ValueError('before_tick must be callable')
-    for index in range(frame_count):
-        if before_tick is not None:
-            before_tick(index)
-        tick_frame = world.tick()
-        snapshot = world.get_snapshot()
-        frame = snapshot.frame
-        time_s = float(snapshot.timestamp.elapsed_seconds)
-        if type(frame) is not int or frame != tick_frame or not math.isfinite(time_s):
-            raise ValueError("World tick and snapshot identity differ")
-        if previous is not None and (frame != previous[0] + 1 or
-                                     not .049 <= time_s - previous[1] <= .051):
-            raise ValueError("World did not preserve a contiguous 20 Hz original clock")
-        previous = frame, time_s
-        if camera_readers is not None:
-            views = {}
-            for name in CAMERAS:
-                image = camera_readers[name](frame)
-                if (not isinstance(image, dict) or image.get('frame') != frame or
-                        not isinstance(image.get('png_bytes'), bytes)):
-                    raise ValueError('original camera frame identity or pixels missing')
-                content = image['png_bytes']
-                try:
-                    with Image.open(io.BytesIO(content)) as decoded:
-                        decoded.load()
-                        if (decoded.format != 'PNG' or decoded.size != tuple(camera_dimensions[name])
-                                or decoded.mode not in ('RGB', 'RGBA')):
-                            raise ValueError('original camera PNG profile differs')
-                except (OSError, TypeError) as error:
-                    raise ValueError('original camera PNG decode failed') from error
-                path = media_root / f'{name}-{len(camera_rows):06d}.png'
-                views[name] = {'path': str(path.relative_to(output)),
-                               'sha256': _bytes(path, content)}
-            camera_rows.append({'frame': frame, 'time_s': time_s, 'views': views})
-        for name, actor in (("ego", ego), ("other", other)):
-            histories[name].append({"frame": frame, "time_s": time_s,
-                                    "actor_id": actor.id,
-                                    "body_vertices_xy_m": _vertices(actor)})
+    runtime_path = str(Path(__file__).resolve().parents[2] / 'runtime/scenario_pipeline')
+    if runtime_path not in sys.path:
+        sys.path.insert(0, runtime_path)
+    from worker_exchange.native_output import FrameMap
+    with FrameMap(output / 'video_frames.jsonl') as frame_map:
+        for index in range(frame_count):
+            if before_tick is not None:
+                before_tick(index)
+            tick_frame = world.tick()
+            snapshot = world.get_snapshot()
+            frame = snapshot.frame
+            time_s = float(snapshot.timestamp.elapsed_seconds)
+            if type(frame) is not int or frame != tick_frame or not math.isfinite(time_s):
+                raise ValueError("World tick and snapshot identity differ")
+            if previous is not None and (frame != previous[0] + 1 or
+                                         not .049 <= time_s - previous[1] <= .051):
+                raise ValueError("World did not preserve a contiguous 20 Hz original clock")
+            previous = frame, time_s
+            frame_map.append(frame, time_s)
+            if camera_readers is not None:
+                views = {}
+                for name in CAMERAS:
+                    image = camera_readers[name](frame)
+                    if (not isinstance(image, dict) or image.get('frame') != frame or
+                            not isinstance(image.get('png_bytes'), bytes)):
+                        raise ValueError('original camera frame identity or pixels missing')
+                    content = image['png_bytes']
+                    try:
+                        with Image.open(io.BytesIO(content)) as decoded:
+                            decoded.load()
+                            if (decoded.format != 'PNG' or decoded.size != tuple(camera_dimensions[name])
+                                    or decoded.mode not in ('RGB', 'RGBA')):
+                                raise ValueError('original camera PNG profile differs')
+                    except (OSError, TypeError) as error:
+                        raise ValueError('original camera PNG decode failed') from error
+                    path = media_root / f'{name}-{len(camera_rows):06d}.png'
+                    views[name] = {'path': str(path.relative_to(output)),
+                                   'sha256': _bytes(path, content)}
+                camera_rows.append({'frame': frame, 'time_s': time_s, 'views': views})
+            for name, actor in (("ego", ego), ("other", other)):
+                histories[name].append({"frame": frame, "time_s": time_s,
+                                        "actor_id": actor.id,
+                                        "body_vertices_xy_m": _vertices(actor)})
     site = dict(scene)
     site.update({"ego_actor_id": ego.id, "other_actor_id": other.id})
     manifest = {}
@@ -134,16 +141,14 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     for name, rows in histories.items():
         files[name + "-body-history.jsonl"] = "".join(
             json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
-    files['video_frames.jsonl'] = ''.join(
-        json.dumps({'video_frame': index, 'carla_frame': row['frame'],
-                    'native_frame': row['frame'], 'time_s': row['time_s']},
-                   sort_keys=True) + '\n'
-        for index, row in enumerate(histories['ego'])).encode()
     if camera_readers is not None:
         files['camera-frame-map.jsonl'] = ''.join(
             json.dumps(row, sort_keys=True) + '\n' for row in camera_rows).encode()
     for name, content in files.items():
         manifest[name] = {"kind": "original_native", "sha256": _bytes(output / name, content)}
+    manifest['video_frames.jsonl'] = {
+        "kind": "original_native", "sha256": hashlib.sha256(
+            (output / 'video_frames.jsonl').read_bytes()).hexdigest()}
     _bytes(output / "source-manifest.json", (json.dumps(manifest, sort_keys=True) + "\n").encode())
     return {"frame_count": frame_count, "first_frame": histories["ego"][0]["frame"],
             "last_frame": histories["ego"][-1]["frame"], "source_manifest": manifest,
@@ -162,7 +167,10 @@ def audit_media(attempt, *, camera_dimensions):
         binding = manifest.get(name)
         if not isinstance(binding, dict) or binding.get('kind') != 'original_native':
             raise ValueError('original camera/body source missing')
-        data = (root / name).read_bytes()
+        source_path = root / name
+        if source_path.is_symlink() or not source_path.is_file():
+            raise ValueError('original camera/body source is not a retained file')
+        data = source_path.read_bytes()
         if hashlib.sha256(data).hexdigest() != binding.get('sha256'):
             raise ValueError('original camera/body source changed')
         sources[name] = [json.loads(line) for line in data.decode('utf-8').splitlines()]
@@ -185,7 +193,10 @@ def audit_media(attempt, *, camera_dimensions):
             expected = f'original-frames/{name}-{index:06d}.png'
             if ref.get('path') != expected:
                 raise ValueError('original camera frame path differs')
-            content = (root / expected).read_bytes()
+            image_path = root / expected
+            if image_path.is_symlink() or not image_path.is_file():
+                raise ValueError('original camera frame is not a retained file')
+            content = image_path.read_bytes()
             if hashlib.sha256(content).hexdigest() != ref.get('sha256'):
                 raise ValueError('original camera frame bytes changed')
             with Image.open(io.BytesIO(content)) as image:

@@ -112,7 +112,7 @@ def measure(root: Path) -> dict:
             "difference_bracket_s": [ego_entry["lower_time_s"] - other_entry["upper_time_s"],
                                      ego_entry["upper_time_s"] - other_entry["lower_time_s"]],
             "ego_side": site["ego_side"], "official_device_present": True,
-            "legal_applicability": "unresolved_subsection_4_and_official_device_exception",
+            "legal_applicability": "fixed_yield_sign_outside_subsection_4_signal_condition_original_device_review_pending",
             "approximately_same_time": "unresolved_judgment",
             "source_sha256": {name: manifest[name]["sha256"] for name in REQUIRED},
             "legal_verdict_claimed": False}

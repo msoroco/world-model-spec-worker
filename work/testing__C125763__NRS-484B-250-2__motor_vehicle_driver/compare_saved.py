@@ -103,7 +103,7 @@ def compare(plan_path, spec_path):
             'comparison_id': 'entry_timing_range', 'case_ids': expected,
             'fixed_scene': fixed, 'observed': observed,
             'approximately_same_time': 'unresolved_judgment',
-            'subsection_4_applicability': 'unresolved',
+            'subsection_4_applicability': 'not_supported_by_fixed_yield_sign_cell',
             'legal_verdict_claimed': False, 'physical_acceptance': False}
 
 

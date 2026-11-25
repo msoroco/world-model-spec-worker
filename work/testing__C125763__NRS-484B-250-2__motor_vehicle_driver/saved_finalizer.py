@@ -1,6 +1,7 @@
 """Saved-only crossing-entry result from an original source-sealed attempt.
 
-The exact legal applicability at this yield-sign cell remains unresolved.
+The fixed yield-sign cell does not establish subsection 4's inoperative signal.
+Original device evidence and any final legal applicability review remain open.
 """
 from __future__ import annotations
 
