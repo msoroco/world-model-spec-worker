@@ -1,0 +1,69 @@
+{
+  "template_id": "NRS-484B-503@motor_vehicle_driver",
+  "law_id": "NRS-484B-503",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not stop, stand or park a vehicle for any purpose or period of time except for the expeditious loading or unloading of passengers in any place marked as a passenger curb loading zone during hours when the regulations applicable to such passenger curb loading zone are effective.",
+  "structure": {
+    "law_id": "NRS-484B-503",
+    "activation": {
+      "condition": "Vehicle is in a marked passenger curb loading zone during hours when applicable regulations are effective.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park for any purpose or period except expeditious passenger loading or unloading.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Expeditious loading or unloading of passengers.",
+        "numeric_conditions": []
+      }
+    ],
+    "timing": {
+      "description": "Observe original effective-hours condition and actual in-zone halt and passenger event history.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "expeditious loading or unloading of passengers",
+        "note": "Original event and halt history needs independent temporal review; no numeric legal cutoff is supplied."
+      },
+      {
+        "phrase": "place marked as a passenger curb loading zone",
+        "note": "Original marking, curb polygon, designation and vehicle pose require source and visibility review."
+      },
+      {
+        "phrase": "hours when the regulations applicable to such passenger curb loading zone are effective",
+        "note": "Original jurisdiction-specific regulation and synchronized civil clock are required."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "conduct",
+      "kind": "world_setup",
+      "range_or_domain": "stop, stand, park",
+      "unit": "category"
+    },
+    {
+      "name": "passenger_action",
+      "kind": "world_setup",
+      "range_or_domain": "none, load, unload",
+      "unit": "category"
+    },
+    {
+      "name": "release_delay_s",
+      "kind": "world_setup",
+      "range_or_domain": "1 or 12 second engineering probes, not legal cutoffs",
+      "unit": "s"
+    },
+    {
+      "name": "regulations_effective",
+      "kind": "world_setup",
+      "range_or_domain": "true or false from original authority and clock",
+      "unit": "boolean"
+    }
+  ]
+}

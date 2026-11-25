@@ -68,7 +68,8 @@ def capture(adapter, config, site_path, output):
             archives[name] = zipfile.ZipFile(original / (name + '.zip'), 'x',
                                               compression=zipfile.ZIP_STORED)
         for index in range(config['frame_count']):
-            adapter.request_speed(built['ego'], case.requested_mph, case.zone_mode, index)
+            adapter.request_speed(built['ego'], case.requested_mph, case.zone_mode,
+                                  config['control'], index)
             sample = adapter.tick_and_read(built, cameras)
             if not isinstance(sample, dict) or sample.get('original_frame') != index or \
                     not isinstance(sample.get('original_time_s'), (int, float)) or \

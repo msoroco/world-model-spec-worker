@@ -31,7 +31,7 @@ class SpeedSiteTest(unittest.TestCase):
             self.site['lanes'][direction]['source_sha256'] = sources[direction + '_lane']['sha256']
             self.site['signs'][direction]['source_sha256'] = sources[direction + '_sign']['sha256']
         self.site['vehicle_class_source_sha256'] = sources['vehicle_classification']['sha256']
-        self.case_id = ROOT.name + '__signed_below'
+        self.case_id = json.loads((ROOT / 'config.json').read_text())['selected_case_id']
         self.packet = {'format': 'c136559-reviewed-speed-site-v1',
                        'cell_id': 'C136559', 'law_id': 'NRS-484B-620-2',
                        'actor': 'motor_vehicle_driver', 'case_id': self.case_id,
@@ -44,7 +44,7 @@ class SpeedSiteTest(unittest.TestCase):
 
     def test_positive_packet_and_all_direction_sources(self):
         _, site, case = validate_packet(self.path, self.case_id)
-        self.assertEqual(case.case_id, 'signed_below')
+        self.assertEqual(case.case_id, self.case_id.rsplit('__', 1)[-1])
         self.assertNotEqual(site['lanes']['eastbound']['source_sha256'],
                             site['lanes']['westbound']['source_sha256'])
 
@@ -68,21 +68,21 @@ class SpeedSiteTest(unittest.TestCase):
             'sha256': hashlib.sha256((self.root / 'public_access.txt').read_bytes()).hexdigest()}
         self.save()
         with self.assertRaisesRegex(ValueError, 'identity mismatch'):
-            validate_packet(self.path, ROOT.name + '__signed_above')
+            validate_packet(self.path, self.case_id + '_wrong')
 
     def test_native_capture_seals_full_original_shape_after_cleanup(self):
         from native_capture import capture
-        config = {'selected_case_id': self.case_id, 'frame_count': 900,
-                  'cameras': [{'name': name} for name in (
-                      'overview', 'approach', 'reference_corner', 'driver_reference')]}
+        config = json.loads((ROOT / 'config.json').read_text())
         output = self.root / 'attempt'
         output.mkdir()
-        (output / 'construction.json').write_text('{}\n')
-        (output / 'runner.py').write_text('pass\n')
+        for name in ('config.json', 'construction.json', 'runner.py'):
+            (output / name).write_bytes((ROOT / name).read_bytes())
 
         class Adapter:
             closed = False
             destroyed = []
+            case_id = self.case_id
+            direction = 'westbound' if self.case_id.endswith('__westbound_signed') else 'eastbound'
 
             def spawn_vehicle(self, point, **kwargs):
                 return 'ego'
@@ -92,7 +92,8 @@ class SpeedSiteTest(unittest.TestCase):
 
             def read_sign(self, sign):
                 return {'source_sha256': 'original-sign-readback',
-                        'direction': 'eastbound', 'installed': True}
+                        'direction': self.direction,
+                        'installed': not self.case_id.endswith('__sign_not_installed')}
 
             def set_route(self, *args, **kwargs):
                 pass
@@ -139,3 +140,7 @@ class SpeedSiteTest(unittest.TestCase):
         seal = json.loads((output / 'capture-seal.json').read_text())
         self.assertEqual(seal['events'][-1], 'restoration_verified')
         self.assertEqual(len([name for name in seal['sources'] if 'source-review/' in name]), 11)
+        from analysis import build
+        report, result = build(output)
+        self.assertEqual(report['measurements']['speed_zone_history']['value']['frame_count'], 900)
+        self.assertFalse(result['physical_acceptance_claimed'])

@@ -1,0 +1,848 @@
+{
+  "cell_id": "C150116",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "c150116-0",
+      "target_law_id": "NRS-484B-503",
+      "judgment_refs": [
+        {
+          "phrase": "expeditious loading or unloading of passengers",
+          "note": "Original event and halt history needs independent temporal review; no numeric legal cutoff is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original marking, regulation, passenger event and qualitative judgment range supplied.",
+      "missing_inputs": [
+        "reviewed original zone and regulation sources",
+        "original Native attempt",
+        "independent judgment range"
+      ]
+    },
+    {
+      "sweep_id": "c150116-1",
+      "target_law_id": "NRS-484B-503",
+      "judgment_refs": [
+        {
+          "phrase": "place marked as a passenger curb loading zone",
+          "note": "Original marking, curb polygon, designation and vehicle pose require source and visibility review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original marking, regulation, passenger event and qualitative judgment range supplied.",
+      "missing_inputs": [
+        "reviewed original zone and regulation sources",
+        "original Native attempt",
+        "independent judgment range"
+      ]
+    },
+    {
+      "sweep_id": "c150116-2",
+      "target_law_id": "NRS-484B-503",
+      "judgment_refs": [
+        {
+          "phrase": "hours when the regulations applicable to such passenger curb loading zone are effective",
+          "note": "Original jurisdiction-specific regulation and synchronized civil clock are required."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original marking, regulation, passenger event and qualitative judgment range supplied.",
+      "missing_inputs": [
+        "reviewed original zone and regulation sources",
+        "original Native attempt",
+        "independent judgment range"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared source-bound marked passenger curb baseline without legal finding.",
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "conduct",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "stop_no_passenger"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "conduct",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "stand_no_passenger"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stand",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "conduct",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "park_no_passenger"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "park",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "passenger_action",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "load_prompt"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "load",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "passenger_action",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "unload_prompt"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "unload",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "release_delay_s",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "load_delayed"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "load",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 12,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact conduct, passenger activity, release timing and effective-hours comparison; legal judgment open.",
+      "paired_probe_id": "passenger_curb_zone_alternatives",
+      "deliberate_differences": [
+        "conduct",
+        "passenger_action",
+        "release_delay_s",
+        "regulations_effective"
+      ],
+      "probe": {
+        "primary_variable": "regulations_effective",
+        "comparison_or_standard": "Compare source-backed original zone halt, passenger events and civil time without a legal cutoff.",
+        "target_value_or_branch": "park_outside_hours"
+      },
+      "variable_assignments": {
+        "conduct": {
+          "kind": "world_setup",
+          "value": "park",
+          "unit": "category"
+        },
+        "passenger_action": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "release_delay_s": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "s"
+        },
+        "regulations_effective": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "expeditious loading or unloading of passengers",
+        "place marked as a passenger curb loading zone",
+        "hours when the regulations applicable to such passenger curb loading zone are effective"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "zone_marking",
+            "unit": "source context",
+            "method": "original marked curb, designation and polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic zone is not original designation"
+          },
+          {
+            "name": "regulation_hours",
+            "unit": "civil time",
+            "method": "original applicable jurisdiction regulation and synchronized civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original civil clock",
+            "uncertainty": "synthetic time is not legal effective-hours proof"
+          },
+          {
+            "name": "vehicle_halt_in_zone",
+            "unit": "frames and m/s",
+            "method": "original ego pose and speed joined to marked zone polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "no realized halt from synthetic fixture"
+          },
+          {
+            "name": "passenger_activity",
+            "unit": "events",
+            "method": "original passenger boarding or alighting event source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "requested action is not observed activity"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic pixels are not original evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original zone/regulation sources absent.",
+          "Expeditious loading or unloading remains an unresolved judgment."
+        ]
+      }
+    }
+  ]
+}

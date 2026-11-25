@@ -1,0 +1,718 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__baseline",
+      "rationale": "Neutral source context; no baseline capture or legal label.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 20.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "established_signed"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__signed_below",
+      "deliberate_differences": [
+        "requested_mph"
+      ],
+      "paired_probe_id": "speed_below_above",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "requested_mph",
+        "target_value_or_branch": 20.0
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 20.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "established_signed"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__signed_near",
+      "deliberate_differences": [
+        "requested_mph"
+      ],
+      "paired_probe_id": "speed_near_above",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "requested_mph",
+        "target_value_or_branch": 24.5
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 24.5
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "established_signed"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__signed_above",
+      "deliberate_differences": [
+        "requested_mph"
+      ],
+      "paired_probe_id": "speed_below_above",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "requested_mph",
+        "target_value_or_branch": 30.0
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 30.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "established_signed"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__outside_zone",
+      "deliberate_differences": [
+        "requested_mph",
+        "zone_mode"
+      ],
+      "paired_probe_id": "zone_occupancy",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "requested_mph",
+        "target_value_or_branch": 30.0
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 30.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "outside"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__sign_not_installed",
+      "deliberate_differences": [
+        "requested_mph",
+        "zone_mode"
+      ],
+      "paired_probe_id": "sign_installation",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "requested_mph",
+        "target_value_or_branch": 30.0
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "eastbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 30.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "sign_absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-620-2__motor_vehicle_driver__westbound_signed",
+      "deliberate_differences": [
+        "direction",
+        "requested_mph"
+      ],
+      "paired_probe_id": "directional_sign",
+      "probe": {
+        "comparison_or_standard": "same reviewed road and independent original measurement",
+        "primary_variable": "direction",
+        "target_value_or_branch": "westbound"
+      },
+      "rationale": "Original speed, occupancy, direction and sign-source comparison; no legal outcome preassigned.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original synchronized ego velocity per frame, not speed command",
+            "name": "actual_speed_mps",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego position joined to established zone extent and map boundary",
+            "name": "inside_zone",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native sign readback and direction joined to sign inventory",
+            "name": "sign_installed",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "documented zone establishment order and installed sign instruction",
+            "name": "authorized_speed_mph",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "mph"
+          },
+          {
+            "method": "Native ego blueprint and sourced motor vehicle classification",
+            "name": "vehicle_class",
+            "reference_frame": "source-sealed original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full original 45-second episode",
+            "uncertainty": "physical realization and legal judgment unresolved",
+            "unit": "classification"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed zone order, signs, route lanes and vehicle class",
+            "name": "reviewed_speed_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "No reviewed original C136559 speed-zone site is in frozen input.",
+          "Requested speed is distinct from original measured speed."
+        ]
+      },
+      "target_law_id": "NRS-484B-620-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate signs"
+      ],
+      "variable_assignments": {
+        "authorized_speed_mph": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 25.0
+        },
+        "direction": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "westbound"
+        },
+        "requested_mph": {
+          "kind": "controller",
+          "note": "Requested physical setup; original result measured separately",
+          "value": 30.0
+        },
+        "zone_mode": {
+          "kind": "world_setup",
+          "note": "Requested physical setup; original result measured separately",
+          "value": "established_signed"
+        }
+      }
+    }
+  ],
+  "cell_id": "C136559",
+  "semantic_status": "partial_source_gated_sign_review",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "",
+          "phrase": "appropriate signs"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed original speed-zone site and sign sources"
+      ],
+      "rationale": "Appropriateness needs reviewed establishment order, actual installed signs and direction.",
+      "status": "incomplete",
+      "sweep_id": "appropriate_sign_source_review",
+      "target_law_id": "NRS-484B-620-2"
+    }
+  ],
+  "sweeps_expanded": true
+}
