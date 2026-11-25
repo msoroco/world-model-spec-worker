@@ -6,7 +6,8 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-STOP_X_M = {"outside": 10.0, "side_band": 5.0}
+STOP_X_M = {"outside": 10.0, "side_band": 5.0, "front": 1.0,
+            "at_five_feet": 5.524}
 
 
 def command(case, frame, observed_x_m, observed_speed_mps, brake_margin_m=1.5):

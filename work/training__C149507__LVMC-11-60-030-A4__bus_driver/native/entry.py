@@ -6,7 +6,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-WHEEL_GAP_M = {"near": 0.30, "far": 0.70}
+WHEEL_GAP_M = {"near": 0.30, "at": 0.4572, "far": 0.70}
 
 
 def target(case, frame):

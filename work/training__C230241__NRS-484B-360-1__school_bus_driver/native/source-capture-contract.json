@@ -4,15 +4,49 @@
   "capture_hz": 20,
   "capture_frames": 600,
   "duration_s": 30,
-  "source_cameras": ["forward", "rear", "left", "right"],
-  "original_video_profile": {"width": 1920, "height": 1080, "fps": 20},
-  "original_files": ["video_frames.jsonl", "bus_motion.jsonl", "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv"],
+  "source_cameras": [
+    "overview",
+    "approach",
+    "reference_corner",
+    "driver_reference"
+  ],
+  "original_video_profile": {
+    "overview": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 20
+    },
+    "detail_views": {
+      "width": 1280,
+      "height": 720,
+      "fps": 20
+    }
+  },
+  "original_files": [
+    "video_frames.jsonl",
+    "bus_motion.jsonl",
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
   "review_file": "passenger_trip_review.json",
   "video_frame_map": "Each row has video_frame 0..599, increasing native_frame and time_s. bus_motion.jsonl joins the same original native_frame and video_frame.",
   "bus_motion": "Each row contains post-tick original Native velocity_mps [vx, vy, vz] and source_kind original_native_velocity. Requested controller speed is never substituted.",
   "passenger_review": "An independent reviewer must bind all four camera file SHA-256 hashes, confirm the actual bus asset/class and visible pupils aboard, record observed_pupil_count with original evidence frames, and cite trip_purpose_source for the school transport purpose. A diagnostic fixture is labeled synthetic_diagnostic and cannot establish these physical facts.",
-  "case_requests_mph": {"probe_a": 52, "probe_b": 58},
-  "comparison_fixed": ["road/travel/ice_cream_truck cell", "school bus identity", "school trip and pupil context", "route", "four camera profile", "30-second duration", "controller feedback law"],
+  "case_requests_mph": {
+    "probe_a": 52,
+    "probe_b": 58
+  },
+  "comparison_fixed": [
+    "road/travel/ice_cream_truck cell",
+    "school bus identity",
+    "school trip and pupil context",
+    "route",
+    "four camera profile",
+    "30-second duration",
+    "controller feedback law"
+  ],
   "comparison_variable": "speed request only; actual observed speeds may differ",
   "unverified_native_dependency": "The installed CARLA asset catalogue must identify a genuine school bus model and an ice cream truck. No candidate blueprint string is asserted as a confirmed school bus."
 }

@@ -10,7 +10,8 @@ from finalize import analyze
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 ROLES = ("fixture-identity", "fixture-geometry", "sidewalk-geometry",
-         "front-orientation")
+         "front-orientation", "traffic-context", "police-direction",
+         "device-direction")
 
 
 def sha(path):

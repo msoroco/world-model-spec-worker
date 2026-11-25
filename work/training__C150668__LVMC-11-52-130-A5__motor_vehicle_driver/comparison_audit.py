@@ -17,11 +17,16 @@ def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False):
     a, b = Path(attempt_a).resolve(), Path(attempt_b).resolve()
     pa, pb = (json.loads(Path(path).read_text()) for path in (processing_a, processing_b))
     prefix = "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__"
-    if [pa.get("case_id"), pb.get("case_id")] != [prefix + "probe_1", prefix + "probe_2"]:
+    ids = [pa.get("case_id"), pb.get("case_id")]
+    pairs = {(1, 2): "side_clearance", (2, 3): "direct_front",
+             (2, 4): "traffic_conflict", (2, 5): "police_direction",
+             (2, 6): "device_direction"}
+    pair = next((key for key in pairs if ids == [prefix + "probe_" + str(n) for n in key]), None)
+    if pair is None:
         raise ValueError("Exact comparison cases differ")
     if not all(p.get("passed") is True and p.get("recorded_only") is True for p in (pa, pb)):
         raise ValueError("Recorded-only processing proof missing")
-    for source in ("road.xodr", "fixture-inventory.json"):
+    for source in ("road.xodr",):
         if sha(a / source) != sha(b / source):
             raise ValueError("Fixed physical context differs: " + source)
     for role in ("fixture-identity", "fixture-geometry", "sidewalk-geometry", "front-orientation"):
@@ -34,14 +39,31 @@ def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False):
                   "cameras", "source_actor_ids", "required_atoms", "brake_margin_m"):
         if configs[0].get(field) != configs[1].get(field):
             raise ValueError("Fixed comparison configuration differs: " + field)
-    if [config.get("stop_case") for config in configs] != ["outside", "side_band"]:
+    expected_stops = ("outside", "side_band") if pair == (1, 2) else (
+        "side_band", "front" if pair == (2, 3) else "side_band")
+    if tuple(config.get("stop_case") for config in configs) != expected_stops:
         raise ValueError("Declared stop-station contrast differs")
+    expected_modes = ("none", "none") if pair[1] <= 3 else (
+        "none", pairs[pair])
+    if tuple(config.get("exception_mode") for config in configs) != expected_modes:
+        raise ValueError("Declared exception contrast differs")
     measured = [analyze(path) for path in (a, b)]
     outside = measured[0]["measurement"]
     inside = measured[1]["measurement"]
-    if outside["within_five_foot_side_band_at_rest"] or not inside[
-            "within_five_foot_side_band_at_rest"]:
-        raise ValueError("Measured side-band contrast absent")
+    if pair == (1, 2):
+        if outside["within_five_foot_side_band_at_rest"] or not inside[
+                "within_five_foot_side_band_at_rest"]:
+            raise ValueError("Measured side-band contrast absent")
+    elif pair == (2, 3):
+        if not outside["within_five_foot_side_band_at_rest"] or inside[
+                "directly_in_front_frame_count_at_rest"] < 100:
+            raise ValueError("Measured direct-front contrast absent")
+    else:
+        key = {4: "traffic_conflict_reviewed", 5: "police_stop_direction_reviewed",
+               6: "device_stop_direction_reviewed"}[pair[1]]
+        if measured[0]["context"][key] or not measured[1]["context"][key] or not all(
+                item["measurement"]["within_five_foot_side_band_at_rest"] for item in measured):
+            raise ValueError("Measured exception-source contrast absent")
     if diagnostic and any(json.loads((path / "acquisition-provenance.json").read_text()).get(
             "provenance_kind") != "synthetic_fixture" for path in (a, b)):
         raise ValueError("Diagnostic comparison requires identified CPU fixtures")
@@ -49,7 +71,7 @@ def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False):
             "case_ids": [item["case_id"] for item in measured],
             "diagnostic_fixture": diagnostic,
             "fixed_map_sha256": sha(a / "road.xodr"),
-            "deliberate_difference": "requested_and_measured_side_clearance",
+            "deliberate_difference": pairs[pair],
             "outside_clearance_m": outside["side_clearance_m_range_at_rest"],
             "inside_clearance_m": inside["side_clearance_m_range_at_rest"],
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False}

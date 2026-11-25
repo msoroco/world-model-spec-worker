@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 
 ROLES = ("fixture-identity", "fixture-geometry", "sidewalk-geometry",
-         "front-orientation")
+         "front-orientation", "traffic-context", "police-direction",
+         "device-direction")
 
 
 def sha(path):
@@ -44,23 +45,47 @@ def reviewed_context(attempt):
     geometry = json.loads((attempt / "fixture-review/fixture-geometry.json").read_text())
     sidewalk = json.loads((attempt / "fixture-review/sidewalk-geometry.json").read_text())
     front = json.loads((attempt / "fixture-review/front-orientation.json").read_text())
+    traffic = json.loads((attempt / "fixture-review/traffic-context.json").read_text())
+    police = json.loads((attempt / "fixture-review/police-direction.json").read_text())
+    device = json.loads((attempt / "fixture-review/device-direction.json").read_text())
     if identity.get("fixture_kind") not in ("sidewalk_elevator", "sidewalk_chute"):
         raise ValueError("Sidewalk elevator or chute identity not sourced")
+    if identity.get("fixture_blueprint_id") != inventory.get("fixture_blueprint_id"):
+        raise ValueError("Reviewed fixture identity differs from Native actor readback")
     if front.get("front_is_road_facing") is not True:
         raise ValueError("Fixture front orientation not sourced")
     if geometry.get("fixture_bounds_m") != inventory.get("fixture_bounds_m") or sidewalk.get(
             "sidewalk_bounds_m") != inventory.get("sidewalk_bounds_m"):
         raise ValueError("Reviewed geometry differs from Native fixture inventory")
     if any(record.get("road_sha256") != sha(road) for record in
-           (identity, geometry, sidewalk, front)):
+           (identity, geometry, sidewalk, front, traffic, police, device)):
         raise ValueError("Reviewed source map differs from saved Native map")
+    for record, key in ((traffic, "conflict_necessity_reviewed"),
+                        (police, "police_stop_direction_reviewed"),
+                        (device, "device_stop_direction_reviewed")):
+        if type(record.get(key)) is not bool:
+            raise ValueError("Exception context source unreviewed: " + key)
+        if record[key] and record.get("native_actor_id") != inventory.get("exception_actor_id"):
+            raise ValueError("Exception source actor differs from Native inventory: " + key)
+    if (traffic["conflict_necessity_reviewed"], police["police_stop_direction_reviewed"],
+            device["device_stop_direction_reviewed"]) != (
+                inventory.get("exception_mode") == "traffic_conflict",
+                inventory.get("exception_mode") == "police_direction",
+                inventory.get("exception_mode") == "device_direction"):
+        raise ValueError("Exception source roles differ from Native inventory")
     return {"source_kind": "native_sidewalk_fixture_and_vehicle_readback",
             "native_map_sha256": sha(road),
             "fixture_identity_sha256": hashes["fixture-identity"],
             "fixture_geometry_sha256": hashes["fixture-geometry"],
             "sidewalk_geometry_sha256": hashes["sidewalk-geometry"],
             "front_orientation_sha256": hashes["front-orientation"],
+            "traffic_context_sha256": hashes["traffic-context"],
+            "police_direction_sha256": hashes["police-direction"],
+            "device_direction_sha256": hashes["device-direction"],
             "fixture_kind": identity["fixture_kind"],
             "fixture_bounds_m": geometry["fixture_bounds_m"],
             "sidewalk_bounds_m": sidewalk["sidewalk_bounds_m"],
+            "traffic_conflict_reviewed": traffic["conflict_necessity_reviewed"],
+            "police_stop_direction_reviewed": police["police_stop_direction_reviewed"],
+            "device_stop_direction_reviewed": device["device_stop_direction_reviewed"],
             "diagnostic_fixture": diagnostic}

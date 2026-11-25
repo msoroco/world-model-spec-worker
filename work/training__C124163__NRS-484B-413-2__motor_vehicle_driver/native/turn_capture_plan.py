@@ -5,8 +5,8 @@ from dataclasses import dataclass
 RATE_HZ = 20
 FRAMES = 600
 BLUEPRINT = 'vehicle.tesla.model3'
-SIGNAL_REQUEST_M = {'other_long': 100.0, 'other_short': 70.0,
-                    'district_long': 35.2, 'district_short': 20.0}
+SIGNAL_REQUEST_M = {'other_long': 100.0, 'other_at': 91.44, 'other_short': 70.0,
+                    'district_long': 35.2, 'district_at': 30.48, 'district_short': 20.0}
 CAMERAS = (
     ('overview', 1920, 1080, (-8.0, -10.0, 12.0), False),
     ('approach', 1280, 720, (-6.0, 0.0, 3.0), True),

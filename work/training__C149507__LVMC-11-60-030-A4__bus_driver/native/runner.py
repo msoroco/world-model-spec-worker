@@ -5,6 +5,7 @@ import math
 from pathlib import Path
 import queue
 import subprocess
+import sys
 
 from entry import FRAMES, RATE_HZ, WHEEL_GAP_M, target
 from geometry import CURB_FACE_Y_M, check as geometry_check, open_drive
@@ -17,12 +18,14 @@ def check(config):
     if (config['cell_id'], config['law_id'], config['actor']) != (
             'C149507', 'LVMC-11-60-030-A4', 'bus_driver'):
         raise ValueError('exact assignment identity changed')
-    if config['bus_case'] not in WHEEL_GAP_M or config['case_id'].rsplit('__', 1)[-1] not in ('probe_1', 'probe_2'):
+    if config['bus_case'] not in WHEEL_GAP_M or config['case_id'].rsplit('__', 1)[-1] not in ('probe_1', 'probe_2', 'probe_3'):
         raise ValueError('unknown exact bus case')
     if config['rate_hz'] != RATE_HZ or config['duration_s'] != FRAMES / RATE_HZ:
         raise ValueError('30-second 20-Hz recording required')
     if tuple(c['name'] for c in config['cameras']) != CAMERAS:
         raise ValueError('four original source cameras required')
+    if config.get('bus_spawn_x_m') not in (-20, -25):
+        raise ValueError('unsurveyed bus spawn requested')
     return {'geometry': geometry, 'frames': FRAMES, 'camera_names': CAMERAS,
             'native_imported': False, 'bus_classification_observed': False,
             'physical_acceptance_claimed': False}
@@ -30,7 +33,7 @@ def check(config):
 
 def survey(carla, mapping):
     points = []
-    for x in (-50, -20, 15, 20, 25, 50):
+    for x in (-50, -25, -20, 15, 20, 25, 50):
         wp = mapping.get_waypoint(carla.Location(x=x, y=-2.5, z=1.4),
                                   project_to_road=True, lane_type=carla.LaneType.Driving)
         if wp is None or wp.road_id != 1 or wp.lane_id != -1 or abs(wp.transform.location.x - x) > 1:
@@ -75,7 +78,14 @@ def bus_control(config, frame, bus, wheel_local):
 
 
 def execute(config, output_dir, host, port):
+    repo = next((p for p in Path(__file__).resolve().parents
+                 if (p / 'batch.json').is_file()), None)
+    if repo is None:
+        raise RuntimeError('Worker repository root unavailable')
+    sys.path.insert(0, str(repo / 'runtime' / 'scenario_pipeline'))
+    sys.path.insert(1, str(repo / 'runtime' / 'python'))
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
@@ -114,7 +124,7 @@ def execute(config, output_dir, host, port):
         bus_bp = buses[0]
         bus_bp.set_attribute('role_name', 'c149507_bus_classification_pending')
         bus = world.spawn_actor(bus_bp, carla.Transform(
-            carla.Location(x=-20, y=-3.5, z=2), carla.Rotation(yaw=0)))
+            carla.Location(x=config['bus_spawn_x_m'], y=-3.5, z=2), carla.Rotation(yaw=0)))
         owned.append(bus)
         wheel_local = right_front_wheel_local(bus)
         traffic_bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
@@ -122,13 +132,23 @@ def execute(config, output_dir, host, port):
         traffic = world.spawn_actor(traffic_bp, carla.Transform(
             carla.Location(x=-45, y=-2.5, z=2), carla.Rotation(yaw=0)))
         owned.append(traffic)
-        (output / 'bus-zone-inventory.json').write_text(json.dumps({
-            'source_kind': 'native_saved_sample', 'cell_id': 'C149507',
-            'native_lane_survey': readback, 'curb_face_y_m': CURB_FACE_Y_M,
+        (output / 'curb-calibration.json').write_text(json.dumps({
+            'source_kind': 'original_native_map_survey', 'native_lane_survey': readback,
+            'curb_face_y_m': CURB_FACE_Y_M, 'curb_heading_deg': 0,
+            'independent_curb_review_pending': True}, indent=2) + '\n')
+        (output / 'wheel-geometry.json').write_text(json.dumps({
+            'source_kind': 'original_native_physics_readback',
             'right_front_wheel_local_xy_m': list(wheel_local),
+            'bus_actor_id': bus.id}, indent=2) + '\n')
+        (output / 'bus-classification.json').write_text(json.dumps({
+            'source_kind': 'original_native_blueprint_readback',
             'bus_blueprint_id': bus.type_id,
-            'non_tour_bus_classification_source': None, 'public_street_source': None,
-            'qualifying_location_source': None, 'loading_activity_source': None}, indent=2) + '\n')
+            'non_tour_classification_review_pending': True}, indent=2) + '\n')
+        (output / 'loading-location.json').write_text(json.dumps({
+            'source_kind': 'authored_road_geometry',
+            'loading_zone_x_m': [15, 25], 'location_kind_review_pending': True,
+            'public_street_review_pending': True,
+            'actual_loading_activity_review_pending': True}, indent=2) + '\n')
         mounts = {'overview': (20, -20, 24, -35), 'approach': (22, -11, 9, -20),
                   'reference_corner': (20, -8, 5, -25), 'driver_reference': (-25, 7, 10, -20)}
         for name in CAMERAS:
@@ -151,7 +171,9 @@ def execute(config, output_dir, host, port):
                 '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, \
+        with PipelineCapture(client, bus, output, config['case_id'],
+                required_observations=config['required_atoms']) as capture, \
+                FrameMap(output / 'video_frames.jsonl') as frame_map, \
                 (output / 'bus-traffic-poses.jsonl').open('x') as poses:
             initial_time = None
             for index in range(FRAMES):
@@ -175,10 +197,14 @@ def execute(config, output_dir, host, port):
                         raise RuntimeError('source camera/frame mismatch: ' + name)
                     encoders[name].stdin.write(image.raw_data)
                     camera_frames[name] = image.frame
-                frame_map.append(native_frame, time_s, camera_native_frames=camera_frames)
+                frame_map.append(native_frame, index / RATE_HZ,
+                    native_elapsed_s=snap.timestamp.elapsed_seconds,
+                    camera_native_frames=camera_frames)
                 bt, bv, ot, ov = bus.get_transform(), bus.get_velocity(), traffic.get_transform(), traffic.get_velocity()
+                capture.capture(native_frame, index / RATE_HZ,
+                    extra={'video_frame': index, 'other_vehicle_actor_id': traffic.id})
                 poses.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
-                    'time_s': time_s, 'bus_id': bus.id, 'other_vehicle_id': traffic.id,
+                    'time_s': index / RATE_HZ, 'bus_id': bus.id, 'other_vehicle_id': traffic.id,
                     'bus_xyz_m': [bt.location.x, bt.location.y, bt.location.z],
                     'bus_yaw_deg': bt.rotation.yaw, 'other_vehicle_xyz_m': [ot.location.x, ot.location.y, ot.location.z],
                     'bus_observed_speed_mps': math.hypot(bv.x, bv.y),
@@ -191,6 +217,16 @@ def execute(config, output_dir, host, port):
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('source video encoding failed: ' + name + ': ' + stderr.decode()[-300:])
+        (output / 'bus-zone-review.template.json').write_text(json.dumps({
+            'assignment_id': config['assignment_id'], 'case_id': config['case_id'],
+            'review_kind': 'original_source_review',
+            'source_kind': 'native_bus_wheel_curb_and_traffic_readback',
+            'vehicle_class': None, 'location_kind': None, 'public_street': None,
+            'curb_face_y_m': CURB_FACE_Y_M, 'curb_heading_deg': 0,
+            'other_vehicle_baseline_mps': None, 'loading_activity_frames': [],
+            'source_sha256': {}, 'independent_review_pending': True,
+            'bus_zone_review': {'vehicle_class': None, 'location_kind': None,
+                'public_street': None}}, indent=2) + '\n')
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'loading_activity_observed': False, 'physical_acceptance_claimed': False}
     finally:

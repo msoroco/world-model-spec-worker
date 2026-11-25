@@ -34,7 +34,7 @@ class NativeDraft(unittest.TestCase):
         self.assertEqual(geometry_check()['curb_face_y_m'], -5)
         self.assertLess(WHEEL_GAP_M['near'], .4572)
         self.assertGreater(WHEEL_GAP_M['far'], .4572)
-        self.assertEqual(len(survey(FakeCarla, FakeMap())), 6)
+        self.assertEqual(len(survey(FakeCarla, FakeMap())), 7)
         with self.assertRaisesRegex(RuntimeError, 'lane survey failed'):
             survey(FakeCarla, FakeMap(True))
 

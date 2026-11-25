@@ -16,12 +16,13 @@ def lines(rows):
     return "".join(json.dumps(row, separators=(",", ":")) + "\n" for row in rows)
 
 
-def fixture(path, suffix, stop_x):
-    build(path)
+def fixture(path, suffix, stop_x, mode="none"):
+    build(path, mode)
     case = ASSIGNMENT + "__" + suffix
     put(path / "config.json", {"case_id": case, "selected_case_id": case,
         "cell_id": "C150668", "law_id": "LVMC-11-52-130-A5",
         "rate_hz": 20, "duration_s": 30,
+        "exception_mode": mode,
         "recording_description": {"channels": [], "limitations": ["CPU diagnostic only"]}})
     poses, frame_map, trace = [], [], []
     for i in range(FRAMES):

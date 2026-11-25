@@ -19,7 +19,9 @@ def open_drive():
     lanes = ET.SubElement(road, 'lanes')
     ET.SubElement(lanes, 'laneOffset', s='0', a='0', b='0', c='0', d='0')
     section = ET.SubElement(lanes, 'laneSection', s='0')
-    ET.SubElement(section, 'left')
+    left = ET.SubElement(section, 'left')
+    sidewalk_lane = ET.SubElement(left, 'lane', id='1', type='sidewalk', level='false')
+    ET.SubElement(sidewalk_lane, 'width', sOffset='0', a='3.0', b='0', c='0', d='0')
     center = ET.SubElement(section, 'center')
     ET.SubElement(center, 'lane', id='0', type='none', level='false')
     right = ET.SubElement(section, 'right')
@@ -34,7 +36,10 @@ def check():
     root = ET.fromstring(open_drive())
     road = root.find('road')
     lanes = root.findall('road/lanes/laneSection/right/lane')
-    if road.attrib['length'] != '160' or [(int(l.attrib['id']), l.attrib['type']) for l in lanes] != [(-1, 'driving')]:
+    sidewalks = root.findall('road/lanes/laneSection/left/lane')
+    if (road.attrib['length'] != '160' or
+            [(int(l.attrib['id']), l.attrib['type']) for l in lanes] != [(-1, 'driving')] or
+            [(int(l.attrib['id']), l.attrib['type']) for l in sidewalks] != [(1, 'sidewalk')]):
         raise ValueError('one-way fixture road contract changed')
     if not (SIDEWALK_BOUNDS['min_x'] <= FIXTURE_BOUNDS['min_x'] < FIXTURE_BOUNDS['max_x'] <= SIDEWALK_BOUNDS['max_x']):
         raise ValueError('fixture/sidewalk geometry changed')

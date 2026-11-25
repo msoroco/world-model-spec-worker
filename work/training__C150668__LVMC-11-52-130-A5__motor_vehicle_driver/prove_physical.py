@@ -21,8 +21,11 @@ def main(attempts):
         value = data["measurement"]
         if value["rest_interval_frames"] != [100, 599]:
             raise ValueError("Diagnostic rest interval differs")
-        if value["within_five_foot_side_band_at_rest"] != (suffix == "probe_2"):
+        if value["within_five_foot_side_band_at_rest"] != (suffix in
+                ("probe_2", "probe_4", "probe_5", "probe_6")):
             raise ValueError("Diagnostic side clearance differs")
+        if (value["directly_in_front_frame_count_at_rest"] >= 100) != (suffix == "probe_3"):
+            raise ValueError("Diagnostic front placement differs")
         context = reviewed_context(path)
         rows = read_rows(Path(path) / "vehicle-poses.jsonl")
         bad_motion = [dict(row, observed_vehicle_speed_mps=3.0) for row in rows]
@@ -43,6 +46,7 @@ def main(attempts):
         result[suffix] = {"diagnostic_fixture": True,
             "source_frames": 600, "rest_frames": 500,
             "side_band": value["within_five_foot_side_band_at_rest"],
+            "direct_front": value["directly_in_front_frame_count_at_rest"] >= 100,
             "no_stop_rejected": True, "missing_frame_rejected": True,
             "original_native_observed": False,
             "physical_acceptance_claimed": False}
@@ -58,6 +62,6 @@ def main(attempts):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        raise SystemExit("Usage: prove_physical.py PROBE1_ATTEMPT PROBE2_ATTEMPT")
-    main({"probe_1": sys.argv[1], "probe_2": sys.argv[2]})
+    if len(sys.argv) != 7:
+        raise SystemExit("Usage: prove_physical.py PROBE1_ATTEMPT ... PROBE6_ATTEMPT")
+    main({"probe_" + str(i): sys.argv[i] for i in range(1, 7)})

@@ -142,9 +142,10 @@ def finalize(attempt, output):
         'target_checks': [{'target': 'right-front-wheel curb gap while stopped loading',
             'requested': target, 'measured': observed_gap,
             'method': 'Native wheel contact and independently reviewed curb/loading source',
-            'tolerance': None,
-            'matched': observation['all_loading_frames_within_18_inches']
-                if target == 'near' else not observation['all_loading_frames_within_18_inches'],
+            'tolerance': 0.005 if target == 'at' else None,
+            'matched': (all(abs(value - 0.4572) <= 0.005 for value in observed_gap)
+                if target == 'at' else observation['all_loading_frames_within_18_inches']
+                if target == 'near' else not observation['all_loading_frames_within_18_inches']),
             'physical_cause_confirmed': False, 'cause_evidence': list(hashes)}],
         'setup_confirmed': False, 'behavior_attempted': True,
         'maneuver_completed': False,

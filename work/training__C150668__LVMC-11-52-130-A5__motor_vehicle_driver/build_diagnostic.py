@@ -21,11 +21,11 @@ def sha(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def build(condition, stop_x):
+def build(condition, stop_x, mode="none"):
     with tempfile.TemporaryDirectory(dir=ROOT / ".runtime-work",
                                      prefix="c150668-source-") as temporary:
         root = Path(temporary)
-        fixture(root / condition, condition, stop_x)
+        fixture(root / condition, condition, stop_x, mode)
         root = root / condition
         files = {str(path.relative_to(root)): path.read_text()
                  for path in root.rglob("*") if path.is_file() and path.name not in
@@ -45,7 +45,16 @@ def build(condition, stop_x):
                        "body_vertices_m": vertices, "heading_deg": 0,
                        "velocity_mps": [speed, 0, 0], "speed_mps": speed,
                        "accel_longitudinal_mps2": 0.0}
-        observed = {"frame": frame, "time_s": t, "participants": [participant],
+        participants = [participant]
+        if mode != "none":
+            participants.append({"actor_id": 42,
+                "blueprint": "vehicle.synthetic.cpu" if mode == "traffic_conflict" else
+                             "walker.synthetic.cpu" if mode == "police_direction" else
+                             "static.synthetic.cpu",
+                "body_vertices_m": [[11, -2.5, 0], [11, -1.0, 0]],
+                "heading_deg": 0, "velocity_mps": [0, 0, 0],
+                "speed_mps": 0, "accel_longitudinal_mps2": 0})
+        observed = {"frame": frame, "time_s": t, "participants": participants,
                     "world_settings": {"no_rendering_mode": False},
                     "rgb_sensors": {camera: {"frame": i} for camera in CAMERAS}}
         graph_path = f"graphs/base/{i:08d}.adapter.json"
@@ -103,5 +112,8 @@ def build(condition, stop_x):
 
 
 if __name__ == "__main__":
-    print(json.dumps([build("probe_1", 10),
-                      build("probe_2", 5)], indent=2))
+    print(json.dumps([build("probe_1", 10), build("probe_2", 5),
+        build("probe_3", 1), build("probe_4", 5, "traffic_conflict"),
+        build("probe_5", 5, "police_direction"),
+        build("probe_6", 5, "device_direction"),
+        build("probe_7", 5.524)], indent=2))

@@ -22,7 +22,7 @@ def write(path, value):
 
 
 def main():
-    manifest = json.loads((HERE / 'draft-execution-manifest.json').read_text())
+    manifest = json.loads((HERE / 'selected-offline-manifest.json').read_text())
     plan = json.loads((HERE / 'case-plan.json').read_text())
     proposal_cases = []
     for entry in manifest['cases']:
@@ -52,7 +52,7 @@ def main():
             'target_type': 'controlled_attempt', 'rationale':
                 'Source-measured bus wheel gap at stopped loading; no legal verdict',
             'variable_assignments': {'front_wheel_curb_gap_request_m':
-                {'kind': 'controller', 'value': .30 if suffix == 'probe_1' else .70},
+                {'kind': 'controller', 'value': {'probe_1': .30, 'probe_2': .70, 'probe_3': .4572}[suffix]},
                 'bus_stop_and_other_traffic': {'kind': 'world_setup', 'value': True},
                 'observed_wheel_gap_m': {'kind': 'subject_behavior', 'value': None}},
             'unresolved_judgment_calls':

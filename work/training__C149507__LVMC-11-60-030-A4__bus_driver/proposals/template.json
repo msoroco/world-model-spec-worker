@@ -1,0 +1,78 @@
+{
+  "template_id": "LVMC-11-60-030-A4@bus_driver",
+  "law_id": "LVMC-11-60-030-A4",
+  "actor": "bus_driver",
+  "quote": "The operator of a bus, other than a tour bus, shall: Enter a bus stop, bus stand, passenger loading zone or origin or destination point on a public street in such a manner that the bus when stopped to load or unload passengers or baggage shall be in a position with the right-hand front wheel of such vehicle not farther than eighteen inches from the curb and the bus approximately parallel to the curb so as not to unduly impede the movement of other vehicular traffic.",
+  "status": "draft",
+  "structure": {
+    "law_id": "LVMC-11-60-030-A4",
+    "activation": {
+      "condition": "Operator of a bus other than a tour bus enters a bus stop, bus stand, passenger loading zone or origin or destination point on a public street and stops to load or unload passengers or baggage.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "When stopped to load or unload, right-hand front wheel is not farther than eighteen inches from curb and bus is approximately parallel so as not to unduly impede other vehicular traffic.",
+      "numeric_conditions": [
+        {
+          "variable": "wheel_gap",
+          "operator": "<=",
+          "value": 18,
+          "unit": "inch"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "other than a tour bus",
+        "condition": "tour bus",
+        "effect": "Excluded from this paragraph; bus classification requires source review."
+      }
+    ],
+    "timing": {
+      "description": "Assess position when stopped for passenger or baggage loading or unloading.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "approximately parallel",
+        "note": "Curb heading difference is measured, but the statute supplies no numeric angular threshold; original geometry needs independent review."
+      },
+      {
+        "phrase": "unduly impede",
+        "note": "Other vehicle speed and delay are measured, but the statute supplies no numerical undue-impedance cutoff; traffic context needs independent review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "vehicle_scope",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed non-tour bus"
+    },
+    {
+      "name": "loading_location",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed bus stop on public street"
+    },
+    {
+      "name": "curb_and_traffic",
+      "kind": "world_setup",
+      "range_or_domain": "surveyed curb and following vehicle"
+    },
+    {
+      "name": "wheel_gap_target_m",
+      "kind": "controller",
+      "range_or_domain": [
+        0.3,
+        0.4572,
+        0.7
+      ]
+    },
+    {
+      "name": "observed_loading_position",
+      "kind": "subject_behavior",
+      "range_or_domain": "original wheel/curb/heading and traffic readback"
+    }
+  ]
+}

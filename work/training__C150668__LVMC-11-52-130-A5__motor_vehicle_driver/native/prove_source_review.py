@@ -18,12 +18,18 @@ def put(path, value):
     path.write_text(json.dumps(value, indent=2) + "\n")
 
 
-def build(path):
+def build(path, mode="none"):
+    if mode not in ("none", "traffic_conflict", "police_direction", "device_direction"):
+        raise ValueError("Unknown exception diagnostic")
     path.mkdir()
     (path / "road.xodr").write_text(open_drive())
     put(path / "fixture-inventory.json", {"fixture_bounds_m": FIXTURE_BOUNDS,
         "sidewalk_bounds_m": SIDEWALK_BOUNDS,
-        "fixture_proxy_blueprint_id": "static.prop.box"})
+        "fixture_proxy_blueprint_id": "static.prop.box",
+        "fixture_blueprint_id": "static.prop.box",
+        "exception_mode": mode,
+        "exception_actor_id": 42 if mode != "none" else None,
+        "exception_actor_blueprint_id": "synthetic.cpu.actor" if mode != "none" else None})
     put(path / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture"})
     for role in ROLES:
         source = path / "fixture-review" / (role + ".source.txt")
@@ -34,12 +40,22 @@ def build(path):
                   "provenance_kind": "synthetic_fixture", "reviewed": True}
         if role == "fixture-identity":
             record["fixture_kind"] = "sidewalk_elevator"
+            record["fixture_blueprint_id"] = "static.prop.box"
         elif role == "fixture-geometry":
             record["fixture_bounds_m"] = FIXTURE_BOUNDS
         elif role == "sidewalk-geometry":
             record["sidewalk_bounds_m"] = SIDEWALK_BOUNDS
-        else:
+        elif role == "front-orientation":
             record["front_is_road_facing"] = True
+        elif role == "traffic-context":
+            record["conflict_necessity_reviewed"] = mode == "traffic_conflict"
+            record["native_actor_id"] = 42 if mode == "traffic_conflict" else None
+        elif role == "police-direction":
+            record["police_stop_direction_reviewed"] = mode == "police_direction"
+            record["native_actor_id"] = 42 if mode == "police_direction" else None
+        else:
+            record["device_stop_direction_reviewed"] = mode == "device_direction"
+            record["native_actor_id"] = 42 if mode == "device_direction" else None
         put(path / "fixture-review" / (role + ".json"), record)
 
 

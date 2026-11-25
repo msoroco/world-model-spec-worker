@@ -48,7 +48,7 @@ def main():
         'bus_classification_sha256': 'bus-classification.json',
         'wheel_geometry_sha256': 'wheel-geometry.json',
         'loading_zone_sha256': 'loading-location.json'}
-    for suffix, gap in (('probe_1', .30), ('probe_2', .70)):
+    for suffix, gap in (('probe_1', .30), ('probe_2', .70), ('probe_3', .4572)):
         case = AID + '__' + suffix
         frame_rows, pose_rows, traces, evidence, replay, graphs = [], [], [], [], [], []
         for i in range(600):
@@ -83,7 +83,7 @@ def main():
                 'actor_id': 1, 'recording_time_s': t,
                 'replay_simulation_time_s': t,
                 'ego': {'position_m': [x, -4, 1], 'heading_deg': 0,
-                    'speed_mps': speed, 'speed_provenance': 'synthetic_diagnostic',
+                    'speed_mps': speed, 'speed_provenance': 'synthetic_native_sample',
                     'body_vertices_m': bbox}, 'synthetic_diagnostic': True,
                 'world': {'weather': {'cloudiness': 0, 'precipitation': 0,
                     'wetness': 0, 'fog_density': 0}}})
@@ -110,6 +110,9 @@ def main():
             'loading_activity_frames': list(range(220, 400)),
             'reviewer': 'synthetic software diagnostic'}
         review.update({field: sha_text(docs[path]) for field, path in mapping.items()})
+        review['bus_zone_review'] = {'vehicle_class': 'non_tour_bus',
+            'location_kind': 'bus_stop', 'public_street': True,
+            'source_kind': 'synthetic_diagnostic'}
         files = dict(docs)
         files.update({'video_frames.jsonl': lines(frame_rows),
             'bus-traffic-poses.jsonl': lines(pose_rows),

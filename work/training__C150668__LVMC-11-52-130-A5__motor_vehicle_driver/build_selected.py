@@ -9,7 +9,9 @@ ASSIGNMENT = HERE.name
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 CHANNELS = ("st.obstruction", "st.sidewalk", "rel.centre_distance",
-            "drv.standing_or_parked", "rel.occupies", "kin.extent")
+            "drv.standing_or_parked", "rel.occupies", "kin.extent",
+            "traffic_conflict_context", "police_direction_context",
+            "device_direction_context")
 
 
 def sha(path):
@@ -30,7 +32,14 @@ def build():
         for name in CHANNELS], "context_inputs": [],
         "limitations": ["A box prop is not an elevator or chute; traffic conflict and officer/device direction require separate original sources."]}
     entries = []
-    for suffix, stop_case in (("probe_1", "outside"), ("probe_2", "side_band")):
+    variants = (("probe_1", "outside", "none"),
+                ("probe_2", "side_band", "none"),
+                ("probe_3", "front", "none"),
+                ("probe_4", "side_band", "traffic_conflict"),
+                ("probe_5", "side_band", "police_direction"),
+                ("probe_6", "side_band", "device_direction"),
+                ("probe_7", "at_five_feet", "none"))
+    for suffix, stop_case, exception_mode in variants:
         case = ASSIGNMENT + "__" + suffix
         contract_rel = f"selected-measurements/{suffix}/measurement-contract.json"
         write(HERE / contract_rel, {"format": "worker-measurement-contract",
@@ -42,7 +51,28 @@ def build():
                            "fixture-review/fixture-identity.json",
                            "fixture-review/fixture-geometry.json",
                            "fixture-review/sidewalk-geometry.json",
-                           "fixture-review/front-orientation.json", "road.xodr"]}],
+                           "fixture-review/front-orientation.json", "road.xodr"]},
+                {"disposition_index": 1, "requirement": "text-0-direct-front",
+                 "source": "LVMC 11.52.130(A)(5)", "output_key": "direct_front",
+                 "method": "measure_direct_front", "value_type": "object",
+                 "kind": "measured", "inputs": ["vehicle-poses.jsonl",
+                     "video_frames.jsonl", "fixture-review/front-orientation.json",
+                     "fixture-review/fixture-geometry.json"]},
+                {"disposition_index": 2, "requirement": "text-0-traffic-conflict",
+                 "source": "LVMC 11.52.130(A)(5)", "output_key": "traffic_exception",
+                 "method": "measure_traffic_exception", "value_type": "object",
+                 "kind": "sourced_context", "inputs": ["fixture-review/traffic-context.json",
+                                              "trace.jsonl"]},
+                {"disposition_index": 3, "requirement": "text-0-police-direction",
+                 "source": "LVMC 11.52.130(A)(5)", "output_key": "police_exception",
+                 "method": "measure_police_exception", "value_type": "object",
+                 "kind": "sourced_context", "inputs": ["fixture-review/police-direction.json",
+                                              "trace.jsonl"]},
+                {"disposition_index": 4, "requirement": "text-0-device-direction",
+                 "source": "LVMC 11.52.130(A)(5)", "output_key": "device_exception",
+                 "method": "measure_device_exception", "value_type": "object",
+                 "kind": "sourced_context", "inputs": ["fixture-review/device-direction.json",
+                                              "trace.jsonl"]}],
             "negative": {"remove": ["fixture-review/fixture-identity.json"],
                 "error_contains": "Missing required source: fixture-review/fixture-identity.json"}})
         candidates = []
@@ -51,7 +81,8 @@ def build():
                 "supported_case_ids": [ASSIGNMENT + "__probe_1", ASSIGNMENT + "__probe_2"],
                 "candidate_id": candidate, "law_id": "LVMC-11-52-130-A5",
                 "cell_id": "C150668", "actor": "motor_vehicle_driver",
-                "stop_case": stop_case, "brake_margin_m": margin,
+                "stop_case": stop_case, "exception_mode": exception_mode,
+                "brake_margin_m": margin,
                 "rate_hz": 20, "duration_s": 30, "duration_frames": 600,
                 "required_atoms": [], "source_packets": [], "source_actor_ids": ["ego"],
                 "case": {"case_id": case, "recording_description": description},
@@ -74,8 +105,9 @@ def build():
                 "static_checks": ["exact law/cell/actor", "600 frames at 20 Hz",
                                   "four canonical source cameras", "no legal verdict"],
                 "termination_rules": ["600 original frames or explicit Native failure"],
-                "mechanisms": ["one-way authored street and sidewalk fixture proxy",
+                "mechanisms": ["one-way authored street and sidewalk fixture acquisition",
                                "feedback stop controller with requested station and brake margin",
+                               "source-gated traffic, officer or device context variant",
                                "saved-only source-gated fixture meter"],
                 "status": "selected_cpu_source_dependency"}
             rel = (f"native/{suffix}/construction.json" if candidate == "primary" else
@@ -102,6 +134,27 @@ def build():
         "assignment_id": ASSIGNMENT,
         "runtime_manifest_sha256": json.loads((ROOT / "batch.json").read_text())["runtime"]["source_manifest_sha256"],
         "status": "selected_cpu_source_dependency", "cases": entries})
+    proposals = []
+    for suffix, stop_case, exception_mode in variants:
+        case = ASSIGNMENT + "__" + suffix
+        proposals.append({"case_id": case, "target_law_id": "LVMC-11-52-130-A5",
+            "target_type": "controlled_attempt",
+            "rationale": "Exact sidewalk fixture place or source-gated exception contrast",
+            "paired_probe_id": "c150668_fixture_branch",
+            "deliberate_differences": ["stop_case"] if suffix == "probe_3" else
+                                     ["exception_mode"] if exception_mode != "none" else
+                                     ["stop_case"],
+            "probe": {"primary_variable": "exception_mode" if exception_mode != "none" else "stop_case",
+                "comparison_or_standard": "five-foot side band, direct front and statutory exception source",
+                "target_value_or_branch": exception_mode if exception_mode != "none" else stop_case},
+            "variable_assignments": {"stop_case": {"kind": "controller", "value": stop_case},
+                                     "exception_mode": {"kind": "scene", "value": exception_mode}},
+            "recording_description": description,
+            "unresolved_judgment_calls": ["original fixture identity and frontage",
+                "traffic conflict necessity or officer/device authority where applicable"]})
+    write(HERE / "proposals/cases.json", {"cell_id": "C150668",
+        "actor": "motor_vehicle_driver", "status": "draft",
+        "sweep_specs": [], "sweeps_expanded": True, "cases": proposals})
     return {"cases": [{"case_id": x["case_id"],
                        "construction_sha256": x["construction_sha256"]} for x in entries]}
 

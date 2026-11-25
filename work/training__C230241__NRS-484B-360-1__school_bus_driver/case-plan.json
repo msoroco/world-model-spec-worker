@@ -14,35 +14,35 @@
         "training__C230241__NRS-484B-360-1__school_bus_driver__probe_a",
         "training__C230241__NRS-484B-360-1__school_bus_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled source-joined speed diagnostics and unselected Native offline drafts pass CPU checks; selected delivery, exact compatibility, saved processing and independent audit remain open."
+      "evidence_or_gap": "Two selected exact speed probes and source-bound synthetic diagnostic proofs; original school-bus, pupil and trip source review remains pending."
     }
   ],
   "cases": [
     {
       "case_id": "training__C230241__NRS-484B-360-1__school_bus_driver__probe_a",
       "target_law_id": "NRS-484B-360-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "transport pupils below 55 mph",
       "comparison_variable": "school_bus_speed_mph",
       "requested_speed_mph": 52,
       "diagnostic_measurement": "native/measure_speed.py",
       "controller_policy": "native/controller.py",
-      "cpu_proof_status": "source-bound 600-frame diagnostic and unselected current-runtime Native offline draft passed; selected compatibility and saved processing remain open",
+      "cpu_proof_status": "Selected exact current-runtime primary and fallback1 offline and public compatibility passed; recorded-only saved and independent audits in progress; original Native and pupil-trip review pending.",
       "draft_construction": "draft-primary/probe_a/primary/construction.json",
       "draft_offline_proof": "draft-a-offline-proof.json"
     },
     {
       "case_id": "training__C230241__NRS-484B-360-1__school_bus_driver__probe_b",
       "target_law_id": "NRS-484B-360-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "transport pupils above 55 mph",
       "comparison_variable": "school_bus_speed_mph",
       "requested_speed_mph": 58,
       "diagnostic_measurement": "native/measure_speed.py",
       "controller_policy": "native/controller.py",
-      "cpu_proof_status": "source-bound 600-frame diagnostic and unselected current-runtime Native offline draft passed; selected compatibility and saved processing remain open",
+      "cpu_proof_status": "Selected exact current-runtime primary and fallback1 offline and public compatibility passed; recorded-only saved and independent audits in progress; original Native and pupil-trip review pending.",
       "draft_construction": "draft-primary/probe_b/primary/construction.json",
       "draft_offline_proof": "draft-b-offline-proof.json"
     }
@@ -59,7 +59,14 @@
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
-      ]
+      ],
+      "status": "diagnostic_independent_audit_passed_physical_pending",
+      "audit": {
+        "report": "comparison-main-audit.json",
+        "sha256": "ba18a122dd2a6118355ae29dab5f90e29ba7e373edcc06f684061deaaebb885d",
+        "log": "comparison-main-audit.log",
+        "log_sha256": "98d2067d5323696537fe3c7e27dbfe2774574a94824e1dab5dbeec538fc167af"
+      }
     }
   ],
   "observations": [
@@ -81,7 +88,7 @@
     {
       "name": "ru.child",
       "mandatory": true,
-      "reason": "pupils aboard — the transporting condition"
+      "reason": "pupils aboard \u2014 the transporting condition"
     },
     {
       "name": "ru.occupant_count",
@@ -97,10 +104,10 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Both unselected 30-second Native offline drafts pass the pinned current runtime; neither is a selected delivery case.",
-    "School-bus and ice-cream-truck exact assets, viable geometry and pupil/trip context remain unconfirmed from original Native sources.",
-    "Selected exact-case compatibility, saved processing, risk fallbacks and independent acceptance/comparison audits remain worker-owned.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control selection."
+    "Exact school-bus and ice-cream-truck blueprints and viable route geometry remain unconfirmed from original Native capture.",
+    "Pupils aboard and school transportation purpose require independent source review; synthetic diagnostic assertions are not physical evidence.",
+    "Requested 52/58 mph speed is not an observed speed; the saved source meter measures original post-tick velocity.",
+    "No original Native or legal verdict is claimed."
   ],
   "statutory_text": "A school bus shall not exceed: A speed of 55 miles per hour when transporting pupils to and from school.",
   "activation_conditions_from_unreviewed_summary": [
@@ -120,55 +127,76 @@
   ],
   "source_observation_mapping": {
     "ru.subject": {
-      "measurement": "Native actor identity and independent bus review",
+      "evidence": "Native actor identity and independent bus review",
       "channels": [
-        "bus_motion.jsonl",
-        "passenger_trip_review.json"
+        "ru.subject"
       ],
       "source_refs": [
         "native/source-capture-contract.json"
       ]
     },
     "ru.school_bus": {
-      "measurement": "Independent model/class review of exact Native actor and all four source videos",
+      "evidence": "Independent model/class review of exact Native actor and all four source videos",
       "channels": [
-        "passenger_trip_review.json"
+        "ru.school_bus"
       ],
       "source_refs": [
         "native/source-capture-contract.json"
       ]
     },
     "kin.speed": {
-      "measurement": "Norm of original post-tick Native 3D velocity at every mapped frame; convert m/s to mph",
+      "evidence": "Norm of original post-tick Native 3D velocity at every mapped frame; convert m/s to mph",
       "channels": [
-        "bus_motion.jsonl",
-        "video_frames.jsonl"
+        "kin.speed"
       ],
       "source_refs": [
         "native/measure_speed.py"
       ]
     },
     "ru.child": {
-      "measurement": "Independent video review of pupils aboard with cited original frame IDs",
+      "evidence": "Independent video review of pupils aboard with cited original frame IDs",
       "channels": [
-        "passenger_trip_review.json",
-        "camera_forward.mkv",
-        "camera_rear.mkv",
-        "camera_left.mkv",
-        "camera_right.mkv"
+        "ru.child"
       ],
       "source_refs": [
         "native/source-capture-contract.json"
       ]
     },
     "ru.occupant_count": {
-      "measurement": "Reviewer observed pupil count or explicit uncertainty, not an inferred CARLA property",
+      "evidence": "Reviewer observed pupil count or explicit uncertainty, not an inferred CARLA property",
       "channels": [
-        "passenger_trip_review.json"
+        "ru.occupant_count"
       ],
       "source_refs": [
         "native/source-capture-contract.json"
       ]
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "school bus identity, pupil occupancy and separate ice cream truck context",
+        "interval": "all 600 original frames",
+        "view": "overview"
+      },
+      {
+        "subject": "school bus identity, pupil occupancy and separate ice cream truck context",
+        "interval": "all 600 original frames",
+        "view": "approach"
+      },
+      {
+        "subject": "school bus identity, pupil occupancy and separate ice cream truck context",
+        "interval": "all 600 original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "school bus identity, pupil occupancy and separate ice cream truck context",
+        "interval": "all 600 original frames",
+        "view": "driver_reference"
+      }
+    ]
   }
 }

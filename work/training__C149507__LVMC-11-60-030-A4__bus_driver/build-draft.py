@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
-CASES = (('probe_1', 'near'), ('probe_2', 'far'))
+CASES = (('probe_1', 'near'), ('probe_2', 'far'), ('probe_3', 'at'))
 
 
 def sha(path):
@@ -30,12 +30,15 @@ def main():
                 ('curb_and_zone_geometry', 'authored curb face and Native lane survey'),
                 ('other_vehicle_motion', 'original Native other-vehicle pose and velocity'),
                 ('camera_frame_join', 'four original RGB streams joined to Native frames'))],
+            'context_inputs': [{'name': 'bus_zone_review', 'unit': 'structured',
+                'method': 'independent original bus classification, curb, location and loading review'}],
             'limitations': ['Qualifying location, public street, non-tour status, actual loading and undue impedance need independent source review']}
         config = {'assignment_id': ASSIGNMENT, 'case_id': case_id, 'selected_case_id': case_id,
                   'supported_case_ids': [ASSIGNMENT + '__' + s for s, _ in CASES],
                   'candidate_id': 'primary', 'law_id': 'LVMC-11-60-030-A4',
                   'cell_id': 'C149507', 'actor': 'bus_driver',
-                  'bus_case': bus_case, 'rate_hz': 20, 'duration_s': 30,
+                  'bus_case': bus_case, 'bus_spawn_x_m': -20,
+                  'rate_hz': 20, 'duration_s': 30,
                   'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case_id},
                   'cameras': [{'name': name,
