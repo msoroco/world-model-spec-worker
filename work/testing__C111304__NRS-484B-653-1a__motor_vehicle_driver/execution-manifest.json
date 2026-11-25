@@ -12,9 +12,40 @@
       "construction_sha256": "6763cf4e28f4ae6da3e7a9de2b4de6acb64470dbb15d39b0ccd7404ccd92b101",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-person_north_early.json",
+          "construction_sha256": "294946824907b65b0574f146d0bf4dc65064a378333b150ea76e482daa687e73",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --candidate fallback1 --output .runtime-work/c111304-fallback-offline-person_north_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "294946824907b65b0574f146d0bf4dc65064a378333b150ea76e482daa687e73",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-person_north_early.log",
+            "log_sha256": "450b4c7adcffa76a0ea45ef8809981c1e425f9d0753fadfd9c5292eeac17243a"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-person_north_early.json",
+            "sha256": "d1e4f3ac9918cbdcd966acd9844f41feab7ae21d2ead40498e082fe49811eb48",
+            "log": "analysis-fallback1-compat-person_north_early.log",
+            "negative_log": "negative-fallback1-person_north_early.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-person_north_early.json",
+        "sha256": "c054eab63a651846d0c625a17aa0b642af0d93331cb4ee2827a140b68a907bba"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --output .runtime-work/c111304-offline-person_north_early-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "6763cf4e28f4ae6da3e7a9de2b4de6acb64470dbb15d39b0ccd7404ccd92b101",
@@ -85,7 +116,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-person_north_early.log",
@@ -94,7 +125,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-person_north_early.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -113,9 +144,40 @@
       "construction_sha256": "3960dacc5991a741068122f38cc76af016476ade546ea0f567d5492677ae05a3",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-person_north_late.json",
+          "construction_sha256": "3a4461eac33e431a1d67b6a709ec77b4591bb4ab1db1f072effd83a9710e2d8a",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late --candidate fallback1 --output .runtime-work/c111304-fallback-offline-person_north_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "3a4461eac33e431a1d67b6a709ec77b4591bb4ab1db1f072effd83a9710e2d8a",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-person_north_late.log",
+            "log_sha256": "e1e81dde008ba06d0c2a91a23c38415d8e0a0e3f63945adfab720d6f960c4052"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-person_north_late.json",
+            "sha256": "762a6d39929550abca6a7f9f127d874e7f842d0875246bf8d220825543bc8c85",
+            "log": "analysis-fallback1-compat-person_north_late.log",
+            "negative_log": "negative-fallback1-person_north_late.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-person_north_late.json",
+        "sha256": "936bd93b49b65edad0fed0d237bf2a94aac8b0cb24b604ee606ec91d4d7517f8"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late --output .runtime-work/c111304-offline-person_north_late-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "3960dacc5991a741068122f38cc76af016476ade546ea0f567d5492677ae05a3",
@@ -186,7 +248,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-person_north_late.log",
@@ -195,7 +257,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-person_north_late.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -214,9 +276,40 @@
       "construction_sha256": "164853dd014cf47c63bcd320e8170ae7f2962779fa6a5d983be633657c5e76cd",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-person_south_early.json",
+          "construction_sha256": "6ef5df7624b7b72f45820345fa0077bf12a9cb5a22f66b9a34c8ddc71cd744db",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early --candidate fallback1 --output .runtime-work/c111304-fallback-offline-person_south_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "6ef5df7624b7b72f45820345fa0077bf12a9cb5a22f66b9a34c8ddc71cd744db",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-person_south_early.log",
+            "log_sha256": "b2217f2906cce58cb5ddfa0c6a521359310913aacbe04b46b4f2b06e87ce86f8"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-person_south_early.json",
+            "sha256": "a32aa6d84f027cef6625796fe7b165bfecef36d5dd6e8d04e7714c9583bc9388",
+            "log": "analysis-fallback1-compat-person_south_early.log",
+            "negative_log": "negative-fallback1-person_south_early.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-person_south_early.json",
+        "sha256": "b03206d534f71e68b592e262de52fdcd91058777996fa1ee110f42204f964cb8"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early --output .runtime-work/c111304-offline-person_south_early-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "164853dd014cf47c63bcd320e8170ae7f2962779fa6a5d983be633657c5e76cd",
@@ -287,7 +380,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-person_south_early.log",
@@ -296,7 +389,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-person_south_early.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -315,9 +408,40 @@
       "construction_sha256": "55f966a4a48cafcfdf8adfab27e0895b6be934f4094ec9006bcd97e0deedff60",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-person_south_late.json",
+          "construction_sha256": "4cbcc581fae0d83e631637cba54ceed238ac2844e7fd9981f6dfec64a2c44e48",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late --candidate fallback1 --output .runtime-work/c111304-fallback-offline-person_south_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "4cbcc581fae0d83e631637cba54ceed238ac2844e7fd9981f6dfec64a2c44e48",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-person_south_late.log",
+            "log_sha256": "edf7ee1a67bc197573afa5ab4cfff20d3a3eda40917408e3e69c5fed551811fc"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-person_south_late.json",
+            "sha256": "a2af51b650e73f17a37af9d6bf3074c57444cbf4f4d7ffcc6c26bf6a3a98e822",
+            "log": "analysis-fallback1-compat-person_south_late.log",
+            "negative_log": "negative-fallback1-person_south_late.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-person_south_late.json",
+        "sha256": "40e1093013f3d36e41272af156cf403484c6e18038151c539ffab93c0b7a55a9"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late --output .runtime-work/c111304-offline-person_south_late-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "55f966a4a48cafcfdf8adfab27e0895b6be934f4094ec9006bcd97e0deedff60",
@@ -388,7 +512,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-person_south_late.log",
@@ -397,7 +521,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-person_south_late.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -416,9 +540,40 @@
       "construction_sha256": "58bf97b70f14f1e196befc9bd3fb3ffd85c2f4ae474364ce93b238700c311cf9",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-property_near.json",
+          "construction_sha256": "dcdc01fda244f249763b588f698158a5b96c81bbbafc95acaf3d6ec84049328e",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near --candidate fallback1 --output .runtime-work/c111304-fallback-offline-property_near --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "dcdc01fda244f249763b588f698158a5b96c81bbbafc95acaf3d6ec84049328e",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-property_near.log",
+            "log_sha256": "b72cd1013a986363f8b8d7726465337431f9e99c4424b2716c7b74a8ca4c3738"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-property_near.json",
+            "sha256": "d39882bd953772d8313f4112619960d5821ed8cdd6a62c00948d41c09b1498b1",
+            "log": "analysis-fallback1-compat-property_near.log",
+            "negative_log": "negative-fallback1-property_near.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-property_near.json",
+        "sha256": "568edbcbdd7e8ddef0681319e0a266202ed2c092d03afd7c531a629b2cd15ce3"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near --output .runtime-work/c111304-offline-property_near-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "58bf97b70f14f1e196befc9bd3fb3ffd85c2f4ae474364ce93b238700c311cf9",
@@ -489,7 +644,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-property_near.log",
@@ -498,7 +653,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-property_near.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -517,9 +672,40 @@
       "construction_sha256": "4ccca6093d80f576b64d97cf7a4cf5cf2acdbfb00a9205bc461028648e412dd5",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-property_far.json",
+          "construction_sha256": "392ddc80c21e428d45e26630cdaba81189e65727bacee3980e9983c7f57ddee3",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far --candidate fallback1 --output .runtime-work/c111304-fallback-offline-property_far --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "392ddc80c21e428d45e26630cdaba81189e65727bacee3980e9983c7f57ddee3",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-property_far.log",
+            "log_sha256": "f55c07b3defc1c2199bc8aaf8e991294de7e1b8c90495ad03a9cfe16ef3e8aea"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-property_far.json",
+            "sha256": "a9feb25fd674778b4c179d8b3c7c06d122f19cf3ec0e9e9ba58d8a7e0e83fb29",
+            "log": "analysis-fallback1-compat-property_far.log",
+            "negative_log": "negative-fallback1-property_far.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-property_far.json",
+        "sha256": "1fdf92b2ca2e3726e4e6eb371b867a15cd198ec86722efc451e700e0a1656233"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far --output .runtime-work/c111304-offline-property_far-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "4ccca6093d80f576b64d97cf7a4cf5cf2acdbfb00a9205bc461028648e412dd5",
@@ -590,7 +776,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-property_far.log",
@@ -599,7 +785,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-property_far.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -618,9 +804,40 @@
       "construction_sha256": "d78decc4ba5656b21c7a6a24386d59164940635a7f02fe74a2744831b7ef66cd",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-premises_person_early.json",
+          "construction_sha256": "0f175db3f8e81e988494dafabe21b5207dd34a35e1ed0811721f20659e4a52d0",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early --candidate fallback1 --output .runtime-work/c111304-fallback-offline-premises_person_early --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "0f175db3f8e81e988494dafabe21b5207dd34a35e1ed0811721f20659e4a52d0",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-premises_person_early.log",
+            "log_sha256": "c7bdec421a93c7261e103c068fe1055572c428d2cc26e97408b57f05cec53a34"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-premises_person_early.json",
+            "sha256": "d271b1937c17987d1707354eb0c68fc8dcff38f2d704a941868790ca8fe6dad5",
+            "log": "analysis-fallback1-compat-premises_person_early.log",
+            "negative_log": "negative-fallback1-premises_person_early.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-premises_person_early.json",
+        "sha256": "da9e863857bc6c4c725bbf2125f994e22605b51d601c8d3a80a5fe326fb3880b"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early --output .runtime-work/c111304-offline-premises_person_early-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "d78decc4ba5656b21c7a6a24386d59164940635a7f02fe74a2744831b7ef66cd",
@@ -691,7 +908,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-premises_person_early.log",
@@ -700,7 +917,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-premises_person_early.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,
@@ -719,9 +936,40 @@
       "construction_sha256": "6270661289a48e974b65804f83838d88e8d5db180dccd5a261d6ae93f50628a4",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Crossing vehicle and fixed occupant may not remain in four camera views through the conflict zone; original full-video visibility must be checked. Property placement may also fail on a particular source map."
+        "reason": "Original ego route may not reach the sourced encounter zone within the 900-frame window if speed tracking converges too slowly; fallback1 increases only the ego/crossing throttle tracking gain. Four-camera participant visibility remains an independent original-pixel acceptance check."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-premises_person_late.json",
+          "construction_sha256": "0328ad5bd1ce3c1424b1851d490223235ace94a387b79344b0dfbe218d9e015f",
+          "trigger": {
+            "source": "original Native 900-frame ego control history and sourced encounter zone",
+            "metric": "ego route progress at frame 899 versus encounter zone entry",
+            "failure_condition": "ego has not entered the sourced encounter zone by frame 899"
+          },
+          "changed_knobs": [
+            "CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late --candidate fallback1 --output .runtime-work/c111304-fallback-offline-premises_person_late --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "0328ad5bd1ce3c1424b1851d490223235ace94a387b79344b0dfbe218d9e015f",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-premises_person_late.log",
+            "log_sha256": "8833fc0dc30dbd8e130235c1279b1f19e4391246f4d393738a5b4f7cf3268a48"
+          },
+          "compatibility": {
+            "receipt": "receipt-fallback1-compat-premises_person_late.json",
+            "sha256": "a62599c11f033d48d2f80876b3f3e6f4507eabdd07f6179d14e7f85f13912445",
+            "log": "analysis-fallback1-compat-premises_person_late.log",
+            "negative_log": "negative-fallback1-premises_person_late.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-premises_person_late.json",
+        "sha256": "03907c5f9ea3c561003db5e6745639ead87c945ff30e8c941fa51f3eb98f3cea"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late --output .runtime-work/c111304-offline-premises_person_late-semantic-v7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "construction_sha256": "6270661289a48e974b65804f83838d88e8d5db180dccd5a261d6ae93f50628a4",
@@ -792,7 +1040,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "72f104cd17467c8084a53a1e584800e4e061cf0242d0b08f7674f45bb39bcbc9",
+        "script_sha256": "700fdf64b7d7ac8214284935dd060391305bedd3666bb049457bb78acfe233af",
         "command": ".venv-cpu/bin/python work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/delivery_audit.py --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late --self-test",
         "test_exit_code": 0,
         "test_log": "cpu-delivery-premises_person_late.log",
@@ -801,7 +1049,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "actual four-camera participant visibility unconfirmed",
         "negative_log": "cpu-delivery-negative-premises_person_late.log",
-        "negative_log_sha256": "7d61d11a910c471b533939a8ba014b829ab7fd60de945d0dfcf6ecabea3c19d9"
+        "negative_log_sha256": "a9135597c20b5cbc48b7b7c5000a619454f5f12e701a80b66e9b074c2d943c63"
       },
       "post_capture": {
         "recorded_only": true,

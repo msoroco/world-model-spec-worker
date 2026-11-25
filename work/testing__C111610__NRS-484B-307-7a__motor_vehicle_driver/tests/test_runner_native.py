@@ -25,6 +25,7 @@ class NativeRunnerTests(unittest.TestCase):
             "assignment_id": ROOT.name, "case_suffix": "arrow_clear",
             "construction_plan": json.loads(plan)["cases"][0]["construction"],
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
+            "controller_gain": 1.0,
             "cameras": runner.CAMERAS}))
         refs = []
         for name in ("map", "signal", "route", "crosswalk"):
@@ -88,7 +89,12 @@ class NativeRunnerTests(unittest.TestCase):
     def exercise(self, faulty=None):
         owner = self
         class Adapter:
-            def bind(self, world, carla, site, actors, output): return object()
+            def bind(self, world, carla, site, actors, output, config):
+                owner.assertEqual(config["controller_gain"], 1.0)
+                return object()
+            def control_metadata(self, state):
+                return {"controller_gain_applied": 1.0,
+                        "source_method": "fake-world bounded control"}
             def command(self, state, index): pass
             def read(self, state, frame, index):
                 aspect = {"frame": frame}

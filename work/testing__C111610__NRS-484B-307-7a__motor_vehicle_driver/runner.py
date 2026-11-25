@@ -54,7 +54,7 @@ def _adapter(site, root):
         raise ValueError("reviewed Native adapter cannot load")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    for name in ("bind", "command", "read"):
+    for name in ("bind", "command", "read", "control_metadata"):
         if not callable(getattr(module, name, None)):
             raise ValueError("reviewed Native adapter lacks " + name)
     return module
@@ -64,6 +64,10 @@ def run_native(root, output, host, port):
     """Tick one sourced world; command then read all five streams per frame."""
     root, output = Path(root).resolve(), Path(output).resolve()
     case_id = check(root)
+    config = json.loads((root / "config.json").read_text())
+    gain = config.get("controller_gain")
+    if type(gain) not in (int, float) or not 0.5 <= gain <= 1.0:
+        raise ValueError("reviewed adapter controller gain out of range")
     source_root = Path(os.environ.get("C111610_SITE_ROOT", str(root))).resolve()
     site_path = source_root / "site.json"
     if not site_path.is_file():
@@ -108,7 +112,12 @@ def run_native(root, output, host, port):
             if (output / "site.json").exists():
                 raise ValueError("original site packet shadows Native package")
             shutil.copyfile(site_path, output / "site.json")
-        state = adapter.bind(world, carla, site, actors, output)
+        state = adapter.bind(world, carla, site, actors, output, config)
+        control_metadata = adapter.control_metadata(state)
+        if (not isinstance(control_metadata, dict) or
+                control_metadata.get("controller_gain_applied") != gain or
+                not control_metadata.get("source_method")):
+            raise ValueError("reviewed Native adapter did not apply selected controller gain")
 
         def step(index):
             adapter.command(state, index)

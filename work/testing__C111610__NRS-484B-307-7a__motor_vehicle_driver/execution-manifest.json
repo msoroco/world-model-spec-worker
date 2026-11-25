@@ -6,14 +6,14 @@
     {
       "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
       "construction": "construction-arrow_clear.json",
-      "construction_sha256": "d746453fc3b72c317e0d08ed531ac4c0ff9fc45d5b8253794916d25b43d90380",
+      "construction_sha256": "ef6a9e05a6687d0fc566d21673c8793d86cb1537128d2e13e483553c4f86e363",
       "measurement_contract": "cases/arrow_clear/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+        "reason": "The primary reviewed Native controller gain may leave the arrow-indicated turn physically incomplete within the 900-frame capture; after a source-complete primary attempt, selected saved physical_checks.maneuver must trigger the bounded 0.75-gain fallback if status is not_met or unverified. The original flashing-yellow arrow aspect and facing head remain independently required source checks for both candidates."
       },
       "kind": "delivery",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/diagnostic-arrow_clear-recipe.json",
@@ -22,19 +22,141 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C111610_SITE_ROOT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-arrow_clear-construction.json",
+          "construction_sha256": "a31362d5b0d1452c421dd847cba3d7261b17551a1cd64137ad11bcaa739d3d6e",
+          "changed_knobs": [
+            "reviewed Native adapter controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved physical_checks.maneuver",
+            "metric": "measured completion status after full original capture",
+            "failure_condition": "not_met or unverified after a source-complete primary attempt"
+          },
+          "risk_note": "Only a bounded control response changes; original site, law, case and recordings remain fixed.",
+          "compatibility": {
+            "receipt": "compat-final-arrow_clear-fallback1-receipt.json",
+            "sha256": "b63e9170348c50084758ed957d1038958474a2288900baca710e2eb1007dd69f",
+            "log": "compat-final-arrow_clear-fallback1-analysis.log",
+            "negative_log": "compat-final-arrow_clear-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --candidate fallback1 --output .runtime-work/c111610-nov24-owner/offline-final-arrow_clear-fallback1",
+            "construction_sha256": "a31362d5b0d1452c421dd847cba3d7261b17551a1cd64137ad11bcaa739d3d6e",
+            "exit_code": 0,
+            "log": "proof-offline-final-arrow_clear-fallback1.log",
+            "log_sha256": "7bb782ac5549b657a27f8efbb9db83c08ba11dd63d9908a0faf9ca6d3faa6838"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "compat-final-arrow_clear-primary-receipt.json",
+        "sha256": "8a9fc653279df9e05bd9f213d80a5849028fda6e43e37e5d6d57db79c3bf85c5",
+        "log": "compat-final-arrow_clear-primary-analysis.log",
+        "negative_log": "compat-final-arrow_clear-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --candidate primary --output .runtime-work/c111610-nov24-owner/offline-final-arrow_clear-primary",
+        "construction_sha256": "ef6a9e05a6687d0fc566d21673c8793d86cb1537128d2e13e483553c4f86e363",
+        "exit_code": 0,
+        "log": "proof-offline-final-arrow_clear-primary.log",
+        "log_sha256": "f070edc2b9bf513b836b4d0b0122a5dbe75968ee42abdce6749b831f52a0e158"
+      },
+      "negative": {
+        "log": "compat-final-arrow_clear-primary-negative.log"
+      },
+      "acquisition": {
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "concurrent_indication_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/concurrent_indication_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-arrow_clear-proof.json",
+        "sha256": "07bea3e68c2bb1c02f4b198fd83305d5269cd7bbda68b75491d985690d65117d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_clear --output .runtime-work/c111610-nov24-owner/saved-output-arrow_clear --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_clear --output .runtime-work/c111610-nov24-owner/saved-output-arrow_clear --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-processing-arrow_clear.log",
+        "test_log_sha256": "15f99badf54480aeb0507cf787e00aa8e67d40ecbfcafb9a1f777510c5c19331",
+        "receipt": "saved-processing-arrow_clear-receipt.json",
+        "receipt_sha256": "15f99badf54480aeb0507cf787e00aa8e67d40ecbfcafb9a1f777510c5c19331"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_clear --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_clear/v0001 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --attempt .runtime-work/c111610-nov24-owner/delivery-negative-arrow_clear --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_clear/v0001 --diagnostic",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "b35002ce0493724a3991fd9755395a61684dfac267ab60550ebe6eb6d016f3b7",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved delivery site source missing",
+        "test_log": "delivery-positive-arrow_clear.log",
+        "test_log_sha256": "5abd14b1af4b8ca2c0affd43f149ccfa7300c8d1e41a1ffd9ac9840a57d1b3be",
+        "negative_log": "delivery-negative-arrow_clear.log",
+        "negative_log_sha256": "5489eb187b95b5f49409881413d315bb69dab154bd2a1517f8dfd53c6fcc8134",
+        "scope": "synthetic diagnostic software proof; original physical and legal acceptance unclaimed"
       }
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk",
       "construction": "construction-arrow_ped_crosswalk.json",
-      "construction_sha256": "3913ca6b6d46984a9a9920e25d577d63fa36e97a35e29b50f1dda945cd5aa79a",
+      "construction_sha256": "b5c6b771c19e89df9d687880ebcbbfeb1c6eaf36d5c56749f200741babfc2d86",
       "measurement_contract": "cases/arrow_ped_crosswalk/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+        "reason": "The primary reviewed Native controller gain may leave the arrow-indicated turn physically incomplete within the 900-frame capture; after a source-complete primary attempt, selected saved physical_checks.maneuver must trigger the bounded 0.75-gain fallback if status is not_met or unverified. The original flashing-yellow arrow aspect and facing head remain independently required source checks for both candidates."
       },
       "kind": "delivery",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/diagnostic-arrow_ped_crosswalk-recipe.json",
@@ -43,19 +165,141 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C111610_SITE_ROOT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-arrow_ped_crosswalk-construction.json",
+          "construction_sha256": "69b11b4d08b3df314f10f4ddf31f7a95f1986b82ad422c363030bfa6ca2830f1",
+          "changed_knobs": [
+            "reviewed Native adapter controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved physical_checks.maneuver",
+            "metric": "measured completion status after full original capture",
+            "failure_condition": "not_met or unverified after a source-complete primary attempt"
+          },
+          "risk_note": "Only a bounded control response changes; original site, law, case and recordings remain fixed.",
+          "compatibility": {
+            "receipt": "compat-final-arrow_ped_crosswalk-fallback1-receipt.json",
+            "sha256": "966fd0968ea43be5eb86d2bf9e7ff5b3c06483eb559fece01bcc7fed9bed6e1a",
+            "log": "compat-final-arrow_ped_crosswalk-fallback1-analysis.log",
+            "negative_log": "compat-final-arrow_ped_crosswalk-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --candidate fallback1 --output .runtime-work/c111610-nov24-owner/offline-final-arrow_ped_crosswalk-fallback1",
+            "construction_sha256": "69b11b4d08b3df314f10f4ddf31f7a95f1986b82ad422c363030bfa6ca2830f1",
+            "exit_code": 0,
+            "log": "proof-offline-final-arrow_ped_crosswalk-fallback1.log",
+            "log_sha256": "41472a5601c79432bd07ec50002135a35b6f80e7ad1bb50edda49fca2ba90a93"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "compat-final-arrow_ped_crosswalk-primary-receipt.json",
+        "sha256": "0744393caa94818c8616794fdce11da09edcae06c04d73d5ad1f5ad43d099e1b",
+        "log": "compat-final-arrow_ped_crosswalk-primary-analysis.log",
+        "negative_log": "compat-final-arrow_ped_crosswalk-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --candidate primary --output .runtime-work/c111610-nov24-owner/offline-final-arrow_ped_crosswalk-primary",
+        "construction_sha256": "b5c6b771c19e89df9d687880ebcbbfeb1c6eaf36d5c56749f200741babfc2d86",
+        "exit_code": 0,
+        "log": "proof-offline-final-arrow_ped_crosswalk-primary.log",
+        "log_sha256": "ee24a83ce10a5352fade69e4195c7af408fc0322e9791fe2e925256e34abe90a"
+      },
+      "negative": {
+        "log": "compat-final-arrow_ped_crosswalk-primary-negative.log"
+      },
+      "acquisition": {
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "concurrent_indication_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/concurrent_indication_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-arrow_ped_crosswalk-proof.json",
+        "sha256": "7441aaee3bb3b7e22f8cab61483567153abca15d0e289cf9ba23a1f7d09f9549"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_crosswalk --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_crosswalk --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-processing-arrow_ped_crosswalk.log",
+        "test_log_sha256": "9fcc6b81e79ddfbc66cab36edc1c50e4afb08f9522d69498e88eddf23ec7fd26",
+        "receipt": "saved-processing-arrow_ped_crosswalk-receipt.json",
+        "receipt_sha256": "9fcc6b81e79ddfbc66cab36edc1c50e4afb08f9522d69498e88eddf23ec7fd26"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_crosswalk --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_crosswalk/v0001 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --attempt .runtime-work/c111610-nov24-owner/delivery-negative-arrow_ped_crosswalk --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_crosswalk/v0001 --diagnostic",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "b35002ce0493724a3991fd9755395a61684dfac267ab60550ebe6eb6d016f3b7",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved delivery site source missing",
+        "test_log": "delivery-positive-arrow_ped_crosswalk.log",
+        "test_log_sha256": "7d7497bc91c21daf0954f05afc327f91ba8d0e74b08603eace7f8f578e3d9fa5",
+        "negative_log": "delivery-negative-arrow_ped_crosswalk.log",
+        "negative_log_sha256": "5489eb187b95b5f49409881413d315bb69dab154bd2a1517f8dfd53c6fcc8134",
+        "scope": "synthetic diagnostic software proof; original physical and legal acceptance unclaimed"
       }
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection",
       "construction": "construction-arrow_ped_intersection.json",
-      "construction_sha256": "b68553390fbbe05cf341ccd84e757ccaf2910d0540ea00bb943ba1afb0f7d209",
+      "construction_sha256": "a2d572ff507f073acacb3c56d25a265a24ddd80da5579a918124a586b74e71fb",
       "measurement_contract": "cases/arrow_ped_intersection/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+        "reason": "The primary reviewed Native controller gain may leave the arrow-indicated turn physically incomplete within the 900-frame capture; after a source-complete primary attempt, selected saved physical_checks.maneuver must trigger the bounded 0.75-gain fallback if status is not_met or unverified. The original flashing-yellow arrow aspect and facing head remain independently required source checks for both candidates."
       },
       "kind": "delivery",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/diagnostic-arrow_ped_intersection-recipe.json",
@@ -64,19 +308,141 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C111610_SITE_ROOT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-arrow_ped_intersection-construction.json",
+          "construction_sha256": "844a7677154a49a76b8451bae2d62fcd6891704564b964c8f870008ba28a42eb",
+          "changed_knobs": [
+            "reviewed Native adapter controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved physical_checks.maneuver",
+            "metric": "measured completion status after full original capture",
+            "failure_condition": "not_met or unverified after a source-complete primary attempt"
+          },
+          "risk_note": "Only a bounded control response changes; original site, law, case and recordings remain fixed.",
+          "compatibility": {
+            "receipt": "compat-final-arrow_ped_intersection-fallback1-receipt.json",
+            "sha256": "73f9b3442c8a5276c100de0692d953dc1a62cd76af33919a6e57d35094ee87ce",
+            "log": "compat-final-arrow_ped_intersection-fallback1-analysis.log",
+            "negative_log": "compat-final-arrow_ped_intersection-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --candidate fallback1 --output .runtime-work/c111610-nov24-owner/offline-final-arrow_ped_intersection-fallback1",
+            "construction_sha256": "844a7677154a49a76b8451bae2d62fcd6891704564b964c8f870008ba28a42eb",
+            "exit_code": 0,
+            "log": "proof-offline-final-arrow_ped_intersection-fallback1.log",
+            "log_sha256": "476d49c4f893dc8593bea70bc7fbf74b4a2bc4988924d658b240e8c5c84dede4"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "compat-final-arrow_ped_intersection-primary-receipt.json",
+        "sha256": "d57c5e81f37534176d35bb49545fb078949606c5583984e6448dc5336749751e",
+        "log": "compat-final-arrow_ped_intersection-primary-analysis.log",
+        "negative_log": "compat-final-arrow_ped_intersection-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --candidate primary --output .runtime-work/c111610-nov24-owner/offline-final-arrow_ped_intersection-primary",
+        "construction_sha256": "a2d572ff507f073acacb3c56d25a265a24ddd80da5579a918124a586b74e71fb",
+        "exit_code": 0,
+        "log": "proof-offline-final-arrow_ped_intersection-primary.log",
+        "log_sha256": "476d49c4f893dc8593bea70bc7fbf74b4a2bc4988924d658b240e8c5c84dede4"
+      },
+      "negative": {
+        "log": "compat-final-arrow_ped_intersection-primary-negative.log"
+      },
+      "acquisition": {
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "concurrent_indication_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/concurrent_indication_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-arrow_ped_intersection-proof.json",
+        "sha256": "54940fd141f0a0832cc71f51af3655762634eaf78d6fa168f59506c02883f129"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_intersection --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_intersection --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-processing-arrow_ped_intersection.log",
+        "test_log_sha256": "b9a7103c4b879faff48a1523e6f9bdb26f9b72990bb004d33db5363e0d662064",
+        "receipt": "saved-processing-arrow_ped_intersection-receipt.json",
+        "receipt_sha256": "b9a7103c4b879faff48a1523e6f9bdb26f9b72990bb004d33db5363e0d662064"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_ped_intersection --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_intersection/v0001 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --attempt .runtime-work/c111610-nov24-owner/delivery-negative-arrow_ped_intersection --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_ped_intersection/v0001 --diagnostic",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "b35002ce0493724a3991fd9755395a61684dfac267ab60550ebe6eb6d016f3b7",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved delivery site source missing",
+        "test_log": "delivery-positive-arrow_ped_intersection.log",
+        "test_log_sha256": "568c1596403c715357293d24c13ae987fc7ddf5fa56f2523983e14acd255e3c3",
+        "negative_log": "delivery-negative-arrow_ped_intersection.log",
+        "negative_log_sha256": "5489eb187b95b5f49409881413d315bb69dab154bd2a1517f8dfd53c6fcc8134",
+        "scope": "synthetic diagnostic software proof; original physical and legal acceptance unclaimed"
       }
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection",
       "construction": "construction-arrow_vehicle_intersection.json",
-      "construction_sha256": "d2a60b63bfc890256cae36546434b8356b198aa134cbb3700f6889bcf70cf362",
+      "construction_sha256": "682cb5e73bbe4b1b4a4b5801b937b79430b8e768cb66e70a5f7df73928a9b3b2",
       "measurement_contract": "cases/arrow_vehicle_intersection/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+        "reason": "The primary reviewed Native controller gain may leave the arrow-indicated turn physically incomplete within the 900-frame capture; after a source-complete primary attempt, selected saved physical_checks.maneuver must trigger the bounded 0.75-gain fallback if status is not_met or unverified. The original flashing-yellow arrow aspect and facing head remain independently required source checks for both candidates."
       },
       "kind": "delivery",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/diagnostic-arrow_vehicle_intersection-recipe.json",
@@ -85,19 +451,141 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C111610_SITE_ROOT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-arrow_vehicle_intersection-construction.json",
+          "construction_sha256": "453bd23a060ebc84f61ea9569a5666c980e223f56ed1a9ee525aabe2fcbb7b71",
+          "changed_knobs": [
+            "reviewed Native adapter controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved physical_checks.maneuver",
+            "metric": "measured completion status after full original capture",
+            "failure_condition": "not_met or unverified after a source-complete primary attempt"
+          },
+          "risk_note": "Only a bounded control response changes; original site, law, case and recordings remain fixed.",
+          "compatibility": {
+            "receipt": "compat-final-arrow_vehicle_intersection-fallback1-receipt.json",
+            "sha256": "82d96b048a0395429913582938bf1885a27abef2822e83f7feddd6459e9994ad",
+            "log": "compat-final-arrow_vehicle_intersection-fallback1-analysis.log",
+            "negative_log": "compat-final-arrow_vehicle_intersection-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --candidate fallback1 --output .runtime-work/c111610-nov24-owner/offline-final-arrow_vehicle_intersection-fallback1",
+            "construction_sha256": "453bd23a060ebc84f61ea9569a5666c980e223f56ed1a9ee525aabe2fcbb7b71",
+            "exit_code": 0,
+            "log": "proof-offline-final-arrow_vehicle_intersection-fallback1.log",
+            "log_sha256": "74fe0599f5bcaec9494bfcd4a085482d54a1d66047fce551ebca4fc7e6ea49bb"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "compat-final-arrow_vehicle_intersection-primary-receipt.json",
+        "sha256": "c6709d2064cb7d8d270da3c043714d0823c26511f90cf9cd12e07e0ee1a71430",
+        "log": "compat-final-arrow_vehicle_intersection-primary-analysis.log",
+        "negative_log": "compat-final-arrow_vehicle_intersection-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --candidate primary --output .runtime-work/c111610-nov24-owner/offline-final-arrow_vehicle_intersection-primary",
+        "construction_sha256": "682cb5e73bbe4b1b4a4b5801b937b79430b8e768cb66e70a5f7df73928a9b3b2",
+        "exit_code": 0,
+        "log": "proof-offline-final-arrow_vehicle_intersection-primary.log",
+        "log_sha256": "4d4939d30afd05d66d6ec293643a70d6dff3f8fbdcd207cc5988688862d34c80"
+      },
+      "negative": {
+        "log": "compat-final-arrow_vehicle_intersection-primary-negative.log"
+      },
+      "acquisition": {
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "concurrent_indication_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/concurrent_indication_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-arrow_vehicle_intersection-proof.json",
+        "sha256": "7226c34a2de2cf8ea81400fc38958bba543d50d8ba2ccd26e3c1f314f683c892"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/saved-output-arrow_vehicle_intersection --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/saved-output-arrow_vehicle_intersection --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-processing-arrow_vehicle_intersection.log",
+        "test_log_sha256": "27c32f7b85434f4559e278c19aca61a279cd43bdf0b3262db8cf70badb4d07c2",
+        "receipt": "saved-processing-arrow_vehicle_intersection-receipt.json",
+        "receipt_sha256": "27c32f7b85434f4559e278c19aca61a279cd43bdf0b3262db8cf70badb4d07c2"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_vehicle_intersection --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_vehicle_intersection/v0001 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --attempt .runtime-work/c111610-nov24-owner/delivery-negative-arrow_vehicle_intersection --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_vehicle_intersection/v0001 --diagnostic",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "b35002ce0493724a3991fd9755395a61684dfac267ab60550ebe6eb6d016f3b7",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved delivery site source missing",
+        "test_log": "delivery-positive-arrow_vehicle_intersection.log",
+        "test_log_sha256": "1fa2df835f68435dcd3edcc63d95f07e8d7d7f7493229dc30eb3f32568670974",
+        "negative_log": "delivery-negative-arrow_vehicle_intersection.log",
+        "negative_log_sha256": "5489eb187b95b5f49409881413d315bb69dab154bd2a1517f8dfd53c6fcc8134",
+        "scope": "synthetic diagnostic software proof; original physical and legal acceptance unclaimed"
       }
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement",
       "construction": "construction-arrow_concurrent_movement.json",
-      "construction_sha256": "4a69c2b2afe32e3fa059ab448fa0e80e6ffcf2d7bd7b66d9b622a7162e5fa82f",
+      "construction_sha256": "b0d290f3f15b0226e1297c80a62999b51db798478649dea0ab8715ad92f2f05b",
       "measurement_contract": "cases/arrow_concurrent_movement/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native control may not expose a flashing yellow turn-arrow aspect; the official head and externally sourced aspect packet must agree in the original frame record."
+        "reason": "The primary reviewed Native controller gain may leave the arrow-indicated turn physically incomplete within the 900-frame capture; after a source-complete primary attempt, selected saved physical_checks.maneuver must trigger the bounded 0.75-gain fallback if status is not_met or unverified. The original flashing-yellow arrow aspect and facing head remain independently required source checks for both candidates."
       },
       "kind": "delivery",
       "fixture_recipe": "work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/diagnostic-arrow_concurrent_movement-recipe.json",
@@ -106,6 +594,128 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C111610_SITE_ROOT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-arrow_concurrent_movement-construction.json",
+          "construction_sha256": "a890b65ccef2d35d87c855401e18c9acc8955a97b81498918bd941358d05986f",
+          "changed_knobs": [
+            "reviewed Native adapter controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved physical_checks.maneuver",
+            "metric": "measured completion status after full original capture",
+            "failure_condition": "not_met or unverified after a source-complete primary attempt"
+          },
+          "risk_note": "Only a bounded control response changes; original site, law, case and recordings remain fixed.",
+          "compatibility": {
+            "receipt": "compat-final-arrow_concurrent_movement-fallback1-receipt.json",
+            "sha256": "906eb0a5989be776cf03ec9d3adb159422ff50e46dca78d3b808e2cf5cd51e5d",
+            "log": "compat-final-arrow_concurrent_movement-fallback1-analysis.log",
+            "negative_log": "compat-final-arrow_concurrent_movement-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --candidate fallback1 --output .runtime-work/c111610-nov24-owner/offline-final-arrow_concurrent_movement-fallback1",
+            "construction_sha256": "a890b65ccef2d35d87c855401e18c9acc8955a97b81498918bd941358d05986f",
+            "exit_code": 0,
+            "log": "proof-offline-final-arrow_concurrent_movement-fallback1.log",
+            "log_sha256": "84012318beb7020bbe914524be46114e627e7991b9337a0120557a765eb505ce"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "compat-final-arrow_concurrent_movement-primary-receipt.json",
+        "sha256": "15f87b7c85991b7cdc692bc9a59d4fd5f8104f6830b75c118d6f7935e3cd3b38",
+        "log": "compat-final-arrow_concurrent_movement-primary-analysis.log",
+        "negative_log": "compat-final-arrow_concurrent_movement-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --candidate primary --output .runtime-work/c111610-nov24-owner/offline-final-arrow_concurrent_movement-primary",
+        "construction_sha256": "b0d290f3f15b0226e1297c80a62999b51db798478649dea0ab8715ad92f2f05b",
+        "exit_code": 0,
+        "log": "proof-offline-final-arrow_concurrent_movement-primary.log",
+        "log_sha256": "7361d666ddff5e4d88c152590d66645a387f4f5c125e5eddb042389575f0d6ea"
+      },
+      "negative": {
+        "log": "compat-final-arrow_concurrent_movement-primary-negative.log"
+      },
+      "acquisition": {
+        "ego_body_heading_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/ego_body_heading_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "facing_arrow_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/facing_arrow_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "pedestrian_body_lawful_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_body_lawful_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "other_traffic_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/other_traffic_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "concurrent_indication_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/concurrent_indication_history.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "turn_route": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/turn_route.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_map.jsonl",
+          "method": "SHA-bound saved arrow/aspect/event/frame-map projection"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-arrow_concurrent_movement-proof.json",
+        "sha256": "ef67e3168b92afd0bb985294f0254df1eae8da5845eb1737d0d313725de70522"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/saved-output-arrow_concurrent_movement --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/saved-output-arrow_concurrent_movement --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-processing-arrow_concurrent_movement.log",
+        "test_log_sha256": "ca81e92c6afcabd12d44ab8f7c2ae86240ea2555cd2c32072051a4711e263e5f",
+        "receipt": "saved-processing-arrow_concurrent_movement-receipt.json",
+        "receipt_sha256": "ca81e92c6afcabd12d44ab8f7c2ae86240ea2555cd2c32072051a4711e263e5f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --attempt .runtime-work/c111610-nov24-owner/saved-attempt-arrow_concurrent_movement --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_concurrent_movement/v0001 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --attempt .runtime-work/c111610-nov24-owner/delivery-negative-arrow_concurrent_movement --processed .runtime-work/c111610-nov24-owner/saved-output-arrow_concurrent_movement/v0001 --diagnostic",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "b35002ce0493724a3991fd9755395a61684dfac267ab60550ebe6eb6d016f3b7",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved delivery site source missing",
+        "test_log": "delivery-positive-arrow_concurrent_movement.log",
+        "test_log_sha256": "1204b97556e50d80272155e35507775e4e2061de8a0f888f1de8a1dc8a47e30a",
+        "negative_log": "delivery-negative-arrow_concurrent_movement.log",
+        "negative_log_sha256": "5489eb187b95b5f49409881413d315bb69dab154bd2a1517f8dfd53c6fcc8134",
+        "scope": "synthetic diagnostic software proof; original physical and legal acceptance unclaimed"
       }
     }
   ]

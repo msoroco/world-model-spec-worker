@@ -1,0 +1,92 @@
+{
+  "format": "c111125-cpu-comparison-proof-v1",
+  "assignment_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator",
+  "script": "audit_comparison_receipts.py",
+  "script_sha256": "9fb0af2b594b23789781924a1df3e9b2da386d4e6f4c1467ec48429ca8eb4c75",
+  "diagnostic_fixture": true,
+  "physical_acceptance": false,
+  "comparisons": [
+    {
+      "comparison_id": "two_vs_one_complete_cycles",
+      "left_case": "two_cycles_failed_detection",
+      "right_case": "one_cycle",
+      "positive_exit_code": 0,
+      "positive_log": "cpu-comparison-two_vs_one_complete_cycles.log",
+      "positive_log_sha256": "21eb0a0717344d46a2b6d2d2090449234e6d1d1056d3731ba1d30153d7cb7524",
+      "negative_exit_code": 1,
+      "negative_log": "cpu-comparison-negative-two_vs_one_complete_cycles.log",
+      "negative_log_sha256": "8620e8daf3590100d55336e19a4228d6d58ae28055de5a2876dc18edbf1d702c",
+      "negative_expected_error": "fixed source differs: map_sha256",
+      "positive_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison two_vs_one_complete_cycles --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-one_cycle.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison two_vs_one_complete_cycles --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-one_cycle.json --negative-stale-map"
+    },
+    {
+      "comparison_id": "failed_detection_vs_signal_change",
+      "left_case": "two_cycles_failed_detection",
+      "right_case": "signal_changes",
+      "positive_exit_code": 0,
+      "positive_log": "cpu-comparison-failed_detection_vs_signal_change.log",
+      "positive_log_sha256": "9e4e3505b9be30b2fe006a0954d224c1d20a11635e9b129db25c62b346b4abb6",
+      "negative_exit_code": 1,
+      "negative_log": "cpu-comparison-negative-failed_detection_vs_signal_change.log",
+      "negative_log_sha256": "8620e8daf3590100d55336e19a4228d6d58ae28055de5a2876dc18edbf1d702c",
+      "negative_expected_error": "fixed source differs: map_sha256",
+      "positive_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison failed_detection_vs_signal_change --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-signal_changes.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison failed_detection_vs_signal_change --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-signal_changes.json --negative-stale-map"
+    },
+    {
+      "comparison_id": "stop_antecedent",
+      "left_case": "two_cycles_failed_detection",
+      "right_case": "no_prior_stop",
+      "positive_exit_code": 0,
+      "positive_log": "cpu-comparison-stop_antecedent.log",
+      "positive_log_sha256": "a213e494c2d0bda01958605382bdb26bc0b9c2cc1f2a740be5ea2060545d6eb0",
+      "negative_exit_code": 1,
+      "negative_log": "cpu-comparison-negative-stop_antecedent.log",
+      "negative_log_sha256": "8620e8daf3590100d55336e19a4228d6d58ae28055de5a2876dc18edbf1d702c",
+      "negative_expected_error": "fixed source differs: map_sha256",
+      "positive_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison stop_antecedent --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-no_prior_stop.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison stop_antecedent --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-no_prior_stop.json --negative-stale-map"
+    },
+    {
+      "comparison_id": "yield_to_directed_participant",
+      "left_case": "two_cycles_failed_detection",
+      "right_case": "fails_to_yield",
+      "positive_exit_code": 0,
+      "positive_log": "cpu-comparison-yield_to_directed_participant.log",
+      "positive_log_sha256": "f1c455c2a190f3f1591562af6c15940ebd910214bde7fd7cbe74dc289e2d1da3",
+      "negative_exit_code": 1,
+      "negative_log": "cpu-comparison-negative-yield_to_directed_participant.log",
+      "negative_log_sha256": "8620e8daf3590100d55336e19a4228d6d58ae28055de5a2876dc18edbf1d702c",
+      "negative_expected_error": "fixed source differs: map_sha256",
+      "positive_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison yield_to_directed_participant --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-fails_to_yield.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/audit_comparison_receipts.py --comparison yield_to_directed_participant --left work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-two_cycles_failed_detection.json --right work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/cpu-saved-analysis-fails_to_yield.json --negative-stale-map"
+    }
+  ],
+  "analysis_reports": {
+    "two_cycles_failed_detection": {
+      "path": "cpu-saved-analysis-two_cycles_failed_detection.json",
+      "sha256": "b54f9f3538fc3c311cbbe2398290f19bf8b3377fa4e5bbe615c1692d8e143f1b"
+    },
+    "one_cycle": {
+      "path": "cpu-saved-analysis-one_cycle.json",
+      "sha256": "15f1fb29a5dfdcf03e76dd6d3feed1e2f9dfd9aa1145ac5b4c9b0ca89460fb18"
+    },
+    "three_cycles": {
+      "path": "cpu-saved-analysis-three_cycles.json",
+      "sha256": "37b62620b6b4136ac3d2943d2fe26c07c651e22ea9f9258c9773b536ac1bdd46"
+    },
+    "signal_changes": {
+      "path": "cpu-saved-analysis-signal_changes.json",
+      "sha256": "7f86af78312df201a3b6543a4930cb007cafc3911a478307834e35fc04ade4d7"
+    },
+    "no_prior_stop": {
+      "path": "cpu-saved-analysis-no_prior_stop.json",
+      "sha256": "510585b62bd5fc1fea94f9a431d8f092c21306c768aeb3c646cddb7dd46ffb6d"
+    },
+    "fails_to_yield": {
+      "path": "cpu-saved-analysis-fails_to_yield.json",
+      "sha256": "8e6ae3cd77f68e3ad2f33c15b96bcd9e294ef46456df0fde8acfeb857e9880dc"
+    }
+  }
+}

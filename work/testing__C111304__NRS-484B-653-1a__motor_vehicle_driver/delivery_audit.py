@@ -17,6 +17,22 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _check_physical_review(review: dict, case_id: str, receipt_sha: str,
+                           inventory_sha: str, frame_map_sha: str) -> None:
+    if (review.get('case_id') != case_id or
+            review.get('native_receipt_sha256') != receipt_sha or
+            review.get('media_inventory_sha256') != inventory_sha or
+            review.get('frame_map_sha256') != frame_map_sha):
+        raise ValueError('physical review source binding mismatch')
+    if review.get('review_kind') != 'independent_original_pixels' or not review.get('reviewer'):
+        raise ValueError('independent original-pixel review missing')
+    visible = review.get('visible', {})
+    if set(visible) != set(CAMERAS) or any(visible[camera] is not True for camera in CAMERAS):
+        raise ValueError('actual four-camera participant visibility unconfirmed')
+    if review.get('physical_completion') is not True:
+        raise ValueError('physical completion unconfirmed')
+
+
 def audit(attempt: Path, report: dict, review: dict, case_id: str) -> dict:
     """Bind independently reviewed pixels to a complete original Native attempt."""
     from saved_audit import audit_native_acquisition
@@ -42,18 +58,8 @@ def audit(attempt: Path, report: dict, review: dict, case_id: str) -> dict:
     decoded = audit_media(attempt, receipt, inventory, camera_plan)
     if decoded.get('source_kind') != 'original_encoded':
         raise ValueError('original encoded pixels required')
-    if (review.get('case_id') != case_id or
-            review.get('native_receipt_sha256') != _sha(receipt_path) or
-            review.get('media_inventory_sha256') != _sha(inventory_path) or
-            review.get('frame_map_sha256') != receipt.get('original_frame_map_sha256')):
-        raise ValueError('physical review source binding mismatch')
-    if review.get('review_kind') != 'independent_original_pixels' or review.get('reviewer') in (None, ''):
-        raise ValueError('independent original-pixel review missing')
-    visible = review.get('visible', {})
-    if set(visible) != set(CAMERAS) or any(visible[camera] is not True for camera in CAMERAS):
-        raise ValueError('actual four-camera participant visibility unconfirmed')
-    if review.get('physical_completion') is not True:
-        raise ValueError('physical completion unconfirmed')
+    _check_physical_review(review, case_id, _sha(receipt_path),
+                           _sha(inventory_path), receipt.get('original_frame_map_sha256'))
     return {'format': 'c111304-independent-delivery-check', 'case_id': case_id,
             'native_receipt_sha256': _sha(receipt_path),
             'media_inventory_sha256': _sha(inventory_path),
@@ -64,22 +70,14 @@ def audit(attempt: Path, report: dict, review: dict, case_id: str) -> dict:
 
 
 def _self_test(case_id: str, tamper: bool) -> None:
-    """Test the pure physical-review gate without presenting fixture as evidence."""
-    def check_review(row: dict) -> None:
-        if row['case_id'] != case_id:
-            raise ValueError('exact delivery case mismatch')
-        if row['frame_count'] != 900 or row['fps'] != 20:
-            raise ValueError('original frame contract mismatch')
-        if set(row['visible']) != set(CAMERAS) or not all(row['visible'].values()):
-            raise ValueError('actual four-camera participant visibility unconfirmed')
-        if not row['physical_completion']:
-            raise ValueError('physical completion unconfirmed')
-
-    row = {'case_id': case_id, 'frame_count': 900, 'fps': 20,
+    """Exercise the exact physical-review predicate without accepting a fixture."""
+    row = {'case_id': case_id, 'native_receipt_sha256': 'receipt',
+           'media_inventory_sha256': 'inventory', 'frame_map_sha256': 'frame-map',
+           'review_kind': 'independent_original_pixels', 'reviewer': 'cpu-test',
            'visible': dict.fromkeys(CAMERAS, True), 'physical_completion': True}
     if tamper:
         row['visible']['right'] = False
-    check_review(row)
+    _check_physical_review(row, case_id, 'receipt', 'inventory', 'frame-map')
     print('CPU physical-review checker passed for ' + case_id + '; no recording accepted')
 
 

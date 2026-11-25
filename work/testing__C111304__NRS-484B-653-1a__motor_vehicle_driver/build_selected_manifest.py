@@ -72,6 +72,52 @@ def main() -> None:
         else:
             acceptance = {'status': 'pending_independent_saved_proof'}
         saved_log = HERE / ('cpu-process-saved-' + suffix + '.log')
+        physical_receipt = HERE / ('physical-preparation-' + suffix + '.json')
+        if not physical_receipt.is_file():
+            raise ValueError('missing CPU physical preparation proof: ' + case_id)
+        fallback_name = 'construction-fallback1-' + suffix + '.json'
+        fallback = HERE / fallback_name
+        if not fallback.is_file():
+            raise ValueError('missing constructed physical fallback: ' + case_id)
+        fallback_sha = sha(fallback)
+        fallback_offline_log = HERE / ('cpu-fallback-offline-' + suffix + '.log')
+        fallback_receipt = HERE / ('receipt-fallback1-compat-' + suffix + '.json')
+        fallback_compat_log = HERE / ('analysis-fallback1-compat-' + suffix + '.log')
+        fallback_negative_log = HERE / ('negative-fallback1-' + suffix + '.log')
+        fallback_entry = {
+            'id': 'fallback1', 'construction': fallback_name,
+            'construction_sha256': fallback_sha,
+            'trigger': {
+                'source': 'original Native 900-frame ego control history and sourced encounter zone',
+                'metric': 'ego route progress at frame 899 versus encounter zone entry',
+                'failure_condition': 'ego has not entered the sourced encounter zone by frame 899',
+            },
+            'changed_knobs': ['CARLA ego throttle speed-tracking gain 0.25 to 0.35; target speeds, route, cameras, 20 Hz and 900 frames held fixed'],
+        }
+        if fallback_offline_log.is_file():
+            if '"offline_passed": true' not in fallback_offline_log.read_text(encoding='utf-8'):
+                raise ValueError('fallback offline proof is not passing: ' + case_id)
+            fallback_entry['offline'] = {
+                'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name +
+                           '/execution-manifest.json --case ' + case_id + ' --candidate fallback1' +
+                           ' --output .runtime-work/c111304-fallback-offline-' + suffix +
+                           ' --python ' + str(REPO / '.venv-cpu/bin/python'),
+                'construction_sha256': fallback_sha, 'exit_code': 0,
+                'log': fallback_offline_log.name, 'log_sha256': sha(fallback_offline_log),
+            }
+        if all(path.is_file() for path in (fallback_receipt, fallback_compat_log, fallback_negative_log)):
+            receipt = json.loads(fallback_receipt.read_text(encoding='utf-8'))
+            if (receipt.get('passed') is not True or receipt.get('case_id') != case_id or
+                    receipt.get('candidate_id') != 'fallback1' or
+                    receipt.get('construction_sha256') != fallback_sha or
+                    receipt.get('log_sha256') != sha(fallback_compat_log) or
+                    receipt.get('negative_log_sha256') != sha(fallback_negative_log)):
+                raise ValueError('fallback compatibility receipt is stale: ' + case_id)
+            fallback_entry['compatibility'] = {
+                'receipt': fallback_receipt.name, 'sha256': sha(fallback_receipt),
+                'log': fallback_compat_log.name,
+                'negative_log': fallback_negative_log.name,
+            }
         post_capture = {
             'recorded_only': True,
             'command': '.venv-cpu/bin/python runtime.py process-saved --manifest work/' +
@@ -87,7 +133,9 @@ def main() -> None:
             'case_id': case_id, 'kind': 'delivery', 'preparation_status': 'partial',
             'construction': row['construction'],
             'construction_sha256': row['construction_sha256'],
-            'candidate_risk': risks[case_id], 'candidates': [],
+            'candidate_risk': risks[case_id], 'candidates': [fallback_entry],
+            'physical_preparation': {'receipt': physical_receipt.name,
+                                     'sha256': sha(physical_receipt)},
             'offline': {
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest '
                            'work/' + HERE.name + '/execution-manifest.draft.json --case '

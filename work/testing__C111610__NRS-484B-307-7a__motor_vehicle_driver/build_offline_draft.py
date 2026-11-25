@@ -67,8 +67,10 @@ def build():
             "cameras": list(CAMERAS),
             "required_sources": ["surveyed_map", "official_head", "external_aspect_readback", "actor_events", "original_camera_media"],
             "required_atoms": [], "diagnostic_only": True,
+            "controller_gain": 1.0,
             "physical_completion": {
-                "criterion": "turn", "motion_source": "body_history.jsonl",
+                "criterion": "travel_progress" if suffix == "arrow_concurrent_movement" else "turn",
+                "motion_source": "body_history.jsonl",
                 "body_key": "body_vertices_m", "heading_key": "heading_deg",
                 "turn_degrees": 90, "turn_tolerance_deg": 30,
                 "turn_sign": 1, "minimum_progress_m": 1.0,

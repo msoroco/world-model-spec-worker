@@ -51,8 +51,11 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
         raise ValueError("Missing required source: site.json")
     site = json.loads(site_path.read_text())
     final = finalize_saved(site_path, attempt, case_id, diagnostic=diagnostic)
-    camera = (audit_diagnostic_cameras(attempt, final) if diagnostic else
-              audit_cameras(site, attempt, diagnostic=False, dimensions=dimensions))
+    camera_receipt = attempt / "arrow-camera-receipt.json"
+    camera_spec = json.loads(camera_receipt.read_text())
+    fixture_video = diagnostic and camera_spec.get("format") == "c111610-diagnostic-arrow-cameras-v1"
+    camera = (audit_diagnostic_cameras(attempt, final) if fixture_video else
+              audit_cameras(site, attempt, diagnostic=diagnostic, dimensions=dimensions))
     if (camera["original_event_sha256"] != final["original_event_sha256"] or
             camera["original_aspect_sha256"] != final["original_aspect_sha256"] or
             camera["decoded_frames"] != final["frame_count"] or
@@ -60,7 +63,6 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
         raise ValueError("saved arrow and camera original sources do not join")
     original_events = json.loads((attempt / "arrow-events-original.json").read_text())
     ego_history = measure_ego_history(original_events, diagnostic=diagnostic)
-    camera_receipt = attempt / "arrow-camera-receipt.json"
     sources = {"site.json": hashlib.sha256(site_path.read_bytes()).hexdigest(),
                "arrow-aspect-original.json": final["original_aspect_sha256"],
                "arrow-events-original.json": final["original_event_sha256"],
@@ -68,7 +70,7 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
     source_inventory = {ref["path"]: ref["sha256"] for ref in site["original_sources"]}
     for ref in json.loads(camera_receipt.read_text())["camera_sources"].values():
         source_inventory[ref["path"]] = (hashlib.sha256((attempt / ref["path"]).read_bytes()).hexdigest()
-                                                if diagnostic else ref["sha256"])
+                                                if fixture_video else ref["sha256"])
     observations = {
         "arrow_display_observation": {"frame_count": final["frame_count"],
             "observed_arrow_transitions": final["observed_arrow_transitions"]},
