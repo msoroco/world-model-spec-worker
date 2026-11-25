@@ -15,7 +15,7 @@ SUFFIXES = ('source_verified_single_movement_uturn',
             'divider_encroachment_before_opening_uturn')
 PARAMETERS = (
     ('movement_sequence', 'controller', 'single forward or forward-reverse-forward U-turn'),
-    ('body_enters_divider_outside_opening', 'subject_behavior', 'complete body overlaps divider outside named opening'),
+    ('commanded_divider_encroachment', 'controller', 'planned body route enters divider outside named opening'),
     ('opening_source', 'world_setup', 'same sourced physical median opening and barrier sections'),
     ('public_authority_source', 'world_setup', 'separate establishment document pending review'),
     ('ego_body_uturn_observed', 'subject_behavior', 'original complete-body motion and gear history'),
@@ -36,11 +36,11 @@ def assignments(suffix):
     values = {'movement_sequence': sequence, 'opening_source': 'same_median_opening',
               'public_authority_source': 'required_separate_review',
               'ego_body_uturn_observed': None,
-              'body_enters_divider_outside_opening': suffix == SUFFIXES[2]}
+              'commanded_divider_encroachment': suffix == SUFFIXES[2]}
     units = {'movement_sequence': 'gear sequence', 'opening_source': 'source category',
              'public_authority_source': 'source status',
              'ego_body_uturn_observed': 'structured record',
-             'body_enters_divider_outside_opening': 'boolean'}
+             'commanded_divider_encroachment': 'boolean'}
     return {name: {'kind': kind, 'value': values[name], 'unit': units[name]}
             for name, kind, _ in PARAMETERS}
 
@@ -106,8 +106,8 @@ def build():
                       'unresolved_judgment_calls': [],
                       'recording_description': item['recording_description'],
                       'paired_probe_id': 'divided_road_uturn_opening',
-                      'deliberate_differences': ['body_enters_divider_outside_opening'],
-                      'probe': {'primary_variable': 'body_enters_divider_outside_opening',
+                      'deliberate_differences': ['commanded_divider_encroachment', 'movement_sequence'],
+                      'probe': {'primary_variable': 'commanded_divider_encroachment',
                                 'comparison_or_standard': 'same divided-highway, opening, camera and authority-source contract with declared gear-sequence change',
                                 'target_value_or_branch': suffix}})
     proposal = {'cell_id': CELL, 'actor': ACTOR, 'status': 'draft',

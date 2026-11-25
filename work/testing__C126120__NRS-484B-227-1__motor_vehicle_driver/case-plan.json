@@ -126,11 +126,36 @@
     "supported_reuses": []
   },
   "observations": [
-    "source-backed divided highway and right-hand roadway",
-    "real Native barrier sections straddling opening",
-    "original-frame complete-body path and divider overlap",
-    "approximately 180-degree heading change as diagnostic; gear sequence for multiple movements",
-    "public-authority establishment from independent source"
+    {
+      "name": "ego_body",
+      "mandatory": true,
+      "description": "original complete Native ego footprint for start, crossing and destination"
+    },
+    {
+      "name": "other_body",
+      "mandatory": true,
+      "description": "original other vehicle footprint and separation"
+    },
+    {
+      "name": "ego_heading",
+      "mandatory": true,
+      "description": "original orientation for U-turn geometry"
+    },
+    {
+      "name": "divider_overlap",
+      "mandatory": true,
+      "description": "source-bound complete-body overlap with opening and divider"
+    },
+    {
+      "name": "camera_frames",
+      "mandatory": true,
+      "description": "four original Native camera frame joins"
+    },
+    {
+      "name": "ego_gear",
+      "mandatory": true,
+      "description": "original reverse-control readback for multiple movement"
+    }
   ],
   "sources": [
     {
@@ -163,7 +188,7 @@
     "Gear changes and turn angle describe motion, not a legal conclusion.",
     "Public-authority establishment remains source review."
   ],
-  "planning_status": "partial; three exact CPU route constructions including prohibited-condition diagnostic; original site and authority pending",
+  "planning_status": "CPU constructions, semantic stages, primary and fallback compatibility, saved processing, synthetic physical outcomes and source audits passed; Native site and authority review pending",
   "requirement_dispositions": [
     {
       "requirement": "Divided-highway and two roadway boundaries require original source review",
@@ -238,5 +263,100 @@
       ],
       "evidence_or_gap": "original authority document pending; synthetic note is not establishment"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both divided-road carriageways, divider, opening, ego and other traffic",
+        "interval": "full capture"
+      },
+      {
+        "view": "approach",
+        "subject": "right-hand origin roadway, ego body and west barrier section",
+        "interval": "approach through divider entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "opening, possible outside-opening divider overlap, east barrier section and destination roadway",
+        "interval": "divider approach through turn completion"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego view toward divider opening, opposing roadway and other vehicle",
+        "interval": "full capture"
+      }
+    ],
+    "physical_visibility_review": "pending independent original camera pixel review"
+  },
+  "source_observation_mapping": {
+    "st.median_or_divider": {
+      "evidence": "Sourced divider polygon, physical barrier section world vertices and physical opening",
+      "channels": [],
+      "source_refs": [
+        "divider_context.json",
+        "barrier_receipt.json",
+        "overview.mkv"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Sourced right-hand and destination roadway polygons excluding shoulders",
+      "channels": [],
+      "source_refs": [
+        "divider_context.json",
+        "overview.mkv"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original complete ego/other Native body overlap with roadway, opening and blocked divider",
+      "channels": [],
+      "source_refs": [
+        "movement_history.jsonl",
+        "divider_context.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Original Native spawn road/lane readback and sourced right-hand direction",
+      "channels": [],
+      "source_refs": [
+        "site_source_receipt.json",
+        "movement_history.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original complete-body U-turn path and signed heading change",
+      "channels": [],
+      "source_refs": [
+        "movement_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.u_turn": {
+      "evidence": "Original complete-body approximately 180-degree route and forward/reverse gear history; legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "movement_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Opening geometry and independent public-authority source receipt; original establishment pending",
+      "channels": [],
+      "source_refs": [
+        "site_source_receipt.json",
+        "overview.mkv"
+      ]
+    },
+    "drv.wrong_way": {
+      "evidence": "Complete-body presence on destination/opposing roadway and sourced direction; legal judgment unresolved",
+      "channels": [],
+      "source_refs": [
+        "movement_history.jsonl",
+        "divider_context.json"
+      ]
+    }
+  }
 }

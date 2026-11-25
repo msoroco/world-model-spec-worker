@@ -1,0 +1,421 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+      "construction": "construction.json",
+      "construction_sha256": "3ea5cf1da024d640fb7d21ebbe1a343aeb2881f236760325a665d4efd98ae250",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/cases/source_verified_single_movement_uturn/source_verified_single_movement_uturn-fixture-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_single_movement_uturn/fallback1-construction.json",
+          "construction_sha256": "0931c13fa6b0139e25abde00b1b4cf12d5640d614e594ddf70e9ae01a99c5e87",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance and route completion",
+            "failure_condition": "barrier clearance below 0.4 m or declared movement incomplete"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m",
+            "ego_segments"
+          ],
+          "design_rationale": "Adjust the exact route point while retaining opening and U-turn branch.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-source_verified_single_movement_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0931c13fa6b0139e25abde00b1b4cf12d5640d614e594ddf70e9ae01a99c5e87",
+            "log": "cases/source_verified_single_movement_uturn/fallback1-offline.log",
+            "log_sha256": "ed6f6027f84cfc0b84287da094622df13db8fcd1c48192788eda9c7ebf5c328a"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_single_movement_uturn/fallback1-compatibility.json",
+            "sha256": "eb970b9a88075e41f7880d5bd9873212aaaff037839fe3941e9a2b80674b77e4",
+            "log": "cases/source_verified_single_movement_uturn/fallback1-compat-analysis.log",
+            "negative_log": "cases/source_verified_single_movement_uturn/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --output .runtime-work/c126120-offline-v4-source_verified_single_movement_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3ea5cf1da024d640fb7d21ebbe1a343aeb2881f236760325a665d4efd98ae250",
+        "log": "cases/source_verified_single_movement_uturn/primary-offline.log",
+        "log_sha256": "f81d0a5546a684894f4033fd079b52a7c64d94c061b57105ea4e746348fe24cc"
+      },
+      "compatibility": {
+        "receipt": "cases/source_verified_single_movement_uturn/primary-compatibility.json",
+        "sha256": "07d9b4ff82a76047987270794056c8077239b0a8c02a0aec098ff3d941343de5",
+        "log": "cases/source_verified_single_movement_uturn/primary-compat-analysis.log",
+        "negative_log": "cases/source_verified_single_movement_uturn/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_single_movement_uturn/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/source_verified_single_movement_uturn/primary-physical-preparation.json",
+        "sha256": "573dc3a8eb7cdc0911f0c690f5994c571f731f2e13375b2e9778adc72019e395"
+      },
+      "post_capture": {
+        "receipt": "cases/source_verified_single_movement_uturn/primary-saved-processing.json",
+        "sha256": "ef10114c63c7a9e65c3b2479a216083b77159d5547804ddcaaf505a4d1c42dc0",
+        "test_log": "cases/source_verified_single_movement_uturn/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+        "feedback_command": "review saved feedback for testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native ego body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native other body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego yaw each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "uturn_measurements.py",
+          "method": "join complete original body to sourced divider and opening",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original cameras with Native tick",
+          "evidence": "video_frames.jsonl and four FFV1 sources"
+        },
+        "ego_gear": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native reverse control readback",
+          "evidence": "movement_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Adjust the exact route point while retaining opening and U-turn branch."
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "a43c657550ea16336639cbb4f6dd3f5ea9532f4c7e68b8c8f418cca454e22662",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-source_verified_single_movement_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/source_verified_single_movement_uturn/primary-delivery-positive.log",
+        "test_log_sha256": "4438bebc13180b579dc61abaf4d879338031c68b4d6dfa51fc8d9021dbb13061",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-source_verified_single_movement_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native acquisition required for physical acceptance",
+        "negative_log": "cases/source_verified_single_movement_uturn/primary-delivery-negative.log",
+        "negative_log_sha256": "f4e056f9831554de20e3d24696ef3e2840f862dce7a7e998b7e2ab5d15905da7"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn",
+      "construction": "cases/source_verified_multiple_movement_uturn/construction.json",
+      "construction_sha256": "44df127515d17dc6a2c444ed1c3b8a28d930ac58a153c3acd9437f23da9bbb4f",
+      "kind": "delivery",
+      "measurement_contract": "cases/source_verified_multiple_movement_uturn/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/cases/source_verified_multiple_movement_uturn/source_verified_multiple_movement_uturn-fixture-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/source_verified_multiple_movement_uturn/fallback1-construction.json",
+          "construction_sha256": "2e6bf676ee4adcb4e6da029f2f13eaf67ac7ac915142285cb58adb0ff2cae7cf",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance and route completion",
+            "failure_condition": "barrier clearance below 0.4 m or declared movement incomplete"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m",
+            "ego_segments"
+          ],
+          "design_rationale": "Adjust the exact route point while retaining opening and U-turn branch.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-source_verified_multiple_movement_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2e6bf676ee4adcb4e6da029f2f13eaf67ac7ac915142285cb58adb0ff2cae7cf",
+            "log": "cases/source_verified_multiple_movement_uturn/fallback1-offline.log",
+            "log_sha256": "cb33d0b6dedb5091518bd5126aa6c2f9b95fd72413af36cdf778f895500a5432"
+          },
+          "compatibility": {
+            "receipt": "cases/source_verified_multiple_movement_uturn/fallback1-compatibility.json",
+            "sha256": "2aab8237676c668bec23ec005cf05296bd0d51c2d516a0fcf2e4f6936acb28e4",
+            "log": "cases/source_verified_multiple_movement_uturn/fallback1-compat-analysis.log",
+            "negative_log": "cases/source_verified_multiple_movement_uturn/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --output .runtime-work/c126120-offline-v4-source_verified_multiple_movement_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "44df127515d17dc6a2c444ed1c3b8a28d930ac58a153c3acd9437f23da9bbb4f",
+        "log": "cases/source_verified_multiple_movement_uturn/primary-offline.log",
+        "log_sha256": "781b1729122d3e35de4ec06be0d179ced65749028387b9a0b27266c422c329a9"
+      },
+      "compatibility": {
+        "receipt": "cases/source_verified_multiple_movement_uturn/primary-compatibility.json",
+        "sha256": "d7202f7f4ba5b32eb9e70a74915efbb0f2f1e9bb6732c238555bb761086a3e34",
+        "log": "cases/source_verified_multiple_movement_uturn/primary-compat-analysis.log",
+        "negative_log": "cases/source_verified_multiple_movement_uturn/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/source_verified_multiple_movement_uturn/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/source_verified_multiple_movement_uturn/primary-physical-preparation.json",
+        "sha256": "daa57c97707f0b38d22b874b1381651022608161b99e944ba5635608538a24a3"
+      },
+      "post_capture": {
+        "receipt": "cases/source_verified_multiple_movement_uturn/primary-saved-processing.json",
+        "sha256": "d4d38139c52b4c9300aa736398c2ebb61fac188fefdd393f952f9ece81335978",
+        "test_log": "cases/source_verified_multiple_movement_uturn/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn",
+        "feedback_command": "review saved feedback for testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native ego body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native other body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego yaw each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "uturn_measurements.py",
+          "method": "join complete original body to sourced divider and opening",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original cameras with Native tick",
+          "evidence": "video_frames.jsonl and four FFV1 sources"
+        },
+        "ego_gear": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native reverse control readback",
+          "evidence": "movement_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Adjust the exact route point while retaining opening and U-turn branch."
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "a43c657550ea16336639cbb4f6dd3f5ea9532f4c7e68b8c8f418cca454e22662",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-source_verified_multiple_movement_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/source_verified_multiple_movement_uturn/primary-delivery-positive.log",
+        "test_log_sha256": "d9ed34c3fe312e09f14fffbb87a0712709204a8fbc5504d652679698055df251",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-source_verified_multiple_movement_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native acquisition required for physical acceptance",
+        "negative_log": "cases/source_verified_multiple_movement_uturn/primary-delivery-negative.log",
+        "negative_log_sha256": "ca2e402580d15ec1288a0ede13c0d06c08d854b7e1af7c0f3dc1206b1824d77c"
+      }
+    },
+    {
+      "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn",
+      "construction": "cases/divider_encroachment_before_opening_uturn/construction.json",
+      "construction_sha256": "c4ddac8a6cf2ac7ab32dcedf48b3b6ab8dfda0140a6e82269fa513269b80ae1c",
+      "kind": "delivery",
+      "measurement_contract": "cases/divider_encroachment_before_opening_uturn/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/cases/divider_encroachment_before_opening_uturn/divider_encroachment_before_opening_uturn-fixture-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/divider_encroachment_before_opening_uturn/fallback1-construction.json",
+          "construction_sha256": "53f38525b6b413ba192b83d818b33d651444394851c1a5ddb4e0dddd7ef9423e",
+          "trigger": {
+            "source": "original Native body history and barrier receipt",
+            "metric": "minimum complete-body clearance and route completion",
+            "failure_condition": "barrier clearance below 0.4 m or declared movement incomplete"
+          },
+          "changed_knobs": [
+            "ego_route_xy_m",
+            "ego_segments"
+          ],
+          "design_rationale": "Adjust the exact route point while retaining opening and U-turn branch.",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-divider_encroachment_before_opening_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "53f38525b6b413ba192b83d818b33d651444394851c1a5ddb4e0dddd7ef9423e",
+            "log": "cases/divider_encroachment_before_opening_uturn/fallback1-offline.log",
+            "log_sha256": "4172d5601e4e65b813e8baf87e780d5537ed6b182989405cbff1fd39345451eb"
+          },
+          "compatibility": {
+            "receipt": "cases/divider_encroachment_before_opening_uturn/fallback1-compatibility.json",
+            "sha256": "af49f307079412fda054b002341a33608682a1f62e2069fc631187dbc06d2c61",
+            "log": "cases/divider_encroachment_before_opening_uturn/fallback1-compat-analysis.log",
+            "negative_log": "cases/divider_encroachment_before_opening_uturn/fallback1-compat-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --output .runtime-work/c126120-offline-v4-divider_encroachment_before_opening_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c4ddac8a6cf2ac7ab32dcedf48b3b6ab8dfda0140a6e82269fa513269b80ae1c",
+        "log": "cases/divider_encroachment_before_opening_uturn/primary-offline.log",
+        "log_sha256": "dbc83f8c646b9facf966ac6f14858fd4adff21da55f8e3c4b511f6773e192c38"
+      },
+      "compatibility": {
+        "receipt": "cases/divider_encroachment_before_opening_uturn/primary-compatibility.json",
+        "sha256": "5e45cea178928a9c33d90a064f3403c70052990e2c4de3484ac913328e667080",
+        "log": "cases/divider_encroachment_before_opening_uturn/primary-compat-analysis.log",
+        "negative_log": "cases/divider_encroachment_before_opening_uturn/primary-compat-negative.log"
+      },
+      "negative": {
+        "log": "cases/divider_encroachment_before_opening_uturn/primary-compat-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/divider_encroachment_before_opening_uturn/primary-physical-preparation.json",
+        "sha256": "c94d55dc0619bf7bbb832cbe3fea0d93be242781e68ede23ba0e954b8c886062"
+      },
+      "post_capture": {
+        "receipt": "cases/divider_encroachment_before_opening_uturn/primary-saved-processing.json",
+        "sha256": "f6b2aa4f18a2f675d7ab81875d6e8522c08622ed663ef387549b9c1b72652868",
+        "test_log": "cases/divider_encroachment_before_opening_uturn/primary-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn",
+        "feedback_command": "review saved feedback for testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn"
+      },
+      "acquisition": {
+        "ego_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native ego body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "other_body": {
+          "entrypoint": "native_capture.py",
+          "method": "record complete original Native other body each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "ego_heading": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native ego yaw each tick",
+          "evidence": "movement_history.jsonl"
+        },
+        "divider_overlap": {
+          "entrypoint": "uturn_measurements.py",
+          "method": "join complete original body to sourced divider and opening",
+          "evidence": "movement_history.jsonl and divider_context.json"
+        },
+        "camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "synchronize four original cameras with Native tick",
+          "evidence": "video_frames.jsonl and four FFV1 sources"
+        },
+        "ego_gear": {
+          "entrypoint": "native_capture.py",
+          "method": "record original Native reverse control readback",
+          "evidence": "movement_history.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Adjust the exact route point while retaining opening and U-turn branch."
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "a43c657550ea16336639cbb4f6dd3f5ea9532f4c7e68b8c8f418cca454e22662",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-divider_encroachment_before_opening_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/divider_encroachment_before_opening_uturn/primary-delivery-positive.log",
+        "test_log_sha256": "128aa2acb96f5c14dbe3e9529d9f50dab35d6321763de6a3634166006a3cacee",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-delivery-audit PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c126120-compat-v2-divider_encroachment_before_opening_uturn --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Native acquisition required for physical acceptance",
+        "negative_log": "cases/divider_encroachment_before_opening_uturn/primary-delivery-negative.log",
+        "negative_log_sha256": "a456fc45c08e587a6db723a03809a0bb4656dee88d71ca0614fbc71c8211bd51"
+      }
+    }
+  ]
+}

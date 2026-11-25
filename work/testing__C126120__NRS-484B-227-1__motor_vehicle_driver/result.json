@@ -1,43 +1,146 @@
 {
   "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
   "input_sha256": "7cc994a8ed4c11105f24aeb4218428a57d1ead12ae7ae9560cc88ef644c64335",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "8352d4e7c06a5232d9d188e8e131aefae42ee67e8202da69119b254fb1ffd338"
+      "sha256": "646b2847f423e4b7e55578be2af774879b40ba81569546bc17997738b8d20b90"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --output .runtime-work/c126120-offline-source_verified_single_movement_uturn --python .venv-cpu/bin/python",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c126120-semantic-v2 .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/validate_semantic_proposals.py",
+      "exit_code": 0,
+      "log": "semantic-validation.log",
+      "sha256": "f8193d12ec4d6af00c1cb4ad3f36dff19a60fd85f869c393ed30a3c8329ad0eb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --output .runtime-work/c126120-offline-v4-source_verified_single_movement_uturn",
       "exit_code": 0,
       "log": "cases/source_verified_single_movement_uturn/primary-offline.log",
-      "sha256": "0746af66c4e32a72f75069784af68c11ce51a47614b655895aaf4b63bcb0de7b"
+      "sha256": "f81d0a5546a684894f4033fd079b52a7c64d94c061b57105ea4e746348fe24cc"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --output .runtime-work/c126120-offline-source_verified_multiple_movement_uturn --python .venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --output .runtime-work/c126120-compat-v2-source_verified_single_movement_uturn --library runtime/library --validator .runtime-work/c158196-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/source_verified_single_movement_uturn/primary-compat-command.log",
+      "sha256": "07d9b4ff82a76047987270794056c8077239b0a8c02a0aec098ff3d941343de5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --attempt .runtime-work/c126120-compat-v2-source_verified_single_movement_uturn --output .runtime-work/c126120-saved-v2-source_verified_single_movement_uturn",
+      "exit_code": 0,
+      "log": "cases/source_verified_single_movement_uturn/primary-saved-command.log",
+      "sha256": "ef10114c63c7a9e65c3b2479a216083b77159d5547804ddcaaf505a4d1c42dc0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-source_verified_single_movement_uturn",
+      "exit_code": 0,
+      "log": "cases/source_verified_single_movement_uturn/fallback1-offline.log",
+      "sha256": "ed6f6027f84cfc0b84287da094622df13db8fcd1c48192788eda9c7ebf5c328a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-compat-v1-source_verified_single_movement_uturn",
+      "exit_code": 0,
+      "log": "cases/source_verified_single_movement_uturn/fallback1-compat-command.log",
+      "sha256": "8d567604918fcf670bf652d634cb983b0d69c5c761a6d6d9176cddb32fa7dd8b"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --attempt .runtime-work/c126120-compat-v2-source_verified_single_movement_uturn --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/source_verified_single_movement_uturn/primary-delivery-positive.log",
+      "sha256": "4438bebc13180b579dc61abaf4d879338031c68b4d6dfa51fc8d9021dbb13061"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --output .runtime-work/c126120-offline-v4-source_verified_multiple_movement_uturn",
       "exit_code": 0,
       "log": "cases/source_verified_multiple_movement_uturn/primary-offline.log",
-      "sha256": "c887f042d87f0205df6dd59d843b03b73cd40c383f40b3713eda45744390964c"
+      "sha256": "781b1729122d3e35de4ec06be0d179ced65749028387b9a0b27266c422c329a9"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py fixture --recipe work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/cases/source_verified_single_movement_uturn/source_verified_single_movement_uturn-fixture-recipe.json --output .runtime-work/c126120-fixture-source_verified_single_movement_uturn",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --output .runtime-work/c126120-compat-v2-source_verified_multiple_movement_uturn --library runtime/library --validator .runtime-work/c158196-current-decoder/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "cases/source_verified_single_movement_uturn/fixture-materialization.log",
-      "sha256": "ec2f3cd75b000e3927db0a9b478fdeec30546f2f6ac87f30c68c4100fcb85100"
+      "log": "cases/source_verified_multiple_movement_uturn/primary-compat-command.log",
+      "sha256": "d7202f7f4ba5b32eb9e70a74915efbb0f2f1e9bb6732c238555bb761086a3e34"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py fixture --recipe work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/cases/source_verified_multiple_movement_uturn/source_verified_multiple_movement_uturn-fixture-recipe.json --output .runtime-work/c126120-fixture-source_verified_multiple_movement_uturn",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --attempt .runtime-work/c126120-compat-v2-source_verified_multiple_movement_uturn --output .runtime-work/c126120-saved-v2-source_verified_multiple_movement_uturn",
       "exit_code": 0,
-      "log": "cases/source_verified_multiple_movement_uturn/fixture-materialization.log",
-      "sha256": "49f7bc8ef101070c09a67c3dd3164203bd20502fd724baa499805aa61185e5a5"
+      "log": "cases/source_verified_multiple_movement_uturn/primary-saved-command.log",
+      "sha256": "d4d38139c52b4c9300aa736398c2ebb61fac188fefdd393f952f9ece81335978"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-source_verified_multiple_movement_uturn",
+      "exit_code": 0,
+      "log": "cases/source_verified_multiple_movement_uturn/fallback1-offline.log",
+      "sha256": "cb33d0b6dedb5091518bd5126aa6c2f9b95fd72413af36cdf778f895500a5432"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-compat-v1-source_verified_multiple_movement_uturn",
+      "exit_code": 0,
+      "log": "cases/source_verified_multiple_movement_uturn/fallback1-compat-command.log",
+      "sha256": "ce1d35663c34f5ec271caebff3746b0bc4fbb68e77dd27020c67270de286a5db"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_multiple_movement_uturn --attempt .runtime-work/c126120-compat-v2-source_verified_multiple_movement_uturn --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/source_verified_multiple_movement_uturn/primary-delivery-positive.log",
+      "sha256": "d9ed34c3fe312e09f14fffbb87a0712709204a8fbc5504d652679698055df251"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-draft-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --output .runtime-work/c126120-offline-v4-divider_encroachment_before_opening_uturn",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/primary-offline.log",
+      "sha256": "dbc83f8c646b9facf966ac6f14858fd4adff21da55f8e3c4b511f6773e192c38"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --output .runtime-work/c126120-compat-v2-divider_encroachment_before_opening_uturn --library runtime/library --validator .runtime-work/c158196-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/primary-compat-command.log",
+      "sha256": "5e45cea178928a9c33d90a064f3403c70052990e2c4de3484ac913328e667080"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-compat-all-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --attempt .runtime-work/c126120-compat-v2-divider_encroachment_before_opening_uturn --output .runtime-work/c126120-saved-v2-divider_encroachment_before_opening_uturn",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/primary-saved-command.log",
+      "sha256": "f6b2aa4f18a2f675d7ab81875d6e8522c08622ed663ef387549b9c1b72652868"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-offline-v1-divider_encroachment_before_opening_uturn",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/fallback1-offline.log",
+      "sha256": "4172d5601e4e65b813e8baf87e780d5537ed6b182989405cbff1fd39345451eb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/review-fallback-manifest.json --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --candidate fallback1 --output .runtime-work/c126120-fallback-compat-v1-divider_encroachment_before_opening_uturn",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/fallback1-compat-command.log",
+      "sha256": "2ba25afe2beaa57847c86c55869094be56a7e4da0a5427acf27b719cb114abbe"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__divider_encroachment_before_opening_uturn --attempt .runtime-work/c126120-compat-v2-divider_encroachment_before_opening_uturn --diagnostic-fixture",
+      "exit_code": 0,
+      "log": "cases/divider_encroachment_before_opening_uturn/primary-delivery-positive.log",
+      "sha256": "128aa2acb96f5c14dbe3e9529d9f50dab35d6321763de6a3634166006a3cacee"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/comparison_audit.py --comparison single_vs_multiple_uturn",
+      "exit_code": 0,
+      "log": "single_vs_multiple_uturn-positive.log",
+      "sha256": "14d3b0c63f820faf8539f3769441c37fce4c3c4bce9d7dfc0e39682868f5504d"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver/comparison_audit.py --comparison opening_vs_divider_encroachment",
+      "exit_code": 0,
+      "log": "opening_vs_divider_encroachment-positive.log",
+      "sha256": "763690c2769d9aad0366f3c91feb0ed64a83d0384bc84fb0d54db66f60ba4858"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual divided highway, authority-established opening, U-turn path and camera visibility; original accepted-source review."
+    "Original divided-highway map, public-authority opening source, physical U-turn and multiple movement, original camera pixels and independent site review."
   ],
-  "reason": "Two exact U-turn constructions pass current-runtime offline checks and synthetic fixture materialization. Native segmented runner, four original cameras, body/gear recorder, saved finalizer and measurement contracts are authored; focused tests pass. Canonical semantic validation currently rejects the pair with Missing plain-rule attempt pair; an independently constructed prohibited-condition attempt is worker-owned next, followed by compatibility, saved processing, physical preparation, fallbacks and independent audits. Actual map, authority and motion remain unverified."
+  "reason": null,
+  "first_gpu_delivery_command": "python3.11 -m scenario_pipeline.worker_exchange execute-delivery --repo \"$PROJECT_ROOT\" --batch demo-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C126120__NRS-484B-227-1__motor_vehicle_driver --case testing__C126120__NRS-484B-227-1__motor_vehicle_driver__source_verified_single_movement_uturn --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }
