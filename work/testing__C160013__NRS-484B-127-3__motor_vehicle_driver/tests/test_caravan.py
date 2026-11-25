@@ -188,6 +188,7 @@ class CaptureTests(unittest.TestCase):
     self.bounding_box=NS(get_world_vertices=lambda tr:[NS(x=x,y=y) for x,y in
      [[self.x-1,self.y-1],[self.x+1,self.y-1],[self.x+1,self.y+1],[self.x-1,self.y+1]]])
    def get_transform(self):return NS(location=NS(x=self.x,y=self.y),rotation=NS(yaw=0))
+   def get_location(self):return NS(x=self.x,y=self.y)
    def get_velocity(self):return NS(x=0,y=0)
    def apply_control(self,value):self.controls.append(value)
   actors=[Actor(1,10,0),Actor(2,20,0),Actor(3,30,0)]
@@ -199,7 +200,8 @@ class CaptureTests(unittest.TestCase):
   def tick():
    counter[0]+=1
    for fn in listeners.values():fn(NS(frame=counter[0],raw_data=b'original pixels'))
-  world=NS(tick=tick,get_snapshot=lambda:NS(frame=counter[0],timestamp=NS(elapsed_seconds=counter[0]*.05)))
+  world=NS(tick=tick,get_snapshot=lambda:NS(frame=counter[0],timestamp=NS(elapsed_seconds=counter[0]*.05)),
+           get_map=lambda:NS(get_waypoint=lambda location,project_to_road:NS(lane_id=-2)))
   mapped=[];pipeline=[];history=[]
   packet={'road_forward_xy':[1,0],
           'roadway_polygon_xy_m':[[0,-5],[80,-5],[80,5],[0,5]],
@@ -218,6 +220,7 @@ class CaptureTests(unittest.TestCase):
    self.assertEqual(mapped,pipeline)
    self.assertEqual({len(encoder.frames) for encoder in encoders.values()},{2})
    self.assertEqual(len(json.loads(history[0])['caravan_members']),3)
+   self.assertEqual(json.loads(history[0])['participants']['entrant']['lane_id'],-2)
    self.assertTrue(all(actor.controls for actor in actors+[entrant]))
   self.assertEqual(receipt['plan']['outcome'],'stop_before')
 
@@ -352,6 +355,7 @@ class FinalizerTests(unittest.TestCase):
    (root/'config.json').write_text(json.dumps({'selected_case_id':saved.WIDE,
        'recording_description':{'channels':[{'name':'entrant_gap_occupancy'}]}})+'\n')
    (root/'site_packet.json').write_text('{}\n')
+   (root/'caravan_context.json').write_text('{}\n')
    (root/'trace.jsonl').write_text('{}\n')
    (root/'capture').mkdir();(root/'capture/evidence.jsonl').write_text('{}\n')
    for name in module.CAMERAS:(root/name).write_text('diagnostic camera placeholder\n')

@@ -9,7 +9,7 @@ from caravan_spacing import analyze
 
 CAMERAS = ('overview.mkv', 'caravan_gap.mkv', 'entrant_approach.mkv',
            'driver_reference.mkv')
-SOURCES = ('config.json', 'road_context.json', 'site_packet.json',
+SOURCES = ('config.json', 'road_context.json', 'caravan_context.json', 'site_packet.json',
            'caravan_history.jsonl', 'video_frames.jsonl', 'trace.jsonl',
            'capture/evidence.jsonl', *CAMERAS)
 

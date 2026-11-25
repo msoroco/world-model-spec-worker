@@ -159,12 +159,26 @@ def capture_frames(world, carla, caravan, entrant, sensors, encoders, mapping,
             encoders[name].write(bytes(_image(queues[name], frame).raw_data))
         pipeline_capture.capture(frame, time_s)
         mapping.append(frame, time_s)
+        members_after = [state(actor) for actor in caravan]
+        entrant_after = state(entrant)
+        selected = {member["actor_id"]: member for member in members_after}
+        rear = selected[plan["rear_actor_id"]]
+        front = selected[plan["front_actor_id"]]
+        waypoint = world.get_map().get_waypoint(entrant.get_location(), project_to_road=False)
+        if waypoint is None or type(waypoint.lane_id) is not int:
+            raise ValueError("Original Native entrant lane readback missing")
         history.write(json.dumps({"frame": frame, "time_s": time_s,
                                   "road_id": packet["road_id"],
                                   "caravan_members": [{key: member[key] for key in ("actor_id", "blueprint_id", "body_vertices_xy_m")}
-                                                      for member in [state(actor) for actor in caravan]],
-                                  "entering_vehicle": {key: value for key, value in state(entrant).items()
-                                                       if key in ("actor_id", "blueprint_id", "body_vertices_xy_m")}},
+                                                      for member in members_after],
+                                  "entering_vehicle": {key: entrant_after[key] for key in
+                                                       ("actor_id", "blueprint_id", "body_vertices_xy_m")},
+                                  "participants": {
+                                      "rear": {"actor_id": rear["actor_id"], "body_vertices_m": rear["body_vertices_xy_m"]},
+                                      "subject": {"actor_id": front["actor_id"], "body_vertices_m": front["body_vertices_xy_m"]},
+                                      "entrant": {"actor_id": entrant_after["actor_id"],
+                                                  "body_vertices_m": entrant_after["body_vertices_xy_m"],
+                                                  "lane_id": int(waypoint.lane_id)}}},
                                  separators=(",", ":")) + "\n")
         count = index + 1
     return {"frames": count, "first_frame": last_frame - count + 1,

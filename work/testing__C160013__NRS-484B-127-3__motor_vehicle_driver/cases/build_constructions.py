@@ -49,6 +49,7 @@ def build():
             'road_forward_xy': [1, 0],
             'roadway_polygon_xy_m': [[0, -5], [80, -5], [80, 5], [0, 5]],
             'selected_gap_index': 0, 'target_speed_mps': 4,
+            'target_lane_id': -1,
             'caravan_vehicles': [
                 {'blueprint_id': 'vehicle.tesla.model3',
                  'transform': {'x': 10 + i * separation, 'y': 0, 'z': .5, 'yaw_deg': 0}}
@@ -84,6 +85,17 @@ def build():
                   'rate_hz': 20, 'duration_s': 45,
                   'target_speed_cap_mps': 4,
                   'recording_description': description,
+                  'physical_completion': ({'criterion': 'caravan_entry',
+                                           'motion_source': 'caravan_history.jsonl',
+                                           'body_key': 'participants.subject.body_vertices_m',
+                                           'context_sources': ['caravan_context.json'],
+                                           'destination_lane': -1,
+                                           'minimum_progress_m': .25} if outcome == 'occupy' else
+                                          {'criterion': 'travel_progress',
+                                           'motion_source': 'caravan_history.jsonl',
+                                           'body_key': 'participants.entrant.body_vertices_m',
+                                           'context_sources': ['caravan_context.json'],
+                                           'minimum_progress_m': 2}),
                   'cameras': [{'name': name, 'width': width, 'height': height, 'fov_deg': 90}
                               for name, (width, height) in {
                                   'overview': (1920, 1080), 'caravan_gap': (1280, 720),

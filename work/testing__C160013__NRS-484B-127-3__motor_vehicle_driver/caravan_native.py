@@ -87,6 +87,9 @@ def capture(args):
         raise ValueError("Finite bounded Native target speed cap required")
     packet["target_speed_mps"] = min(packet["target_speed_mps"], float(cap))
     packet["required_atoms"] = config["required_atoms"]
+    if args.case_id == next(case for case, outcome in CASES.items() if outcome == "occupy"):
+        if packet.get("target_lane_id") != config.get("physical_completion", {}).get("destination_lane"):
+            raise ValueError("Reviewed entrant destination lane differs from exact physical plan")
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -132,6 +135,13 @@ def capture(args):
                             "route_source", "lane_source")}
                 context["control_target_speed_mps"] = packet["target_speed_mps"]
                 (output / "road_context.json").write_text(json.dumps(context, indent=2) + "\n", encoding="utf-8")
+                (output / "caravan_context.json").write_text(json.dumps({
+                    "native_map_id": packet["native_map_id"], "road_id": packet["road_id"],
+                    "highway_id": packet["highway_id"],
+                    "selected_gap_index": packet["selected_gap_index"],
+                    "lane_source": packet["lane_source"],
+                    "physical_completion_note": "Engineering maneuver event, not a legal danger threshold"
+                }, indent=2) + "\n", encoding="utf-8")
                 with source_cameras(world, entrant, poses) as sensors, ExitStack() as stack:
                     for name, (width, height) in PROFILE.items():
                         encoders[name] = stack.enter_context(FFV1Writer(output / (name + ".mkv"), width, height))
