@@ -32,7 +32,16 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
                           assignment_id=assignment_id, expected_frames=expected_frames)
     original_body = _lines(attempt / 'frames.jsonl')
     original_rays = _lines(attempt / 'crest-rays.jsonl')
-    trace = _lines(attempt / 'trace.jsonl')
+    trace_path = attempt / 'crest-derived-trace.jsonl'
+    trace = _lines(trace_path if trace_path.is_file() else attempt / 'trace.jsonl')
+    if trace_path.is_file():
+        core_trace = _lines(attempt / 'trace.jsonl')
+        if len(core_trace) != len(trace) or any(
+                core.get('frame') != derived['frame'] or
+                abs(core.get('time_s', -1) - derived['time_s']) > 1e-4 or
+                (('opposing_body_distance_m' in core) and core != derived)
+                for core, derived in zip(core_trace, trace)):
+            raise ValueError('derived trace differs from original Core trace')
     frame_map = _lines(attempt / 'video_frames.jsonl')
     if len(trace) != expected_frames or len(frame_map) != expected_frames:
         raise ValueError('derived frame count differs from sealed originals')

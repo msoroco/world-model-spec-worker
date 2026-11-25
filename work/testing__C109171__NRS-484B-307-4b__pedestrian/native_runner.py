@@ -27,7 +27,11 @@ def run_capture(world, *, attempt, site_ref, case_id, map_reader,
         raise SourceError('surveyed site source hash differs')
     site = json.loads(path.read_text(encoding='utf-8'))
     verify_site(site, attempt)
-    map_path = attempt / site['map_source_path']
+    road_source = site.get('road_xodr_source_path')
+    if not isinstance(road_source, str) or road_source == 'road.xodr' or road_source not in {
+            ref['path'] for ref in site['original_sources']}:
+        raise SourceError('reviewed original OpenDRIVE map source missing')
+    map_path = attempt / road_source
     loaded_map = map_reader(world)
     if type(loaded_map) is not bytes or hashlib.sha256(loaded_map).hexdigest() != hashlib.sha256(map_path.read_bytes()).hexdigest():
         raise SourceError('loaded Native map differs from surveyed original')
@@ -36,7 +40,8 @@ def run_capture(world, *, attempt, site_ref, case_id, map_reader,
     settings.synchronous_mode = True
     settings.fixed_delta_seconds = 1 / FPS
     adapter = CarlaAdapter(world, walker, sensors, original_state_reader,
-                           walker_control_factory, vector_factory)
+                           walker_control_factory, vector_factory,
+                           strict_actor_geometry=True)
     try:
         world.apply_settings(settings)
         readback = world.get_settings()

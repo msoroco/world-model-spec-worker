@@ -40,7 +40,7 @@ def follow_approach(start_waypoint, *, interval_m=10, count=11):
 
 
 def bind_two_way_crest(world, anchor_location, *, observer_index=1, target_index=9,
-                       interval_m=10, count=11):
+                       interval_m=10, count=11, require_blocked=True):
     """Return source-shaped grade samples or reject an unsuitable Native road.
 
     This does not claim actual driver visibility; final capture must raycast to
@@ -76,8 +76,10 @@ def bind_two_way_crest(world, anchor_location, *, observer_index=1, target_index
     validate_lanes(ego, other)
     measured = crest_occlusion(ego, other, observer_s_m=observer_index * interval_m,
                                target_s_m=target_index * interval_m)
-    if not measured['sampled_grade_blocks_proxy_ray']:
+    if require_blocked and not measured['sampled_grade_blocks_proxy_ray']:
         raise ValueError('original map grade does not obstruct declared crest proxy ray')
+    if not require_blocked and measured['sampled_grade_blocks_proxy_ray']:
+        raise ValueError('original map grade is not clear for declared crest proxy ray')
     return {'map_source': source, 'ego_lane': ego, 'opposing_lane': other,
             'grade_proxy': measured, 'capture_requirements': [
                 'actual opposing vehicle body corner rays', 'left-side ego body history',

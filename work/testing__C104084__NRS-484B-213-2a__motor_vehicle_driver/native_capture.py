@@ -104,8 +104,15 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900,
         names = ('frames.jsonl', 'crest-rays.jsonl', 'lane-context.json',
                  'frame-map.json', *(f'{name}.mkv' for name in CAMERAS),
                  *([ONE_WAY_AUTHORITY] if case_id.endswith('left_one_way_obstructed') else []),
+                 *(f'reviewed-{name}.json' for name in
+                   ('highway', 'center_reference',
+                    'one_way_authority' if case_id.endswith('left_one_way_obstructed')
+                    else 'opposing_lane') if
+                   (output / f'reviewed-{name}.json').is_file()),
                  *(['original-png-manifest.json'] if
-                   (output / 'original-png-manifest.json').is_file() else []))
+                   (output / 'original-png-manifest.json').is_file() else []),
+                 *(['road-profile.json'] if
+                   (output / 'road-profile.json').is_file() else []))
         hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
                   for name in names}
         _write_json(output / 'source-hashes.json', hashes)

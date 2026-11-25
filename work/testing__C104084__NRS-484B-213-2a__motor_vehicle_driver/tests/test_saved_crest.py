@@ -45,6 +45,24 @@ def fixture(directory):
 
 
 class SavedCrestTests(unittest.TestCase):
+    def test_original_sampled_grade_profile_joins_exact_case(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            hashes = fixture(attempt)
+            profile = {'case_id': CASE, 'map_opendrive_sha256': 'a' * 64,
+                       'grade_proxy': {'sampled_grade_blocks_proxy_ray': True}}
+            path = attempt / 'road-profile.json'
+            path.write_text(json.dumps(profile) + '\n')
+            hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            saved.measure(attempt, hashes, case_id=CASE, assignment_id=ASSIGNMENT,
+                          expected_frames=3)
+            profile['grade_proxy']['sampled_grade_blocks_proxy_ray'] = False
+            path.write_text(json.dumps(profile) + '\n')
+            hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'road profile differs'):
+                saved.measure(attempt, hashes, case_id=CASE,
+                              assignment_id=ASSIGNMENT, expected_frames=3)
+
     def test_default_requires_full_duration_and_all_camera_frames(self):
         with tempfile.TemporaryDirectory() as temp:
             attempt = Path(temp)

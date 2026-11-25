@@ -52,6 +52,13 @@ class NativeMapTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'not opposite'):
             native.bind_two_way_crest(world(opposite=False), object())
 
+    def test_clear_comparison_requires_measured_flat_proxy(self):
+        clear = native.bind_two_way_crest(world(crest=False), object(),
+                                         require_blocked=False)
+        self.assertFalse(clear['grade_proxy']['sampled_grade_blocks_proxy_ray'])
+        with self.assertRaisesRegex(ValueError, 'not clear'):
+            native.bind_two_way_crest(world(), object(), require_blocked=False)
+
     def test_rejects_truncated_approach(self):
         bad = world()
         route = bad.get_map().get_waypoint(None).route

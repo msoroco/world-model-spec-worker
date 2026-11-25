@@ -19,7 +19,8 @@ from pedestrian_control import RouteFollower
 
 class CarlaAdapter:
     def __init__(self, world, walker, sensors, original_state_reader,
-                 walker_control_factory, vector_factory, timeout_seconds=5.0):
+                 walker_control_factory, vector_factory, timeout_seconds=5.0,
+                 strict_actor_geometry=False):
         if set(sensors) != set(CAMERAS):
             raise SourceError('four camera sensors required')
         self.world = world
@@ -29,6 +30,7 @@ class CarlaAdapter:
         self.walker_control_factory = walker_control_factory
         self.vector_factory = vector_factory
         self.timeout_seconds = timeout_seconds
+        self.strict_actor_geometry = strict_actor_geometry
         self.queues = {name: Queue() for name in CAMERAS}
         self.listening = []
         self.follower = None
@@ -96,6 +98,24 @@ class CarlaAdapter:
                 not math.isfinite(reported_time) or
                 abs(reported_time - native_time) > 1e-4):
             raise SourceError('original event/snapshot time mismatch')
+        if self.strict_actor_geometry:
+            if 'native_walker_actor' in event:
+                raise SourceError('operator cannot overwrite sampled Native walker geometry')
+            transform = self.walker.get_transform()
+            vertices = self.walker.bounding_box.get_world_vertices(transform)
+            velocity = self.walker.get_velocity()
+            body = [[float(point.x), float(point.y), float(point.z)] for point in vertices]
+            speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
+            if (len(body) < 4 or
+                    any(not all(math.isfinite(value) for value in point) for point in body) or
+                    not math.isfinite(speed) or not str(self.walker.type_id).startswith('walker.')):
+                raise SourceError('original Native walker geometry or blueprint missing')
+            event['native_walker_actor'] = {
+                'actor_id': int(self.walker.id), 'blueprint': self.walker.type_id,
+                'blueprint_attributes': dict(self.walker.attributes),
+                'body_vertices_m': body, 'heading_deg': float(transform.rotation.yaw),
+                'velocity_mps': [float(velocity.x), float(velocity.y), float(velocity.z)],
+                'speed_mps': speed}
         cameras = {}
         for name in CAMERAS:
             try:

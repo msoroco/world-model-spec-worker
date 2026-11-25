@@ -11,6 +11,7 @@ SOURCE_FILES = (
     "pass_right_route.py", "pass_right_live.py", "pass_right_capture.py",
     "pass_right_measure.py", "pass_right_audit.py", "pass_right_media.py",
     "pass_right_sensor.py", "pass_right_actor.py", "pass_right_session.py",
+    "pass_right_control.py", "native_runner.py",
 )
 
 RUNNER = '''"""Exact paragraph-(a) right-pass bundle preflight."""

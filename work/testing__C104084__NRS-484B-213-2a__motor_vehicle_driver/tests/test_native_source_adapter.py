@@ -114,6 +114,9 @@ class SourceAdapterTests(unittest.TestCase):
         self.assertEqual(result["frame_count"], 3)
         self.assertTrue(delegate.closed)
         self.assertIn("frames.jsonl", result["source_sha256"])
+        self.assertIn("reviewed-highway.json", result["source_sha256"])
+        self.assertEqual((self.output / "reviewed-highway.json").read_bytes(),
+                         (self.root / "highway.json").read_bytes())
 
     def test_one_way_authority_retained(self):
         adapter, _, _, case_id = self.fixture("left_one_way_obstructed")

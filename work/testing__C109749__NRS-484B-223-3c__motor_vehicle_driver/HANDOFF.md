@@ -97,3 +97,35 @@ Pinned preflight and scoped complete static check pass. Exact scoped strict exit
 Next CPU work is selected measurement contracts, source-hashed diagnostic recipes, actual analysis-to-Native/Core/Lean/video positive and missing-source negative compatibility for both candidates, saved-only processing, physical-preparation and delivery/comparison receipts, then exact strict assignment gate. The current result remains partial; no original Native execution or physical/legal finding is claimed.
 
 `analysis.py` now recomputes the observed turn/merge event and censored center-lane body path from hash-bound original Native trace and site/capture receipts. Four selected requirement contracts cover exact lane design, event sequence and 50-foot travel with a case-specific missing-site-source negative. Pinned `measurement_contract.validate` passes each contract. This analysis stage reports observed values only; complete Native result publication and selected compatibility are still CPU work. The existing 55-test source-gated construction suite passes (`cpu-current-construction-tests.log`). Adding analysis to all eight bundles required rebuilding their construction hashes; all eight offline checks pass again in the v3 outputs and their logs/receipts are rebound.
+
+## 2026-11-24 current-runtime selected CPU proofs
+
+The four exact cases remain `__below_50ft`, `__at_50ft`, `__above_50ft` and censored `__no_merge`. The 49/50/51-foot commands are boundary probes; original travel after left-turn completion must be measured from an independently reviewed public-highway site with one exclusive bidirectional center turn lane. No reviewed original site or accepted CARLA recording exists yet. Numeric legal interpretation and vehicle reference convention remain unresolved.
+
+The selected four-view 20 Hz, 45-second camera plan was bound into `case-plan.json` and all eight current-runtime primary/fallback constructions were rebuilt. Each pinned offline check and each pinned positive/negative compatibility run passed against those constructions. The fallback changes only the reviewed entry/spawn route if the primary cannot safely stage both actors or reach the merge station. `runner.py`, `config.json` and `construction.json` provide a root exact-case dispatcher and capture configuration. The 59-test assignment suite passes in `cpu-suite-v6.log`. Synthetic receipts establish software joins and Core/Lean/video compatibility, not original pixels or physical behavior.
+
+`analysis.py` recomputes the source-hashed original turn completion, center-lane body path and first through-lane merge or censoring; its diagnostic branch is allowed only with explicit synthetic fixture provenance. `saved_finalizer.py` retains a production path that rehashes and fully decodes all original four-view PNGs. `prove_delivery_audit.py` passed four diagnostic 900-frame source-join positives and four production missing-pixel negatives. `run_comparison_audit.py` passed both declared source-bound comparisons on four distinct diagnostic attempts. Its independent production-shaped CPU fixture decoded all 14,400 source PNG paths and rejected a modified original PNG by hash. These remain synthetic tests and make no physical or legal acceptance claim.
+
+Current selected-manifest, recorded-only processing and exact scoped strict gate are in progress. The package remains partial until every current receipt is bound, those validators and saved-only proofs pass, and `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete --require-delivery-ready` exits zero. Scratch media and temporary attempts reside only under `.runtime-work/`.
+
+### Local Native source audit commands
+
+For each real completed Native case, set `CASE_ID` to its exact `testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__...` identity, `ORIGINAL_ATTEMPT` to its independent closed original-attempt directory and `SOURCE_AUDIT_OUTPUT` to a new local JSON path. After Native exit and owner release, the production additional-source audit is:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/run_production_source_audit.py --case "$CASE_ID" --attempt "$ORIGINAL_ATTEMPT" --output "$SOURCE_AUDIT_OUTPUT"
+```
+
+It rehashes the reviewed map/site, original trace and frame map, joins all 900 original frames, decodes all 3,600 original full-resolution PNGs, and reports measured distance or censoring without legal judgment. A synthetic full-resolution 900-frame `__at_50ft` positive passed; a tampered `__below_50ft` original image failed on source hash. Their normalized logs are `cpu-production-audit-positive.log` and `cpu-production-audit-negative.log`.
+
+For each declared comparison ID, set four independent `BELOW_ORIGINAL_ATTEMPT`, `AT_ORIGINAL_ATTEMPT`, `ABOVE_ORIGINAL_ATTEMPT`, `NO_MERGE_ORIGINAL_ATTEMPT` directories and a new `COMPARISON_AUDIT_OUTPUT` JSON path. Run once with `COMPARISON_ID=post_turn_center_lane_distance` and once with `COMPARISON_ID=merge_observation`:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109749__NRS-484B-223-3c__motor_vehicle_driver/run_comparison_audit.py --comparison "$COMPARISON_ID" --attempt "below_50ft=$BELOW_ORIGINAL_ATTEMPT" --attempt "at_50ft=$AT_ORIGINAL_ATTEMPT" --attempt "above_50ft=$ABOVE_ORIGINAL_ATTEMPT" --attempt "no_merge=$NO_MERGE_ORIGINAL_ATTEMPT" --output "$COMPARISON_AUDIT_OUTPUT"
+```
+
+The production comparison mode calls the full original-PNG saved finalizer on all four attempts and independently checks fixed site, entry route, receiving traffic and camera plan against each declared difference. The diagnostic CPU comparison positives in `cpu-comparison-*.log` use explicit synthetic provenance and do not qualify a real capture. The independent production-shaped synthetic audit decoded all 14,400 PNG paths and rejected a tampered original image (`cpu-comparison-production-shape.log`, `cpu-comparison-production-negative.log`).
+
+## 2026-11-24 scoped strict delivery readiness
+
+The final selected `execution-manifest.json` SHA-256 is `eb35d02bb67d7d3c20fa9ab498b2e99d030b427f1993567f43c36dc5f774f92c`. The selected manifest, semantic proposals, four exact delivery/physical receipts and all eight current-runtime compatibility receipts passed direct validation. Four primary recorded-only `runtime.py process-saved` runs passed with a 900-frame final video decode, source checks and no Native replay. The 59-test assignment suite passed. The exact command `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-223-3c__motor_vehicle_driver --complete --require-delivery-ready` exited zero; its normalized output is `cpu-strict-ready.log`. `result.json` is ready with `delivery_prepared` readiness. This is CPU preparation only; no actual highway/center-lane designation, CARLA behavior, original camera coverage or legal outcome has been accepted.

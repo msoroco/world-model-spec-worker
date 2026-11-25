@@ -11,7 +11,8 @@ from saved_measurement import ASSIGNMENT, EXPECTED
 HERE = Path(__file__).resolve().parent
 SOURCES = ('native_scene.py', 'pedestrian_control.py', 'carla_adapter.py',
            'native_capture.py', 'native_runner.py', 'saved_measurement.py', 'saved_process.py',
-           'comparison_audit.py', 'delivery_media.py', 'analysis.py')
+           'comparison_audit.py', 'delivery_media.py', 'analysis.py',
+           'native_output_bridge.py')
 
 RECORDING_DESCRIPTION = {
     'channels': [
@@ -32,9 +33,12 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 from native_capture import CAMERAS, DEFAULT_FRAMES, FPS
+from native_output_bridge import publish
 from native_runner import run_capture
+from analysis import analyze
 from saved_measurement import ASSIGNMENT, EXPECTED
 
 
@@ -66,36 +70,49 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
-    parser.add_argument("--site-ref")
-    parser.add_argument("--operator-path")
-    parser.add_argument("--operator-sha256")
+    parser.add_argument("--host")
+    parser.add_argument("--port", type=int)
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic C109171 case passed: " + case_id)
         return
-    if not all((args.output_dir, args.site_ref, args.operator_path, args.operator_sha256)):
+    operator_path = os.environ.get("SCENARIO_PEDESTRIAN_OPERATOR_MODULE")
+    operator_sha = os.environ.get("SCENARIO_PEDESTRIAN_OPERATOR_SHA256")
+    if not all((args.output_dir, args.host, args.port, operator_path, operator_sha)):
         raise ValueError("Reviewed original C109171 map, signal, device and camera sources required")
     attempt = Path(args.output_dir).resolve()
-    site_ref = json.loads(Path(args.site_ref).read_text(encoding="utf-8"))
-    operator = (attempt / args.operator_path).resolve()
-    if not operator.is_relative_to(attempt) or not operator.is_file():
+    operator = Path(operator_path).resolve()
+    if not operator.is_file():
         raise ValueError("Source-bound Native operator missing")
-    if hashlib.sha256(operator.read_bytes()).hexdigest() != args.operator_sha256:
+    if hashlib.sha256(operator.read_bytes()).hexdigest() != operator_sha:
         raise ValueError("Source-bound Native operator changed")
     spec = importlib.util.spec_from_file_location("c109171_original_operator", operator)
     if spec is None or spec.loader is None:
         raise ValueError("Source-bound Native operator cannot load")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    bindings = module.bind(case_id=case_id, attempt=attempt, site_ref=site_ref)
-    result = run_capture(bindings.pop("world"), attempt=attempt, site_ref=site_ref,
+    import carla
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30.0)
+    world = client.get_world()
+    site_ref = module.stage_original_sources(case_id=case_id, attempt=attempt)
+    if not isinstance(site_ref, dict) or not site_ref.get("path") or not site_ref.get("sha256"):
+        raise ValueError("Operator did not stage a source-hashed original site")
+    bindings = module.bind(world=world, case_id=case_id, attempt=attempt, site_ref=site_ref)
+    if not isinstance(bindings, dict):
+        raise ValueError("Original Native operator bindings missing")
+    result = run_capture(world, attempt=attempt, site_ref=site_ref,
                          case_id=case_id, **bindings)
     (attempt / "pedestrian-source.json").write_text(json.dumps({
         "case_id": case_id, "site_ref": site_ref,
         "events_ref": result["events_ref"], "frame_map_ref": result["frame_map_ref"],
         "diagnostic_fixture": False}, indent=2) + "\\n")
     (attempt / "capture-result.json").write_text(json.dumps(result, indent=2) + "\\n")
+    map_bytes = bindings["map_reader"](world)
+    seal = publish(attempt, map_bytes=map_bytes, restoration_verified=True)
+    analyze(attempt, attempt / "analysis-report.json")
+    print("sealed original C109171 capture: " + str(seal))
 
 
 if __name__ == "__main__":

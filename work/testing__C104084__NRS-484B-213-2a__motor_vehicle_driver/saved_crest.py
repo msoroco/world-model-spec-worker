@@ -17,12 +17,17 @@ REQUIRED_SOURCES = ('frames.jsonl', 'lane-context.json', 'crest-rays.jsonl',
                     'reference_corner.mkv', 'driver_reference.mkv')
 ONE_WAY_AUTHORITY = 'one-way-authority.json'
 PNG_MANIFEST = 'original-png-manifest.json'
+ROAD_PROFILE = 'road-profile.json'
+REVIEWED_COMMON = ('reviewed-highway.json', 'reviewed-center_reference.json')
+REVIEWED_OPPOSING = 'reviewed-opposing_lane.json'
+REVIEWED_ONE_WAY = 'reviewed-one_way_authority.json'
 CASE_SUFFIXES = ('right_crest_obstructed', 'left_crest_obstructed',
                  'left_crest_clear', 'left_one_way_obstructed')
 
 
 def _original(attempt: Path, name: str, hashes: dict) -> Path:
-    if name not in (*REQUIRED_SOURCES, ONE_WAY_AUTHORITY, PNG_MANIFEST) or name not in hashes:
+    if name not in (*REQUIRED_SOURCES, ONE_WAY_AUTHORITY, PNG_MANIFEST, ROAD_PROFILE,
+                    *REVIEWED_COMMON, REVIEWED_OPPOSING, REVIEWED_ONE_WAY) or name not in hashes:
         raise ValueError(f'missing required original source: {name}')
     expected = hashes[name]
     if not isinstance(expected, str) or len(expected) != 64 or any(c not in '0123456789abcdef' for c in expected):
@@ -42,6 +47,16 @@ def source_inventory(hashes, case_id, expected_frames):
         required.add(ONE_WAY_AUTHORITY)
     if expected_frames == 900:
         required.add(PNG_MANIFEST)
+        required.add(ROAD_PROFILE)
+        required.update(REVIEWED_COMMON)
+        required.add(REVIEWED_ONE_WAY if case_id.endswith('__left_one_way_obstructed')
+                     else REVIEWED_OPPOSING)
+    elif any(name.startswith('reviewed-') for name in hashes):
+        required.update(REVIEWED_COMMON)
+        required.add(REVIEWED_ONE_WAY if case_id.endswith('__left_one_way_obstructed')
+                     else REVIEWED_OPPOSING)
+    if expected_frames != 900 and ROAD_PROFILE in hashes:
+        required.add(ROAD_PROFILE)
     if not isinstance(hashes, dict) or set(hashes) != required:
         raise ValueError('original source manifest has wrong exact sources')
 
@@ -64,6 +79,26 @@ def audit_original_pngs(attempt, hashes, case_id, frames):
                     path.resolve().parent != (attempt / 'original-png' / camera).resolve() or
                     hashlib.sha256(path.read_bytes()).hexdigest() != rows[str(frame)]):
                 raise ValueError('original PNG source differs')
+
+
+def audit_reviewed_sources(attempt, hashes, case_id, context):
+    if not any(name.startswith('reviewed-') for name in hashes):
+        return
+    kinds = ('highway', 'center_reference',
+             'one_way_authority' if case_id.endswith('__left_one_way_obstructed')
+             else 'opposing_lane')
+    refs = {'highway': context.get('highway_source_ref'),
+            'center_reference': context.get('center_reference_source_ref'),
+            'opposing_lane': context.get('opposing_lane_source_ref'),
+            'one_way_authority': context.get('one_way_authority', {}).get('sha256')}
+    for kind in kinds:
+        name = 'reviewed-' + kind + '.json'
+        path = _original(attempt, name, hashes)
+        if hashlib.sha256(path.read_bytes()).hexdigest() != refs[kind]:
+            raise ValueError('reviewed source and Native context differ: ' + kind)
+        document = json.loads(path.read_text())
+        if document.get('case_id') != case_id or document.get('source_kind') != kind:
+            raise ValueError('reviewed source identity differs: ' + kind)
 
 
 def _rows(path: Path) -> list[dict]:
@@ -112,6 +147,14 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
     if type(expected_frames) is not int or expected_frames <= 0 or len(frame_ids) != expected_frames:
         raise ValueError('original frame history violates required duration')
     source_inventory(source_hashes, case_id, expected_frames)
+    audit_reviewed_sources(attempt, source_hashes, case_id, context)
+    if ROAD_PROFILE in source_hashes:
+        profile = json.loads(_original(attempt, ROAD_PROFILE, source_hashes).read_text())
+        blocked = not case_id.endswith('__left_crest_clear')
+        if (profile.get('case_id') != case_id or
+                profile.get('grade_proxy', {}).get('sampled_grade_blocks_proxy_ray') is not blocked or
+                not profile.get('map_opendrive_sha256')):
+            raise ValueError('original sampled road profile differs from exact crest case')
     audit_original_pngs(attempt, source_hashes, case_id, frame_ids)
     camera_frames = frame_map.get('camera_frames')
     if not isinstance(camera_frames, dict) or set(camera_frames) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
@@ -159,7 +202,9 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
         'source_sha256': {name: source_hashes[name] for name in
                           (*REQUIRED_SOURCES,
                            *([ONE_WAY_AUTHORITY] if lane_allocation == 'one_way' else []),
-                           *([PNG_MANIFEST] if PNG_MANIFEST in source_hashes else []))},
+                           *([PNG_MANIFEST] if PNG_MANIFEST in source_hashes else []),
+                           *([ROAD_PROFILE] if ROAD_PROFILE in source_hashes else []),
+                           *(name for name in source_hashes if name.startswith('reviewed-')))},
         'frame_count': len(frames),
         'first_frame': frame_ids[0],
         'last_frame': frame_ids[-1],

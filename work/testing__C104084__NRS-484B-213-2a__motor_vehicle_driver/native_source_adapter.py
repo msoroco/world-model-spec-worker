@@ -84,6 +84,11 @@ class ReviewedAdapter:
         elif (context.get("lane_allocation") != "two_way"
               or context.get("opposing_lane_source_ref") != retained["opposing_lane"][1]):
             raise ValueError("Native opposing-lane context differs from review")
+        for kind in required:
+            target = self.output / ("reviewed-" + kind + ".json")
+            if target.exists() or target.is_symlink():
+                raise ValueError("Original reviewed source output already exists")
+            target.write_bytes(retained[kind][0])
         return context
 
     def tick(self):

@@ -83,6 +83,9 @@ class CarlaDelegate:
                     'reviewed original route required: ' + name)
             for values in route:
                 point(self.carla, values)
+            speed = actor.get('target_speed_mps')
+            require(type(speed) in (int, float) and math.isfinite(speed) and
+                    0 < speed <= 15, 'reviewed target speed required: ' + name)
         cameras = setup.get('cameras')
         require(isinstance(cameras, dict) and set(cameras) == set(CAMERAS),
                 'four reviewed original cameras required')
@@ -99,6 +102,7 @@ class CarlaDelegate:
                 isinstance(line.get('point'), list) and isinstance(line.get('overview'), list),
                 'reviewed center reference required')
         point(self.carla, line['point'])
+        point(self.carla, setup.get('crest_anchor'))
         require(len(line['overview']) == 2 and all(type(v) in (int, float) and math.isfinite(v) for v in line['overview']) and
                 math.hypot(*line['overview']) > .5, 'reviewed center direction invalid')
         return setup
@@ -115,6 +119,18 @@ class CarlaDelegate:
             require(self.world.get_map().to_opendrive() and
                     __import__('hashlib').sha256(self.world.get_map().to_opendrive().encode()).hexdigest() ==
                     self.packet['map_opendrive_sha256'], 'live Native road differs from reviewed source')
+            from native_map import bind_one_way_crest, bind_two_way_crest
+            anchor = point(self.carla, setup['crest_anchor'])
+            if case_id.endswith('__left_one_way_obstructed'):
+                profile = bind_one_way_crest(self.world, anchor)
+            else:
+                profile = bind_two_way_crest(self.world, anchor,
+                    require_blocked=not case_id.endswith('__left_crest_clear'))
+            profile['map_opendrive_sha256'] = self.packet['map_opendrive_sha256']
+            profile['case_id'] = case_id
+            import json
+            (self.output / 'road-profile.json').write_text(
+                json.dumps(profile, sort_keys=True) + '\n', encoding='utf-8')
             self.saved_settings = self.world.get_settings()
             self.saved_weather = self.world.get_weather()
             settings = self.world.get_settings()
@@ -271,6 +287,14 @@ class CarlaDelegate:
         eye = self.carla.Location(x=ego.x, y=ego.y, z=ego.z+1.4)
         box = self.other.bounding_box
         transform = self.other.get_transform()
+        other_vertices = []
+        for x in (-box.extent.x, box.extent.x):
+            for y in (-box.extent.y, box.extent.y):
+                for z in (-box.extent.z, box.extent.z):
+                    p = transform.transform(self.carla.Location(
+                        x=x+box.location.x, y=y+box.location.y,
+                        z=z+box.location.z))
+                    other_vertices.append([p.x, p.y, p.z])
         for x in (-box.extent.x, box.extent.x):
             for y in (-box.extent.y, box.extent.y):
                 target = transform.transform(self.carla.Location(x=x+box.location.x,
@@ -283,6 +307,8 @@ class CarlaDelegate:
         body = {'frame': frame, 'timestamp_s': timestamp,
                 'ego_body_corners_signed_m': corners,
                 'opposing_body_distance_m': distance,
+                'opposing_body_vertices_m': other_vertices,
+                'opposing_route_index': self._route_indices['other'],
                 'ego_source_ref': f'Native actor {self.ego.id}',
                 'opposing_source_ref': f'Native actor {self.other.id}'}
         ray = {'frame': frame, 'body_corner_ray_hits': hits,

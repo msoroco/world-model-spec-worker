@@ -41,9 +41,11 @@ class DelegateTests(unittest.TestCase):
                                    'source_citation': 'source',
                                    'map_opendrive_sha256': 'a' * 64,
                                    'ego': {'blueprint': 'vehicle.car', 'pose': [0]*6,
-                                           'route': [[0, 0, 0], [10, 0, 0]]},
+                                           'route': [[0, 0, 0], [10, 0, 0]],
+                                           'target_speed_mps': 5},
                                    'other': {'blueprint': 'vehicle.car', 'pose': [0]*6,
-                                             'route': [[0, 0, 0], [10, 0, 0]]},
+                                             'route': [[0, 0, 0], [10, 0, 0]],
+                                             'target_speed_mps': 5},
                                    'cameras': {}}}
         delegate = CarlaDelegate(None, packet, 'case', Path('unused'),
                                  carla_module=CarlaShapes)

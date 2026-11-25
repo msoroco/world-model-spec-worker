@@ -31,12 +31,15 @@ class RunnerTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory(dir=Path.cwd() / '.runtime-work')
         self.root = Path(self.tmp.name)
         (self.root / 'map.json').write_bytes(b'{"surveyed": true}')
-        (self.root / 'site.json').write_text(json.dumps({'map_source_path': 'map.json'}))
+        (self.root / 'survey-road.xodr').write_bytes(b'<OpenDRIVE/>')
+        (self.root / 'site.json').write_text(json.dumps({
+            'map_source_path': 'map.json', 'road_xodr_source_path': 'survey-road.xodr',
+            'original_sources': [{'path': 'survey-road.xodr'}]}))
         self.ref = {'path': 'site.json',
                     'sha256': hashlib.sha256((self.root / 'site.json').read_bytes()).hexdigest()}
         self.world = World()
         self.kwargs = dict(attempt=self.root, site_ref=self.ref, case_id='case',
-                           map_reader=lambda world: (self.root / 'map.json').read_bytes(),
+                           map_reader=lambda world: (self.root / 'survey-road.xodr').read_bytes(),
                            walker=object(), sensors={}, original_state_reader=object(),
                            walker_control_factory=object(), vector_factory=object(),
                            expected_frames=3)
