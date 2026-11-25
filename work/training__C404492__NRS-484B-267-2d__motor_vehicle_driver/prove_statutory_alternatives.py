@@ -80,11 +80,22 @@ def main():
         reject(signal,'emergency_moving')
         rewrite(signal/'vehicle_poses.jsonl',lambda row:row['emergency'].update(driver_hand_signal_visible=False))
         reject(signal,'emergency_preparing_hand_signal')
+        directed=base/'officer_directed';fixture(directed,True)
+        context(directed,officer_directed_otherwise=True,
+                officer_direction_review_source='synthetic-fixture:officer-instruction-recipient-time')
+        directed_result=measure(directed,branch='emergency_moving')
+        assert directed_result['legal_result'] is None
+        assert directed_result['officer_directed_otherwise'] is True
+        assert sum(r['longitudinal_overlap_length_m']>0
+                   for r in directed_result['per_frame_geometry'])==299
+        context(directed,officer_direction_review_source=None)
+        reject(directed,'emergency_moving')
         print(json.dumps({'regulatory_moving_source_shape_passed':True,
                           'regulatory_follow_overlap_frames':0,
                           'regulatory_abreast_overlap_frames':299,
                           'visible_movement_frames':40,'driver_hand_signal_frames':40,
-                          'negative_source_checks':6,'original_native_executed':False,
+                          'officer_directed_source_shape_passed':True,
+                          'negative_source_checks':7,'original_native_executed':False,
                           'legal_result':None},sort_keys=True))
 
 

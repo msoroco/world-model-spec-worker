@@ -12,7 +12,7 @@ import traceback
 
 from native_request import (FRAMES, RATE_HZ, START, FINISH, camera_plan,
                             apply_walker_control, apply_device_and_readback,
-                            verify_authority_sources)
+                            verify_authority_sources, authorize_native_capture)
 
 HERE = Path(__file__).resolve().parent
 HEAD = 'c109166-diagonal-crossing-head'
@@ -103,7 +103,7 @@ def execute(config, output, host, port):
     if not receipt_path.is_file():
         raise ValueError('original authority receipt required before Native mutation')
     original_receipt = json.loads(receipt_path.read_text())
-    verify_authority_sources(source_dir, original_receipt)
+    authorize_native_capture(source_dir, original_receipt, config['opendrive_signal_id'])
     for source in original_receipt.values():
         relative = Path(source['path'])
         destination = output / relative
@@ -111,10 +111,17 @@ def execute(config, output, host, port):
         if destination.exists():
             raise ValueError('attempt already contains authority source: ' + str(relative))
         shutil.copy2(source_dir / relative, destination)
+        survey = json.loads((source_dir / relative).read_text())['original_survey_media']
+        media_relative = Path(survey['path'])
+        media_destination = output / media_relative
+        media_destination.parent.mkdir(parents=True, exist_ok=True)
+        if media_destination.exists():
+            raise ValueError('attempt already contains original survey media: ' + str(media_relative))
+        shutil.copy2(source_dir / media_relative, media_destination)
     if (output / 'authority-receipt.json').exists():
         raise ValueError('attempt already contains authority receipt')
     shutil.copy2(receipt_path, output / 'authority-receipt.json')
-    authority = verify_authority_sources(output, original_receipt)
+    authority = authorize_native_capture(output, original_receipt, config['opendrive_signal_id'])
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     world = client.get_world()

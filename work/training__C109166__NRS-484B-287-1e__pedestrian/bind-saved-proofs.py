@@ -34,7 +34,7 @@ def main():
             'feedback_command': ('cat $SAVED_OUTPUT/feedback.json # ' + entry['case_id']),
             'test_log': log.name, 'test_log_sha256': sha(log), 'test_exit_code': 0}
     negative = json.loads((HERE / 'saved-1-negative.log').read_text())
-    feedback_source = HERE.parents[1] / '.runtime-work/c109166-saved-r3-negative/v0001/feedback.json'
+    feedback_source = HERE.parents[1] / '.runtime-work/c109166-saved-r5-negative/v0001/feedback.json'
     feedback = json.loads(feedback_source.read_text())
     if (negative.get('missing_evidence') is not True or
             feedback.get('classification') != 'incomplete_or_unavailable_law_evidence' or

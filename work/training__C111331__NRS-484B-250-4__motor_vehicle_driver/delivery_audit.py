@@ -41,7 +41,8 @@ def check_result(result, case):
     if not isinstance(metric.get('ego_entry_frame'),int) or not isinstance(metric.get('other_entry_frame'),int):
         raise ValueError('Physical junction entry incomplete')
     observed=bool(metric.get('pre_line_low_speed_frames'))
-    if observed != case.endswith('controlled_1'):
+    expects_stop = not case.endswith(('controlled_2','crosswalk_no_stop','visible_point_no_stop'))
+    if observed != expects_stop:
         raise ValueError('Physical marked-line stop contrast incomplete')
     return metric
 
@@ -113,7 +114,7 @@ def selftest(case,negative):
         'measured_values':{'frames':600,'legal_verdict':None,'actual_pixels_reviewed':False,
         'source_sha256':{x:'0'*64 for x in ('native-raw-actors.jsonl','native-signal-readback.jsonl','native-map-readback.json','video_frames.jsonl')},
         'ego_entry_frame':300,'other_entry_frame':250,
-        'pre_line_low_speed_frames':[180] if case.endswith('controlled_1') else []}}
+        'pre_line_low_speed_frames':[180] if not case.endswith(('controlled_2','crosswalk_no_stop','visible_point_no_stop')) else []}}
     if negative:
         sample['provenance_kind']='synthetic_fixture'
         check_result(sample,case)

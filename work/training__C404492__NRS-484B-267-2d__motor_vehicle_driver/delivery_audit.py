@@ -24,7 +24,7 @@ def sha(path):
 
 
 def selected_statutory_context(context, case):
-    """Require reviewed facts for the selected moving, undirected branch."""
+    """Require reviewed facts for the selected undirected branch."""
     if (context.get('case_id') != case or
             context.get('review_kind') != 'original_source_review' or
             not context.get('reviewer')):
@@ -42,6 +42,14 @@ def selected_statutory_context(context, case):
         raise ValueError('Flashing equipment unproved')
     if context.get('officer_directed_otherwise') is not False:
         raise ValueError('Selected undirected branch requires reviewed officer exception absence')
+    preparing = case.endswith('__preparing_movement')
+    if preparing:
+        if context.get('preparing_to_move_reviewed') is not True:
+            raise ValueError('Visible preparation review unproved')
+        for key in ('preparing_to_move_source', 'visible_vehicle_movement_source'):
+            value = context.get(key)
+            if not isinstance(value, str) or not value or value.startswith('synthetic-fixture:'):
+                raise ValueError('Original preparation source missing: ' + key)
     for key in ('ego_driver_source', 'ego_vehicle_source',
                 *(('regulatory_agency_vehicle_source',) if official else ('emergency_authorization_source',)),
                 'qualifying_flash_equipment_source',
@@ -50,6 +58,15 @@ def selected_statutory_context(context, case):
         value = context.get(key)
         if not isinstance(value, str) or not value or value.startswith('synthetic-fixture:'):
             raise ValueError('Original statutory source missing: ' + key)
+
+
+def visible_preparation_frames(poses):
+    """Count original pose samples marking visible source-vehicle movement."""
+    count = sum(p.get('emergency', {}).get('visible_vehicle_movement') is True
+                for p in poses)
+    if count == 0:
+        raise ValueError('No source-observed visible vehicle movement')
+    return count
 
 
 def audit(case, candidate, attempt, processing, diagnostic=False):
@@ -93,6 +110,9 @@ def audit(case, candidate, attempt, processing, diagnostic=False):
     context = read(attempt / 'emergency_context.json')
     if len(frame_map) != 600 or len(poses) != 600 or len(trace) != 600:
         raise ValueError('Original frame count differs')
+    preparing = case.endswith('__preparing_movement')
+    if preparing:
+        visible_preparation_frames(poses)
     if (context.get('case_id') != case or
             any(p.get('ego', {}).get('actor_id') != context.get('ego_actor_id') or
                 p.get('emergency', {}).get('actor_id') != context.get('emergency_actor_id')
@@ -127,6 +147,8 @@ def audit(case, candidate, attempt, processing, diagnostic=False):
     required = ('all_participants_reviewed', 'four_original_camera_pixels_reviewed',
                 'actual_motion_and_overlap_reviewed', 'flashing_equipment_reviewed',
                 authority_review, 'officer_direction_reviewed', 'native_completion_reviewed')
+    if preparing:
+        required += ('visible_vehicle_movement_reviewed',)
     if review.get('case_id') != case or any(review.get(key) is not True for key in required):
         raise ValueError('Independent statutory source review incomplete')
     return {**common, 'accepted': True, 'checks': {key: True for key in

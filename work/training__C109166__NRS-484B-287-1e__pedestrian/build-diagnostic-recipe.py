@@ -98,6 +98,12 @@ def build():
                              'movement_id':'c109166-diagonal-sw-ne',
                              'review_status':'pending_independent_review'}
         spec['files']['authority-receipt.json']=json.dumps(authority, separators=(',',':'))+'\n'
+        spec['files']['exception-applicability-source.json']=json.dumps({
+            'format':'c109166-exception-applicability-source-v1',
+            'statute':'NRS 484B.290',
+            'review_status':'pending_independent_review',
+            'applicability':'undetermined',
+            'synthetic_diagnostic':True}, separators=(',',':'))+'\n'
         road = ROAD_SHAPE.read_text().replace('C111334', 'C109166-synthetic-diagnostic')
         spec['files']['road.xodr'] = road
         spec['files']['capture/manifest.json']=json.dumps({'extraction_confirmed':True,

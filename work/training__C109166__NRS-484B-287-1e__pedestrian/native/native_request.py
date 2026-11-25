@@ -111,6 +111,44 @@ def verify_authority_sources(folder, receipt) -> dict:
             "movement_applicability_verified": False}
 
 
+def authorize_native_capture(folder, receipt, requested_head_id):
+    """Require reviewed original survey media before changing a Native world.
+
+    The authored head ID is only a request label. The independent documents
+    must identify that head, the particular diagonal movement, and the actual
+    survey media. The later pixel audit still has to inspect the recorded run.
+    """
+    verify_authority_sources(folder, receipt)
+    folder = Path(folder).resolve()
+    claims = {"authorization": "diagonal_crossing_authorized",
+              "official_status": "official_device",
+              "movement_applicability": "governs_exact_diagonal_movement"}
+    media_hashes = set()
+    for field, claim in claims.items():
+        source = json.loads((folder / receipt[field]["path"]).read_text())
+        media = source.get("original_survey_media")
+        if (source.get("provenance_kind") != "original_survey" or
+                source.get("review_status") != "independently_reviewed" or
+                not source.get("independent_reviewer") or
+                source.get("native_head_id") != requested_head_id or
+                source.get("device_id") != "c109166-diagonal-crossing-head" or
+                source.get("movement_id") != "c109166-diagonal-sw-ne" or
+                source.get(claim) is not True or not isinstance(media, dict)):
+            raise ValueError("original independently reviewed Native authority missing: " + field)
+        relative = Path(media.get("path", ""))
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError("survey media path escapes attempt: " + field)
+        path = (folder / relative).resolve()
+        if (not path.is_relative_to(folder) or not path.is_file() or
+                hashlib.sha256(path.read_bytes()).hexdigest() != media.get("sha256")):
+            raise ValueError("original survey media hash differs: " + field)
+        media_hashes.add(media["sha256"])
+    if len(media_hashes) != len(claims):
+        raise ValueError("three independent original survey media required")
+    return {"capture_authorized": True, "reviewed_media_sha256": sorted(media_hashes),
+            "requested_head_id": requested_head_id}
+
+
 def camera_plan() -> list[dict]:
     return [{"name": name, "width": width, "height": height, "fps": RATE_HZ,
              "location_xyz_m": list(location), "rotation_pitch_yaw_roll_deg": list(rotation),

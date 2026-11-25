@@ -93,9 +93,39 @@ def main():
         trial["authorization"]["path"] = trial["official_status"]["path"]
         trial["authorization"]["sha256"] = trial["official_status"]["sha256"]
         failures["reused_source_bytes"] = reject(lambda: native.verify_authority_sources(folder, trial), "identical bytes")
+        failures["synthetic_capture_gate"] = reject(
+            lambda: native.authorize_native_capture(folder, receipt, "candidate-unverified-203"),
+            "original independently reviewed")
+        claims = {"authorization": "diagonal_crossing_authorized",
+                  "official_status": "official_device",
+                  "movement_applicability": "governs_exact_diagonal_movement"}
+        reviewed = json.loads(json.dumps(receipt))
+        for name, claim in claims.items():
+            media = folder / (name + ".png")
+            media.write_bytes(("synthetic CPU test of " + name).encode())
+            document = {"provenance_kind": "original_survey",
+                        "review_status": "independently_reviewed",
+                        "independent_reviewer": "synthetic CPU reviewer",
+                        "native_head_id": "candidate-unverified-203",
+                        "device_id": "c109166-diagonal-crossing-head",
+                        "movement_id": "c109166-diagonal-sw-ne", claim: True,
+                        "original_survey_media": {"path": media.name,
+                                                  "sha256": hashlib.sha256(media.read_bytes()).hexdigest()}}
+            path = folder / reviewed[name]["path"]
+            path.write_text(json.dumps(document) + "\n")
+            reviewed[name]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        assert native.authorize_native_capture(folder, reviewed, "candidate-unverified-203")["capture_authorized"]
+        failures["wrong_surveyed_head"] = reject(
+            lambda: native.authorize_native_capture(folder, reviewed, "different-head"),
+            "original independently reviewed")
+        (folder / "authorization.png").write_bytes(b"modified synthetic media")
+        failures["stale_survey_media"] = reject(
+            lambda: native.authorize_native_capture(folder, reviewed, "candidate-unverified-203"),
+            "survey media hash differs")
     output = {"format": "c109166-device-authority-interface-cpu-proof-v1",
               "module_sha256": hashlib.sha256(MODULE.read_bytes()).hexdigest(),
               "tested_original_readback_api": True, "tested_source_provenance_api": True,
+              "tested_pre_capture_independent_survey_gate": True,
               "rejections": failures, "native_executed": False,
               "original_authority_sources_available": False,
               "official_status_verified": False, "diagonal_authorization_verified": False}

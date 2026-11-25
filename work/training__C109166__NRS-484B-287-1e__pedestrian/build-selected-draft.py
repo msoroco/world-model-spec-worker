@@ -113,7 +113,13 @@ def build():
                         'method': 'diagonal_entry_measurement', 'value_type': 'object',
                         'kind': 'measured',
                         'inputs': ['pedestrian-original.jsonl', 'device-original.jsonl',
-                                   'authority-receipt.json']}],
+                                   'authority-receipt.json']},
+                        {'disposition_index': 1,
+                         'requirement': 'NRS-484B-287-1e', 'source': 'NRS 484B.287(1)(e)',
+                         'output_key': 'nrs_484b_290_exception_context',
+                         'method': 'exception_applicability_measurement', 'value_type': 'object',
+                         'kind': 'sourced_context',
+                         'inputs': ['exception-applicability-source.json']}],
                     'negative': {'remove': ['device-original.jsonl'],
                                  'error_contains': 'Missing required source: device-original.jsonl'}}
                 contract_path = HERE/'cases'/suffix/'measurement-contract.json'

@@ -1,57 +1,11 @@
 {
-  "format": "c111331-exact-source-branch-expansion-plan-v1",
+  "accepted_native_recordings": 0,
   "assignment_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver",
-  "source": "NRS 484B.250(4)",
-  "source_text_sha256": "eb5fb0c216119db607c762d01d5d69b20bd3e58cf5ea308cfe90147bb9a405ac",
-  "status": "planned_cpu_work_not_selected",
   "common_activation": [
     "installed traffic-control signal governing both incoming approaches",
     "uncovered vehicular heads",
     "original Native Off indications at entry",
     "junction entry from a lane governed by that head"
-  ],
-  "stop_reference_comparisons": [
-    {
-      "comparison_id": "marked_line_stop",
-      "case_ids": ["controlled_1", "controlled_2"],
-      "governing_reference": "clearly marked stop line",
-      "fixed": ["stop line present", "near-side crosswalk present", "other vehicle history", "all-entrance signal outage"],
-      "variable": "complete halt before marked line versus uninterrupted entry",
-      "implementation": "selected-construction-manifest.json",
-      "software_status": "four candidate offline/public/saved paths passed; original physical review pending"
-    },
-    {
-      "comparison_id": "near_side_crosswalk_stop",
-      "case_ids": ["crosswalk_stop", "crosswalk_no_stop"],
-      "governing_reference": "before near-side crosswalk if there is no clearly marked stop line",
-      "fixed": ["no stop line on either entrance", "near-side crosswalk present", "other vehicle history", "all-entrance signal outage"],
-      "variable": "complete halt before near-side crosswalk versus uninterrupted entry",
-      "implementation": "new exact road/request/native-measure variants required"
-    },
-    {
-      "comparison_id": "visible_point_stop",
-      "case_ids": ["visible_point_stop", "visible_point_no_stop"],
-      "governing_reference": "nearest point to the intersection with a view of approaching through-highway traffic if there is no line or near-side crosswalk",
-      "fixed": ["no stop line", "no near-side crosswalk", "measured view-opening geometry", "other vehicle history", "all-entrance signal outage"],
-      "variable": "complete halt at measured view-opening reference versus uninterrupted entry",
-      "implementation": "new physical view-opening geometry, virtual-observer rays and source-bound measurement required"
-    }
-  ],
-  "post_stop_comparisons": [
-    {
-      "comparison_id": "previously_completed_stop_precedence",
-      "case_ids": ["controlled_1", "prior_stop_no_yield"],
-      "fixed": ["marked-line reference", "ego completes pre-line stop", "other vehicle completes its own stop earlier", "all-entrance signal outage"],
-      "variable": "ego entry release after versus before the prior stopper has passed",
-      "implementation": "new exact case and measured prior-stop/ego-release event audit required"
-    },
-    {
-      "comparison_id": "vehicle_already_within_intersection_precedence",
-      "case_ids": ["controlled_1", "inside_vehicle_no_yield"],
-      "fixed": ["marked-line reference", "ego completes pre-line stop", "other vehicle enters intersection first", "all-entrance signal outage"],
-      "variable": "ego entry release after versus during the other vehicle's intersection occupancy",
-      "implementation": "new exact case and body-occupancy/yield audit required"
-    }
   ],
   "cross_cutting_measurements": [
     "all-entrance stop treatment requires independent head and reference readback on both incoming roads",
@@ -59,6 +13,94 @@
     "yield is assessed after an observed complete stop and cannot be inferred from a controller request",
     "uncovered signal faces, road reference visibility and participant recognition require original pixel audit"
   ],
+  "format": "c111331-exact-source-branch-expansion-plan-v1",
   "legal_verdict": null,
-  "accepted_native_recordings": 0
+  "planned_case_count": 9,
+  "post_stop_comparisons": [
+    {
+      "case_ids": [
+        "prior_stop_yield",
+        "prior_stop_no_yield"
+      ],
+      "comparison_id": "previously_completed_stop_precedence",
+      "fixed": [
+        "marked-line reference",
+        "ego completes pre-line stop",
+        "other vehicle completes its own stop earlier",
+        "all-entrance signal outage"
+      ],
+      "implementation": "new exact case and measured prior-stop/ego-release event audit required",
+      "variable": "ego entry release after versus before the prior stopper has passed"
+    },
+    {
+      "case_ids": [
+        "prior_stop_yield",
+        "inside_vehicle_no_yield"
+      ],
+      "comparison_id": "vehicle_already_within_intersection_precedence",
+      "fixed": [
+        "marked-line reference",
+        "ego completes pre-line stop",
+        "other vehicle enters intersection first",
+        "all-entrance signal outage"
+      ],
+      "implementation": "new exact case and body-occupancy/yield audit required",
+      "variable": "ego entry release after versus during the other vehicle's intersection occupancy"
+    }
+  ],
+  "source": "NRS 484B.250(4)",
+  "source_text_sha256": "eb5fb0c216119db607c762d01d5d69b20bd3e58cf5ea308cfe90147bb9a405ac",
+  "status": "planned_cpu_work_not_selected",
+  "stop_reference_comparisons": [
+    {
+      "case_ids": [
+        "controlled_1",
+        "controlled_2"
+      ],
+      "comparison_id": "marked_line_stop",
+      "fixed": [
+        "stop line present",
+        "near-side crosswalk present",
+        "other vehicle history",
+        "all-entrance signal outage"
+      ],
+      "governing_reference": "clearly marked stop line",
+      "implementation": "selected-construction-manifest.json",
+      "software_status": "four candidate offline/public/saved paths passed; original physical review pending",
+      "variable": "complete halt before marked line versus uninterrupted entry"
+    },
+    {
+      "case_ids": [
+        "crosswalk_stop",
+        "crosswalk_no_stop"
+      ],
+      "comparison_id": "near_side_crosswalk_stop",
+      "fixed": [
+        "no stop line on either entrance",
+        "near-side crosswalk present",
+        "other vehicle history",
+        "all-entrance signal outage"
+      ],
+      "governing_reference": "before near-side crosswalk if there is no clearly marked stop line",
+      "implementation": "new exact road/request/native-measure variants required",
+      "variable": "complete halt before near-side crosswalk versus uninterrupted entry"
+    },
+    {
+      "case_ids": [
+        "visible_point_stop",
+        "visible_point_no_stop"
+      ],
+      "comparison_id": "visible_point_stop",
+      "fixed": [
+        "no stop line",
+        "no near-side crosswalk",
+        "measured view-opening geometry",
+        "other vehicle history",
+        "all-entrance signal outage"
+      ],
+      "governing_reference": "nearest point to the intersection with a view of approaching through-highway traffic if there is no line or near-side crosswalk",
+      "implementation": "new physical view-opening geometry, virtual-observer rays and source-bound measurement required",
+      "variable": "complete halt at measured view-opening reference versus uninterrupted entry"
+    }
+  ]
 }

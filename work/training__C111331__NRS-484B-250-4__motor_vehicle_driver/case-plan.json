@@ -10,7 +10,7 @@
       "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
       "comparison_variable": "complete stop and precedence under inoperative uncovered signal",
       "kind": "planned_only",
-      "physical_target": "stop at governing point and yield before cautious entry",
+      "physical_target": "complete halt before marked stop line; other-vehicle precedence separately compared",
       "requested_not_measured": true,
       "selection_targets": [
         "demo-train",
@@ -31,6 +31,104 @@
       ],
       "source_branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
       "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_stop",
+      "comparison_variable": "complete halt before near-side crosswalk",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "complete halt before near-side crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "No marked stop line; stop before near-side crosswalk",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop",
+      "comparison_variable": "uninterrupted entry across near-side crosswalk",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "uninterrupted entry across near-side crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "No marked stop line; no stop before near-side crosswalk",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop",
+      "comparison_variable": "complete halt at nearest point with approaching-traffic view",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "complete halt at nearest point with approaching-traffic view",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "No line or crosswalk; stop at measured view-opening point",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_no_stop",
+      "comparison_variable": "uninterrupted entry across view-opening reference",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "uninterrupted entry across view-opening reference",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "No line or crosswalk; no stop at measured view-opening point",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_no_yield",
+      "comparison_variable": "post-stop entry without yielding to earlier stopper",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "post-stop entry without yielding to earlier stopper",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "Other previously completed stop; ego stops then enters before other passes",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__inside_vehicle_no_yield",
+      "comparison_variable": "post-stop entry without yielding to occupying vehicle",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "post-stop entry without yielding to occupying vehicle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "Other already within intersection; ego stops then enters during occupancy",
+      "target_law_id": "NRS-484B-250-4"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+      "comparison_variable": "post-stop yield to earlier stopper",
+      "construction_status": "unimplemented_cpu_branch",
+      "kind": "planned_only",
+      "physical_target": "post-stop yield to earlier stopper",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": "Other previously completed stop; ego waits for other to clear",
+      "target_law_id": "NRS-484B-250-4"
     }
   ],
   "cell_id": "C111331",
@@ -49,6 +147,72 @@
         "route and controller policy except requested comparison variable",
         "capture channels, rate, camera policy and recording duration"
       ]
+    },
+    {
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_stop",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop"
+      ],
+      "comparison_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__near_side_crosswalk_stop",
+      "deliberate_differences": [
+        "complete halt before crosswalk versus uninterrupted entry"
+      ],
+      "fixed_conditions": [
+        "no marked stop line",
+        "near-side crosswalk exists",
+        "all-entrance inoperative signal",
+        "same other-vehicle history"
+      ],
+      "status": "construction_pending"
+    },
+    {
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_no_stop"
+      ],
+      "comparison_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop",
+      "deliberate_differences": [
+        "complete halt at view-opening point versus uninterrupted entry"
+      ],
+      "fixed_conditions": [
+        "no marked stop line",
+        "no near-side crosswalk",
+        "same measured view-opening geometry",
+        "all-entrance inoperative signal"
+      ],
+      "status": "construction_pending"
+    },
+    {
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_no_yield"
+      ],
+      "comparison_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__previously_completed_stop_precedence",
+      "deliberate_differences": [
+        "ego entry release after versus before earlier stopper passes"
+      ],
+      "fixed_conditions": [
+        "both ego trajectories complete a marked-line halt",
+        "other completed its halt earlier",
+        "same all-entrance signal outage"
+      ],
+      "status": "construction_pending"
+    },
+    {
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__inside_vehicle_no_yield"
+      ],
+      "comparison_id": "training__C111331__NRS-484B-250-4__motor_vehicle_driver__already_within_intersection_precedence",
+      "deliberate_differences": [
+        "ego entry release after versus during other-vehicle occupation"
+      ],
+      "fixed_conditions": [
+        "both ego trajectories complete a marked-line halt",
+        "other is inside before ego entry",
+        "same all-entrance signal outage"
+      ],
+      "status": "construction_pending"
     }
   ],
   "existing_evidence": [],
@@ -188,28 +352,74 @@
   ],
   "requirement_dispositions": [
     {
-      "branch": "Marked stop line; complete cessation; all-entrance stop treatment.",
+      "branch": "Marked line stop and all-entrance signal outage",
       "case_ids": [
         "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
         "training__C111331__NRS-484B-250-4__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+      "disposition_index": 0,
+      "evidence_or_gap": "Repaired selected CPU pair and original-source capture code; original Native physical and pixel proof pending.",
       "requirement": "NRS-484B-250-4",
       "source": "NRS 484B.250(4)",
       "status": "selected_required"
     },
     {
-      "branch": "selected assignment branch",
-      "case_ids": [],
-      "evidence_or_gap": "Witness describes a separate branch; exact same-cell construction and proof remain pending.",
+      "branch": "No line: stop before near-side crosswalk",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_stop",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "Exact no-line Native construction, original measurement and source-bound receipts pending.",
       "requirement": "NRS-484B-250-4",
       "source": "NRS 484B.250(4)",
       "status": "alternative_pending"
     },
     {
-      "branch": "Textual exceptions, alternatives, or dependencies: if there is none",
-      "case_ids": [],
-      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit.",
+      "branch": "No line and no crosswalk: nearest point with view of approaching traffic",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_no_stop"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "View-opening geometry, virtual-observer source, exact construction and receipts pending.",
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "status": "alternative_pending"
+    },
+    {
+      "branch": "Yield after stop to vehicle previously completing a stop",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_no_yield"
+      ],
+      "disposition_index": 3,
+      "evidence_or_gap": "Distinct post-stop release case and other complete-stop event audit pending.",
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "Yield after stop to vehicle already within intersection",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__inside_vehicle_no_yield"
+      ],
+      "disposition_index": 4,
+      "evidence_or_gap": "Distinct post-stop release case and full other-body junction-occupancy event audit pending.",
+      "requirement": "NRS-484B-250-4",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "Cautious proceeding after a complete halt",
+      "case_ids": [
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__prior_stop_yield",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__crosswalk_stop",
+        "training__C111331__NRS-484B-250-4__motor_vehicle_driver__visible_point_stop"
+      ],
+      "disposition_index": 5,
+      "evidence_or_gap": "Original trajectory and pixel review must inform qualitative cautious proceeding without a numeric legal threshold.",
       "requirement": "NRS-484B-250-4",
       "source": "NRS 484B.250(4)",
       "status": "exception_pending"

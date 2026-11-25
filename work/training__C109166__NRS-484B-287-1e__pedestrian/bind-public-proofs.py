@@ -40,7 +40,7 @@ def bind():
                     or receipt['candidate_id'] != candidate
                     or receipt['construction_sha256'] != selected['construction_sha256']):
                 raise ValueError('Public receipt identity differs: ' + label)
-            output_name = 'c109166-public-r3-' + label
+            output_name = 'c109166-public-r5-' + label
             output = ROOT / '.runtime-work' / output_name
             analysis = directory / 'public-analysis.log'
             negative = directory / 'negative-analysis.log'
