@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import shutil
 
 from barrier_construction import spawn_barrier_opening
 from camera_encoder import FFV1Writer
@@ -132,7 +133,21 @@ def _spawn_vehicle(world, blueprint, pose):
     return actor
 
 
-def run(world, client, carla, plan, output):
+def copy_site_sources(plan, source_root, output):
+    """Retain the exact source bytes referenced by the original site receipt."""
+    source_root, output = Path(source_root).resolve(), Path(output).resolve()
+    for ref in plan['source_refs']:
+        source = (source_root / ref['path']).resolve()
+        target = (output / ref['path']).resolve()
+        if (not source.is_relative_to(source_root) or not target.is_relative_to(output) or
+                not source.is_file() or target.exists() or
+                hashlib.sha256(source.read_bytes()).hexdigest() != ref['sha256']):
+            raise ValueError('Fresh original site source copy failed validation')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+
+
+def run(world, client, carla, plan, output, source_root):
     """Capture a reviewed opening route and original four-camera frame joins."""
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -143,6 +158,7 @@ def run(world, client, carla, plan, output):
     capture_names.update(name + '.mkv' for name in CAMERAS)
     if not output.is_dir() or any((output / name).exists() for name in capture_names):
         raise ValueError('Fresh runtime capture source paths required')
+    copy_site_sources(plan, source_root, output)
     if world.get_map().name != plan['native_map_name']:
         raise ValueError('Native world map differs from reviewed site')
     library = world.get_blueprint_library()
@@ -265,7 +281,8 @@ def main():
         current.synchronous_mode = True
         current.fixed_delta_seconds = .05
         world.apply_settings(current)
-        encoder_codes = run(world, client, carla, plan, output)
+        encoder_codes = run(world, client, carla, plan, output,
+                            Path(args.site_plan).resolve().parent)
     except Exception as error:
         failure = error
     try:

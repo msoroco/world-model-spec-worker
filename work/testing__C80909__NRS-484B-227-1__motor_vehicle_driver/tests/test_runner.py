@@ -16,6 +16,21 @@ spec.loader.exec_module(runner)
 
 
 class RunnerTests(unittest.TestCase):
+    def test_original_site_sources_are_copied_byte_exactly_and_fail_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            packet, source, plan = self.plan(root)
+            output = root / 'attempt'
+            output.mkdir()
+            runner.copy_site_sources(plan, packet.parent, output)
+            self.assertEqual((output / source.name).read_bytes(), source.read_bytes())
+            with self.assertRaisesRegex(ValueError, 'copy failed validation'):
+                runner.copy_site_sources(plan, packet.parent, output)
+            (output / source.name).unlink()
+            source.write_text('changed after plan validation\n')
+            with self.assertRaisesRegex(ValueError, 'copy failed validation'):
+                runner.copy_site_sources(plan, packet.parent, output)
+
     def test_native_capture_restores_world_before_sealing(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

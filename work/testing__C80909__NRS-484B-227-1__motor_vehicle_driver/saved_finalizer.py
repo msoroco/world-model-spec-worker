@@ -152,6 +152,35 @@ def finalize_delivery(attempt, output, *, probe=_video_info):
         'opening_traversed_observed', 'any_body_overlap_outside_opening',
         'observed_turn_angle_degrees')}
     measured['sample_count'] = len(observations['samples'])
+    channels = attempt / 'channels'
+    channels.mkdir(exist_ok=False)
+    channel_values = {
+        'ego_body': ('m', [row['ego_body_vertices_xy_m'] for row in rows[0]]),
+        'other_body': ('m', [row['other_body_vertices_xy_m'] for row in rows[0]]),
+        'ego_heading': ('degrees', [row['heading_deg'] for row in rows[0]]),
+        'divider_overlap': ('boolean',
+                            [row['ego_over_divider_outside_opening']
+                             for row in observations['samples']]),
+        'camera_frames': ('frame', [row['video_frame'] for row in rows[1]])}
+    recording_evidence = []
+    for name, (unit, values) in channel_values.items():
+        if len(values) != len(rows[1]):
+            raise ValueError('Original recording channel count differs: ' + name)
+        target = channels / (name + '.jsonl')
+        with target.open('x') as stream:
+            for frame, value in zip(rows[1], values):
+                stream.write(json.dumps({'original_frame': frame['carla_frame'],
+                                         'time_s': frame['time_s'], 'value': value},
+                                        allow_nan=False) + '\n')
+        recording_evidence.append({'name': name, 'unit': unit,
+                                   'reference': 'channels/' + target.name})
+    for name, source in (('divider_site', 'divider_context.json'),
+                         ('barrier_opening', 'barrier_receipt.json')):
+        value = json.loads((attempt / source).read_text())
+        target = channels / (name + '.json')
+        target.write_text(json.dumps({name: value}, indent=2, allow_nan=False) + '\n')
+        recording_evidence.append({'name': name, 'unit': 'structured record',
+                                   'reference': 'channels/' + target.name})
     check = {'target': 'left_turn_or_right_roadway_route',
              'requested': config['physical_completion']['criterion'],
              'measured': measured,
@@ -169,8 +198,7 @@ def finalize_delivery(attempt, output, *, probe=_video_info):
               'video_references': [name + '.mkv' for name in CAMERAS],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
-              'recording_evidence': [{'name': key, 'reference': key, 'sha256': value}
-                                     for key, value in source_hashes.items()],
+              'recording_evidence': recording_evidence,
               'source_evidence_hashes': source_hashes, 'realized_observables': {}}
     from worker_exchange.native_output import physical_result, write_result
     result = physical_result(attempt, result)

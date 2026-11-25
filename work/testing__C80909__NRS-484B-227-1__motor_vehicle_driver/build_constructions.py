@@ -54,7 +54,10 @@ def _build_once():
         if authority.is_file():add(authority, 'diagnostic-authority.txt')
         for variant in SUFFIXES:
             for source in sorted((ROOT / 'cases' / variant).glob('*')):
-                if source.name == 'construction.json':continue
+                if (source.name in ('construction.json', 'config.json') or
+                        source.suffix == '.log' or
+                        source.name.endswith(('-diagnostic-sources.json', '-fixture-recipe.json'))):
+                    continue
                 add(source, 'cases/' + variant + '/' + source.name)
         channels = [
             {'name': name, 'unit': unit, 'method': method,
@@ -73,6 +76,15 @@ def _build_once():
             'status': 'partial_cpu_diagnostic_unreviewed_native_site',
             'files': files,
             'recording_description': {'channels': channels,
+                'context_inputs': [
+                    {'name': 'divider_site', 'unit': 'structured record',
+                     'method': 'source-hashed divided-highway roadway and opening geometry',
+                     'source_refs': ['divider_context.json', 'site_source_receipt.json'],
+                     'uncertainty': 'actual divided-highway and public-authority status require review'},
+                    {'name': 'barrier_opening', 'unit': 'structured record',
+                     'method': 'realized Native barrier section vertices and open footprint',
+                     'source_refs': ['barrier_receipt.json'],
+                     'uncertainty': 'actual vertical clearance and crossing require review'}],
                 'limitations': ['Diagnostic packet is synthetic; Native site and authority review pending']},
             'measurement_plan': {'raw_sources': [
                 'road.xodr','trace.jsonl','carla_recorder.log','capture/manifest.json',
@@ -90,6 +102,12 @@ def _build_once():
                            'two realized barrier sections and complete-body route clearance',
                            'four original FFV1 camera streams and canonical FrameMap identities',
                            'PipelineCapture graph, telemetry and original Native recorder']}
+        config['case'] = {'case_id': case,
+                          'recording_description': construction['recording_description']}
+        config_path.write_text(json.dumps(config, indent=2) + '\n')
+        for item in files:
+            if item['path'] == 'config.json':
+                item['content'] = config_path.read_text()
         destination = ROOT / 'construction.json' if suffix == SUFFIXES[0] else folder / 'construction.json'
         destination.write_text(json.dumps(construction, indent=2) + '\n')
 

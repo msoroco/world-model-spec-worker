@@ -53,5 +53,81 @@
       "fov_deg": 90,
       "pose_strategy": "source-reviewed-site-pose"
     }
-  ]
+  ],
+  "case": {
+    "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_across_blocked_divider",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body",
+          "unit": "m",
+          "method": "original complete Native world vertices",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "physical realization and legal judgment require independent review"
+        },
+        {
+          "name": "other_body",
+          "unit": "m",
+          "method": "original complete Native world vertices",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "physical realization and legal judgment require independent review"
+        },
+        {
+          "name": "ego_heading",
+          "unit": "degrees",
+          "method": "original Native pose yaw",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "physical realization and legal judgment require independent review"
+        },
+        {
+          "name": "divider_overlap",
+          "unit": "boolean",
+          "method": "complete body against sourced divider polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "physical realization and legal judgment require independent review"
+        },
+        {
+          "name": "camera_frames",
+          "unit": "frame",
+          "method": "four original RGB source frames joined to Native tick",
+          "sampling_rate_hz": 20,
+          "time_window": "30 seconds at 20 Hz",
+          "reference_frame": "original Native tick and four cameras",
+          "uncertainty": "physical realization and legal judgment require independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "divider_site",
+          "unit": "structured record",
+          "method": "source-hashed divided-highway roadway and opening geometry",
+          "source_refs": [
+            "divider_context.json",
+            "site_source_receipt.json"
+          ],
+          "uncertainty": "actual divided-highway and public-authority status require review"
+        },
+        {
+          "name": "barrier_opening",
+          "unit": "structured record",
+          "method": "realized Native barrier section vertices and open footprint",
+          "source_refs": [
+            "barrier_receipt.json"
+          ],
+          "uncertainty": "actual vertical clearance and crossing require review"
+        }
+      ],
+      "limitations": [
+        "Diagnostic packet is synthetic; Native site and authority review pending"
+      ]
+    }
+  }
 }

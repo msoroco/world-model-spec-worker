@@ -4,8 +4,10 @@ import json
 import sys
 import subprocess
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -81,6 +83,36 @@ class FinalizerTests(unittest.TestCase):
             result = finalizer.finalize(root, probe=probe)
             self.assertEqual(len(result['camera_sources']), 4)
             self.assertFalse(result['physical_acceptance_claimed'])
+            case_id = json.loads((root / 'site_source_receipt.json').read_text())['case_id']
+            (root / 'config.json').write_text(json.dumps({
+                'selected_case_id': case_id, 'law_id': 'NRS-484B-227-1',
+                'cell_id': 'C80909', 'physical_completion': {'criterion': 'turn'}}))
+            (root / 'construction.json').write_text(json.dumps({
+                'case_id': case_id, 'recording_description': {'channels': [],
+                    'context_inputs': [], 'limitations': []}}))
+            (root / 'trace.jsonl').write_text(''.join(json.dumps({
+                'frame': row['frame'], 'time_s': row['time_s']}) + '\n' for row in rows))
+            (root / 'capture').mkdir()
+            (root / 'capture/evidence.jsonl').write_text(''.join(json.dumps({
+                'original_frame': row['frame']}) + '\n' for row in rows))
+            for row, angle in zip(rows, (0,0,45,90)):
+                row['heading_deg'] = angle
+            (root / 'movement_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            exchange = types.ModuleType('worker_exchange')
+            exchange.__path__ = []
+            native = types.ModuleType('worker_exchange.native_output')
+            native.physical_result = lambda attempt, value: dict(value, physical_checks={})
+            native.write_result = lambda attempt, value: (Path(attempt) / 'result.json').write_text(json.dumps(value))
+            with patch.dict(sys.modules, {'worker_exchange': exchange,
+                                         'worker_exchange.native_output': native}):
+                analysis = finalizer.finalize_delivery(root, root / 'analysis-report.json', probe=probe)
+            self.assertTrue(analysis['analysis_complete'])
+            self.assertEqual(analysis['case_id'], case_id)
+            saved = json.loads((root / 'result.json').read_text())
+            self.assertEqual({item['name'] for item in saved['recording_evidence']},
+                             {'ego_body', 'other_body', 'ego_heading', 'divider_overlap',
+                              'camera_frames', 'divider_site', 'barrier_opening'})
+            self.assertEqual(len((root / 'channels/ego_body.jsonl').read_text().splitlines()), 4)
             (root / 'approach.mkv').unlink()
             with self.assertRaisesRegex(ValueError, 'Missing original source camera'):
                 finalizer.finalize(root, probe=probe)

@@ -33,7 +33,7 @@ def build():
         contract = {'format': 'worker-measurement-contract', 'case_id': case_id,
                     'requirements': requirements,
                     'negative': {'remove': ['movement_history.jsonl'],
-                                 'error_contains': 'Missing original source: movement_history.jsonl'},
+                                 'error_contains': 'Missing required source: movement_history.jsonl'},
                     'statutory_judgment': 'unresolved; original source review required'}
         suffix = case_id.split('__')[-1]
         path = ROOT / 'measurement-contract.json' if suffix == 'left_through_opening' else ROOT / 'cases' / suffix / 'measurement-contract.json'
