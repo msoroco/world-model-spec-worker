@@ -40,7 +40,7 @@ def bind():
                     or receipt['candidate_id'] != candidate
                     or receipt['construction_sha256'] != selected['construction_sha256']):
                 raise ValueError('Public receipt identity differs: ' + label)
-            output_name = 'c109166-public-2871d-' + suffix + '-' + candidate
+            output_name = 'c109166-public-v2-' + suffix + '-' + candidate
             output = ROOT / '.runtime-work' / output_name
             analysis = directory / 'public-analysis.log'
             negative = directory / 'negative-analysis.log'
@@ -64,6 +64,7 @@ def bind():
                     'dev.regulatory_sign': 'authority-receipt.json, authority/official_status.json',
                     'dev.governs': 'authority-receipt.json, authority/movement_applicability.json',
                     'st.intersection': 'road-boundary-review.json, pedestrian-original.jsonl',
+                    'st.crosswalk': 'road-boundary-review.json, pedestrian-original.jsonl',
                     'kin.position': 'pedestrian-original.jsonl, video_frames.jsonl',
                     'kin.heading': 'pedestrian-original.jsonl, video_frames.jsonl',
                     'kin.path_length': 'pedestrian-original.jsonl, video_frames.jsonl',

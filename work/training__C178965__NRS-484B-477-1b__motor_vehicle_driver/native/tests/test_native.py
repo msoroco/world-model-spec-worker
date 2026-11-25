@@ -36,8 +36,10 @@ class FakeWorld:
 
 class NativeDraft(unittest.TestCase):
     def test_width_variants_and_capture(self):
-        self.assertEqual(WIDTHS, {'controlled_1': 7.5, 'controlled_2': 6.0})
+        self.assertEqual(WIDTHS, {'controlled_1': 7.5, 'controlled_at_10': 6.648,
+                                  'controlled_2': 6.0})
         self.assertEqual(geometry_check(7.5)['paved_width_m'], 7.5)
+        self.assertEqual(geometry_check(6.648)['paved_width_m'], 6.648)
         self.assertEqual(geometry_check(6.0)['paved_width_m'], 6.0)
         self.assertEqual(len(CAMERAS), 4)
         self.assertEqual([(name, width, height) for name, width, height, *_ in CAMERAS],

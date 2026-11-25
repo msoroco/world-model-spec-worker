@@ -40,19 +40,27 @@ def measure(packet_bytes: bytes, inventory_bytes: bytes):
             'source kind mismatch')
     for field in ('public_highway_source_id', 'city_block_source_id', 'rear_access_source_id',
                   'abutting_property_source_id', 'non_culdesac_source_id',
-                  'local_jurisdiction_source_id', 'local_ordinance_review_source_id'):
+                  'local_jurisdiction_source_id', 'local_ordinance_review_source_id',
+                  'halt_purpose_review_source_id', 'occupant_activity_review_source_id',
+                  'traffic_conflict_review_source_id', 'official_direction_review_source_id'):
         require(inventory.get(field), field + ' missing')
     require(inventory.get('other_alley_scope_review_source_id'), 'other-alley scope source missing')
     y0, y1 = inventory.get('alley_lateral_edges_m', [None, None])
     require(finite(y0) and finite(y1) and y0 < y1, 'measured alley boundaries missing')
     require(inventory.get('boundary_measurement_source_id'), 'alley boundary measurement source missing')
     rows = packet.get('frames')
-    require(isinstance(rows, list) and len(rows) == FRAMES, '600 original frames required')
-    require([r.get('video_frame') for r in rows] == list(range(FRAMES)), 'missing or unordered video frames')
+    expected = FRAMES if kind == 'native_saved_sample' else len(rows) if isinstance(rows, list) else 0
+    require(expected == FRAMES or (kind == 'synthetic_native_sample' and expected == 9),
+            '600 original frames required' if kind == 'native_saved_sample' or expected > 9
+            else '9 diagnostic frames required')
+    require([r.get('video_frame') for r in rows] == list(range(expected)), 'missing or unordered video frames')
     require(all(finite(r.get('native_frame')) for r in rows) and
-            all(rows[i]['native_frame'] < rows[i+1]['native_frame'] for i in range(FRAMES-1)),
+            all(rows[i]['native_frame'] < rows[i+1]['native_frame'] for i in range(expected-1)),
             'nonmonotonic Native frame identity')
-    require(all(finite(r.get('time_s')) and abs(r['time_s'] - i / RATE) < .005 for i, r in enumerate(rows)),
+    time_origin = rows[0].get('time_s')
+    require(finite(time_origin) and 0 <= time_origin <= 1 / RATE + .005 and
+            all(finite(r.get('time_s')) and abs(r['time_s'] - (time_origin + i / RATE)) < .005
+                for i, r in enumerate(rows)),
             'missing original 20 Hz timing')
     require(packet.get('subject_id') and packet.get('other_id') and packet['subject_id'] != packet['other_id'],
             'distinct vehicle identities missing')
@@ -79,7 +87,7 @@ def measure(packet_bytes: bytes, inventory_bytes: bytes):
             'assignment_id': ASSIGNMENT, 'source_kind': kind,
             'packet_sha256': hashlib.sha256(packet_bytes).hexdigest(),
             'inventory_sha256': hashlib.sha256(inventory_bytes).hexdigest(),
-            'frame_count': FRAMES, 'duration_s': FRAMES / RATE,
+            'frame_count': expected, 'duration_s': expected / RATE,
             'alley_lateral_edges_m': [y0, y1], 'alley_width_m': y1 - y0,
             'subject_halt_proxy_frames': halt_frames,
             'cross_section_free_width_m_by_frame': widths,

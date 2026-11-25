@@ -12,6 +12,8 @@ REQUIRED = (
     'rear_access_source_id', 'abutting_property_source_id',
     'non_culdesac_source_id', 'local_jurisdiction_source_id',
     'local_ordinance_review_source_id', 'other_alley_scope_review_source_id',
+    'halt_purpose_review_source_id', 'occupant_activity_review_source_id',
+    'traffic_conflict_review_source_id', 'official_direction_review_source_id',
 )
 
 

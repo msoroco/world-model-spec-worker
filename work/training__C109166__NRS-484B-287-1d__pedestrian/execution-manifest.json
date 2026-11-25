@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C109166__NRS-484B-287-1d__pedestrian",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_cpu_draft_no_public_receipt",
+  "status": "cpu_proofs_bound_source_review_pending",
   "delivery_ready": false,
   "original_native_observed": false,
   "cases": [
@@ -10,7 +10,7 @@
       "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
       "kind": "delivery",
       "construction": "cases/probe_01/primary/construction.json",
-      "construction_sha256": "6d1d7d9f803366f5e4c80516c244ceca39bc4daf64881e99f367521556e40a33",
+      "construction_sha256": "2c28b63f64f1a5f6be5ac8c9be68a9376511d6f1e47fc95313c5a45559b4aba3",
       "measurement_contract": "cases/probe_01/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -25,7 +25,7 @@
         {
           "id": "fallback1",
           "construction": "cases/probe_01/fallback1/construction.json",
-          "construction_sha256": "7d7c07875d419c095c2346c5a5b72820cb85a5e0103b55100ba453c6341a4d38",
+          "construction_sha256": "7023a838d39b5d5d3fec88ce4a7939f356be550ac0b54a533ca81ad20fbd8688",
           "trigger": {
             "source": "original driver_reference camera pixels",
             "metric": "diagonal glyph visible height in pixels",
@@ -33,15 +33,150 @@
           },
           "changed_knobs": [
             "driver_reference_height_m: 3.0 to 2.2"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7023a838d39b5d5d3fec88ce4a7939f356be550ac0b54a533ca81ad20fbd8688",
+            "command": "runtime.py offline --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --candidate fallback1",
+            "log": "selected-offline-probe_01-fallback1.log",
+            "log_sha256": "44f531665681e4488886dc5c57199ab28626e7cb8d87fb95a5c30042556e521a"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_01/fallback1/public-receipt.json",
+            "sha256": "f8e05d49523f0a652d4aad7634cffd03ef490d0678272f3b7151fc9fcc4cfd0e",
+            "log": "cases/probe_01/fallback1/public-analysis.log",
+            "negative_log": "cases/probe_01/fallback1/negative-analysis.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "2c28b63f64f1a5f6be5ac8c9be68a9376511d6f1e47fc95313c5a45559b4aba3",
+        "command": "runtime.py offline --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --candidate primary",
+        "log": "selected-offline-probe_01-primary.log",
+        "log_sha256": "347d335c732a06ca9df6b8cc61b2797bbb8ba781a9ae37b82913bcbc02fcceb6"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_01/primary/public-receipt.json",
+        "sha256": "ccfcd7b9938177d4176ba4a7e01941731f80aa999cc966173680a9731fb5e45c",
+        "log": "cases/probe_01/primary/public-analysis.log",
+        "negative_log": "cases/probe_01/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_01/primary/negative-analysis.log",
+        "log_sha256": "ff2b85293fd66e97bd42f38d91426415d3200c5b7c47ca4323753742e5c5c0f6"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl"
+        },
+        "dev.pedestrian_signal": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "device-original.jsonl, diagonal-pixel-review.json"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "authority-receipt.json, authority/official_status.json"
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "authority-receipt.json, authority/movement_applicability.json"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "road-boundary-review.json, pedestrian-original.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "road-boundary-review.json, pedestrian-original.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "video_frames.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, road-boundary-review.json"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "cases/probe_01/physical-preparation.json",
+        "sha256": "29e51a4d80854d0614a1d1918968d2f4d0550b332a40bcc8d9afb03bb2d9d7b9"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "source_hashed_exception_applicability_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5f646999a58864562e442ab65058659fa8830f5c6c18e8d1593ee41ca324ef52",
+        "command": ".venv-cpu/bin/python work/training__C109166__NRS-484B-287-1d__pedestrian/delivery_audit.py --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --candidate primary --attempt .runtime-work/c109166-public-v2-probe_01-primary --processing work/training__C109166__NRS-484B-287-1d__pedestrian/saved-probe_01-primary.log --output .runtime-work/c109166-delivery-v2-positive-probe_01-primary.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_01-primary-positive.log",
+        "test_log_sha256": "f25990ea4c4c64941906c4825ae433541033f9871824823ca9a9f9d1e38514f3",
+        "negative_command": ".venv-cpu/bin/python work/training__C109166__NRS-484B-287-1d__pedestrian/delivery_audit.py --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --candidate primary --attempt .runtime-work/c109166-public-v2-probe_01-primary --processing .runtime-work/c109166-negative-device-processing.json --output .runtime-work/c109166-delivery-v2-negative.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-original.jsonl",
+        "negative_log": "delivery-probe_01-negative.log",
+        "negative_log_sha256": "1080446eaf04f7684834cac95d9e5df870a678940ce4439fed251242edf118d2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109166__NRS-484B-287-1d__pedestrian/execution-manifest.json --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py feedback --case training__C109166__NRS-484B-287-1d__pedestrian__probe_01 --attempt \"$ATTEMPT\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-probe_01-primary.log",
+        "test_log_sha256": "9507a22d7391d3fea4b030da95cff5daa28ebd0a603a006ba716ce4d3ae916c5"
+      }
     },
     {
       "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_02",
       "kind": "delivery",
       "construction": "cases/probe_02/primary/construction.json",
-      "construction_sha256": "ffa875e9a282367904cd09c0bf958ceaaca46f4fb6049d47a3185bbe47c763e5",
+      "construction_sha256": "a281b2618bef242e65f4018568e30333f7fddfbd6e36d29f6d8076e1c108b5ff",
       "measurement_contract": "cases/probe_02/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -56,7 +191,7 @@
         {
           "id": "fallback1",
           "construction": "cases/probe_02/fallback1/construction.json",
-          "construction_sha256": "2b2fd16f31744876749635725dea462766b0bbcfa971a118df6860df38e32148",
+          "construction_sha256": "625155ff22c16fbb391bcfcabda064ece110e9e9707d4b5c912fa8b80f94cd47",
           "trigger": {
             "source": "original driver_reference camera pixels",
             "metric": "diagonal glyph visible height in pixels",
@@ -64,9 +199,152 @@
           },
           "changed_knobs": [
             "driver_reference_height_m: 3.0 to 2.2"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "625155ff22c16fbb391bcfcabda064ece110e9e9707d4b5c912fa8b80f94cd47",
+            "command": "runtime.py offline --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --candidate fallback1",
+            "log": "selected-offline-probe_02-fallback1.log",
+            "log_sha256": "44eff7d53671b84d9531fd665be755d0614439b39ce77371f8c4b48801b5cfdc"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_02/fallback1/public-receipt.json",
+            "sha256": "50a85c292fd37feecd6955a89e0b2ba913539034b5cfb244274b351865bdc91a",
+            "log": "cases/probe_02/fallback1/public-analysis.log",
+            "negative_log": "cases/probe_02/fallback1/negative-analysis.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a281b2618bef242e65f4018568e30333f7fddfbd6e36d29f6d8076e1c108b5ff",
+        "command": "runtime.py offline --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --candidate primary",
+        "log": "selected-offline-probe_02-primary.log",
+        "log_sha256": "836924503f7a9b1df716f7bea25e31d66cb4385ff1cd6a9883ce223aac750c96"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_02/primary/public-receipt.json",
+        "sha256": "a63cbeaeea69df2f71d4e9b21f0f8b77512b1046644fc6318f28270eb27f02a2",
+        "log": "cases/probe_02/primary/public-analysis.log",
+        "negative_log": "cases/probe_02/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_02/primary/negative-analysis.log",
+        "log_sha256": "4c3f6fa9aaf16ae749ecb94de93a64a29975cd52d69a7cad1a8a057402b50784"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl"
+        },
+        "dev.pedestrian_signal": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "device-original.jsonl, diagonal-pixel-review.json"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "authority-receipt.json, authority/official_status.json"
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "authority-receipt.json, authority/movement_applicability.json"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "road-boundary-review.json, pedestrian-original.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "road-boundary-review.json, pedestrian-original.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, video_frames.jsonl"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "video_frames.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native readback, frame join and independent source review",
+          "evidence": "pedestrian-original.jsonl, road-boundary-review.json"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "cases/probe_02/physical-preparation.json",
+        "sha256": "428021c71a0eaf02b678949f44dcb1c4f46a976b47e0612c515472df4b3f1045"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "source_hashed_exception_applicability_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5f646999a58864562e442ab65058659fa8830f5c6c18e8d1593ee41ca324ef52",
+        "command": ".venv-cpu/bin/python work/training__C109166__NRS-484B-287-1d__pedestrian/delivery_audit.py --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --candidate primary --attempt .runtime-work/c109166-public-v2-probe_02-primary --processing work/training__C109166__NRS-484B-287-1d__pedestrian/saved-probe_02-primary.log --output .runtime-work/c109166-delivery-v2-positive-probe_02-primary.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_02-primary-positive.log",
+        "test_log_sha256": "fbc1e2b1c4f8cd6e6895ed30a99f38055e5926d9ddc4c22ef7ab5ba212064e7a",
+        "negative_command": ".venv-cpu/bin/python work/training__C109166__NRS-484B-287-1d__pedestrian/delivery_audit.py --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --candidate primary --attempt .runtime-work/c109166-public-v2-probe_02-primary --processing .runtime-work/c109166-negative-device-processing-probe_02.json --output .runtime-work/c109166-delivery-v2-negative-probe_02.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-original.jsonl",
+        "negative_log": "delivery-probe_02-negative.log",
+        "negative_log_sha256": "1080446eaf04f7684834cac95d9e5df870a678940ce4439fed251242edf118d2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109166__NRS-484B-287-1d__pedestrian/execution-manifest.json --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py feedback --case training__C109166__NRS-484B-287-1d__pedestrian__probe_02 --attempt \"$ATTEMPT\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved-probe_02-primary.log",
+        "test_log_sha256": "b4246f0909cfbf782fe6fef1ad7894d09f9df2561555e782fdbb6c1df6756e38"
+      }
     }
-  ]
+  ],
+  "comparison_proof": {
+    "path": "comparison-proof.json",
+    "sha256": "bf5016385ef0bfd1f8bce7f7887dd8aa7ce3721948db4001bc1d13519a6ead48"
+  },
+  "exception_review_cpu_proof": {
+    "path": "exception-review-proof.json",
+    "sha256": "9f89e1ad6f9ac0c13f7d0611abd7a262fd68cfbdd1265895f24e731f4d7a48c8"
+  }
 }

@@ -30,6 +30,7 @@
       "status": "selected_required",
       "case_ids": [
         "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+        "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
         "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2"
       ],
       "evidence_or_gap": "Primary CPU drafts and source-shaped saved proof exist; selected execution manifest, legal alley/ordinance source bindings, fallbacks, runtime process-saved compatibility, independent audits and semantic proposals remain incomplete."
@@ -63,6 +64,20 @@
       "draft_status": "primary Native runner, pinned offline and saved-source CPU proofs passed; exact delivery selection incomplete"
     },
     {
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+      "target_law_id": "NRS-484B-477-1b",
+      "kind": "planned_only",
+      "source_branch": "park",
+      "physical_target": "park in alley leaving exactly 10 feet clear",
+      "comparison_variable": "measured unobstructed alley width",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction_draft": "draft-alley/controlled_at_10/primary/construction.json",
+      "draft_status": "exact statutory equality boundary; Native runner and source proofs pending"
+    },
+    {
       "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-477-1b",
       "kind": "planned_only",
@@ -83,6 +98,36 @@
       "case_ids": [
         "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
         "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "measured unobstructed alley width"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__boundary_comparison",
+      "case_ids": [
+        "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+        "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2"
+      ],
+      "deliberate_differences": [
+        "measured unobstructed alley width"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
+        "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__above_boundary_comparison",
+      "case_ids": [
+        "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+        "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10"
       ],
       "deliberate_differences": [
         "measured unobstructed alley width"
@@ -185,9 +230,8 @@
     "Primary CPU drafts and source-shaped saved proof exist; selected execution manifest, legal alley/ordinance source bindings, fallbacks, runtime process-saved compatibility, independent audits and semantic proposals remain incomplete."
   ],
   "source_context_review": "The 10-foot clear-width duty concerns an alley and is subject to local ordinance. Measure available width across the vehicle footprint, not just centerline clearance.",
-  "source_observation_mapping": [
-    {
-      "term": "st.alley",
+  "source_observation_mapping": {
+    "st.alley": {
       "measurement": "st_alley_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -206,8 +250,7 @@
         "other_alley_scope_review_source_id"
       ]
     },
-    {
-      "term": "drv.standing_or_parked",
+    "drv.standing_or_parked": {
       "measurement": "drv_standing_or_parked_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -222,8 +265,7 @@
         "time_s"
       ]
     },
-    {
-      "term": "st.lane_width",
+    "st.lane_width": {
       "measurement": "st_lane_width_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -238,8 +280,7 @@
         "boundary_measurement_source_id"
       ]
     },
-    {
-      "term": "kin.extent",
+    "kin.extent": {
       "measurement": "kin_extent_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -254,8 +295,7 @@
         "other.half_width_m"
       ]
     },
-    {
-      "term": "rel.surface_gap",
+    "rel.surface_gap": {
       "measurement": "rel_surface_gap_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -270,8 +310,7 @@
         "other.xy_m"
       ]
     },
-    {
-      "term": "rel.occupies",
+    "rel.occupies": {
       "measurement": "rel_occupies_saved_measure",
       "evidence": "Original Native saved source and independent legal context; no legal verdict",
       "channels": [
@@ -286,5 +325,32 @@
         "subject.yaw_rad"
       ]
     }
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject, other vehicle and paved alley edges",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "subject, other vehicle and paved alley edges",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject, other vehicle and paved alley edges",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject, other vehicle and paved alley edges",
+        "interval": "all 600 original frames"
+      }
+    ]
+  }
 }

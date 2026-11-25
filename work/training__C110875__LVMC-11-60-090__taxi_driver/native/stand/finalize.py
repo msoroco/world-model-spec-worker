@@ -109,8 +109,7 @@ def first_turn_measurement(root):
                       'stand_designation_review': survey.get('stand_designation_review'),
                       'posted_notice_review': survey.get('posted_notice_review'),
                       'taxi_license_review': survey.get('taxi_license_review'),
-                      'street_identity_review': survey.get('street_identity_review'),
-                      'legal_verdict': None},
+                      'street_identity_review': survey.get('street_identity_review')},
             'sources': {name: sha(required(root, name)) for name in
                 ('road.xodr', 'route-survey.json', 'actor-poses.jsonl',
                  'video_frames.jsonl', 'trace.jsonl', 'reference_corner.mkv')},

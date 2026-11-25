@@ -11,7 +11,8 @@ CAMERAS = [('overview', 1920, 1080), ('approach', 1280, 720),
            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]
 TERMS = ('ru.subject', 'ru.pedestrian', 'dev.pedestrian_signal',
          'dev.regulatory_sign', 'dev.governs', 'st.intersection',
-         'kin.position', 'kin.heading', 'kin.path_length', 'kin.time', 'rel.occupies')
+         'kin.position', 'kin.heading', 'kin.path_length', 'kin.time',
+         'rel.occupies', 'st.crosswalk')
 
 
 def sha(path):

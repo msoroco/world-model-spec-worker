@@ -40,24 +40,34 @@
     {
       "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
       "target_law_id": "LVMC-11-60-090",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cab departs designated stand and turns right at first signed intersection",
       "comparison_variable": "first intersection turn direction",
-      "selection_status": "not_selected",
+      "selection_status": "selected_pending_cpu_proof",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_offline_passed_public_compatibility_in_progress",
+      "physical_risk": "First/later Native junction connection, taxi motion and posted notice visibility need original readback",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "First/later Native junction connection, taxi motion and posted notice visibility need original readback"
+      }
     },
     {
       "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_02",
       "target_law_id": "LVMC-11-60-090",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "same signed route with cab turning another direction",
       "comparison_variable": "first intersection turn direction",
-      "selection_status": "not_selected",
+      "selection_status": "selected_pending_cpu_proof",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_offline_passed_public_compatibility_in_progress",
+      "physical_risk": "First/later Native junction connection, taxi motion and posted notice visibility need original readback",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "First/later Native junction connection, taxi motion and posted notice visibility need original readback"
+      }
     }
   ],
   "comparisons": [
@@ -133,10 +143,9 @@
     "Cab stand designation and posted sign authority require external source/context, plus taxi blueprint and first-intersection route."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Exact public compatibility and recorded-only saved proof still in progress.",
+    "Fallback construction and independent delivery/comparison audits still in progress.",
+    "Original taxi license, stand designation, posted notice, first street identity and physical turn await local review."
   ],
   "observations": [
     {
@@ -192,12 +201,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Cab stand designation and posted sign authority require external source/context, plus taxi blueprint and first-intersection route.",
-    "No CARLA execution or accepted recording is claimed."
+    "Exact public compatibility and recorded-only saved proof still in progress.",
+    "Fallback construction and independent delivery/comparison audits still in progress.",
+    "Original taxi license, stand designation, posted notice, first street identity and physical turn await local review."
   ],
   "requirement_dispositions": [
     {
@@ -209,7 +215,134 @@
         "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
         "training__C110875__LVMC-11-60-090__taxi_driver__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Two selected Native taxi cases have executable offline-passing junction/stand/sign drafts; current-runtime public, saved, semantic and independent audits in progress. No original designation, notice, licensing or first-street identity yet."
+    }
+  ],
+  "evidence_review": [
+    {
+      "recording_ids": [],
+      "target_sets": [
+        "full-train"
+      ],
+      "facts_established": [],
+      "limitations": [
+        "Frozen accepted membership is empty; no source-backed reuse is available."
+      ],
+      "disposition": "new_delivery_pair_required"
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "ru.taxicab",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "ru.taxicab"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "st.curb_zone",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "st.curb_zone"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "dev.governs",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "st.intersection",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "drv.turning",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "kin.heading",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "kin.heading"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
+    },
+    {
+      "term": "kin.path_length",
+      "measurement": "source_bound_first_turn",
+      "channels": [
+        "kin.path_length"
+      ],
+      "source_refs": [
+        "actor-poses.jsonl",
+        "route-survey.json",
+        "road.xodr",
+        "reference_corner.mkv"
+      ],
+      "status": "proposed_original_source"
     }
   ]
 }

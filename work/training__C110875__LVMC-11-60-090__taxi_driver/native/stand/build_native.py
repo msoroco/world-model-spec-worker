@@ -29,15 +29,15 @@ def build():
             'time_window': '600 original Native frames',
             'reference_frame': 'original Native frame and surveyed street topology',
             'uncertainty': '50 ms sampling; authority and physical topology require review',
-            'source': source} for name, unit, method, source in (
-                ('ru.taxicab', 'identity', 'original Native blueprint plus external taxi-license review', 'actor-poses.jsonl'),
-                ('st.curb_zone', 'structured', 'stand landmark, original RGB and independent designation source', 'route-survey-native.json'),
-                ('dev.regulatory_sign', 'structured', 'OpenDRIVE sign landmark, original RGB and notice authority source', 'route-survey-native.json'),
-                ('dev.governs', 'structured', 'sign station joined to stand and first junction topology', 'route-survey-native.json'),
-                ('st.intersection', 'structured', 'ordered Native junction and independent street-identity review', 'route-survey-native.json'),
-                ('drv.turning', 'degrees', 'original observed heading through first junction', 'actor-poses.jsonl'),
-                ('kin.heading', 'degrees', 'original Native actor heading', 'actor-poses.jsonl'),
-                ('kin.path_length', 'm', 'original Native position integrated from stand exit', 'actor-poses.jsonl'))],
+            'source': 'channels/' + name + '.jsonl'} for name, unit, method in (
+                ('ru.taxicab', 'identity', 'original Native blueprint plus external taxi-license review'),
+                ('st.curb_zone', 'structured', 'stand landmark, original RGB and independent designation source'),
+                ('dev.regulatory_sign', 'structured', 'OpenDRIVE sign landmark, original RGB and notice authority source'),
+                ('dev.governs', 'structured', 'sign station joined to stand and first junction topology'),
+                ('st.intersection', 'structured', 'ordered Native junction and independent street-identity review'),
+                ('drv.turning', 'degrees', 'original observed heading through first junction'),
+                ('kin.heading', 'degrees', 'original Native actor heading'),
+                ('kin.path_length', 'm', 'original Native position integrated from stand exit'))],
             'context_inputs': [], 'limitations': [
                 'Designation, posted notice and taxi licensing need independent source review',
                 'Authored road is a request until original Native topology readback']}
@@ -79,12 +79,25 @@ def build():
         path = HERE / 'native-drafts' / suffix / 'construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(construction, indent=2) + '\n')
+        alternate = json.loads(json.dumps(construction))
+        alt_config = dict(config, candidate_id='fallback1', steering_gain=.024)
+        next(item for item in alternate['files'] if item['path'] == 'config.json')['content'] = json.dumps(alt_config, indent=2) + '\n'
+        alternate['mechanisms'] = ['same road, stand, notice, and cameras; steering gain increases from 0.018 to 0.024']
+        alternate['status'] = 'selected_native_fallback_draft_authority_unverified'
+        alternate_path = HERE / 'native-drafts' / suffix / 'fallback1-construction.json'
+        alternate_path.write_text(json.dumps(alternate, indent=2) + '\n')
         manifest['cases'].append({'case_id': case_id, 'kind': 'delivery',
             'construction': str(path.relative_to(HERE.parents[1])),
             'construction_sha256': sha(path),
             'candidate_risk': {'status': 'physical',
                 'reason': 'Native taxi route and sign visibility need original review'},
-            'candidates': [],
+            'candidates': [{'id': 'fallback1',
+                'construction': str(alternate_path.relative_to(HERE.parents[1])),
+                'construction_sha256': sha(alternate_path),
+                'trigger': {'source': 'original Native actor-poses.jsonl and result.json',
+                    'metric': 'observed first-junction turn and original sampled path',
+                    'failure_condition': 'requested turn indeterminate or sampled path below 100 m with complete original source'},
+                'changed_knobs': ['steering_gain 0.018 to 0.024; case/law/route/cameras/duration fixed']}],
             'measurement_contract': 'native/stand/native-drafts/' + suffix + '/measurement-contract.json',
             'fixture_recipe': 'work/' + ASSIGNMENT + '/diagnostic-' + suffix + '-recipe.json',
             'measurement_procedure': {'entrypoint': 'finalize.py'},
@@ -112,13 +125,26 @@ def build():
     proposals.mkdir(exist_ok=True)
     (proposals / 'cases.json').write_text(json.dumps({
         'cell_id': 'C110875', 'actor': 'taxi_driver',
-        'status': 'selected_native_draft', 'sweeps_expanded': True,
-        'cases': [{'case_id': ASSIGNMENT + '__' + suffix,
+        'status': 'draft', 'sweep_specs': [], 'sweeps_expanded': True,
+        'cases': [{'case_id': ASSIGNMENT + '__baseline',
+            'target_law_id': None, 'target_type': 'baseline',
+            'rationale': 'Common frozen taxi-stand context before requesting a route.',
+            'variable_assignments': {
+                'first_intersection_turn_direction': {'kind': 'subject_behavior', 'value': None},
+                'requested_first_turn': {'kind': 'controller', 'value': None},
+                'notice_posted': {'kind': 'world_setup', 'value': 'authored right-turn notice; authority unverified'}},
+            'unresolved_judgment_calls': ['stand designation, notice posting and first street identity'],
+            'recording_description': json.loads(next(f['content'] for f in json.loads(
+                (HERE / 'native-drafts' / 'probe_01' / 'construction.json').read_text()
+                )['files'] if f['path'] == 'config.json'))['recording_description']}] + [
+            {'case_id': ASSIGNMENT + '__' + suffix,
             'target_law_id': 'LVMC-11-60-090',
             'target_type': 'first_turn_' + direction,
             'rationale': 'Original first street after designated stand with posted right-turn notice',
             'variable_assignments': {'first_intersection_turn_direction': {
-                'kind': 'world_setup', 'value': direction}},
+                'kind': 'subject_behavior', 'value': None},
+                'requested_first_turn': {'kind': 'controller', 'value': direction},
+                'notice_posted': {'kind': 'world_setup', 'value': 'authored right-turn notice; authority unverified'}},
             'unresolved_judgment_calls': ['taxi license and stand/sign authority',
                 'physical first street identity'],
             'recording_description': manifest['cases'][i].get('recording_description')

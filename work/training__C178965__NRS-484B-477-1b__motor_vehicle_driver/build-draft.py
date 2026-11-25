@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
-CASES = (('controlled_1', 7.5), ('controlled_2', 6.0))
+CASES = (('controlled_1', 7.5), ('controlled_at_10', 6.648), ('controlled_2', 6.0))
 
 
 def sha(path):
@@ -30,19 +30,28 @@ def main():
                   'rate_hz': 20, 'duration_s': 30, 'required_atoms': [],
                   'source_packets': [], 'case': {'case_id': case_id},
                   'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
-                               'height': 1080 if name == 'overview' else 720}
+                               'height': 1080 if name == 'overview' else 720,
+                               'pose_strategy': 'fixed_world_lateral_and_overhead_capture',
+                               'fov_deg': 85}
                               for name in ('overview', 'approach', 'reference_corner', 'driver_reference')],
                   'recording_description': {'channels': [
                       {'name': 'subject_and_other_vehicle_poses', 'unit': 'structured',
                        'sampling_rate_hz': 20, 'method': 'original Native transforms, velocities and extents',
                        'time_window': '600 frames', 'reference_frame': 'authored paved road',
-                       'uncertainty': '50 ms sampling'},
+                       'uncertainty': '50 ms sampling',
+                       'source': 'channels/subject_and_other_vehicle_poses.jsonl'},
                       {'name': 'alley_lateral_boundaries', 'unit': 'meters',
                        'sampling_rate_hz': 20, 'method': 'OpenDRIVE and original Native lane-width readback',
                        'time_window': '600 frames', 'reference_frame': 'authored paved road',
-                       'uncertainty': 'pending Native readback'}],
+                       'uncertainty': 'pending Native readback',
+                       'source': 'channels/alley_lateral_boundaries.jsonl'}],
+                      'context_inputs': [
+                          {'name': 'independent_alley_review', 'unit': 'structured',
+                           'method': 'source-bound alley identity, jurisdiction, ordinance and purpose review',
+                           'source': 'alley-context.json'}],
                       'limitations': ['Legal alley definition, local jurisdiction and ordinance, and free movement require independent review']},
                   'status': 'cpu_draft_not_delivery_prepared'}
+        config['case']['recording_description'] = config['recording_description']
         candidate_rows = {}
         for candidate_id, spawn_height in (('primary', 8.8), ('fallback1', 9.1)):
             variant = dict(config, candidate_id=candidate_id, spawn_height_m=spawn_height)
@@ -56,7 +65,7 @@ def main():
                         'recording_description': variant['recording_description'],
                         'measurement_plan': {'entrypoint': 'finalize_alley.py',
                                              'required_sources': ['vehicle-poses.jsonl', 'alley-inventory.json',
-                                                                  'video_frames.jsonl'],
+                                                                  'video_frames.jsonl', 'trace.jsonl'],
                                              'status': 'source_bound_cpu_draft'},
                         'static_checks': ['open-ended 100 m paved road', f'{width} m alley width',
                                           'two measured vehicle footprints', 'four profile cameras',

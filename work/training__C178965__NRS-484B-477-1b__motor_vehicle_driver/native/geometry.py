@@ -3,7 +3,7 @@ import argparse
 import json
 import xml.etree.ElementTree as ET
 
-WIDTHS = {'controlled_1': 7.5, 'controlled_2': 6.0}
+WIDTHS = {'controlled_1': 7.5, 'controlled_at_10': 6.648, 'controlled_2': 6.0}
 
 
 def open_drive(width):

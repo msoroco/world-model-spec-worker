@@ -62,7 +62,9 @@ def _pose(actor):
 
 def execute(output_dir, case, host, port, spawn_height):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     if case not in WIDTHS:
@@ -80,6 +82,9 @@ def execute(output_dir, case, host, port, spawn_height):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned, encoders, queues = [], {}, {}
+    encoder_exit_codes = {}
+    capture = None
+    capture_complete = False
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(width), carla.OpendriveGenerationParameters(
@@ -96,7 +101,6 @@ def execute(output_dir, case, host, port, spawn_height):
         world.apply_settings(settings)
         readback = survey(world, carla, width)
         output.mkdir(parents=True, exist_ok=True)
-        (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         inventory = {'assignment_id': 'training__C178965__NRS-484B-477-1b__motor_vehicle_driver',
                      'source_kind': 'native_saved_sample', 'native_readback': readback,
                      'alley_lateral_edges_m': [-width, 0.0],
@@ -106,6 +110,10 @@ def execute(output_dir, case, host, port, spawn_height):
                      'non_culdesac_source_id': None, 'local_jurisdiction_source_id': None,
                      'local_ordinance_review_source_id': None,
                      'other_alley_scope_review_source_id': None,
+                     'halt_purpose_review_source_id': None,
+                     'occupant_activity_review_source_id': None,
+                     'traffic_conflict_review_source_id': None,
+                     'official_direction_review_source_id': None,
                      'source_status': 'original geometry only; alley definition and ordinance need source review'}
         independent_packet = os.environ.get('C178965_ALLEY_CONTEXT_SOURCE')
         if independent_packet:
@@ -141,6 +149,9 @@ def execute(output_dir, case, host, port, spawn_height):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        capture = PipelineCapture(client, subject, output,
+                                  json.loads((output / 'config.json').read_text())['case_id'],
+                                  visibility=False, required_observations=[])
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-poses.jsonl').open('x') as poses:
             first_elapsed = None
             for index in range(FRAMES):
@@ -158,6 +169,9 @@ def execute(output_dir, case, host, port, spawn_height):
                 if first_elapsed is None:
                     first_elapsed = ts
                 elapsed = ts - first_elapsed
+                capture.capture(native_frame, elapsed,
+                                extra={'c178965_subject_pose': _pose(subject),
+                                       'c178965_other_pose': _pose(other)})
                 mapped = {}
                 for name, q in queues.items():
                     image = q.get(timeout=30)
@@ -174,12 +188,20 @@ def execute(output_dir, case, host, port, spawn_height):
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_exit_codes[name] = process.wait(timeout=180)
+            if encoder_exit_codes[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError(f'Original camera encoding failed: {name}: {stderr.decode()[-400:]}')
+        capture_complete = True
         return {'frames': FRAMES, 'camera_names': list(queues),
                 'native_survey': readback, 'legal_alley_status_observed': False,
                 'physical_acceptance_claimed': False}
     finally:
+        close_error = None
+        if capture is not None:
+            try:
+                capture.close(confirmed=capture_complete)
+            except BaseException as error:
+                close_error = error
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -191,8 +213,16 @@ def execute(output_dir, case, host, port, spawn_height):
                 actor.destroy()
             except Exception:
                 pass
-        if changed:
-            restore(client, saved)
+        restoration = restore(client, saved) if changed else {'restored': True}
+        if close_error is not None:
+            raise RuntimeError('Original recorder closure failed') from close_error
+        if capture_complete:
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                         encoder_exit_codes=encoder_exit_codes,
+                         context={'case_id': json.loads((output / 'config.json').read_text())['case_id'],
+                                  'source': 'original Native alley width and two vehicle bodies',
+                                  'legal_alley_status_observed': False,
+                                  'physical_acceptance_claimed': False})
 
 
 if __name__ == '__main__':

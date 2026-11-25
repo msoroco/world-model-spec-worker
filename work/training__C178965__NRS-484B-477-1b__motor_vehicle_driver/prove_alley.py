@@ -1,6 +1,7 @@
 """CPU proof of source-bound 30-second width computation and rejection."""
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from alley_measure import ASSIGNMENT, measure, TEN_FEET_M
@@ -20,6 +21,10 @@ def sample(width):
                  'local_jurisdiction_source_id': 'synthetic-jurisdiction',
                  'local_ordinance_review_source_id': 'synthetic-ordinance-review',
                  'other_alley_scope_review_source_id': 'synthetic-antecedent-review',
+                 'halt_purpose_review_source_id': 'synthetic-purpose-review',
+                 'occupant_activity_review_source_id': 'synthetic-occupant-review',
+                 'traffic_conflict_review_source_id': 'synthetic-conflict-review',
+                 'official_direction_review_source_id': 'synthetic-direction-review',
                  'boundary_measurement_source_id': 'synthetic-map-width-survey',
                  'alley_lateral_edges_m': [-width, 0.0]}
     rows = []
@@ -58,9 +63,16 @@ def main():
     if 'less than 10 feet' not in law or 'Unless otherwise provided by ordinance' not in law:
         raise ValueError('source law changed')
     wide, inv_wide = sample(7.5)
+    at, inv_at = sample(6.648)
     narrow, inv_narrow = sample(6.0)
     a = measure(encoded(wide), encoded(inv_wide))
+    midpoint = measure(encoded(at), encoded(inv_at))
     b = measure(encoded(narrow), encoded(inv_narrow))
+    if not math.isclose(midpoint['minimum_measured_halt_free_width_m'], TEN_FEET_M,
+                        rel_tol=0, abs_tol=1e-9):
+        raise ValueError('exact ten-foot sample differs')
+    if midpoint['measured_halt_frames_below_10_feet']:
+        raise ValueError('exact ten-foot sample was incorrectly classified below')
     if not a['minimum_measured_halt_free_width_m'] > TEN_FEET_M:
         raise ValueError('wide alley sample did not leave 10 feet')
     if not b['minimum_measured_halt_free_width_m'] < TEN_FEET_M:
@@ -76,6 +88,9 @@ def main():
     inventory['rear_access_source_id'] = ''
     reject(packet, inventory, 'rear_access_source_id missing')
     packet, inventory = sample(6)
+    inventory['halt_purpose_review_source_id'] = ''
+    reject(packet, inventory, 'halt_purpose_review_source_id missing')
+    packet, inventory = sample(6)
     packet['frames'][200]['other']['vehicle_id'] = 'other2'
     reject(packet, inventory, 'vehicle identity changed')
     packet, inventory = sample(6)
@@ -87,10 +102,12 @@ def main():
                       'wide_packet_sha256': a['packet_sha256'],
                       'narrow_packet_sha256': b['packet_sha256'],
                       'wide_free_width_m': a['minimum_measured_halt_free_width_m'],
+                      'at_free_width_m': midpoint['minimum_measured_halt_free_width_m'],
                       'narrow_free_width_m': b['minimum_measured_halt_free_width_m'],
                       'checks': ['600 original 20-Hz frames', 'both vehicle footprints',
                                  '10-foot statutory comparison without legal verdict',
                                  'local ordinance source rejection', 'alley definition source rejection',
+                                 'parking-purpose source rejection',
                                  'identity rejection', 'missing frame rejection']}, sort_keys=True))
 
 

@@ -109,6 +109,8 @@ def derive_channels(attempt, config):
             'dev.governs': {'movement_id': 'c109166-287-1d-diagonal-sw-ne',
                             'independent_review_pending': True},
             'st.intersection': {'entry_boundary_review_pending': True},
+            'st.crosswalk': {'original_crosswalk_geometry_review_pending': True,
+                             'source_ref': 'road-boundary-review.json'},
             'kin.position': center,
             'kin.heading': [2 ** -.5, 2 ** -.5],
             'kin.path_length': length,
