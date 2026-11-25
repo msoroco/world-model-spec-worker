@@ -1,3 +1,7 @@
+## 2026-11-25 15:22 UTC: C80909 route-construction checkpoint
+
+The next partial assignment, C80909, now has `left_turn_route.py`: a planar complete-body route validator for the real two-section barrier opening and a Native waypoint controller issuing bounded steering, throttle and stop braking. A new CPU test checks a 90-degree left turn through the opening, rejects a blocked-divider crossing, and observes the controller's Native control calls. All four focused tests pass in `cpu-tests.log`. The exact runner, camera capture, saved finalizer, semantic chain, source-bound proofs and independent audits are still CPU work; C80909 remains `partial`. The frozen branch label says U-turn even though the reviewed binding places this cell at a distinct 90-degree left turn; its handoff keeps that discrepancy explicit. No accepted recording or legal/public-authority conclusion is claimed.
+
 # C80909 CPU handoff — NRS 484B.227(1)
 
 Status: **partial**. The frozen branch label mentions a U-turn, but the witness binds this divided-road/left_turn/other_vehicle cell to the distinct 90-degree left-turn alternative. C126120 remains the assigned fixed U-turn cell. This package makes no U-turn coverage claim. The exact law requires the right-hand roadway and forbids crossing a dividing space or turning except through a physical opening or public-authority-established crossover/intersection. The frozen evidence inventory has zero accepted recordings.

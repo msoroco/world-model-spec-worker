@@ -16,6 +16,7 @@ def load(name):
 
 measure=load("divider_measurements")
 construction=load("barrier_construction")
+route=load("left_turn_route")
 
 
 def body(x,y):return [[x+dx,y+dy] for dx,dy in ((-1,-1),(-1,1),(1,1),(1,-1))]
@@ -81,6 +82,36 @@ class DividerTests(unittest.TestCase):
             self.assertLess(built["section_axis_offsets_m"][0],0)
             self.assertGreater(built["section_axis_offsets_m"][1],0)
         self.assertEqual(destroyed,[True,True])
+
+    def test_left_turn_route_has_body_clearance_and_applies_native_control(self):
+        from unittest.mock import patch
+        import sys
+        context={"right_hand_roadway_xy_m":[[0,-10],[30,-10],[30,-2],[0,-2]],
+                 "destination_roadway_xy_m":[[0,2],[30,2],[30,10],[0,10]],
+                 "dividing_space_xy_m":[[0,-2],[30,-2],[30,2],[0,2]],
+                 "opening_xy_m":[[10,-2],[20,-2],[20,2],[10,2]]}
+        points=[(5,-5),(15,-5),(15,0),(15,5)]
+        receipt=route.validate_route(context,points,body_radius_m=1.0)
+        self.assertEqual(receipt['turn_angle_degrees'],90)
+        with self.assertRaisesRegex(ValueError,'blocked dividing space'):
+            route.validate_route(context,[(5,-5),(5,-3),(5,0),(5,5)],body_radius_m=1.0)
+        controls=[]
+        state=NS(location=NS(x=5,y=-5),rotation=NS(yaw=0))
+        vehicle=NS(get_transform=lambda:state,apply_control=controls.append)
+        fake_carla=NS(VehicleControl=lambda **kw:NS(**kw))
+        with patch.dict(sys.modules,{'carla':fake_carla}):
+            controller=route.WaypointController(points)
+            first=controller.step(vehicle)
+            self.assertFalse(first['arrived'])
+            self.assertGreater(controls[-1].throttle,0)
+            state.location.x,state.location.y,state.rotation.yaw=15,-5,0
+            controller.step(vehicle)
+            state.location.x,state.location.y,state.rotation.yaw=15,0,90
+            controller.step(vehicle)
+            state.location.x,state.location.y,state.rotation.yaw=15,5,90
+            final=controller.step(vehicle)
+            self.assertTrue(final['arrived'])
+            self.assertEqual(controls[-1].brake,1.0)
 
 
 if __name__=="__main__":unittest.main()
