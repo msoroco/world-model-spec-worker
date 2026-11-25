@@ -130,6 +130,8 @@ def capture(args,config):
  output=Path(args.output_dir).resolve()
  if not output.is_dir() or not (output/'construction.json').is_file():
   raise ValueError('Use runtime.py capture to materialize exact construction first')
+ from reviewed_site_install import install
+ install(output,config.get('selected_case_id',''))
  packet=json.loads((output/'site_packet.json').read_text())
  require_native_site_review(packet)
  prepared,start,forward,target=prepare_site(packet,output,config)

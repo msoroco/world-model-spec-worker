@@ -24,9 +24,9 @@ def build():
         rows.append({
             "order": order, "assignment_id": AID, "case_id": case,
             "prepare_command": primary,
-            "execute_command": f"{PREFIX} execute-delivery {COMMON} --case {case} --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+            "execute_command": f"C215286_REVIEW_BUNDLE=$REVIEW_BUNDLE {PREFIX} execute-delivery {COMMON} --case {case} --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
             "accept_command": f"{PREFIX} accept-delivery {COMMON} --case {case} --run $RUN --job $JOB_ID --attempt $ATTEMPT --audit $AUDIT --review-archive /external/archive",
-            "capture_command": f"$CARLA_PYTHON runtime.py capture --manifest {BASE}/execution-manifest.json --case {case} --output $ATTEMPT --host $CARLA_HOST --port $CARLA_PORT --python $CARLA_PYTHON",
+            "capture_command": f"C215286_REVIEW_BUNDLE=$REVIEW_BUNDLE $CARLA_PYTHON runtime.py capture --manifest {BASE}/execution-manifest.json --case {case} --output $ATTEMPT --host $CARLA_HOST --port $CARLA_PORT --python $CARLA_PYTHON",
             "postprocessing_command": f".venv-cpu/bin/python runtime.py process-saved --manifest {BASE}/execution-manifest.json --case {case} --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json",
             "owner_release_command": f"SCENARIO_CASE_ID={case} .venv-cpu/bin/python runtime.py owner-released --attempt $ATTEMPT --receipt $ATTEMPT/owner-release.json --acknowledge-owner-released",
             "additional_source_audit_command": f"SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-native-audit .venv-cpu/bin/python {BASE}/{audit_script} " + (f"--native $ANALYSIS {case} $ATTEMPT/owner-release.json" if alternative else f"$ANALYSIS {case} $ATTEMPT/owner-release.json"),

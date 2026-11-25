@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from contextlib import ExitStack
 from pathlib import Path
 from queue import Empty, Queue
@@ -114,6 +115,10 @@ def _publish_site_sources(output, site, case_id):
     for name in names:
         target = output / name
         template = output / "site_templates" / name
+        if os.environ.get("C215286_REVIEW_BUNDLE"):
+            if not target.is_file():
+                raise ValueError("Installed reviewed site source missing: " + name)
+            continue
         if not template.is_file():
             if not target.is_file():
                 raise ValueError("Missing reviewed site template: " + name)
@@ -168,6 +173,8 @@ def capture(output, host, port, case_id):
     output = Path(output).resolve()
     if not (output / "construction.json").is_file():
         raise ValueError("Materialized exact construction required")
+    from reviewed_site_install import install
+    install(output, case_id)
     site, review = _load_site(output, case_id)
     _require_native_review(site)
     _publish_site_sources(output, site, case_id)
