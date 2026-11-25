@@ -882,3 +882,21 @@ Added `reverse_crosswalk_native_audit.py`, a CARLA-independent post-capture pref
 Next: obtain and review actual Native map/road/intersection/corner and crosswalk district/marking/camera source packets; bind those reviewed sources to materialized attempts; run local Native capture, saved processing and the two Native source preflights; review pixels; then integrate exact rows into the shared ordered queue and pass the assignment strict gate before changing status to ready.
 
 The Native crosswalk source preflight additionally requires explicit `reviewed_native_site` status and camera review basis, and checks all 900 original camera, trace and reverse-history rows at 20 Hz. `cases/native-source-join-test.log` records a passing 900-frame joined source fixture and rejection of changed frame identity and cadence. `cases/check_dispatch_plan.py` reproducibly checks the saved six-case, ten-fallback, three-comparison dispatch inventory; `cases/dispatch-plan-check.log` records exit 0. These are CPU protocol checks, not a Native positive capture.
+
+## 2026-11-24 crosswalk capture-entry review enforcement
+
+The selected crosswalk `runner.py` now calls `require_native_site_review` before importing CARLA or starting a Native client. It rejects the diagnostic TownX packet and requires a declared reviewed Native site, named reviewer, district and marked-crosswalk basis, and camera review basis. The same check is embedded in both exact crosswalk primaries and all six bounded fallbacks. The package tests exercise `capture()` with a diagnostic packet and confirm rejection before CARLA import; 33 tests pass. The existing `delivery_audit.py` Native preflight also now requires those review fields and a 900-row 20 Hz camera, trace and reverse-history join.
+
+All eight changed crosswalk constructions passed current-runtime exact offline and positive/missing-source compatibility reproof (`cases/native-review-current-runtime-reproof.log`); both primaries passed recorded-only processing (`cases/native-review-current-saved-reproof.log`) and physical-preparation fixture reproof (`cases/native-review-physical-reproof.log`). Rebuilt 900-frame full-duration crosswalk diagnostic specifications under ignored `.runtime-work/`, then passed both exact full-duration compatibility runs (`cases/native-review-full-compatibility.log`) and positive plus changed-source negative delivery audits (`cases/native-review-delivery-reproof.log`). Runtime source verification and CPU preflight passed. Pinned manifest validation passed; final compatibility, semantic and delivery-handoff receipt validation is running. The assignment remains partial pending actual source-reviewed Native site/camera packets, Native/pixel review, shared queue integration and a strict scoped gate. No physical or legal acceptance is claimed.
+
+The final pinned validator run completed with exit 0: execution-manifest, package compatibility receipts, semantic delivery and all six delivery-handoff cases passed (`cases/native-review-final-validators.log`). The current inventory remains 34 ready and 9 partial; no prior-ready package was changed.
+
+The lead integrated the six exact C215286 rows and three comparison commands into `work/_shared/gpu-queue.json` with explicit `status: partial`; the shared queue has six rows and lacks the other assignments and local integration proof. `cases/shared-queue-integration.log` and `cases/shared-queue-check.log` record an idempotent integration and command/order check. This is exact dispatch intent only, not a complete batch queue or Native acceptance.
+
+## 2026-11-24 C215286 site intake
+
+C215286 added a five-packet reviewed-source intake check with hash, identity and paired-region guards. Diagnostic TownX is rejected; 35 package tests and CPU preflight pass. It remains partial; the shared queue is partial.
+
+## 2026-11-24 C179789 condition construction
+
+C179789 now has reversible Native weather readback/restoration, original-world lane/sight ray probe, and bounded lead/ego longitudinal controllers with body-gap guard. Eight package tests pass. It remains partial pending exact runner, source-bound surface realization, saved finalizer, semantic and delivery proofs.

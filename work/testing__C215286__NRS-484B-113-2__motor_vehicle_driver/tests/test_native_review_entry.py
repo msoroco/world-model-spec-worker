@@ -1,8 +1,10 @@
 import importlib.util
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
@@ -16,6 +18,12 @@ class NativeReviewEntryTests(unittest.TestCase):
         packet = json.loads((HERE / "site_packet.json").read_text())
         with self.assertRaisesRegex(ValueError, "before capture"):
             runner.require_native_site_review(packet)
+        with tempfile.TemporaryDirectory() as temporary:
+            stage = Path(temporary)
+            (stage / "construction.json").write_text("{}\n")
+            (stage / "site_packet.json").write_text(json.dumps(packet) + "\n")
+            with self.assertRaisesRegex(ValueError, "before capture"):
+                runner.capture(SimpleNamespace(output_dir=str(stage)), {})
 
     def test_complete_review_declaration_is_accepted(self):
         packet = json.loads((HERE / "site_packet.json").read_text())

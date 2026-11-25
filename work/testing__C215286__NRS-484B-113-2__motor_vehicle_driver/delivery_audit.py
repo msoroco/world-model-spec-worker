@@ -20,6 +20,7 @@ from worker_exchange.common import digest, within
 from worker_exchange.candidate_constructions import select
 from delivery_source_audit import audit as audit_sources
 from crosswalk_reverse import analyze as measure_reverse
+from reverse_crosswalk_native_audit import _joined_20hz
 
 
 def sha(path):
@@ -139,6 +140,14 @@ def audit_native_preflight(attempt, case_id, owner_receipt):
     config = json.loads((attempt / 'config.json').read_text())
     if config.get('selected_case_id') != case_id:
         raise ValueError('Native config selects another case')
+    site = json.loads((attempt / 'site_packet.json').read_text())
+    if (site.get('site_review_status') != 'reviewed_native_site' or not site.get('reviewer')
+            or not site.get('district_review_basis') or not site.get('crosswalk_review_basis')
+            or not site.get('camera_review_basis')
+            or any('synthetic' in str(site.get(key, '')).lower() for key in
+                   ('reviewer', 'district_review_basis', 'crosswalk_review_basis', 'camera_review_basis'))):
+        raise ValueError('Original Native district, crosswalk and camera review required')
+    _joined_20hz(attempt)
     measured = measure_reverse(attempt)
     if len(measured['samples']) != 900:
         raise ValueError('Native reverse history must contain 900 joined frames')
