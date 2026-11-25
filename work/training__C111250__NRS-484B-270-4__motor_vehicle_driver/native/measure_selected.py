@@ -23,7 +23,7 @@ def measure(attempt, allow_diagnostic=False):
     attempt = Path(attempt)
     for name in SOURCES:
         if not (attempt / name).is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     facility = json.loads((attempt / "facility-context.json").read_text())
     circumstance = json.loads((attempt / "subsection3-context.json").read_text())
     source_kind = facility.get("source_kind")

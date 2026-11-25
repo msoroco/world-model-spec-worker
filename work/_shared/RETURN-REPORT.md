@@ -1,8 +1,14 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 55 of 253 assignments are ready and 198 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 56 of 253 assignments are ready and 197 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-24 officer-directed selected CPU checkpoint
+
+Lead-owned `training__C404492__NRS-484B-267-2d__motor_vehicle_driver` now selects a sixth exact `officer_directed` case alongside its five previously selected cases. Three primary/fallback constructions pass current-runtime offline, public positive and missing-source negative compatibility, and recorded-only saved processing. Public matrix proof SHA-256: `f10e689e0d77175e800baffae2d360f0ed141ad212cabd728b0a7a2f39a72bbc`; saved matrix proof SHA-256: `b803da94369791dfe1c3ac59685e3b2979afda0692814e9b2c82f6c7a75fc53c`. The six-case execution and ten-stage semantic validators pass; synthetic physical complete/incomplete/missing proof and source-shaped officer comparison pass. The selected officer delivery audit has a diagnostic positive, six missing-instruction-source negatives and an original-Native negative. Full receipt validation and selected comparison rebinding are in progress. A distinct driver hand-signal preparation case is still CPU work, so C404492 remains partial. No original physical, officer instruction, or legal acceptance is claimed.
+
+C109166/NRS 484B.287(1)(e) independently passed its scoped strict gate earlier this turn and is ready on the current runtime. C111331, C111088(5a), and C111250 have disjoint active owners and remain partial pending their exact gates. The batch-wide strict gate remains unpassed while partial packages remain.
 
 ## 2026-11-24 resumed CPU construction checkpoint
 

@@ -25,6 +25,8 @@ def prove(case):
     suffix=entry['id'];source=REPO/'.runtime-work'/('c111331-2504-unified-v1-compat-'+suffix+'-primary')
     if not (source/'compatibility.json').is_file():
         source=REPO/'.runtime-work'/('c111331-2504-unified-v2-compat-'+suffix+'-primary')
+    if suffix=='prior_stop_yield' and (REPO/'.runtime-work/c111331-2504-cautious-v1-compat-primary/compatibility.json').is_file():
+        source=REPO/'.runtime-work/c111331-2504-cautious-v1-compat-primary'
     receipt=json.loads((source/'compatibility.json').read_text())
     if receipt.get('passed') is not True or receipt.get('case_id')!=case:
         raise ValueError('Exact public compatibility source required')

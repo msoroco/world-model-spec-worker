@@ -25,6 +25,21 @@ def rejected(call):
 
 
 def main():
+    manifest_path = HERE / 'execution-manifest.json'
+    manifest = json.loads(manifest_path.read_text())
+    selected = next((item for item in manifest['cases']
+                     if item['case_id'] == AID + '__officer_directed'), None)
+    if selected is None or selected.get('id') != 'primary':
+        raise ValueError('Officer comparison case is not selected')
+    saved_path = HERE / selected['saved_processing']['receipt']
+    saved = json.loads(saved_path.read_text())
+    if (selected['construction_sha256'] != sha(HERE / selected['construction'])
+            or saved.get('case_id') != selected['case_id']
+            or saved.get('candidate_id') != 'primary'
+            or saved.get('native_revision', {}).get('construction_sha256')
+            != selected['construction_sha256']
+            or saved.get('originals_preserved') is not True):
+        raise ValueError('Selected officer source or saved receipt differs')
     source = HERE / 'current-fixture' / 'controlled_2'
     with tempfile.TemporaryDirectory(prefix='c404492-officer-compare-',
                                      dir=REPO / '.runtime-work') as scratch:
@@ -69,6 +84,9 @@ def main():
              'controlled_pose_source_sha256': sha(source / 'vehicle_poses.jsonl'),
              'controlled_frame_source_sha256': sha(source / 'video_frames.jsonl'),
              'draft_manifest_sha256': sha(HERE / 'draft-officer-manifest.json'),
+             'selected_manifest_sha256': sha(manifest_path),
+             'selected_construction_sha256': selected['construction_sha256'],
+             'selected_saved_receipt_sha256': sha(saved_path),
              'positive': positive, 'mutation_rejections': 4,
              'original_native_comparison_claimed': False}
     path = HERE / 'current-officer-comparison-proof.json'

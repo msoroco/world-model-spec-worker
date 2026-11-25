@@ -121,6 +121,7 @@ def execute(config, output_dir, host, port):
             "authored_map_sha256": hashlib.sha256(open_drive().encode()).hexdigest(),
             "facility_x_m": [3.5, 5.5], "intersection_y_m": [-7.0, 7.0],
             "native_lane_survey": native_survey,
+            "native_facility_readback": native_survey,
             "official_designation_proven": False,
             "subsection_3_exception_resolved": False})
         bp = world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
@@ -141,6 +142,8 @@ def execute(config, output_dir, host, port):
             "source_kind": "original_native_capture",
             "exception_clause_requested": "NRS 484B.270(3)(c), to avoid conflict with other traffic",
             "conflict_actor_id": obstacle.id,
+            "subsection3_conflict_context": {"actor_id": obstacle.id,
+                                                "body_xy_m": footprint(obstacle)},
             "conflict_actor_blueprint": obstacle.type_id,
             "conflict_actor_body_xy_m": footprint(obstacle),
             "conflict_actor_pose_xy_m": [obstacle.get_transform().location.x,
@@ -196,6 +199,7 @@ def execute(config, output_dir, host, port):
                 trace.write(json.dumps({"frame": frame, "time_s": time_s,
                     "position_m": [pose.location.x, pose.location.y, pose.location.z],
                     "heading_deg": pose.rotation.yaw, "speed_mps": observed_speed,
+                    "velocity_mps": [velocity.x, velocity.y, velocity.z],
                     "body_vertices_m": [[v.x, v.y, v.z] for v in
                          ego.bounding_box.get_world_vertices(pose)]}, allow_nan=False) + "\n")
                 capture.capture(frame, time_s, extra={"c111250_native_body": body_row})

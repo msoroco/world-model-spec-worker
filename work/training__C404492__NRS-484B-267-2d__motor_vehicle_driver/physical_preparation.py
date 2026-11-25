@@ -66,6 +66,7 @@ def evaluate(poses, frames, suffix):
 
 def fixture(suffix, kind, output):
     manifest_name = ('current-official-probe-manifest.json' if suffix.startswith('official_')
+                     else 'current-officer-probe-manifest.json' if suffix == 'officer_directed'
                      else 'current-probe-manifest.json')
     manifest = json.loads((HERE / manifest_name).read_text())
     entry = next(c for c in manifest['cases'] if c['case_id'].endswith('__' + suffix))
@@ -76,6 +77,8 @@ def fixture(suffix, kind, output):
     if kind == 'lifecycle':
         receipt_path = (HERE / 'current-official-saved' / (suffix + '-primary.json')
                         if suffix.startswith('official_') else
+                        HERE / 'current-officer-saved/primary.json'
+                        if suffix == 'officer_directed' else
                         HERE / 'current-saved' / (suffix + '-primary-receipt.json'))
         receipt = json.loads(receipt_path.read_text())
         if not (receipt['passed'] and receipt['recorded_only']
@@ -88,9 +91,10 @@ def fixture(suffix, kind, output):
                       negative_premature_saved_processing_rejected=True,
                       recorded_only_receipt_sha256=sha(receipt_path))
     else:
-        source = HERE / 'current-fixture' / suffix / 'vehicle_poses.jsonl'
+        fixture_suffix = 'controlled_2' if suffix == 'officer_directed' else suffix
+        source = HERE / 'current-fixture' / fixture_suffix / 'vehicle_poses.jsonl'
         poses = rows(source)
-        frames = rows(HERE / 'current-fixture' / suffix / 'video_frames.jsonl')
+        frames = rows(HERE / 'current-fixture' / fixture_suffix / 'video_frames.jsonl')
         if kind == 'incomplete_motion':
             origin = poses[0]['ego']['x_m']
             for pose in poses[100:]:
@@ -115,8 +119,9 @@ def fixture(suffix, kind, output):
                       'status': result.get('physical_checks', {}).get('maneuver', {}).get('status')}))
 
 
-def build(official=False):
+def build(official=False, officer=False):
     manifest_name = ('current-official-probe-manifest.json' if official
+                     else 'current-officer-probe-manifest.json' if officer
                      else 'current-probe-manifest.json')
     manifest = json.loads((HERE / manifest_name).read_text())
     index = []
@@ -151,7 +156,7 @@ def build(official=False):
         put(path, proof)
         index.append({'case_id': entry['case_id'],
                       'receipt': path.relative_to(HERE).as_posix(), 'sha256': sha(path)})
-    index_name = 'official-index.json' if official else 'index.json'
+    index_name = 'official-index.json' if official else 'officer-index.json' if officer else 'index.json'
     put(HERE / 'physical-proof' / index_name, {'cases': index,
                                              'diagnostic_only': True})
     print(json.dumps({'physical_fixture_cases': len(index)}))
@@ -164,8 +169,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
     parser.add_argument('--build-official', action='store_true')
+    parser.add_argument('--build-officer', action='store_true')
     parser.add_argument('--case', choices=('controlled_1', 'controlled_2',
-                                          'official_1', 'official_2'))
+                                          'official_1', 'official_2', 'officer_directed'))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
@@ -173,6 +179,8 @@ if __name__ == '__main__':
         build()
     elif args.build_official:
         build(official=True)
+    elif args.build_officer:
+        build(officer=True)
     elif args.case and args.kind and args.output:
         fixture(args.case, args.kind, args.output)
     else:

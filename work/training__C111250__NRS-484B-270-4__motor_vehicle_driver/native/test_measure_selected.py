@@ -62,7 +62,7 @@ class SavedSourceTest(unittest.TestCase):
 
     def test_missing_exception_context_rejects(self):
         (self.root / "subsection3-context.json").unlink()
-        with self.assertRaisesRegex(ValueError, "Missing required original source"):
+        with self.assertRaisesRegex(ValueError, "Missing required source"):
             measure(self.root)
 
     def test_synthetic_context_rejects(self):

@@ -934,6 +934,192 @@
         "negative_log": "delivery-proofs/preparing_movement/native-required.log",
         "negative_log_sha256": "5bd4c3077e71fab5983764d7ae91854bd909fcc265062c88647059aa9832cf97"
       }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original officer identity, instruction, recipient and timing need independent review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-officer/fallback1/construction.json",
+          "construction_sha256": "86200ac1adba1de0ce8ed5d8633f12b83b60e494ad1294a774dc6db45b313be7",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "86200ac1adba1de0ce8ed5d8633f12b83b60e494ad1294a774dc6db45b313be7",
+            "log": "current-officer-offline/fallback1.log",
+            "log_sha256": "5d11731f6675f70f37e06a0afea156dad8c5f01e2a052a22753648160fa970ed"
+          },
+          "compatibility": {
+            "receipt": "current-officer-public/fallback1/receipt.json",
+            "sha256": "b1da3af8e0d28ef4928e99b43bd31e227cec7477d8d51ecff1397f8c84dc16c0",
+            "log": "current-officer-public/fallback1/analysis.log",
+            "negative_log": "current-officer-public/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "current-officer-public/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-officer-saved/fallback1.json",
+            "sha256": "40f998e32d58e4bcb95d7e876896edc093106a685824c113852da92f1a3b0190"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-officer/fallback2/construction.json",
+          "construction_sha256": "5946dd46b6a06c9341d77371f8a6b943eaef0c4ad660eb73e1ce1acccbece2ad",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --candidate fallback2 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5946dd46b6a06c9341d77371f8a6b943eaef0c4ad660eb73e1ce1acccbece2ad",
+            "log": "current-officer-offline/fallback2.log",
+            "log_sha256": "5d11731f6675f70f37e06a0afea156dad8c5f01e2a052a22753648160fa970ed"
+          },
+          "compatibility": {
+            "receipt": "current-officer-public/fallback2/receipt.json",
+            "sha256": "f4cb1b15efbc69929210bfd4eaa5a8c47ef4884d0648562633dc20b5de0c8f10",
+            "log": "current-officer-public/fallback2/analysis.log",
+            "negative_log": "current-officer-public/fallback2/negative.log"
+          },
+          "negative": {
+            "log": "current-officer-public/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-officer-saved/fallback2.json",
+            "sha256": "d6ca54f8f6a2abc89c831b2088b468250eb42678b41998cc28db12be4c1320d4"
+          }
+        }
+      ],
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed",
+      "construction": "draft-officer/primary/construction.json",
+      "construction_sha256": "4caf5433535e8a2db9e367ec52c6540fc429349cd8b5d373890cf7781be2c500",
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-officer_directed-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contracts/officer_directed.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Record subject and authorized emergency vehicle identity, original pose and flashing phase on each Native frame",
+          "evidence": "vehicle_poses.jsonl and emergency_context.template.json; authorization and equipment require independent source review"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "method": "Read back both observed driving-lane waypoints, travel heading and per-frame actor headings",
+          "evidence": "vehicle_poses.jsonl joined to video_frames.jsonl and reviewed lane context"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "Project original subject and emergency vehicle body extents onto observed travel axis and retain each overlapping frame",
+          "evidence": "vehicle_poses.jsonl, trace.jsonl and channels/rel.longitudinal_overlap.jsonl"
+        },
+        "drv.overtaking": {
+          "entrypoint": "finalize.py",
+          "method": "Track signed original relative order across frames separately from body overlap",
+          "evidence": "vehicle_poses.jsonl and channels/drv.overtaking.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Report signed relative longitudinal order and distinct adjacent lane identities",
+          "evidence": "vehicle_poses.jsonl and channels/rel.ahead_behind_in_lane.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Retain observed per-frame actor velocities and ego trace at original Native frame and time",
+          "evidence": "vehicle_poses.jsonl and trace.jsonl joined to video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Record original officer identity, instruction, recipient, timing and reviewer sources with exact Native frame joins",
+          "evidence": "emergency_context.template.json and four original camera streams; instruction content and authority require independent original review"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_directed/proof.json",
+        "sha256": "ab7c24c6e11eefffea71f6f8e11ca08fd781d7ca122fef538faa6a59cc4481ba"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_NATIVE_SURVEY"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "4caf5433535e8a2db9e367ec52c6540fc429349cd8b5d373890cf7781be2c500",
+        "log": "current-officer-offline/primary.log",
+        "log_sha256": "5d11731f6675f70f37e06a0afea156dad8c5f01e2a052a22753648160fa970ed"
+      },
+      "compatibility": {
+        "receipt": "current-officer-public/primary/receipt.json",
+        "sha256": "72646873826a2c71bc8331595c95167f85a59542769573dbe31b54411ad4fe5b",
+        "log": "current-officer-public/primary/analysis.log",
+        "negative_log": "current-officer-public/primary/negative.log"
+      },
+      "negative": {
+        "log": "current-officer-public/primary/negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-officer-saved/primary.json",
+        "sha256": "b2646f292ffccad1b3296f0675db8c415fc91c276471766db9f602bfa63e5cce"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-officer-saved/primary.json",
+        "test_log_sha256": "b2646f292ffccad1b3296f0675db8c415fc91c276471766db9f602bfa63e5cce"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/officer_delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-officer-public-primary-v6 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-officer-saved/primary.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-officer-audit/diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/officer_delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-officer-public-primary-v6 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-officer-saved/primary.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-officer-audit/diagnostic.json",
+        "script": "officer_delivery_audit.py",
+        "script_sha256": "f0f60458416ee8e121d4d773c76111ff82d1e4029fb739b18312a8a4043c26f1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "test_log": "delivery-proofs/officer_directed/diagnostic.log",
+        "test_log_sha256": "67bf9d25d4ca418715b7ebd82cefef4940131f924aae873f2e414a340b9411f0",
+        "negative_log": "delivery-proofs/officer_directed/native-required.log",
+        "negative_log_sha256": "0c0c1a60feb46462c48d6ca1e16248243a7104e9f698f5807a96d7c53b472eb8"
+      }
     }
   ]
 }

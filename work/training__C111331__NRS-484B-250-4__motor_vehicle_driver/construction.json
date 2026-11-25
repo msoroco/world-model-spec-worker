@@ -54,6 +54,19 @@
     }
   ],
   "law_id": "NRS-484B-250-4",
+  "measurement_plan": {
+    "duration_s": 30,
+    "measurement_contract": "selected-v3-primary-measurement-contract.json",
+    "physical_and_legal_review_pending": true,
+    "rate_hz": 20,
+    "source": "Original Native actor-body, signal, map and four-camera frame joins"
+  },
+  "mechanisms": [
+    "authored straight-through intersection with installed uncovered all-entrance signal outage",
+    "marked-line, near-side crosswalk and visible-point reference alternatives",
+    "source-bound ego and other-vehicle body histories with stop and precedence requests",
+    "four synchronized original Native cameras and saved-only analysis"
+  ],
   "recording_description": {
     "channels": [
       {
@@ -73,12 +86,131 @@
         "time_window": "30 s / 600 frames",
         "uncertainty": "50 ms frame bracket; physical and legal review pending",
         "unit": "structured"
+      },
+      {
+        "method": "Original OpenDRIVE installed signal/map readback and four synchronized source cameras",
+        "name": "dev.traffic_signal",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original Native signal-state readback for both governing incoming heads",
+        "name": "dev.inoperative",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original ego body trajectory joined to Native intersection polygon",
+        "name": "st.lane_enters",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original OpenDRIVE marked-line object and Native reference readback",
+        "name": "st.stop_line",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original OpenDRIVE near-side crosswalk object and Native reference readback",
+        "name": "st.crosswalk",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original driver-reference camera pixels and retained sight-line review context",
+        "name": "st.sight_distance",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original driver-reference pixels and independent human view-opening review",
+        "name": "rel.visible",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original ego body, speed and governing-reference time join",
+        "name": "drv.stopped",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original ego body-to-junction occupancy transition",
+        "name": "drv.entering_intersection",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original ego and other-vehicle source-frame histories",
+        "name": "drv.arrival_order",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original ego body-to-junction occupancy per frame",
+        "name": "drv.in_intersection",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
+      },
+      {
+        "method": "Original both-vehicle body trajectories and release-order review",
+        "name": "drv.yields_to",
+        "reference_frame": "original Native frame/time",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "uncertainty": "50 ms frame bracket; original physical and legal review pending",
+        "unit": "structured"
       }
     ],
     "context_inputs": [],
     "limitations": [
-      "Synthetic request only; original vehicular signal state and actual stop unverified"
+      "Synthetic request only; original vehicular signal state and actual stop unverified",
+      "Named statutory channels retain original Native source context; qualitative visibility, caution and yielding require independent pixel and trajectory review."
     ]
   },
-  "status": "selected_cpu_construction_in_progress"
+  "static_checks": [
+    "exact NRS 484B.250(4) cell and actor",
+    "600 frames at 20 Hz",
+    "four synchronized source cameras",
+    "source-bound finalizer and missing-source rejection"
+  ],
+  "status": "selected_cpu_construction_in_progress",
+  "termination_rules": [
+    "600 original source frames or explicit capture failure",
+    "encoder closure, restoration and owner release before saved processing"
+  ]
 }

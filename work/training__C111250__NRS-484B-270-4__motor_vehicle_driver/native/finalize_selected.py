@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from measure_selected import SOURCES, measure
+from measure_selected import SOURCES, measure, rows
 
 
 VIDEOS = ("overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
@@ -14,13 +14,17 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def measure_original_native_cycle_lane(attempt, diagnostic=False):
+    return measure(attempt, allow_diagnostic=diagnostic)
+
+
 def finalize(attempt, output):
     attempt = Path(attempt); output = Path(output)
     if output.exists() or (attempt / "result.json").exists():
         raise ValueError("Retain prior analysis; use a fresh attempt")
     for name in (*SOURCES, *VIDEOS, "config.json", "construction.json"):
         if not (attempt / name).is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     construction = json.loads((attempt / "construction.json").read_text())
     fixture_manifest = attempt / "capture/manifest.json"
@@ -30,22 +34,41 @@ def finalize(attempt, output):
     if not diagnostic:
         report_path = attempt / "native-capture-report.json"
         if not report_path.is_file():
-            raise ValueError("Missing required original source: native-capture-report.json")
+            raise ValueError("Missing required source: native-capture-report.json")
         report = json.loads(report_path.read_text())
         if report.get("case_id") != config["case_id"] or report.get("frames") != 600 or \
            report.get("error") is not None or report.get("restoration", {}).get("restored") is not True:
             raise ValueError("Native acquisition or world restoration incomplete")
-    value = measure(attempt, allow_diagnostic=diagnostic)
+    value = measure_original_native_cycle_lane(attempt, diagnostic=diagnostic)
     if (value["source_kind"] == "synthetic_cpu_diagnostic") != diagnostic:
         raise ValueError("Fixture/source provenance differs")
     expected_overlap = config["case_suffix"] in ("outside_cycle_lane", "within_cycle_lane")
     matched = expected_overlap and value["cycle_lane_intersection_overlap_frames"] > 0
+    channel_folder = attempt / "channels"
+    channel_folder.mkdir()
+    channel_evidence = []
+    bodies = rows(attempt / "body-history.jsonl")
+    for name in ("vehicle_body", "cycle_facility"):
+        path = channel_folder / (name + ".jsonl")
+        with path.open("x") as stream:
+            for body in bodies:
+                observed = body["body_xy_m"] if name == "vehicle_body" else [3.5, 5.5]
+                stream.write(json.dumps({"time_s": body["time_s"], "value": observed},
+                                        allow_nan=False) + "\n")
+        channel_evidence.append({"name": name, "unit": "structured",
+                                 "reference": "channels/" + path.name,
+                                 "sha256": sha(path)})
     analysis = {"format": "worker-analysis-report", "case_id": config["case_id"],
                 "measurements": {"cycle_lane_intersection_measurement": {
                     "method": "measure_original_native_cycle_lane", "value": value,
                     "sources": value["source_sha256"]}},
                 "source_complete": True, "diagnostic_fixture": diagnostic,
                 "physical_or_legal_acceptance": False}
+    channel_evidence.extend([
+        {"name": "native_facility_readback", "unit": "structured",
+         "reference": "facility-context.json", "sha256": sha(attempt / "facility-context.json")},
+        {"name": "subsection3_conflict_context", "unit": "structured",
+         "reference": "subsection3-context.json", "sha256": sha(attempt / "subsection3-context.json")}])
     result = {"case_id": config["case_id"], "measured_values": value,
               "target_checks": [{"target": "original body occupancy in authored bicycle facility at intersection",
                   "requested": expected_overlap,
@@ -60,9 +83,8 @@ def finalize(attempt, output):
               "trace_reference": "trace.jsonl", "video_references": list(VIDEOS),
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],
-              "recording_evidence": [{"name": name, "unit": "structured",
-                  "reference": name, "sha256": sha(attempt / name)} for name in SOURCES],
-              "realized_observables": {"body_occupancy": value},
+              "recording_evidence": channel_evidence,
+              "realized_observables": {},
               "provenance_kind": "synthetic_local_diagnostic" if diagnostic else "original_native_capture", "accepted": False}
     from worker_exchange.native_output import write_result
     write_result(attempt, result)

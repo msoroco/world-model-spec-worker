@@ -77,9 +77,13 @@ for entry in manifest['cases']:
     for candidate, target in [('primary', entry), ('fallback1', entry['candidates'][0])]:
         local = ROOT / ('selected-candidates' if suffix.startswith('controlled_') else 'precedence') / suffix / candidate
         compat = REPO / '.runtime-work' / f'c111331-2504-unified-v1-compat-{suffix}-{candidate}'
+        if suffix == 'prior_stop_yield':
+            compat = REPO / '.runtime-work' / f'c111331-2504-cautious-v1-compat-{candidate}'
         if not (compat / 'compatibility.json').is_file():
             compat = REPO / '.runtime-work' / f'c111331-2504-unified-v2-compat-{suffix}-{candidate}'
         saved_root = REPO / '.runtime-work' / f'c111331-2504-unified-v1-saved-{suffix}-{candidate}'
+        if suffix == 'prior_stop_yield':
+            saved_root = REPO / '.runtime-work' / f'c111331-2504-cautious-v1-saved-{candidate}'
         saved_versions = sorted(saved_root.glob('v*/processing.json'))
         if not saved_versions:
             raise ValueError('Missing saved processing: ' + suffix + ' ' + candidate)
@@ -104,8 +108,11 @@ for entry in manifest['cases']:
         for name in ('compatibility.json', 'analysis.log', 'negative-analysis.log', 'processing.json'):
             shutil.copyfile(files[name], local / name)
         rel = reference(local)
+        offline_output = (f'.runtime-work/c111331-2504-cautious-v1-offline-{candidate}'
+                          if suffix == 'prior_stop_yield' else
+                          f'.runtime-work/c111331-2504-unified-v1-offline-{suffix}-{candidate}')
         target['offline'] = {
-            'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{BASE}/stop-reference-construction-manifest.json --case {case} --candidate {candidate} --output .runtime-work/c111331-2504-unified-v1-offline-{suffix}-{candidate} --python "$PWD/.venv-cpu/bin/python"',
+            'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{BASE}/stop-reference-construction-manifest.json --case {case} --candidate {candidate} --output {offline_output} --python "$PWD/.venv-cpu/bin/python"',
             'construction_sha256': target['construction_sha256'], 'exit_code': 0,
             'log': rel + '/offline.log', 'log_sha256': sha(local / 'offline.log')}
         target['compatibility'] = {
