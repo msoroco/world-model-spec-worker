@@ -7,7 +7,7 @@ from unittest import mock
 from runner import check
 from native_plan import command_from_observation, load_plan, make_controller, survey_governed_sign
 from native_capture import CAMERAS, _camera_pose
-from saved_native import assess_geometry
+from saved_native import assess_geometry, check_original_body_join, _decode
 from finalize import finalize, _channel
 from comparison import assess_pair
 from geometry import sampled_source
@@ -18,6 +18,57 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SourcePreflightTest(unittest.TestCase):
+    def test_saved_camera_requires_full_frames_size_and_rate(self):
+        scratch = next(parent for parent in ROOT.parents if parent.name == '.runtime-work')
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            camera = Path(temporary) / 'overview.mkv'
+            camera.write_bytes(b'unit-test-camera')
+            stream = {'nb_read_frames': '600', 'width': 1920,
+                      'height': 1080, 'r_frame_rate': '20/1'}
+            def probe(*_args, **_kwargs):
+                return SimpleNamespace(returncode=0,
+                                       stdout=json.dumps({'streams': [stream]}))
+            with mock.patch('saved_native.subprocess.run', side_effect=probe):
+                self.assertEqual(_decode(camera, (1920, 1080))['frames'], 600)
+                stream['width'] = 1280
+                with self.assertRaisesRegex(ValueError, 'full decode differs'):
+                    _decode(camera, (1920, 1080))
+                stream['width'] = 1920
+                stream['nb_read_frames'] = '599'
+                with self.assertRaisesRegex(ValueError, 'full decode differs'):
+                    _decode(camera, (1920, 1080))
+                stream['nb_read_frames'] = '600'
+                stream['r_frame_rate'] = '19/1'
+                with self.assertRaisesRegex(ValueError, 'full decode differs'):
+                    _decode(camera, (1920, 1080))
+
+    def test_saved_native_binds_actor_trace_and_full_body(self):
+        vertices = [[float(i), float(i + 1), 0.5] for i in range(8)]
+        native = {'native_center_xy_m': [1.0, 2.0],
+                  'native_body_vertices_m': vertices}
+        rider = {'actor_id': 7}
+        trace = {'position_m': [1.0, 2.0, 0.5]}
+        body = {'body_vertices_m': vertices}
+        evidence = {'actor_id': 7, 'ego': {'body_vertices_m': vertices,
+                                         'position_m': [1.0, 2.0, 0.5]}}
+        check_original_body_join(native, rider, trace, body, evidence)
+        evidence['actor_id'] = 8
+        with self.assertRaisesRegex(ValueError, 'actor identity'):
+            check_original_body_join(native, rider, trace, body, evidence)
+        evidence['actor_id'] = 7
+        trace['position_m'][0] = 2.0
+        with self.assertRaisesRegex(ValueError, 'trace position'):
+            check_original_body_join(native, rider, trace, body, evidence)
+        trace['position_m'][0] = 1.0
+        evidence['ego']['position_m'][0] = 2.0
+        with self.assertRaisesRegex(ValueError, 'trace position'):
+            check_original_body_join(native, rider, trace, body, evidence)
+        evidence['ego']['position_m'][0] = 1.0
+        body['body_vertices_m'] = [list(vertex) for vertex in vertices]
+        body['body_vertices_m'][2][0] = 2.5
+        with self.assertRaisesRegex(ValueError, 'body source'):
+            check_original_body_join(native, rider, trace, body, evidence)
+
     def test_saved_finalizer_rebuilds_channels_from_sources(self):
         config, route = load_plan(ROOT)
         scratch = next(parent for parent in ROOT.parents if parent.name == '.runtime-work')
@@ -49,7 +100,7 @@ class SourcePreflightTest(unittest.TestCase):
                         'destination_road_id': 2 if config['behavior'] == 'obey' else 3,
                         'engineering_geometry_matched': True}
             review = {'geometry': geometry,
-                      'cameras': {name + '.mkv': {} for name in
+                      'cameras': {name: {} for name in
                                   ('overview', 'approach', 'reference_corner', 'driver_reference')}}
             with mock.patch('finalize.audit_attempt', return_value=review):
                 report = finalize(attempt, attempt / 'analysis-report.json')
@@ -57,6 +108,9 @@ class SourcePreflightTest(unittest.TestCase):
             result = json.loads((attempt / 'result.json').read_text())
             self.assertFalse(result['setup_confirmed'])
             self.assertFalse(result['accepted'])
+            self.assertEqual(result['video_references'],
+                             ['overview.mkv', 'approach.mkv',
+                              'reference_corner.mkv', 'driver_reference.mkv'])
             self.assertEqual(len((attempt / 'channels' / 'drv.turning.jsonl').read_text().splitlines()), 600)
             self.assertEqual(len(result['recording_evidence']),
                              len(config['recording_description']['channels']) + 1)

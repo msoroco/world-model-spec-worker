@@ -76,16 +76,56 @@ def assess_geometry(native, config):
             'posture_verified': False, 'official_sign_authorization_verified': False}
 
 
-def _decode(path):
+def _decode(path, expected_size):
     if not path.is_file():
         raise ValueError('Missing staged source camera: ' + path.name)
     completed = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
-        '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames',
-        '-of', 'default=noprint_wrappers=1:nokey=1', str(path)],
+        '-select_streams', 'v:0', '-show_entries',
+        'stream=nb_read_frames,width,height,r_frame_rate',
+        '-of', 'json', str(path)],
         capture_output=True, text=True, timeout=180)
-    if completed.returncode or completed.stdout.strip() != str(FRAMES):
+    if completed.returncode:
         raise ValueError('Staged source camera full decode differs: ' + path.name)
-    return {'sha256': sha(path), 'frames': FRAMES}
+    try:
+        streams = json.loads(completed.stdout)['streams']
+        stream = streams[0]
+        actual = (int(stream['width']), int(stream['height']))
+        numerator, denominator = map(int, stream['r_frame_rate'].split('/'))
+        matched = (len(streams) == 1 and int(stream['nb_read_frames']) == FRAMES and
+                   actual == expected_size and denominator > 0 and
+                   numerator / denominator == 20)
+    except (ValueError, KeyError, IndexError, TypeError, ZeroDivisionError) as exc:
+        raise ValueError('Staged source camera metadata missing: ' + path.name) from exc
+    if not matched:
+        raise ValueError('Staged source camera full decode differs: ' + path.name)
+    return {'sha256': sha(path), 'frames': FRAMES, 'size': list(actual), 'fps': 20}
+
+
+def check_original_body_join(native, rider, trace, body, evidence):
+    """Bind the observed rider to the same Native body and captured actor."""
+    actor_id = rider.get('actor_id')
+    position = trace.get('position_m')
+    original = evidence.get('ego', {})
+    evidence_position = original.get('position_m')
+    vertices = native.get('native_body_vertices_m')
+    body_vertices = body.get('body_vertices_m')
+    evidence_vertices = original.get('body_vertices_m')
+    if type(actor_id) is not int or evidence.get('actor_id') != actor_id:
+        raise ValueError('Staged original rider actor identity differs')
+    if (not isinstance(position, list) or len(position) < 2 or
+            not isinstance(evidence_position, list) or len(evidence_position) < 2 or
+            not isinstance(vertices, list) or len(vertices) != 8 or
+            not isinstance(body_vertices, list) or not isinstance(evidence_vertices, list) or
+            len(vertices) != len(body_vertices) or len(vertices) != len(evidence_vertices)):
+        raise ValueError('Staged original body/trace source missing')
+    if any(abs(a - b) > 1e-3 for source in (position, evidence_position)
+           for a, b in zip(source[:2], native['native_center_xy_m'])):
+        raise ValueError('Staged original rider/trace position differs')
+    for source in (body_vertices, evidence_vertices):
+        for expected, observed in zip(vertices, source):
+            if len(expected) != 3 or len(observed) != 3 or any(
+                    abs(a - b) > 1e-3 for a, b in zip(expected, observed)):
+                raise ValueError('Staged original body source differs')
 
 
 def audit_attempt(attempt):
@@ -106,12 +146,14 @@ def audit_attempt(attempt):
                 f['carla_frame'] != frame or r['frame'] != index or
                 t['frame'] != frame or b['frame'] != frame or
                 e['original_frame'] != frame or
+                abs(e['recording_time_s'] - time) > 1e-6 or
                 any(abs(source['time_s'] - time) > 1e-6 for source in (f, r, t))):
             raise ValueError('Staged original frame/time source join differs')
         if r['sign_id'] != ('11400803' if config['direction'] == 'right' else '11400804'):
             raise ValueError('Staged rider/sign source join differs')
         if r['machine_class'] != 'bicycle' or r['mounted'] is not None:
             raise ValueError('Staged source invented original posture')
+        check_original_body_join(n, r, t, b, e)
     manifest = json.loads((root / 'capture/manifest.json').read_text())
     if manifest.get('frames') != FRAMES or manifest.get('extraction_confirmed') is not True or \
             manifest.get('acquisition') != 'original_live_run':
@@ -126,8 +168,10 @@ def audit_attempt(attempt):
             sha(root / 'road.xodr') != survey.get('native_map_sha256'):
         raise ValueError('Staged authored/live map or requested route source hash differs')
     geometry = assess_geometry(native, config)
-    cameras = {name: _decode(root / (name + '.mkv')) for name in
-               ('overview', 'approach', 'reference_corner', 'driver_reference')}
+    cameras = {name: _decode(root / (name + '.mkv'), size) for name, size in (
+               ('overview', (1920, 1080)), ('approach', (1280, 720)),
+               ('reference_corner', (1280, 720)),
+               ('driver_reference', (1280, 720)))}
     return {'format': 'c104538-staged-native-saved-review-v1', 'case_id': config['case_id'],
             'source_kind': 'original_live_run', 'passed': True, 'accepted': False,
             'geometry': geometry, 'cameras': cameras,

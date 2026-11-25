@@ -10,7 +10,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work/c104496-fixture-proof-v1"
+SCRATCH = ROOT / ".runtime-work/c104496-fixture-proof-v4"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
@@ -41,6 +41,7 @@ def main():
         if receipt["recipe_sha256"] != sha(recipe) or len(receipt["fixture_manifest"]) < 709:
             raise ValueError("source recipe or 700 graph output differs")
         for name in ("trace.jsonl", "video_frames.jsonl",
+                     "turn_history.jsonl", "analytic_sight.jsonl",
                      "capture/evidence.jsonl", "capture/native/frames.jsonl"):
             if lines(target / name) != 700:
                 raise ValueError("700-frame source join differs: " + name)

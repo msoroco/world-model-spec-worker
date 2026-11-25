@@ -57,6 +57,12 @@ def build_case(suffix: str, branch: str):
     frame_map = []
     graph_frames = []
     graphs = []
+    turn_history = []
+    analytic_sight = []
+    raw = json.loads((HERE / "native" / branch / "synthetic" / suffix /
+                      "primary" / "raw.json").read_text())
+    if len(raw["rows"]) != FRAMES or raw["case_id"] != scope["case_id"]:
+        raise ValueError("exact saved analytic ray source missing")
     for index, request in enumerate(requests):
         frame = 1000 + index
         time_s = index / RATE
@@ -66,6 +72,20 @@ def build_case(suffix: str, branch: str):
         speed = request["requested_speed_mps"]
         body = bbox(center, heading)
         other_body = bbox(other, 0.0)
+        sight = raw["rows"][index]
+        if sight["frame"] != index or sight["requested_ego_xyz_m"] != center:
+            raise ValueError("authored request and saved ray source differ")
+        analytic_sight.append({"frame": frame, "time_s": time_s,
+                               "observer_stations_m": sight.get("observer_stations_m",
+                                  sight.get("observer_road_stations_m")),
+                               "analytic_road_above_ray_m": sight["analytic_road_above_ray_m"],
+                               "source_kind": "synthetic_authored_geometry",
+                               "original_body_visibility_verified": False})
+        turn_history.append({"frame": frame, "time_s": time_s,
+                             "body_vertices_m": body,
+                             "heading_deg": round(math.degrees(heading), 5),
+                             "requested_motion_phase": request["requested_motion_phase"],
+                             "synthetic_diagnostic": True})
         velocity = [round(speed * math.cos(heading), 5),
                     round(speed * math.sin(heading), 5), 0]
         trace.append({"frame": frame, "time_s": time_s,
@@ -80,7 +100,7 @@ def build_case(suffix: str, branch: str):
                          "ego": {"position_m": center,
                                  "heading_deg": round(math.degrees(heading), 5),
                                  "speed_mps": speed,
-                                 "speed_provenance": "synthetic_authored_request_only",
+                                 "speed_provenance": "synthetic_native_sample",
                                  "body_vertices_m": body},
                          "world": {"weather": {"cloudiness": 0, "precipitation": 0,
                                                "wetness": 0, "fog_density": 0},
@@ -112,8 +132,13 @@ def build_case(suffix: str, branch: str):
     for name, rows in (("trace.jsonl", trace),
                        ("capture/evidence.jsonl", evidence),
                        ("video_frames.jsonl", frame_map),
+                       ("turn_history.jsonl", turn_history),
+                       ("analytic_sight.jsonl", analytic_sight),
                        ("capture/native/frames.jsonl", graph_frames)):
         put(out / name, "\n".join(dump(row) for row in rows))
+    put(out / "curve_context.json", dump({"case_id": scope["case_id"],
+        "road_kind": branch, "authored_road_sha256": sha(out / "road.xodr"),
+        "synthetic_diagnostic": True, "original_native_verified": False}))
     manifest = {"acquisition": "synthetic_diagnostic",
                 "frames": FRAMES, "extraction_confirmed": True,
                 "observation_contract_version": 1,
@@ -132,7 +157,7 @@ def build_case(suffix: str, branch: str):
               "requested_road_sha256": sha(road)}))
     put(out / "case-scope.json",
         dump({"format": "c104496-synthetic-source-scope-v1",
-              "case_id": scope["case_id"], "candidate_id": "primary",
+              "case_id": scope["case_id"],
               "law_id": "NRS-484B-407",
               "source_text": scope["source_text"],
               "grade_height_m": scope["grade_height_m"],
@@ -149,7 +174,9 @@ def build_case(suffix: str, branch: str):
     diagnostic_path = out / "diagnostic.json"
     put(diagnostic_path, dump(diagnostic))
     source_names = ("road.xodr", "trace.jsonl", "capture/evidence.jsonl",
-                    "video_frames.jsonl", "capture/native/frames.jsonl",
+                    "video_frames.jsonl", "turn_history.jsonl",
+                    "analytic_sight.jsonl", "curve_context.json",
+                    "capture/native/frames.jsonl",
                     "capture/manifest.json", "capture/recorder_info.txt",
                     "acquisition-provenance.json", "case-scope.json")
     recipe = {"format": "worker-fixture-recipe",

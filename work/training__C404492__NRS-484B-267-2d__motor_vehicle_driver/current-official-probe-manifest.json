@@ -1,0 +1,101 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver",
+  "status": "partial",
+  "delivery_ready": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__official_1",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-official/official_1/primary/construction.json",
+      "construction_sha256": "f778586540fcb6192962a7281f34c4f18fe5590f70def09ef0a239a6a2e2bd93",
+      "measurement_contract": "measurement-contracts/official_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Regulatory authority, flashing equipment and original camera visibility need source review"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-official/official_1/fallback1/construction.json",
+          "construction_sha256": "79d9903bb45f7fe6bcdec24ea994466cf90c01c63451858143a93645bed80560",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject does not remain behind during the approach",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-official/official_1/fallback2/construction.json",
+          "construction_sha256": "fda2ed1fbf3f16f02e131b990e885828509aef23fdc6bff305290863ec923c87",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot identify regulatory vehicle or flashing equipment",
+            "metric": "visible regulatory body and lamp pixels",
+            "source": "original four-camera frame map and pixels"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-official_1-recipe.json"
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__official_2",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-official/official_2/primary/construction.json",
+      "construction_sha256": "221016b6deeea770a4895a47dbf929dbd5c91d774cd19ba4ea1219c8e9ea810f",
+      "measurement_contract": "measurement-contracts/official_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Regulatory authority, flashing equipment and original camera visibility need source review"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-official/official_2/fallback1/construction.json",
+          "construction_sha256": "60176c34c73d2c4104f53356b5f5b5e857fef80a8c9d5704458c4b9bffad5241",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject does not remain behind during the approach",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-official/official_2/fallback2/construction.json",
+          "construction_sha256": "1429416f485cc231ef75f6138f80b85c8edff152d557493b12b82f5b86bf7bf5",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot identify regulatory vehicle or flashing equipment",
+            "metric": "visible regulatory body and lamp pixels",
+            "source": "original four-camera frame map and pixels"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-official_2-recipe.json"
+    }
+  ]
+}

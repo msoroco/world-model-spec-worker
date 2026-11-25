@@ -6,11 +6,16 @@ class still requires a reviewed original asset and source pixels.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
 
 CLASSES = ("electric_bicycle", "electric_scooter")
+LEGAL_CLASS_SOURCES = {
+    "electric_bicycle": ("NRS-484B-017", "NRS-484A-081"),
+    "electric_scooter": ("NRS-484B-018", "NRS-484A-082", "NRS-482-0295"),
+}
 BICYCLE_BLUEPRINTS = frozenset((
     "vehicle.bh.crossbike", "vehicle.diamondback.century",
     "vehicle.gazelle.omafiets",
@@ -36,6 +41,64 @@ def validate_blueprint(library, machine_class: str, blueprint_id: str,
         raise ValueError("Exact Native electric asset is unavailable")
     return {"machine_class": machine_class, "blueprint_id": blueprint_id,
             "native_asset_found": True, "classification_review_pending": True}
+
+
+def bind_reviewed_asset(library, machine_class: str, evidence: dict,
+                        source_root: Path) -> dict:
+    """Require an exact source-hashed review before an electric-class spawn.
+
+    This binds an asset proposal and live inventory only. The recorded rider
+    and device pixels still require local review after capture.
+    """
+    source_root = Path(source_root).resolve()
+    if not isinstance(evidence, dict):
+        raise ValueError("Electric asset review evidence is required")
+    blueprint_id = evidence.get("blueprint_id")
+    if machine_class not in LEGAL_CLASS_SOURCES:
+        raise ValueError("Unknown electric rider class")
+    review = evidence.get("class_review", {})
+    if (review.get("legal_sources") != list(LEGAL_CLASS_SOURCES[machine_class]) or
+            not review.get("reviewer") or review.get("conclusion") != machine_class):
+        raise ValueError("Electric class-specific legal review is required")
+    refs = evidence.get("source_refs")
+    if not isinstance(refs, list) or not refs:
+        raise ValueError("Electric asset review needs exact source references")
+    bound = {}
+    for ref in refs:
+        relative = ref.get("path") if isinstance(ref, dict) else None
+        if not isinstance(relative, str) or not relative:
+            raise ValueError("Electric asset source path is missing")
+        path = (source_root / relative).resolve()
+        if path == source_root or source_root not in path.parents or not path.is_file():
+            raise ValueError("Electric asset source must exist inside source root")
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != ref.get("sha256") or relative in bound:
+            raise ValueError("Electric asset review source changed or duplicated")
+        bound[relative] = digest
+    selected = validate_blueprint(library, machine_class, blueprint_id, evidence)
+    return {**selected, "review_source_sha256": bound,
+            "classification_review_record_bound": True,
+            "classification_review_pending": True,
+            "original_pixel_review_pending": True,
+            "legal_verdict_claimed": False}
+
+
+def spawn_reviewed_electric(world, machine_class: str, evidence: dict,
+                           source_root: Path, transform):
+    """Spawn only the exactly reviewed live blueprint; retain its Native ID."""
+    library = world.get_blueprint_library()
+    bound = bind_reviewed_asset(library, machine_class, evidence, source_root)
+    blueprint = library.find(bound["blueprint_id"])
+    if blueprint.id != bound["blueprint_id"]:
+        raise ValueError("Live electric blueprint identity changed")
+    actor = world.spawn_actor(blueprint, transform)
+    if actor is None or actor.type_id != bound["blueprint_id"]:
+        if actor is not None:
+            actor.destroy()
+        raise ValueError("Spawned electric actor differs from reviewed blueprint")
+    return actor, {**bound, "native_actor_id": actor.id,
+                   "original_rider_posture_verified": False,
+                   "original_class_pixels_verified": False}
 
 
 def local_preflight() -> dict:

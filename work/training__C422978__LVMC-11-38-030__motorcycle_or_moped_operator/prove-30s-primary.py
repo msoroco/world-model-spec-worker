@@ -8,7 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 AID = HERE.name
 OUT = HERE / 'extended-primary'
-SCRATCH = ROOT / '.runtime-work/c422978-30s'
+SCRATCH = ROOT / '.runtime-work/c422978-30s-v4'
 
 
 def sha(data):
@@ -69,7 +69,7 @@ def main():
         rows, overlap, longitudinal = evaluate(construction, assignment, law_text)
         if len(overlap) != (0 if index == 0 else 520):
             raise ValueError('Requested sidewalk occupancy differs')
-        log = SCRATCH / ('offline-w1-2' if index == 0 else 'offline-w2') / 'offline.log'
+        log = SCRATCH / (suffix + '-primary') / 'offline.log'
         if not log.is_file() or 'OK' not in log.read_text():
             raise ValueError('Pinned offline test proof absent')
         tracks.append(rows)

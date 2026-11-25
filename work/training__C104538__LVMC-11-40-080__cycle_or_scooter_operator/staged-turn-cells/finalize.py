@@ -133,7 +133,7 @@ def finalize(attempt, output):
               'physical_failure_flags': [
                   'original_posture_sign_authorization_and_pixels_unreviewed'],
               'trace_reference': 'trace.jsonl',
-              'video_references': list(review['cameras']),
+              'video_references': [name + '.mkv' for name in review['cameras']],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': description,
               'recording_evidence': evidence,

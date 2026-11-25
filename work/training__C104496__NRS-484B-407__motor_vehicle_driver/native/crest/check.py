@@ -36,7 +36,7 @@ def check(bundle):
             cfg["crest_station_m"] != 200 or cfg["grade_height_m"] != CASES[suffix] or
             cfg["requested_speed_mps"] != speed or cfg["camera_policy"] != camera or
             cfg["stop_before_crest"] is not stop or
-            cfg["status"] != "unselected_native_request" or
+            cfg["status"] not in ("unselected_native_request", "selected_for_delivery_preparation") or
             cfg["original_native_observed"] is not False or cfg["legal_verdict"] is not None):
         raise ValueError("Source join, policy, or evidence status changed")
     if (bundle / "crest.xodr").read_text() != road(CASES[suffix]):
