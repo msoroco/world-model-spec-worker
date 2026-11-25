@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from source_channels import SOURCE_NAMES
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -20,7 +21,9 @@ def build():
             'method':'original Native full-body corners and speed readback',
             'time_window':'600 frames','reference_frame':'sourced highway and fire-station entrance',
             'uncertainty':'50 ms frame interval; legal distance reference unresolved'}],
-            'context_inputs':[],
+            'context_inputs':[{'name':name,'unit':'structured',
+                'method':'original hash-bound authority and Native actor source; retain unverified state'}
+                for name in SOURCE_NAMES],
             'limitations':['Raw body-edge gap is not a statutory reference-point verdict',
                 'Actual station, entrance and pixels require Native and independent review']}
         config={'case_id':case_id,'case_suffix':suffix,'cell_id':'C229410','law_id':'NRS-484B-450-1j',
@@ -31,7 +34,7 @@ def build():
             'recording_description':description,
             'target':'beyond 20 feet from entrance' if suffix=='controlled_1' else 'within 20 feet from entrance'}
         files=[{'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
-        for name in ('layout.py','runner.py','measure_entrance.py','source_context.py','finalize.py','tests/test_native.py'):
+        for name in ('layout.py','runner.py','measure_entrance.py','source_context.py','source_channels.py','finalize.py','tests/test_native.py'):
             files.append({'path':name,'content':(HERE/name).read_text()})
         for name in ('assignment.json','witnesses.json'):
             source=Path('inputs')/ASSIGNMENT/name

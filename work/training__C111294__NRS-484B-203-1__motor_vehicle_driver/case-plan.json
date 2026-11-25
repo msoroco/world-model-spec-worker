@@ -39,7 +39,7 @@
     {
       "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.45",
       "target_law_id": "NRS-484B-203-1",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_native_draft",
       "target_type": "attempt",
       "comparison_variable": "ego_right_half_occupancy",
       "comparison_unit": "fraction",
@@ -50,12 +50,15 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "selected": false
+      "selected": true,
+      "gap_ids": [
+        "meeting-paved-half-original"
+      ]
     },
     {
       "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__0.55",
       "target_law_id": "NRS-484B-203-1",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_native_draft",
       "target_type": "attempt",
       "comparison_variable": "ego_right_half_occupancy",
       "comparison_unit": "fraction",
@@ -66,7 +69,10 @@
       "source_topic_ids": [
         "text-0"
       ],
-      "selected": false
+      "selected": true,
+      "gap_ids": [
+        "meeting-paved-half-original"
+      ]
     }
   ],
   "comparisons": [
@@ -89,7 +95,7 @@
         "controller behavior except comparison variable",
         "capture profile"
       ],
-      "status": "planned_unverified",
+      "status": "selected_native_draft",
       "measurement_method": "Measure paved width, center, both footprints and lateral allocation during meeting."
     }
   ],
@@ -231,5 +237,44 @@
     "rel.occupies": "ego and oncoming body extents intersected with paved halves per meeting frame",
     "rel.surface_gap": "minimum lateral body-surface gap during longitudinal meeting",
     "st.roadway": "source-hashed original paved edges and directional road geometry"
+  },
+  "evidence_review": {
+    "reviewer": "worker C111294 Native preparation",
+    "method": "Compared both frozen accepted-membership rows and the supplied review-context index. Both rows have the same described commanded target y=5.25 m and judgment phrase, but no original video, trace, native pavement/bodies or source acceptance receipt is present in this export. Membership and recorded labels do not establish the current statutory observations or equivalence.",
+    "facts": [
+      {
+        "recording_id": "7961db45f49e6358b03fec07f6bea82db54d2fc779607ed7422eb70dae812787",
+        "demonstrated_fact": "Accepted membership lists a keep-right labeled case and commanded target y=5.25 m",
+        "limitations": "No original source available here; label and command do not prove paved allocation or meeting motion",
+        "sources": [
+          {
+            "path": "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/review-context/review.json",
+            "sha256": "7ea242a31beb91ea07c0917e0cde0d5d06ba1e3345804784e4f010a5addd39ab"
+          }
+        ]
+      },
+      {
+        "recording_id": "669e9d157e6119691b728a776df30dd20105be5c22b1d5c2aeae685ef8b60b33",
+        "demonstrated_fact": "Accepted membership lists a wrong-side labeled case and commanded target y=5.25 m",
+        "limitations": "No original source available here; same described target does not establish controlled equivalence",
+        "sources": [
+          {
+            "path": "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/review-context/review.json",
+            "sha256": "7ea242a31beb91ea07c0917e0cde0d5d06ba1e3345804784e4f010a5addd39ab"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "meeting-paved-half-original",
+        "requirement": "Original two-direction meeting, right-side passing, one lane per direction and each driver giving the other at least half the paved portion as nearly as possible",
+        "source": {
+          "path": "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/review-context/review.json",
+          "sha256": "7ea242a31beb91ea07c0917e0cde0d5d06ba1e3345804784e4f010a5addd39ab"
+        },
+        "why_existing_insufficient": "Membership-only export has no original pavement edges, both bodies, motion or reviewed physical constraints."
+      }
+    ]
   }
 }
