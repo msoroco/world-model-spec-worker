@@ -72,8 +72,10 @@ def construction(case_id, config_path):
 def main():
     root_config = json.loads((ROOT / "config.json").read_text())
     case_ids = [PREFIX + suffix for suffix in SUFFIXES]
-    if set(root_config["supported_case_ids"]) != set(case_ids):
-        raise ValueError("Three-case support set mismatch")
+    selected = {case["case_id"] for case in json.loads((ROOT / "proposals/cases.json").read_text())["cases"]
+                if case.get("target_type") != "baseline"}
+    if set(root_config["supported_case_ids"]) != selected:
+        raise ValueError("Selected exact-case support set mismatch")
     for index, case_id in enumerate(case_ids):
         if index == 0:
             config_path = ROOT / "config.json"

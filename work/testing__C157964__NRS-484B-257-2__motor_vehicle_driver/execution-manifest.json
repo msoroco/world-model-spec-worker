@@ -2,6 +2,43 @@
   "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, erected sign or relevant vehicle bodies.",
         "status": "physical"
@@ -12,9 +49,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-officer_controls_go-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-officer_controls_go-fallback1-negative.log",
+            "receipt": "proof-compatibility-officer_controls_go-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-officer_controls_go-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "4f7fbab9c420e984678de0dda90a2313688929a3e564bab7e9d748d77d9b6bef"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go/fallback1/construction.json",
-          "construction_sha256": "3aa5df8228def6f41ea70cbe93d0c39a4e4accc75ca6eaec217e792a6620a63e",
+          "construction_sha256": "5f629e927ba542fadf9c74c705c22af234c50561bfb255114f27189b1c161f23",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-officer_controls_go-fallback1",
+            "construction_sha256": "5f629e927ba542fadf9c74c705c22af234c50561bfb255114f27189b1c161f23",
+            "exit_code": 0,
+            "log": "official-offline-officer_controls_go-fallback1.log",
+            "log_sha256": "a2621f0f72c0660b3aaa235616398ac96bd9285f19a2cdcadda26f7153bd869f"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -23,8 +74,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+      "compatibility": {
+        "log": "proof-compatibility-officer_controls_go-primary-analysis.log",
+        "negative_log": "proof-compatibility-officer_controls_go-primary-negative.log",
+        "receipt": "proof-compatibility-officer_controls_go-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --candidate primary --output .runtime-work/c157964-sub2/compatibility17-officer_controls_go-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "6ef7ec558dab50341f38f5a81009e2e6f297e37d51b6cb4995164c8f40609492"
+      },
       "construction": "construction.json",
-      "construction_sha256": "72ab859f0291a7aee26563151e69dc12eeff2220dc412954859fcd66e34cfb18",
+      "construction_sha256": "d8c575ed2cd29caf8b271a28e1e515ac5ddf2c2b762610e124ee96545e980f05",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-officer_controls_go-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-officer_controls_go --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-officer_controls_go-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-officer_controls_go-positive.log",
+        "test_log_sha256": "eb3e5e6b11c0f68cf1cef65c28ade96c74b938cbe02e3920b7060ea952b82da4"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/officer_controls_go-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "officer_controls_go-measurement-contract.json",
@@ -38,10 +123,59 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-officer_controls_go-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --candidate primary --output .runtime-work/c157964-sub2/offline17-officer_controls_go-primary",
+        "construction_sha256": "d8c575ed2cd29caf8b271a28e1e515ac5ddf2c2b762610e124ee96545e980f05",
+        "exit_code": 0,
+        "log": "official-offline-officer_controls_go-primary.log",
+        "log_sha256": "7c6e64f0d8b2c5e2e8c1ee56d42ed370aef467b352e73885c1cceaaa217c0c29"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-officer_controls_go.json",
+        "sha256": "5b2f6689b8e3a9a9448d7ff3a4fadf8c6d5455727724c02e673aa5f9e2079546"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, erected sign or relevant vehicle bodies.",
         "status": "physical"
@@ -52,9 +186,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-officer_controls_hold-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-officer_controls_hold-fallback1-negative.log",
+            "receipt": "proof-compatibility-officer_controls_hold-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-officer_controls_hold-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "555e299527bb49b598bb48324af7ab694cb9937730790a21853de08cb54d0ee3"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold/fallback1/construction.json",
-          "construction_sha256": "4e225ccffc731fd78e716a4ceb88842b799b9eca44c80a5305d109de33d97239",
+          "construction_sha256": "0d298376311b0ff2c93b2da4ab915364481335d18d8ded8209b2322c284e6e0b",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-officer_controls_hold-fallback1",
+            "construction_sha256": "0d298376311b0ff2c93b2da4ab915364481335d18d8ded8209b2322c284e6e0b",
+            "exit_code": 0,
+            "log": "official-offline-officer_controls_hold-fallback1.log",
+            "log_sha256": "c1888fb2ba97f5f520d3a88cd6c636b483af05b91383286f8668d61125a2e412"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -63,8 +211,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+      "compatibility": {
+        "log": "proof-compatibility-officer_controls_hold-primary-analysis.log",
+        "negative_log": "proof-compatibility-officer_controls_hold-primary-negative.log",
+        "receipt": "proof-compatibility-officer_controls_hold-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --candidate primary --output .runtime-work/c157964-sub2/compatibility17-officer_controls_hold-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "1945b3990173e99b0279edfb86ab17046fdb24667f1d5c0c4117be2d9144408f"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold/construction.json",
-      "construction_sha256": "19e11af54511c6ea1c1a0f587c0fd6e3f1c0561d883cc6beba31da63caa66ae3",
+      "construction_sha256": "329c705d320567bda532a663b29633b055f69cf6e2bc3781daf9aa6282a47ae2",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-officer_controls_hold-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-officer_controls_hold --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-officer_controls_hold-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-officer_controls_hold-positive.log",
+        "test_log_sha256": "d0197b9a99defe0bdd43b1c200f4c9640c3f5771a0f711e2e97e09c2f23232f2"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/officer_controls_hold-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "officer_controls_hold-measurement-contract.json",
@@ -78,10 +260,59 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-officer_controls_hold-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --candidate primary --output .runtime-work/c157964-sub2/offline17-officer_controls_hold-primary",
+        "construction_sha256": "329c705d320567bda532a663b29633b055f69cf6e2bc3781daf9aa6282a47ae2",
+        "exit_code": 0,
+        "log": "official-offline-officer_controls_hold-primary.log",
+        "log_sha256": "fa8e94b4f9cb2f8e08c268015e091ca104ec5a1c935c84591c696a831b381a3d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-officer_controls_hold.json",
+        "sha256": "1cca5e6c12eb2ad25d2bc404398f5d6043e28e7c0740a5df7538d52f619ad578"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, erected sign or relevant vehicle bodies.",
         "status": "physical"
@@ -92,9 +323,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-officer_present_inactive-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-officer_present_inactive-fallback1-negative.log",
+            "receipt": "proof-compatibility-officer_present_inactive-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-officer_present_inactive-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "2306edf5c6281ac488f2e4189723bea486791b1126d9d541178b774a1bae8ae3"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive/fallback1/construction.json",
-          "construction_sha256": "51f0e089e9af83cec5f10c02dbf3f789e56e8a674be353d9fb6c066ed9958a4a",
+          "construction_sha256": "88dbc78d3b93e0a970be8a42538d08006cf44de22685159b5b3f1677af1933df",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-officer_present_inactive-fallback1",
+            "construction_sha256": "88dbc78d3b93e0a970be8a42538d08006cf44de22685159b5b3f1677af1933df",
+            "exit_code": 0,
+            "log": "official-offline-officer_present_inactive-fallback1.log",
+            "log_sha256": "f8138806a277ed3d7078ab11229d7288869f6f6a1cd44c76f653ade1bdc204ee"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -103,8 +348,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+      "compatibility": {
+        "log": "proof-compatibility-officer_present_inactive-primary-analysis.log",
+        "negative_log": "proof-compatibility-officer_present_inactive-primary-negative.log",
+        "receipt": "proof-compatibility-officer_present_inactive-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --candidate primary --output .runtime-work/c157964-sub2/compatibility17-officer_present_inactive-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "5a6ebfff862d4322c45062d15cbf7b5906d3c3cdf21d1eebd0d5f6fb67ed92ed"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive/construction.json",
-      "construction_sha256": "91344e769caba60ac8054ada57f0bdc576ab719208e92e95930df945cbf077ff",
+      "construction_sha256": "6d4c481500a961d7fa80217a4adade59f295157345c5ea8770cfc29962b1d1b9",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-officer_present_inactive-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-officer_present_inactive --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-officer_present_inactive-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-officer_present_inactive-positive.log",
+        "test_log_sha256": "4aa7d5e046373146b364a8c4eb2a58a20f79600c2d18a11e87e44d1d8e624ae8"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/officer_present_inactive-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "officer_present_inactive-measurement-contract.json",
@@ -118,10 +397,59 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-officer_present_inactive-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --candidate primary --output .runtime-work/c157964-sub2/offline17-officer_present_inactive-primary",
+        "construction_sha256": "6d4c481500a961d7fa80217a4adade59f295157345c5ea8770cfc29962b1d1b9",
+        "exit_code": 0,
+        "log": "official-offline-officer_present_inactive-primary.log",
+        "log_sha256": "ec055454e6dfbc23c855cf6fbfb7db2ee9cc0e408f03f588e71253d43b9b986b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-officer_present_inactive.json",
+        "sha256": "8ec83a16760b49b18eb13d31adb78b7ae37361c831b01a4f3446e5e9479ccc3c"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -132,9 +460,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_3-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_3-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "84b3b600e4996d2382c5df0ebeaf6bbd2be61e861b701cfda9d916de6ae88df9"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000/fallback1/construction.json",
-          "construction_sha256": "1e88ad39843c03b011b184ff77320a423783ed768826348eab13dc380f804e20",
+          "construction_sha256": "38b76984f13a6be73b5e0b08dc6be84b3b28675f7c167d48d8cd639b793b5304",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0000-fallback1",
+            "construction_sha256": "38b76984f13a6be73b5e0b08dc6be84b3b28675f7c167d48d8cd639b793b5304",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_3-0000-fallback1.log",
+            "log_sha256": "097653b62c1820c8fdf3c50279da4c00c12952ad74a75e4b30c5376ed19d67d4"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -143,8 +485,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_3-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "7fab4dca33a6fdd81119136d292085aa6af3d1bd042d726368b77c2ca5a9e2e1"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000/construction.json",
-      "construction_sha256": "687f8134653b1427217f9238ab83691484e3be1f2652b15aefdc573eeb9fa3e7",
+      "construction_sha256": "5fee59efebf135eb028df982c7d10b3aabdde6c31ecdcaac6be588f23f5ce8dc",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_3-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_3-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_3-0000-positive.log",
+        "test_log_sha256": "6af141287860c7b1420ef4bd91936daad7bdf1dbfc988a8a4ca7ab6b32bc5d1d"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_3-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_3-0000-measurement-contract.json",
@@ -158,10 +534,59 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0000-primary",
+        "construction_sha256": "5fee59efebf135eb028df982c7d10b3aabdde6c31ecdcaac6be588f23f5ce8dc",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_3-0000-primary.log",
+        "log_sha256": "b70b1a051f50b4ead492d53762703cb4ac11c2dd22f4d7bd17de023fa4431488"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_3-0000.json",
+        "sha256": "bdcb754deaa8014fd20538d72f6a1ca5c3ec27841b3fc6e961e995c6ebf8ac7a"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -172,9 +597,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_3-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_3-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "87e0549fad72325616652fdac69b6735c1372e2e847bcd7ec68325c67eb914e4"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001/fallback1/construction.json",
-          "construction_sha256": "6b54ca5a10a3681de91c2fa09e7b529fac43083b7f57dc28009c84a35a9c94fb",
+          "construction_sha256": "2c311a57d8b5e33315fed9e7ea6276d3e9cfbf11a07eca64ea01a0123ec2478d",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0001-fallback1",
+            "construction_sha256": "2c311a57d8b5e33315fed9e7ea6276d3e9cfbf11a07eca64ea01a0123ec2478d",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_3-0001-fallback1.log",
+            "log_sha256": "73ca8f1d52960ad45d090680ffdfdfcda4d7045c88cad696b9ab4d4c2dc5ff39"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -183,8 +622,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_3-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "48fa2b6dfa30ae7f762bd428673dd38fffdfe378e838f34aeed78ac50fcb67da"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001/construction.json",
-      "construction_sha256": "eb61322185049104336f04fbd3d0a036bfc3be2411adaf41630ed04276d76231",
+      "construction_sha256": "fe6dd1a69239d8694c4e4d71fbaab3a8c4ab038c326ebe6321cb45761b8b7484",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_3-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_3-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_3-0001-positive.log",
+        "test_log_sha256": "701bd1d07b5a85c888ca838527fc11ec23033e66dc5a3766cac55669e6f4c068"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_3-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_3-0001-measurement-contract.json",
@@ -198,10 +671,59 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0001-primary",
+        "construction_sha256": "fe6dd1a69239d8694c4e4d71fbaab3a8c4ab038c326ebe6321cb45761b8b7484",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_3-0001-primary.log",
+        "log_sha256": "76f85a82e8f4f3a5d2d33f89f502096b2ce24ebc814b5a119e57c5b2c078ed9e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_3-0001.json",
+        "sha256": "bfadb8bd2216439003dbcfb923a5721b21e072cf79a21c5cda8427df6ca1d8c8"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -212,9 +734,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_3-0002-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0002-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_3-0002-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0002-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "65b605b6cb077147f95dad94291423cd0e4d9b6960c3ecabd451aebbcfce7f3c"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002/fallback1/construction.json",
-          "construction_sha256": "1f927c1e9994ce5cf1e0b8af4706294946005e8db9cf4cd4aed08094a577297a",
+          "construction_sha256": "c45f0fe29a7fa27688e3beaf123b382ae6709fdb855359586b1f8ff52fee1232",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0002-fallback1",
+            "construction_sha256": "c45f0fe29a7fa27688e3beaf123b382ae6709fdb855359586b1f8ff52fee1232",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_3-0002-fallback1.log",
+            "log_sha256": "ead73bc1028e59ae668c635c42f2afa3340c67ed0948494151671d3f4d4781c6"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -223,8 +759,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0002-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_3-0002-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_3-0002-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0002-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "c1aa4f3db2f2483fa288c2bb074551d5860ab99f9e8fd735b352a6f2c83c94ae"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002/construction.json",
-      "construction_sha256": "be2e4e226f709f50e8b8560362e7ec6b8ee87d218992dabed27ec66a14b38a9a",
+      "construction_sha256": "28b2a962cb28c8422d3c02fbc3dabfd5e3654a34f9700b3f256d3be525d3a863",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_3-0002-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_3-0002 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_3-0002-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_3-0002-positive.log",
+        "test_log_sha256": "7fdbafc07e1c63532323443db82a30d26ad5bb732e8b4aea3f305eb242928024"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_3-0002-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_3-0002-measurement-contract.json",
@@ -238,10 +808,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_3-0002-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_3-0002-primary",
+        "construction_sha256": "28b2a962cb28c8422d3c02fbc3dabfd5e3654a34f9700b3f256d3be525d3a863",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_3-0002-primary.log",
+        "log_sha256": "8608cbf2b9bed067378aefed0aa68cd90c874a426dcca6a8da2be2c9c234b690"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_3-0002.json",
+        "sha256": "6b06cb2671e152e75e1669d4595e5c55652390a036fed9b4af81da6fbb7c0bba"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -252,9 +876,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_5-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_5-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "38741aa837e007a8d96923088204680937440da1d6a74439abf9a2b996d81e0e"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000/fallback1/construction.json",
-          "construction_sha256": "1f69c60f96467ff3dcf142d264934cb6c11e87b8118a10d6a2ded641c4e2a42a",
+          "construction_sha256": "7c9c9cbb3e7263246d27d0f8817c0a48bb1c2649ff9415c0ba441f9d4f4c0580",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0000-fallback1",
+            "construction_sha256": "7c9c9cbb3e7263246d27d0f8817c0a48bb1c2649ff9415c0ba441f9d4f4c0580",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_5-0000-fallback1.log",
+            "log_sha256": "5c1ac85da6b379d20fa346ce8bfa48f94d7c4193bd644d951ba6d0fece0341ea"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -263,8 +901,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_5-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "5b418fb6a9b3bbde93c413fdda640958f6ee3122154b721789ef498157d5cb22"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000/construction.json",
-      "construction_sha256": "4524958200ec40c3be2c29d76b35699f8ce7c34f81d908047694cd65208ab7d9",
+      "construction_sha256": "ca2930453947c61518b3dab2c918801a43c8372ebf0aee49a6c803e7a9f00e6b",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_5-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_5-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_5-0000-positive.log",
+        "test_log_sha256": "914b6ca91a083d1b0875b88773b6837d231fa7010d5926e6b6954c789d460203"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_5-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_5-0000-measurement-contract.json",
@@ -278,10 +950,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0000-primary",
+        "construction_sha256": "ca2930453947c61518b3dab2c918801a43c8372ebf0aee49a6c803e7a9f00e6b",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_5-0000-primary.log",
+        "log_sha256": "33132f87b5e3217c5eb81f4e799942cb4f595fc8c52ca427d8fb5f67ec8a85cb"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_5-0000.json",
+        "sha256": "0394dcee77afdde0a4196d1710110dc2aabb5a56a0ce5e26acb0348f67b3f308"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -292,9 +1018,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_5-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_5-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "769c2fea0edf78b8fb4aadd8743402f183b615f92243c6381992925517dcf612"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001/fallback1/construction.json",
-          "construction_sha256": "a78defcf1875a2ffe45f39eb4973dff2def4f3c6ca2920ffb529a0b7eac8475e",
+          "construction_sha256": "eb5535154cadaf4b4278916f2dd6ae685308ea22e290d5bea7ccd65cda895d23",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0001-fallback1",
+            "construction_sha256": "eb5535154cadaf4b4278916f2dd6ae685308ea22e290d5bea7ccd65cda895d23",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_5-0001-fallback1.log",
+            "log_sha256": "1d07f328ea9e7f122c95a89d3d9de03304ecf7aed8788be655301e6dbb1f4d04"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -303,8 +1043,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_5-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "8c9f9d683cffa8376e0a82215c0fc9ee5b40fbc0f2cd2e65a89b16324f23fdc7"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001/construction.json",
-      "construction_sha256": "5282d29b56864e1ffe5421d5d51ef3d03ff5414211f95f4f42a59762a4912d84",
+      "construction_sha256": "60593adfd49cc2ea51b9fbb8720d94ae7f7651ba40cef5ef8a3f50c7b5dad4ff",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_5-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_5-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_5-0001-positive.log",
+        "test_log_sha256": "c6f6f5775a7f9a4b7b850950d896ab0fcb06397721f89f315b26cdaf09a06c90"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_5-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_5-0001-measurement-contract.json",
@@ -318,10 +1092,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0001-primary",
+        "construction_sha256": "60593adfd49cc2ea51b9fbb8720d94ae7f7651ba40cef5ef8a3f50c7b5dad4ff",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_5-0001-primary.log",
+        "log_sha256": "ae6480bc379c061647f12777b8fcbddf3c54254d470dc38d28a702eb1c09efcc"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_5-0001.json",
+        "sha256": "33cf97520be7ca30e471ba3349927bdecb9b81ce8c700d8b1e7711cb5a7dc5c7"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -332,9 +1160,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_5-0002-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0002-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_5-0002-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0002-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "9538553ce20ac727a30986cb178dc56666ac081b493bb31db497821e5302ff0d"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002/fallback1/construction.json",
-          "construction_sha256": "13145388496da187dda23f433e2f9334079fa940aa94005224f8edeca8ad9263",
+          "construction_sha256": "2d05bdc29eb6815b76c26b764f811c0153a1ab3bf14a7a0bfcf167122ead853f",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0002-fallback1",
+            "construction_sha256": "2d05bdc29eb6815b76c26b764f811c0153a1ab3bf14a7a0bfcf167122ead853f",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_5-0002-fallback1.log",
+            "log_sha256": "d26882d37d71e9cd81f5c85c21fb75b8ce8e8d799252e10f9d05c5f37fd5c182"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -343,8 +1185,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0002-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_5-0002-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_5-0002-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0002-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "6e651f5f9f6afad71ffd7e807351599b69ca759c324d042f69f2e9c31123d5a1"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002/construction.json",
-      "construction_sha256": "59768e0b5da4abbd0740b71113d5e9b9c60aa2544a7ef1fed070400812794e59",
+      "construction_sha256": "2fd599cee755a3a236e13bb3ba7b824b613c8b536ebadbddb07afe4ce07f6df2",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_5-0002-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_5-0002 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_5-0002-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_5-0002-positive.log",
+        "test_log_sha256": "1d37f0c87cf4b2c3d89c780e9f81660889a72e5da12b0332d8570324b24d94ee"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_5-0002-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_5-0002-measurement-contract.json",
@@ -358,10 +1234,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_5-0002-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_5-0002-primary",
+        "construction_sha256": "2fd599cee755a3a236e13bb3ba7b824b613c8b536ebadbddb07afe4ce07f6df2",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_5-0002-primary.log",
+        "log_sha256": "996663c7986c10cf5c4a6e8b93c26c8419b7a7fe3c6b604e50d8353926a8cb25"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_5-0002.json",
+        "sha256": "cd226b0189fce29481661f4825a17a181778948a53c65d68fcd5c8610608a9f4"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -372,9 +1302,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_6-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_6-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "b18d4f0d52c26fcf1e5d50967a928c9d2598d954c1f4347f5b689c22e89b0838"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000/fallback1/construction.json",
-          "construction_sha256": "51b298bece87fac065eadeb8af30d34dbaa75768d49149e5b2f3bf073cce983d",
+          "construction_sha256": "ddca77aa780099bff324d3caf6a0eae48510a09e71b9c7428403e1cd1db63de2",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0000-fallback1",
+            "construction_sha256": "ddca77aa780099bff324d3caf6a0eae48510a09e71b9c7428403e1cd1db63de2",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_6-0000-fallback1.log",
+            "log_sha256": "2e1957de3ea81ffea8c543226743c953e729adaa727740d61df0e951d51c3907"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -383,8 +1327,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_6-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "3938013cfd416c2ad1600617a9b67f6b7a57c5baa8e6c7792c6bafdac5266931"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000/construction.json",
-      "construction_sha256": "eb42e8823e249083741dd4c988d2bb876cc1aba62399d37386fbc05004e5e8a8",
+      "construction_sha256": "fe09d06cc9a53f5a2c1ab3f623d7345801cd16bd7441f7875f87f61db93020ed",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_6-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_6-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_6-0000-positive.log",
+        "test_log_sha256": "4d62e6d3f649990656391495529b369cdaff63fc53a24729ce4e7c4f987cadee"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_6-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_6-0000-measurement-contract.json",
@@ -398,10 +1376,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0000-primary",
+        "construction_sha256": "fe09d06cc9a53f5a2c1ab3f623d7345801cd16bd7441f7875f87f61db93020ed",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_6-0000-primary.log",
+        "log_sha256": "4e2c38d95341a88d0b2646c165a43e2130998f0fcf9fea93929c7a04ae34393f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_6-0000.json",
+        "sha256": "f437565ece92296384465201338a055746f6200b02934d69b8d8615ec0d1fd8e"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -412,9 +1444,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_6-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_6-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "a45d9f06f505294262c7098e9251c51b3ec92bc472d287595032378a277d4f16"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001/fallback1/construction.json",
-          "construction_sha256": "417821a72acef373b32879779d4a975346f6fa1672c8338f53a4ec83f1ef298f",
+          "construction_sha256": "146910e9c3fe5459c12bf8de2e474a072cf6bac1d880fb864c6f45e5dfaef278",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0001-fallback1",
+            "construction_sha256": "146910e9c3fe5459c12bf8de2e474a072cf6bac1d880fb864c6f45e5dfaef278",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_6-0001-fallback1.log",
+            "log_sha256": "48e0d307e1e6fb53f9b2ed5b1cf0fb9dd2a7c58bd9ad4b9eb94c5a893963edff"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -423,8 +1469,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_6-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "a5a5920aeec439563453f903b7231af57b995c17de643fd1e1ae91237852c6cc"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001/construction.json",
-      "construction_sha256": "7a26dc34febfad80e9e85310b93683ebadeb9b9f7bac33485101917ed42eee9e",
+      "construction_sha256": "ed32b16323a8f3e07131c28d22378af308577995ef47287cef0c78f19e63ea37",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_6-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_6-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_6-0001-positive.log",
+        "test_log_sha256": "a05c61abf2a2953ec615f2c52db319c745449c53a798560a52fc823cb51141b2"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_6-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_6-0001-measurement-contract.json",
@@ -438,10 +1518,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0001-primary",
+        "construction_sha256": "ed32b16323a8f3e07131c28d22378af308577995ef47287cef0c78f19e63ea37",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_6-0001-primary.log",
+        "log_sha256": "9ff13c8fa5bcf0a8980d48f4963202a340e8a3d7e21d3bb9140c82f00edbed13"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_6-0001.json",
+        "sha256": "3ce349527a5a6a7978db5a796b04f7da46b3f068e241b810b325a12dc6b1d1be"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_first_body_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body other intersection entry"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -452,9 +1586,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_6-0002-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0002-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_6-0002-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0002-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "a39f56af7d0f0de98e6b59877b2022bf47563fa8da3824d79c1013ad33cc9f9a"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002/fallback1/construction.json",
-          "construction_sha256": "2bf67a9088074fd97ed515442912c162be0e24cf261f274deddbf2bbcda2c340",
+          "construction_sha256": "12f17a346ee167985c2cdbd5af23b5fd88d12741e20b40bcfbcbf89cd88d774a",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0002-fallback1",
+            "construction_sha256": "12f17a346ee167985c2cdbd5af23b5fd88d12741e20b40bcfbcbf89cd88d774a",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_6-0002-fallback1.log",
+            "log_sha256": "10356306fc9e8a018b8620a1490c1694be78570b45aac67ec9ee90424ac3f09d"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -463,8 +1611,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0002-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_6-0002-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_6-0002-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0002-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "a0b1124be9437e310653edcb06f5cf2369a3a7c2fb0d6052f59c9cc433ad8298"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002/construction.json",
-      "construction_sha256": "e0175c619d354bc36ba9dee5964715577b4ce3c36ea763a400030434d70c1bfd",
+      "construction_sha256": "5b4bc9281ae7d601d0315c06ee46cad61bbae7623301b408511f9b2ca7debbcc",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_6-0002-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_6-0002 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_6-0002-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_6-0002-positive.log",
+        "test_log_sha256": "15f0793454a4851f9defd948484195f3547084060dfa9d25ad2e52d30783fdaa"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_6-0002-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_6-0002-measurement-contract.json",
@@ -478,10 +1660,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_6-0002-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_6-0002-primary",
+        "construction_sha256": "5b4bc9281ae7d601d0315c06ee46cad61bbae7623301b408511f9b2ca7debbcc",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_6-0002-primary.log",
+        "log_sha256": "621fb34b033ae3c6a5365e150dc0c1686bc062b6c33d8934ca1c70b583b90d22"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_6-0002.json",
+        "sha256": "0440d4050641e30bbfca9b907df9e7be701c3797ba9345e5f8ae82a504bedeba"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_observed_go_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First independently reviewed original camera go gesture"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -492,9 +1728,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_1-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_1-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "8272b56e066f3eb79e9c2cf05a60496ff910bab5040e603569f9624b41e2a537"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000/fallback1/construction.json",
-          "construction_sha256": "313c7b7738d84808ec58167ea3f403bdd70f642b30e721e818915fd581da25f3",
+          "construction_sha256": "5d09cd627a772d3da3bc89d5e536d5cd552930b4c6ffdec7adc43a24f6ca1e9b",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0000-fallback1",
+            "construction_sha256": "5d09cd627a772d3da3bc89d5e536d5cd552930b4c6ffdec7adc43a24f6ca1e9b",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_1-0000-fallback1.log",
+            "log_sha256": "7b4e2c64db3b3ffefb45a84ee78fdf46b0b47538129a6e7e33e58259951e25f4"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -503,8 +1753,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_1-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "ee1a24545e6a68bdee70131c21dd057dd5b085dfdc5035ec494e1e9767a04b7b"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000/construction.json",
-      "construction_sha256": "5d063b42b4a51495ad078a519783fb5e31c8800d465154e77679936fce739f78",
+      "construction_sha256": "a3737e7fc06ec801529c98763ce7b72a2c12406c3606952dcb65f1ed1e2e69d4",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_1-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_1-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_1-0000-positive.log",
+        "test_log_sha256": "0bab68ed17a43765248a84f9e8adcb02cfcd41aea7f33847f28c3b0b823374a5"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_1-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_1-0000-measurement-contract.json",
@@ -518,10 +1802,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0000-primary",
+        "construction_sha256": "a3737e7fc06ec801529c98763ce7b72a2c12406c3606952dcb65f1ed1e2e69d4",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_1-0000-primary.log",
+        "log_sha256": "6b15a34481c3e2ba6d2487a2dc85c619d3490f6dbef9dfbf60d69eb6b40fbc5b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_1-0000.json",
+        "sha256": "e219809bf257b2234f0ef8f8fe02470ec7fcf692b3b4f85868c86bd09699138a"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_observed_go_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First independently reviewed original camera go gesture"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -532,9 +1870,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_1-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_1-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "6da14daf1ee5ae02f3800e842387e1239967bd43b5055406a05224a5cc0af13c"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001/fallback1/construction.json",
-          "construction_sha256": "66db6e5ba3040ce99733a4ccd13a0a867e0ef40afc4c6e39b51897d59d4755a3",
+          "construction_sha256": "5879441c1561d305b833aa3749fbae84e41de0938589f6354930c8f86ce49297",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0001-fallback1",
+            "construction_sha256": "5879441c1561d305b833aa3749fbae84e41de0938589f6354930c8f86ce49297",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_1-0001-fallback1.log",
+            "log_sha256": "65de06abadd4e465e99126e9818f370e76db57ea24e68262d58a592890ea4ebc"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -543,8 +1895,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_1-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "329f3ee0f5c37d7e53252c546408307afae615a4ac5f42856d06d013093ee43f"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001/construction.json",
-      "construction_sha256": "9ea267b212dc1147f75eb084f42a0c7ea44dd7d3deecc2538e9a98ecde64cc4d",
+      "construction_sha256": "f89c99bb36dc4bf0907fa9abba0a43451be83d5c6fe66eca660b1522001b2f62",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_1-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_1-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_1-0001-positive.log",
+        "test_log_sha256": "50071a2f8af2d24b1b68b3f71826c9c853944ebf4a7d561105e62b782b758750"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_1-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_1-0001-measurement-contract.json",
@@ -558,10 +1944,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0001-primary",
+        "construction_sha256": "f89c99bb36dc4bf0907fa9abba0a43451be83d5c6fe66eca660b1522001b2f62",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_1-0001-primary.log",
+        "log_sha256": "f23c16e7cd686beb1c73b343db3b001e5e636670d81ddecead87e245c445177c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_1-0001.json",
+        "sha256": "c3ad6d9c439abfccb45796e8d69a3a8635651107b1f8eb743c81f35eddf979c4"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_observed_go_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First independently reviewed original camera go gesture"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -572,9 +2012,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_1-0002-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0002-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_1-0002-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0002-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "b47160972337b140fb242eb7899cdf7b2accc361a57c01300c87226f790a03a4"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002/fallback1/construction.json",
-          "construction_sha256": "e40fafb6549c0a8333222d9d5ccac555d3a7988025be763cf909a1837f912812",
+          "construction_sha256": "2ef5c28493cd2a9a9dac93f032b6159a04e7cd1c078937b43b84e148718f1cea",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0002-fallback1",
+            "construction_sha256": "2ef5c28493cd2a9a9dac93f032b6159a04e7cd1c078937b43b84e148718f1cea",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_1-0002-fallback1.log",
+            "log_sha256": "9c5034abdca0f83174fc0af4f2119dfa4b6d24b29756ed5ba96978a7777e75fa"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -583,8 +2037,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0002-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_1-0002-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_1-0002-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0002-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "d495c5c565223c115948214a5e70f0c4fedf2e1a4505e561dccdf69830f6ba8d"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002/construction.json",
-      "construction_sha256": "a7032f037e48189d98cdf414f95ec970b294b12b829b8ecc06a31da47c240dbb",
+      "construction_sha256": "6cee13586603cbf6a68271161cc7defb76d030c2218f516b4e85a7d0e0eb0fc7",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_1-0002-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_1-0002 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_1-0002-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_1-0002-positive.log",
+        "test_log_sha256": "61b55624d4d8a018e29ac2583bc899e98458f9f0b809606d8bd06b9d06d7b521"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_1-0002-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_1-0002-measurement-contract.json",
@@ -598,10 +2086,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_1-0002-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_1-0002-primary",
+        "construction_sha256": "6cee13586603cbf6a68271161cc7defb76d030c2218f516b4e85a7d0e0eb0fc7",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_1-0002-primary.log",
+        "log_sha256": "ee7d89e6d507e9a77bdf01194c6ceb48d944d386529c7d2226a62cbba2e7e917"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_1-0002.json",
+        "sha256": "82a011d6a95e64abfd1d729c6951928e61f1391e3a2d8293acf092cf7bd63302"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_ego_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body ego intersection entry"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -612,9 +2154,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_2-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_2-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "4b4910f5dfc23d86b2e354d7a9d26eb4bbefdcb25d09ffc0e5690dee1bed7205"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000/fallback1/construction.json",
-          "construction_sha256": "47cdd41375acf669ae40e02cc2dc45fad50344d97679a707f819ab8d63e8b1eb",
+          "construction_sha256": "6f1cc8d1279853f42e9991bdc65b908793706406bed3798fabb4364cca2d6da4",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0000-fallback1",
+            "construction_sha256": "6f1cc8d1279853f42e9991bdc65b908793706406bed3798fabb4364cca2d6da4",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_2-0000-fallback1.log",
+            "log_sha256": "d9a513647a5ef67d51ade61d0946c836d701f801d7498e1f2f389632ea89565f"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -623,8 +2179,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_2-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "37036faa0b209afd28443ee668df3552868d37fcaf22cbebc2c0e1f3af7bafbe"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000/construction.json",
-      "construction_sha256": "aad7763c6b35a940fc28e19140768a09587381796ffd05459aff9f745e689d37",
+      "construction_sha256": "5379d54f1bddde66836cd68ebbeb02b07588eefacb91db83d62fcfce6148744f",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_2-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_2-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_2-0000-positive.log",
+        "test_log_sha256": "2fcb175c59e0ed44a93e215c680917d793cf6312ffba199ad2cc247ba1fd831b"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_2-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_2-0000-measurement-contract.json",
@@ -638,10 +2228,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0000-primary",
+        "construction_sha256": "5379d54f1bddde66836cd68ebbeb02b07588eefacb91db83d62fcfce6148744f",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_2-0000-primary.log",
+        "log_sha256": "f8893d04a618f163249dc5e67f0d8d3a266c8d707e423fedddb1844dc9b8d5ac"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_2-0000.json",
+        "sha256": "ff69697050f21692949b339ee69dfea4270753264894e39237bb9f4b4d7f27e7"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_ego_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body ego intersection entry"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -652,9 +2296,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_2-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_2-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "3f160321a02b1f81860f250c6459c6ddaa9928cbf9d6a1e58da5fee012d2db24"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001/fallback1/construction.json",
-          "construction_sha256": "df644dec3d1c7c35bacf9c01e134f15b543908a69cd3923a2d2c43b862befef6",
+          "construction_sha256": "8586e6bbade686c699e38e8e00baa86b8ac76a2619f3e61eb30bd3a192ee2b37",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0001-fallback1",
+            "construction_sha256": "8586e6bbade686c699e38e8e00baa86b8ac76a2619f3e61eb30bd3a192ee2b37",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_2-0001-fallback1.log",
+            "log_sha256": "402c0c7427f5e6003b9b8a7717407616c599c3867cbeea2607ab29b0af79ea47"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -663,8 +2321,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_2-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "41fc7a92971f9d9345c90170ea77b512420d0a4da118941eb536ae5194826ffc"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001/construction.json",
-      "construction_sha256": "a80a698466f630441d1f97fc6089fe6e33937f064eb3749008fe17bbfeba62f9",
+      "construction_sha256": "5fbfa1c06b9cb4ffab0126fcce154f7d42a54ceb5b36e7698ab2ea4d0f044523",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_2-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_2-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_2-0001-positive.log",
+        "test_log_sha256": "7de43c382a609433b97a629ab8831dcc6466168d5390ac00e15c9f63a75e0c65"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_2-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_2-0001-measurement-contract.json",
@@ -678,10 +2370,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0001-primary",
+        "construction_sha256": "5fbfa1c06b9cb4ffab0126fcce154f7d42a54ceb5b36e7698ab2ea4d0f044523",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_2-0001-primary.log",
+        "log_sha256": "18bc857a0d9870cb7af01b7fbcaa4ff44b237aabe5e36e7775b903d1742965ec"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_2-0001.json",
+        "sha256": "d5bc408b558ec5a7406e5d7695e472897e241d9253741d50f1030c0195208b4c"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "first_ego_entry_frame": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "First original Native full-body ego intersection entry"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -692,9 +2438,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_2-0002-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0002-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_2-0002-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0002-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "0a8a4771766b8ef3d5e3835acffe831db294df4c4cd4140bfdbbcf0a8725eafc"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002/fallback1/construction.json",
-          "construction_sha256": "57a57b42b59267c3c734a1b035f1adf10fcc884de7c87a19adcecd2f3fe96abd",
+          "construction_sha256": "9d2083100c98e20428337c37fda7c311685ab13ac496c2dff98771f55b0f929f",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0002-fallback1",
+            "construction_sha256": "9d2083100c98e20428337c37fda7c311685ab13ac496c2dff98771f55b0f929f",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_2-0002-fallback1.log",
+            "log_sha256": "6c652ffc5087fe5e636e5ab80b93a1293a84e8eb66f8dcc0db60c478574d9976"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -703,8 +2463,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0002-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_2-0002-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_2-0002-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0002-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "f99086834924105931450c4ba98f3d63f797df7673e12ece20a61a6a1e3fb241"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002/construction.json",
-      "construction_sha256": "30f07b6edc93d987ce0e5a187d11567c6c05a96055300050c0648547996c4f40",
+      "construction_sha256": "3153365c3c24e1d1d86ae385f6844e390516388a43afd1dafdf9453b05b4969c",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_2-0002-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_2-0002 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_2-0002-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_2-0002-positive.log",
+        "test_log_sha256": "7eb7f10615a9ec139f8e3d387fe1b41b28f7b307e543b2f254dfc5e631c92537"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_2-0002-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_2-0002-measurement-contract.json",
@@ -718,10 +2512,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_2-0002-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_2-0002-primary",
+        "construction_sha256": "3153365c3c24e1d1d86ae385f6844e390516388a43afd1dafdf9453b05b4969c",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_2-0002-primary.log",
+        "log_sha256": "ecc72ab52b101cba348102bb334116919a0aebdb1a6a068b245eb6b67e2c9716"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_2-0002.json",
+        "sha256": "a91895ecfc382be600c15570d97cf6335edb9b09b9c09a93b800b16445f4d030"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approach_road_id_observed": {
+          "entrypoint": "finalizer.py",
+          "evidence": "source_review/source-packet.json",
+          "method": "Reviewed other entrance road joined to Native lane readback"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -732,9 +2580,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_4-0000-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_4-0000-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_4-0000-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0000-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "a25efa2694e3e01b073e624f54218eff410184a57dd72ae7293f678b0e16ac2a"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000/fallback1/construction.json",
-          "construction_sha256": "48c1d2946cd56173574f1aa922c2e562d9366a4b6ae7405651a09b202f01c5c2",
+          "construction_sha256": "c89ac688b8a706283fb4eb1d789846c454acd370b29465b9138636f1cd9e6a7f",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_4-0000-fallback1",
+            "construction_sha256": "c89ac688b8a706283fb4eb1d789846c454acd370b29465b9138636f1cd9e6a7f",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_4-0000-fallback1.log",
+            "log_sha256": "64f9587782f29b222893a511a3e66e3b5991190a882c9d840db4fe84fc9044af"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -743,8 +2605,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_4-0000-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_4-0000-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_4-0000-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0000-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "46b442c57106533402d5dd5d2fa130ed63628e594b005efa08bdfaa595e4afa3"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000/construction.json",
-      "construction_sha256": "d493cd924cbec69e41ffcb141c60e013c9496d870f78dd6d27bed70234efc7db",
+      "construction_sha256": "deafd5ec91ecd4bfca003495d2c09db8d4f693355c1e117765195bca6dbb4333",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0000-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_4-0000 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_4-0000-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_4-0000-positive.log",
+        "test_log_sha256": "7507a5a7c7aa67c3dcc682b256d0c104d15f567c224aff2046d720a1a2b469d3"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_4-0000-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_4-0000-measurement-contract.json",
@@ -758,10 +2654,64 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_4-0000-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_4-0000-primary",
+        "construction_sha256": "deafd5ec91ecd4bfca003495d2c09db8d4f693355c1e117765195bca6dbb4333",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_4-0000-primary.log",
+        "log_sha256": "7ce3eb5edf3c907b1fa6967c4f3d175440398fb6bdd62cbf0665e391e1b860b7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_4-0000.json",
+        "sha256": "f0cc4138c85aec87ba82cd46b4f0e0223b7a0300d2aafaa175c4215a24aae593"
       }
     },
     {
+      "acquisition": {
+        "ego_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body ego polygon against source-reviewed intersection"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native ego speed joined to original camera frame"
+        },
+        "officer_control_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera officer traffic-control review joined to Native frame"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera gesture direction review joined to Native pose"
+        },
+        "other_approach_road_id_observed": {
+          "entrypoint": "finalizer.py",
+          "evidence": "source_review/source-packet.json",
+          "method": "Reviewed other entrance road joined to Native lane readback"
+        },
+        "other_approaching_observed": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Independent original-camera other-vehicle approach review"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "officer_saved_review.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Native full-body other polygon against source-reviewed intersection"
+        },
+        "other_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "evidence": "officer_history.jsonl",
+          "method": "Original Native other speed joined to original camera frame"
+        }
+      },
       "candidate_risk": {
         "reason": "Original source camera may omit officer gesture, signed entrance or relevant vehicle bodies at this physical setpoint.",
         "status": "physical"
@@ -772,9 +2722,23 @@
             "overview camera pose",
             "reference_corner camera pose"
           ],
+          "compatibility": {
+            "log": "proof-compatibility-c157964_sub2_judgment_4-0001-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-c157964_sub2_judgment_4-0001-fallback1-negative.log",
+            "receipt": "proof-compatibility-c157964_sub2_judgment_4-0001-fallback1-receipt.json",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0001-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+            "sha256": "91a529a5140f6d510d3ed4232ff835bef580b284bb3bdfffde02be8bfa6e8a33"
+          },
           "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001/fallback1/construction.json",
-          "construction_sha256": "1e7d8725232dba18966da8a6968cc2924c4ecbce6ea746829d8c7d06fe0a2a56",
+          "construction_sha256": "798e7f74bb195b9e97168808c3c32ccd6db54c0bb5cac3e73eea53cfa49a9845",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --candidate fallback1 --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_4-0001-fallback1",
+            "construction_sha256": "798e7f74bb195b9e97168808c3c32ccd6db54c0bb5cac3e73eea53cfa49a9845",
+            "exit_code": 0,
+            "log": "official-offline-c157964_sub2_judgment_4-0001-fallback1.log",
+            "log_sha256": "cb2a494eabc0b77bfc232e532f0fcfc73fc1f5a6fbcda230a8e1722d37e2e16d"
+          },
           "trigger": {
             "failure_condition": "An original camera view omits or obscures the officer gesture, erected sign or relevant body at the required frame.",
             "metric": "independent reviewer ability to see officer gesture, signed entrance and both vehicle bodies",
@@ -783,8 +2747,42 @@
         }
       ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001",
+      "compatibility": {
+        "log": "proof-compatibility-c157964_sub2_judgment_4-0001-primary-analysis.log",
+        "negative_log": "proof-compatibility-c157964_sub2_judgment_4-0001-primary-negative.log",
+        "receipt": "proof-compatibility-c157964_sub2_judgment_4-0001-primary-receipt.json",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --candidate primary --output .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0001-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck",
+        "sha256": "b8725b598bf583d31381eafcfa2d559e3069f645d03b402133a9e3c5acd1e450"
+      },
       "construction": "cases/testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001/construction.json",
-      "construction_sha256": "566c254b870d02c3ff731508c14061ee9b0b34e3b06b9f637be82e0e28074491",
+      "construction_sha256": "e14db7f83f78b9c49c2996e52b185361c97b1025b3b2044bb0b79656f543dd72",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/compatibility17-c157964_sub2_judgment_4-0001-primary --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --diagnostic-fixture",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c157964-sub2/acceptance-tampered-c157964_sub2_judgment_4-0001 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --diagnostic-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join changed",
+        "negative_log": "delivery-acceptance-c157964_sub2_judgment_4-0001-negative.log",
+        "negative_log_sha256": "6d92a806cff0df36ee198a4f5764ac01e3db7b228cb52afe5a701ac7c42693f2",
+        "proof_scope": "Diagnostic CPU source and media boundary; Native physical acceptance awaits original capture",
+        "script": "delivery_audit.py",
+        "script_sha256": "d2640870e9bb679e487bce38fa29c2d8ec8c39b8cff2ae206bcc24a9707d8376",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance-c157964_sub2_judgment_4-0001-positive.log",
+        "test_log_sha256": "67713786e7e81d27aa69123e58347cda3f81ee785cf67edc878cb30dceb212a0"
+      },
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/c157964_sub2_judgment_4-0001-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "c157964_sub2_judgment_4-0001-measurement-contract.json",
@@ -798,7 +2796,19 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "error_contains": "Missing required source: officer_review.json"
+        "error_contains": "Missing required source: officer_review.json",
+        "log": "proof-compatibility-c157964_sub2_judgment_4-0001-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001 --candidate primary --output .runtime-work/c157964-sub2/offline17-c157964_sub2_judgment_4-0001-primary",
+        "construction_sha256": "e14db7f83f78b9c49c2996e52b185361c97b1025b3b2044bb0b79656f543dd72",
+        "exit_code": 0,
+        "log": "official-offline-c157964_sub2_judgment_4-0001-primary.log",
+        "log_sha256": "61c2b7d8c12d3cc9b5403b9ecc2732505a881abda372eee676f943be2f9f818c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-c157964_sub2_judgment_4-0001.json",
+        "sha256": "785a6711e070f31d64016ead14d4a19cd24c0b15a5c6b8a0ed725685fe52403a"
       }
     }
   ],

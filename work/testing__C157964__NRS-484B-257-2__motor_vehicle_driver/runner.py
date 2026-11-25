@@ -38,7 +38,7 @@ def validate_config(config):
             config.get("actor") != "motor_vehicle_driver" or
             config.get("selected_case_id") not in CASES | SWEEP_CASES or
             config.get("case", {}).get("case_id") != config.get("selected_case_id") or
-            set(config.get("supported_case_ids", ())) != CASES):
+            set(config.get("supported_case_ids", ())) != CASES | SWEEP_CASES):
         raise ValueError("Exact subsection 2 officer case identity required")
     if (config.get("rate_hz"), config.get("duration_s")) != (20, 30):
         raise ValueError("Exact officer capture requires 20 Hz and 30 seconds")

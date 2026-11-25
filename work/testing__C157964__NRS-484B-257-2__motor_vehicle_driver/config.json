@@ -1,57 +1,248 @@
 {
-  "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
-  "law_id": "NRS-484B-257-2",
-  "cell_id": "C157964",
   "actor": "motor_vehicle_driver",
-  "selected_case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
-  "rate_hz": 20,
-  "duration_s": 30,
-  "required_atoms": [],
+  "actor_blueprints": {
+    "ego": "vehicle.tesla.model3",
+    "officer": "walker.pedestrian.0001",
+    "other": "vehicle.tesla.model3"
+  },
+  "actor_transforms": {
+    "ego": {
+      "location": {
+        "x": -40.0,
+        "y": 1.8,
+        "z": 0.3
+      },
+      "rotation": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      }
+    },
+    "officer": {
+      "location": {
+        "x": -3.0,
+        "y": -5.5,
+        "z": 0.5
+      },
+      "rotation": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": -90.0
+      }
+    },
+    "other": {
+      "location": {
+        "x": 1.8,
+        "y": -22.0,
+        "z": 0.3
+      },
+      "rotation": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 90.0
+      }
+    }
+  },
+  "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
+  "camera_mounts": {
+    "approach": {
+      "attach_to": "ego",
+      "pose": {
+        "location": {
+          "x": 1.7,
+          "y": 0.0,
+          "z": 1.6
+        },
+        "rotation": {
+          "pitch": 0.0,
+          "roll": 0.0,
+          "yaw": 0.0
+        }
+      }
+    },
+    "driver_reference": {
+      "attach_to": "ego",
+      "pose": {
+        "location": {
+          "x": 0.7,
+          "y": 0.0,
+          "z": 1.3
+        },
+        "rotation": {
+          "pitch": 0.0,
+          "roll": 0.0,
+          "yaw": 0.0
+        }
+      }
+    },
+    "overview": {
+      "attach_to": null,
+      "pose": {
+        "location": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 18.0
+        },
+        "rotation": {
+          "pitch": -55.0,
+          "roll": 0.0,
+          "yaw": -135.0
+        }
+      }
+    },
+    "reference_corner": {
+      "attach_to": null,
+      "pose": {
+        "location": {
+          "x": -12.0,
+          "y": -12.0,
+          "z": 8.0
+        },
+        "rotation": {
+          "pitch": -20.0,
+          "roll": 0.0,
+          "yaw": 45.0
+        }
+      }
+    }
+  },
   "cameras": [
     {
-      "name": "overview",
-      "width": 1920,
+      "fov_deg": 90,
       "height": 1080,
-      "fov_deg": 90,
-      "pose_strategy": "fixed elevated junction overview"
+      "name": "overview",
+      "pose_strategy": "fixed elevated junction overview",
+      "width": 1920
     },
     {
+      "fov_deg": 90,
+      "height": 720,
       "name": "approach",
-      "width": 1280,
-      "height": 720,
-      "fov_deg": 90,
-      "pose_strategy": "ego-mounted forward approach view"
+      "pose_strategy": "ego-mounted forward approach view",
+      "width": 1280
     },
     {
+      "fov_deg": 90,
+      "height": 720,
       "name": "reference_corner",
-      "width": 1280,
-      "height": 720,
-      "fov_deg": 90,
-      "pose_strategy": "fixed signed-entrance corner view"
+      "pose_strategy": "fixed signed-entrance corner view",
+      "width": 1280
     },
     {
-      "name": "driver_reference",
-      "width": 1280,
-      "height": 720,
       "fov_deg": 90,
-      "pose_strategy": "ego-mounted driver reference view"
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "ego-mounted driver reference view",
+      "width": 1280
     }
   ],
-  "site": {
-    "native_map_id": "OpenDriveMap",
-    "xodr_sha256": "ba0afed687bc33d4a93dbbcc2d3c96695177fee9f7b31b3c7ddbe7b017af2b8d",
-    "ego_lane": [
-      157960,
-      -1
-    ],
-    "yield_sign_id": "1579601",
-    "other_lane": [
-      157964,
-      -1
-    ]
+  "case": {
+    "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Independent original-camera review at complete ego-body entry",
+          "name": "officer_control_observed",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "count"
+        },
+        {
+          "method": "Original-frame gesture review separate from Native pose command",
+          "name": "officer_direction_observed",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "text"
+        },
+        {
+          "method": "Native complete-body polygon versus reviewed intersection polygon",
+          "name": "ego_body_in_intersection",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "count"
+        },
+        {
+          "method": "Native other complete-body polygon versus reviewed intersection polygon",
+          "name": "other_body_in_intersection",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "count"
+        },
+        {
+          "method": "Independent original-camera other-vehicle approach review",
+          "name": "other_approaching_observed",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "count"
+        },
+        {
+          "method": "Native ego velocity magnitude",
+          "name": "ego_speed_mps",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "m/s"
+        },
+        {
+          "method": "Native other-vehicle velocity magnitude",
+          "name": "other_speed_mps",
+          "reference_frame": "Native source frame and reviewed original camera frame",
+          "sampling_rate_hz": 20,
+          "time_window": "original 20 Hz 30-second capture",
+          "uncertainty": "physical and legal judgments remain unresolved",
+          "unit": "m/s"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+          "name": "officer_context",
+          "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved",
+          "unit": "structured record"
+        }
+      ],
+      "limitations": [
+        "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+        "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+        "Physical visibility, motion and device governance require later original capture review."
+      ]
+    }
   },
+  "cell_id": "C157964",
+  "drive": {
+    "ego": {
+      "brake": 0.0,
+      "steer": 0.0,
+      "throttle": 0.3
+    },
+    "other": {
+      "brake": 0.0,
+      "steer": 0.0,
+      "throttle": 0.4
+    }
+  },
+  "duration_s": 30,
+  "junction_center_xyz_m": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "law_id": "NRS-484B-257-2",
   "officer_context": {
-    "native_map_id": "OpenDriveMap",
+    "authority_source": "reviewed source packet; physical authority unresolved",
+    "direction_video_source": "approach.mkv",
+    "ego_route_source": "officer-site.xodr#157960,157962,157963",
     "intersection_id": 157961,
     "intersection_polygon_xy_m": [
       [
@@ -72,222 +263,112 @@
       ]
     ],
     "junction_source": "officer-site.xodr#157961",
-    "ego_route_source": "officer-site.xodr#157960,157962,157963",
-    "direction_video_source": "approach.mkv",
-    "authority_source": "reviewed source packet; physical authority unresolved",
-    "uniform_video_source": "approach.mkv",
-    "other_route_source": "officer-site.xodr#157964,157965"
-  },
-  "actor_transforms": {
-    "ego": {
-      "location": {
-        "x": -40.0,
-        "y": 1.8,
-        "z": 0.3
-      },
-      "rotation": {
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0
-      }
-    },
-    "officer": {
-      "location": {
-        "x": -3.0,
-        "y": -5.5,
-        "z": 0.5
-      },
-      "rotation": {
-        "yaw": -90.0,
-        "pitch": 0.0,
-        "roll": 0.0
-      }
-    },
-    "other": {
-      "location": {
-        "x": 1.8,
-        "y": -22.0,
-        "z": 0.3
-      },
-      "rotation": {
-        "yaw": 90.0,
-        "pitch": 0.0,
-        "roll": 0.0
-      }
-    }
-  },
-  "junction_center_xyz_m": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "actor_blueprints": {
-    "ego": "vehicle.tesla.model3",
-    "officer": "walker.pedestrian.0001",
-    "other": "vehicle.tesla.model3"
-  },
-  "camera_mounts": {
-    "overview": {
-      "pose": {
-        "location": {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 18.0
-        },
-        "rotation": {
-          "yaw": -135.0,
-          "pitch": -55.0,
-          "roll": 0.0
-        }
-      },
-      "attach_to": null
-    },
-    "approach": {
-      "pose": {
-        "location": {
-          "x": 1.7,
-          "y": 0.0,
-          "z": 1.6
-        },
-        "rotation": {
-          "yaw": 0.0,
-          "pitch": 0.0,
-          "roll": 0.0
-        }
-      },
-      "attach_to": "ego"
-    },
-    "reference_corner": {
-      "pose": {
-        "location": {
-          "x": -12.0,
-          "y": -12.0,
-          "z": 8.0
-        },
-        "rotation": {
-          "yaw": 45.0,
-          "pitch": -20.0,
-          "roll": 0.0
-        }
-      },
-      "attach_to": null
-    },
-    "driver_reference": {
-      "pose": {
-        "location": {
-          "x": 0.7,
-          "y": 0.0,
-          "z": 1.3
-        },
-        "rotation": {
-          "yaw": 0.0,
-          "pitch": 0.0,
-          "roll": 0.0
-        }
-      },
-      "attach_to": "ego"
-    }
+    "native_map_id": "OpenDriveMap",
+    "other_route_source": "officer-site.xodr#157964,157965",
+    "uniform_video_source": "approach.mkv"
   },
   "officer_pose": {
-    "stop": {
-      "crl_Arm__L": {
-        "pitch": 0.0,
-        "yaw": 0.0,
-        "roll": 90.0
-      }
-    },
     "go": {
       "crl_Arm__L": {
         "pitch": 0.0,
-        "yaw": 0.0,
-        "roll": 0.0
+        "roll": 0.0,
+        "yaw": 0.0
+      }
+    },
+    "stop": {
+      "crl_Arm__L": {
+        "pitch": 0.0,
+        "roll": 90.0,
+        "yaw": 0.0
       }
     }
   },
-  "drive": {
-    "ego": {
-      "throttle": 0.3,
-      "brake": 0.0,
-      "steer": 0.0
-    },
-    "other": {
-      "throttle": 0.4,
-      "brake": 0.0,
-      "steer": 0.0
-    }
+  "physical_completion": {
+    "body_key": "ego.body_vertices_xy_m",
+    "context_sources": [
+      "officer_context.json"
+    ],
+    "criterion": "intersection_clearance",
+    "engineering_tolerances_not_legal": true,
+    "exit_axis": 0,
+    "exit_sign": 1,
+    "minimum_progress_m": 0.25,
+    "minimum_samples": 3,
+    "motion_source": "officer_history.jsonl"
   },
+  "rate_hz": 20,
   "recording_description": {
     "channels": [
       {
-        "name": "officer_control_observed",
-        "unit": "count",
         "method": "Independent original-camera review at complete ego-body entry",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "officer_control_observed",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "count"
       },
       {
-        "name": "officer_direction_observed",
-        "unit": "text",
         "method": "Original-frame gesture review separate from Native pose command",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "officer_direction_observed",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "text"
       },
       {
-        "name": "ego_body_in_intersection",
-        "unit": "count",
         "method": "Native complete-body polygon versus reviewed intersection polygon",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "ego_body_in_intersection",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "count"
       },
       {
-        "name": "other_body_in_intersection",
-        "unit": "count",
         "method": "Native other complete-body polygon versus reviewed intersection polygon",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "other_body_in_intersection",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "count"
       },
       {
-        "name": "other_approaching_observed",
-        "unit": "count",
         "method": "Independent original-camera other-vehicle approach review",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "other_approaching_observed",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "count"
       },
       {
-        "name": "ego_speed_mps",
-        "unit": "m/s",
         "method": "Native ego velocity magnitude",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "ego_speed_mps",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "m/s"
       },
       {
-        "name": "other_speed_mps",
-        "unit": "m/s",
         "method": "Native other-vehicle velocity magnitude",
-        "time_window": "original 20 Hz 30-second capture",
+        "name": "other_speed_mps",
         "reference_frame": "Native source frame and reviewed original camera frame",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical and legal judgments remain unresolved"
+        "time_window": "original 20 Hz 30-second capture",
+        "uncertainty": "physical and legal judgments remain unresolved",
+        "unit": "m/s"
       }
     ],
     "context_inputs": [
       {
-        "name": "officer_context",
-        "unit": "structured record",
         "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
-        "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+        "name": "officer_context",
+        "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved",
+        "unit": "structured record"
       }
     ],
     "limitations": [
@@ -296,107 +377,43 @@
       "Physical visibility, motion and device governance require later original capture review."
     ]
   },
-  "source_packets": [],
-  "case": {
-    "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
-    "recording_description": {
-      "channels": [
-        {
-          "name": "officer_control_observed",
-          "unit": "count",
-          "method": "Independent original-camera review at complete ego-body entry",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "officer_direction_observed",
-          "unit": "text",
-          "method": "Original-frame gesture review separate from Native pose command",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "ego_body_in_intersection",
-          "unit": "count",
-          "method": "Native complete-body polygon versus reviewed intersection polygon",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "other_body_in_intersection",
-          "unit": "count",
-          "method": "Native other complete-body polygon versus reviewed intersection polygon",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "other_approaching_observed",
-          "unit": "count",
-          "method": "Independent original-camera other-vehicle approach review",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "ego_speed_mps",
-          "unit": "m/s",
-          "method": "Native ego velocity magnitude",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        },
-        {
-          "name": "other_speed_mps",
-          "unit": "m/s",
-          "method": "Native other-vehicle velocity magnitude",
-          "time_window": "original 20 Hz 30-second capture",
-          "reference_frame": "Native source frame and reviewed original camera frame",
-          "sampling_rate_hz": 20,
-          "uncertainty": "physical and legal judgments remain unresolved"
-        }
-      ],
-      "context_inputs": [
-        {
-          "name": "officer_context",
-          "unit": "structured record",
-          "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
-          "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
-        }
-      ],
-      "limitations": [
-        "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
-        "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
-        "Physical visibility, motion and device governance require later original capture review."
-      ]
-    }
-  },
-  "physical_completion": {
-    "criterion": "intersection_clearance",
-    "motion_source": "officer_history.jsonl",
-    "body_key": "ego.body_vertices_xy_m",
-    "context_sources": [
-      "officer_context.json"
+  "required_atoms": [],
+  "selected_case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+  "site": {
+    "ego_lane": [
+      157960,
+      -1
     ],
-    "exit_axis": 0,
-    "exit_sign": 1,
-    "minimum_progress_m": 0.25,
-    "minimum_samples": 3,
-    "engineering_tolerances_not_legal": true
+    "native_map_id": "OpenDriveMap",
+    "other_lane": [
+      157964,
+      -1
+    ],
+    "xodr_sha256": "ba0afed687bc33d4a93dbbcc2d3c96695177fee9f7b31b3c7ddbe7b017af2b8d",
+    "yield_sign_id": "1579601"
   },
+  "source_packet_environment": "OFFICER_SOURCE_ROOT (SHA-bound officer source packet and route/hazard plan)",
+  "source_packets": [],
   "supported_case_ids": [
     "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
     "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
-    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive"
-  ],
-  "source_packet_environment": "OFFICER_SOURCE_ROOT (SHA-bound officer source packet and route/hazard plan)"
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0001",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_3-0002",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0001",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_5-0002",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0001",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_6-0002",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0001",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_1-0002",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0001",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_2-0002",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0000",
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_4-0001"
+  ]
 }

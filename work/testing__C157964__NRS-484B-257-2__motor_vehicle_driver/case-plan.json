@@ -1,6 +1,34 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through complete-body intersection clearance",
+        "subject": "ego and other complete vehicle bodies, officer, signed junction and crossing polygon",
+        "view": "overview"
+      },
+      {
+        "interval": "pre-entry through ego complete-body entry",
+        "subject": "ego signed entrance, officer direction and original gesture timing",
+        "view": "approach"
+      },
+      {
+        "interval": "setup through crossing occupancy",
+        "subject": "officer control, other through entrance, sign governance and both bodies",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through final observation",
+        "subject": "ego approach, full-brake hold and signed entrance sight line",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "physical_claim": false,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
@@ -198,12 +226,49 @@
   },
   "existing_evidence": [],
   "law_id": "NRS-484B-257-2",
-  "observations": [
+  "observation_requirements": [
     "source-backed non-through status and all entrance signs",
     "actual police authority, visible direction and traffic-control status",
     "original-frame ego and other complete bodies at entry",
     "other non-obligated vehicle inside intersection",
     "approaching traffic and immediate hazard without invented numeric cutoff"
+  ],
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "officer_control_observed",
+      "source": "Independent original-camera review at complete ego-body entry"
+    },
+    {
+      "mandatory": true,
+      "name": "officer_direction_observed",
+      "source": "Original-frame gesture review separate from Native pose command"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_body_in_intersection",
+      "source": "Native complete-body polygon versus reviewed intersection polygon"
+    },
+    {
+      "mandatory": true,
+      "name": "other_body_in_intersection",
+      "source": "Native other complete-body polygon versus reviewed intersection polygon"
+    },
+    {
+      "mandatory": true,
+      "name": "other_approaching_observed",
+      "source": "Independent original-camera other-vehicle approach review"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_speed_mps",
+      "source": "Native ego velocity magnitude"
+    },
+    {
+      "mandatory": true,
+      "name": "other_speed_mps",
+      "source": "Native other-vehicle velocity magnitude"
+    }
   ],
   "planning_status": "partial; two physical judgment grids expanded to six exact case IDs with construction and CPU offline checks; compatibility and final manifest still incomplete",
   "requirement_dispositions": [
