@@ -47,14 +47,14 @@
             "sha256": "f565cb4d2a4f4219fbeab891f202e4b7777e40d2e2c0cc0a2f09d95979e70601"
           },
           "construction": "fallback1-construction.json",
-          "construction_sha256": "49772d5ee28790877bcb5a328ef85d0cfe13cf8ea72fe180523e82b6c978c8be",
+          "construction_sha256": "628fe224317e9e3d7ac91900d7cd5da53b9859e58fd832f0aa5c92c1c98ce3f5",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-freight_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "49772d5ee28790877bcb5a328ef85d0cfe13cf8ea72fe180523e82b6c978c8be",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-freight_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "628fe224317e9e3d7ac91900d7cd5da53b9859e58fd832f0aa5c92c1c98ce3f5",
             "exit_code": 0,
             "log": "proof-offline-freight_loading-fallback1.log",
-            "log_sha256": "557f6d6672a9265815188837fcdd4b2f0e2372d996062061e3267f49a4a5631f"
+            "log_sha256": "3b5170b6af6d19770d0c85aaf0e7bc5a515b08dc8d90ba7309d0bad22d353441"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -73,23 +73,33 @@
         "sha256": "3c9287abb2e38e843108037fc3d2a926d24eb434c6aee3d7d661650004561ed9"
       },
       "construction": "construction.json",
-      "construction_sha256": "c3415734f26b3334e417d5982960177961d282c6c3d20cca17318965d1bf60c5",
+      "construction_sha256": "dd939a735c19129d8e615598fcae4f4adfb903625596dba1e80ab122846792dd",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/freight_loading/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/freight_loading/delivery-positive.log",
+        "test_log_sha256": "112199d6d9031047bbc91540d50b53c6bca95219116505903b93b9da667e0679"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/freight_loading/recipe.json",
       "kind": "delivery",
@@ -109,11 +119,15 @@
         "log": "compat-freight_loading-primary-negative.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate primary --output .runtime-work/c149555-resume/offline2-freight_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "c3415734f26b3334e417d5982960177961d282c6c3d20cca17318965d1bf60c5",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate primary --output .runtime-work/c149555-resume/final-offline-freight_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "dd939a735c19129d8e615598fcae4f4adfb903625596dba1e80ab122846792dd",
         "exit_code": 0,
         "log": "proof-offline-freight_loading.log",
-        "log_sha256": "3880516dde16dd70af514d0a97bb01aafc88ccbf6180f8745e001e7231d02661"
+        "log_sha256": "2da64383d4e5ebc46c4e85d1d1e9e10db58488d0bddf7062a82aab42154414ed"
+      },
+      "physical_preparation": {
+        "receipt": "cases/freight_loading/physical-preparation.json",
+        "sha256": "f72ab51e113d0f1b7e7adcc1061e8fe27b4418568da63fcf48dcfd4fcd9a54e3"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
@@ -166,14 +180,14 @@
             "sha256": "5d9fcd91f2bfbd601d174d4cc972933021743f7c1800eb828ccf74379dd99980"
           },
           "construction": "cases/freight_unloading/fallback1-construction.json",
-          "construction_sha256": "990969029f5ff02437173fe09b4aeea93ab2d2740219da0a806776e34dfad2c7",
+          "construction_sha256": "a6dff9a117eb7ac4ecd6cd5cb9b01975ce6a51242be27dc8cd5c5067049f8d2a",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-freight_unloading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "990969029f5ff02437173fe09b4aeea93ab2d2740219da0a806776e34dfad2c7",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-freight_unloading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "a6dff9a117eb7ac4ecd6cd5cb9b01975ce6a51242be27dc8cd5c5067049f8d2a",
             "exit_code": 0,
             "log": "proof-offline-freight_unloading-fallback1.log",
-            "log_sha256": "b05b17b9bcef3727397c11d881a0c1475f460ff9bf890c45d22bccc9d7b422af"
+            "log_sha256": "6abb3f06420989d3683d0464adc2f700d562f81422dbd86dc1d5b0aff714822a"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -192,23 +206,33 @@
         "sha256": "51c7e79c4408f3b0848b1a1c5a4c2c437b943db5a337710681713851236d8dba"
       },
       "construction": "cases/freight_unloading/construction.json",
-      "construction_sha256": "b3e0511636d2895458f6c32b19986b09013edb9acdb3922f47b20652bb1b6d2d",
+      "construction_sha256": "3a17c03602e37f0a1ca10999a9c8caccda7c0587b52afa839e0c4d35a7e90f5f",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/freight_unloading/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/freight_unloading/delivery-positive.log",
+        "test_log_sha256": "1abc0fd0bac952999c64fc96c65d170d659c87a272be5d7042fc799af0a152fe"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/freight_unloading/recipe.json",
       "kind": "delivery",
@@ -228,11 +252,15 @@
         "log": "compat-freight_unloading-primary-negative.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate primary --output .runtime-work/c149555-resume/offline2-freight_unloading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "b3e0511636d2895458f6c32b19986b09013edb9acdb3922f47b20652bb1b6d2d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate primary --output .runtime-work/c149555-resume/final-offline-freight_unloading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "3a17c03602e37f0a1ca10999a9c8caccda7c0587b52afa839e0c4d35a7e90f5f",
         "exit_code": 0,
         "log": "proof-offline-freight_unloading.log",
-        "log_sha256": "c558406fdc14947d554e148bc7b58bc138a942fabdabb9f23636afea82230479"
+        "log_sha256": "d865365523941006091d7297c08afcbc9b00b4b40ce497ab279a9af98758b1ac"
+      },
+      "physical_preparation": {
+        "receipt": "cases/freight_unloading/physical-preparation.json",
+        "sha256": "d01174f9158a5ce9e742bb9e8564daa13548c841327df9f1e9b5cab2a3e95c16"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
@@ -285,14 +313,14 @@
             "sha256": "65ccc078b92b1c0428608677a694c96a31999ddc2d87b727d260a94ebc24cfcb"
           },
           "construction": "cases/no_freight_activity/fallback1-construction.json",
-          "construction_sha256": "db162e3f502dc9ef105f011002ff5aef4c8df8568e0232196844cbc5d66f53ca",
+          "construction_sha256": "92d8624498dde11c2b44c2bbef41fb48086aaa6d17ddaff9e7875e19bad1a6eb",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate fallback1 --output .runtime-work/c149555-resume/offline2-no_freight_activity-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "db162e3f502dc9ef105f011002ff5aef4c8df8568e0232196844cbc5d66f53ca",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-no_freight_activity-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "92d8624498dde11c2b44c2bbef41fb48086aaa6d17ddaff9e7875e19bad1a6eb",
             "exit_code": 0,
             "log": "proof-offline-no_freight_activity-fallback1.log",
-            "log_sha256": "c0f0b65e82a567026395ce64f667531f9c9f48a55c17b82d6879478420936c01"
+            "log_sha256": "43a62a0388519143ecea4878f9f7a1c9f76e8fa0fce9b0c8c32b0aa3bfef8cbb"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -311,23 +339,33 @@
         "sha256": "4afd27ff50addaa02ac56c98686cc46378f6bb8ea09d9b5007285e84df7e3907"
       },
       "construction": "cases/no_freight_activity/construction.json",
-      "construction_sha256": "e262fce0bed8dc49c788981b19718f75ca12918a8e806adfab382dab5429487f",
+      "construction_sha256": "0f3b506c25a12298f22526a36c7fed5478aa7f8c5dd001ee3ee823ffc430c056",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/no_freight_activity/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/no_freight_activity/delivery-positive.log",
+        "test_log_sha256": "bd167e7581bf1a009ba4652d2593f9fe6d326df5ddb010030cd7bb43d3a0a888"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/no_freight_activity/recipe.json",
       "kind": "delivery",
@@ -347,11 +385,15 @@
         "log": "compat-no_freight_activity-primary-negative.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate primary --output .runtime-work/c149555-resume/offline2-no_freight_activity-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "e262fce0bed8dc49c788981b19718f75ca12918a8e806adfab382dab5429487f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate primary --output .runtime-work/c149555-resume/final-offline-no_freight_activity-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "0f3b506c25a12298f22526a36c7fed5478aa7f8c5dd001ee3ee823ffc430c056",
         "exit_code": 0,
         "log": "proof-offline-no_freight_activity.log",
-        "log_sha256": "150439c99460aa55fee55849baeded58e9ac3dc95de74bd76f8227b8fc2783af"
+        "log_sha256": "44f7bd25301fac6424e1667309b689b6f8c3e11e6b6409b3f215de48269d4ffa"
+      },
+      "physical_preparation": {
+        "receipt": "cases/no_freight_activity/physical-preparation.json",
+        "sha256": "086de8cff9412b0601a4c736ee4e38f4e3e2d4926638c0e4a8b610762afd52f6"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
@@ -396,14 +438,14 @@
             "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
           ],
           "construction": "cases/noncommercial_loading/fallback1-construction.json",
-          "construction_sha256": "ca8c62931204f69c4c9a8b03e07ae0992a984d65e066110416515c312e538b9d",
+          "construction_sha256": "dc5b6048e728a2f9ab14cbc49a19f573bf1d2abc5de55c9254d365062c95f230",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-noncommercial_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "ca8c62931204f69c4c9a8b03e07ae0992a984d65e066110416515c312e538b9d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-noncommercial_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "dc5b6048e728a2f9ab14cbc49a19f573bf1d2abc5de55c9254d365062c95f230",
             "exit_code": 0,
             "log": "proof-offline-noncommercial_loading-fallback1.log",
-            "log_sha256": "e02091329792e710f396f71c5e1bffe774a194f0df63ef8d59d9398e0d8b76b1"
+            "log_sha256": "5dd3e1a7d8c22a41f4babc43fd48b6d2f0b427f405bb53ca4f7505a9cbd80ee2"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -413,24 +455,42 @@
         }
       ],
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate primary --output .runtime-work/c149555-resume/compat2-noncommercial_loading-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "compat-noncommercial_loading-primary-analysis.log",
+        "negative_log": "compat-noncommercial_loading-primary-negative.log",
+        "receipt": "compat-noncommercial_loading-primary-receipt.json",
+        "sha256": "04eec4976e57b15ff424064ef9407f8efd6f2ddc2edc9791b06e2af37f15812d"
+      },
       "construction": "cases/noncommercial_loading/construction.json",
-      "construction_sha256": "c8329895ca441665ab40923e627f1d7e129d2602fffd803d49f9fc1ab4e2a2cd",
+      "construction_sha256": "8f68bfc74aad249f18a7f8e9a0e60da4e9a6d2730c81c2a1ca1949e202a31ef0",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/noncommercial_loading/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/noncommercial_loading/delivery-positive.log",
+        "test_log_sha256": "14c41210e06690c66af83752c02d92b814e60d4535cb5e55036cbeeda9442cbd"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/noncommercial_loading/recipe.json",
       "kind": "delivery",
@@ -446,12 +506,19 @@
         "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
         "source_root_env_var": "C149555_SOURCE_ROOT"
       },
+      "negative": {
+        "log": "compat-noncommercial_loading-primary-negative.log"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate primary --output .runtime-work/c149555-resume/offline2-noncommercial_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "c8329895ca441665ab40923e627f1d7e129d2602fffd803d49f9fc1ab4e2a2cd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate primary --output .runtime-work/c149555-resume/final-offline-noncommercial_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "8f68bfc74aad249f18a7f8e9a0e60da4e9a6d2730c81c2a1ca1949e202a31ef0",
         "exit_code": 0,
         "log": "proof-offline-noncommercial_loading.log",
-        "log_sha256": "7dfaf2b96cc8ed232ca6ec5817482b362e21597fb9f71f05a7330ebc80699f6b"
+        "log_sha256": "f982c6d6947d28063e4d010b0195e25de507dbf9b686b5df3be5c85404e26c8b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/noncommercial_loading/physical-preparation.json",
+        "sha256": "af70d1c441fbd7ab0de85d45cedb0ccd46c77104c9ab9f4992dd839d1cd7fc10"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
@@ -496,14 +563,14 @@
             "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
           ],
           "construction": "cases/outside_posted_time/fallback1-construction.json",
-          "construction_sha256": "f58df51b7f773aa0220d5a036d24ef25c05aff9c379d0668496a6d46ec2a26d5",
+          "construction_sha256": "b6fd07db5a75e4cbbc9283e5eb45a70a2d316ded2a9bc04e5011ce81ec442327",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate fallback1 --output .runtime-work/c149555-resume/offline2-outside_posted_time-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "f58df51b7f773aa0220d5a036d24ef25c05aff9c379d0668496a6d46ec2a26d5",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-outside_posted_time-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "b6fd07db5a75e4cbbc9283e5eb45a70a2d316ded2a9bc04e5011ce81ec442327",
             "exit_code": 0,
             "log": "proof-offline-outside_posted_time-fallback1.log",
-            "log_sha256": "d8881c1806f7bdf17a1163f47ad8c46926f1badd24f7e1db7cfc21dbc1343aae"
+            "log_sha256": "17740856ff58ef0d5d236e9d66ae57ba31203bab7a8c44edb2984a4679ae62ec"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -514,23 +581,33 @@
       ],
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
       "construction": "cases/outside_posted_time/construction.json",
-      "construction_sha256": "d1adfb07c218ddd733a40553db616df904eaefb3f5df6e29b5e968696e0a49c5",
+      "construction_sha256": "5833389dd91e5ff025973cad05168d1c28472ce1d902200c69cde1958e40193f",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/outside_posted_time/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_posted_time/delivery-positive.log",
+        "test_log_sha256": "a1b2a668ef2c8e2407afcb367682cbfaba4ceb5e205395849f039f5f0c29265f"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/outside_posted_time/recipe.json",
       "kind": "delivery",
@@ -547,11 +624,15 @@
         "source_root_env_var": "C149555_SOURCE_ROOT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate primary --output .runtime-work/c149555-resume/offline2-outside_posted_time-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "d1adfb07c218ddd733a40553db616df904eaefb3f5df6e29b5e968696e0a49c5",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate primary --output .runtime-work/c149555-resume/final-offline-outside_posted_time-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "5833389dd91e5ff025973cad05168d1c28472ce1d902200c69cde1958e40193f",
         "exit_code": 0,
         "log": "proof-offline-outside_posted_time.log",
-        "log_sha256": "479b80f6b3bf1c10dd3827f3a8fd6d8393dd3dca4986680041e4018d08ff7363"
+        "log_sha256": "76fc7a4245abed09ce693ead9207963da6b886aef5cbceb9c673edaf92176c3e"
+      },
+      "physical_preparation": {
+        "receipt": "cases/outside_posted_time/physical-preparation.json",
+        "sha256": "0aa4ca326c57ebdac25b647a3c2658e14311b485ff1a4208ca61f0796b931c47"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
@@ -596,14 +677,14 @@
             "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
           ],
           "construction": "cases/outside_yellow_zone/fallback1-construction.json",
-          "construction_sha256": "460a8735b16419ac386f12c2c7bc0014c7c9c72b307bc307283e3efb8b21e161",
+          "construction_sha256": "2f61017da3bf9bcfc194e68a1284c56bcecb0ed7eb9b9c09695629b74ecb44ff",
           "id": "fallback1",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate fallback1 --output .runtime-work/c149555-resume/offline2-outside_yellow_zone-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "460a8735b16419ac386f12c2c7bc0014c7c9c72b307bc307283e3efb8b21e161",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate fallback1 --output .runtime-work/c149555-resume/final-offline-outside_yellow_zone-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "2f61017da3bf9bcfc194e68a1284c56bcecb0ed7eb9b9c09695629b74ecb44ff",
             "exit_code": 0,
             "log": "proof-offline-outside_yellow_zone-fallback1.log",
-            "log_sha256": "f172c26d7e555baf8bba0ba20bc5de19ab65bad31d992656058eb5210b1334ba"
+            "log_sha256": "4411316fe1da876902d6f07f3b41a58fde266d825ae77252d851cf79d529a8dc"
           },
           "trigger": {
             "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
@@ -614,23 +695,33 @@
       ],
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
       "construction": "cases/outside_yellow_zone/construction.json",
-      "construction_sha256": "e5f639dfe1e440ac7f582ce3d6f5cb3bae7e45eac9d9d87cbebc0a5081204496",
+      "construction_sha256": "2d56f9d47863fe3a1d4d1b9f85f670f4b42164b78be8d8d429d786ac3bf52b26",
       "delivery_acceptance": {
         "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
         "checks": [
-          "native_source",
-          "original_motion",
+          "actual_pixels",
+          "all_participants",
           "four_camera_sources",
           "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
+          "native_source",
+          "original_motion",
+          "physical_completion",
+          "time_join"
         ],
-        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/prove_delivery_audit.py --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "saved original changed: raw.jsonl",
+        "negative_log": "cases/outside_yellow_zone/delivery-negative.log",
+        "negative_log_sha256": "68320cbfd70dd68001d77c6c0db07f096a9ecf1b0cf03fbb30b1211831e1dd61",
         "script": "delivery_audit.py",
-        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "script_sha256": "be3ea90a01a85e73a97414449634b0edec4c18551d4956d19d6d48387a42e41a",
         "sets": [
           "full-test"
-        ]
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_yellow_zone/delivery-positive.log",
+        "test_log_sha256": "eb0762daf4fb1f7a804639436080602b88e892082bf1fd1f89b6f0b9c8bcbeba"
       },
       "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/outside_yellow_zone/recipe.json",
       "kind": "delivery",
@@ -647,11 +738,15 @@
         "source_root_env_var": "C149555_SOURCE_ROOT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate primary --output .runtime-work/c149555-resume/offline2-outside_yellow_zone-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "e5f639dfe1e440ac7f582ce3d6f5cb3bae7e45eac9d9d87cbebc0a5081204496",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate primary --output .runtime-work/c149555-resume/final-offline-outside_yellow_zone-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "2d56f9d47863fe3a1d4d1b9f85f670f4b42164b78be8d8d429d786ac3bf52b26",
         "exit_code": 0,
         "log": "proof-offline-outside_yellow_zone.log",
-        "log_sha256": "0b26006ecc734198730749b6544df20153cf0f56fdf659e71c5cd5650c073a30"
+        "log_sha256": "6e3e87e53b028970a79d1ff2e80a6dbb9f644633989697785daeb9a427c5c358"
+      },
+      "physical_preparation": {
+        "receipt": "cases/outside_yellow_zone/physical-preparation.json",
+        "sha256": "cb38603380f5c337194534eacf0062f11d907f74b4aab3d333d46a40072d32f8"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
