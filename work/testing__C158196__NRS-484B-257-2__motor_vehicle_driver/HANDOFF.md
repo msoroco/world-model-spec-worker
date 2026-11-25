@@ -1,5 +1,32 @@
 # C158196 CPU handoff — NRS 484B.257(2) signal cell
 
+## 2026-11-25 14:44 UTC staged physical preparation matrix
+
+`prove_review_draft_physical.py` renewed complete-motion, incomplete-motion and missing-evidence fixture outcomes against the staged source-bound primary construction for each of the 12 C158196 cases. All 36 fixture commands exited 0 with the expected measured maneuver status. Each staged receipt binds its construction, three result files and proof logs, and the existing case-specific capture lifecycle log. `review-draft/draft-physical-proofs/index.json` binds all 12 receipts to the staged manifest. Direct invocation of the pinned runtime `physical_preparation.validate` accepted all 12 staged receipts. The 48-test package suite passed after the proof-script additions, with `cpu-tests.log` SHA bound in `result.json`.
+
+This is synthetic CPU evidence and leaves actual Native motion and visual/legal judgments open. The selected execution manifest and earlier active receipts remain unchanged. C158196 stays **partial** pending coherent active promotion, independent delivery/comparison receipts, executable baseline and qualitative sweep members, and its scoped strict gate.
+
+
+## 2026-11-25 14:41 UTC staged recorded-only processing
+
+`prove_review_draft_saved.py` ran official `runtime.py process-saved` on all 12 staged primary compatibility attempts. All 12 returned `passed: true` and `recorded_only: true`, including six officer/reference variants. `review-draft/draft-saved-proofs/index.json` binds the staged manifest SHA, each construction SHA, exact command and text log SHA; all 12 logs and receipt identities were independently rechecked. The largest log is 160,533 bytes. These are synthetic CPU source-shaped attempts and do not establish actual Native motion, pixel visibility or a legal finding.
+
+Final check for this checkpoint: runtime source verification, CPU preflight and the assignment-scoped `worker_check.py --complete` all exit 0. A direct scan of 12,883 returned files found zero UTF-8, size, trailing-whitespace or conflict-marker errors. The full strict gate is still open with five partial assignments; C158196 was not marked ready.
+
+The active selected manifest and its prior CPU receipts remain unchanged, so C158196 stays **partial**. Next CPU step is to regenerate the active primary/fallback construction bindings and all dependent active receipts together, then complete executable baseline/sweep members and pass the scoped strict gate.
+
+
+## 2026-11-25 14:33 UTC staged original-camera review proof
+
+`build_review_draft.py` constructed a staged source-bound execution manifest and 24 exact primary/fallback bundles for the 12 selected C158196 cases under `review-draft/`. The bundles embed the original four-camera index builder and corresponding saved finalizer. The active selected manifest and its earlier bound receipts remain unchanged.
+
+The official current-runtime `runtime.py offline` passed all 24 staged bundles; `review-draft/draft-offline-proof-index.json` binds the manifest, construction and text log hashes. Official `runtime.py compatibility` passed all 24 with positive decode and missing/changed-source negative checks; `review-draft/draft-compat-proofs/index.json` binds its passing text receipts. Both indices were rechecked against all 24 log hashes. The draft manifest passes `semantic_delivery.validate`; the 48-test package suite passes and `cpu-tests.log` is SHA-bound in `result.json`.
+
+The staged proof directories were renamed to satisfy the returned-file diagnostic path rule. After that change, runtime verify and CPU preflight passed, the assignment-scoped complete static check exited 0, and a direct scan of 12,869 files under `work/` found zero invalid UTF-8, oversize, trailing-whitespace or conflict-marker files. The full strict gate remains pending because the assignment is partial.
+
+C158196 remains **partial**. Next worker-owned CPU work is coherent promotion into the selected manifest and renewal of active saved-only, physical, independent delivery and comparison receipts, followed by executable baseline and qualitative judgment sweep members and the assignment-scoped strict gate. Staged success does not certify active readiness. Original camera pixels, Native motion, officer authority, site validity and legal judgments remain unresolved.
+
+
 Status: **partial**. The fixed cell is one-way-to-two-way travel with `traffic_light` control. An operative signal actually controlling ego is an express exception to subsection 2's signed-entrance duty. A head elsewhere is insufficient. Frozen accepted-evidence inventory is empty.
 
 `signal_control.py` selects the Native head by affected ego lane, applies a state with readback and restores it. `signal_yield_exception.py` joins original signal/head and frame maps to complete ego/other bodies, signed non-through entrance context and other occupancy. Three CPU tests pass for active, Off and nongoverning states, stale frame, wrong light and Native state restoration. The within-intersection observation does not decide immediate hazard or cautious yielding.

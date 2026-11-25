@@ -23,13 +23,13 @@ def write_rows(path, records):
     path.write_text(''.join(json.dumps(row, allow_nan=False) + '\n' for row in records))
 
 
-def run(case_suffix, kind, output):
+def run(case_suffix, kind, output, selected_construction=None):
     if kind not in KINDS:
         raise ValueError('Unknown physical fixture outcome')
     if not case_suffix.replace('_', '').isalnum():
         raise ValueError('Invalid exact case suffix')
-    construction_path = ROOT / 'cases' / (case_suffix + '-construction.json')
-    if case_suffix == 'active_signal_controls':
+    construction_path = Path(selected_construction) if selected_construction else ROOT / 'cases' / (case_suffix + '-construction.json')
+    if case_suffix == 'active_signal_controls' and selected_construction is None:
         construction_path = ROOT / 'construction.json'
     construction = json.loads(construction_path.read_text())
     config = json.loads(next(item['content'] for item in construction['files']
@@ -96,5 +96,6 @@ if __name__ == '__main__':
     parser.add_argument('--case-suffix', required=True)
     parser.add_argument('--kind', choices=sorted(KINDS), required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--construction', type=Path)
     args = parser.parse_args()
-    run(args.case_suffix, args.kind, args.output)
+    run(args.case_suffix, args.kind, args.output, args.construction)

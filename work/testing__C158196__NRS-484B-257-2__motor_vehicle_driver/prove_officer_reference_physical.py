@@ -19,20 +19,20 @@ def _rows(value):
     return [json.loads(line) for line in value.splitlines() if line.strip()]
 
 
-def run(suffix, kind, output):
+def run(suffix, kind, output, selected_construction=None):
     if kind not in KINDS or suffix not in (
             'officer_controls_go', 'officer_controls_hold',
             'officer_present_inactive', 'stop_line_reference',
             'crosswalk_reference', 'nearest_view_reference'):
         raise ValueError('Select exact officer/reference case and outcome')
-    construction = ROOT / 'cases' / (suffix + '-officer-reference-construction.json')
+    construction = Path(selected_construction) if selected_construction else ROOT / 'cases' / (suffix + '-officer-reference-construction.json')
     bundle = json.loads(construction.read_text())
     config = json.loads(next(item['content'] for item in bundle['files']
                              if item['path'] == 'config.json'))
     spec = json.loads((ROOT / 'cases' /
                        (suffix + '-officer-reference-diagnostic-sources.json')).read_text())
     output = Path(output)
-    output.mkdir(parents=True, exist_ok=False)
+    output.mkdir(parents=True, exist_ok=True)
     (output / 'config.json').write_text(json.dumps(config, sort_keys=True) + '\n')
     history = _rows(spec['files']['officer_reference_history.jsonl'])
     if kind == 'complete_motion':
@@ -75,5 +75,6 @@ if __name__ == '__main__':
     parser.add_argument('--case-suffix', required=True)
     parser.add_argument('--kind', required=True, choices=sorted(KINDS))
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--construction', type=Path)
     args = parser.parse_args()
-    print(run(args.case_suffix, args.kind, args.output))
+    print(run(args.case_suffix, args.kind, args.output, args.construction))

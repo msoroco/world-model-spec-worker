@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'review-draft-manifest.json'
 OUTPUT = REPO / '.runtime-work/c158196-review-offline-all-r2'
-LOGS = ROOT / 'review-draft/offline-proofs'
+LOGS = ROOT / 'review-draft/draft-offline-proofs'
 
 
 def sha(path):
@@ -48,7 +48,7 @@ def main():
                 break
     index = {'format': 'c158196-review-draft-offline-proofs',
              'manifest_sha256': sha(MANIFEST), 'receipts': receipts}
-    (ROOT / 'review-draft/offline-proof-index.json').write_text(
+    (ROOT / 'review-draft/draft-offline-proof-index.json').write_text(
         json.dumps(index, indent=2) + '\n')
     if len(receipts) != 24 or any(row['exit_code'] for row in receipts):
         raise SystemExit('Staged offline proof incomplete')

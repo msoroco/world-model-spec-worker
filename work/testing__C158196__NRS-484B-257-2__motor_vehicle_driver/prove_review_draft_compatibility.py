@@ -13,7 +13,7 @@ REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'review-draft-manifest.json'
 VALIDATOR = REPO / '.runtime-work/c158196-current-decoder/.lake/build/bin/adapterCheck'
 OUTPUT = REPO / '.runtime-work/c158196-review-compat-all'
-LOGS = ROOT / 'review-draft/compatibility-proofs'
+LOGS = ROOT / 'review-draft/draft-compat-proofs'
 INDEX = LOGS / 'index.json'
 
 
