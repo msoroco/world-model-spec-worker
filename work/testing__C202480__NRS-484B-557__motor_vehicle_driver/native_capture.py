@@ -18,6 +18,7 @@ from rail_stop_audit import audit_saved_file
 VIEWS = (("overview", 1920, 1080), ("approach", 1280, 720),
          ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 FRAMES = 900
+PIXEL_SAMPLE_FRAMES = (0, 450, 899)
 
 
 def _sha(data: bytes) -> str:
@@ -130,6 +131,16 @@ def capture(world, scene: dict, camera, attempt: Path, case: dict,
                     written = encoders[name].stdin.write(pixels)
                     if written != len(pixels):
                         raise ValueError("original camera encoder short write")
+                    if index in PIXEL_SAMPLE_FRAMES:
+                        png = attempt / f"original-{name}-{index:03d}.png"
+                        if png.exists():
+                            raise ValueError("retain previous original pixel sample")
+                        subprocess.run([
+                            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                            "-f", "rawvideo", "-pixel_format", "bgra",
+                            "-video_size", f"{width}x{height}", "-i", "pipe:0",
+                            "-frames:v", "1", str(png)], input=pixels,
+                            check=True, stdout=subprocess.DEVNULL, timeout=60)
                     # The lossless encoded original remains in the attempt; raw
                     # callback scratch is removed only after its bytes are joined.
                     source.unlink()
@@ -226,6 +237,14 @@ def capture(world, scene: dict, camera, attempt: Path, case: dict,
                     "conflict_actor_present": scene.get("conflict_actor") is not None}
     _write_json(attempt / "rail-stop-packet.json", saved_packet)
     _write_json(attempt / "camera-frame-joins.json", camera_joins)
+    _write_json(attempt / "pixel-sample-inventory.json", {
+        "format": "original-camera-pixel-samples",
+        "frames": list(PIXEL_SAMPLE_FRAMES),
+        "samples": [{"camera": name, "video_frame": index,
+                     "source_frame": camera_joins[index]["source_frame"],
+                     "png": f"original-{name}-{index:03d}.png",
+                     "original_bgra_sha256": camera_joins[index]["cameras"][name]["original_bgra_sha256"]}
+                    for index in PIXEL_SAMPLE_FRAMES for name, _, _ in VIEWS]})
     measured = audit_saved_file(attempt / "rail-stop-packet.json")
     return {"frames": FRAMES, "encoder_exit_codes": codes,
             "rail_measurement": measured, "first_native_frame": motion[0]["source_frame"],

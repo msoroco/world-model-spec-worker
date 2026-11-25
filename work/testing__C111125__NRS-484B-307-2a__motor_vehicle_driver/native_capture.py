@@ -19,7 +19,7 @@ FRAMES = 900
 
 def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
             output_root, other_context_ref=None, camera_profile_sha256=None,
-            camera_frame_reader=None):
+            camera_frame_reader=None, before_tick=None, after_tick=None):
     root = Path(output_root).resolve()
     if case_suffix not in CASES:
         raise ValueError('unknown exact case')
@@ -29,6 +29,10 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
         raise ValueError('source-hashed camera profile required')
     if camera_frame_reader is not None and not callable(camera_frame_reader):
         raise ValueError('original camera frame reader must be callable')
+    if before_tick is not None and not callable(before_tick):
+        raise ValueError('before_tick controller must be callable')
+    if after_tick is not None and not callable(after_tick):
+        raise ValueError('after_tick capture must be callable')
     verify_site(site, root)
     source(site_ref, root)
     if json.loads(source(site_ref, root).read_text()) != site:
@@ -46,6 +50,8 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
     frame_map = []
     try:
         for index in range(FRAMES):
+            if before_tick is not None:
+                before_tick(index)
             tick = world.tick()
             snapshot = world.get_snapshot()
             if snapshot.frame != tick:
@@ -88,6 +94,8 @@ def capture(world, ego, other, site, site_ref, case_suffix, signal_reader,
                 frame_map.append({'index': index, 'frame': tick,
                                   'elapsed_seconds': instant,
                                   'camera_frame_ids': camera_frames.copy()})
+            if after_tick is not None:
+                after_tick(snapshot, rows[-1])
     finally:
         # The caller still owns every actor and the world restoration.
         if hasattr(ego, 'set_target_velocity'):

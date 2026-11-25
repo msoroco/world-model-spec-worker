@@ -4,9 +4,114 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared exact official circular-green intersection and straight route reference.",
+      "variable_assignments": {
+        "other_user_at_exhibition": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "Same surveyed signal, route, duration and cameras"
+        },
+        "other_user_region_at_exhibition": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Retain original first-green timing"
+        },
+        "official_signal_aspect": {
+          "kind": "world_setup",
+          "value": "circular_green_alone",
+          "note": "Original facing official head source gate"
+        },
+        "ego_straight_controller": {
+          "kind": "controller",
+          "value": "source_gated_straight",
+          "note": "Same engineering controller, no legal verdict"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Lawful presence, right-of-way and actual physical visibility remain subject to original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "official_signal_history",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          },
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "ego_body_history",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          },
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "other_user_history",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          },
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "intersection_geometry",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          },
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "adjacent_crosswalk_geometry",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          },
+          {
+            "method": "Source-hashed original Native event, site and frame-map acquisition",
+            "name": "camera_frame_map",
+            "reference_frame": "Native world, original frame and elapsed time",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s original circular-green exhibition and crossing",
+            "uncertainty": "20 Hz temporal and Native map/body precision",
+            "unit": "original structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Original site survey, official head and other-device inventory",
+            "name": "official_signal_and_device_context",
+            "unit": "original source packet"
+          },
+          {
+            "method": "Source-sealed participant identity and lawful-presence review context",
+            "name": "participant_lawful_presence_context",
+            "unit": "original source packet"
+          }
+        ],
+        "limitations": [
+          "Physical visibility, motion and lawful presence need independent original review.",
+          "Engineering hold policy is not a legal right-of-way verdict."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_clear",
       "target_law_id": "NRS-484B-307-2a",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "Original sole circular-green straight movement with source-positioned other user at first exhibition.",
       "variable_assignments": {
         "other_user_at_exhibition": {
@@ -18,6 +123,16 @@
           "kind": "world_setup",
           "value": "clear",
           "note": "Retain original first-green timing"
+        },
+        "official_signal_aspect": {
+          "kind": "world_setup",
+          "value": "circular_green_alone",
+          "note": "Original facing official head source gate"
+        },
+        "ego_straight_controller": {
+          "kind": "controller",
+          "value": "source_gated_straight",
+          "note": "Same engineering controller, no legal verdict"
         }
       },
       "unresolved_judgment_calls": [
@@ -96,12 +211,22 @@
           "Physical visibility, motion and lawful presence need independent original review.",
           "Engineering hold policy is not a legal right-of-way verdict."
         ]
+      },
+      "paired_probe_id": "other_user_exhibition",
+      "deliberate_differences": [
+        "other_user_at_exhibition",
+        "other_user_region_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "other_user_region_at_exhibition",
+        "comparison_or_standard": "Original first-green exhibition frame, participant body and lawful-presence source; no numeric legal cutoff",
+        "target_value_or_branch": "clear"
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_vehicle_present",
       "target_law_id": "NRS-484B-307-2a",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "Original sole circular-green straight movement with source-positioned other user at first exhibition.",
       "variable_assignments": {
         "other_user_at_exhibition": {
@@ -113,6 +238,16 @@
           "kind": "world_setup",
           "value": "intersection",
           "note": "Retain original first-green timing"
+        },
+        "official_signal_aspect": {
+          "kind": "world_setup",
+          "value": "circular_green_alone",
+          "note": "Original facing official head source gate"
+        },
+        "ego_straight_controller": {
+          "kind": "controller",
+          "value": "source_gated_straight",
+          "note": "Same engineering controller, no legal verdict"
         }
       },
       "unresolved_judgment_calls": [
@@ -191,12 +326,22 @@
           "Physical visibility, motion and lawful presence need independent original review.",
           "Engineering hold policy is not a legal right-of-way verdict."
         ]
+      },
+      "paired_probe_id": "other_user_exhibition",
+      "deliberate_differences": [
+        "other_user_at_exhibition",
+        "other_user_region_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "other_user_region_at_exhibition",
+        "comparison_or_standard": "Original first-green exhibition frame, participant body and lawful-presence source; no numeric legal cutoff",
+        "target_value_or_branch": "intersection"
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_present",
       "target_law_id": "NRS-484B-307-2a",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "Original sole circular-green straight movement with source-positioned other user at first exhibition.",
       "variable_assignments": {
         "other_user_at_exhibition": {
@@ -208,6 +353,16 @@
           "kind": "world_setup",
           "value": "adjacent_crosswalk",
           "note": "Retain original first-green timing"
+        },
+        "official_signal_aspect": {
+          "kind": "world_setup",
+          "value": "circular_green_alone",
+          "note": "Original facing official head source gate"
+        },
+        "ego_straight_controller": {
+          "kind": "controller",
+          "value": "source_gated_straight",
+          "note": "Same engineering controller, no legal verdict"
         }
       },
       "unresolved_judgment_calls": [
@@ -286,12 +441,22 @@
           "Physical visibility, motion and lawful presence need independent original review.",
           "Engineering hold policy is not a legal right-of-way verdict."
         ]
+      },
+      "paired_probe_id": "pedestrian_exhibition_time",
+      "deliberate_differences": [
+        "other_user_at_exhibition",
+        "other_user_region_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "other_user_region_at_exhibition",
+        "comparison_or_standard": "Original first-green exhibition frame, participant body and lawful-presence source; no numeric legal cutoff",
+        "target_value_or_branch": "adjacent_crosswalk"
       }
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver__green_pedestrian_late",
       "target_law_id": "NRS-484B-307-2a",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "Original sole circular-green straight movement with source-positioned other user at first exhibition.",
       "variable_assignments": {
         "other_user_at_exhibition": {
@@ -303,6 +468,16 @@
           "kind": "world_setup",
           "value": "outside",
           "note": "Retain original first-green timing"
+        },
+        "official_signal_aspect": {
+          "kind": "world_setup",
+          "value": "circular_green_alone",
+          "note": "Original facing official head source gate"
+        },
+        "ego_straight_controller": {
+          "kind": "controller",
+          "value": "source_gated_straight",
+          "note": "Same engineering controller, no legal verdict"
         }
       },
       "unresolved_judgment_calls": [
@@ -381,9 +556,36 @@
           "Physical visibility, motion and lawful presence need independent original review.",
           "Engineering hold policy is not a legal right-of-way verdict."
         ]
+      },
+      "paired_probe_id": "pedestrian_exhibition_time",
+      "deliberate_differences": [
+        "other_user_at_exhibition",
+        "other_user_region_at_exhibition"
+      ],
+      "probe": {
+        "primary_variable": "other_user_region_at_exhibition",
+        "comparison_or_standard": "Original first-green exhibition frame, participant body and lawful-presence source; no numeric legal cutoff",
+        "target_value_or_branch": "outside"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111125-original-green-yield",
+      "target_law_id": "NRS-484B-307-2a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited",
+          "note": "The exact law supplies no numeric lawful-presence or right-of-way cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Native official circular-only head, other-user lawful-presence source and feasible encounter range require physical survey.",
+      "missing_inputs": [
+        "Original facing official circular-green-only head and source-verified lawful participant placement",
+        "Feasible nontransient source-backed approach, crossing and yielding ranges"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

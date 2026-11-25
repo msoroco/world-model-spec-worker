@@ -37,7 +37,15 @@ def main() -> None:
         output = ROOT / ("compat-" + suffix + "-positive")
         if suffix == "inside_15" and not output.exists():
             output = ROOT / "compat-inside-15-v5"
-        if not (output / "compatibility.json").is_file():
+        cached = json.loads((output / "compatibility.json").read_text()) if (
+            output / "compatibility.json").is_file() else {}
+        recipe = REPO / entry["fixture_recipe"]
+        contract = HERE / entry["measurement_contract"]
+        current = (cached.get("passed") is True
+                   and cached.get("construction_sha256") == entry["construction_sha256"]
+                   and cached.get("fixture_recipe_sha256") == sha(recipe)
+                   and cached.get("measurement_contract_sha256") == sha(contract))
+        if not current:
             if output.exists():
                 shutil.rmtree(output)
             command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),

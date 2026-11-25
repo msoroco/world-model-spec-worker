@@ -18,7 +18,8 @@ from saved_attempt import ASSIGNMENT
 def capture_with_media(world, ego, other, site, site_ref, case_suffix,
                        signal_reader, attempt, sensors, scratch,
                        camera_profile_ref, context_ref, other_context_ref=None,
-                       *, profile=PRODUCTION_PROFILE, diagnostic_fixture=False):
+                       *, profile=PRODUCTION_PROFILE, diagnostic_fixture=False,
+                       before_tick=None, after_tick=None):
     attempt = Path(attempt).resolve()
     scratch = Path(scratch).resolve()
     if not attempt.is_dir() or not scratch.is_dir() or '.runtime-work' not in scratch.parts:
@@ -36,7 +37,8 @@ def capture_with_media(world, ego, other, site, site_ref, case_suffix,
         captured = capture(world, ego, other, site, site_ref, case_suffix,
                            signal_reader, attempt, other_context_ref,
                            camera_profile_sha256=camera_profile_ref['sha256'],
-                           camera_frame_reader=recorder.read)
+                           camera_frame_reader=recorder.read,
+                           before_tick=before_tick, after_tick=after_tick)
         media_refs = recorder.finish(attempt)
         original = captured['receipt']
         event_ref = original['event_ref']

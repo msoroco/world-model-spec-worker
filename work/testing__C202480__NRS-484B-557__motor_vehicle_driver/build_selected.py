@@ -132,6 +132,9 @@ def main() -> None:
             "scope": "Original rail/vehicle measurements and authority context; vehicle-reference and due-care legal judgments remain unresolved."})
         entry["measurement_contract"] = contract_name
         entry["measurement_procedure"] = {"entrypoint": "analysis.py"}
+        entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
+                                   "host_env_var": "CARLA_HOST",
+                                   "port_env_var": "CARLA_PORT"}
         entries.append(entry)
     # This is a draft until every offline, compatibility, semantic and delivery
     # receipt is bound. Keeping every planned case here enables exact offline.

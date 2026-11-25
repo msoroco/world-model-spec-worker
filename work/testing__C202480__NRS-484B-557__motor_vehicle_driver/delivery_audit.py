@@ -1,0 +1,160 @@
+"""Independent source, frame and four-camera audit for a rail-stop attempt."""
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+from rail_stop_audit import audit_saved_file
+
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+SOURCES = ("rail-stop-packet.json", "native-crossing-geometry.json",
+           "native-authority-record.json", "native-stop-device.json",
+           "native-ego-kinematics.json", "native-ego-footprint.json",
+           "trace.jsonl", "video_frames.jsonl")
+NATIVE_ORIGINALS = (*SOURCES, "config.json", "construction.json",
+                    "acquisition-provenance.json", "camera-frame-joins.json",
+                    "pixel-sample-inventory.json", *(name + ".mkv" for name in CAMERAS))
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _decoded_bgra(video: Path, index: int, *, png: bool = False) -> bytes:
+    command = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(video)]
+    if not png:
+        command.extend(["-vf", f"select=eq(n\\,{index})", "-vsync", "0"])
+    command.extend(["-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "bgra", "pipe:1"])
+    return subprocess.check_output(command, timeout=120)
+
+
+def _verify_native_pixel_samples(attempt: Path, seal: dict) -> dict:
+    inventory = json.loads((attempt / "pixel-sample-inventory.json").read_text())
+    joins = json.loads((attempt / "camera-frame-joins.json").read_text())
+    expected = {(camera, index) for camera in CAMERAS for index in (0, 450, 899)}
+    rows = inventory.get("samples", [])
+    if inventory.get("frames") != [0, 450, 899] or len(joins) != 900 or len(rows) != len(expected):
+        raise ValueError("original PNG sample inventory incomplete")
+    if {(r.get("camera"), r.get("video_frame")) for r in rows} != expected:
+        raise ValueError("original PNG sample coverage differs")
+    verified = {}
+    for row in rows:
+        name, index = row["camera"], row["video_frame"]
+        png_name = f"original-{name}-{index:03d}.png"
+        if row.get("png") != png_name or png_name not in seal["sources"]:
+            raise ValueError("unsealed original PNG sample")
+        joined = joins[index]
+        camera = joined["cameras"][name]
+        if (joined.get("frame") != index or row.get("source_frame") != joined.get("source_frame")
+                or camera.get("original_bgra_sha256") != row.get("original_bgra_sha256")):
+            raise ValueError("original PNG/frame source join differs")
+        original_hash = row["original_bgra_sha256"]
+        png_pixels = _decoded_bgra(attempt / png_name, index, png=True)
+        video_pixels = _decoded_bgra(attempt / (name + ".mkv"), index)
+        if not png_pixels or hashlib.sha256(png_pixels).hexdigest() != original_hash:
+            raise ValueError("original PNG pixels differ: " + png_name)
+        if video_pixels != png_pixels:
+            raise ValueError("original PNG/video pixels differ: " + png_name)
+        verified[png_name] = {"source_frame": row["source_frame"],
+                              "video_frame": index, "bgra_sha256": original_hash}
+    return verified
+
+
+def _independent_review(attempt: Path, seal: dict, joins: dict) -> dict:
+    path = attempt / "independent-physical-review.json"
+    if not path.is_file():
+        raise ValueError("independent original-frame physical review missing")
+    review = json.loads(path.read_text())
+    if (review.get("format") != "rail-stop-independent-physical-review"
+            or review.get("reviewer_role") != "independent_physical_reviewer"
+            or not review.get("reviewer") or not review.get("reviewed_at")
+            or review.get("capture_seal_sha256") != sha(attempt / "capture-seal.json")
+            or review.get("original_png_video_joins") != joins):
+        raise ValueError("independent physical review is unbound or incomplete")
+    required = ("crossing_and_nearest_rail", "official_stop_device_and_authority",
+                "ego_body_stop_footprint", "cessation", "departure_clearance")
+    checks = review.get("checks")
+    if not isinstance(checks, dict) or set(checks) != set(required):
+        raise ValueError("independent physical review lacks required scene checks")
+    for name in required:
+        value = checks[name]
+        if (not isinstance(value, dict) or value.get("status") != "verified"
+                or not value.get("original_frame_refs") or not value.get("finding")):
+            raise ValueError("independent original-frame review did not verify: " + name)
+        if any(ref not in joins for ref in value["original_frame_refs"]):
+            raise ValueError("independent review references an unjoined original frame")
+    return review
+
+
+def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
+    attempt = Path(attempt).resolve()
+    config = json.loads((attempt / "config.json").read_text())
+    provenance = json.loads((attempt / "acquisition-provenance.json").read_text())
+    seal = json.loads((attempt / "capture-seal.json").read_text())
+    if not isinstance(seal.get("sources"), dict):
+        raise ValueError("capture source seal missing")
+    synthetic = provenance.get("provenance_kind") == "synthetic_fixture"
+    if provenance.get("provenance_kind") not in ("native", "synthetic_fixture"):
+        raise ValueError("unknown capture provenance")
+    if provenance.get("provenance_kind") != seal.get("provenance_kind"):
+        raise ValueError("capture provenance and seal differ")
+    required_sealed = set(SOURCES) | {name + ".mkv" for name in CAMERAS}
+    if not synthetic:
+        required_sealed |= set(NATIVE_ORIGINALS)
+        required_sealed |= {f"original-{name}-{index:03d}.png"
+                            for name in CAMERAS for index in (0, 450, 899)}
+        if (attempt / "native-conflict-history.json").is_file():
+            required_sealed.add("native-conflict-history.json")
+    if not required_sealed <= set(seal["sources"]):
+        raise ValueError("capture seal lacks complete original source inventory")
+    for name, checksum in seal["sources"].items():
+        path = attempt / name
+        if not path.is_file() or sha(path) != checksum:
+            raise ValueError("sealed original source changed: " + name)
+    if config["selected_case_id"] != config["case"]["case_id"]:
+        raise ValueError("selected case identity differs")
+    measurement = audit_saved_file(attempt / "rail-stop-packet.json")
+    trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
+    mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
+    if len(trace) != 900 or len(mapping) != 900:
+        raise ValueError("900 original frames required")
+    for index, (motion, frame) in enumerate(zip(trace, mapping)):
+        if (frame.get("video_frame") != index or motion.get("frame") != frame.get("carla_frame")
+                or motion.get("time_s") != frame.get("time_s")):
+            raise ValueError("original trace/video frame join differs")
+    decoded = {}
+    for name in CAMERAS:
+        video = attempt / (name + ".mkv")
+        if not video.is_file():
+            raise ValueError("original camera missing: " + name)
+        probe = json.loads(subprocess.check_output([
+            "ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+            "-show_entries", "stream=nb_read_frames", "-of", "json", str(video)], text=True))
+        count = int(probe["streams"][0]["nb_read_frames"])
+        if count != 900:
+            raise ValueError("original camera frame count differs: " + name)
+        subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-i", str(video),
+                        "-f", "null", "-"], check=True, stdout=subprocess.DEVNULL,
+                       timeout=180)
+        decoded[name] = {"frames": count, "sha256": sha(video)}
+    joined_pixels = {}
+    review = None
+    if not synthetic:
+        joined_pixels = _verify_native_pixel_samples(attempt, seal)
+        review = _independent_review(attempt, seal, joined_pixels)
+    if diagnostic_test:
+        if not synthetic or provenance.get("diagnostic_fixture") is not True:
+            raise ValueError("diagnostic test requires synthetic provenance")
+    elif synthetic:
+        raise ValueError("synthetic diagnostic cannot pass Native delivery")
+    return {"case_id": config["selected_case_id"],
+            "source_hashes": {name: sha(attempt / name) for name in SOURCES},
+            "nearest_rail_measurement": measurement,
+            "camera_decode": decoded, "original_frame_count": 900,
+            "original_png_video_joins": joined_pixels,
+            "independent_review_sha256": sha(attempt / "independent-physical-review.json") if review else None,
+            "diagnostic_audit_test_passed": diagnostic_test,
+            "delivery_physical_audit_passed": bool(review),
+            "actual_carla_capture_claimed": bool(review)}

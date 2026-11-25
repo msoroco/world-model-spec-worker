@@ -11,7 +11,8 @@ SUFFIXES = ('green_clear', 'green_vehicle_present', 'green_pedestrian_present', 
 ALL = [AID + '__' + suffix for suffix in SUFFIXES]
 MODULES = ('runner.py', 'analysis.py', 'native_scene.py', 'straight_control.py', 'native_capture.py',
            'original_camera_recorder.py', 'native_session.py', 'saved_attempt.py',
-           'delivery_audit.py', 'comparison_audit.py', 'tests/test_offline_case.py')
+           'delivery_audit.py', 'comparison_audit.py', 'tests/test_offline_case.py',
+           'tests/test_runner_native_bindings.py')
 
 
 def write(path, obj):
