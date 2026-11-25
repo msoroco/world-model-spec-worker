@@ -1,8 +1,16 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 57 of 253 assignments are ready and 196 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 60 of 253 assignments are ready and 193 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-24 current-runtime ready integration
+
+Newly ready: `training__C111250__NRS-484B-270-4__motor_vehicle_driver`, `training__C111088__NRS-484B-307-5a__motor_vehicle_driver`, and `training__C404492__NRS-484B-267-2d__motor_vehicle_driver`. Each passed its exact assignment-scoped strict delivery gate on the current runtime; C404492 selected seven exact cases: `controlled_1`, `controlled_2`, `official_1`, `official_2`, `preparing_movement`, `officer_directed`, and `preparing_hand_signal`. The C404492 gate exit was 0 with `static_checks_passed: true`; its seven-case public, saved, semantic, physical diagnostic, delivery and comparison CPU proofs are bound in its HANDOFF and manifest. Original Native physical and legal facts remain unverified.
+
+Pinned `runtime.py verify --runtime runtime` and `runtime.py preflight` both pass. The ordered GPU queue was rebuilt and independently audited after ready promotion: 814 case intents, 384 comparisons, zero dispatchable cases, SHA-256 `f64a707760a524b313a311219aa5a16b124a2833633f732b217d2ced20bfb599`. The return audit passes with 253 packages, 60 ready, 193 partial, 310 selected delivery cases and 667 proven candidates. The batch strict gate remains unpassed while 193 assignments are partial.
+
+Current owners continue C150142/LVMC-11-52-030-A (30 selected, 16 long cases need full source chains), C230222/LVMC-11-30-050 (two draft bundles, current-runtime offline and comparison diagnostics), and C394566/LVMC-11-48-060 (selected first case; completing remaining case/proof/audit work). C104538/LVMC-11-40-080 has nine selected cases and current CPU compatibility/delivery checks; a source-hashed catalog audit found no actor-eligible frozen right/left supplemental cell among 1,243 cells, so it remains partial with staged exact constructions. Continue CPU construction and scoped strict checks for nearest-ready assignments; do not treat synthetic fixtures as original physical evidence.
 
 ## 2026-11-24 C111331 ready and C404492 hand-signal selected
 

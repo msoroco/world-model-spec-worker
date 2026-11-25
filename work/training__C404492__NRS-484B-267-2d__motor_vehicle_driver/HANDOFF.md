@@ -1,6 +1,10 @@
 # C404492 / NRS 484B.267(2)(d) with (4) handoff
 
-Status: **partial**. Accepted memberships: 0. Frozen `adjacent_lanes/travel_abreast/emergency_vehicle` cell and `motor_vehicle_driver` actor retained. Exact law, qualifying flashing-light reference, source hashes and witness remain in `case-plan.json`.
+Status: **ready for CPU delivery preparation**. Accepted memberships: 0. Exact assignment-scoped `worker_check.py --complete --require-delivery-ready` passed on the current runtime on 2026-11-24 with `static_checks_passed: true`. Original Native and canonical acceptance remain unverified. Frozen `adjacent_lanes/travel_abreast/emergency_vehicle` cell and `motor_vehicle_driver` actor retained. Exact law, qualifying flashing-light reference, source hashes and witness remain in `case-plan.json`.
+
+## 2026-11-24 scoped strict gate passed
+
+All seven selected exact cases are bound to the current runtime. Direct execution, semantic, package compatibility and delivery handoff validators passed. The root construction, configuration, runner, measurement contract, camera plan and one root CPU test are present; `root-cpu-tests.log` SHA-256 `7ed826c373101a7ed01bcf62fb2403891758009fb68dd82e91f280a8b0607c78`. The selected requirement disposition now maps the shared NRS 484B.267(2)(d) source-joined measurement across all seven cases, including source vehicle preparation and officer direction. Exact command: `SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c404492-strict-final TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment training__C404492__NRS-484B-267-2d__motor_vehicle_driver --complete --require-delivery-ready`; exit 0, `static_checks_passed: true`. Original source review, physical realization and legal outcome remain local GPU work.
 
 ## 2026-11-24 seven-case hand-signal CPU checkpoint
 

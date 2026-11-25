@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
 ROOT = ASSIGNMENT.parents[1]
-SOURCES = ('runner.py', 'route_meter.py', 'road.xodr', 'test_offline.py')
+SOURCES = ('runner.py', 'route_meter.py', 'finalize.py', 'road.xodr', 'test_offline.py')
 
 
 def sha(path):

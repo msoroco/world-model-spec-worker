@@ -1,3 +1,15 @@
+# Current selected delivery state (2026-11-24)
+
+`training__C111250__NRS-484B-270-4__motor_vehicle_driver` is `ready` / `delivery_prepared`: the exact assignment strict gate passed with exit 0 (see `scoped-strict-gate.log`). This is CPU preparation only. Original CARLA motion, full-body and facility pixels, actual camera visibility, official bicycle-facility designation, subsection (3) exception applicability and any legal verdict remain for local review. No original Native capture or legal/physical acceptance is claimed.
+
+Selected exact cases: `training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1` briefly crosses the authored facility and returns to the motor lane; `training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2` proceeds within the facility through the intersection. The independently audited synthetic source pair has 39 versus 108 facility-intersection body-overlap frames, with matching map, stationary conflict actor, frame/time, velocity, and capture policy. These counts are diagnostic and do not establish physical realization. `case-plan.json` binds both subsection (4) and source-reviewed subsection (3) dependency to both cases. `proposals/semantic-index.json` binds six canonical stage proposals; `execution-manifest.json` selects primary and one camera-placement fallback for each case. The fallback shifts three world cameras 2 m if the original facility boundary is not sufficiently visible.
+
+For each of the four constructions, offline, full compatibility including a missing-body-source negative, and recorded-only saved processing pass on the current runtime; receipts are `selected-controlled_*`. The three synthetic physical outcomes and lifecycle proof are `physical-controlled_*`. `audit-selected-delivery.py` has positive and missing-body-source negative proofs; `audit-selected-comparison.py` has positive, fixed-condition-drift negative, and missing-source negative proofs. `comparison-audit-proof.json` binds those checks. `cpu-native-tests.log` reports 10 passing Native unit tests.
+
+Repeat the exact CPU gate: `.venv-cpu/bin/python worker_check.py --assignment training__C111250__NRS-484B-270-4__motor_vehicle_driver --complete --require-delivery-ready`. First local GPU delivery command is in `result.json.first_gpu_delivery_command`; it uses `runtime.py execute-delivery` and explicit CARLA host, port and Python variables. After the Native owner closes and releases the capture, run saved processing and the delivery/comparison source audits from the manifest.
+
+## Historical checkpoints
+
 # NRS-484B-270-4 at C111250
 
 Status: partial; authored facility geometry and saved-body CPU comparison pass pinned offline preflight.

@@ -14,6 +14,8 @@ for _machine in ('electric_bicycle', 'electric_scooter'):
                   f'{_machine}_turn': 'mounted-turn',
                   f'{_machine}_dismount': 'dismounted-turn'})
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+VIEW_SIZES = {'overview': (1920, 1080), 'approach': (1280, 720),
+              'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
 
 
 def require(ok, message):
@@ -36,14 +38,32 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
-def decode(path, expected=600):
+def decode(path, expected=600, expected_size=None):
     run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
-                          '-show_entries', 'stream=nb_read_frames', '-of', 'json', str(path)],
+                          '-show_entries', 'stream=nb_read_frames,width,height,r_frame_rate',
+                          '-of', 'json', str(path)],
                          capture_output=True, text=True, timeout=180)
     streams = json.loads(run.stdout).get('streams', []) if run.returncode == 0 else []
-    require(len(streams) == 1 and int(streams[0].get('nb_read_frames', 0)) == expected,
-            'Full video frame count differs')
-    return {'frames': expected, 'sha256': sha(path)}
+    require(len(streams) == 1, 'Full video stream inventory differs')
+    stream = streams[0]
+    try:
+        frames = int(stream['nb_read_frames'])
+        width, height = int(stream['width']), int(stream['height'])
+        numerator, denominator = map(int, stream['r_frame_rate'].split('/'))
+        rate = numerator / denominator
+    except (KeyError, TypeError, ValueError, ZeroDivisionError) as exc:
+        raise ValueError('Full video metadata missing') from exc
+    require(frames == expected and rate == 20 and
+            (expected_size is None or (width, height) == expected_size),
+            'Full video frame, size or rate differs')
+    return {'frames': frames, 'width': width, 'height': height,
+            'fps': rate, 'sha256': sha(path)}
+
+
+def check_pixel_presence(marks):
+    for field in ('sign_visible', 'rider_visible', 'machine_visible'):
+        require(any(row.get(field) is True for row in marks),
+                'Original pixel review lacks visible ' + field)
 
 
 def check_sources(attempt, case, diagnostic=False):
@@ -72,6 +92,7 @@ def check_sources(attempt, case, diagnostic=False):
                 type(pixel.get('rider_visible')) is bool and
                 type(pixel.get('machine_visible')) is bool,
                 'Original pixel marks incomplete')
+    check_pixel_presence(marks)
     review = json.loads(paths['sign-review.json'].read_text())
     require(review.get('native_samples_sha256') == sha(paths['native_samples.jsonl']) and
             review.get('frame_map_sha256') == sha(paths['video_frames.jsonl']) and
@@ -122,7 +143,8 @@ def check_sources(attempt, case, diagnostic=False):
                     for row in labels if row['u_turn_active'] is True) and
                 review.get('pedestrian_rule_compliance_verified') is True,
                 'Original dismount or pedestrian-rule conduct unverified')
-    videos = {view: decode(source(attempt, view + '.mkv')) for view in VIEWS}
+    videos = {view: decode(source(attempt, view + '.mkv'),
+                           expected_size=VIEW_SIZES[view]) for view in VIEWS}
     primary = decode(source(attempt, 'raw.mkv'))
     require(review.get('approach_video_sha256') == videos['approach']['sha256'],
             'Original approach pixels differ from review')

@@ -19,13 +19,7 @@ def rows(path):return [json.loads(line) for line in Path(path).read_text().split
 def finite(x):return type(x) in (int,float) and math.isfinite(x)
 
 
-BRANCHES=('emergency_moving','regulatory_moving','emergency_preparing_movement',
-          'emergency_preparing_hand_signal')
-
-
-def measure(root,branch='emergency_moving'):
-    if branch not in BRANCHES:
-        raise ValueError('Unknown statutory source branch')
+def measure(root):
     root=Path(root)
     sources={name:root/name for name in ('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json')}
     if any(not p.is_file() for p in sources.values()):raise ValueError('Original frame, poses and reviewed context required')
@@ -36,28 +30,12 @@ def measure(root,branch='emergency_moving'):
     kind=ctx.get('review_kind')
     if kind not in ('synthetic_diagnostic','original_source_review'):
         raise ValueError('Source provenance not reviewed')
-    authority_source=('regulatory_agency_vehicle_source' if branch=='regulatory_moving'
-                      else 'emergency_authorization_source')
-    for key in ('reviewer','ego_driver_source','ego_vehicle_source',authority_source,
+    for key in ('reviewer','ego_driver_source','ego_vehicle_source','emergency_authorization_source',
                 'qualifying_flash_equipment_source','flashing_light_visual_source',
                 'lane_boundary_source','officer_direction_review_source'):
         if not ctx.get(key):raise ValueError('Missing statutory context source: '+key)
-    if branch=='regulatory_moving':
-        if (ctx.get('official_regulatory_vehicle') is not True
-                or not ctx.get('regulatory_agency_vehicle_source')):
-            raise ValueError('Official regulatory vehicle status unproved')
-    elif ctx.get('emergency_vehicle_authorized') is not True:
-        raise ValueError('Emergency authorization unproved')
-    if ctx.get('qualifying_flash_equipment_reviewed') is not True:
-        raise ValueError('Qualifying flashing equipment unproved')
-    if branch.startswith('emergency_preparing_'):
-        if (ctx.get('preparing_to_move_reviewed') is not True
-                or not ctx.get('preparing_to_move_source')):
-            raise ValueError('Visible preparation source unproved')
-        source_key=('visible_vehicle_movement_source' if branch.endswith('movement')
-                    else 'driver_hand_signal_visual_source')
-        if not ctx.get(source_key):
-            raise ValueError('Visible preparation mode source missing: '+source_key)
+    if ctx.get('emergency_vehicle_authorized') is not True or ctx.get('qualifying_flash_equipment_reviewed') is not True:
+        raise ValueError('Authorization or qualifying flashing equipment unproved')
     if type(ctx.get('officer_directed_otherwise')) is not bool:
         raise ValueError('Officer direction exception not reviewed')
     if type(ctx.get('ego_actor_id')) is not int or type(ctx.get('emergency_actor_id')) is not int or ctx['ego_actor_id']==ctx['emergency_actor_id']:
@@ -79,7 +57,6 @@ def measure(root,branch='emergency_moving'):
     prev_n,prev_t=-1,-1.0
     derived=[]
     light_phases=[]
-    preparation_visible=[]
     for i,(f,p,trace) in enumerate(zip(frames,poses,traces)):
         n,t=f.get('native_frame'),f.get('time_s')
         if f.get('video_frame')!=i or type(n) is not int or n<=prev_n or not finite(t) or t<=prev_t or (i and abs(t-prev_t-.05)>.005):
@@ -105,18 +82,8 @@ def measure(root,branch='emergency_moving'):
         if type(em.get('flashing_light_phase_on')) is not bool:
             raise ValueError('Original flashing-light phase missing')
         light_phases.append(em['flashing_light_phase_on'])
-        if branch.endswith('_moving') and em['speed_mps']<=0:
+        if em['speed_mps']<=0:
             raise ValueError('Selected moving emergency branch not observed')
-        if branch.endswith('movement'):
-            visible=em.get('visible_vehicle_movement')
-            if type(visible) is not bool:
-                raise ValueError('Original visible vehicle movement flag missing')
-            preparation_visible.append(visible)
-        elif branch.endswith('hand_signal'):
-            visible=em.get('driver_hand_signal_visible')
-            if type(visible) is not bool:
-                raise ValueError('Original driver hand signal flag missing')
-            preparation_visible.append(visible)
         delta=ego['heading_rad']-em['heading_rad']
         dot=math.cos(delta)
         c,s=math.cos(em['heading_rad']),math.sin(em['heading_rad'])
@@ -140,15 +107,11 @@ def measure(root,branch='emergency_moving'):
         raise ValueError('Full 30-second observation required')
     if set(light_phases)!={False,True} or not any(a!=b for a,b in zip(light_phases,light_phases[1:])):
         raise ValueError('Observed flashing-light phase changes missing')
-    if preparation_visible and not any(preparation_visible):
-        raise ValueError('Visible preparation never observed')
     crossings=sum(a['ego_minus_emergency_longitudinal_m']<0<=b['ego_minus_emergency_longitudinal_m'] for a,b in zip(derived,derived[1:]))
     return {'format':'source-bound-emergency-abreast-v1','assignment_id':AID,
-        'statutory_branch':branch,
         'source_sha256':{**{k:sha(v) for k,v in sources.items()},**cam_hashes},
         'samples':COUNT,'per_frame_geometry':derived,'relative_order_crossings':crossings,
         'observed_light_phase_changes':sum(a!=b for a,b in zip(light_phases,light_phases[1:])),
-        'visible_preparation_frames':sum(preparation_visible),
         'same_direction_cutoff':None,'abreast_cutoff':None,'legal_result':None,
         'officer_directed_otherwise':ctx['officer_directed_otherwise'],
         'physical_acceptance_claimed':False}

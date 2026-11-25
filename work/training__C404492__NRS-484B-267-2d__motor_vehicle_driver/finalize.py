@@ -5,22 +5,6 @@ from pathlib import Path
 
 from measure_emergency import AID, CAMERAS, measure, rows, sha
 
-CASES=tuple(AID+'__'+suffix for suffix in
-            ('controlled_1','controlled_2','official_1','official_2','preparing_movement'))
-
-
-def statutory_branch(case_id):
-    if case_id.endswith(('__official_1','__official_2')):
-        return 'regulatory_moving'
-    if case_id.endswith('__preparing_movement'):
-        return 'emergency_preparing_movement'
-    return 'emergency_moving'
-
-
-def reviewed_authority(context, case_id):
-    return (context['official_regulatory_vehicle'] if statutory_branch(case_id)=='regulatory_moving'
-            else context['emergency_vehicle_authorized'])
-
 
 def source_joined_same_direction_abreast_and_order(measured):
     """Return original body intervals and order without a statutory cutoff."""
@@ -28,14 +12,14 @@ def source_joined_same_direction_abreast_and_order(measured):
 
 
 def finalize(source_dir, case_id, output, *, diagnostic=False):
-    if case_id not in CASES:
-        raise ValueError('Exact emergency or regulatory case required')
+    if case_id not in (AID+'__controlled_1', AID+'__controlled_2'):
+        raise ValueError('Exact selected emergency case required')
     source_dir=Path(source_dir)
     ctx=json.loads((source_dir/'emergency_context.json').read_text())
     expected='synthetic_diagnostic' if diagnostic else 'original_source_review'
     if ctx.get('review_kind')!=expected or ctx.get('case_id')!=case_id:
         raise ValueError('Exact case and source review provenance required')
-    measured=measure(source_dir,branch=statutory_branch(case_id))
+    measured=measure(source_dir)
     measured['case_id']=case_id
     measured['source_review_kind']=expected
     measured['selected_outcome_observed']=None
@@ -62,10 +46,10 @@ def finalize_attempt(attempt, output):
     construction=json.loads((attempt/'construction.json').read_text())
     context=json.loads((attempt/'emergency_context.json').read_text())
     case_id=cfg.get('case_id')
-    if (case_id not in CASES or
+    if (case_id not in (AID+'__controlled_1',AID+'__controlled_2') or
             construction.get('case_id')!=case_id or context.get('case_id')!=case_id):
         raise ValueError('Exact saved case identity differs')
-    measured=measure(attempt,branch=statutory_branch(case_id))
+    measured=measure(attempt)
     mapping=rows(attempt/'video_frames.jsonl')
     poses=rows(attempt/'vehicle_poses.jsonl')
     channels=attempt/'channels'
@@ -79,7 +63,7 @@ def finalize_attempt(attempt, output):
                 ego,emergency=pose['ego'],pose['emergency']
                 values={
                     'drv.responding_emergency':{'actor_id':emergency['actor_id'],
-                        'authorized_review':reviewed_authority(context,case_id),
+                        'authorized_review':context['emergency_vehicle_authorized'],
                         'qualifying_equipment_review':context['qualifying_flash_equipment_reviewed'],
                         'flashing_light_phase_on':emergency['flashing_light_phase_on']},
                     'rel.same_direction':{'heading_dot':geometry['heading_dot'],
@@ -97,26 +81,17 @@ def finalize_attempt(attempt, output):
                     raise ValueError('Unknown declared recording channel: '+name)
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':descriptor['unit'],'reference':'channels/'+path.name})
-    context_name=('regulatory_vehicle_context' if statutory_branch(case_id)=='regulatory_moving'
-                  else 'emergency_context')
-    review_context={context_name:{
-        'authorized':reviewed_authority(context,case_id),
+    review_context={'emergency_context':{
+        'authorized':context['emergency_vehicle_authorized'],
         'qualifying_flash_equipment_reviewed':context['qualifying_flash_equipment_reviewed'],
         'source_review_kind':context['review_kind'],
         'source_sha256':sha(attempt/'emergency_context.json')},
         'officer_direction_context':context['officer_directed_otherwise']}
-    if statutory_branch(case_id)=='emergency_preparing_movement':
-        review_context['preparing_to_move_context']={
-            'reviewed':context['preparing_to_move_reviewed'],
-            'preparing_to_move_source':context['preparing_to_move_source'],
-            'visible_vehicle_movement_source':context['visible_vehicle_movement_source'],
-            'visible_preparation_frames':measured['visible_preparation_frames'],
-            'source_sha256':sha(attempt/'emergency_context.json')}
     (channels/'context-review.json').write_text(json.dumps(review_context,indent=2,allow_nan=False)+'\n')
     for descriptor in construction['recording_description']['context_inputs']:
         evidence.append({'name':descriptor['name'],'unit':descriptor['unit'],
                          'reference':'channels/context-review.json'})
-    requested=case_id.endswith(('__controlled_2','__official_2'))
+    requested=case_id.endswith('__controlled_2')
     observed=any(row['longitudinal_overlap_length_m']>0 for row in measured['per_frame_geometry'])
     result={'case_id':case_id,'measured_values':{
                 'overlap_frames':sum(row['longitudinal_overlap_length_m']>0 for row in measured['per_frame_geometry']),
@@ -143,8 +118,6 @@ def finalize_attempt(attempt, output):
     measurement_sources=('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl',
                          'emergency_context.json',*(name+'.mkv' for name in CAMERAS))
     report={'format':'source-bound-emergency-finalization-v1','case_id':case_id,
-            'statutory_branch':statutory_branch(case_id),
-            'visible_preparation_frames':measured['visible_preparation_frames'],
             'measurements':{'per_frame_geometry':{'method':'source_joined_same_direction_abreast_and_order',
                 'value':source_joined_same_direction_abreast_and_order(measured),
                 'sources':{name:sha(attempt/name) for name in measurement_sources}}},

@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 from measure_through_route import AID, CAMERAS, COUNT, measure
+from measure_purpose_route import measure_purpose
 
 
 def save(path, rows):
@@ -85,6 +86,39 @@ def main():
             assert observed['purpose_inferred_from_stop'] is False
             variants.append({'name': label, 'road_sequence': observed['observed_road_sequence'],
                              'complete': observed['complete_truck_to_truck_passage'], 'purpose': purpose})
+        context['enroute_purpose'] = 'delivery'
+        context['service_stop_complete'] = True
+        (root/'route_context.json').write_text(json.dumps(context)+'\n')
+        trace = [{'video_frame': i, 'native_frame': 1000+i, 'source_kind': 'synthetic_native_sample',
+                  'ego_actor_id': 7, 'road_id': 100 if i < 150 else 200 if i < 450 else 300,
+                  'ego_x_m': round((i if i < 220 else 220 if i < 320 else i-100)*.1, 4), 'ego_y_m': 0.0,
+                  'ego_speed_mps': 0.0 if 220 <= i < 320 else 2.0,
+                  'service_stop_active': 220 <= i < 320} for i in range(COUNT)]
+        save(root/'native_route_trace.jsonl', trace)
+        purpose_observed = measure_purpose(root)
+        assert purpose_observed['reviewed_service_stop_frames'] == 100
+        context['service_stop_complete'] = False
+        (root/'route_context.json').write_text(json.dumps(context)+'\n')
+        try:
+            measure_purpose(root)
+        except ValueError as exc:
+            assert 'Missing 100-frame original stop' in str(exc)
+            purpose_negative = str(exc)
+        else:
+            raise AssertionError('Unfinished service stop accepted')
+        context['service_stop_complete'] = True
+        (root/'route_context.json').write_text(json.dumps(context)+'\n')
+        trace[250]['service_stop_active'] = False
+        save(root/'native_route_trace.jsonl', trace)
+        try:
+            measure_purpose(root)
+        except ValueError as exc:
+            assert 'Missing 100-frame original stop' in str(exc)
+            interrupted_stop_negative = str(exc)
+        else:
+            raise AssertionError('Interrupted service stop accepted')
+        trace[250]['service_stop_active'] = True
+        save(root/'native_route_trace.jsonl', trace)
         negatives = [reject(root, 'native_route_trace.jsonl', 'frame'),
                      reject(root, 'native_route_trace.jsonl', 'provenance'),
                      reject(root, 'native_route_trace.jsonl', 'actor'),
@@ -95,6 +129,8 @@ def main():
                      reject(root, 'route_context.json', 'route_ids')]
         print(json.dumps({'assignment_id': AID, 'software_proof': 'synthetic_diagnostic',
                           'variants': variants, 'negative_rejections': negatives,
+                          'purpose_stop_positive_frames': purpose_observed['reviewed_service_stop_frames'],
+                          'purpose_stop_negative_rejections': [purpose_negative, interrupted_stop_negative],
                           'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}, sort_keys=True))
 
 

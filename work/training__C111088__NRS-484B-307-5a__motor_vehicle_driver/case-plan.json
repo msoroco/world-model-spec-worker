@@ -132,23 +132,35 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "native_body_pose_control",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Retained original ego pose, control and trajectory over the full event; review after Native capture."
     },
     {
-      "name": "lawful_conflict_participant_present",
-      "unit": "bool",
+      "name": "dev.traffic_signal",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Record native signal head and phase, lawful participant entry, conflict occupancy and ego response."
+      "purpose": "Retained original signal actor and phase readback; visual aspect and legal validity require review."
+    },
+    {
+      "name": "drv.in_intersection",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Retained original participant/intersection occupancy for the comparison; legal status requires review."
+    },
+    {
+      "name": "drv.yields_to",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Retained original ego and participant response for independent yield review."
     }
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
       "evidence": "Proposed capture only: state green_arrow(straight) alone. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "dev.traffic_signal"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -157,7 +169,7 @@
     "dev.governs": {
       "evidence": "Proposed capture only: the head faces the subject. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "dev.governs"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -166,7 +178,7 @@
     "drv.turning": {
       "evidence": "Proposed capture only: a prohibited right or left turn. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "drv.turning"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -175,7 +187,7 @@
     "kin.heading": {
       "evidence": "Proposed capture only: the direction taken through the intersection. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -184,7 +196,7 @@
     "drv.entering_intersection": {
       "evidence": "Proposed capture only: entry. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "drv.entering_intersection"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -192,9 +204,7 @@
     },
     "ru.pedestrian": {
       "evidence": "Proposed capture only: pedestrians lawfully in the intersection or adjacent crosswalk. No Native channel or Core atom proof yet.",
-      "channels": [
-        "lawful_conflict_participant_present"
-      ],
+      "channels": [],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
       ]
@@ -202,7 +212,7 @@
     "st.crosswalk": {
       "evidence": "Proposed capture only: that crosswalk. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -211,7 +221,7 @@
     "drv.in_intersection": {
       "evidence": "Proposed capture only: other vehicles lawfully within. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "drv.in_intersection"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
@@ -220,7 +230,7 @@
     "drv.yields_to": {
       "evidence": "Proposed capture only: the yield owed. No Native channel or Core atom proof yet.",
       "channels": [
-        "lawful_conflict_participant_present"
+        "drv.yields_to"
       ],
       "source_refs": [
         "inputs/training__C111088__NRS-484B-307-5a__motor_vehicle_driver/assignment.json"
