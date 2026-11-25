@@ -49,7 +49,7 @@ def analyze(root:Path)->dict:
         raise ValueError("Unsafe original surface document path")
     source=root/rel
     if not source.is_file() or not source.resolve().is_relative_to(root.resolve()):
-        raise ValueError("Original surface document missing")
+        raise ValueError("Missing required source: surface.txt")
     if hashlib.sha256(source.read_bytes()).hexdigest()!=surface_ref.get("sha256"):
         raise ValueError("Original surface document hash changed")
     hashes[str(rel)]=surface_ref["sha256"]

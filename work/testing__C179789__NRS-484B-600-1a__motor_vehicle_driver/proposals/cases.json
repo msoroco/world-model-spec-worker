@@ -150,10 +150,191 @@
       }
     },
     {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+      "target_law_id": "NRS-484B-600-1a",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite authored speed-grid point; no legal outcome assigned.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 4,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        },
+        "lane_width_target_m": {
+          "kind": "world_setup",
+          "value": 3.5,
+          "unit": "m"
+        },
+        "lead_gap_target_m": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "m"
+        },
+        "weather_profile": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable or proper"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "longitudinal_body_gap_m",
+            "unit": "m",
+            "method": "original actor body extents projected on road tangent",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lane_width_m",
+            "unit": "m",
+            "method": "original Native waypoint",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "surface",
+            "unit": "category",
+            "method": "original hashed surface observation packet",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "precipitation_percent",
+            "unit": "percent",
+            "method": "Native weather readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "sight_distance_m",
+            "unit": "m",
+            "method": "Original Native cast_ray to first obstruction, including lead traffic",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled first obstruction; not optical weather visibility; original cameras require pixel review"
+          },
+          {
+            "name": "curvature_per_m",
+            "unit": "1/m",
+            "method": "original Native waypoint chain",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "fog_density_percent",
+            "unit": "percent",
+            "method": "original Native world.get_weather fog_density readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          },
+          {
+            "name": "fog_distance_m",
+            "unit": "m",
+            "method": "original Native world.get_weather fog_distance readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_context",
+            "unit": "structured record",
+            "method": "hashed surface and weather packets joined to Native road, vehicle and map observations"
+          }
+        ],
+        "limitations": [
+          "The statute supplies no numeric speed threshold; stopping distance is an engineering diagnostic only.",
+          "Weather readback does not establish wet or icy pavement, actual visibility, or legal reasonableness."
+        ]
+      },
+      "paired_probe_id": "reasonable_speed_grid",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "physical speed coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_speed_mps": 4
+        }
+      },
+      "sweep_id": "reasonable_speed_grid",
+      "sweep_spec_version": "37ee6131e91a2161d18e889d038611f38302470f220778e8e868a5cc3e37a150",
+      "sweep_point": {
+        "requested_speed_mps": 4
+      },
+      "selection_rank": 0,
+      "judgment_refs": [
+        {
+          "phrase": "reasonable or proper",
+          "note": "Statute provides no numeric speed threshold; external judgment remains separate from diagnostic stopping distance."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_speed_mps",
+          "observable": "ego_speed",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original Native ego velocity samples",
+            "time_window": "entire captured interval",
+            "statistic": "max"
+          }
+        }
+      ]
+    },
+    {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
       "target_law_id": "NRS-484B-600-1a",
       "target_type": "judgment_sweep",
-      "rationale": "Source-bound condition comparison at a fixed authored speed; no legal outcome assigned.",
+      "rationale": "Finite authored speed-grid point; no legal outcome assigned.",
       "variable_assignments": {
         "requested_speed_mps": {
           "kind": "controller",
@@ -294,18 +475,222 @@
           "Weather readback does not establish wet or icy pavement, actual visibility, or legal reasonableness."
         ]
       },
-      "paired_probe_id": "road_speed_conditions",
+      "paired_probe_id": "reasonable_speed_grid",
       "deliberate_differences": [
-        "surface_condition",
-        "lane_width_target_m",
-        "lead_gap_target_m",
-        "weather_profile"
+        "requested_speed_mps"
       ],
       "probe": {
         "primary_variable": "requested_speed_mps",
-        "comparison_or_standard": "same sourced roadway/traffic controls except declared condition change",
-        "target_value_or_branch": "dry_open_traffic"
-      }
+        "comparison_or_standard": "physical speed coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_speed_mps": 8
+        }
+      },
+      "sweep_id": "reasonable_speed_grid",
+      "sweep_spec_version": "37ee6131e91a2161d18e889d038611f38302470f220778e8e868a5cc3e37a150",
+      "sweep_point": {
+        "requested_speed_mps": 8
+      },
+      "selection_rank": 1,
+      "judgment_refs": [
+        {
+          "phrase": "reasonable or proper",
+          "note": "Statute provides no numeric speed threshold; external judgment remains separate from diagnostic stopping distance."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_speed_mps",
+          "observable": "ego_speed",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original Native ego velocity samples",
+            "time_window": "entire captured interval",
+            "statistic": "max"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
+      "target_law_id": "NRS-484B-600-1a",
+      "target_type": "judgment_sweep",
+      "rationale": "Finite authored speed-grid point; no legal outcome assigned.",
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 6,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        },
+        "lane_width_target_m": {
+          "kind": "world_setup",
+          "value": 3.5,
+          "unit": "m"
+        },
+        "lead_gap_target_m": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "m"
+        },
+        "weather_profile": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "reasonable or proper"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "longitudinal_body_gap_m",
+            "unit": "m",
+            "method": "original actor body extents projected on road tangent",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lane_width_m",
+            "unit": "m",
+            "method": "original Native waypoint",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "surface",
+            "unit": "category",
+            "method": "original hashed surface observation packet",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "precipitation_percent",
+            "unit": "percent",
+            "method": "Native weather readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "sight_distance_m",
+            "unit": "m",
+            "method": "Original Native cast_ray to first obstruction, including lead traffic",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled first obstruction; not optical weather visibility; original cameras require pixel review"
+          },
+          {
+            "name": "curvature_per_m",
+            "unit": "1/m",
+            "method": "original Native waypoint chain",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "fog_density_percent",
+            "unit": "percent",
+            "method": "original Native world.get_weather fog_density readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          },
+          {
+            "name": "fog_distance_m",
+            "unit": "m",
+            "method": "original Native world.get_weather fog_distance readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_context",
+            "unit": "structured record",
+            "method": "hashed surface and weather packets joined to Native road, vehicle and map observations"
+          }
+        ],
+        "limitations": [
+          "The statute supplies no numeric speed threshold; stopping distance is an engineering diagnostic only.",
+          "Weather readback does not establish wet or icy pavement, actual visibility, or legal reasonableness."
+        ]
+      },
+      "paired_probe_id": "reasonable_speed_grid",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mps",
+        "comparison_or_standard": "physical speed coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_speed_mps": 6
+        }
+      },
+      "sweep_id": "reasonable_speed_grid",
+      "sweep_spec_version": "37ee6131e91a2161d18e889d038611f38302470f220778e8e868a5cc3e37a150",
+      "sweep_point": {
+        "requested_speed_mps": 6
+      },
+      "selection_rank": 2,
+      "judgment_refs": [
+        {
+          "phrase": "reasonable or proper",
+          "note": "Statute provides no numeric speed threshold; external judgment remains separate from diagnostic stopping distance."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_speed_mps",
+          "observable": "ego_speed",
+          "unit": "m/s",
+          "measurement": {
+            "method": "original Native ego velocity samples",
+            "time_window": "entire captured interval",
+            "statistic": "max"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
@@ -1108,12 +1493,173 @@
           "note": "Statute provides no numeric speed threshold; external judgment remains separate from diagnostic stopping distance."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Six condition contrasts at one authored speed are not a numeric speed sweep.",
-      "missing_inputs": [
-        "Author exact numeric speed-grid case IDs, source-bound constructions and physical feasibility measurements for the selected conditions. This is worker-owned CPU work."
+      "status": "complete",
+      "mode": "one_dimensional",
+      "rationale": "Finite 4, 6 and 8 m/s authored speed targets on the same dry road and traffic; measured ego speed and independent judgment remain separate.",
+      "axes": [
+        {
+          "variable": "requested_speed_mps",
+          "observable": "ego_speed",
+          "unit": "m/s",
+          "min": 4,
+          "max": 8,
+          "spacing": 2,
+          "range_rationale": "Three feasible diagnostic controller setpoints below, near and above the fixed 7 m/s lead target; no legal boundary is implied.",
+          "spacing_rationale": "2 m/s separates the three authored controller targets for later original speed measurement.",
+          "feasibility_evidence": "Exact source-bound software constructions and CPU physical-preparation fixtures; Native realization remains unverified.",
+          "measurement": {
+            "method": "original Native ego velocity samples",
+            "time_window": "entire captured interval",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        },
+        "lane_width_target_m": {
+          "kind": "world_setup",
+          "value": 3.5,
+          "unit": "m"
+        },
+        "lead_gap_target_m": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "m"
+        },
+        "weather_profile": {
+          "kind": "world_setup",
+          "value": "dry",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lead_speed_mps",
+            "unit": "m/s",
+            "method": "original Native actor.get_velocity",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "longitudinal_body_gap_m",
+            "unit": "m",
+            "method": "original actor body extents projected on road tangent",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "lane_width_m",
+            "unit": "m",
+            "method": "original Native waypoint",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "surface",
+            "unit": "category",
+            "method": "original hashed surface observation packet",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "precipitation_percent",
+            "unit": "percent",
+            "method": "Native weather readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "sight_distance_m",
+            "unit": "m",
+            "method": "Original Native cast_ray to first obstruction, including lead traffic",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled first obstruction; not optical weather visibility; original cameras require pixel review"
+          },
+          {
+            "name": "curvature_per_m",
+            "unit": "1/m",
+            "method": "original Native waypoint chain",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz samples; physical and pixel review required"
+          },
+          {
+            "name": "fog_density_percent",
+            "unit": "percent",
+            "method": "original Native world.get_weather fog_density readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          },
+          {
+            "name": "fog_distance_m",
+            "unit": "m",
+            "method": "original Native world.get_weather fog_distance readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Weather control readback only; camera pixels and physical visibility require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_context",
+            "unit": "structured record",
+            "method": "hashed surface and weather packets joined to Native road, vehicle and map observations"
+          }
+        ],
+        "limitations": [
+          "The statute supplies no numeric speed threshold; stopping distance is an engineering diagnostic only.",
+          "Weather readback does not establish wet or icy pavement, actual visibility, or legal reasonableness."
+        ]
+      },
+      "spec_version": "37ee6131e91a2161d18e889d038611f38302470f220778e8e868a5cc3e37a150",
+      "planned_case_count": 3,
+      "selection_order": [
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps"
       ]
     }
   ],
-  "sweeps_expanded": false
+  "sweeps_expanded": true
 }

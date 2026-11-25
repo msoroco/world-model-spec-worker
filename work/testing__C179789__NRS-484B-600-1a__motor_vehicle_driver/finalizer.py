@@ -16,7 +16,7 @@ from conditions_measurements import analyze
 ASSIGNMENT = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver'
 EXACT_CASES = {ASSIGNMENT + '__' + suffix for suffix in (
     'dry_open_traffic', 'wet_same_traffic', 'narrow_same_traffic',
-    'dense_traffic', 'low_visibility', 'ice_or_snow')}
+    'dense_traffic', 'low_visibility', 'ice_or_snow', 'dry_4mps', 'dry_6mps')}
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 

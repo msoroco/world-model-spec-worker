@@ -1,4 +1,4 @@
-"""CPU source and lifecycle fixtures for the six exact speed/conditions cases.
+"""CPU source and lifecycle fixtures for the eight exact speed/conditions cases.
 
 Synthetic histories test the saved checker; they are never accepted recordings.
 """
@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 OUT = REPO / '.runtime-work/c179789-physical'
 SUFFIXES = ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-            'narrow_same_traffic', 'low_visibility', 'ice_or_snow')
+            'narrow_same_traffic', 'low_visibility', 'ice_or_snow',
+            'dry_4mps', 'dry_6mps')
 KINDS = ('complete_motion', 'incomplete_motion', 'missing_evidence')
 
 
@@ -32,7 +33,7 @@ def one(case, config, kind, folder):
     positions = []
     for index in range(900):
         t = index / 20
-        x = t * (8 if kind == 'complete_motion' else .1)
+        x = t * (config['requested_speed_mps'] if kind == 'complete_motion' else .1)
         positions.append((index + 100, t, x))
     (folder / 'video_frames.jsonl').write_text(''.join(json.dumps({
         'video_frame': index, 'carla_frame': frame, 'time_s': t}) + '\n'

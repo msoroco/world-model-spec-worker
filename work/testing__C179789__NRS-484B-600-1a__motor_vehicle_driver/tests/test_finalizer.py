@@ -14,6 +14,8 @@ SPEC.loader.exec_module(MODULE)
 
 def write_fixture(root):
     config = json.loads((ROOT / 'config.json').read_text())
+    config['selected_case_id'] = MODULE.ASSIGNMENT + '__dry_open_traffic'
+    config['requested_speed_mps'] = 8
     config['condition_target'] = {'surface': 'dry', 'lane_width_m': [3, 4],
                                   'longitudinal_body_gap_m': [10, 35],
                                   'sight_distance_m': [10, 120],
@@ -101,7 +103,7 @@ class SavedFinalizerTests(unittest.TestCase):
             root = Path(folder)
             write_fixture(root)
             (root / 'surface.txt').unlink()
-            with self.assertRaisesRegex(ValueError, 'Original surface document missing'):
+            with self.assertRaisesRegex(ValueError, 'Missing required source: surface.txt'):
                 MODULE.finalize(root, root / 'analysis.json')
             self.assertFalse((root / 'result.json').exists())
         with tempfile.TemporaryDirectory() as folder:

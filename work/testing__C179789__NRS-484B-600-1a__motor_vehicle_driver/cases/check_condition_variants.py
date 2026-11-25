@@ -1,4 +1,4 @@
-"""Check controlled construction differences in six selected C179789 cases."""
+"""Check controlled construction differences in eight selected C179789 cases."""
 import json
 from pathlib import Path
 
@@ -18,7 +18,9 @@ def check():
     narrow,n=files('narrow_same_traffic')
     low,l=files('low_visibility')
     ice,i=files('ice_or_snow')
-    for package,bundle in ((wet,w),(dense,t),(narrow,n),(low,l),(ice,i)):
+    dry4,s4=files('dry_4mps')
+    dry6,s6=files('dry_6mps')
+    for package,bundle in ((wet,w),(dense,t),(narrow,n),(low,l),(ice,i),(dry4,s4),(dry6,s6)):
         if set(bundle)!=set(d) or package['recording_description']!=dry['recording_description']:
             raise ValueError('Controlled source/camera inventory differs')
         for name in ('runner.py','camera_setup.py','camera_encoder.py',
@@ -103,8 +105,19 @@ def check():
             dc['condition_target']['lane_width_m']!=[3,4] or
             nc['condition_target']['surface']!='dry'):
         raise ValueError('Narrow case lacks exact width comparison target')
+    for suffix,bundle,expected in (('dry_4mps',s4,4),('dry_6mps',s6,6)):
+        config=json.loads(bundle['config.json'])
+        road=json.loads(bundle['road_packet.json'])
+        if config['requested_speed_mps']!=expected or road['ego_target_speed_mps']!=expected:
+            raise ValueError('Speed grid setpoint differs: '+suffix)
+        if config['condition_target']!=dc['condition_target'] or bundle['surface.txt']!=d['surface.txt'] or bundle['weather.json']!=d['weather.json'] or bundle['surface_packet.json']!=d['surface_packet.json']:
+            raise ValueError('Speed grid condition source differs: '+suffix)
+        for key in ('native_map_id','road_id','lane_id','ego_spawn','lead_spawn',
+                    'lead_target_speed_mps','vehicle_blueprint_id','lead_blueprint_id','weather_profile'):
+            if road[key]!=dr[key]:
+                raise ValueError('Speed grid fixed road/traffic differs: '+key)
     return {'format':'worker-c179789-construction-comparison','passed':True,
-            'cases':[package['case_id'] for package in (dry,wet,dense,narrow,low,ice)],
+            'cases':[package['case_id'] for package in (dry,wet,dense,narrow,low,ice,dry4,dry6)],
             'fixed':['runner','four cameras','capture contract',
                      'road identity and ego spawn for dry/wet/dense',
                      'vehicle/control/weather/surface category/relative traffic for narrow'],
@@ -116,6 +129,7 @@ def check():
                                          'frame-specific weather readback target'],
             'ice_or_snow_difference':['separate ice/snow roadway source review',
                                       'Native precipitation and wetness profile'],
+            'speed_grid_difference':['authored 4, 6, 8 m/s ego targets with fixed dry road, weather and lead traffic'],
             'physical_realization_verified':False}
 
 

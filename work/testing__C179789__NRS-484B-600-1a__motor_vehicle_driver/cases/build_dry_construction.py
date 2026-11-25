@@ -30,7 +30,7 @@ def build():
                'status': 'diagnostic_draft',
                'measurement_plan': {'source': 'original Native frame, camera, surface and weather sources',
                                     'method': 'conditions_measurements.analyze; engineering surrogate only'},
-               'static_checks': ['exact six-case inventory', 'four original cameras',
+               'static_checks': ['exact eight-case inventory', 'four original cameras',
                                  '20 Hz and 45-second recording'],
                'termination_rules': ['complete 900 original frames or fail without sealing'],
                'mechanisms': {'ego_and_lead': 'Native actors and bounded body-gap controls',

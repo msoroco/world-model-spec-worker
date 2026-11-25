@@ -13,7 +13,7 @@ from pathlib import Path
 ASSIGNMENT = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver'
 EXACT_CASES = {ASSIGNMENT + '__' + suffix for suffix in (
     'dry_open_traffic', 'wet_same_traffic', 'narrow_same_traffic',
-    'dense_traffic', 'low_visibility', 'ice_or_snow')}
+    'dense_traffic', 'low_visibility', 'ice_or_snow', 'dry_4mps', 'dry_6mps')}
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 SOURCE_NAMES = ('road_context.json', 'condition_history.jsonl',
@@ -106,10 +106,11 @@ def audit_delivery(attempt, analysis_path):
 
 
 def audit_comparison(attempts):
-    """Check declared changes in all six exact constructions."""
+    """Check declared changes in all eight exact constructions."""
     if set(attempts) != {'dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-                         'narrow_same_traffic', 'low_visibility', 'ice_or_snow'}:
-        raise ValueError('Six exact controlled comparison members required')
+                         'narrow_same_traffic', 'low_visibility', 'ice_or_snow',
+                         'dry_4mps', 'dry_6mps'}:
+        raise ValueError('Eight exact controlled comparison members required')
     docs = {}
     for suffix, root in attempts.items():
         root = Path(root)
@@ -133,6 +134,19 @@ def audit_comparison(attempts):
         for key in ('rate_hz', 'duration_s', 'cameras', 'requested_speed_mps'):
             if other[0][key] != dry[0][key]:
                 raise ValueError('Undeclared fixed capture change: ' + key)
+    for suffix, speed in (('dry_4mps', 4), ('dry_6mps', 6)):
+        config, road, surface = docs[suffix]
+        if config['requested_speed_mps'] != speed or road['ego_target_speed_mps'] != speed:
+            raise ValueError('Speed sweep setpoint mismatch: ' + suffix)
+        if surface != dry[2] or road['weather_profile'] != dry[1]['weather_profile']:
+            raise ValueError('Speed sweep changed fixed surface or weather: ' + suffix)
+        for key in ('native_map_id', 'road_id', 'lane_id', 'ego_spawn', 'lead_spawn',
+                    'lead_target_speed_mps', 'vehicle_blueprint_id', 'lead_blueprint_id'):
+            if road[key] != dry[1][key]:
+                raise ValueError('Speed sweep changed fixed site or traffic: ' + key)
+        for key in ('rate_hz', 'duration_s', 'cameras', 'condition_target'):
+            if config[key] != dry[0][key]:
+                raise ValueError('Speed sweep changed fixed capture or condition: ' + key)
     if wet[1]['lead_spawn'] != dry[1]['lead_spawn'] or wet[1]['lead_target_speed_mps'] != dry[1]['lead_target_speed_mps']:
         raise ValueError('Wet case changed fixed traffic')
     if wet[2]['surface'] != 'wet' or dry[2]['surface'] != 'dry' or wet[1]['weather_profile'] == dry[1]['weather_profile']:
@@ -192,18 +206,22 @@ def main():
     parser.add_argument('--narrow')
     parser.add_argument('--low')
     parser.add_argument('--ice')
+    parser.add_argument('--dry4')
+    parser.add_argument('--dry6')
     args = parser.parse_args()
-    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice)):
+    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice, args.dry4, args.dry6)):
         receipt = audit_delivery(args.attempt, args.analysis)
-    elif all((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice)) and not any((args.attempt, args.analysis)):
+    elif all((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice, args.dry4, args.dry6)) and not any((args.attempt, args.analysis)):
         receipt = audit_comparison({'dry_open_traffic': args.dry,
                                     'wet_same_traffic': args.wet,
                                     'dense_traffic': args.dense,
                                     'narrow_same_traffic': args.narrow,
                                     'low_visibility': args.low,
-                                    'ice_or_snow': args.ice})
+                                    'ice_or_snow': args.ice,
+                                    'dry_4mps': args.dry4,
+                                    'dry_6mps': args.dry6})
     else:
-        parser.error('Supply an attempt and analysis, or six controlled source roots')
+        parser.error('Supply an attempt and analysis, or eight controlled source roots')
     print(json.dumps(receipt, indent=2))
 
 

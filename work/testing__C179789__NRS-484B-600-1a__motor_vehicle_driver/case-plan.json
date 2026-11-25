@@ -40,6 +40,18 @@
       "target_law_id": "NRS-484B-600-1a",
       "purpose": "Same road/traffic, ice or snow surface/weather condition",
       "physical_risk": "Native weather may not realize ice/snow surface physically"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same dry road, weather and lead traffic with authored ego target 4 m/s for finite speed coverage",
+      "physical_risk": "lead gap or actual ego speed may differ from authored target"
+    },
+    {
+      "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
+      "target_law_id": "NRS-484B-600-1a",
+      "purpose": "Same dry road, weather and lead traffic with authored ego target 6 m/s for finite speed coverage",
+      "physical_risk": "lead gap or actual ego speed may differ from authored target"
     }
   ],
   "comparisons": [
@@ -83,6 +95,20 @@
       "deliberate_differences": [
         "sourced highway width or measured sight distance as declared per case"
       ]
+    },
+    {
+      "comparison_id": "reasonable_speed_grid",
+      "case_ids": [
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps"
+      ],
+      "fixed_conditions": [
+        "same dry road site, surface, weather, lead traffic, cameras and capture duration"
+      ],
+      "deliberate_differences": [
+        "authored ego controller speed target at 4, 8 and 6 m/s; actual Native speed measured separately"
+      ]
     }
   ],
   "evidence_review": {
@@ -118,20 +144,22 @@
     "Native weather parameters do not themselves prove wet/ice/snow roadway surface or actual visibility.",
     "Lead traffic spawn and software condition samples do not establish physically safe motion."
   ],
-  "planning_status": "partial; six exact current-runtime offline diagnostic constructions and independent comparison proved; physical and delivery proofs pending",
+  "planning_status": "partial; eight exact current-runtime offline diagnostic constructions, finite speed-grid semantic plan and independent comparison proved; source-reviewed delivery proofs pending",
   "requirement_dispositions": [
     {
       "requirement": "rate greater than is reasonable or proper, having due regard for traffic, surface and width of highway, weather and other highway conditions",
       "source": "NRS 484B.600(1)(a)",
       "status": "selected_required",
-      "evidence_or_gap": "No accepted recording. Six exact diagnostic constructions, saved-source finalizer, narrow-site width survey and independent comparison CPU proof exist; actual original condition realization, physical speed and reasonable-or-proper judgment remain unverified. Engineering target ranges and stopping distance are not legal thresholds.",
+      "evidence_or_gap": "No accepted recording. Eight exact diagnostic constructions and finite 4/6/8 m/s coverage plan are CPU-proved; original Native site and condition sources, physical speed and independent reasonable-or-proper judgment remain unverified. The grid and stopping distance are not legal thresholds.",
       "case_ids": [
         "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
         "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
         "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
         "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
         "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
-        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow"
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps"
       ]
     }
   ]

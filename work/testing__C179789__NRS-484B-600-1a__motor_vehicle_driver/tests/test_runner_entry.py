@@ -29,7 +29,7 @@ class RunnerEntryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Four ordered'):
             RUNNER.validate_config(bad)
         bad=self.config();bad['selected_case_id']='wrong'
-        with self.assertRaisesRegex(ValueError,'Six exact'):
+        with self.assertRaisesRegex(ValueError,'Eight exact'):
             RUNNER.validate_config(bad)
 
     def test_case_condition_targets_reject_wrong_physical_observation(self):

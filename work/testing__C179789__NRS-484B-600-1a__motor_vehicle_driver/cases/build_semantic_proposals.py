@@ -1,11 +1,12 @@
-"""Build truthful draft semantic stages for C179789's six condition comparisons.
+"""Build draft semantic stages with a finite three-point speed judgment sweep.
 
-The judgment sweep remains explicitly incomplete until exact numeric speed points
-and their source-bound constructions are authored. No legal labels are supplied.
+The authored grid is for physical coverage, not a legal speed threshold.
 """
 import hashlib
 import json
 from pathlib import Path
+from batch_pipeline.store import digest
+from batch_pipeline.sweeps import grid
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
@@ -17,8 +18,9 @@ SOURCE = json.loads((REPO / 'inputs' / ASSIGNMENT / 'assignment.json').read_text
 TEXT = SOURCE['law']['text']
 QUOTE = 'A rate of speed greater than is reasonable or proper, having due regard for the traffic, surface and width of the highway, the weather and other highway conditions.'
 PHRASE = 'reasonable or proper'
-SUFFIXES = ('dry_open_traffic', 'wet_same_traffic', 'narrow_same_traffic',
-            'dense_traffic', 'low_visibility', 'ice_or_snow')
+SUFFIXES = ('dry_4mps', 'dry_open_traffic', 'dry_6mps',
+            'wet_same_traffic', 'narrow_same_traffic', 'dense_traffic',
+            'low_visibility', 'ice_or_snow')
 PARAMETERS = [
     ('requested_speed_mps', 'controller', 'authored finite ego speed target, m/s'),
     ('ego_speed', 'subject_behavior', 'original sampled ego speed, m/s'),
@@ -51,7 +53,8 @@ def assignments(suffix):
         weather = 'fog'
     elif suffix == 'ice_or_snow':
         weather, surface = 'cold_precipitation', 'ice_or_snow'
-    values = {'requested_speed_mps': 8, 'ego_speed': None,
+    speed = {'dry_4mps': 4, 'dry_6mps': 6}.get(suffix, 8)
+    values = {'requested_speed_mps': speed, 'ego_speed': None,
               'surface_condition': surface, 'lane_width_target_m': width,
               'lead_gap_target_m': gap, 'weather_profile': weather}
     units = {'requested_speed_mps': 'm/s', 'ego_speed': 'm/s',
@@ -127,38 +130,67 @@ def main():
                   'variable_assignments': assignments('dry_open_traffic'),
                   'unresolved_judgment_calls': [PHRASE],
                   'recording_description': baseline_description})
-    primary = {'dry_open_traffic': 'requested_speed_mps',
+    primary = {'dry_4mps': 'requested_speed_mps',
+               'dry_6mps': 'requested_speed_mps',
+               'dry_open_traffic': 'requested_speed_mps',
                'wet_same_traffic': 'surface_condition',
                'narrow_same_traffic': 'lane_width_target_m',
                'dense_traffic': 'lead_gap_target_m',
                'low_visibility': 'weather_profile',
                'ice_or_snow': 'surface_condition'}
+    spec = {'sweep_id': 'reasonable_speed_grid', 'target_law_id': LAW,
+            'judgment_refs': [{'phrase': PHRASE, 'note': judgment['note']}],
+            'status': 'complete', 'mode': 'one_dimensional',
+            'rationale': 'Finite 4, 6 and 8 m/s authored speed targets on the same dry road and traffic; measured ego speed and independent judgment remain separate.',
+            'axes': [{'variable': 'requested_speed_mps', 'observable': 'ego_speed',
+                      'unit': 'm/s', 'min': 4, 'max': 8, 'spacing': 2,
+                      'range_rationale': 'Three feasible diagnostic controller setpoints below, near and above the fixed 7 m/s lead target; no legal boundary is implied.',
+                      'spacing_rationale': '2 m/s separates the three authored controller targets for later original speed measurement.',
+                      'feasibility_evidence': 'Exact source-bound software constructions and CPU physical-preparation fixtures; Native realization remains unverified.',
+                      'measurement': {'method': 'original Native ego velocity samples',
+                                      'time_window': 'entire captured interval',
+                                      'statistic': 'max'}}],
+            'landmarks': [],
+            'variable_assignments': assignments('dry_open_traffic'),
+            'recording_description': baseline_description}
+    spec['spec_version'] = digest(spec)
+    spec['planned_case_count'] = len(grid(spec))
+    spec['selection_order'] = [ASSIGNMENT + '__' + suffix for suffix in
+                               ('dry_4mps', 'dry_open_traffic', 'dry_6mps')]
     for suffix in SUFFIXES:
         construction = ROOT / ('construction.json' if suffix == 'dry_open_traffic' else
                                'cases/' + suffix + '-construction.json')
         packet = json.loads(construction.read_text())
         variable = primary[suffix]
-        cases.append({'case_id': packet['case_id'], 'target_law_id': LAW,
+        speed_member = suffix in ('dry_4mps', 'dry_open_traffic', 'dry_6mps')
+        case = {'case_id': packet['case_id'], 'target_law_id': LAW,
                       'target_type': 'judgment_sweep',
-                      'rationale': 'Source-bound condition comparison at a fixed authored speed; no legal outcome assigned.',
+                      'rationale': ('Finite authored speed-grid point; no legal outcome assigned.' if speed_member else
+                                    'Source-bound condition comparison at a fixed authored speed; no legal outcome assigned.'),
                       'variable_assignments': assignments(suffix),
                       'unresolved_judgment_calls': [PHRASE],
                       'recording_description': packet['recording_description'],
-                      'paired_probe_id': 'road_speed_conditions',
-                      'deliberate_differences': ['surface_condition', 'lane_width_target_m',
-                                                 'lead_gap_target_m', 'weather_profile'],
+                      'paired_probe_id': ('reasonable_speed_grid' if speed_member else 'road_speed_conditions'),
+                      'deliberate_differences': (['requested_speed_mps'] if speed_member else
+                                                 ['surface_condition', 'lane_width_target_m',
+                                                  'lead_gap_target_m', 'weather_profile']),
                       'probe': {'primary_variable': variable,
                                 'comparison_or_standard': 'same sourced roadway/traffic controls except declared condition change',
-                                'target_value_or_branch': suffix}})
+                                'target_value_or_branch': suffix}}
+        if speed_member:
+            point = {'requested_speed_mps': assignments(suffix)['requested_speed_mps']['value']}
+            case.update({'sweep_id': spec['sweep_id'], 'sweep_spec_version': spec['spec_version'],
+                         'sweep_point': point,
+                         'selection_rank': spec['selection_order'].index(packet['case_id']),
+                         'judgment_refs': spec['judgment_refs'],
+                         'sweep_measurements': [{'variable': 'requested_speed_mps',
+                                                 'observable': 'ego_speed', 'unit': 'm/s',
+                                                 'measurement': spec['axes'][0]['measurement']}]})
+            case['probe']['comparison_or_standard'] = 'physical speed coverage; legal judgment unresolved'
+            case['probe']['target_value_or_branch'] = point
+        cases.append(case)
     proposal = {'cell_id': CELL, 'actor': ACTOR, 'status': 'draft', 'cases': cases,
-                'sweep_specs': [{'sweep_id': 'reasonable_speed_grid',
-                                 'target_law_id': LAW,
-                                 'judgment_refs': [{'phrase': PHRASE,
-                                                   'note': judgment['note']}],
-                                 'status': 'incomplete',
-                                 'rationale': 'Six condition contrasts at one authored speed are not a numeric speed sweep.',
-                                 'missing_inputs': ['Author exact numeric speed-grid case IDs, source-bound constructions and physical feasibility measurements for the selected conditions. This is worker-owned CPU work.']}],
-                'sweeps_expanded': False}
+                'sweep_specs': [spec], 'sweeps_expanded': True}
     refs = {'relevance_batch': write('relevance.json', relevance),
             'relevance': None,
             'template': write('template.json', template),
@@ -170,7 +202,7 @@ def main():
              'stages': refs}
     write('semantic-index.json', index)
     print(json.dumps({'stage_count': 6, 'selected_cases': len(SUFFIXES),
-                      'sweep_complete': False}, indent=2))
+                      'sweep_complete': True}, indent=2))
 
 
 if __name__ == '__main__':

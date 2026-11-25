@@ -1,6 +1,6 @@
 """CARLA-lazy original capture for the paved-road speed/conditions cases.
 
-The runner records six source-driven variants. It does not decide whether an
+The runner records eight source-driven variants. It does not decide whether an
 observed speed is reasonable or proper under NRS 484B.600(1)(a).
 """
 import argparse
@@ -20,7 +20,8 @@ from traffic_controller import LongitudinalController
 
 ASSIGNMENT = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver'
 SUFFIXES = ('dry_open_traffic', 'wet_same_traffic', 'narrow_same_traffic',
-            'dense_traffic', 'low_visibility', 'ice_or_snow')
+            'dense_traffic', 'low_visibility', 'ice_or_snow',
+            'dry_4mps', 'dry_6mps')
 CASES = tuple(ASSIGNMENT + '__' + suffix for suffix in SUFFIXES)
 CAMERAS = tuple(PROFILE)
 
@@ -30,7 +31,7 @@ def validate_config(config):
             'NRS-484B-600-1a', 'C179789', 'motor_vehicle_driver'):
         raise ValueError('Exact speed/conditions law, cell and actor required')
     if config.get('selected_case_id') not in CASES or set(config.get('supported_case_ids', [])) != set(CASES):
-        raise ValueError('Six exact speed/conditions cases required')
+        raise ValueError('Eight exact speed/conditions cases required')
     if config.get('rate_hz') != 20 or config.get('duration_s') != 45:
         raise ValueError('Pinned 20 Hz, 45-second source capture required')
     cameras = config.get('cameras')

@@ -26,6 +26,7 @@ class DeliveryAuditTests(unittest.TestCase):
             fixture.write_fixture(root)
             config = json.loads((root / 'config.json').read_text())
             config['selected_case_id'] = audit.ASSIGNMENT + '__dry_open_traffic'
+            config['requested_speed_mps'] = 8
             config['condition_target'] = {'surface': 'dry', 'lane_width_m': [3, 4],
                                           'longitudinal_body_gap_m': [10, 35],
                                           'sight_distance_m': [10, 120],
@@ -69,7 +70,8 @@ class DeliveryAuditTests(unittest.TestCase):
             baseline['road_packet.json']['lead_spawn']['y'] = 0
             baseline['road_packet.json']['lead_target_speed_mps'] = 7
             for suffix in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-                           'narrow_same_traffic', 'low_visibility', 'ice_or_snow'):
+                           'narrow_same_traffic', 'low_visibility', 'ice_or_snow',
+                           'dry_4mps', 'dry_6mps'):
                 root = Path(folder) / suffix
                 root.mkdir()
                 docs = json.loads(json.dumps(baseline))
@@ -96,6 +98,10 @@ class DeliveryAuditTests(unittest.TestCase):
                     docs['surface_packet.json']['surface'] = 'ice_or_snow'
                     docs['road_packet.json']['weather_profile']['precipitation'] = 80
                     docs['config.json']['condition_target']['precipitation_percent'] = [70, 90]
+                elif suffix in ('dry_4mps', 'dry_6mps'):
+                    speed = 4 if suffix == 'dry_4mps' else 6
+                    docs['config.json']['requested_speed_mps'] = speed
+                    docs['road_packet.json']['ego_target_speed_mps'] = speed
                 for name, doc in docs.items():
                     (root / name).write_text(json.dumps(doc) + '\n')
                 roots[suffix] = root

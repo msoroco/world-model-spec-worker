@@ -1,4 +1,4 @@
-"""Verify all six source-bound physical preparation receipts on the pinned runtime."""
+"""Verify all eight source-bound physical preparation receipts on the pinned runtime."""
 import hashlib
 from pathlib import Path
 
@@ -7,7 +7,8 @@ from worker_exchange.physical_preparation import validate
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 for suffix in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-               'narrow_same_traffic', 'low_visibility', 'ice_or_snow'):
+               'narrow_same_traffic', 'low_visibility', 'ice_or_snow',
+               'dry_4mps', 'dry_6mps'):
     construction = ROOT / ('construction.json' if suffix == 'dry_open_traffic' else
                            'cases/' + suffix + '-construction.json')
     receipt = 'cases/' + suffix + '-physical-preparation.json'
