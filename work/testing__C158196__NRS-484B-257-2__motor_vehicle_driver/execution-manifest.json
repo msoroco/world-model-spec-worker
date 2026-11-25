@@ -1,86 +1,52 @@
 {
-  "format": "worker-execution-manifest",
   "assignment_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver",
-  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial_delivery_draft",
   "cases": [
     {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
-      "construction": "construction.json",
-      "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
-      "measurement_contract": "cases/active_signal_controls-measurement-contract.json",
-      "measurement_procedure": {
-        "entrypoint": "saved_finalizer.py"
-      },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/active_signal_controls-fixture-recipe.json",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Governing versus nongoverning signal head may be outside the original approach view."
+        "reason": "Governing versus nongoverning signal head may be outside the original approach view.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/active_signal_controls-fallback1-construction.json",
-          "construction_sha256": "6bba7a29e1d90be3f688bb66311d4c9c7cccae4d1f09c080958c2e2db46218c4",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "governing-head lane and signal state visible in original approach frames",
-            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane"
-          },
           "changed_knobs": [
             "approach camera height 1.6 to 2.2 m",
             "approach camera pitch 0 to 5 degrees"
           ],
+          "compatibility": {
+            "log": "cases/active_signal_controls-fallback1-analysis.log",
+            "negative_log": "cases/active_signal_controls-fallback1-negative.log",
+            "receipt": "cases/active_signal_controls-fallback1-compatibility.json",
+            "sha256": "3e7e7a3c2c80d77390c966d4d036c714429ec3fed8dd664d00704630eb5c86e8"
+          },
+          "construction": "cases/active_signal_controls-fallback1-construction.json",
+          "construction_sha256": "6bba7a29e1d90be3f688bb66311d4c9c7cccae4d1f09c080958c2e2db46218c4",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --candidate fallback1 --output .runtime-work/c158196-fallback1-active_signal_controls/offline",
-            "exit_code": 0,
             "construction_sha256": "6bba7a29e1d90be3f688bb66311d4c9c7cccae4d1f09c080958c2e2db46218c4",
+            "exit_code": 0,
             "log": "cases/active_signal_controls-fallback1-offline.log",
             "log_sha256": "5908dbb08691d01266851cdf03250dbcc214d68a682e9cabad09e043c47b1469"
           },
-          "compatibility": {
-            "receipt": "cases/active_signal_controls-fallback1-compatibility.json",
-            "sha256": "3e7e7a3c2c80d77390c966d4d036c714429ec3fed8dd664d00704630eb5c86e8",
-            "log": "cases/active_signal_controls-fallback1-analysis.log",
-            "negative_log": "cases/active_signal_controls-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane",
+            "metric": "governing-head lane and signal state visible in original approach frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --output .runtime-work/c158196-257-2-active_signal_controls-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
-        "log": "cases/active_signal_controls-offline.log",
-        "log_sha256": "a8232592ea2eebc939f76694d8df1852bb57b94d038865564b14bb4b1abb6c5a"
-      },
-      "physical_preparation": {
-        "receipt": "cases/active_signal_controls-physical-proofs/receipt.json",
-        "sha256": "19a1ce39ca407e6e102a990a8c34473b036db80e83f412a435192a052072aee5"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
       "compatibility": {
+        "log": "cases/active_signal_controls-compatibility-analysis.log",
         "receipt": "cases/active_signal_controls-compatibility.json",
-        "sha256": "ee488d5f5634ba34993bb3f29caa11e362c0aa4059a03875ba6ac9a27f1d2f94",
-        "log": "cases/active_signal_controls-compatibility-analysis.log"
+        "sha256": "ee488d5f5634ba34993bb3f29caa11e362c0aa4059a03875ba6ac9a27f1d2f94"
       },
-      "negative": {
-        "log": "cases/active_signal_controls-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/active_signal_controls-process-saved.json",
-        "sha256": "d4081694b14a9cb9b75b44ab8b9b271577b429fbdb4f81435659452e82ce4661",
-        "log": "cases/active_signal_controls-process-saved-analysis.log"
-      },
+      "construction": "construction.json",
+      "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -91,97 +57,139 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/active_signal_controls-delivery-positive.log",
-        "test_log_sha256": "34ad5470377cd4823e5e806b83ec0dec42e5b98d75dbfabc0fa97d207e26e47f",
         "negative_log": "cases/active_signal_controls-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
-      }
-    },
-    {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
-      "construction": "cases/signal_off_signed_duty-construction.json",
-      "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
-      "measurement_contract": "cases/signal_off_signed_duty-measurement-contract.json",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/active_signal_controls-delivery-positive.log",
+        "test_log_sha256": "34ad5470377cd4823e5e806b83ec0dec42e5b98d75dbfabc0fa97d207e26e47f"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/active_signal_controls-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/active_signal_controls-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_signed_duty-fixture-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/active_signal_controls-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --output .runtime-work/c158196-257-2-active_signal_controls-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
+        "exit_code": 0,
+        "log": "cases/active_signal_controls-offline.log",
+        "log_sha256": "a8232592ea2eebc939f76694d8df1852bb57b94d038865564b14bb4b1abb6c5a"
+      },
+      "physical_preparation": {
+        "receipt": "cases/active_signal_controls-physical-proofs/receipt.json",
+        "sha256": "19a1ce39ca407e6e102a990a8c34473b036db80e83f412a435192a052072aee5"
+      },
+      "post_capture": {
+        "log": "cases/active_signal_controls-process-saved-analysis.log",
+        "receipt": "cases/active_signal_controls-process-saved.json",
+        "sha256": "d4081694b14a9cb9b75b44ab8b9b271577b429fbdb4f81435659452e82ce4661"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Signed entrance device may be outside the original reference-corner view."
+        "reason": "Signed entrance device may be outside the original reference-corner view.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/signal_off_signed_duty-fallback1-construction.json",
-          "construction_sha256": "ce421369054f30e10b7f416b722f717a71fad7a03a28b645a764d3a973c46dd7",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
-            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation"
-          },
           "changed_knobs": [
             "reference-corner camera moved to (-27,-10,6) m",
             "reference-corner yaw 45 to 41 and pitch -20 to -24 degrees"
           ],
+          "compatibility": {
+            "log": "cases/signal_off_signed_duty-fallback1-analysis.log",
+            "negative_log": "cases/signal_off_signed_duty-fallback1-negative.log",
+            "receipt": "cases/signal_off_signed_duty-fallback1-compatibility.json",
+            "sha256": "7e349324eafa6b1634671494283ef450f2eb2856c8bea91ca98944a342a6a85a"
+          },
+          "construction": "cases/signal_off_signed_duty-fallback1-construction.json",
+          "construction_sha256": "ce421369054f30e10b7f416b722f717a71fad7a03a28b645a764d3a973c46dd7",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_off_signed_duty/offline",
-            "exit_code": 0,
             "construction_sha256": "ce421369054f30e10b7f416b722f717a71fad7a03a28b645a764d3a973c46dd7",
+            "exit_code": 0,
             "log": "cases/signal_off_signed_duty-fallback1-offline.log",
             "log_sha256": "a79b7ec6be9591c74ee987c6dc2b3741181b67355d91289c0f9480a5484804c0"
           },
-          "compatibility": {
-            "receipt": "cases/signal_off_signed_duty-fallback1-compatibility.json",
-            "sha256": "7e349324eafa6b1634671494283ef450f2eb2856c8bea91ca98944a342a6a85a",
-            "log": "cases/signal_off_signed_duty-fallback1-analysis.log",
-            "negative_log": "cases/signal_off_signed_duty-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation",
+            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --output .runtime-work/c158196-257-2-signal_off_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
-        "log": "cases/signal_off_signed_duty-offline.log",
-        "log_sha256": "29bc53364fa39d7e1a2203808083dbc2a43a4e76c91a086d200404253b1e900f"
-      },
-      "physical_preparation": {
-        "receipt": "cases/signal_off_signed_duty-physical-proofs/receipt.json",
-        "sha256": "96d839d6d8b3cadbfce287ee64176edf84a69c82a2ccc0143329879683e1e3a0"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
       "compatibility": {
+        "log": "cases/signal_off_signed_duty-compatibility-analysis.log",
         "receipt": "cases/signal_off_signed_duty-compatibility.json",
-        "sha256": "9bbe5e686ff3423e5012ab097f24c9017ad356a46ad6c38241ac12acc392b9aa",
-        "log": "cases/signal_off_signed_duty-compatibility-analysis.log"
+        "sha256": "9bbe5e686ff3423e5012ab097f24c9017ad356a46ad6c38241ac12acc392b9aa"
       },
-      "negative": {
-        "log": "cases/signal_off_signed_duty-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/signal_off_signed_duty-process-saved.json",
-        "sha256": "ae8bdba144f8a8d5960928458675b25effaf033edd4f331432de1d35030f53bf",
-        "log": "cases/signal_off_signed_duty-process-saved-analysis.log"
-      },
+      "construction": "cases/signal_off_signed_duty-construction.json",
+      "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -192,97 +200,139 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/signal_off_signed_duty-delivery-positive.log",
-        "test_log_sha256": "6a070a0401d69747883e81bd4f98f87c6482f91d66aad0cdcd64a8aa90839bd4",
         "negative_log": "cases/signal_off_signed_duty-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
-      }
-    },
-    {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
-      "construction": "cases/signal_elsewhere_no_control-construction.json",
-      "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
-      "measurement_contract": "cases/signal_elsewhere_no_control-measurement-contract.json",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/signal_off_signed_duty-delivery-positive.log",
+        "test_log_sha256": "6a070a0401d69747883e81bd4f98f87c6482f91d66aad0cdcd64a8aa90839bd4"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_signed_duty-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/signal_off_signed_duty-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_elsewhere_no_control-fixture-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/signal_off_signed_duty-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --output .runtime-work/c158196-257-2-signal_off_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
+        "exit_code": 0,
+        "log": "cases/signal_off_signed_duty-offline.log",
+        "log_sha256": "29bc53364fa39d7e1a2203808083dbc2a43a4e76c91a086d200404253b1e900f"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_off_signed_duty-physical-proofs/receipt.json",
+        "sha256": "96d839d6d8b3cadbfce287ee64176edf84a69c82a2ccc0143329879683e1e3a0"
+      },
+      "post_capture": {
+        "log": "cases/signal_off_signed_duty-process-saved-analysis.log",
+        "receipt": "cases/signal_off_signed_duty-process-saved.json",
+        "sha256": "ae8bdba144f8a8d5960928458675b25effaf033edd4f331432de1d35030f53bf"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Governing versus nongoverning signal head may be outside the original approach view."
+        "reason": "Governing versus nongoverning signal head may be outside the original approach view.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/signal_elsewhere_no_control-fallback1-construction.json",
-          "construction_sha256": "08ff18fbe692c5977b2e45f2298f53226fc15b4a055fdcc852d792d99638b6ca",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "governing-head lane and signal state visible in original approach frames",
-            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane"
-          },
           "changed_knobs": [
             "approach camera height 1.6 to 2.2 m",
             "approach camera pitch 0 to 5 degrees"
           ],
+          "compatibility": {
+            "log": "cases/signal_elsewhere_no_control-fallback1-analysis.log",
+            "negative_log": "cases/signal_elsewhere_no_control-fallback1-negative.log",
+            "receipt": "cases/signal_elsewhere_no_control-fallback1-compatibility.json",
+            "sha256": "7814130b932bd859c7be97bbc895761aff874862a170fb86670698590264c7c7"
+          },
+          "construction": "cases/signal_elsewhere_no_control-fallback1-construction.json",
+          "construction_sha256": "08ff18fbe692c5977b2e45f2298f53226fc15b4a055fdcc852d792d99638b6ca",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_elsewhere_no_control/offline",
-            "exit_code": 0,
             "construction_sha256": "08ff18fbe692c5977b2e45f2298f53226fc15b4a055fdcc852d792d99638b6ca",
+            "exit_code": 0,
             "log": "cases/signal_elsewhere_no_control-fallback1-offline.log",
             "log_sha256": "77c36d89a41fe1a147cc3f7e725299e091d907d3f4273324518b0dc6688335c6"
           },
-          "compatibility": {
-            "receipt": "cases/signal_elsewhere_no_control-fallback1-compatibility.json",
-            "sha256": "7814130b932bd859c7be97bbc895761aff874862a170fb86670698590264c7c7",
-            "log": "cases/signal_elsewhere_no_control-fallback1-analysis.log",
-            "negative_log": "cases/signal_elsewhere_no_control-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane",
+            "metric": "governing-head lane and signal state visible in original approach frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --output .runtime-work/c158196-257-2-signal_elsewhere_no_control-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
-        "log": "cases/signal_elsewhere_no_control-offline.log",
-        "log_sha256": "c4991353bd6f7b5172f5bc5753e2c77d1bac24de782a1def555c617e7104466f"
-      },
-      "physical_preparation": {
-        "receipt": "cases/signal_elsewhere_no_control-physical-proofs/receipt.json",
-        "sha256": "5f509ad25fb22be2419d968fbe4c9ff7ab8cbf2ab213a195c89ab8cdde6c61e6"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
       "compatibility": {
+        "log": "cases/signal_elsewhere_no_control-compatibility-analysis.log",
         "receipt": "cases/signal_elsewhere_no_control-compatibility.json",
-        "sha256": "35e740f3e446b518e5450259810c3a01826b8dc1ccbd2268604ee46745233ec9",
-        "log": "cases/signal_elsewhere_no_control-compatibility-analysis.log"
+        "sha256": "35e740f3e446b518e5450259810c3a01826b8dc1ccbd2268604ee46745233ec9"
       },
-      "negative": {
-        "log": "cases/signal_elsewhere_no_control-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/signal_elsewhere_no_control-process-saved.json",
-        "sha256": "235033444f3eee7a4cb0c224a962fcb352668b46a8db3248b854ea6e67f82237",
-        "log": "cases/signal_elsewhere_no_control-process-saved-analysis.log"
-      },
+      "construction": "cases/signal_elsewhere_no_control-construction.json",
+      "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -293,97 +343,139 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/signal_elsewhere_no_control-delivery-positive.log",
-        "test_log_sha256": "75e7af4443e07dc98b503ac61c9c228637e80ddf219e0753cb3675a8260fc275",
         "negative_log": "cases/signal_elsewhere_no_control-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
-      }
-    },
-    {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
-      "construction": "cases/signal_off_stop_signed_duty-construction.json",
-      "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
-      "measurement_contract": "cases/signal_off_stop_signed_duty-measurement-contract.json",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/signal_elsewhere_no_control-delivery-positive.log",
+        "test_log_sha256": "75e7af4443e07dc98b503ac61c9c228637e80ddf219e0753cb3675a8260fc275"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_elsewhere_no_control-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/signal_elsewhere_no_control-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_stop_signed_duty-fixture-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/signal_elsewhere_no_control-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --output .runtime-work/c158196-257-2-signal_elsewhere_no_control-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
+        "exit_code": 0,
+        "log": "cases/signal_elsewhere_no_control-offline.log",
+        "log_sha256": "c4991353bd6f7b5172f5bc5753e2c77d1bac24de782a1def555c617e7104466f"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_elsewhere_no_control-physical-proofs/receipt.json",
+        "sha256": "5f509ad25fb22be2419d968fbe4c9ff7ab8cbf2ab213a195c89ab8cdde6c61e6"
+      },
+      "post_capture": {
+        "log": "cases/signal_elsewhere_no_control-process-saved-analysis.log",
+        "receipt": "cases/signal_elsewhere_no_control-process-saved.json",
+        "sha256": "235033444f3eee7a4cb0c224a962fcb352668b46a8db3248b854ea6e67f82237"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Signed entrance device may be outside the original reference-corner view."
+        "reason": "Signed entrance device may be outside the original reference-corner view.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/signal_off_stop_signed_duty-fallback1-construction.json",
-          "construction_sha256": "2ffcb85a8623621b9b253d3e568b400151e3733d0d4a66544702d4055bfa87e4",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
-            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation"
-          },
           "changed_knobs": [
             "reference-corner camera moved to (-27,-10,6) m",
             "reference-corner yaw 45 to 41 and pitch -20 to -24 degrees"
           ],
+          "compatibility": {
+            "log": "cases/signal_off_stop_signed_duty-fallback1-analysis.log",
+            "negative_log": "cases/signal_off_stop_signed_duty-fallback1-negative.log",
+            "receipt": "cases/signal_off_stop_signed_duty-fallback1-compatibility.json",
+            "sha256": "cc797343dc91b462a671607b8713297b9e806eed17dd0dd06cfe29decc07ef26"
+          },
+          "construction": "cases/signal_off_stop_signed_duty-fallback1-construction.json",
+          "construction_sha256": "2ffcb85a8623621b9b253d3e568b400151e3733d0d4a66544702d4055bfa87e4",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_off_stop_signed_duty/offline",
-            "exit_code": 0,
             "construction_sha256": "2ffcb85a8623621b9b253d3e568b400151e3733d0d4a66544702d4055bfa87e4",
+            "exit_code": 0,
             "log": "cases/signal_off_stop_signed_duty-fallback1-offline.log",
             "log_sha256": "4a963d7d14ff25fbf2c8be1c94dcd7750b7b822f525629d3c27ad6df15b852dc"
           },
-          "compatibility": {
-            "receipt": "cases/signal_off_stop_signed_duty-fallback1-compatibility.json",
-            "sha256": "cc797343dc91b462a671607b8713297b9e806eed17dd0dd06cfe29decc07ef26",
-            "log": "cases/signal_off_stop_signed_duty-fallback1-analysis.log",
-            "negative_log": "cases/signal_off_stop_signed_duty-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation",
+            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --output .runtime-work/c158196-257-2-signal_off_stop_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
-        "log": "cases/signal_off_stop_signed_duty-offline.log",
-        "log_sha256": "ea11bd819c6e0872c24e2e4455e6e71a7345317c8e7a8c6703486a0a7b2144e0"
-      },
-      "physical_preparation": {
-        "receipt": "cases/signal_off_stop_signed_duty-physical-proofs/receipt.json",
-        "sha256": "aecf7a0f7ef75a4f4c47c15ea733599b039e171fe53fd2a5f9a8ee206342a4f5"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
       "compatibility": {
+        "log": "cases/signal_off_stop_signed_duty-compatibility-analysis.log",
         "receipt": "cases/signal_off_stop_signed_duty-compatibility.json",
-        "sha256": "35136db3b4b387b5cc8b2c4d6380199b4967e4b0898e8b08f4601061aca4eb44",
-        "log": "cases/signal_off_stop_signed_duty-compatibility-analysis.log"
+        "sha256": "35136db3b4b387b5cc8b2c4d6380199b4967e4b0898e8b08f4601061aca4eb44"
       },
-      "negative": {
-        "log": "cases/signal_off_stop_signed_duty-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/signal_off_stop_signed_duty-process-saved.json",
-        "sha256": "fa07d9975be7a9faf690944731627bb076a4e6dc4e44a49ea269701d2bbe82e8",
-        "log": "cases/signal_off_stop_signed_duty-process-saved-analysis.log"
-      },
+      "construction": "cases/signal_off_stop_signed_duty-construction.json",
+      "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -394,97 +486,139 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/signal_off_stop_signed_duty-delivery-positive.log",
-        "test_log_sha256": "2cdbc88ba3846bf9db71e4f2767874c9e4a2d54a223f22cc19f4dce8d35706e2",
         "negative_log": "cases/signal_off_stop_signed_duty-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
-      }
-    },
-    {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
-      "construction": "cases/approaching_traffic_close-construction.json",
-      "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
-      "measurement_contract": "cases/approaching_traffic_close-measurement-contract.json",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/signal_off_stop_signed_duty-delivery-positive.log",
+        "test_log_sha256": "2cdbc88ba3846bf9db71e4f2767874c9e4a2d54a223f22cc19f4dce8d35706e2"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_stop_signed_duty-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/signal_off_stop_signed_duty-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_close-fixture-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/signal_off_stop_signed_duty-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --output .runtime-work/c158196-257-2-signal_off_stop_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
+        "exit_code": 0,
+        "log": "cases/signal_off_stop_signed_duty-offline.log",
+        "log_sha256": "ea11bd819c6e0872c24e2e4455e6e71a7345317c8e7a8c6703486a0a7b2144e0"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_off_stop_signed_duty-physical-proofs/receipt.json",
+        "sha256": "aecf7a0f7ef75a4f4c47c15ea733599b039e171fe53fd2a5f9a8ee206342a4f5"
+      },
+      "post_capture": {
+        "log": "cases/signal_off_stop_signed_duty-process-saved-analysis.log",
+        "receipt": "cases/signal_off_stop_signed_duty-process-saved.json",
+        "sha256": "fa07d9975be7a9faf690944731627bb076a4e6dc4e44a49ea269701d2bbe82e8"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Other vehicle approach or complete body may leave the original overview."
+        "reason": "Other vehicle approach or complete body may leave the original overview.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/approaching_traffic_close-fallback1-construction.json",
-          "construction_sha256": "1db0ba1aa3514c4c489967c1d6c9e886dcf019459823fac4874d345bd37ceddb",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "both complete bodies and conflict region visible in original overview frames",
-            "failure_condition": "Original overview frames omit the other approach or complete crossing body"
-          },
           "changed_knobs": [
             "overview camera height 18 to 24 m",
             "overview pitch -55 to -65 degrees"
           ],
+          "compatibility": {
+            "log": "cases/approaching_traffic_close-fallback1-analysis.log",
+            "negative_log": "cases/approaching_traffic_close-fallback1-negative.log",
+            "receipt": "cases/approaching_traffic_close-fallback1-compatibility.json",
+            "sha256": "734bbadfd51063f2ce2222c13b0a18b8337ce531fa3e0b3aaf9a1eab80b6df14"
+          },
+          "construction": "cases/approaching_traffic_close-fallback1-construction.json",
+          "construction_sha256": "1db0ba1aa3514c4c489967c1d6c9e886dcf019459823fac4874d345bd37ceddb",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --candidate fallback1 --output .runtime-work/c158196-fallback1-approaching_traffic_close/offline",
-            "exit_code": 0,
             "construction_sha256": "1db0ba1aa3514c4c489967c1d6c9e886dcf019459823fac4874d345bd37ceddb",
+            "exit_code": 0,
             "log": "cases/approaching_traffic_close-fallback1-offline.log",
             "log_sha256": "fcaa69c658c63fa5f103f6863a9ee9b3691a2f417905dcd56357e2b927f442d1"
           },
-          "compatibility": {
-            "receipt": "cases/approaching_traffic_close-fallback1-compatibility.json",
-            "sha256": "734bbadfd51063f2ce2222c13b0a18b8337ce531fa3e0b3aaf9a1eab80b6df14",
-            "log": "cases/approaching_traffic_close-fallback1-analysis.log",
-            "negative_log": "cases/approaching_traffic_close-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original overview frames omit the other approach or complete crossing body",
+            "metric": "both complete bodies and conflict region visible in original overview frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --output .runtime-work/c158196-257-2-approaching_traffic_close-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
-        "log": "cases/approaching_traffic_close-offline.log",
-        "log_sha256": "da2008c7788cc02c2eb05a132b6c8aa6ddef97feba3cb3d0a311e76ca8518a35"
-      },
-      "physical_preparation": {
-        "receipt": "cases/approaching_traffic_close-physical-proofs/receipt.json",
-        "sha256": "321f7ecc12f9fe6b3fa218ce4c837792286cf99b210e4b353e5b7352f2b0e10a"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
       "compatibility": {
+        "log": "cases/approaching_traffic_close-compatibility-analysis.log",
         "receipt": "cases/approaching_traffic_close-compatibility.json",
-        "sha256": "a6ead333506cdbd7e2940995ddc7f4b3d0098c33f4cacf99c3538f81e9fe54eb",
-        "log": "cases/approaching_traffic_close-compatibility-analysis.log"
+        "sha256": "a6ead333506cdbd7e2940995ddc7f4b3d0098c33f4cacf99c3538f81e9fe54eb"
       },
-      "negative": {
-        "log": "cases/approaching_traffic_close-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/approaching_traffic_close-process-saved.json",
-        "sha256": "9fa022d4310fdefaf35fed1b36051db6f4fa3ad0ba4a25dc154bc00086ecf325",
-        "log": "cases/approaching_traffic_close-process-saved-analysis.log"
-      },
+      "construction": "cases/approaching_traffic_close-construction.json",
+      "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -495,97 +629,139 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/approaching_traffic_close-delivery-positive.log",
-        "test_log_sha256": "7f1b9f4cf9e62cbf757dd80168a6d552e3d5ffa0cb7d63afbbb2b75eccdb5a13",
         "negative_log": "cases/approaching_traffic_close-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
-      }
-    },
-    {
-      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
-      "construction": "cases/approaching_traffic_far-construction.json",
-      "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
-      "measurement_contract": "cases/approaching_traffic_far-measurement-contract.json",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/approaching_traffic_close-delivery-positive.log",
+        "test_log_sha256": "7f1b9f4cf9e62cbf757dd80168a6d552e3d5ffa0cb7d63afbbb2b75eccdb5a13"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_close-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/approaching_traffic_close-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "saved_finalizer.py"
       },
-      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_far-fixture-recipe.json",
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/approaching_traffic_close-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --output .runtime-work/c158196-257-2-approaching_traffic_close-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
+        "exit_code": 0,
+        "log": "cases/approaching_traffic_close-offline.log",
+        "log_sha256": "da2008c7788cc02c2eb05a132b6c8aa6ddef97feba3cb3d0a311e76ca8518a35"
+      },
+      "physical_preparation": {
+        "receipt": "cases/approaching_traffic_close-physical-proofs/receipt.json",
+        "sha256": "321f7ecc12f9fe6b3fa218ce4c837792286cf99b210e4b353e5b7352f2b0e10a"
+      },
+      "post_capture": {
+        "log": "cases/approaching_traffic_close-process-saved-analysis.log",
+        "receipt": "cases/approaching_traffic_close-process-saved.json",
+        "sha256": "9fa022d4310fdefaf35fed1b36051db6f4fa3ad0ba4a25dc154bc00086ecf325"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Other vehicle approach or complete body may leave the original overview."
+        "reason": "Other vehicle approach or complete body may leave the original overview.",
+        "status": "physical"
       },
       "candidates": [
         {
-          "id": "fallback1",
-          "construction": "cases/approaching_traffic_far-fallback1-construction.json",
-          "construction_sha256": "1a928d112097a399279e554723eb1a1a456150f4ae193a8813725c2e09b7f1cd",
-          "trigger": {
-            "source": "original synchronized camera frames and frame map",
-            "metric": "both complete bodies and conflict region visible in original overview frames",
-            "failure_condition": "Original overview frames omit the other approach or complete crossing body"
-          },
           "changed_knobs": [
             "overview camera height 18 to 24 m",
             "overview pitch -55 to -65 degrees"
           ],
+          "compatibility": {
+            "log": "cases/approaching_traffic_far-fallback1-analysis.log",
+            "negative_log": "cases/approaching_traffic_far-fallback1-negative.log",
+            "receipt": "cases/approaching_traffic_far-fallback1-compatibility.json",
+            "sha256": "5f94b5415151dce5fc11fac20411c5d88079923391a40a2125ec5cc6d5ad2777"
+          },
+          "construction": "cases/approaching_traffic_far-fallback1-construction.json",
+          "construction_sha256": "1a928d112097a399279e554723eb1a1a456150f4ae193a8813725c2e09b7f1cd",
+          "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --candidate fallback1 --output .runtime-work/c158196-fallback1-approaching_traffic_far/offline",
-            "exit_code": 0,
             "construction_sha256": "1a928d112097a399279e554723eb1a1a456150f4ae193a8813725c2e09b7f1cd",
+            "exit_code": 0,
             "log": "cases/approaching_traffic_far-fallback1-offline.log",
             "log_sha256": "f1cb4c1e4a75605fb893a51cf6fa8dac9e67c994f695ce82f5a1621253387fbc"
           },
-          "compatibility": {
-            "receipt": "cases/approaching_traffic_far-fallback1-compatibility.json",
-            "sha256": "5f94b5415151dce5fc11fac20411c5d88079923391a40a2125ec5cc6d5ad2777",
-            "log": "cases/approaching_traffic_far-fallback1-analysis.log",
-            "negative_log": "cases/approaching_traffic_far-fallback1-negative.log"
+          "trigger": {
+            "failure_condition": "Original overview frames omit the other approach or complete crossing body",
+            "metric": "both complete bodies and conflict region visible in original overview frames",
+            "source": "original synchronized camera frames and frame map"
           }
         }
       ],
-      "kind": "delivery",
-      "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --output .runtime-work/c158196-257-2-approaching_traffic_far-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
-        "log": "cases/approaching_traffic_far-offline.log",
-        "log_sha256": "ffce3988d3ba64775f3f59ee79f86c611b3531f6b1c093a8daf44466d826f5cc"
-      },
-      "physical_preparation": {
-        "receipt": "cases/approaching_traffic_far-physical-proofs/receipt.json",
-        "sha256": "8893f075d167890e536fc843e9dd28b7d4000c1fba267baa14d84d34b58a2eec"
-      },
-      "native_handoff": {
-        "python_env_var": "CARLA_PYTHON",
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
-      },
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
       "compatibility": {
+        "log": "cases/approaching_traffic_far-compatibility-analysis.log",
         "receipt": "cases/approaching_traffic_far-compatibility.json",
-        "sha256": "8e43ac931167c93b08be75810556d882653f72042997093f22317d07ed79d102",
-        "log": "cases/approaching_traffic_far-compatibility-analysis.log"
+        "sha256": "8e43ac931167c93b08be75810556d882653f72042997093f22317d07ed79d102"
       },
-      "negative": {
-        "log": "cases/approaching_traffic_far-negative-analysis.log"
-      },
-      "post_capture": {
-        "receipt": "cases/approaching_traffic_far-process-saved.json",
-        "sha256": "ba10aaf7266ac1185b331d18e86fa687b76590f8f44ba65b686f5650ae395a37",
-        "log": "cases/approaching_traffic_far-process-saved-analysis.log"
-      },
+      "construction": "cases/approaching_traffic_far-construction.json",
+      "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
       "delivery_acceptance": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
         "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
-        "sets": [
-          "demo-test"
-        ],
         "checks": [
           "native_source",
           "all_participants",
@@ -596,19 +772,743 @@
         ],
         "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --mode positive",
         "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-audit-v3 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --mode negative",
-        "script": "prove_delivery_acceptance.py",
-        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
-        "audit_script": "delivery_audit.py",
-        "audit_script_sha256": "8824d3f68531769283ef381aebf09d7ba7b1dd921c3e99f8d4e7f444ebb0918d",
-        "test_exit_code": 0,
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original delivery source: config.json",
-        "test_log": "cases/approaching_traffic_far-delivery-positive.log",
-        "test_log_sha256": "8e326dd1705ba34a1dcf97fbc0777e297def13104713c27c6c9f4f71ba461839",
         "negative_log": "cases/approaching_traffic_far-delivery-negative.log",
         "negative_log_sha256": "9b2b512bd9ac482c46255d9c40c81c3219d8f5d605956f6f5488d1962984f333",
-        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified"
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, pixels and visibility remain unverified",
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "31bb43210e75b7e7b3db9ec360d53607b22c6cbd9d1abb98fce155dbf2f57502",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/approaching_traffic_far-delivery-positive.log",
+        "test_log_sha256": "8e326dd1705ba34a1dcf97fbc0777e297def13104713c27c6c9f4f71ba461839"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_far-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/approaching_traffic_far-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/approaching_traffic_far-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --output .runtime-work/c158196-257-2-approaching_traffic_far-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
+        "exit_code": 0,
+        "log": "cases/approaching_traffic_far-offline.log",
+        "log_sha256": "ffce3988d3ba64775f3f59ee79f86c611b3531f6b1c093a8daf44466d826f5cc"
+      },
+      "physical_preparation": {
+        "receipt": "cases/approaching_traffic_far-physical-proofs/receipt.json",
+        "sha256": "8893f075d167890e536fc843e9dd28b7d4000c1fba267baa14d84d34b58a2eec"
+      },
+      "post_capture": {
+        "log": "cases/approaching_traffic_far-process-saved-analysis.log",
+        "receipt": "cases/approaching_traffic_far-process-saved.json",
+        "sha256": "ba10aaf7266ac1185b331d18e86fa687b76590f8f44ba65b686f5650ae395a37"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "operative_signal_control": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_crossing_body": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_approach_speed": {
+          "entrypoint": "original_crossing_capture.py",
+          "method": "join original Native frame records to the authored entrance and crossing geometry",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "ego_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        },
+        "other_time_to_conflict": {
+          "entrypoint": "intersection_yield_measure.py",
+          "method": "derive engineering time-to-conflict from the original joined frame velocities and body positions",
+          "evidence": "source-bound original 600-frame Native crossing capture and measurement report; original camera sources retained for review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original overview may not resolve the officer gesture and affected ego approach.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "overview fixed camera location (0,0,18) to (-4,-3,15) m",
+            "overview pitch -55 to -45 degrees and yaw -135 to -100 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/officer_controls_go-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/officer_controls_go-officer-reference-fallback1-negative.log",
+            "receipt": "cases/officer_controls_go-officer-reference-fallback1-compatibility.json",
+            "sha256": "fc17ae1d767e509ebee84169a1b3df992c34aa716931742515e149d3cce40391"
+          },
+          "construction": "cases/officer_controls_go-officer-reference-fallback1-construction.json",
+          "construction_sha256": "4d6f1f6d1a5342de1382c8d495b7e63486e96b1b37d2334a5c7504622ace77a2",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --candidate fallback1 --output .runtime-work/c158196-officer-controls-go-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "4d6f1f6d1a5342de1382c8d495b7e63486e96b1b37d2334a5c7504622ace77a2",
+            "exit_code": 0,
+            "log": "cases/officer_controls_go-officer-reference-fallback1-offline.log",
+            "log_sha256": "8f8e448ed0898f93b967a44b772e324979605c59a545e739a24d7484e0a0e7bd"
+          },
+          "trigger": {
+            "failure_condition": "officer or affected approach is outside the original camera field of view",
+            "metric": "independent review of original overview/approach frames for officer body and arm pose",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+      "compatibility": {
+        "log": "cases/officer_controls_go-officer-reference-analysis.log",
+        "receipt": "cases/officer_controls_go-officer-reference-compatibility.json",
+        "sha256": "2ee5a383f57a552456db3b87cbab905b31eb6179fd748844702f0694f751877f"
+      },
+      "construction": "cases/officer_controls_go-officer-reference-construction.json",
+      "construction_sha256": "6f9e4db42e96fd82d7f5e65999690e4d698797418c8c0f4149602d13f3301f5a",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --attempt .runtime-work/c158196-officer-controls-go-compat-r1 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --attempt .runtime-work/c158196-officer-controls-go-compat-r1 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/officer_controls_go-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/officer_controls_go-officer-reference-delivery-positive.log",
+        "test_log_sha256": "45524e3ad6db4a6fee086bec8c606cd3fc68b07c7c2f20aa4fac30efde6cbc07"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/officer_controls_go-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/officer_controls_go-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/officer_controls_go-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go --output .runtime-work/c158196-officer-controls-go-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "6f9e4db42e96fd82d7f5e65999690e4d698797418c8c0f4149602d13f3301f5a",
+        "exit_code": 0,
+        "log": "cases/officer_controls_go-offline.log",
+        "log_sha256": "2ba129eafcb58ce0deb4c099d9d6f1f2a547fb753cc188f45cd0fe325e0f04ce"
+      },
+      "physical_preparation": {
+        "receipt": "cases/officer_controls_go-officer-reference-physical-proofs/receipt.json",
+        "sha256": "8ec3ed2e021dbf89da318ba969e5d49e9e34b89d961cb04a659ca7bbaa4110ec"
+      },
+      "post_capture": {
+        "log": "cases/officer_controls_go-officer-reference-saved.log",
+        "receipt": "cases/officer_controls_go-officer-reference-processing.json",
+        "sha256": "6d8f13f0551b05ff55b1a17726a7fb61f0fdcad3f171de126899e963574eefde"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original overview may not resolve the officer gesture and affected ego approach.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "overview fixed camera location (0,0,18) to (-4,-3,15) m",
+            "overview pitch -55 to -45 degrees and yaw -135 to -100 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/officer_controls_hold-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/officer_controls_hold-officer-reference-fallback1-negative.log",
+            "receipt": "cases/officer_controls_hold-officer-reference-fallback1-compatibility.json",
+            "sha256": "15aeea081b7e51fd950545321dba5aeea059c4fea6d0f862242ac2af2e4a8044"
+          },
+          "construction": "cases/officer_controls_hold-officer-reference-fallback1-construction.json",
+          "construction_sha256": "b5a2d2125a28d0377aba06378a0870e417b8e40227883b4001b51610516c018a",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --candidate fallback1 --output .runtime-work/c158196-officer-controls-hold-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "b5a2d2125a28d0377aba06378a0870e417b8e40227883b4001b51610516c018a",
+            "exit_code": 0,
+            "log": "cases/officer_controls_hold-officer-reference-fallback1-offline.log",
+            "log_sha256": "79e39346001ca20aa05b4c69744b54c09dca6945e9c7d6b37d46eec430737bf4"
+          },
+          "trigger": {
+            "failure_condition": "officer or affected approach is outside the original camera field of view",
+            "metric": "independent review of original overview/approach frames for officer body and arm pose",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+      "compatibility": {
+        "log": "cases/officer_controls_hold-officer-reference-analysis.log",
+        "receipt": "cases/officer_controls_hold-officer-reference-compatibility.json",
+        "sha256": "f8f19ca8ea53d6fab524bc085f70da61f79e6d318dcf7e39d19f3c36cd59da67"
+      },
+      "construction": "cases/officer_controls_hold-officer-reference-construction.json",
+      "construction_sha256": "6f678d3771a9fa433bcc0ec4aea5d39e9455151b940397c77a2fef29801acf6e",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --attempt .runtime-work/c158196-officer-controls-hold-compat-r1 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --attempt .runtime-work/c158196-officer-controls-hold-compat-r1 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/officer_controls_hold-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/officer_controls_hold-officer-reference-delivery-positive.log",
+        "test_log_sha256": "9484d3af9aa5fea14ae4fc8d61b3e7ca5152823aaaa7b788761201bde1790b2f"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/officer_controls_hold-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/officer_controls_hold-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/officer_controls_hold-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold --output .runtime-work/c158196-officer-controls-hold-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "6f678d3771a9fa433bcc0ec4aea5d39e9455151b940397c77a2fef29801acf6e",
+        "exit_code": 0,
+        "log": "cases/officer_controls_hold-offline.log",
+        "log_sha256": "d69729c78410daf23701eba88dac1ddb6a57c37172f69a6bf40559cfb7deb6b1"
+      },
+      "physical_preparation": {
+        "receipt": "cases/officer_controls_hold-officer-reference-physical-proofs/receipt.json",
+        "sha256": "3768adabc5f662927ac0d6f353b7fe47764abe44e00b1eb5c4031dc3e4ac3b4f"
+      },
+      "post_capture": {
+        "log": "cases/officer_controls_hold-officer-reference-saved.log",
+        "receipt": "cases/officer_controls_hold-officer-reference-processing.json",
+        "sha256": "49cabe588011ba5def735e8b6a2f05814dddf305cb351c03ad1e93b55abdaf0e"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original overview may not resolve the officer gesture and affected ego approach.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "overview fixed camera location (0,0,18) to (-4,-3,15) m",
+            "overview pitch -55 to -45 degrees and yaw -135 to -100 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/officer_present_inactive-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/officer_present_inactive-officer-reference-fallback1-negative.log",
+            "receipt": "cases/officer_present_inactive-officer-reference-fallback1-compatibility.json",
+            "sha256": "710cecef0d1fed91585bdd05d864cc17251f652b06bf524968c3edaf558c1980"
+          },
+          "construction": "cases/officer_present_inactive-officer-reference-fallback1-construction.json",
+          "construction_sha256": "ea77a7ac43201d991b093ad550d3b97cd9d533a1f7f4f3aa88659ae51e556003",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c158196-officer-present-inactive-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "ea77a7ac43201d991b093ad550d3b97cd9d533a1f7f4f3aa88659ae51e556003",
+            "exit_code": 0,
+            "log": "cases/officer_present_inactive-officer-reference-fallback1-offline.log",
+            "log_sha256": "5ed4e40a38aba30406d5f74b12651d13f1acf4e1cb63a7e7299e682ef14e544f"
+          },
+          "trigger": {
+            "failure_condition": "officer or affected approach is outside the original camera field of view",
+            "metric": "independent review of original overview/approach frames for officer body and arm pose",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+      "compatibility": {
+        "log": "cases/officer_present_inactive-officer-reference-analysis.log",
+        "receipt": "cases/officer_present_inactive-officer-reference-compatibility.json",
+        "sha256": "744a29dd7a99bace24d5936a4cce1cf4d2a227dd7723272ebad0cf4ebb200094"
+      },
+      "construction": "cases/officer_present_inactive-officer-reference-construction.json",
+      "construction_sha256": "9a4e89ca98140ae0e05744f9b9129e19f168b4055e22e969412b7f1e806a84e6",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --attempt .runtime-work/c158196-officer-present-inactive-compat-r1 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --attempt .runtime-work/c158196-officer-present-inactive-compat-r1 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/officer_present_inactive-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/officer_present_inactive-officer-reference-delivery-positive.log",
+        "test_log_sha256": "7b386a23165d20bb85499f931802e5ff9cddc5e9f68bc3b9e5551076808b9e02"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/officer_present_inactive-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/officer_present_inactive-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/officer_present_inactive-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c158196-officer-present-inactive-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "9a4e89ca98140ae0e05744f9b9129e19f168b4055e22e969412b7f1e806a84e6",
+        "exit_code": 0,
+        "log": "cases/officer_present_inactive-offline.log",
+        "log_sha256": "a700c6f9b7ca6a5c51d46d4e4a581e36ed0309da28d5fadeeada7ed49ad900f4"
+      },
+      "physical_preparation": {
+        "receipt": "cases/officer_present_inactive-officer-reference-physical-proofs/receipt.json",
+        "sha256": "ecb229dc7134c38572fbcdef6af9b7219b5b3032ba540361cc007a0ead746f14"
+      },
+      "post_capture": {
+        "log": "cases/officer_present_inactive-officer-reference-saved.log",
+        "receipt": "cases/officer_present_inactive-officer-reference-processing.json",
+        "sha256": "76d6b5537443aec1f6c06e3182cf8c54175c68771cb387ea36cff4d15fcd9a81"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "The authored stopping reference and ego front may not share a clear original corner view.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reference_corner fixed camera location (-12,-12,8) to (-14,-8,6) m",
+            "reference_corner pitch -20 to -35 degrees and yaw 45 to 20 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/stop_line_reference-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/stop_line_reference-officer-reference-fallback1-negative.log",
+            "receipt": "cases/stop_line_reference-officer-reference-fallback1-compatibility.json",
+            "sha256": "47df42d0c78a49f68c0d374183baaff3f0a498fd8cf5c42947612e2e8f43956d"
+          },
+          "construction": "cases/stop_line_reference-officer-reference-fallback1-construction.json",
+          "construction_sha256": "fe56d5b74edbfbd17b180c6ebd18f9013e90e5ed9ac6b143429e89eeae9ba3f1",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference --candidate fallback1 --output .runtime-work/c158196-stop-line-reference-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "fe56d5b74edbfbd17b180c6ebd18f9013e90e5ed9ac6b143429e89eeae9ba3f1",
+            "exit_code": 0,
+            "log": "cases/stop_line_reference-officer-reference-fallback1-offline.log",
+            "log_sha256": "ccb7d049fea0ececd92c7269b6154a1007c1e3594ce237fb9d1dba38da59882e"
+          },
+          "trigger": {
+            "failure_condition": "ego front or stopping-reference line is outside the original corner camera field of view",
+            "metric": "independent review of original corner frames for ego front and authored stopping reference",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference",
+      "compatibility": {
+        "log": "cases/stop_line_reference-officer-reference-analysis.log",
+        "receipt": "cases/stop_line_reference-officer-reference-compatibility.json",
+        "sha256": "4d9d77e4b38dbf6e80e2b08f0e4417aebba804986608bc50f37fa33d859b89e5"
+      },
+      "construction": "cases/stop_line_reference-officer-reference-construction.json",
+      "construction_sha256": "e5748c64d4f5587a368a9622e237f289ff0cbd5cd802f7051d0ae0b4c98c497c",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference --attempt .runtime-work/c158196-stop-line-reference-compat-r8 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference --attempt .runtime-work/c158196-stop-line-reference-compat-r8 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/stop_line_reference-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stop_line_reference-officer-reference-delivery-positive.log",
+        "test_log_sha256": "8af1e8a29071ae6c3c61adf9cdbfb2de4f0e906264d5f328352eeaba9a1aed76"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/stop_line_reference-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/stop_line_reference-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stop_line_reference-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference --output .runtime-work/c158196-stop-line-reference-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "e5748c64d4f5587a368a9622e237f289ff0cbd5cd802f7051d0ae0b4c98c497c",
+        "exit_code": 0,
+        "log": "cases/stop_line_reference-offline.log",
+        "log_sha256": "991be91def4eb4900b86816b55b6343048b159ee4d967ceeab82dcc5f4eafed3"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stop_line_reference-officer-reference-physical-proofs/receipt.json",
+        "sha256": "a80ac8cb42712eb3be27cf7d15c4fdff227536b4fd20b0efac9119dfe3b74038"
+      },
+      "post_capture": {
+        "log": "cases/stop_line_reference-officer-reference-saved.log",
+        "receipt": "cases/stop_line_reference-officer-reference-processing.json",
+        "sha256": "815b1a4eeedd43a5dcff59fbaf2cd60298c92ec65c3e831d31e61ab3d8222beb"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "The authored stopping reference and ego front may not share a clear original corner view.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reference_corner fixed camera location (-12,-12,8) to (-14,-8,6) m",
+            "reference_corner pitch -20 to -35 degrees and yaw 45 to 20 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/crosswalk_reference-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/crosswalk_reference-officer-reference-fallback1-negative.log",
+            "receipt": "cases/crosswalk_reference-officer-reference-fallback1-compatibility.json",
+            "sha256": "316301623c41b3b7c4141fde654440735688777c0e3a79bb1a1d545553282a8a"
+          },
+          "construction": "cases/crosswalk_reference-officer-reference-fallback1-construction.json",
+          "construction_sha256": "305b2fac8c50a5212af693fe808c4e7dd5d683ef0bb04a3139797bdc7a78633f",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference --candidate fallback1 --output .runtime-work/c158196-crosswalk-reference-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "305b2fac8c50a5212af693fe808c4e7dd5d683ef0bb04a3139797bdc7a78633f",
+            "exit_code": 0,
+            "log": "cases/crosswalk_reference-officer-reference-fallback1-offline.log",
+            "log_sha256": "ea2026162f1013debfb6886fd35f56af64803dee7a84e61f748596b87623a748"
+          },
+          "trigger": {
+            "failure_condition": "ego front or stopping-reference line is outside the original corner camera field of view",
+            "metric": "independent review of original corner frames for ego front and authored stopping reference",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference",
+      "compatibility": {
+        "log": "cases/crosswalk_reference-officer-reference-analysis.log",
+        "receipt": "cases/crosswalk_reference-officer-reference-compatibility.json",
+        "sha256": "bb36082b096fecd0b09ad21c09737dac9551f2e17e439b251ba0f1fd7fa2a8fc"
+      },
+      "construction": "cases/crosswalk_reference-officer-reference-construction.json",
+      "construction_sha256": "58f5c158fe2466980a935c53d436f144cfba3398af48ecfdc5a842ceb6dcea29",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference --attempt .runtime-work/c158196-crosswalk-reference-compat-r1 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference --attempt .runtime-work/c158196-crosswalk-reference-compat-r1 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/crosswalk_reference-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/crosswalk_reference-officer-reference-delivery-positive.log",
+        "test_log_sha256": "a299200bc29f6b4f5f72b9110835fc3d48e7d2ade7d7d343e5d7fb062768f5e3"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/crosswalk_reference-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/crosswalk_reference-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/crosswalk_reference-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference --output .runtime-work/c158196-crosswalk-reference-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "58f5c158fe2466980a935c53d436f144cfba3398af48ecfdc5a842ceb6dcea29",
+        "exit_code": 0,
+        "log": "cases/crosswalk_reference-offline.log",
+        "log_sha256": "0ca4cd0302353690b0987999812f28a58d889fda2fee9ab39de8588a09e81a7b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/crosswalk_reference-officer-reference-physical-proofs/receipt.json",
+        "sha256": "f827f2516112a8a0d626ddf971b6084972923189948f6f24ca5d489c56fc9d41"
+      },
+      "post_capture": {
+        "log": "cases/crosswalk_reference-officer-reference-saved.log",
+        "receipt": "cases/crosswalk_reference-officer-reference-processing.json",
+        "sha256": "5be1c6cc897742d49c5edec12952298e1a6a916fa247808b48bce33bf0ebb637"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "The authored stopping reference and ego front may not share a clear original corner view.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reference_corner fixed camera location (-12,-12,8) to (-14,-8,6) m",
+            "reference_corner pitch -20 to -35 degrees and yaw 45 to 20 degrees"
+          ],
+          "compatibility": {
+            "log": "cases/nearest_view_reference-officer-reference-fallback1-analysis.log",
+            "negative_log": "cases/nearest_view_reference-officer-reference-fallback1-negative.log",
+            "receipt": "cases/nearest_view_reference-officer-reference-fallback1-compatibility.json",
+            "sha256": "9df9351db0e186d32543639b12c27fe4d80ab91a8539baf344734e14e1206c86"
+          },
+          "construction": "cases/nearest_view_reference-officer-reference-fallback1-construction.json",
+          "construction_sha256": "c5a9933c0e155a98ca4cd0ecceed8d61a70d33c5cb6030b47580a17242b232d5",
+          "id": "fallback1",
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-fallback-offline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-fallback-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference --candidate fallback1 --output .runtime-work/c158196-nearest-view-reference-fallback1-offline-r1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "c5a9933c0e155a98ca4cd0ecceed8d61a70d33c5cb6030b47580a17242b232d5",
+            "exit_code": 0,
+            "log": "cases/nearest_view_reference-officer-reference-fallback1-offline.log",
+            "log_sha256": "84cbd0b94ac234059c402990aa43ee85961400fda9d0b1262b49bba237ed5062"
+          },
+          "trigger": {
+            "failure_condition": "ego front or stopping-reference line is outside the original corner camera field of view",
+            "metric": "independent review of original corner frames for ego front and authored stopping reference",
+            "source": "original synchronized camera frames and frame map"
+          }
+        }
+      ],
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference",
+      "compatibility": {
+        "log": "cases/nearest_view_reference-officer-reference-analysis.log",
+        "receipt": "cases/nearest_view_reference-officer-reference-compatibility.json",
+        "sha256": "4eb747b36fc6ffd4ac10a81c8a75a06dc04c9c1a3f475dcc43ab7dbb01a69df5"
+      },
+      "construction": "cases/nearest_view_reference-officer-reference-construction.json",
+      "construction_sha256": "ec8a20926afb4f6383ebb0046e68b2d6a677febfafdc35ca20748cc3a9cbf763",
+      "delivery_acceptance": {
+        "audit_script": "officer_reference_delivery_audit.py",
+        "audit_script_sha256": "27f6cc8f3767ab029ab3284027f4415087ce7ec4bdff98cb2ad569c9079881ee",
+        "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference --attempt .runtime-work/c158196-nearest-view-reference-compat-r1 --mode positive",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c158196-delivery-contract PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/prove_officer_reference_delivery.py --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference --attempt .runtime-work/c158196-nearest-view-reference-compat-r1 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: officer-reference-capture.json",
+        "negative_log": "cases/nearest_view_reference-officer-reference-delivery-contract-negative.log",
+        "negative_log_sha256": "ac792db2573d907f7586c482838e895251bb13f5bf48253fc98744257cdc2297",
+        "proof_scope": "Synthetic 600-frame CPU source-shaped diagnostic; Native motion, officer authority, original pixels and legal judgment remain unverified",
+        "script": "prove_officer_reference_delivery.py",
+        "script_sha256": "c959e0046900000b3bfa60eb09edc5898535c241c7f0cf9461a0cd4afbd1dc9a",
+        "sets": [
+          "demo-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/nearest_view_reference-officer-reference-delivery-positive.log",
+        "test_log_sha256": "6fd8dfb1398604dcb620f6daf0f16b4ead9aa00fd3000fd9ae7f303fcb13f40f"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/nearest_view_reference-officer-reference-fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/nearest_view_reference-officer-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "officer_reference_saved_finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/nearest_view_reference-officer-reference-negative-analysis.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/officer-reference-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference --output .runtime-work/c158196-nearest-view-reference-offline-r7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "ec8a20926afb4f6383ebb0046e68b2d6a677febfafdc35ca20748cc3a9cbf763",
+        "exit_code": 0,
+        "log": "cases/nearest_view_reference-offline.log",
+        "log_sha256": "c2503e3f6a623a28e0b39f2b6b70aa485ee892f1a0931be4ae7c5eb9c23ec07b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/nearest_view_reference-officer-reference-physical-proofs/receipt.json",
+        "sha256": "79d96f15bd82a3955db7a7dee8f93ddab278b91e2f45fc556651d4b74e5b6280"
+      },
+      "post_capture": {
+        "log": "cases/nearest_view_reference-officer-reference-saved.log",
+        "receipt": "cases/nearest_view_reference-officer-reference-processing.json",
+        "sha256": "c375ec025d87d86e53b30af792c8b19edb1e2804a23adcda80bbbdab61ea063a"
+      },
+      "acquisition": {
+        "ego_body_front_at_reference": {
+          "entrypoint": "reference_saved_measure.py",
+          "method": "derive frontmost ego body x-coordinate at each original Native joined frame and compare with the authored source reference",
+          "evidence": "source-bound 600-frame Native reference capture, authored OpenDRIVE source, and independent camera review"
+        }
       }
     }
-  ]
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_delivery_draft"
 }

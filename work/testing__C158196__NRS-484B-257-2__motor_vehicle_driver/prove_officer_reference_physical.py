@@ -62,6 +62,7 @@ def run(suffix, kind, output):
                                 for name, path in ((p.name, p) for p in output.iterdir())
                                 if path.is_file()},
               'physical_checks': assessed['physical_checks'],
+              'realized_observables': assessed['realized_observables'],
               'maneuver_completed': assessed['maneuver_completed'],
               'legal_conclusion': 'unresolved'}
     (output / 'result.json').write_text(json.dumps(result, indent=2,

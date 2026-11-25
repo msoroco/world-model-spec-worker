@@ -152,107 +152,39 @@
   },
   "physical_completion": {
     "body_key": "ego_body_vertices_xy_m",
-    "context_sources": [
-      "entrance_inventory.json"
-    ],
-    "criterion": "intersection_clearance",
+    "context_sources": [],
+    "criterion": "travel_progress",
     "engineering_tolerances_not_legal": true,
-    "exit_axis": 0,
-    "exit_sign": 1,
     "minimum_progress_m": 0.25,
-    "motion_source": "crossing_history.jsonl"
+    "minimum_samples": 2,
+    "motion_source": "officer_reference_history.jsonl"
   },
   "rate_hz": 20,
   "recording_description": {
     "channels": [
       {
-        "method": "Original Native signal-state readback at each joined frame",
-        "name": "signal_state",
-        "reference_frame": "authored Native junction and original camera frames",
+        "method": "Original Native body vertices and authored reference",
+        "name": "ego_body_front_at_reference",
+        "reference_frame": "authored junction and original camera frames",
         "sampling_rate_hz": 20,
         "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "text"
-      },
-      {
-        "method": "Original affected-lane readback joined to ego entrance",
-        "name": "operative_signal_control",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "count"
-      },
-      {
-        "method": "Original complete ego body vertices",
-        "name": "ego_crossing_body",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "structured record"
-      },
-      {
-        "method": "Original complete other-vehicle body vertices",
-        "name": "other_crossing_body",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "structured record"
-      },
-      {
-        "method": "Original ego velocity magnitude",
-        "name": "ego_approach_speed",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "m/s"
-      },
-      {
-        "method": "Original other-vehicle velocity magnitude",
-        "name": "other_approach_speed",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "m/s"
-      },
-      {
-        "method": "Original source distance to crossing divided by speed; undefined when stopped",
-        "name": "ego_time_to_conflict",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "s"
-      },
-      {
-        "method": "Original source distance to crossing divided by speed; undefined when stopped",
-        "name": "other_time_to_conflict",
-        "reference_frame": "authored Native junction and original camera frames",
-        "sampling_rate_hz": 20,
-        "time_window": "original 20 Hz 30-second capture",
-        "uncertainty": "physical realization and statutory judgment require independent local review",
-        "unit": "s"
+        "uncertainty": "legal stop and visibility review pending",
+        "unit": "m"
       }
     ],
     "context_inputs": [
       {
-        "method": "Authored full entrance inventory and original Native governance",
-        "name": "entrance_inventory",
+        "method": "OpenDRIVE site selection",
+        "name": "authored_reference",
         "source_refs": [
-          "entrance_inventory.json",
-          "crossing_history.jsonl",
-          "video_frames.jsonl"
+          "nearest-view-reference-site.xodr"
         ],
-        "uncertainty": "proper sign erection and non-through legal status unresolved",
+        "uncertainty": "Native confirmation pending",
         "unit": "structured record"
       }
     ],
     "limitations": [
-      "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+      "Original officer authority, direction and legal stop remain subject to independent review"
     ]
   },
   "required_atoms": [],
