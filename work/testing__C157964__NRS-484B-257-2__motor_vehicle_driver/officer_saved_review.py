@@ -8,9 +8,16 @@ traffic control for the saved measurement analyzer.
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 from officer_source_intake import load_and_validate
 from officer_yield_exception import analyze
+from officer_direction import PREFIX
+
+
+EXPECTED = {PREFIX + "officer_controls_go": (True, "go"),
+            PREFIX + "officer_controls_hold": (True, "stop"),
+            PREFIX + "officer_present_inactive": (False, "none")}
 
 
 def _sha(path):
@@ -25,6 +32,28 @@ def _output_root(path):
     return path
 
 
+def _camera_path(capture_path, reference, index):
+    if not isinstance(reference, str) or not reference.endswith("#frame-" + str(index)):
+        raise ValueError("Original camera video frame index differs")
+    video = Path(reference.rsplit("#frame-", 1)[0])
+    if not video.is_absolute():
+        video = capture_path.parent / video
+    video = video.resolve()
+    if not video.is_relative_to(capture_path.parent.resolve()) or not video.is_file():
+        raise ValueError("Original camera video source missing from attempt")
+    return video
+
+
+def _probe_camera(path, expected_frames):
+    command = ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+               "-show_entries", "stream=codec_name,nb_read_frames", "-of", "json", str(path)]
+    result = subprocess.run(command, capture_output=True, text=True, check=True)
+    streams = json.loads(result.stdout).get("streams", [])
+    if (len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or
+            streams[0].get("nb_read_frames") != str(expected_frames)):
+        raise ValueError("Original camera video decode or frame count differs")
+
+
 def process(capture_path, review_path, source_root, source_packet, output_root,
             *, native_map_id, intersection_id):
     capture_path, review_path = Path(capture_path), Path(review_path)
@@ -33,7 +62,8 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
     intake = load_and_validate(source_root, source_packet)
     if (capture.get("format") != "worker-officer-subsection-2-native-capture" or
             capture.get("site_id") != intake["site_id"] or
-            capture.get("source_packet_sha256") != _sha(source_packet)):
+            capture.get("source_packet_sha256") != _sha(source_packet) or
+            capture.get("case_id") not in EXPECTED):
         raise ValueError("Native capture and reviewed site source differ")
     rows = capture.get("rows")
     if not isinstance(rows, list) or len(rows) < 3 or len(rows) != capture.get("frame_count"):
@@ -50,6 +80,11 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
         raise ValueError("Incomplete original-frame review")
     if not isinstance(native_map_id, str) or not native_map_id or type(intersection_id) is not int:
         raise ValueError("Native map and intersection identity required")
+    camera_hashes = review.get("camera_sha256")
+    camera_names = {"overview", "approach", "reference_corner", "driver_reference"}
+    if not isinstance(camera_hashes, dict) or set(camera_hashes) != camera_names:
+        raise ValueError("Four original camera hashes required")
+    video_paths = {}
     first = rows[0]["native_actor_source"]
     officer_id = first.get("officer_actor_id")
     if type(officer_id) is not int:
@@ -77,16 +112,23 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
         if not isinstance(source, dict) or source.get("frame") != row.get("carla_frame"):
             raise ValueError("Native source and capture frame differ")
         refs = source.get("camera_raw_sources")
-        if not isinstance(refs, dict) or set(refs) != {"overview", "approach", "reference_corner", "driver_reference"}:
+        if not isinstance(refs, dict) or set(refs) != camera_names:
             raise ValueError("Four original camera sources required")
+        for name in camera_names:
+            video = _camera_path(capture_path, refs[name], index)
+            if name in video_paths and video_paths[name] != video:
+                raise ValueError("Original camera source changed within capture")
+            video_paths[name] = video
         if (not isinstance(observation, dict) or
                 observation.get("carla_frame") != source["frame"] or
                 observation.get("officer_actor_id") != officer_id or
                 observation.get("direction_frame_source") not in refs.values() or
                 observation.get("uniform_frame_source") not in refs.values() or
                 observation.get("control_frame_source") not in refs.values() or
-                observation.get("officer_direction_observed") not in ("stop", "go", "unclear") or
-                type(observation.get("traffic_control_observed")) is not bool):
+                observation.get("other_frame_source") not in refs.values() or
+                observation.get("officer_direction_observed") not in ("stop", "go", "unclear", "none") or
+                type(observation.get("traffic_control_observed")) is not bool or
+                type(observation.get("other_approaching_observed")) is not bool):
             raise ValueError("Original-frame officer review differs from Native sources")
         if source.get("officer_actor_id") != officer_id:
             raise ValueError("Officer actor identity changed")
@@ -98,11 +140,17 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
                         "officer_direction_observed": observation["officer_direction_observed"],
                         "direction_frame_source": observation["direction_frame_source"],
                         "traffic_control_observed": observation["traffic_control_observed"],
+                        "other_frame_source": observation["other_frame_source"],
+                        "other_approaching_observed": observation["other_approaching_observed"],
                         "ego": {"speed_mps": ego["speed_mps"],
                                 "body_vertices_xy_m": ego["body_vertices_xy_m"]},
                         "other_body_vertices_xy_m": other["body_vertices_xy_m"]})
         frame_map.append({"video_frame": index, "carla_frame": source["frame"],
                           "time_s": source["time_s"]})
+    for name, path in video_paths.items():
+        if _sha(path) != camera_hashes[name]:
+            raise ValueError("Original camera bytes differ: " + name)
+        _probe_camera(path, len(rows))
     context["uniform_video_source"] = observed[0]["uniform_frame_source"]
     context["direction_video_source"] = observed[0]["direction_frame_source"]
     output_root = _output_root(output_root)
@@ -118,4 +166,18 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
     result["capture_sha256"] = _sha(capture_path)
     result["review_sha256"] = _sha(review_path)
     result["source_packet_sha256"] = _sha(source_packet)
+    expected_control, expected_direction = EXPECTED[capture["case_id"]]
+    entry = result["first_ego_entry"]
+    result["case_id"] = capture["case_id"]
+    result["target_checks"] = [
+        {"target": "officer_control_observed_at_ego_entry",
+         "requested": expected_control,
+         "measured": entry["traffic_control_observed"],
+         "matched": entry["traffic_control_observed"] is expected_control,
+         "physical_cause_confirmed": False},
+        {"target": "officer_direction_observed_at_ego_entry",
+         "requested": expected_direction,
+         "measured": entry["officer_direction_observed"],
+         "matched": entry["officer_direction_observed"] == expected_direction,
+         "physical_cause_confirmed": False}]
     return result

@@ -14,6 +14,7 @@ import officer_source_intake as INTAKE
 import officer_traffic_sampler as TRAFFIC
 from officer_camera import CAMERAS
 from officer_camera_media import CameraMedia
+from officer_site import SITE
 
 
 CASE = 'testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go'
@@ -23,8 +24,8 @@ def source_packet(root):
     sources = {}
     for name in ('road', 'sign_inventory', 'officer_authority', 'officer_control',
                  'other_route', 'camera_sight_review'):
-        path = root / (name + '.txt')
-        path.write_text('CPU fixture ' + name)
+        path = root / (name + ('.xodr' if name == 'road' else '.txt'))
+        path.write_text(SITE.read_text() if name == 'road' else 'CPU fixture ' + name)
         sources[name] = {'path': path.name,
                          'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     packet = {'format': 'worker-officer-subsection-2-source-review',
@@ -144,7 +145,7 @@ class OfficerCaptureSequenceTests(unittest.TestCase):
             root = Path(dirname)
             packet = source_packet(root)
             carla, world, ego, officer, other, bone, traffic, cameras, state = self.native()
-            (root / 'road.txt').write_text('changed')
+            (root / 'road.xodr').write_text('changed')
             with self.assertRaisesRegex(ValueError, 'Changed source file: road'):
                 SEQUENCE.run(carla, world, ego, officer, bone, CASE,
                              frame_count=3, source_root=root, source_packet=packet,
@@ -155,6 +156,25 @@ class OfficerCaptureSequenceTests(unittest.TestCase):
             world.get_settings = lambda: NS(synchronous_mode=False,
                                             fixed_delta_seconds=0.05)
             with self.assertRaisesRegex(ValueError, '20 Hz synchronous'):
+                SEQUENCE.run(carla, world, ego, officer, bone, CASE,
+                             frame_count=3, source_root=root, source_packet=packet,
+                             other_actor=other, traffic_sampler=traffic,
+                             camera_readback=cameras)
+            self.assertEqual(state['frame'], 40)
+
+    def test_source_bound_but_invalid_site_rejected_before_tick(self):
+        with tempfile.TemporaryDirectory() as dirname:
+            root = Path(dirname)
+            packet = source_packet(root)
+            bad_site = (root / 'road.xodr').read_text().replace('type="205"',
+                                                               'type="999"', 1)
+            (root / 'road.xodr').write_text(bad_site)
+            value = json.loads(packet.read_text())
+            value['sources']['road']['sha256'] = hashlib.sha256(
+                (root / 'road.xodr').read_bytes()).hexdigest()
+            packet.write_text(json.dumps(value))
+            carla, world, ego, officer, other, bone, traffic, cameras, state = self.native()
+            with self.assertRaisesRegex(ValueError, 'signed ego entrance'):
                 SEQUENCE.run(carla, world, ego, officer, bone, CASE,
                              frame_count=3, source_root=root, source_packet=packet,
                              other_actor=other, traffic_sampler=traffic,

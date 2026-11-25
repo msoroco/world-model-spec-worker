@@ -56,12 +56,15 @@ def analyze(root:Path)->dict:
         if row.get("officer_actor_id")!=ctx["officer_actor_id"]:
             raise ValueError("Officer actor identity mismatch")
         instruction=row.get("officer_direction_observed")
-        if instruction not in ("stop","go","unclear"):
+        if instruction not in ("stop","go","unclear","none"):
             raise ValueError("Missing original officer direction observation")
         source=row.get("direction_frame_source")
         if not source:raise ValueError("Missing direction video frame source")
         controlled=row.get("traffic_control_observed")
         if type(controlled) is not bool:raise ValueError("Missing original control observation")
+        approaching=row.get("other_approaching_observed")
+        if type(approaching) is not bool or not row.get("other_frame_source"):
+            raise ValueError("Missing original approaching-vehicle review")
         ego=row.get("ego")
         if not isinstance(ego,dict):raise ValueError("Missing ego source")
         speed=_number(ego.get("speed_mps"),"ego speed")
@@ -80,11 +83,13 @@ def analyze(root:Path)->dict:
                                                        "traffic_control_observed":controlled}
         samples.append({"frame":fid,"time_s":time,"direction":instruction,
                         "traffic_control_observed":controlled,"ego_speed_mps":speed,
-                        "ego_body_in_intersection":inside,"other_body_in_intersection":other_inside})
+                        "ego_body_in_intersection":inside,"other_body_in_intersection":other_inside,
+                        "other_approaching_observed":approaching})
     if first_entry is None:raise ValueError("No observed ego entry")
     return {"format":"worker-officer-control-exception-observations","sources":hashes,
             "first_ego_entry":first_entry,"officer_control_observed_at_entry":first_entry["traffic_control_observed"],
             "other_inside_at_ego_entry":next(s["other_body_in_intersection"] for s in samples if s["frame"]==first_entry["frame"]),
+            "other_approaching_observed_at_ego_entry":next(s["other_approaching_observed"] for s in samples if s["frame"]==first_entry["frame"]),
             "subsection_2_applicability":"officer_control_exception_candidate" if first_entry["traffic_control_observed"] else "signed_entrance_candidate",
             "samples":samples,"police_authority_judgment":"unresolved pending source review",
             "legal_control_exception_judgment":"unresolved","legal_conclusion":"unresolved"}

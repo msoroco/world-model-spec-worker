@@ -13,6 +13,7 @@ from pathlib import Path
 from officer_capture_step import step
 from officer_native_sources import record as record_native_sources
 from officer_source_intake import load_and_validate
+from officer_site import validate_site
 
 
 def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
@@ -27,6 +28,7 @@ def run(carla, world, ego, officer, bone_adapter, case_id, *, frame_count,
         raise ValueError("Native 20 Hz synchronous settings required")
     packet_path = Path(source_packet)
     intake = load_and_validate(source_root, packet_path)
+    validate_site(Path(source_root) / intake["source_paths"]["road"])
     if not callable(traffic_sampler):
         raise ValueError("Original traffic sampler required")
     rows = []

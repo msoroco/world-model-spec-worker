@@ -38,6 +38,8 @@ class OfficerTests(unittest.TestCase):
                          "officer_direction_observed":direction,
                          "direction_frame_source":"front-original",
                          "traffic_control_observed":active,
+                         "other_frame_source":"overview-original",
+                         "other_approaching_observed":False,
                          "ego":{"speed_mps":0 if i<2 else 2,"body_vertices_xy_m":body(x)},
                          "other_body_vertices_xy_m":body(13)})
         frames=[{"video_frame":i,"carla_frame":r["frame"],"time_s":r["time_s"]} for i,r in enumerate(rows)]
