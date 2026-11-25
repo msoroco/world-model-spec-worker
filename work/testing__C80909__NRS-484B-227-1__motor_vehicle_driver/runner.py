@@ -14,11 +14,17 @@ from pathlib import Path
 
 from barrier_construction import spawn_barrier_opening
 from camera_encoder import FFV1Writer
-from left_turn_route import WaypointController, validate_route
+from left_turn_route import (WaypointController, validate_route,
+                             validate_blocked_space_route, validate_right_roadway_continuation,
+                             validate_crossover_route)
 from native_capture import CAMERAS, OriginalTickRecorder, original_cameras
 
 ASSIGNMENT = 'testing__C80909__NRS-484B-227-1__motor_vehicle_driver'
 CASE = ASSIGNMENT + '__left_through_opening'
+BLOCKED_CASE = ASSIGNMENT + '__left_across_blocked_divider'
+CONTINUE_CASE = ASSIGNMENT + '__left_right_roadway_continuation'
+CROSSOVER_CASE = ASSIGNMENT + '__left_at_established_crossover'
+CASE_IDS = {CASE, BLOCKED_CASE, CONTINUE_CASE, CROSSOVER_CASE}
 
 
 def _pose(carla, values):
@@ -34,10 +40,11 @@ def _pose(carla, values):
 def load_plan(path):
     path = Path(path)
     plan = json.loads(path.read_text())
-    if plan.get('assignment_id') != ASSIGNMENT or plan.get('selected_case_id') != CASE:
+    if plan.get('assignment_id') != ASSIGNMENT or plan.get('selected_case_id') not in CASE_IDS:
         raise ValueError('Exact C80909 opening case identity required')
-    if plan.get('source_review_status') != 'reviewed_original_map_and_cameras':
-        raise ValueError('Reviewed original Native map and cameras required')
+    if plan.get('source_review_status') not in ('authored_cpu_diagnostic',
+                                                'reviewed_original_map_and_cameras'):
+        raise ValueError('Reviewed original Native map or explicit CPU diagnostic required')
     if plan.get('rate_hz') != 20 or type(plan.get('frames')) is not int or plan['frames'] < 80:
         raise ValueError('20 Hz and complete planned frame count required')
     source_refs = plan.get('source_refs')
@@ -67,11 +74,55 @@ def load_plan(path):
     for key in ('ego_spawn_pose', 'other_spawn_pose'):
         if len(plan.get(key, [])) != 6:
             raise ValueError('Native participant pose required: ' + key)
-    validate_route(context, plan['ego_route_xy_m'],
-                   body_radius_m=plan['ego_body_radius_m'])
+    selected = plan['selected_case_id']
+    if selected == CASE:
+        validate_route(context, plan['ego_route_xy_m'],
+                       body_radius_m=plan['ego_body_radius_m'])
+    elif selected == BLOCKED_CASE:
+        if len(plan.get('planned_barrier_footprints_xy_m', [])) != 2:
+            raise ValueError('Two planned barrier footprints required for blocked-space route')
+        validate_blocked_space_route(context, plan['ego_route_xy_m'],
+            plan['planned_barrier_footprints_xy_m'],
+            body_radius_m=plan['ego_body_radius_m'])
+    elif selected == CROSSOVER_CASE:
+        authority = plan.get('authority_source_ref')
+        if not isinstance(authority, dict) or authority not in source_refs:
+            raise ValueError('Separate source-hashed public-authority review required')
+        validate_crossover_route(context, plan['ego_route_xy_m'],
+            plan['crossover_xy_m'], body_radius_m=plan['ego_body_radius_m'])
+    else:
+        validate_right_roadway_continuation(context, plan['ego_route_xy_m'],
+            body_radius_m=plan['ego_body_radius_m'])
     if len(plan.get('other_route_xy_m', [])) < 2:
         raise ValueError('Other vehicle route required')
     return plan
+
+
+def validate_config(config, plan):
+    if (config.get('assignment_id'), config.get('law_id'),
+            config.get('cell_id'), config.get('actor')) != (
+            ASSIGNMENT, 'NRS-484B-227-1', 'C80909', 'motor_vehicle_driver'):
+        raise ValueError('Wrong exact C80909 configuration identity')
+    if set(config.get('supported_case_ids', [])) != CASE_IDS or config.get('selected_case_id') != plan['selected_case_id']:
+        raise ValueError('Selected C80909 case/configuration differs')
+    if config.get('rate_hz') != 20 or config.get('duration_s') != plan['frames'] / 20:
+        raise ValueError('C80909 capture duration/rate differs')
+    cameras = config.get('cameras')
+    if not isinstance(cameras, list) or len(cameras) != 4:
+        raise ValueError('Four original cameras required in configuration')
+    if [(camera.get('name'), camera.get('width'), camera.get('height')) for camera in cameras] != [
+            (name, *shape) for name, shape in CAMERAS.items()]:
+        raise ValueError('Four original camera profile differs')
+    if config.get('required_atoms') != [] or config.get('source_packets') != []:
+        raise ValueError('Unsupported Core atom or source packet claim')
+    physical = config.get('physical_completion', {})
+    expected = 'travel_progress' if plan['selected_case_id'] == CONTINUE_CASE else 'turn'
+    if (physical.get('criterion') != expected or
+            physical.get('motion_source') != 'movement_history.jsonl' or
+            physical.get('body_key') != 'ego_body_vertices_xy_m' or
+            physical.get('engineering_tolerances_not_legal') is not True):
+        raise ValueError('Exact source-bound physical completion descriptor required')
+    return config
 
 
 def _spawn_vehicle(world, blueprint, pose):
@@ -81,11 +132,13 @@ def _spawn_vehicle(world, blueprint, pose):
     return actor
 
 
-def run(world, carla, plan, output):
+def run(world, client, carla, plan, output):
     """Capture a reviewed opening route and original four-camera frame joins."""
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     output = Path(output)
-    capture_names = {'divider_context.json', 'site_source_receipt.json', 'barrier_receipt.json',
+    capture_names = {'capture', 'road.xodr', 'trace.jsonl', 'carla_recorder.log',
+                     'divider_context.json', 'site_source_receipt.json', 'barrier_receipt.json',
                      'movement_history.jsonl', 'video_frames.jsonl', 'control_history.jsonl'}
     capture_names.update(name + '.mkv' for name in CAMERAS)
     if not output.is_dir() or any((output / name).exists() for name in capture_names):
@@ -117,12 +170,18 @@ def run(world, carla, plan, output):
         context = plan['divider_context']
         with spawn_barrier_opening(world, sections, context['opening_xy_m'],
                                    plan['barrier_axis_xy']) as barrier:
+            if plan['selected_case_id'] == BLOCKED_CASE:
+                validate_blocked_space_route(context, plan['ego_route_xy_m'],
+                    barrier['barrier_footprints_xy_m'],
+                    body_radius_m=plan['ego_body_radius_m'])
             context = dict(context)
             context['barrier_actors_source'] = 'Native barrier actor world vertices in barrier_receipt.json'
             (output / 'divider_context.json').write_text(json.dumps(context, indent=2) + '\n')
             (output / 'site_source_receipt.json').write_text(json.dumps({
                 'native_map_name': plan['native_map_name'],
+                'case_id': plan['selected_case_id'],
                 'source_refs': plan['source_refs'],
+                'authority_source_ref': plan.get('authority_source_ref'),
                 'physical_acceptance_claimed': False}, indent=2) + '\n')
             receipt = {key: value for key, value in barrier.items() if key != 'actors'}
             (output / 'barrier_receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
@@ -138,16 +197,30 @@ def run(world, carla, plan, output):
                 controls = stack.enter_context((output / 'control_history.jsonl').open('x'))
                 recorder = OriginalTickRecorder(context, history, frames,
                     {name: writer.write for name, writer in writers.items()})
-                for _ in range(plan['frames']):
-                    commands = {'ego': ego_control.step(ego), 'other': other_control.step(other)}
-                    world.tick()
-                    snapshot = world.get_snapshot()
-                    recorder.record(snapshot, ego, other, read(snapshot.frame))
-                    controls.write(json.dumps({'frame': snapshot.frame,
-                                               'time_s': snapshot.timestamp.elapsed_seconds,
-                                               'commands': commands}, allow_nan=False) + '\n')
-                if recorder.index != plan['frames']:
-                    raise ValueError('Incomplete original Native capture')
+                pipeline = PipelineCapture(client, ego, output, plan['selected_case_id'],
+                                           required_observations=[])
+                confirmed = False
+                try:
+                    for _ in range(plan['frames']):
+                        commands = {'ego': ego_control.step(ego), 'other': other_control.step(other)}
+                        tick_frame = world.tick()
+                        snapshot = world.get_snapshot()
+                        if snapshot.frame != tick_frame:
+                            raise ValueError('Original Native tick/snapshot identity differs')
+                        waypoint = map_source.get_waypoint(ego.get_location(), project_to_road=False)
+                        recorder.record(snapshot, ego, other, read(snapshot.frame),
+                                        road_id=None if waypoint is None else waypoint.road_id)
+                        controls.write(json.dumps({'frame': snapshot.frame,
+                                                   'time_s': snapshot.timestamp.elapsed_seconds,
+                                                   'commands': commands}, allow_nan=False) + '\n')
+                        pipeline.capture(snapshot.frame, snapshot.timestamp.elapsed_seconds)
+                    if recorder.index != plan['frames']:
+                        raise ValueError('Incomplete original Native capture')
+                    confirmed = True
+                finally:
+                    pipeline.close(confirmed=confirmed)
+                encoder_codes = {name: writer.close() for name, writer in writers.items()}
+                return encoder_codes
     finally:
         if other is not None:
             other.destroy()
@@ -157,32 +230,61 @@ def run(world, carla, plan, output):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--site-plan', default='site-plan.json')
+    parser.add_argument('--config', default='config.json')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
     plan = load_plan(args.site_plan)
+    if Path(args.config).is_file():
+        validate_config(json.loads(Path(args.config).read_text()), plan)
     if args.check:
-        print(json.dumps({'assignment_id': ASSIGNMENT, 'case_id': CASE,
+        print(json.dumps({'assignment_id': ASSIGNMENT, 'case_id': plan['selected_case_id'],
                           'planned_frames': plan['frames'], 'camera_sources': list(CAMERAS),
                           'cpu_plan_checked': True, 'physical_acceptance_claimed': False}))
         return
     if not args.output_dir:
         raise ValueError('Fresh --output-dir required for Native capture')
+    if plan['source_review_status'] != 'reviewed_original_map_and_cameras':
+        raise ValueError('Reviewed original Native map and cameras required for physical capture')
     import carla
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.world_restore import snapshot, restore
     client = carla.Client(args.host, args.port)
     client.set_timeout(30)
-    world = client.get_world()
-    settings = world.get_settings()
+    output = Path(args.output_dir).resolve()
+    if not output.is_dir() or not (output / 'construction.json').is_file():
+        raise ValueError('Exact construction must be materialized before Native capture')
+    saved = snapshot(client)
+    failure = None
+    encoder_codes = None
     try:
+        world = client.get_world()
         current = world.get_settings()
         current.synchronous_mode = True
         current.fixed_delta_seconds = .05
         world.apply_settings(current)
-        run(world, carla, plan, args.output_dir)
-    finally:
-        world.apply_settings(settings)
+        encoder_codes = run(world, client, carla, plan, output)
+    except Exception as error:
+        failure = error
+    try:
+        restored = restore(client, saved)
+    except Exception as error:
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'case_id': plan['selected_case_id'], 'capture_sealed': False,
+            'errors': [*([str(failure)] if failure else []),
+                       'World restoration failed: ' + str(error)]}) + '\n')
+        raise
+    if failure is not None:
+        (output / 'native-run-status.json').write_text(json.dumps({
+            'case_id': plan['selected_case_id'], 'capture_sealed': False,
+            'errors': [str(failure)]}) + '\n')
+        raise failure
+    seal_capture(output, frames=plan['frames'], restoration=restored, errors=[],
+                 encoder_exit_codes=encoder_codes,
+                 context={'selected_case_id': plan['selected_case_id'],
+                          'physical_site_and_authority_review_pending': True})
 
 
 if __name__ == '__main__':

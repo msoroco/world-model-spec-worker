@@ -15,6 +15,13 @@ spec.loader.exec_module(finalizer)
 
 
 class FinalizerTests(unittest.TestCase):
+    def test_canonical_saved_entry_rejects_missing_original_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaisesRegex(ValueError, 'Missing required source: config.json'):
+                finalizer.finalize_delivery(root, root / 'analysis-report.json')
+            self.assertFalse((root / 'result.json').exists())
+
     def test_ffv1_full_decode_probe_on_small_cpu_video(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'source.mkv'
@@ -43,6 +50,7 @@ class FinalizerTests(unittest.TestCase):
             (root / 'review.txt').write_text('CPU source fixture only\n')
             (root / 'site_source_receipt.json').write_text(json.dumps({
                 'native_map_name': 'TownX',
+                'case_id': 'testing__C80909__NRS-484B-227-1__motor_vehicle_driver__left_through_opening',
                 'source_refs': [{'path': 'review.txt',
                                  'sha256': hashlib.sha256((root / 'review.txt').read_bytes()).hexdigest()}]}))
             (root / 'barrier_receipt.json').write_text(json.dumps({

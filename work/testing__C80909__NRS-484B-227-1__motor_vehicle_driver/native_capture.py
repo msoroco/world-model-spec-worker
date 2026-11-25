@@ -109,7 +109,7 @@ class OriginalTickRecorder:
         self.last_frame = -1
         self.last_time = -math.inf
 
-    def record(self, snapshot, ego, other, images):
+    def record(self, snapshot, ego, other, images, road_id=None):
         frame = snapshot.frame
         time_s = _finite(snapshot.timestamp.elapsed_seconds, 'time')
         if type(frame) is not int or frame <= self.last_frame or time_s <= self.last_time:
@@ -126,7 +126,8 @@ class OriginalTickRecorder:
                'ego_actor_id': ego.id, 'other_actor_id': other.id,
                'ego_body_vertices_xy_m': _body(ego, 'ego'),
                'other_body_vertices_xy_m': _body(other, 'other'),
-               'ego_forward_xy': [math.cos(yaw), math.sin(yaw)]}
+               'ego_forward_xy': [math.cos(yaw), math.sin(yaw)],
+               'heading_deg': math.degrees(yaw), 'road_id': road_id}
         for name, image in images.items():
             self.camera_writers[name](image)
         self.movement_stream.write(json.dumps(row, allow_nan=False) + '\n')

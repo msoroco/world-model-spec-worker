@@ -83,6 +83,30 @@ class DividerTests(unittest.TestCase):
             self.assertGreater(built["section_axis_offsets_m"][1],0)
         self.assertEqual(destroyed,[True,True])
 
+    def test_blocked_space_comparator_requires_barrier_clearance_and_no_named_opening(self):
+        context={"right_hand_roadway_xy_m":[[0,-10],[30,-10],[30,-2],[0,-2]],
+                 "destination_roadway_xy_m":[[0,2],[30,2],[30,10],[0,10]],
+                 "dividing_space_xy_m":[[0,-2],[30,-2],[30,2],[0,2]],
+                 "opening_xy_m":[[10,-2],[20,-2],[20,2],[10,2]]}
+        barriers=[[[0,-2],[8,-2],[8,2],[0,2]],
+                  [[22,-2],[30,-2],[30,2],[22,2]]]
+        receipt=route.validate_blocked_space_route(
+            context,[(5,-5),(9,-5),(9,0),(9,5)],barriers,body_radius_m=.4)
+        self.assertTrue(receipt['divider_outside_opening_traversed'])
+        self.assertEqual(receipt['statutory_opening_judgment'],'unresolved')
+        with self.assertRaisesRegex(ValueError,'collides with physical barrier'):
+            route.validate_blocked_space_route(
+                context,[(5,-5),(7,-5),(7,0),(7,5)],barriers,body_radius_m=.4)
+        with self.assertRaisesRegex(ValueError,'enters named opening'):
+            route.validate_blocked_space_route(
+                context,[(5,-5),(15,-5),(15,0),(15,5)],barriers,body_radius_m=.4)
+        straight=route.validate_right_roadway_continuation(
+            context,[(5,-5),(15,-5),(25,-5)],body_radius_m=.4)
+        self.assertTrue(straight['right_roadway_swept_clearance'])
+        with self.assertRaisesRegex(ValueError,'leaves right-hand roadway'):
+            route.validate_right_roadway_continuation(
+                context,[(5,-5),(15,-5),(15,5)],body_radius_m=.4)
+
     def test_left_turn_route_has_body_clearance_and_applies_native_control(self):
         from unittest.mock import patch
         import sys
