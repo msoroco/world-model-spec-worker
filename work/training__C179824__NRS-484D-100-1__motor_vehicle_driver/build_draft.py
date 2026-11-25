@@ -43,14 +43,18 @@ def main():
         files = [{'path': name, 'content': (HERE/'native'/name).read_text()}
                  for name in ('runner.py','geometry.py','tests/test_native.py')]
         files.append({'path': 'lamp_saved_measure.py', 'content': (HERE/'lamp_saved_measure.py').read_text()})
+        files.append({'path': 'finalize_lamp.py', 'content': (HERE/'finalize_lamp.py').read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config,indent=2)+'\n'})
         construction = {
             'case_id': case, 'law_id': config['law_id'], 'cell_id': config['cell_id'],
             'actor': config['actor'], 'entrypoint': 'runner.py', 'files': files,
             'recording_description': config['recording_description'],
-            'measurement_plan': {'entrypoint': 'lamp_saved_measure.py',
+            'measurement_plan': {'entrypoint': 'finalize_lamp.py',
                                  'required_sources': ['vehicle-lamps.jsonl','lamp-context.json',
-                                                      'road.xodr','video_frames.jsonl'],
+                                                      'road.xodr','video_frames.jsonl'] +
+                                  ['highway-review.json','vehicle-class-review.json',
+                                   'device-content-review.json','device-authority-review.json',
+                                   'device-placement-review.json','device-timing-review.json'],
                                  'source_review_required': True},
             'static_checks': ['signed 160m paved road','four cameras and 600 original frames',
                               'Native lamp setting readback and sign/lane survey'],

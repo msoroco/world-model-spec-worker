@@ -12,8 +12,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 PACKAGE = HERE / 'rider-30s-primary'
 CASE = HERE.name + '__rider_bicycle_clear'
-FIXTURE = ROOT / '.runtime-work/c10052-rider-30s-primary-fixture'
-DECODER = ROOT / '.runtime-work/c10052-decoder/.lake/build/bin/adapterCheck'
+FIXTURE = ROOT / '.runtime-work/c10052-rider-30s-profile-fixture'
+DECODER = ROOT / '.runtime-work/c10052-current-decoder/.lake/build/bin/adapterCheck'
 
 
 def sha(path):
@@ -52,7 +52,7 @@ def run():
         args = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
                 '--manifest', str(PACKAGE / 'draft-manifest.json'), '--case', CASE,
                 '--attempt', str(attempt), '--output', str(output),
-                '--library', str(ROOT / 'runtime/pipeline/library'),
+                '--library', str(ROOT / 'runtime/library'),
                 '--validator', str(DECODER)]
         processed = command(args, env)
         after = {name: sha(attempt / name) for name in before}
@@ -61,17 +61,24 @@ def run():
         version = output / 'v0001'
         feedback = version / 'feedback.json'
         receipt = version / 'processing.json'
+        receipt_present = receipt.is_file()
+        if processed.returncode != 0 or not receipt_present:
+            raise ValueError('Saved-only lifecycle did not produce a passing receipt: ' + processed.stdout[-1800:])
+        processing_receipt = json.loads(receipt.read_text())
+        if not processing_receipt.get('passed') or not processing_receipt.get('recorded_only'):
+            raise ValueError('Saved-only receipt lacks passing recorded-only binding')
         result = {'format': 'c10052-rider-30s-process-saved-proof-v1',
                   'case_id': CASE, 'selected': False, 'exit_code': processed.returncode,
                   'originals_preserved': True, 'source_files': len(before),
                   'manifest_sha256': sha(PACKAGE / 'draft-manifest.json'),
                   'construction_sha256': sha(PACKAGE / 'construction.json'),
-                  'processing_receipt': json.loads(receipt.read_text()) if receipt.is_file() else None,
+                  'processing_receipt': processing_receipt,
+                  'processing_receipt_sha256': sha(receipt),
                   'feedback': json.loads(feedback.read_text()) if feedback.is_file() else None,
                   'error_tail': processed.stdout[-1800:] if processed.returncode else None,
                   'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     (PACKAGE / 'process-saved-proof.json').write_text(json.dumps(result, indent=2) + '\n')
-    print(json.dumps({'exit_code': result['exit_code'], 'receipt': receipt.is_file(),
+    print(json.dumps({'exit_code': result['exit_code'], 'receipt': receipt_present,
                       'feedback': result['feedback'], 'error_tail': result['error_tail']}, indent=2))
     return result
 

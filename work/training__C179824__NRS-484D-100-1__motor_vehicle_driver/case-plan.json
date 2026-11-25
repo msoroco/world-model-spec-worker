@@ -61,10 +61,10 @@
       ],
       "cpu_native_draft": {
         "construction": "draft-lamp-device/controlled_1/primary/construction.json",
-        "construction_sha256": "e38e18399e7d973ea39f483034f75cd5b63b9f742f50a7cefd9cb66979558d42",
+        "construction_sha256": "7e6e80f0bd39302401de8283ce228d08b0f1f8323a507086954f0415d42ffdce",
         "offline_log": "controlled-1-offline.log",
-        "offline_log_sha256": "38c9d24deedd01f9fa688c210462c111e357265e53fbde26c33f2d9ccdf556d5",
-        "status": "offline_draft_passed_not_delivery_ready"
+        "offline_log_sha256": "206d33fe2a1f313748a9a7148f33ea2855c1ac5260e9ad0c56aae848647718ad",
+        "status": "finalizer_bundled_offline_passed_not_delivery_ready"
       }
     },
     {
@@ -80,10 +80,10 @@
       ],
       "cpu_native_draft": {
         "construction": "draft-lamp-device/controlled_2/primary/construction.json",
-        "construction_sha256": "f8942cf65be76bc26839d9a9ab7a2c35d919ba891661ccce97dd9de25ed97e63",
+        "construction_sha256": "c6087abf329f1f30a4e2d5a39a62b84b0c394df7cc07a900cbbd9da469be267f",
         "offline_log": "controlled-2-offline.log",
-        "offline_log_sha256": "38c9d24deedd01f9fa688c210462c111e357265e53fbde26c33f2d9ccdf556d5",
-        "status": "offline_draft_passed_not_delivery_ready"
+        "offline_log_sha256": "c6fafc48c86b5eb294638521fdfd77dbb9bf54d529005b1cd8c9d38153dd9e75",
+        "status": "finalizer_bundled_offline_passed_not_delivery_ready"
       }
     }
   ],
@@ -107,7 +107,7 @@
   "mandatory_observation_terms": [
     {
       "term": "sig.headlamp",
-      "purpose": "state off / low_beam / high_beam \u2014 the lamps displayed",
+      "purpose": "state off / low_beam / high_beam — the lamps displayed",
       "status": "measurement_mapping_pending"
     },
     {
@@ -160,7 +160,7 @@
     {
       "name": "sig.headlamp",
       "mandatory": true,
-      "reason": "state off / low_beam / high_beam \u2014 the lamps displayed"
+      "reason": "state off / low_beam / high_beam — the lamps displayed"
     },
     {
       "name": "sig.position_lamp",
@@ -254,5 +254,133 @@
     "proof_sha256": "1a80de5fe7dd2d9553acdb7e41083d172ca980baef6d2b65e2e92e799aa99bb1",
     "test_scope": "three 600-frame/20-Hz synthetic source-shaped positives, nine source/frame negatives, original FrameMap join and OpenDRIVE hash check",
     "legal_result": null
+  },
+  "source_observation_mapping": [
+    {
+      "term": "sig.headlamp",
+      "measurement": "original lamp readback",
+      "channels": [
+        "vehicle-lamps.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "sig.position_lamp",
+      "measurement": "original position-lamp readback",
+      "channels": [
+        "vehicle-lamps.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "drv.civil_night",
+      "measurement": "timezone-aware civil timestamp joined to independently sourced sunset and sunrise",
+      "channels": [
+        "civil_time"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "env.civil_time",
+      "measurement": "timezone-aware original per-frame civil timestamp",
+      "channels": [
+        "civil_time"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "env.visibility",
+      "measurement": "separate original person and vehicle discernibility at 304.8 m",
+      "channels": [
+        "visibility_1000ft"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "env.darkness",
+      "measurement": "original image and independently sourced light context; no inference from weather",
+      "channels": [
+        "actual_pixels"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "env.precipitation",
+      "measurement": "original weather readback and image; not a discernibility proxy",
+      "channels": [
+        "weather"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "measurement": "OpenDRIVE signal plus independent device authority/content/timing review",
+      "channels": [
+        "lamp-context.json"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "st.highway",
+      "measurement": "OpenDRIVE lane plus independent Nevada highway source",
+      "channels": [
+        "road_and_class"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "measurement": "original per-frame parked state and separately reviewed parking exception",
+      "channels": [
+        "parking"
+      ],
+      "source_refs": [
+        "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
+      ],
+      "status": "diagnostic_or_source_review_pending"
+    }
+  ],
+  "additional_cpu_measurements": {
+    "module": "lamp_branch_measure.py",
+    "proof": "lamp-branch-proof.log",
+    "source_bound": true,
+    "original_frame_map_join": true,
+    "physical_visibility_claimed": false,
+    "civil_time_boundary": "sunset + 30 minutes / next sunrise - 30 minutes",
+    "visibility_reference_m": 304.8,
+    "parked_exception_status": "review_required"
+  },
+  "additional_native_geometry": {
+    "module": "native/visibility_geometry.py",
+    "proof": "visibility-geometry-proof.log",
+    "road_length_m": 700,
+    "person_and_vehicle_pixels_verified": false
   }
 }

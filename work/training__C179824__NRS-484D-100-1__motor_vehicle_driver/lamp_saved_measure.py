@@ -104,7 +104,7 @@ def measure_original(raw_poses, raw_frame_map, raw_context, raw_opendrive):
                     ('video_frame', 'native_frame', 'camera_native_frames')) and
                 abs(pose['time_s'] - row['time_s']) < 1e-8,
                 'original frame map join mismatch')
-    packet = {'assignment_id': ASSIGNMENT, 'source_kind': 'native_saved_sample',
+    packet = {'assignment_id': ASSIGNMENT, 'source_kind': context.get('source_kind'),
               'vehicle_id': poses[0]['vehicle_id'], 'frames': poses}
     result = measure(json.dumps(packet, sort_keys=True, separators=(',', ':')).encode(), raw_context)
     result.update(original_pose_sha256=digest(raw_poses),

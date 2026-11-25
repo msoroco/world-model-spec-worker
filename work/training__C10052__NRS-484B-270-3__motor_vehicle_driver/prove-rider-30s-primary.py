@@ -14,8 +14,8 @@ CASE = HERE.name + '__rider_bicycle_clear'
 PACKAGE = HERE / 'rider-30s-primary'
 MANIFEST = PACKAGE / 'draft-manifest.json'
 RECIPE = PACKAGE / 'fixture-recipe.json'
-FIXTURE = ROOT / '.runtime-work/c10052-rider-30s-primary-fixture'
-DECODER = ROOT / '.runtime-work/c10052-decoder/.lake/build/bin/adapterCheck'
+FIXTURE = ROOT / '.runtime-work/c10052-rider-30s-profile-fixture'
+DECODER = ROOT / '.runtime-work/c10052-current-decoder/.lake/build/bin/adapterCheck'
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -32,7 +32,7 @@ def run(command, env):
 def main():
     env = dict(os.environ)
     env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ROOT / '.runtime-work/c10052-rider-30s-proof')
-    env['PYTHONPATH'] = str(ROOT / 'runtime/pipeline/scenario_pipeline') + (
+    env['PYTHONPATH'] = str(ROOT / 'runtime/scenario_pipeline') + (
         os.pathsep + env['PYTHONPATH'] if env.get('PYTHONPATH') else '')
     assert FIXTURE.is_dir() and DECODER.is_file()
     recipe = json.loads(RECIPE.read_text())
@@ -66,12 +66,12 @@ def main():
         channels = sorted((positive / 'channels').glob('*.jsonl'))
         assert len(channels) == len(result['recording_description']['channels'])
         assert all(len(path.read_text().splitlines()) == 600 for path in channels)
-        sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
+        sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
         from worker_exchange.runtime_cli import process, render
         from worker_exchange.media import audit
         converted_root = scratch / 'converted'
         converted = process(positive, converted_root,
-                            ROOT / 'runtime/pipeline/library', DECODER,
+                            ROOT / 'runtime/library', DECODER,
                             diagnostic_fixture=True)
         assert converted['converted'] and converted['decoder_checked']
         video = render(positive, converted_root, {'case_id': CASE})

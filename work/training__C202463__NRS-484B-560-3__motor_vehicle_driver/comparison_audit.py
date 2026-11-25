@@ -17,7 +17,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False):
+def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False, review_path=None):
     a, b = Path(attempt_a).resolve(), Path(attempt_b).resolve()
     pa, pb = (json.loads(Path(path).read_text()) for path in (processing_a, processing_b))
     identities = [p.get("case_id", "") for p in (pa, pb)]
@@ -27,12 +27,26 @@ def compare(attempt_a, attempt_b, processing_a, processing_b, diagnostic=False):
         raise ValueError("Exact rail comparison cases differ")
     if not all(p.get("passed") is True and p.get("recorded_only") is True for p in (pa, pb)):
         raise ValueError("Recorded-only rail processing proof missing")
-    for source in ("road.xodr", "rail-review/required-stop.json",
-                   "rail-review/required-stop.source.txt",
-                   "rail-review/rail-crossing.json", "rail-review/rail-crossing.source.txt",
-                   "rail-review/gate-indication.json", "rail-review/gate-indication.source.txt"):
-        if sha(a / source) != sha(b / source):
-            raise ValueError("Fixed rail source differs: " + source)
+    if diagnostic:
+        for source in ("road.xodr", "rail-review/required-stop.json",
+                       "rail-review/required-stop.source.txt",
+                       "rail-review/rail-crossing.json", "rail-review/rail-crossing.source.txt",
+                       "rail-review/gate-indication.json", "rail-review/gate-indication.source.txt"):
+            if sha(a / source) != sha(b / source):
+                raise ValueError("Fixed rail source differs: " + source)
+    else:
+        if review_path is None or not Path(review_path).is_file():
+            raise ValueError("Original pairwise rail context review missing")
+        review_path = Path(review_path)
+        review = json.loads(review_path.read_text())
+        source_text = review_path.with_suffix(".source.txt")
+        if (not source_text.is_file() or review.get("source_sha256") != sha(source_text)
+                or review.get("review_status") != "independently_reviewed"
+                or not review.get("reviewer_id") or review.get("case_ids") != identities
+                or review.get("road_sha256") != [sha(a / "road.xodr"), sha(b / "road.xodr")]
+                or review.get("sole_variation") != PAIRS[suffixes]
+                or review.get("other_context_invariants_reviewed") is not True):
+            raise ValueError("Original pairwise rail context source differs")
     configs = [json.loads((path / "config.json").read_text()) for path in (a, b)]
     for field in ("law_id", "cell_id", "actor", "rate_hz", "duration_s",
                   "cameras", "source_actor_ids", "required_atoms", "brake_margin_m"):
@@ -86,8 +100,9 @@ if __name__ == "__main__":
     for option in ("attempt-a", "attempt-b", "processing-a", "processing-b", "output"):
         parser.add_argument("--" + option, required=True)
     parser.add_argument("--diagnostic", action="store_true")
+    parser.add_argument("--review")
     args = parser.parse_args()
     result = compare(args.attempt_a, args.attempt_b, args.processing_a,
-                     args.processing_b, args.diagnostic)
+                     args.processing_b, args.diagnostic, args.review)
     Path(args.output).write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, sort_keys=True))

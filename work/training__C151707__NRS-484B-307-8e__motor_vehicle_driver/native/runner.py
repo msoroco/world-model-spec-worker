@@ -46,6 +46,11 @@ def check(config):
 def read_survey(path):
     survey = json.loads(Path(path).read_text())
     require(survey["source_kind"] == "original_native_property_survey", "original survey required")
+    require(survey.get("assignment_id") == CASE.rsplit("__", 1)[0], "survey assignment mismatch")
+    require(survey.get("approach_signal_lens_form") == "circular_red_alone" and
+            survey.get("approach_signal_facing_source_id"), "surveyed red-alone facing source required")
+    require(survey.get("property_id") and survey.get("property_boundary_source_id"),
+            "surveyed property authority missing")
     require(survey["map_name"] and survey["property_boundary_source"]
             and survey["approach_lane_source"] and survey["cross_street_lane_source"],
             "map/parcel authority missing")
@@ -90,9 +95,11 @@ def execute(config, output_dir, survey_path, host, port):
     survey = read_survey(survey_path)
     output_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "")
     require(".runtime-work" in output_root, "set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
+    require(Path(output_dir).resolve().is_relative_to(Path(output_root).resolve()),
+            "Native output must stay under SCENARIO_PIPELINE_OUTPUT_ROOT")
     repo = ROOT.parents[2]
-    sys.path.insert(0, str(repo / "runtime" / "pipeline" / "scenario_pipeline"))
-    sys.path.insert(1, str(repo / "runtime" / "pipeline" / "python"))
+    sys.path.insert(0, str(repo / "runtime"))
+    sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -103,6 +110,12 @@ def execute(config, output_dir, survey_path, host, port):
         require((output / "config.json").is_file(), "existing output lacks materialized config")
     else:
         output.mkdir(parents=True)
+    (output / "property-survey.json").write_bytes(Path(survey_path).read_bytes())
+    (output / "purpose-declaration.json").write_text(json.dumps({
+        "source_kind": "original_controller_purpose_declaration",
+        "assignment_id": CASE.rsplit("__", 1)[0],
+        "declaration_source_id": "native-controller-config:" + CASE,
+        "declared_purpose": config["purpose_declaration"]}, sort_keys=True) + "\n")
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()

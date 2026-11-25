@@ -6,6 +6,7 @@ The first 480 diagnostic frames and their measurements are preserved.
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 
@@ -66,6 +67,11 @@ def main():
         rows = [json.loads(line) for line in path.read_text().splitlines()]
         assert len(rows) == 480
         rows.extend(extend(rows[-1], index) for index in range(480, 600))
+        if relative == 'trace.jsonl':
+            for row in rows:
+                heading = math.radians(row['heading_deg'])
+                speed = row['speed_mps']
+                row['velocity_mps'] = [speed * math.cos(heading), speed * math.sin(heading), 0.0]
         write_rows(path, rows)
     graph_dir = NEW / 'capture/native/graphs/base'
     final_graph = json.loads((graph_dir / '00000579.adapter.json').read_text())
@@ -95,6 +101,9 @@ def main():
     spec = json.loads((HERE / 'rider-v2-bicycle-clear-primary/diagnostic-spec.json').read_text())
     for video in spec['videos']:
         video['frames'] = 600
+        if video['path'] != 'overview.mkv':
+            video['width'] = 1280
+            video['height'] = 720
     write(SPEC, spec)
     sources = []
     for path in sorted(NEW.rglob('*')):

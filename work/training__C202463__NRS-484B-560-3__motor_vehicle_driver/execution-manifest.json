@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_cpu_source_dependency",
+  "status": "cpu_prepared_original_rail_source_pending",
   "cases": [
     {
       "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a",
@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_a/public-fallback1/receipt.json",
+            "sha256": "5268e795114c8a985462c126f5a473e4090f645af1e9331bdd48d27daaa7ca90",
+            "log": "proofs/probe_a/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_a/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a --candidate fallback1",
+            "construction_sha256": "4c983e1c5cf14228f0ae6a7ae9f368ccb652b4897cb1cee15a3a6e298f082edc",
+            "exit_code": 0,
+            "log": "selected-probe-a-fallback1-v3-offline.log",
+            "log_sha256": "c52def5d4795329b5dc1661ec1f6db65da8d4afe5bc54dca930a48ef43b6f682"
+          }
         }
       ],
       "measurement_procedure": {
@@ -33,8 +46,108 @@
       },
       "measurement_contract": "selected-measurements/probe_a/measurement-contract.json",
       "fixture_recipe": "work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/diagnostic-probe_a-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_a/public-primary/receipt.json",
+        "sha256": "40bddabba6fb2cdcfc5b4f1f28afb1ab34497a4fa67a548e89f92b7337bd5343",
+        "log": "proofs/probe_a/public-primary/analysis.log",
+        "negative_log": "proofs/probe_a/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a --candidate primary",
+        "construction_sha256": "09e83516fc862b2d5f61916e4cc719dca477e1f8a1530631ac5caf9e9ff94f74",
+        "exit_code": 0,
+        "log": "selected-probe-a-primary-v3-offline.log",
+        "log_sha256": "c52def5d4795329b5dc1661ec1f6db65da8d4afe5bc54dca930a48ef43b6f682"
+      },
+      "negative": {
+        "log": "proofs/probe_a/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/execution-manifest.json --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_a/saved-processing.json",
+        "test_log_sha256": "895d01528970f6a759c3fc3d8f715aa46ae7faabd890e7085a221bd473c1798c"
+      },
+      "acquisition": {
+        "drv.laned_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_a/proof.json",
+        "sha256": "f21da9e312e7cc95d91e429a6863115c9058a6049a81467411801af3cb9f26c6"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "befe5ebf48e8c36049efee2ecdb2102aebacbfb33aa52c746781cefcedc1e905",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-a-attempt-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-a-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/proofs/probe_a/delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_a/delivery-positive.log",
+        "test_log_sha256": "34ff1015ef83fa0620a642503c8198b52fb4321fedd55949f4248c7ac35ba349",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-a-negative-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-a-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-a-negative-v3.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: rail-review/required-stop.json",
+        "negative_log": "proofs/probe_a/delivery-negative.log",
+        "negative_log_sha256": "3e1f181a76ce47a2281bf1df6f45bf247e30bc61724912be355c47f8374889bf"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b",
@@ -57,7 +170,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_b/public-fallback1/receipt.json",
+            "sha256": "be8e76d30d6220e4fb448f549de47edbeac6f2273477dd6c268aa3953e93c504",
+            "log": "proofs/probe_b/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_b/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b --candidate fallback1",
+            "construction_sha256": "cc831b90a2eacd8458df78095ad98fe7c598e405d56cae4141dbfc71fcce8e5b",
+            "exit_code": 0,
+            "log": "selected-probe-b-fallback1-v3-offline.log",
+            "log_sha256": "78d1fd0b59845dbc0e0069a04a21db10077aac0b20566bc6b62f234a56aff268"
+          }
         }
       ],
       "measurement_procedure": {
@@ -65,8 +191,108 @@
       },
       "measurement_contract": "selected-measurements/probe_b/measurement-contract.json",
       "fixture_recipe": "work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/diagnostic-probe_b-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_b/public-primary/receipt.json",
+        "sha256": "0aa8dc319d14d35b3b285bd4b56e450d9acb6cc59123c03e2a82e7d2d15b793f",
+        "log": "proofs/probe_b/public-primary/analysis.log",
+        "negative_log": "proofs/probe_b/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b --candidate primary",
+        "construction_sha256": "bc7e908ab8bab472827cc414123b44bf2430ee6c85b65cbf24bcc22ad8bfe8e8",
+        "exit_code": 0,
+        "log": "selected-probe-b-primary-v3-offline.log",
+        "log_sha256": "ad16ec78b7d479eb53fbe431856c4d2b80eb6cc11ee8ab6e48338efed99d2fd3"
+      },
+      "negative": {
+        "log": "proofs/probe_b/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/execution-manifest.json --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_b/saved-processing.json",
+        "test_log_sha256": "cf0009ff9a949a47dfbaa9258a0f0955ef8e21b57aea605e21ef9d7a537805a1"
+      },
+      "acquisition": {
+        "drv.laned_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_b/proof.json",
+        "sha256": "1f3892100885b2661091120d8d1e7b0f1e92fa6854cbd0c2a66e0c451961a971"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "befe5ebf48e8c36049efee2ecdb2102aebacbfb33aa52c746781cefcedc1e905",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-b-attempt-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-b-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/proofs/probe_b/delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_b/delivery-positive.log",
+        "test_log_sha256": "0ff4d534af6df4a8430aa4f1a3538b03f74cff6787292870a539f0b10a43aa73",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-b-negative-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-b-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-b-negative-v3.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: rail-review/required-stop.json",
+        "negative_log": "proofs/probe_b/delivery-negative.log",
+        "negative_log_sha256": "3e1f181a76ce47a2281bf1df6f45bf247e30bc61724912be355c47f8374889bf"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c",
@@ -89,7 +315,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_c/public-fallback1/receipt.json",
+            "sha256": "cca1b7604996bd871c68f6b51798c1bff5501864526a42416d640e75815d6bdc",
+            "log": "proofs/probe_c/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_c/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c --candidate fallback1",
+            "construction_sha256": "5f7fc4a4ef5c10ca6425a6725e240323bd0cfce82f3ce1707c4168783a5e1979",
+            "exit_code": 0,
+            "log": "selected-probe-c-fallback1-v3-offline.log",
+            "log_sha256": "0d0b30c8f3cccea616653760872c1ab3eea9bdfc1999c9388c897dd101ad34a5"
+          }
         }
       ],
       "measurement_procedure": {
@@ -97,8 +336,108 @@
       },
       "measurement_contract": "selected-measurements/probe_c/measurement-contract.json",
       "fixture_recipe": "work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/diagnostic-probe_c-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_c/public-primary/receipt.json",
+        "sha256": "75fab28d7f46f27787c87a0e506793e2362115fb9e6c5aea5e1def801798c0de",
+        "log": "proofs/probe_c/public-primary/analysis.log",
+        "negative_log": "proofs/probe_c/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c --candidate primary",
+        "construction_sha256": "dc9fa0b6621dcc4e20c7acc2a4965896372b464365dc81a3d745970b75597022",
+        "exit_code": 0,
+        "log": "selected-probe-c-primary-v3-offline.log",
+        "log_sha256": "aec36e5eef79ee429e58172b8990c1a53475d21201685bc649b7e5231ff69b32"
+      },
+      "negative": {
+        "log": "proofs/probe_c/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/execution-manifest.json --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_c/saved-processing.json",
+        "test_log_sha256": "5068fbec73cf705bafd3f1d077e249f34c2e36b0e86c4b886ce250d846b88c51"
+      },
+      "acquisition": {
+        "drv.laned_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_c/proof.json",
+        "sha256": "b324fb7b011b3678daa2e57d4632b3b1cc20715abe97ede7e20c85eed0bb7a4e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "befe5ebf48e8c36049efee2ecdb2102aebacbfb33aa52c746781cefcedc1e905",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-c-attempt-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-c-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/proofs/probe_c/delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_c/delivery-positive.log",
+        "test_log_sha256": "56502b4d734f9384ecfd09bc9e412fe66f7a8b4bd73dde23e07798d040d35a0d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-c-negative-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-c-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-c-negative-v3.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: rail-review/required-stop.json",
+        "negative_log": "proofs/probe_c/delivery-negative.log",
+        "negative_log_sha256": "3e1f181a76ce47a2281bf1df6f45bf247e30bc61724912be355c47f8374889bf"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d",
@@ -121,7 +460,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_d/public-fallback1/receipt.json",
+            "sha256": "3945a414157f5031ebec8f14c6d282fdfab80e558a2dedf5f50dbd3c4692a5a3",
+            "log": "proofs/probe_d/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_d/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d --candidate fallback1",
+            "construction_sha256": "3f73af9b0c1cbc56cccc99d0c1e921e6497a8bb0b32228b9479879018674dda1",
+            "exit_code": 0,
+            "log": "selected-probe-d-fallback1-v3-offline.log",
+            "log_sha256": "1fe75a9b1149f846ecbfc58ba4c3b6a20fa27e3e215a23ba98177884afcc70f6"
+          }
         }
       ],
       "measurement_procedure": {
@@ -129,8 +481,108 @@
       },
       "measurement_contract": "selected-measurements/probe_d/measurement-contract.json",
       "fixture_recipe": "work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/diagnostic-probe_d-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_d/public-primary/receipt.json",
+        "sha256": "29dafa21141a44d640a995de3af50a651b24ee4a75bef6654879a2d9b118c76c",
+        "log": "proofs/probe_d/public-primary/analysis.log",
+        "negative_log": "proofs/probe_d/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d --candidate primary",
+        "construction_sha256": "bb8127fbbb5633a1a655fd00a235cd846d9ed49bf7df6576b911e3602ba3ee32",
+        "exit_code": 0,
+        "log": "selected-probe-d-primary-v3-offline.log",
+        "log_sha256": "1fe75a9b1149f846ecbfc58ba4c3b6a20fa27e3e215a23ba98177884afcc70f6"
+      },
+      "negative": {
+        "log": "proofs/probe_d/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/execution-manifest.json --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_d/saved-processing.json",
+        "test_log_sha256": "3dda7b10e9ab83abc5845b4c4ded39e916a3789ddd0adf015b7af7ee688a1b2f"
+      },
+      "acquisition": {
+        "drv.laned_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_d/proof.json",
+        "sha256": "a51871b4037eafceb3cbf3a7cf045dcae59506287c0210642c204554a4d4b096"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "befe5ebf48e8c36049efee2ecdb2102aebacbfb33aa52c746781cefcedc1e905",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-d-attempt-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-d-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/proofs/probe_d/delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_d/delivery-positive.log",
+        "test_log_sha256": "fa58d8069c74edd6485cc4973353cf02fb668c2645ab01b201e087856fd7a083",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-d-negative-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-d-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-d-negative-v3.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: rail-review/required-stop.json",
+        "negative_log": "proofs/probe_d/delivery-negative.log",
+        "negative_log_sha256": "3e1f181a76ce47a2281bf1df6f45bf247e30bc61724912be355c47f8374889bf"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e",
@@ -153,7 +605,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_e/public-fallback1/receipt.json",
+            "sha256": "04ba7098aabc8ed40afcf5ed352522548a5f600ee7d8a55aac15f01d00cf7f66",
+            "log": "proofs/probe_e/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_e/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e --candidate fallback1",
+            "construction_sha256": "83c3c8dbd2c01e2ef2702a7aac0a32db7c3d7f8692877c4d99d3fa9b1771b1f9",
+            "exit_code": 0,
+            "log": "selected-probe-e-fallback1-v3-offline.log",
+            "log_sha256": "4947e8bdfe085051e2bafdf81a4255345d90f6f3f302f23c9993be37249b449b"
+          }
         }
       ],
       "measurement_procedure": {
@@ -161,8 +626,108 @@
       },
       "measurement_contract": "selected-measurements/probe_e/measurement-contract.json",
       "fixture_recipe": "work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/diagnostic-probe_e-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_e/public-primary/receipt.json",
+        "sha256": "594edfa48c834b8923e15bdb6daa417506d67347722de093a29eabe180775076",
+        "log": "proofs/probe_e/public-primary/analysis.log",
+        "negative_log": "proofs/probe_e/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e --candidate primary",
+        "construction_sha256": "079a57d45080087f2f4cb7106952de5de1830b7e4d9821bcb4bc61aa1ce9817f",
+        "exit_code": 0,
+        "log": "selected-probe-e-primary-v3-offline.log",
+        "log_sha256": "5aefcd0ddc0bae8c94886b0cedadd0139c40ec91d949a5e2e45bfa284f169861"
+      },
+      "negative": {
+        "log": "proofs/probe_e/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/execution-manifest.json --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_e/saved-processing.json",
+        "test_log_sha256": "994dc4b8bc930aecdd2400c79f55ba25d7349fa156555b84ea07564be48b01d2"
+      },
+      "acquisition": {
+        "drv.laned_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native gate, actor footprint, road, lane review and video-frame join",
+          "evidence": "actors.jsonl; gate.jsonl; road.xodr; rail-review roles; video_frames.jsonl; four source cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_e/proof.json",
+        "sha256": "61ac2bc41d008f4501681fa524e6996b82d0bf194d65ca7453de0a80328993c2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "befe5ebf48e8c36049efee2ecdb2102aebacbfb33aa52c746781cefcedc1e905",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-e-attempt-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-e-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/proofs/probe_e/delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_e/delivery-positive.log",
+        "test_log_sha256": "9612c06a17d549d971dbe978f2dba283f16a9f5ebecb0ca115ae48a2d52c7b1f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202463__NRS-484B-560-3__motor_vehicle_driver/delivery_audit.py --case training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-e-negative-v3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-saved-probe-e-output-v3/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202463-delivery-probe-e-negative-v3.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: rail-review/required-stop.json",
+        "negative_log": "proofs/probe_e/delivery-negative.log",
+        "negative_log_sha256": "3e1f181a76ce47a2281bf1df6f45bf247e30bc61724912be355c47f8374889bf"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }
