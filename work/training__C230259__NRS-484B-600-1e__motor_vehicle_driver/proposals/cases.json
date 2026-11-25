@@ -2,8 +2,79 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+      "rationale": "Neutral common road and participant context, not a selected recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "three-axis post-tick Native vehicle velocity",
+            "name": "kin.velocity",
+            "reference_frame": "authored two-lane 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "m/s"
+          },
+          {
+            "method": "norm of original Native velocity divided by 0.44704",
+            "name": "kin.speed",
+            "reference_frame": "authored two-lane 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "mph"
+          },
+          {
+            "method": "Native actor ID and reviewed vehicle identity",
+            "name": "ru.subject",
+            "reference_frame": "authored two-lane 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "identifier"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Controller request is not measured speed",
+          "CPU diagnostics do not establish physical speed or pixels"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": null
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      }
+    },
+    {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
-      "rationale": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite.",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering request spacing; no legal tolerance or attainment claim.",
+        "unit": "mph",
+        "value": 5
+      },
+      "paired_probe_id": "absolute_80_mph",
+      "probe": {
+        "comparison_or_standard": "Requested setpoint brackets the absolute 80 mph threshold for physical coverage only; measured Native speed determines the observed relation.",
+        "operator": ">",
+        "primary_variable": "commanded_approach_speed",
+        "target_value_or_branch": "below",
+        "test_value": 75,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Request a distinct controller speed for physical coverage; only original velocity can establish the observed relation to 80 mph.",
       "recording_description": {
         "channels": [
           {
@@ -41,17 +112,40 @@
         ]
       },
       "target_law_id": "NRS-484B-600-1e",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "Actual measured speed and physical camera coverage require Native review"
-      ],
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
-        "requested_speed_mph": 75
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 33.528
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       }
     },
     {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
-      "rationale": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite.",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering request spacing; no legal tolerance or attainment claim.",
+        "unit": "mph",
+        "value": 5
+      },
+      "paired_probe_id": "absolute_80_mph",
+      "probe": {
+        "comparison_or_standard": "Requested setpoint brackets the absolute 80 mph threshold for physical coverage only; measured Native speed determines the observed relation.",
+        "operator": ">",
+        "primary_variable": "commanded_approach_speed",
+        "target_value_or_branch": "at",
+        "test_value": 80,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Request a distinct controller speed for physical coverage; only original velocity can establish the observed relation to 80 mph.",
       "recording_description": {
         "channels": [
           {
@@ -89,17 +183,40 @@
         ]
       },
       "target_law_id": "NRS-484B-600-1e",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "Actual measured speed and physical camera coverage require Native review"
-      ],
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
-        "requested_speed_mph": 80
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 35.7632
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       }
     },
     {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
-      "rationale": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite.",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering request spacing; no legal tolerance or attainment claim.",
+        "unit": "mph",
+        "value": 5
+      },
+      "paired_probe_id": "absolute_80_mph",
+      "probe": {
+        "comparison_or_standard": "Requested setpoint brackets the absolute 80 mph threshold for physical coverage only; measured Native speed determines the observed relation.",
+        "operator": ">",
+        "primary_variable": "commanded_approach_speed",
+        "target_value_or_branch": "above",
+        "test_value": 85,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Request a distinct controller speed for physical coverage; only original velocity can establish the observed relation to 80 mph.",
       "recording_description": {
         "channels": [
           {
@@ -137,17 +254,22 @@
         ]
       },
       "target_law_id": "NRS-484B-600-1e",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "Actual measured speed and physical camera coverage require Native review"
-      ],
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
-        "requested_speed_mph": 85
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 37.9984
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       }
     }
   ],
   "cell_id": "C230259",
-  "format": "canonical-cases",
   "status": "draft",
-  "sweep_specs": []
+  "sweep_specs": [],
+  "sweeps_expanded": true
 }

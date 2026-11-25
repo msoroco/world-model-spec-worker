@@ -1,0 +1,392 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "construction": "native/bundles/controlled_1/construction.json",
+      "construction_sha256": "7b585a3647ff873ed1f68f641acd79aa3c909fc67b89f1640a14e6054e6b9860",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Backing path and moving traffic response unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/controlled_1/fallback1/construction.json",
+          "construction_sha256": "4d4e49c8d83d0161058f21fabbb95040c17d7a203df7385fc8bf1be749c7b844",
+          "changed_knobs": [
+            "other_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Other vehicle reaches conflict region before usable backing observation"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1 --candidate fallback1",
+            "construction_sha256": "4d4e49c8d83d0161058f21fabbb95040c17d7a203df7385fc8bf1be749c7b844",
+            "exit_code": 0,
+            "log": "native/controlled_1-fallback1-offline.log",
+            "log_sha256": "8525291a44a622cb94b5661b744a92d42f1ea072c65e89d6b85f1ca0e5fa719d"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/controlled_1/fallback1/proof.json",
+            "sha256": "ac6ecdbdcb95addacf0ef8c9b299498890424e11ec3ef309e7025467141b7ec6",
+            "log": "native/proofs/controlled_1/fallback1/analysis.log",
+            "negative_log": "native/proofs/controlled_1/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/bundles/controlled_1/fallback2/construction.json",
+          "construction_sha256": "5361c37ff2c384d9415ab582f79c56380e6e46009917e3a579bf44215589cfc4",
+          "changed_knobs": [
+            "ego_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Ego backing trajectory fails to enter authored conflict region"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1 --candidate fallback2",
+            "construction_sha256": "5361c37ff2c384d9415ab582f79c56380e6e46009917e3a579bf44215589cfc4",
+            "exit_code": 0,
+            "log": "native/controlled_1-fallback2-offline.log",
+            "log_sha256": "e1c01f60c8d58ee9b1c9acc8ef1c31e0c4abf90b45dcdc2f5fc82fb79b9d925a"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/controlled_1/fallback2/proof.json",
+            "sha256": "d5f48a87a753e4eeebc63102eb1fbf24559007adfba9e5130c0fa84e0a52722d",
+            "log": "native/proofs/controlled_1/fallback2/analysis.log",
+            "negative_log": "native/proofs/controlled_1/fallback2/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1 --candidate primary",
+        "construction_sha256": "7b585a3647ff873ed1f68f641acd79aa3c909fc67b89f1640a14e6054e6b9860",
+        "exit_code": 0,
+        "log": "native/controlled_1-primary-offline.log",
+        "log_sha256": "7781a087f398e402221acaec61f1367a1064012b95732a745a49c37a5adebea4"
+      },
+      "measurement_contract": "native/bundles/controlled_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c230259-saved-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/diagnostic-controlled_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/controlled_1/physical/physical-preparation.json",
+        "sha256": "61ee083590b6fe4f4ba91fcd0032b61e8799eadd2945b682188eae54c5c7314b"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/controlled_1/primary/proof.json",
+        "sha256": "f536298efd1c35c7a0625a1ec553bcf71128a88da30d056bab08dbb3c209404c",
+        "log": "native/proofs/controlled_1/primary/analysis.log",
+        "negative_log": "native/proofs/controlled_1/primary/negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/controlled_1/primary/negative.log",
+        "log_sha256": "ed25a8c18d3616f587df1610f50b104dbb78e3ebbbb11c9385fd608440b75b42"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "construction": "native/bundles/controlled_2/construction.json",
+      "construction_sha256": "b86a88396e6e81a27ea97d3f0d3e5f96a3e0cb61fd44c7bc264e3e827dd69d56",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Backing path and moving traffic response unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/controlled_2/fallback1/construction.json",
+          "construction_sha256": "1a663bda718631e71e94dc29f1b95ec2f921944fdac8fa6db7c61c44741f406d",
+          "changed_knobs": [
+            "other_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Other vehicle reaches conflict region before usable backing observation"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2 --candidate fallback1",
+            "construction_sha256": "1a663bda718631e71e94dc29f1b95ec2f921944fdac8fa6db7c61c44741f406d",
+            "exit_code": 0,
+            "log": "native/controlled_2-fallback1-offline.log",
+            "log_sha256": "fd4a08ebc12f7739d8e8b26a99749195e77cc4395dbc43cf8ddf0d1438ff2f48"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/controlled_2/fallback1/proof.json",
+            "sha256": "eefc1d91999f56f995f58550503969c032c48e90421e91b7991b3aff7e01cdde",
+            "log": "native/proofs/controlled_2/fallback1/analysis.log",
+            "negative_log": "native/proofs/controlled_2/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/bundles/controlled_2/fallback2/construction.json",
+          "construction_sha256": "b95a0df0db0377fa946c983a0dec838d7c848d836224a7e9358840aff135b5ce",
+          "changed_knobs": [
+            "ego_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Ego backing trajectory fails to enter authored conflict region"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2 --candidate fallback2",
+            "construction_sha256": "b95a0df0db0377fa946c983a0dec838d7c848d836224a7e9358840aff135b5ce",
+            "exit_code": 0,
+            "log": "native/controlled_2-fallback2-offline.log",
+            "log_sha256": "2d64df3348f2240f3254a15ba3ab3e4dcaa19fbc02feeab56e6df2fbaab19e31"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/controlled_2/fallback2/proof.json",
+            "sha256": "63824374e00bedd471c628aaa04f5b2390303bc292980da2030f6e0278046739",
+            "log": "native/proofs/controlled_2/fallback2/analysis.log",
+            "negative_log": "native/proofs/controlled_2/fallback2/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2 --candidate primary",
+        "construction_sha256": "b86a88396e6e81a27ea97d3f0d3e5f96a3e0cb61fd44c7bc264e3e827dd69d56",
+        "exit_code": 0,
+        "log": "native/controlled_2-primary-offline.log",
+        "log_sha256": "c06417c257a66ec04f0d03c504f0264572429b3da5d9f1f5fad543521f0d3985"
+      },
+      "measurement_contract": "native/bundles/controlled_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c230259-saved-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/diagnostic-controlled_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/controlled_2/physical/physical-preparation.json",
+        "sha256": "d075efcb8b1ce33daa6db791ef69988053fd1f57656b994e2214552733eb6532"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/controlled_2/primary/proof.json",
+        "sha256": "dd9976da229bf154fe50ec1ddf4a1d16a1ca92c89b3c78fd6875d52374711974",
+        "log": "native/proofs/controlled_2/primary/analysis.log",
+        "negative_log": "native/proofs/controlled_2/primary/negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/controlled_2/primary/negative.log",
+        "log_sha256": "70770fb5b683f48e70aba7f87e8c63c2e317e44215c68e5ca88cf1c78a23b50e"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1",
+      "kind": "delivery",
+      "construction": "native/bundles/pedestrian_1/construction.json",
+      "construction_sha256": "f05c2233b640b1d592962b7fecda208f210b4d766e4aa69587cc1c075cd35812",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Backing path and pedestrian encounter unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/pedestrian_1/fallback1/construction.json",
+          "construction_sha256": "31db1b4c42cde5e85a0b39488fd509cda63e51a8d5bf534370f998a5f925cf2a",
+          "changed_knobs": [
+            "other_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Other vehicle reaches conflict region before usable backing observation"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1 --candidate fallback1",
+            "construction_sha256": "31db1b4c42cde5e85a0b39488fd509cda63e51a8d5bf534370f998a5f925cf2a",
+            "exit_code": 0,
+            "log": "native/pedestrian_1-fallback1-offline.log",
+            "log_sha256": "834cb5c13f5c9e6dd9560f3a2d883747962701ace833468d78f031f26ccc07a0"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/pedestrian_1/fallback1/proof.json",
+            "sha256": "8be50f7548ddd5faa3736656c1a7a1d61b49a2dfced8820967d1cac92b1d9185",
+            "log": "native/proofs/pedestrian_1/fallback1/analysis.log",
+            "negative_log": "native/proofs/pedestrian_1/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/bundles/pedestrian_1/fallback2/construction.json",
+          "construction_sha256": "6da349dc491d6409289aed50d33944e30d8eb45529896c961b3259e837c46e3f",
+          "changed_knobs": [
+            "ego_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Ego backing trajectory fails to enter authored conflict region"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1 --candidate fallback2",
+            "construction_sha256": "6da349dc491d6409289aed50d33944e30d8eb45529896c961b3259e837c46e3f",
+            "exit_code": 0,
+            "log": "native/pedestrian_1-fallback2-offline.log",
+            "log_sha256": "e796c68663be2a655e6197848911929e16e46b6f1cf88bcd8f1472aef07db46c"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/pedestrian_1/fallback2/proof.json",
+            "sha256": "cd6992835be6c19965e533598a48abc73f94b2b373bcfc9205af76e6a5d7241d",
+            "log": "native/proofs/pedestrian_1/fallback2/analysis.log",
+            "negative_log": "native/proofs/pedestrian_1/fallback2/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1 --candidate primary",
+        "construction_sha256": "f05c2233b640b1d592962b7fecda208f210b4d766e4aa69587cc1c075cd35812",
+        "exit_code": 0,
+        "log": "native/pedestrian_1-primary-offline.log",
+        "log_sha256": "bc220da7ef5f226dd3b987e99f3647da82124599bd793dd06e8896894467cd65"
+      },
+      "measurement_contract": "native/bundles/pedestrian_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c230259-saved-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/diagnostic-pedestrian_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/pedestrian_1/physical/physical-preparation.json",
+        "sha256": "be0677bfe5528ead84f7a7e4829ff3b90063da6ef365a4104bfc6be982326535"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/pedestrian_1/primary/proof.json",
+        "sha256": "02dacc6dac4d7f0dedbfac29b89c1484670c0cd0e120944941c5fd107502a88b",
+        "log": "native/proofs/pedestrian_1/primary/analysis.log",
+        "negative_log": "native/proofs/pedestrian_1/primary/negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/pedestrian_1/primary/negative.log",
+        "log_sha256": "1b47dd894c8672b7404cc21c0c8a988a30def5795f953ae5ef5c1f5bdc95001e"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2",
+      "kind": "delivery",
+      "construction": "native/bundles/pedestrian_2/construction.json",
+      "construction_sha256": "01238989997d4d1901120ef09bb1662bb93e15dfcfe1f5cf63196048f5a75d13",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Backing path and pedestrian encounter unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/pedestrian_2/fallback1/construction.json",
+          "construction_sha256": "1ca70470c3fb0cf5c5fc86d9587c9452eb648861cbed44d49e3b2659d8bb0371",
+          "changed_knobs": [
+            "other_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Other vehicle reaches conflict region before usable backing observation"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2 --candidate fallback1",
+            "construction_sha256": "1ca70470c3fb0cf5c5fc86d9587c9452eb648861cbed44d49e3b2659d8bb0371",
+            "exit_code": 0,
+            "log": "native/pedestrian_2-fallback1-offline.log",
+            "log_sha256": "51aaebcd650a96325ba7e1d4397150e665a8e09a7ac88db1f15772c3f0db34a8"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/pedestrian_2/fallback1/proof.json",
+            "sha256": "fb41c429c9124a898a82e0f2f6ed444d39b6049f9e3b9e9008d070c26ff7d952",
+            "log": "native/proofs/pedestrian_2/fallback1/analysis.log",
+            "negative_log": "native/proofs/pedestrian_2/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/bundles/pedestrian_2/fallback2/construction.json",
+          "construction_sha256": "f6ea7a78814f1f95bbecb256cb6657f715157fe69a713b0a71c9b85444abdcdc",
+          "changed_knobs": [
+            "ego_start_x_m"
+          ],
+          "trigger": {
+            "source": "original Native motion and frame-map audit",
+            "metric": "first conflict-region frame and active backing frame count",
+            "failure_condition": "Ego backing trajectory fails to enter authored conflict region"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2 --candidate fallback2",
+            "construction_sha256": "f6ea7a78814f1f95bbecb256cb6657f715157fe69a713b0a71c9b85444abdcdc",
+            "exit_code": 0,
+            "log": "native/pedestrian_2-fallback2-offline.log",
+            "log_sha256": "1d221f76510929b97cb114511b79f69153beadf1bdda6564293661801f9c3842"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/pedestrian_2/fallback2/proof.json",
+            "sha256": "2475ee51397cbcff5361cea6b213dfe71bd8cebccd5d19b65b3e817b9cf2951d",
+            "log": "native/proofs/pedestrian_2/fallback2/analysis.log",
+            "negative_log": "native/proofs/pedestrian_2/fallback2/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/draft-native-manifest.json --case training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2 --candidate primary",
+        "construction_sha256": "01238989997d4d1901120ef09bb1662bb93e15dfcfe1f5cf63196048f5a75d13",
+        "exit_code": 0,
+        "log": "native/pedestrian_2-primary-offline.log",
+        "log_sha256": "0c24930cb50632910149a3fb46f41198f1e310cd3d62220103f3120c239ebca9"
+      },
+      "measurement_contract": "native/bundles/pedestrian_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c230259-saved-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C230259__NRS-484B-113-3__motor_vehicle_driver/diagnostic-pedestrian_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/pedestrian_2/physical/physical-preparation.json",
+        "sha256": "6e407fbb1eb5c99baad2d7fc73bd81363848fb2510724d0ae1d7843af5fadae9"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/pedestrian_2/primary/proof.json",
+        "sha256": "83cd9831b02cfd590c434efd56f25daf6d891c4576d435bac0475b6ff5ff0eef",
+        "log": "native/proofs/pedestrian_2/primary/analysis.log",
+        "negative_log": "native/proofs/pedestrian_2/primary/negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/pedestrian_2/primary/negative.log",
+        "log_sha256": "369566cd454f9e01914091a3593cb29417c187a7260675ed245555cd08f65ca5"
+      }
+    }
+  ]
+}

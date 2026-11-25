@@ -36,7 +36,7 @@ def main():
         candidate = source_entry['candidates'][0]
         target = ROOT / candidate['construction']
         bundle = target.parent
-        offline_output = WORK / ('fallback-v4-offline-' + suffix)
+        offline_output = WORK / ('fallback-v5-offline-' + suffix)
         offline_cmd = [sys.executable, str(REPO / 'runtime.py'), 'offline',
                        '--manifest', str(MANIFEST), '--case', case,
                        '--candidate', 'fallback1', '--output', str(offline_output)]
@@ -49,7 +49,7 @@ def main():
                                 'construction_sha256': sha(target),
                                 'exit_code': 0, 'log': relative(offline_log),
                                 'log_sha256': sha(offline_log)}
-        public_output = WORK / ('fallback-v4-public-' + suffix)
+        public_output = WORK / ('fallback-v5-public-' + suffix)
         public_cmd = [sys.executable, str(REPO / 'runtime.py'), 'compatibility',
                       '--manifest', str(MANIFEST), '--case', case,
                       '--candidate', 'fallback1', '--output', str(public_output),

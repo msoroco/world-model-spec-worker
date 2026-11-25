@@ -37,7 +37,8 @@ def finalize(attempt, output):
     if len(frames) != 600 or len(trace) != 600:
         raise ValueError('Requires full original trace/frame join')
     for index, (frame, row) in enumerate(zip(frames, trace)):
-        if frame['video_frame'] != index or row['frame'] != index or abs(frame['time_s']-row['time_s']) > 1e-6:
+        if (frame['video_frame'] != index or row['frame'] != frame['carla_frame'] or
+                abs(frame['time_s']-row['time_s']) > 1e-6):
             raise ValueError('Trace and original camera frame join differs')
     channels = attempt/'channels'
     channels.mkdir(exist_ok=False)

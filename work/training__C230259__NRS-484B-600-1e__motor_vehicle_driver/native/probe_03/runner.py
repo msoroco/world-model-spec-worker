@@ -38,7 +38,8 @@ def _camera_pose(carla, name):
 
 def execute(case_id, output_dir, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
     suffix = case_id.rsplit('__', 1)[-1]
     if suffix not in TARGETS_MPH or not case_id.startswith('training__C230259__NRS-484B-600-1e__motor_vehicle_driver__'):
@@ -54,6 +55,8 @@ def execute(case_id, output_dir, host, port):
     if prior['settings'].synchronous_mode or any(actor.type_id.startswith(('vehicle.', 'walker.', 'sensor.', 'controller.')) for actor in old_world.get_actors()):
         raise RuntimeError('Requires an exclusive idle asynchronous Native world')
     owned, encoders, queues = [], {}, {}
+    capture = None
+    complete = False
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -75,6 +78,9 @@ def execute(case_id, output_dir, host, port):
             raise RuntimeError('Native clear corridor or separate other-vehicle lane unavailable')
         output.mkdir(parents=True, exist_ok=True)
         (output/'road.xodr').write_text(mapping.to_opendrive())
+        (output/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'physical_acceptance_claimed': False}, indent=2)+'\n')
         library = world.get_blueprint_library()
         ego_bp = library.find('vehicle.tesla.model3')
         ego_bp.set_attribute('role_name', 'c230259_speed_subject')
@@ -90,6 +96,9 @@ def execute(case_id, output_dir, host, port):
             raise RuntimeError('Separate Native vehicles did not spawn')
         owned.extend((ego, other))
         other.set_simulate_physics(False)
+        capture = PipelineCapture(client, ego, output, case_id,
+                                  visibility=False,
+                                  required_observations=json.loads((Path(__file__).parent/'config.json').read_text()).get('required_atoms', []))
         for name, width, height in CAMERAS:
             camera_bp = library.find('sensor.camera.rgb')
             camera_bp.set_attribute('image_size_x', str(width))
@@ -108,7 +117,7 @@ def execute(case_id, output_dir, host, port):
                                                '-c:v', 'ffv1', '-level', '1', str(output/(name+'.mkv'))],
                                               stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         target = TARGETS_MPH[suffix]*.44704
-        with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'native_motion.jsonl').open('x') as stream:
+        with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'native_motion.jsonl').open('x') as stream, (output/'trace.jsonl').open('x') as trace:
             start = None
             for index in range(FRAMES):
                 pose = ego.get_transform()
@@ -126,6 +135,7 @@ def execute(case_id, output_dir, host, port):
                 if start is None:
                     start = snap.timestamp.elapsed_seconds
                 elapsed = snap.timestamp.elapsed_seconds-start
+                capture.capture(frame, elapsed)
                 pose = ego.get_transform()
                 velocity = ego.get_velocity()
                 other_pose = other.get_transform()
@@ -151,6 +161,12 @@ def execute(case_id, output_dir, host, port):
                                          'road_id': measured_wp.road_id, 'lane_id': measured_wp.lane_id,
                                          'controller_request_mps': target, 'velocity_x_mps': velocity.x,
                                          'velocity_y_mps': velocity.y, 'velocity_z_mps': velocity.z})+'\n')
+                trace.write(json.dumps({'frame': frame, 'time_s': elapsed,
+                                        'position': {'x': pose.location.x, 'y': pose.location.y,
+                                                     'z': pose.location.z},
+                                        'position_m': [pose.location.x, pose.location.y, pose.location.z],
+                                        'heading_deg': pose.rotation.yaw,
+                                        'speed_mps': math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)})+'\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
@@ -164,9 +180,17 @@ def execute(case_id, output_dir, host, port):
             'vehicle_identity_source': 'Native vehicle blueprint and actor identity in original motion',
             'other_vehicle_source': 'Separate Native other vehicle actor and original relative pose',
             'driving_state_source': 'Original Native per-frame controlled vehicle state'}, indent=2)+'\n')
+        complete = True
         return {'case_id': case_id, 'frames': FRAMES, 'separate_other_vehicle': True,
                 'requested_speed_mph': TARGETS_MPH[suffix], 'physical_acceptance_claimed': False}
+    except BaseException as error:
+        (output/'native-run-status.json').write_text(json.dumps({
+            'errors': [str(error)], 'frames_complete': complete,
+            'physical_acceptance_claimed': False}, indent=2)+'\n')
+        raise
     finally:
+        if capture is not None:
+            capture.close(confirmed=complete)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -178,8 +202,12 @@ def execute(case_id, output_dir, host, port):
                 actor.destroy()
             except Exception:
                 pass
-        if changed:
-            restore(client, prior)
+        restoration = restore(client, prior) if changed else {'restored': True, 'world_unchanged': True}
+        if complete:
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                         encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
+                         context={'case_id': case_id, 'candidate_id': 'primary',
+                                  'absolute_speed_review': 'pending_original_source'})
 
 
 if __name__ == '__main__':

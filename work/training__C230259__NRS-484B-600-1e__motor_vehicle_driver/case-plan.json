@@ -58,9 +58,9 @@
       "comparison_variable": "measured speed while driving",
       "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "native_primary_offline_passed",
+      "construction_status": "cpu_delivery_prepared",
       "construction_path": "native/probe_01-construction.json",
-      "construction_sha256": "8f26fbc0e5af1b885fd591e178c487b20ba8a345c571bb820be9aee072b69f5e",
+      "construction_sha256": "4d22441becd88d2e7631de32ec004248fe98858af3b6633f36057b9d5eb84678",
       "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     },
     {
@@ -72,9 +72,9 @@
       "comparison_variable": "measured speed while driving",
       "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "native_primary_offline_passed",
+      "construction_status": "cpu_delivery_prepared",
       "construction_path": "native/probe_02-construction.json",
-      "construction_sha256": "de40afcebfb4ce13d171c22770b9a9611930c3910f389052dc49f277d08dd817",
+      "construction_sha256": "5e0538e96f9cab244f37bd9411a711f0d6aacd35463e5cae399ee5f89c1155f9",
       "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     },
     {
@@ -86,9 +86,9 @@
       "comparison_variable": "measured speed while driving",
       "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "native_primary_offline_passed",
+      "construction_status": "cpu_delivery_prepared",
       "construction_path": "native/probe_03-construction.json",
-      "construction_sha256": "a36955c81900234022e4ca89480ca3af27981370f450064feeb7986cf4f60bc8",
+      "construction_sha256": "995aaa8b6bfc4911bb69c44932130f802425ec41b2233ee712be4bdd47d1d6ff",
       "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     }
   ],
@@ -101,7 +101,7 @@
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
       ],
       "deliberate_differences": [
-        "measured speed while driving"
+        "requested controller speed 75, 80, 85 mph; original measured velocity remains the comparison observation"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
@@ -110,7 +110,14 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "audit": {
+        "script": "native/comparison_audit.py",
+        "script_sha256": "00bf4554b01f022a55b708340de010012e0b2009eac36a31fd8c33e0f66fccc8",
+        "tests": "native/comparison-audit-tests.log",
+        "tests_sha256": "246efeefe8ca7af6327050bbf8bcf37df137928a324e9d11c788d1f363ca646e",
+        "method": "Original source velocity and frame identity must independently establish observed below/at/above relation; no requested-speed substitution."
+      }
     }
   ],
   "mandatory_observation_targets": [
@@ -129,7 +136,7 @@
     },
     {
       "term": "ru.subject",
-      "note": "the vehicle judged — any kind"
+      "note": "the vehicle judged \u2014 any kind"
     }
   ],
   "source_dependencies": [
@@ -146,9 +153,8 @@
     "No posted speed sign is needed for this absolute limit; 80 mph may be physically unsafe on this road, requiring route/capability proof."
   ],
   "runtime_gaps": [
-    "Three exact survey-gated Native constructions pass pinned offline; full runtime compatibility, process-saved, semantic and delivery audits remain.",
-    "Measured at-boundary 80 mph is a physical target; requested 80 mph does not prove observed equality.",
-    "Local map survey must verify clear route and vehicle capability; actual speed, camera pixels and physical safety remain unverified."
+    "Original Native capture, measured speed and pixels require GPU delivery; CPU source-shaped diagnostic and saved processing checks pass.",
+    "Requested 80 mph does not establish measured equality; inspect original source at the strict greater-than boundary."
   ],
   "observations": [
     {
@@ -164,7 +170,7 @@
     {
       "name": "ru.subject",
       "mandatory": true,
-      "reason": "the vehicle judged — any kind"
+      "reason": "the vehicle judged \u2014 any kind"
     }
   ],
   "sources": [
@@ -179,10 +185,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Three Native primary constructions have pinned offline proofs but no original CARLA capture.",
-    "No full runtime compatibility, process-saved, semantic proposal or independent delivery audit receipts yet.",
-    "No source-hashed equivalence receipt for accepted recordings; current target membership is empty.",
-    "No observed velocity or measured below/at/above comparison; requested speed is only controller input."
+    "Original CARLA source capture has not run, so physical speed and full pixels remain unverified.",
+    "The 85 mph primary may underattain; source-triggered fallback changes throttle proportional gain only."
   ],
   "requirement_dispositions": [
     {
@@ -195,7 +199,7 @@
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "All three distinct requested-speed constructions pass pinned offline. Source-bound saved compatibility, delivery audit and measured physical comparison remain unproved."
+      "evidence_or_gap": "Three selected exact cases have offline, public positive/negative compatibility, recorded-only saved processing, physical fixture, and delivery positive/negative CPU receipts. Original Native speed and pixels await delivery."
     },
     {
       "requirement": "NRS-484B-600-1e",
@@ -207,7 +211,7 @@
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "All three distinct requested-speed constructions pass pinned offline. Source-bound saved compatibility, delivery audit and measured physical comparison remain unproved."
+      "evidence_or_gap": "Three selected exact cases have offline, public positive/negative compatibility, recorded-only saved processing, physical fixture, and delivery positive/negative CPU receipts. Original Native speed and pixels await delivery."
     }
   ],
   "source_observation_mapping": {
@@ -243,5 +247,32 @@
         "native_motion.jsonl:driving_state"
       ]
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and other vehicle on clear road",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "ego vehicle original lane and motion",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego at corridor reference and other vehicle",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego forward road view",
+        "interval": "0-30 s"
+      }
+    ]
   }
 }

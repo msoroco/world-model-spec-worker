@@ -55,12 +55,13 @@ def _channels(attempt,description):
     motion=rows(attempt/'native-motion.jsonl')
     context=json.loads((attempt/'traffic-context.json').read_text())
     destination=attempt/'channels';destination.mkdir(exist_ok=True)
-    first=None
+    first=next((row['time_s'] for row in motion
+        if row['ego']['velocity_xy_mps'][0]<-.1),None)
+    if first is None:raise ValueError('No measured original backing onset')
     values={name:[] for name in (c['name'] for c in description['channels'])}
     for row in motion:
         time=row['time_s'];ego=row['ego'];other=row['other'];ped=row.get('pedestrian')
         backing=ego['velocity_xy_mps'][0]<-.1
-        if first is None and backing:first=time
         channel={'drv.backing':{'backing':backing,'ego':ego},
             'drv.yields_to':{'ego':ego,'other':other,'pedestrian':ped,'legal_verdict':'unresolved'},
             'ru.pedestrian':{'present':ped is not None,'actor':ped},
@@ -72,7 +73,7 @@ def _channels(attempt,description):
                 'engineering_observation_only':True},
             'drv.hard_deceleration':{'other_velocity_xy_mps':other['velocity_xy_mps'],
                 'cause_unresolved':True},
-            'backing_onset_s':first if first is not None else 0.0,
+            'backing_onset_s':first,
             'native_body_pose_control':row,
             'camera_frame_join':{'native_frame':row['native_frame'],'video_frame':row['video_frame']}}
         for name in values:
@@ -82,8 +83,7 @@ def _channels(attempt,description):
 
 
 def finalize(attempt,output):
-    from worker_exchange.native_output import write_result
-    from worker_exchange.measurement_contract import physical_result
+    from worker_exchange.native_output import write_result,physical_result
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Use fresh saved finalization output')
@@ -105,6 +105,14 @@ def finalize(attempt,output):
         'tolerance':'50 ms sampled timing; no legal threshold',
         'matched':values['backing_frames']>0 and values['simultaneous_frames']>0,
         'physical_cause_confirmed':False,'cause_evidence':list(measured['sources'])}
+    motion_rows=rows(attempt/'native-motion.jsonl')
+    onset=next((row['time_s'] for row in motion_rows
+        if row['ego']['velocity_xy_mps'][0]<-.1),None)
+    if onset is None:raise ValueError('No measured original backing onset')
+    onset_reference='channels/backing_onset_s.jsonl'
+    realized={'backing_onset_s':{'unit':'s','method':'first original negative signed ego velocity',
+        'time_window':'30 s original recording','statistic':'first','reference':onset_reference,
+        'value':onset,'sample_window_s':[0.0,motion_rows[-1]['time_s']]}}
     result={'case_id':config['case_id'],'measured_values':values,'target_checks':[check],
         'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,
         'termination_reason':'Full original duration retained; saved assessment pending',
@@ -112,8 +120,9 @@ def finalize(attempt,output):
         'trace_reference':'trace.jsonl','video_references':[n+'.mkv' for n in CAMERAS],
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],'recording_evidence':evidence,
-        'realized_observables':{},'legal_verdict_claimed':False,'accepted':False}
+        'realized_observables':realized,'legal_verdict_claimed':False,'accepted':False}
     result=physical_result(attempt,result)
+    result['realized_observables']['backing_onset_s']=realized['backing_onset_s']
     write_result(attempt,result)
     report={'format':'c230259-saved-measurement-v1','case_id':config['case_id'],
         'candidate_id':config['candidate_id'],

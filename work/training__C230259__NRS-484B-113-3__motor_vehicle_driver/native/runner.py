@@ -124,7 +124,11 @@ def execute(output,host,port):
             'driver_control_source':'runner.py script controls ego target velocity per original Native frame',
             'pedestrian_presence_reviewed':True,'pedestrian_actor_count_at_start':int(pedestrian is not None),
             'pedestrian_actor_id':pedestrian.id if pedestrian is not None else None,
-            'precedence_reviewed':False,'right_of_way_legal_verdict':None},indent=2)+'\n')
+            'precedence_reviewed':False,'right_of_way_legal_verdict':None,
+            'road_and_actor_context':{'road_source':'original authored OpenDRIVE Native map',
+                'ego_actor_id':ego.id,'other_actor_id':other.id,
+                'pedestrian_actor_id':pedestrian.id if pedestrian is not None else None,
+                'conflict_region':CONFLICT}},indent=2)+'\n')
         return {'frames':FRAMES,'camera_names':list(queues),
             'section_stem_recovered':True,'physical_acceptance_claimed':False}
     finally:

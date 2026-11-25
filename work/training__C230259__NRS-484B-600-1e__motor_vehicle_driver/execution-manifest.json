@@ -36,10 +36,10 @@
         "log": "native/proofs/probe_01/public-analysis.log",
         "negative_log": "native/proofs/probe_01/negative-analysis.log",
         "receipt": "native/proofs/probe_01/compatibility.json",
-        "sha256": "04c5566e436740207a5599480b259652471774d55ad53a2100a356567920e6ed"
+        "sha256": "2eb132fff0e9d638f73b4268b2c3ce59cc869631699e836fb9762e68c0876274"
       },
       "construction": "native/probe_01-construction.json",
-      "construction_sha256": "8f26fbc0e5af1b885fd591e178c487b20ba8a345c571bb820be9aee072b69f5e",
+      "construction_sha256": "4d22441becd88d2e7631de32ec004248fe98858af3b6633f36057b9d5eb84678",
       "fixture_recipe": "work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_01/fixture-recipe.json",
       "id": "probe_01",
       "kind": "delivery",
@@ -55,14 +55,14 @@
       "negative": {
         "expected_error": "Missing required source: native_motion.jsonl",
         "log": "native/proofs/probe_01/negative-analysis.log",
-        "log_sha256": "fc717872c7dc9219ee2e5e58ad5c52642056196b6abe722d11fd23acab9b7640"
+        "log_sha256": "5b225aa8279c9ed1ccbdcb6e48b5657e4df6fe5077cd776605de9f7e5103171a"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --output .runtime-work/c230259-offline-probe_01",
-        "construction_sha256": "8f26fbc0e5af1b885fd591e178c487b20ba8a345c571bb820be9aee072b69f5e",
+        "construction_sha256": "4d22441becd88d2e7631de32ec004248fe98858af3b6633f36057b9d5eb84678",
         "exit_code": 0,
         "log": "native/probe_01-offline.log",
-        "log_sha256": "9b72f9083af396a58e79df69ccce2ab2ee6d8c9397b87fa057726fe2da298179"
+        "log_sha256": "f11fbf1782806e10924462e4e949c2c37a5dd030120f66d5dfd40cc5722398c8"
       },
       "recording_description": {
         "channels": [
@@ -99,6 +99,45 @@
           "Controller request is not measured speed",
           "CPU diagnostics do not establish physical speed or pixels"
         ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "test_log": "native/proofs/probe_01/saved.log",
+        "test_log_sha256": "8b1f1995e8a72388a63e4294593d413d1f1a6269b9021d972eefc987e600d6c3",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_01/physical-preparation.json",
+        "sha256": "4c0ebfcd31ef12b16b3365b99c4073e9319c58e486e1f147eef789ba6c068b38"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-01c --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-01/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-01-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-01c --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-01/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-01-positive.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_01/delivery-negative.log",
+        "negative_log_sha256": "d765c2a8c004598c38687636e0d6c349b7c8a0a3a24bd9fae6c773ebd21039d9"
       }
     },
     {
@@ -136,10 +175,10 @@
         "log": "native/proofs/probe_02/public-analysis.log",
         "negative_log": "native/proofs/probe_02/negative-analysis.log",
         "receipt": "native/proofs/probe_02/compatibility.json",
-        "sha256": "3ff73183920824569a42c84e274d1d7b5c3ade7f97b731d4444b244f3a3af25a"
+        "sha256": "3a4a0d4b658bdd83c61b2a9b1661041b9a0f7844c451d692c486add7e6b28c15"
       },
       "construction": "native/probe_02-construction.json",
-      "construction_sha256": "de40afcebfb4ce13d171c22770b9a9611930c3910f389052dc49f277d08dd817",
+      "construction_sha256": "5e0538e96f9cab244f37bd9411a711f0d6aacd35463e5cae399ee5f89c1155f9",
       "fixture_recipe": "work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_02/fixture-recipe.json",
       "id": "probe_02",
       "kind": "delivery",
@@ -155,14 +194,14 @@
       "negative": {
         "expected_error": "Missing required source: native_motion.jsonl",
         "log": "native/proofs/probe_02/negative-analysis.log",
-        "log_sha256": "48266f1b0fd8a21cc1c4df7c2d48bea30189e2e6dbfa9763c34305bed171c7b2"
+        "log_sha256": "22e63649b3c8414b99ec4b096e7e3df77fa8d3669e901762f2651abd25983fe6"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --output .runtime-work/c230259-offline-probe_02",
-        "construction_sha256": "de40afcebfb4ce13d171c22770b9a9611930c3910f389052dc49f277d08dd817",
+        "construction_sha256": "5e0538e96f9cab244f37bd9411a711f0d6aacd35463e5cae399ee5f89c1155f9",
         "exit_code": 0,
         "log": "native/probe_02-offline.log",
-        "log_sha256": "91e726376a83bb6a24e82d556e5a24fb7455b01f5198c65e4eb519b17ac6a72a"
+        "log_sha256": "2c4f163a136d22c0ba5c686d9f2c509f271243f75594b0d6a5a852debcb47f0e"
       },
       "recording_description": {
         "channels": [
@@ -199,6 +238,45 @@
           "Controller request is not measured speed",
           "CPU diagnostics do not establish physical speed or pixels"
         ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "test_log": "native/proofs/probe_02/saved.log",
+        "test_log_sha256": "f977d61a4ba12cd39245fcfa3abf480853419965d1d763b852a2b9fae60c2a0e",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_02/physical-preparation.json",
+        "sha256": "78c2012aa4631d57f4e37af9f2bc5875544895d92296d0d8b42e82032af79f31"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-02 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-02/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-02-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-02 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-02/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-02-positive.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_02/delivery-negative.log",
+        "negative_log_sha256": "d765c2a8c004598c38687636e0d6c349b7c8a0a3a24bd9fae6c773ebd21039d9"
       }
     },
     {
@@ -230,16 +308,43 @@
         "reason": "Requested speed may not be achieved on a reviewed clear route",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/probe_03-fallback1-construction.json",
+          "construction_sha256": "6a7ef55fbd0aa3e7adb8c5f306e40d592c1f5fec41061643994dfa0e38026ff7",
+          "trigger": {
+            "source": "original native_motion.jsonl and result.json",
+            "metric": "original measured speed in the selected 600-frame window",
+            "failure_condition": "the primary 85 mph requested-speed attempt does not produce an original measured interval strictly above 80 mph, after source completeness and clear-route review"
+          },
+          "changed_knobs": [
+            "throttle proportional speed-error gain from 0.14 to 0.18 at the unchanged 85 mph request"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "6a7ef55fbd0aa3e7adb8c5f306e40d592c1f5fec41061643994dfa0e38026ff7",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c230259-owner/fallback03-offline",
+            "log": "native/proofs/probe_03/fallback1-offline.log",
+            "log_sha256": "2fba6e03c6576773cf3779f77886a76c0390f7a54a7a49b46802e44ba15262a4"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe_03/fallback1-compatibility.json",
+            "sha256": "952b15dbefd72235943833e395714ed298232537715f33c9f1aac17c02d761bf",
+            "log": "native/proofs/probe_03/fallback1-compatibility-analysis.log",
+            "negative_log": "native/proofs/probe_03/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
       "compatibility": {
         "log": "native/proofs/probe_03/public-analysis.log",
         "negative_log": "native/proofs/probe_03/negative-analysis.log",
         "receipt": "native/proofs/probe_03/compatibility.json",
-        "sha256": "3899c4e4e12add305eab217531d982214aa59d17e49d8e7edcdd0539b8530db7"
+        "sha256": "77ec71993d952e7fea9e57645a92341f22ffaeb674c0aaea6345831c626c4a59"
       },
       "construction": "native/probe_03-construction.json",
-      "construction_sha256": "a36955c81900234022e4ca89480ca3af27981370f450064feeb7986cf4f60bc8",
+      "construction_sha256": "995aaa8b6bfc4911bb69c44932130f802425ec41b2233ee712be4bdd47d1d6ff",
       "fixture_recipe": "work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_03/fixture-recipe.json",
       "id": "probe_03",
       "kind": "delivery",
@@ -255,14 +360,14 @@
       "negative": {
         "expected_error": "Missing required source: native_motion.jsonl",
         "log": "native/proofs/probe_03/negative-analysis.log",
-        "log_sha256": "b40c74456500d509a1dea9700dbc352dcb978ccee7ff1311279218ad3436a9b6"
+        "log_sha256": "b75208620beeb722ba83be391f985fbe5058fb7915fd0c3ccbeaad36d5973bf6"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --output .runtime-work/c230259-offline-probe_03",
-        "construction_sha256": "a36955c81900234022e4ca89480ca3af27981370f450064feeb7986cf4f60bc8",
+        "construction_sha256": "995aaa8b6bfc4911bb69c44932130f802425ec41b2233ee712be4bdd47d1d6ff",
         "exit_code": 0,
         "log": "native/probe_03-offline.log",
-        "log_sha256": "ad48d5531e747d8dbddfef20cddcff36fb1e557ce17484b44b4cecf2b22b9ea9"
+        "log_sha256": "1b301a5e82a364ad3cf16e01b76216f8595dc1f32ce6b950133dd85949acbae1"
       },
       "recording_description": {
         "channels": [
@@ -299,6 +404,45 @@
           "Controller request is not measured speed",
           "CPU diagnostics do not establish physical speed or pixels"
         ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+        "test_log": "native/proofs/probe_03/saved.log",
+        "test_log_sha256": "ac5049dfee62a1905be17a709874b5ec9809b945adfd13b989194250a8d9af94",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_03/physical-preparation.json",
+        "sha256": "fe9fc5d1af914f6ce8e056940c522eebb4e255c693195e94e688e3d013df0534"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-03 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-03/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-03-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_03/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/compat-03 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/saved-03/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230259-owner/audit-03-positive.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_03/delivery-negative.log",
+        "negative_log_sha256": "d765c2a8c004598c38687636e0d6c349b7c8a0a3a24bd9fae6c773ebd21039d9"
       }
     }
   ],

@@ -55,7 +55,7 @@ def build_case(suffix):
             'replay_simulation_time_s':time,'actor_id':101,
             'ego':{'body_vertices_m':vertices,'position_m':[x,y,1.2],
                 'heading_deg':0,'speed_mps':ego['speed_mps'],
-                'speed_provenance':'synthetic_diagnostic'},
+                'speed_provenance':'synthetic_native_sample'},
             'world':{'weather':{'cloudiness':0,'precipitation':0,'wetness':0,'fog_density':0},
                 'road_projection':{'road_id':1,'section_id':0,'lane_id':-1,'s_m':x+80}}}
         graph_path=f'capture/native/graphs/base/{frame:08d}.adapter.json'
@@ -78,13 +78,18 @@ def build_case(suffix):
         'driver_control_reviewed':True,'ego_actor_id':101,'other_actor_id':102,
         'pedestrian_presence_reviewed':True,'pedestrian_actor_count_at_start':int(branch),
         'pedestrian_actor_id':103 if branch else None,'precedence_reviewed':False,
-        'right_of_way_legal_verdict':None,'fixture_kind':'synthetic_diagnostic_only'}
+        'right_of_way_legal_verdict':None,'fixture_kind':'synthetic_diagnostic_only',
+        'road_and_actor_context':{'road_source':'authored OpenDRIVE diagnostic',
+            'ego_actor_id':101,'other_actor_id':102,
+            'pedestrian_actor_id':103 if branch else None,
+            'conflict_region':CONFLICT}}
     write(source_root/'traffic-context.json',json.dumps(context,indent=2)+'\n')
     manifest={'extraction_confirmed':True,'frames':600,
         'sources':{'road.xodr':sha(road),'trace.jsonl':sha(source_root/'trace.jsonl')},
         'synthetic_diagnostic':True}
     write(source_root/'capture/manifest.json',json.dumps(manifest)+'\n')
-    write(source_root/'capture/recorder_info.txt','Synthetic diagnostic only; no CARLA recorder')
+    write(source_root/'capture/recorder_info.txt',
+        'Synthetic diagnostic only; no CARLA recorder\nCreate 101: vehicle.tesla.model3\n')
     generator={'files':{},'graphs':graphs,
         'videos':[{'path':name+'.mkv','frames':600,'width':1920 if name=='overview' else 1280,
             'height':1080 if name=='overview' else 720,'fps':20,'color':'black'} for name in CAMERAS]}

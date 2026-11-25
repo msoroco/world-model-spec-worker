@@ -47,7 +47,11 @@ def main():
             'scope': 'CPU audit boundary only; original Native delivery unverified'}
         entry['remaining_cpu_bindings'] = [item for item in entry['remaining_cpu_bindings']
                                            if item not in ('per_case_physical_preparation',
-                                                           'delivery_acceptance_positive_and_negative')]
+                                                           'delivery_acceptance_positive_and_negative',
+                                                           'independent_physical_comparison')]
+        entry['remaining_original_source_bindings'] = [
+            'independent_physical_comparison', 'original_native_capture_and_pixel_review',
+            'source_authorized_legal_classification']
     DRAFT.write_text(json.dumps(draft, indent=2, allow_nan=False) + '\n')
     print('PASS bound 13 exact synthetic physical and delivery audit CPU contracts')
 

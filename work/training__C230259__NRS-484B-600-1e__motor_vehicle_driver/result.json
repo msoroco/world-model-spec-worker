@@ -2,15 +2,20 @@
   "assignment_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "397b2e1997858036a01f5f4225adc4cecae5a756da735a1ec30f96152d8735a9",
   "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Three distinct 75/80/85 mph requested-speed Native bundles now construct an 1,800 m two-lane corridor, a separate other vehicle, source velocity and four profile cameras; exact pinned offline passes. Source-shaped velocity and comparison audit CPU tests pass. Full runtime compatibility, saved processing, semantic proposals and independent delivery audit remain; physical speed and pixels are unverified.",
+  "readiness_kind": "native_capture_repair",
   "planned_case_count": 3,
-  "candidate_count": 3,
+  "candidate_count": 2,
   "selected_delivery_case_count": 3,
   "reuse_count": 0,
   "source_law_review": "Reviewed exact NRS 484B.600(1)(e): speed greater than 80 mph in any event for a vehicle of any kind or character. No posted-limit source is needed. Measured velocity, not requested controller speed, determines the observation; no invented legal tolerance.",
   "applied_update": 16,
   "tests": [
+    {
+      "command": "PYTHONPATH=$PWD ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py -v",
+      "exit_code": 0,
+      "log": "native/root-bundle-tests.log",
+      "sha256": "e4a4958b2883d36271606825e3f6978898b02922b2fd01b6159146dcf2f93a73"
+    },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/native -p test_comparison_audit.py -v",
       "exit_code": 0,
@@ -22,5 +27,20 @@
     "Reviewed map/clear route and vehicle capability",
     "Actual Native speed below, at and above 80 mph",
     "Real camera visibility and physical completion"
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230259__NRS-484B-600-1e__motor_vehicle_driver --case training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "cpu_checkpoint": {
+    "selected_cases": 3,
+    "primary_offline_passed": 3,
+    "fallback_offline_passed": 1,
+    "primary_public_positive_negative_passed": 3,
+    "fallback_public_positive_negative_passed": 1,
+    "recorded_only_saved_passed": 3,
+    "physical_preparation_case_count": 3,
+    "semantic_stage_count": 5,
+    "independent_delivery_positive_negative_passed": 3,
+    "original_native_executed": false,
+    "diagnostic_only": true
+  },
+  "reason": "Public CPU proofs passed, but the selected Native runner needs original trace, PipelineCapture and capture seal rebinding before delivery readiness can be claimed."
 }
