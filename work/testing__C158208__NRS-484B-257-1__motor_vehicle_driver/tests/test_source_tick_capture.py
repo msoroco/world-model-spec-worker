@@ -57,12 +57,14 @@ class SourceTickCaptureTests(unittest.TestCase):
                 writer.append(raw(index))
             writer.close()
             construction = root / "construction.json"
-            construction.write_text('{"case":"exact"}\n')
+            case = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response"
+            construction.write_text(json.dumps({"case_id": case,
+                "law_id": "NRS-484B-257-1", "cell_id": "C158208",
+                "actor": "motor_vehicle_driver", "diagnostic_only": True}) + "\n")
             opendrive = b"<OpenDRIVE>test map</OpenDRIVE>"
             site = root / "site.json"
             site.write_text(json.dumps({"review_status": "reviewed",
                 "map_opendrive_sha256": hashlib.sha256(opendrive).hexdigest()}) + "\n")
-            case = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response"
             result = capture.write_capture_identity(attempt, case, construction, site,
                                                     opendrive, diagnostic_fixture=True)
             self.assertEqual(result["case_id"], case)
@@ -81,7 +83,10 @@ class SourceTickCaptureTests(unittest.TestCase):
                 writer.append(raw(index))
             writer.close()
             construction = root / "construction.json"
-            construction.write_text("{}\n")
+            construction.write_text(json.dumps({"case_id":
+                "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+                "law_id": "NRS-484B-257-1", "cell_id": "C158208",
+                "actor": "motor_vehicle_driver", "diagnostic_only": True}) + "\n")
             site = root / "site.json"
             site.write_text(json.dumps({"review_status": "pending",
                 "map_opendrive_sha256": hashlib.sha256(b"map-a").hexdigest()}) + "\n")
@@ -94,8 +99,38 @@ class SourceTickCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "reviewed site packet differs"):
                 capture.write_capture_identity(attempt, case, construction, site, b"map-b",
                                                diagnostic_fixture=True)
+            payload = json.loads(construction.read_text())
+            payload["diagnostic_only"] = False
+            construction.write_text(json.dumps(payload) + "\n")
             with self.assertRaisesRegex(ValueError, "900 contiguous"):
                 capture.write_capture_identity(attempt, case, construction, site, b"map-a")
+
+    def test_identity_rejects_other_case_and_diagnostic_construction_in_original_mode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            attempt = root / "attempt"
+            writer = capture.TickCapture(attempt, GEOMETRY, CONTEXT)
+            for index in range(3):
+                writer.append(raw(index))
+            writer.close()
+            case = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response"
+            other = case.replace("nearest_view_response", "nearest_view_uninterrupted")
+            construction = root / "construction.json"
+            payload = {"case_id": other, "law_id": "NRS-484B-257-1",
+                       "cell_id": "C158208", "actor": "motor_vehicle_driver",
+                       "diagnostic_only": True}
+            construction.write_text(json.dumps(payload) + "\n")
+            opendrive = b"<OpenDRIVE>source</OpenDRIVE>"
+            site = root / "site.json"
+            site.write_text(json.dumps({"review_status": "reviewed",
+                "map_opendrive_sha256": hashlib.sha256(opendrive).hexdigest()}) + "\n")
+            with self.assertRaisesRegex(ValueError, "exact construction identity"):
+                capture.write_capture_identity(attempt, case, construction, site,
+                                               opendrive, diagnostic_fixture=True)
+            payload["case_id"] = case
+            construction.write_text(json.dumps(payload) + "\n")
+            with self.assertRaisesRegex(ValueError, "production construction"):
+                capture.write_capture_identity(attempt, case, construction, site, opendrive)
 
     def test_sealed_originals_rederive_measured_branch(self):
         with tempfile.TemporaryDirectory() as directory:

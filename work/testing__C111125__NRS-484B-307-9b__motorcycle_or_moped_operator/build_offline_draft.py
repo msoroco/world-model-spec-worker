@@ -166,7 +166,12 @@ def build():
                   'case': {'case_id': case_id,
                            'recording_description': recording_description()},
                   'plan_sha256': hashlib.sha256(source).hexdigest(),
-                  'fps': 20, 'frame_count': 900, 'duration_s': 45,
+                  'fps': 20, 'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
+                  'physical_completion': {
+                      'criterion': 'travel_progress', 'motion_source': 'trace.jsonl',
+                      'position_key': 'position_m', 'minimum_progress_m': 20,
+                      'minimum_samples': 900,
+                      'completion_goal_method': '20 m recorded route progress through the authored straight intersection; engineering check only, not a statutory threshold'},
                   'cameras': ['overview', 'approach', 'reference_corner',
                               'driver_reference'], 'required_atoms': [],
                   'required_sources': ['loaded_map', 'official_composite_head',

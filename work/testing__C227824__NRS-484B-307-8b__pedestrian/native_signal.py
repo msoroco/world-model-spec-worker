@@ -39,6 +39,14 @@ def _review(scene):
 def bind(world, scene):
     """Resolve exact original actors and require route/authority metadata."""
     route, ids, head_id = _review(scene)
+    all_actors = world.get_actors()
+    if all_actors is None:
+        raise ValueError("original world actor inventory unavailable")
+    inventoried = sorted(actor.id for actor in all_actors
+                         if actor.attributes.get("official_pedestrian_signal") == "true"
+                         and actor.attributes.get("governs_pedestrian_route_id") == route)
+    if inventoried != sorted(ids):
+        raise ValueError("original governing pedestrian device inventory differs")
     head = world.get_actor(head_id)
     if head is None or head.attributes.get("official_traffic_signal") != "true" or head.attributes.get("governs_pedestrian_route_id") != route:
         raise ValueError("official route-facing traffic head absent")
@@ -83,6 +91,11 @@ def sample(head, others, scene, *, frame, time_s):
         raise ValueError("invalid original signal frame")
     if head.id != head_id or [actor.id for actor in others] != ids:
         raise ValueError("original signal actors changed")
+    if (head.attributes.get("official_traffic_signal") != "true" or
+            head.attributes.get("governs_pedestrian_route_id") != route or
+            head.attributes.get("signal_shape") != "circle" or
+            head.attributes.get("sole_illuminated") != "true"):
+        raise ValueError("original route-facing signal authority changed")
     if _state(head) != "red":
         raise ValueError("facing traffic head not red in original frame")
     common = {"case_id": scene["case_id"], "frame": frame, "time_s": float(time_s)}
@@ -91,10 +104,16 @@ def sample(head, others, scene, *, frame, time_s):
         "head_id": head.id, "route_id": route,
         "asset_source_sha256": scene["device_inventory_review"]["source_sha256"]}}
     devices = []
+    requested = scene.get("requested_pedestrian_indication")
     for actor in others:
+        if (actor.attributes.get("official_pedestrian_signal") != "true" or
+                actor.attributes.get("governs_pedestrian_route_id") != route):
+            raise ValueError("original pedestrian device authority changed")
         indication = _state(actor)
         if indication not in DEVICES:
             raise ValueError("unsupported original pedestrian device state")
+        if indication != requested:
+            raise ValueError("original pedestrian indication differs from requested case")
         device = {"official": True, "indication": indication, "head_id": actor.id,
                   "route_id": route}
         if indication == "flashing_hand_countdown":

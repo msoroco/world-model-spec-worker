@@ -42,6 +42,9 @@ class World:
     def get_actor(self, ident):
         return self.actors.get(ident)
 
+    def get_actors(self):
+        return list(self.actors.values())
+
 
 class Carla:
     TrafficLightState = SimpleNamespace(Red="Red")
@@ -87,8 +90,14 @@ class NativeSignalTests(unittest.TestCase):
             MODULE.bind(World(Actor(5, "official_traffic_signal")), s)
         s = scene("walk")
         wrong = Actor(8, "official_pedestrian_signal", route="other")
-        with self.assertRaisesRegex(ValueError, "official pedestrian device absent"):
+        with self.assertRaisesRegex(ValueError, "device inventory differs"):
             MODULE.bind(World(Actor(5, "official_traffic_signal"), wrong), s)
+
+    def test_rejects_unlisted_governing_device_in_no_device_case(self):
+        s = scene()
+        unlisted = Actor(8, "official_pedestrian_signal")
+        with self.assertRaisesRegex(ValueError, "device inventory differs"):
+            MODULE.bind(World(Actor(5, "official_traffic_signal"), unlisted), s)
 
     def test_rejects_unreadable_countdown_and_nonred_frame(self):
         head = Actor(5, "official_traffic_signal")
@@ -101,6 +110,30 @@ class NativeSignalTests(unittest.TestCase):
             MODULE.sample(bound, others, s, frame=17, time_s=.85)
         head.indication = "Green"
         with self.assertRaisesRegex(ValueError, "not red"):
+            MODULE.sample(bound, others, s, frame=17, time_s=.85)
+
+    def test_rejects_signal_or_device_authority_drift_after_configuration(self):
+        head = Actor(5, "official_traffic_signal")
+        other = Actor(8, "official_pedestrian_signal")
+        s = scene("walk")
+        bound, others = MODULE.bind(World(head, other), s)
+        MODULE.configure(bound, others, s, Carla)
+        head.attributes["sole_illuminated"] = "false"
+        with self.assertRaisesRegex(ValueError, "signal authority changed"):
+            MODULE.sample(bound, others, s, frame=17, time_s=.85)
+        head.attributes["sole_illuminated"] = "true"
+        other.attributes["governs_pedestrian_route_id"] = "other-route"
+        with self.assertRaisesRegex(ValueError, "device authority changed"):
+            MODULE.sample(bound, others, s, frame=17, time_s=.85)
+
+    def test_rejects_indication_drift_after_configuration(self):
+        head = Actor(5, "official_traffic_signal")
+        other = Actor(8, "official_pedestrian_signal")
+        s = scene("walk")
+        bound, others = MODULE.bind(World(head, other), s)
+        MODULE.configure(bound, others, s, Carla)
+        other.indication = "steady_hand"
+        with self.assertRaisesRegex(ValueError, "differs from requested case"):
             MODULE.sample(bound, others, s, frame=17, time_s=.85)
 
 

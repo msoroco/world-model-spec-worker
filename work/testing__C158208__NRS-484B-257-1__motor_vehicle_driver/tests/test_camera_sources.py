@@ -59,7 +59,10 @@ def fixture(attempt):
                                    for camera, name in enumerate(CAMERAS)}})
     capture.close()
     construction = attempt.parent / "construction.json"
-    construction.write_text('{"case":"nearest_view_response"}\n')
+    construction.write_text(json.dumps({"case_id":
+        "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+        "law_id": "NRS-484B-257-1", "cell_id": "C158208",
+        "actor": "motor_vehicle_driver", "diagnostic_only": True}) + "\n")
     opendrive = b"<OpenDRIVE>diagnostic map</OpenDRIVE>"
     site = attempt.parent / "reviewed-site.json"
     site.write_text(json.dumps({"review_status": "reviewed",
@@ -139,7 +142,10 @@ class CameraSourcesTests(unittest.TestCase):
                                "cameras": images})
             capture.close()
             construction = attempt.parent / "construction.json"
-            construction.write_text('{"case":"nearest_view_response"}\n')
+            construction.write_text(json.dumps({"case_id":
+                "testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response",
+                "law_id": "NRS-484B-257-1", "cell_id": "C158208",
+                "actor": "motor_vehicle_driver", "diagnostic_only": True}) + "\n")
             opendrive = b"<OpenDRIVE>diagnostic map</OpenDRIVE>"
             site = attempt.parent / "reviewed-site.json"
             site.write_text(json.dumps({"review_status": "reviewed",

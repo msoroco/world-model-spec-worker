@@ -51,6 +51,9 @@ class World:
     def get_actor(self, actor_id):
         return self.head if actor_id == 5 else None
 
+    def get_actors(self):
+        return [self.head]
+
     def tick(self):
         self.frame += 1
         self.walker.x += .8

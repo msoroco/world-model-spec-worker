@@ -35,6 +35,9 @@ class Walker:
 
 class Head:
     id = 5
+    attributes = {"official_traffic_signal": "true",
+                  "governs_pedestrian_route_id": "crossing-1",
+                  "signal_shape": "circle", "sole_illuminated": "true"}
 
     def get_state(self):
         return "Red"

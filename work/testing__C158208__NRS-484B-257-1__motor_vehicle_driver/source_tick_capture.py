@@ -191,6 +191,15 @@ def write_capture_identity(attempt: Path, case_id: str, construction: Path,
     output = attempt / "capture-identity.json"
     if output.exists():
         raise ValueError("capture identity already exists")
+    construction_bytes = Path(construction).read_bytes()
+    if not construction_bytes:
+        raise ValueError("construction source is empty")
+    selected = json.loads(construction_bytes)
+    if selected.get("case_id") != case_id or selected.get("law_id") != "NRS-484B-257-1" or \
+            selected.get("cell_id") != "C158208" or selected.get("actor") != "motor_vehicle_driver":
+        raise ValueError("exact construction identity differs from capture case")
+    if not diagnostic_fixture and selected.get("diagnostic_only") is not False:
+        raise ValueError("original capture requires a production construction")
     packet = verify_seal(attempt)
     if not diagnostic_fixture and len(packet["samples"]) != 900:
         raise ValueError("original capture requires 900 contiguous 20 Hz frames")
@@ -201,9 +210,6 @@ def write_capture_identity(attempt: Path, case_id: str, construction: Path,
     map_hash = hashlib.sha256(opendrive).hexdigest()
     if site.get("map_opendrive_sha256") != map_hash or site.get("review_status") != "reviewed":
         raise ValueError("reviewed site packet differs from actual loaded map")
-    construction_bytes = Path(construction).read_bytes()
-    if not construction_bytes:
-        raise ValueError("construction source is empty")
     identity = {"format": "c158208-original-capture-identity-v1",
                 "assignment_id": prefix, "case_id": case_id,
                 "construction_sha256": hashlib.sha256(construction_bytes).hexdigest(),

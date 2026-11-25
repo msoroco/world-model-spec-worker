@@ -124,7 +124,10 @@ class NativeAttemptTests(unittest.TestCase):
             "reviewed_context": CONTEXT,
             "map_opendrive_sha256": hashlib.sha256(b"<OpenDRIVE>site</OpenDRIVE>").hexdigest()}) + "\n")
         self.construction = self.root / "construction.json"
-        self.construction.write_text('{"case": "response"}\n')
+        self.construction.write_text(json.dumps({"case_id":
+            ASSIGNMENT + "__nearest_view_response", "law_id": "NRS-484B-257-1",
+            "cell_id": "C158208", "actor": "motor_vehicle_driver",
+            "diagnostic_only": True}) + "\n")
         self.client, self.adapter, self.restore = Client(), Adapter(), Restore()
         self.case = ASSIGNMENT + "__nearest_view_response"
         self.attempt = self.root / "attempt"
