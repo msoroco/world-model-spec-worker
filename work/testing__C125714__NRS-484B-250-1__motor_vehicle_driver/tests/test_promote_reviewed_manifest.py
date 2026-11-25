@@ -61,7 +61,11 @@ class PromotionTests(unittest.TestCase):
             proof["cases"][case_id] = {}
             for stage in REQUIRED:
                 rel = suffix + "/" + stage + ".json"
-                stage_hash = write(base / rel, {"case_id": case_id, "construction_sha256": digest})
+                stage_hash = write(base / rel, {"case_id": case_id, "construction_sha256": digest,
+                                                "stage": stage, "passed": True,
+                                                "scope": "cpu_preparation",
+                                                "physical_acceptance_claimed": False,
+                                                "legal_acceptance_claimed": False})
                 proof["cases"][case_id][stage] = {"receipt": rel, "sha256": stage_hash}
         write(base / "candidate-index.json", {"format": "worker-reviewed-delivery-candidates",
                                                "assignment_id": ROOT.name,
@@ -145,6 +149,32 @@ class PromotionTests(unittest.TestCase):
             receipts = self.fixture(base)
             (base / "advance" / "fallback1-construction.json").write_text("{}\n")
             with self.assertRaisesRegex(ValueError, "fallback construction hash changed"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_failed_or_mislabelled_cpu_receipt(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            case_id = ROOT.name + "__advance"
+            stage_path = base / "advance" / "delivery_acceptance.json"
+            index = json.loads(receipts.read_text())
+            detail = json.loads(stage_path.read_text())
+            detail["passed"] = False
+            index["cases"][case_id]["delivery_acceptance"]["sha256"] = write(stage_path, detail)
+            write(receipts, index)
+            with self.assertRaisesRegex(ValueError, "failed or mislabelled delivery_acceptance"):
+                assemble(base, receipts, allow_scratch=True)
+            detail["passed"] = True
+            detail["stage"] = "offline"
+            index["cases"][case_id]["delivery_acceptance"]["sha256"] = write(stage_path, detail)
+            write(receipts, index)
+            with self.assertRaisesRegex(ValueError, "failed or mislabelled delivery_acceptance"):
+                assemble(base, receipts, allow_scratch=True)
+            detail["stage"] = "delivery_acceptance"
+            detail["physical_acceptance_claimed"] = True
+            index["cases"][case_id]["delivery_acceptance"]["sha256"] = write(stage_path, detail)
+            write(receipts, index)
+            with self.assertRaisesRegex(ValueError, "failed or mislabelled delivery_acceptance"):
                 assemble(base, receipts, allow_scratch=True)
 
 

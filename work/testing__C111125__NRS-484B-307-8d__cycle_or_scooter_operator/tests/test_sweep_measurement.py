@@ -31,6 +31,13 @@ class SweepMeasurementTests(unittest.TestCase):
                                                     "observable": "observed_detector_offset", "unit": "m",
                                                     "measurement": {"original_readback_field": "detector_offset_m",
                                                                     "statistic": "mean"}}]}]}
+        self.site_ref = self._write("site.json", {"reviewed_original_site": True})
+        self.control_ref = self._write("control.json", {"reviewed_original_controls": True,
+                                                         "site_sha256": self.site_ref["sha256"]})
+        self.proposal["reviewed_sweep_authority"] = {
+            "site_sha256": self.site_ref["sha256"],
+            "control_sha256": self.control_ref["sha256"]}
+        self.proposal["sweep_specs"][0]["numeric_control_binding"]["control_sha256"] = self.control_ref["sha256"]
         self.rows = [{"frame": index, "timestamp_s": index / 20,
                       "ego_station_m": 0.0 if index < 500 else 10.0,
                       "ego_speed_mps": 1.0 if index < 100 or index >= 500 else 0.0,
@@ -39,15 +46,29 @@ class SweepMeasurementTests(unittest.TestCase):
         native = self._write("native.json", {"frames": self.rows})
         geometry = self._write("geometry.json", {"stop_boundary_station_m": 1.0,
                                                   "entry_station_m": 9.0})
-        packet = self._write("packet.json", {"native_trace_ref": native,
-                                             "geometry_ref": geometry, "frames": self.rows})
-        self._write("attempt.json", {"case_id": self.case_id, "diagnostic_fixture": False,
-                                     "packet_ref": packet})
+        self.geometry_ref = geometry
+        self._attempt(self.rows, native)
 
     def _write(self, name, value):
         path = self.root / name
         path.write_text(json.dumps(value, separators=(",", ":")) + "\n")
         return {"path": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    def _attempt(self, rows, native_ref):
+        packet = self._write("packet.json", {
+            "case_id": self.case_id, "site_sha256": self.site_ref["sha256"],
+            "control_sha256": self.control_ref["sha256"],
+            "control_request": {"case_id": self.case_id,
+                                "control_sha256": self.control_ref["sha256"],
+                                "requested_setpoint": 0.5,
+                                "original_readback_field": "detector_offset_m"},
+            "native_trace_ref": native_ref, "geometry_ref": self.geometry_ref,
+            "frames": rows})
+        self._write("attempt.json", {"case_id": self.case_id,
+                                     "diagnostic_fixture": False,
+                                     "site_ref": self.site_ref,
+                                     "control_ref": self.control_ref,
+                                     "packet_ref": packet})
 
     def test_realized_readback_excludes_startup_and_preserves_no_verdict(self):
         result = measure(self.proposal, self.case_id, self.root)
@@ -64,11 +85,7 @@ class SweepMeasurementTests(unittest.TestCase):
             measure(self.proposal, self.case_id, self.root)
         bad_rows = [{**row, "detector_offset_m": None} for row in self.rows]
         native_ref = self._write("native.json", {"frames": bad_rows})
-        packet = self._write("packet.json", {"native_trace_ref": native_ref,
-                                             "geometry_ref": json.loads((self.root / "packet.json").read_text())["geometry_ref"],
-                                             "frames": bad_rows})
-        self._write("attempt.json", {"case_id": self.case_id, "diagnostic_fixture": False,
-                                     "packet_ref": packet})
+        self._attempt(bad_rows, native_ref)
         with self.assertRaisesRegex(ValueError, "numeric sweep readback missing"):
             measure(self.proposal, self.case_id, self.root)
 
@@ -76,11 +93,7 @@ class SweepMeasurementTests(unittest.TestCase):
         bad_rows = list(self.rows)
         bad_rows[130] = {**bad_rows[130], "timestamp_s": 7.0}
         native_ref = self._write("native.json", {"frames": bad_rows})
-        packet = self._write("packet.json", {"native_trace_ref": native_ref,
-                                             "geometry_ref": json.loads((self.root / "packet.json").read_text())["geometry_ref"],
-                                             "frames": bad_rows})
-        self._write("attempt.json", {"case_id": self.case_id, "diagnostic_fixture": False,
-                                     "packet_ref": packet})
+        self._attempt(bad_rows, native_ref)
         with self.assertRaisesRegex(ValueError, "time sequence broken"):
             measure(self.proposal, self.case_id, self.root)
 
@@ -99,6 +112,20 @@ class SweepMeasurementTests(unittest.TestCase):
         with patch("sys.argv", argv):
             with self.assertRaisesRegex(ValueError, "retain previous"):
                 main()
+
+    def test_rejects_changed_site_or_control_request_binding(self):
+        self.proposal["reviewed_sweep_authority"]["site_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "authority differs"):
+            measure(self.proposal, self.case_id, self.root)
+        self.proposal["reviewed_sweep_authority"]["site_sha256"] = self.site_ref["sha256"]
+        packet = json.loads((self.root / "packet.json").read_text())
+        packet["control_request"]["requested_setpoint"] = 0.9
+        packet_ref = self._write("packet.json", packet)
+        attempt = json.loads((self.root / "attempt.json").read_text())
+        attempt["packet_ref"] = packet_ref
+        self._write("attempt.json", attempt)
+        with self.assertRaisesRegex(ValueError, "control binding"):
+            measure(self.proposal, self.case_id, self.root)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from comparison_audit import audit
+from comparison_audit import audit, audit_receiving_direction
 
 
 class ComparisonAuditTest(unittest.TestCase):
@@ -34,3 +34,27 @@ class ComparisonAuditTest(unittest.TestCase):
         self.right["trace_sha256"] = "trace-b"
         with self.assertRaisesRegex(ValueError, "case or legal"):
             audit(self.left, self.right, "a", "c")
+
+    def test_separately_reviewed_receiving_direction_pair(self):
+        common = {"opendrive": "a" * 64, "official_signal": "b" * 64,
+                  "stop_reference": "c" * 64}
+        one = {**self.left, "receiving_direction": "one_way_left",
+               "source_hashes": {**common, "one_way_routes": "d" * 64}}
+        two = {**self.right, "receiving_direction": "two_way", "site_sha256": "other",
+               "source_hashes": {**common, "two_way_routes": "e" * 64}}
+        out = audit_receiving_direction(one, two, "a", "b")
+        self.assertEqual(out["comparison_id"], "receiving_direction")
+        self.assertFalse(out["requested_difference_physically_confirmed"])
+        two["source_hashes"]["official_signal"] = "f" * 64
+        with self.assertRaisesRegex(ValueError, "fixed approach"):
+            audit_receiving_direction(one, two, "a", "b")
+
+    def test_receiving_direction_pair_rejects_relabelled_route(self):
+        common = {"opendrive": "a" * 64, "official_signal": "b" * 64,
+                  "stop_reference": "c" * 64}
+        one = {**self.left, "receiving_direction": "one_way_left",
+               "source_hashes": {**common, "one_way_routes": "d" * 64}}
+        two = {**self.right, "receiving_direction": "two_way", "site_sha256": "other",
+               "source_hashes": {**common, "one_way_routes": "e" * 64}}
+        with self.assertRaisesRegex(ValueError, "source inventory"):
+            audit_receiving_direction(one, two, "a", "b")

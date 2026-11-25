@@ -9,7 +9,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 AID = HERE.name
-SCRATCH = REPO / ".runtime-work" / "c135087-saved-v13"
+SCRATCH_V16 = REPO / ".runtime-work" / "c135087-saved-v16"
+SCRATCH_V17 = REPO / ".runtime-work" / "c135087-saved-v17"
 
 
 def sha(path: Path) -> str:
@@ -21,7 +22,7 @@ def bind():
     manifest = json.loads(path.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(AID + "__")
-        source = SCRATCH / suffix / "v0001"
+        source = (SCRATCH_V16 if entry in manifest["cases"][:4] else SCRATCH_V17) / suffix / "v0001"
         receipt = json.loads((source / "processing.json").read_text())
         assert receipt["case_id"] == entry["case_id"] and receipt["passed"] is True
         assert receipt["candidate_id"] == "primary" and receipt["originals_preserved"] is True
@@ -41,6 +42,21 @@ def bind():
             "analysis_log_sha256": sha(target / "analysis.log"),
             "synthetic_only": True,
             "originals_preserved": True}
+        proof_log = HERE / ("cpu-20261125-saved-v16-" + suffix + ".log" if entry in manifest["cases"][:4]
+                            else "cpu-20261125-saved-v17-" + suffix + ".log")
+        proof = json.loads(proof_log.read_text())
+        assert proof["case_id"] == entry["case_id"] and proof["exit_code"] == 0
+        assert proof["processing_receipt_sha256"] == sha(target / "receipt.json")
+        entry["post_capture"] = {
+            "recorded_only": True,
+            "command": proof["command"],
+            "feedback_command": proof["command"],
+            "test_exit_code": 0,
+            "test_log": proof_log.name,
+            "test_log_sha256": sha(proof_log),
+            "diagnostic_fixture": True,
+            "physical_acceptance_claimed": False,
+        }
         positive = HERE / ("audit-" + suffix + "-positive.log")
         negative = HERE / ("audit-" + suffix + "-negative.log")
         assert positive.is_file() and negative.is_file()

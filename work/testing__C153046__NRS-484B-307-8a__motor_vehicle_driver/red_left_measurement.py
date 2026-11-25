@@ -35,15 +35,17 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def validate_site(packet_path):
+def validate_site(packet_path, expected_receiving_direction="one_way_left"):
     """Validate retained source custody and stated lane/stop geometry."""
     packet_path = Path(packet_path).resolve()
     packet = json.loads(packet_path.read_text())
     if packet.get("format") != "c153046-red-left-site-v1" or not packet.get("reviewer"):
         raise ValueError("unreviewed exact site packet")
     sources = packet.get("sources")
+    route_source = ("two_way_routes" if expected_receiving_direction == "two_way"
+                    else "one_way_routes")
     if not isinstance(sources, dict) or set(sources) != {
-        "opendrive", "official_signal", "one_way_routes", "stop_reference"
+        "opendrive", "official_signal", route_source, "stop_reference"
     }:
         raise ValueError("incomplete site source inventory")
     for name, source in sources.items():
@@ -52,8 +54,16 @@ def validate_site(packet_path):
         path = (packet_path.parent / source.get("path", "")).resolve()
         if not path.is_relative_to(packet_path.parent) or not path.is_file() or _sha(path) != source.get("sha256"):
             raise ValueError("source bytes missing or changed: " + name)
-    if packet.get("approach_one_way") is not True or packet.get("receiving_one_way_to_left") is not True:
+    if packet.get("approach_one_way") is not True:
         raise ValueError("one-way directions unreviewed")
+    if expected_receiving_direction == "one_way_left":
+        if packet.get("receiving_one_way_to_left") is not True:
+            raise ValueError("one-way receiving direction unreviewed")
+    elif expected_receiving_direction == "two_way":
+        if packet.get("receiving_two_way") is not True or packet.get("receiving_one_way_to_left") is not False:
+            raise ValueError("two-way receiving direction unreviewed")
+    else:
+        raise ValueError("unsupported receiving direction")
     direction = _xy(packet.get("approach_direction_xy"), "approach direction")
     outgoing = _xy(packet.get("receiving_direction_xy"), "receiving direction")
     if abs(math.hypot(*direction) - 1) > 0.01 or abs(math.hypot(*outgoing) - 1) > 0.01 or _cross(direction, outgoing) < 0.7:
@@ -76,16 +86,22 @@ def validate_site(packet_path):
     stop_point = _xy(stop.get("point_xy"), "stop reference")
     inner = sorted(lateral, key=lateral.get, reverse=True)[1]
     return {"source_packet_sha256": _sha(packet_path), "direction": direction,
+            "source_hashes": {name: source["sha256"] for name, source in sources.items()},
             "reference": reference, "stop_progress_m": _dot(tuple(stop_point[i] - reference[i] for i in (0, 1)), direction),
             "left_lane_id": extreme, "inner_lane_id": inner,
-            "receiving_direction": "one_way_left",
+            "receiving_direction": expected_receiving_direction,
             "signal_actor_id": str(signal["native_actor_id"]),
             "stop_kind": stop["kind"]}
 
 
-def measure(packet_path, trace_path, case_id):
+def measure(packet_path, trace_path, case_id, *, expected_receiving_direction="one_way_left",
+            expected_approach_position="extreme_left"):
     """Measure a sealed 20 Hz original history without substituting requests."""
-    site = validate_site(packet_path)
+    site = validate_site(packet_path, expected_receiving_direction)
+    if expected_approach_position not in {"extreme_left", "inner_lane"}:
+        raise ValueError("unsupported approach position")
+    expected_lane = (site["left_lane_id"] if expected_approach_position == "extreme_left"
+                     else site["inner_lane_id"])
     rows = [json.loads(line) for line in Path(trace_path).read_text().splitlines() if line.strip()]
     if len(rows) < 2:
         raise ValueError("original history too short")
@@ -103,8 +119,8 @@ def measure(packet_path, trace_path, case_id):
             raise ValueError("original 20 Hz sequence broken")
         previous = index, time_s
         ego = frame.get("ego", {})
-        if ego.get("lane_id") not in {site["left_lane_id"], "receiving"}:
-            raise ValueError("ego left-turn lane source missing")
+        if ego.get("lane_id") not in {expected_lane, "receiving"}:
+            raise ValueError("ego exact approach lane source missing")
         vertices = ego.get("body_vertices_xy")
         if not isinstance(vertices, list) or len(vertices) < 4:
             raise ValueError("full original ego body missing")
@@ -129,7 +145,27 @@ def measure(packet_path, trace_path, case_id):
     return {"case_id": case_id, "site_sha256": site["source_packet_sha256"],
             "trace_sha256": _sha(trace_path), "original_frames": len(measurements),
             "stop_reference_kind": site["stop_kind"], "extreme_left_lane_id": site["left_lane_id"],
+            "source_hashes": site["source_hashes"],
+            "expected_approach_lane_id": expected_lane,
+            "receiving_direction": expected_receiving_direction,
             "first_entry_frame": None if first_entry is None else measurements[first_entry]["frame"],
             "first_pre_entry_stop_frame": None if not stops else stops[0]["frame"],
             "red_conflict_entry_frames": [x["frame"] for x in conflict_entry],
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
+
+
+def measure_exact(packet_path, trace_path, case_id, plan_path=None):
+    """Bind original-frame measurement to the requested exact statutory probe."""
+    plan_path = Path(plan_path) if plan_path else Path(__file__).resolve().parent / "case-plan.json"
+    plan = json.loads(plan_path.read_text())
+    if plan.get("assignment_id") != "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver":
+        raise ValueError("exact case plan identity differs")
+    matches = [row for row in plan.get("cases", []) if row.get("case_id") == case_id]
+    if len(matches) != 1:
+        raise ValueError("exact case absent or duplicated")
+    variables = matches[0]["draft_variables"]
+    result = measure(packet_path, trace_path, case_id,
+                     expected_receiving_direction=variables["receiving_direction"],
+                     expected_approach_position=variables["approach_position"])
+    result["requested_variables"] = variables
+    return result

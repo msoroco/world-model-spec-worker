@@ -61,8 +61,30 @@ def measure(proposal: dict, case_id: str, attempt_root: Path) -> dict:
     attempt = json.loads((root / "attempt.json").read_text(encoding="utf-8"))
     if attempt.get("case_id") != case_id or attempt.get("diagnostic_fixture") is True:
         raise ValueError("original generated sweep attempt missing")
+    authority = proposal.get("reviewed_sweep_authority", {})
+    site_path, site_sha = _linked(root, attempt.get("site_ref"))
+    control_path, control_sha = _linked(root, attempt.get("control_ref"))
+    site = json.loads(site_path.read_text(encoding="utf-8"))
+    control = json.loads(control_path.read_text(encoding="utf-8"))
+    if (authority.get("site_sha256") != site_sha or
+            authority.get("control_sha256") != control_sha or
+            binding.get("control_sha256") != control_sha or
+            site.get("reviewed_original_site") is not True or
+            site.get("diagnostic_fixture") is True or
+            control.get("reviewed_original_controls") is not True or
+            control.get("site_sha256") != site_sha):
+        raise ValueError("original sweep authority differs from reviewed source")
     packet_path, packet_sha = _linked(root, attempt.get("packet_ref"))
     packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    request = packet.get("control_request", {})
+    if (packet.get("case_id") != case_id or
+            packet.get("site_sha256") != site_sha or
+            packet.get("control_sha256") != control_sha or
+            request.get("case_id") != case_id or
+            request.get("control_sha256") != control_sha or
+            request.get("requested_setpoint") != case["sweep_point"][variable] or
+            request.get("original_readback_field") != field):
+        raise ValueError("original sweep packet lacks reviewed control binding")
     native_path, native_sha = _linked(root, packet.get("native_trace_ref"))
     geometry_path, geometry_sha = _linked(root, packet.get("geometry_ref"))
     rows = json.loads(native_path.read_text(encoding="utf-8")).get("frames")
@@ -104,7 +126,8 @@ def measure(proposal: dict, case_id: str, attempt_root: Path) -> dict:
         raise ValueError("unsupported original sweep statistic")
     return {"format": "c111125-original-sweep-measurement-v1",
             "case_id": case_id, "sweep_id": spec["sweep_id"],
-            "source_hashes": {"packet": packet_sha, "native_trace": native_sha,
+            "source_hashes": {"site": site_sha, "control": control_sha,
+                              "packet": packet_sha, "native_trace": native_sha,
                               "geometry": geometry_sha},
             "requested_setpoint": {variable: case["sweep_point"][variable]},
             "realized_observables": {axis["observable"]: {"value": summaries[statistic],

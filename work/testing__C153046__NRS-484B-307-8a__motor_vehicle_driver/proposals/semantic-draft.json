@@ -1,0 +1,440 @@
+{
+  "format": "c153046-source-gated-semantic-draft-v1",
+  "assignment_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-8a",
+  "law_source_sha256": "10ee814c706ff0a84553204c9c65748b85f7d8405a045eb27b8a88281aeb3709",
+  "case_plan_sha256": "93e2f1963cfcfe9c0b3b78ecb5a7febc5d17849882af48e52de86e80df02ecc5",
+  "law_text": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown. After complying with the requirement to stop, vehicular traffic facing such a signal and situated on the extreme right of the highway may proceed into the intersection for a right turn only when the intersecting highway is two-directional or one-way to the right, or vehicular traffic facing such a signal and situated on the extreme left of a one-way highway may proceed into the intersection for a left turn only when the intersecting highway is one-way to the left, but must yield the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
+  "red_alone_duty": "Stop at the applicable source-reviewed boundary and remain stopped until green, subject to stated exceptions.",
+  "left_turn_exception": "After stopping, extreme-left one-way approach may turn left only into one-way road to left and must yield to pedestrians and signal-directed traffic.",
+  "cases": [
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "no_conflict",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "rolling",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "no_conflict",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "inner_lane",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "no_conflict",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": true,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "two_way",
+        "conflict_response_request": "no_conflict",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": true,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "pedestrian_yield",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "pedestrian_advance",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "traffic_yield",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance",
+      "target_law_id": "NRS-484B-307-8a",
+      "requested_variables": {
+        "stop_request": "complete_stop",
+        "approach_position": "extreme_left",
+        "receiving_direction": "one_way_left",
+        "conflict_response_request": "traffic_advance",
+        "signal_request": "steady_red_alone"
+      },
+      "applicability_probe": false,
+      "observations": [
+        {
+          "name": "official_steady_red_alone",
+          "source": "official_signal",
+          "measurement": "original signal actor and per-frame state"
+        },
+        {
+          "name": "stop_reference_hierarchy",
+          "source": "stop_reference",
+          "measurement": "reviewed near-side crosswalk, sign or marking, else intersection boundary"
+        },
+        {
+          "name": "actual_stop_before_entry",
+          "source": "native_world_snapshot",
+          "measurement": "full ego body, speed and frame/time before first boundary entry"
+        },
+        {
+          "name": "approach_and_receiving_lanes",
+          "source": "one_way_routes or two_way_routes",
+          "measurement": "reviewed lane directions and original ego body/route"
+        },
+        {
+          "name": "directed_conflict_and_yield",
+          "source": "native_world_snapshot",
+          "measurement": "signal-directed pedestrian/traffic body history and ego entry order"
+        }
+      ],
+      "physical_risk_assessment": {
+        "status": "unverified",
+        "reason": "Native lane geometry, signal phase and participant route remain unreviewed; no fallback selected."
+      },
+      "original_source_status": "pending_review",
+      "physical_acceptance_claimed": false,
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stop_before_turn",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear",
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__rolling_leftmost_clear"
+      ],
+      "deliberate_differences": [
+        "requested stop"
+      ],
+      "realized_difference_claimed": false
+    },
+    {
+      "comparison_id": "extreme_left_position",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear",
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_inner_lane_clear"
+      ],
+      "deliberate_differences": [
+        "approach lane"
+      ],
+      "realized_difference_claimed": false
+    },
+    {
+      "comparison_id": "receiving_direction",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_clear",
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_two_way_receive"
+      ],
+      "deliberate_differences": [
+        "receiving road direction"
+      ],
+      "realized_difference_claimed": false
+    },
+    {
+      "comparison_id": "pedestrian_yield",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_yield",
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_pedestrian_advance"
+      ],
+      "deliberate_differences": [
+        "requested response to pedestrian"
+      ],
+      "realized_difference_claimed": false
+    },
+    {
+      "comparison_id": "traffic_yield",
+      "case_ids": [
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_yield",
+        "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver__stopped_leftmost_traffic_advance"
+      ],
+      "deliberate_differences": [
+        "requested response to signal-directed traffic"
+      ],
+      "realized_difference_claimed": false
+    }
+  ],
+  "canonical_proposal_status": "pending original site and source-grounded recording descriptions",
+  "legal_judgment": "unresolved",
+  "physical_acceptance_claimed": false
+}

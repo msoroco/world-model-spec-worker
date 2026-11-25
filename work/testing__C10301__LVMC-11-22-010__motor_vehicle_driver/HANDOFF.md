@@ -1,5 +1,23 @@
 # testing__C10301__LVMC-11-22-010__motor_vehicle_driver
 
+## 2026-11-25 production source-audit binding and current status
+
+The selected manifest is SHA-256 `806d7cb9eaa98db23a562038f39cba81d0069757e0515a283fe02a937c92f310`. Both exact selected cases now bind `production_audit.py` (SHA-256 `e5b5d5917b4ce5ded9b4cb73569604172216c6fae422c9461a3f2502903445aa`) to their original-attempt source audit command; the selected comparison binds the same auditor to both attempts. The auditor checks the selected construction hash, reopens 900 original joined frames and 3,600 camera PNGs per attempt through `saved_delivery.py`, rejects diagnostic captures, and writes a receipt only after source integrity passes. Each receipt explicitly leaves physical completion to independent review, attention unobserved, and legal judgment unresolved. The selected manifest's missing-proof list now reflects the actual source-gated sweep, site, and physical review gaps; its passing diagnostic process-saved, compatibility and independent audit receipts remain bound.
+
+Production commands, after reviewed original Native attempts exist:
+
+```sh
+.venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/production_audit.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --attempt "$STEADY_ATTEMPT" --output "$STEADY_SOURCE_AUDIT_RECEIPT"
+.venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/production_audit.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --attempt "$VARIATION_ATTEMPT" --output "$VARIATION_SOURCE_AUDIT_RECEIPT"
+.venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/production_audit.py --steady "$STEADY_ATTEMPT" --variation "$VARIATION_ATTEMPT" --output "$COMPARISON_SOURCE_AUDIT_RECEIPT"
+```
+
+The current diagnostic attempts are rejected by these production commands without writing receipts. Three new focused tests exercise case and pair rejection, selected binding and no-overwrite behavior; the full assignment suite passes 43 tests (`cpu-nov25-production-audit-tests.log`). Pinned preflight and scoped static pass (`cpu-nov25-production-audit-preflight.log`, `cpu-nov25-production-audit-static.log`); their hashes are in `result.json.tests`.
+
+The result remains **partial**. Direct selected execution validation stops at `Expand sweeps with the main implementation before manifest generation`, because `alley_attention_observation` is explicitly incomplete. The exact frozen directory supplies no reviewed interior sensor, feasible control range, municipal applicability or original alley/site packet, and the law supplies no numeric attention boundary. Exterior yaw, position and steering contrast cannot fill that missing interior observable. The root construction envelope and expanded case roster depend on the reviewed sweep; materialize them after source-backed expansion, then prove every new case and run the exact scoped strict gate. Current two-case diagnostics are software shape proofs, not physical or legal acceptance.
+
+Fresh direct selected validation failed with that sweep error (`cpu-nov25-production-audit-selected-gap.log`). The exact scoped strict gate exited 1 on truthful partial status (`cpu-nov25-production-audit-strict.log`); no ready status was staged.
+
 ## 2026-11-24 operator-owned capture integration checkpoint
 
 - `owned_runner.py` binds an operator-provided reviewed alley site packet to the exact case, spawns the sourced ego through `native_operation.spawn_ego`, invokes the 900-frame four-camera `native_capture.capture`, preserves the site packet bytes and their SHA256 in the diagnostic receipt, and destroys its actor in a `finally` block. The operator-owned session remains responsible for world settings, sensor lifecycle and restoration. The capture receipt retains `diagnostic_fixture: true`; this integration does not assert original physical realization or interior attention.

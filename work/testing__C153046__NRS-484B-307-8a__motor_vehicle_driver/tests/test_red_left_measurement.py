@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from red_left_measurement import measure, validate_site
+from red_left_measurement import measure, measure_exact, validate_site
 
 
 class RedLeftMeasurementTest(unittest.TestCase):
@@ -100,3 +100,44 @@ class RedLeftMeasurementTest(unittest.TestCase):
             measure(self.packet_path, path, "case-a")
         with self.assertRaisesRegex(ValueError, "case or source"):
             measure(self.packet_path, self.trace(), "case-b")
+
+    def test_exact_variant_requires_matching_lane_and_reviewed_receiving_route(self):
+        prefix = "testing__C153046__NRS-484B-307-8a__motor_vehicle_driver"
+        inner = prefix + "__stopped_inner_lane_clear"
+        two_way = prefix + "__stopped_leftmost_two_way_receive"
+        plan = self.root / "case-plan.json"
+        plan.write_text(json.dumps({"assignment_id": prefix, "cases": [
+            {"case_id": inner, "draft_variables": {"receiving_direction": "one_way_left",
+                                                   "approach_position": "inner_lane"}},
+            {"case_id": two_way, "draft_variables": {"receiving_direction": "two_way",
+                                                     "approach_position": "extreme_left"}}]}))
+        trace = self.trace()
+        rows = [json.loads(line) for line in trace.read_text().splitlines()]
+        for row in rows:
+            row["case_id"] = inner
+        trace.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        with self.assertRaisesRegex(ValueError, "exact approach lane"):
+            measure_exact(self.packet_path, trace, inner, plan)
+        for row in rows:
+            row["native_frame"]["ego"]["lane_id"] = "inner"
+        trace.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        self.assertEqual(measure_exact(self.packet_path, trace, inner, plan)["expected_approach_lane_id"], "inner")
+        for row in rows:
+            row["case_id"] = two_way
+            row["native_frame"]["ego"]["lane_id"] = "left"
+        trace.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        with self.assertRaisesRegex(ValueError, "incomplete site source inventory"):
+            measure_exact(self.packet_path, trace, two_way, plan)
+        self.packet["receiving_one_way_to_left"] = False
+        self.packet["receiving_two_way"] = True
+        route = self.root / "two_way_routes.txt"
+        route.write_text("two-way fixture")
+        del self.packet["sources"]["one_way_routes"]
+        self.packet["sources"]["two_way_routes"] = {
+            "path": route.name, "sha256": hashlib.sha256(route.read_bytes()).hexdigest(),
+            "citation": "reviewed-two-way-fixture", "reviewer": "fixture"}
+        self.write_packet()
+        for row in rows:
+            row["source_packet_sha256"] = hashlib.sha256(self.packet_path.read_bytes()).hexdigest()
+        trace.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        self.assertEqual(measure_exact(self.packet_path, trace, two_way, plan)["receiving_direction"], "two_way")

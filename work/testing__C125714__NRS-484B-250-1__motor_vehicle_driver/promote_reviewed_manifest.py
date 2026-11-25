@@ -112,6 +112,11 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
             detail = json.loads(path.read_text())
             if detail.get("case_id") != case_id or detail.get("construction_sha256") != entry["construction_sha256"]:
                 raise ValueError("stale " + name + " case or construction binding: " + case_id)
+            if (detail.get("stage") != name or detail.get("passed") is not True
+                    or detail.get("scope") != "cpu_preparation"
+                    or detail.get("physical_acceptance_claimed") is not False
+                    or detail.get("legal_acceptance_claimed") is not False):
+                raise ValueError("failed or mislabelled " + name + " CPU receipt: " + case_id)
         promoted = dict(entry)
         promoted.update(stage)
         promoted["construction"] = str(construction.relative_to(returned_root))
