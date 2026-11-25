@@ -117,16 +117,26 @@ def _camera_transforms(carla,packet,transform):
          'driver_reference':pose(1,0,1.65,180,-5)}
 
 
+def require_native_site_review(packet):
+ if (packet.get('site_review_status')!='reviewed_native_site'
+     or not packet.get('reviewer') or not packet.get('district_review_basis')
+     or not packet.get('crosswalk_review_basis') or not packet.get('camera_review_basis')
+     or any('synthetic' in str(packet.get(key,'')).lower() for key in
+            ('reviewer','district_review_basis','crosswalk_review_basis','camera_review_basis'))):
+  raise ValueError('Original Native district, crosswalk and camera review required before capture')
+
+
 def capture(args,config):
- import carla
- from pipeline_capture import PipelineCapture
- from worker_exchange.native_output import FrameMap,seal_capture
- from worker_exchange.world_restore import snapshot as snapshot_world,restore
  output=Path(args.output_dir).resolve()
  if not output.is_dir() or not (output/'construction.json').is_file():
   raise ValueError('Use runtime.py capture to materialize exact construction first')
  packet=json.loads((output/'site_packet.json').read_text())
+ require_native_site_review(packet)
  prepared,start,forward,target=prepare_site(packet,output,config)
+ import carla
+ from pipeline_capture import PipelineCapture
+ from worker_exchange.native_output import FrameMap,seal_capture
+ from worker_exchange.world_restore import snapshot as snapshot_world,restore
  client=carla.Client(args.host,args.port);client.set_timeout(30)
  saved=snapshot_world(client);world=client.get_world();actor=None;capture_helper=None
  encoders={};frames=0;error=None
