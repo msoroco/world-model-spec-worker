@@ -57,6 +57,14 @@ class DeliveryPredicates(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 comparison.compare(a, changed, a_case, b_case)
 
+        source = {"requested_ego_speed_mps": 8.0, "camera_policy": "standard",
+                  "cameras": [{"name": "overview"}], "duration_s": 30, "rate_hz": 20}
+        comparison.compare_capture_settings(source, source.copy())
+        for key, bad in (("requested_ego_speed_mps", 5.0), ("camera_policy", "elevated_overview")):
+            changed = dict(source, **{key: bad})
+            with self.subTest(source_key=key), self.assertRaises(ValueError):
+                comparison.compare_capture_settings(source, changed)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,25 +9,25 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "native/selected-reference-primary-construction.json",
-      "construction_sha256": "ceea30419a0bba72326f06240bab8ab79d49761f3e81cced5c3feab98a01ca85",
+      "construction_sha256": "a54c82fedad4df688a9f6c5d390e169916f983450fffb8b0bfec402cf29b32f6",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "ceea30419a0bba72326f06240bab8ab79d49761f3e81cced5c3feab98a01ca85",
+        "construction_sha256": "a54c82fedad4df688a9f6c5d390e169916f983450fffb8b0bfec402cf29b32f6",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference --candidate primary --output .runtime-work/c230222-offline-v4-reference-primary",
         "log": "selected-reference-primary-offline.log",
-        "log_sha256": "060ac6168eb0e88b4152b13f38298aec66ac88aa4ff156c9bcba6090488c7647"
+        "log_sha256": "931df3b695eb7dd21ca9096b40149f26d6c9bd0884a5eebdeaa10b6f3ea11a52"
       },
       "candidates": [
         {
           "id": "fallback1",
           "construction": "native/selected-reference-fallback1-construction.json",
-          "construction_sha256": "51f864a15af13309cdb4846b26ceea1c0adb6b31c595c1579e25dcb6f838cf13",
+          "construction_sha256": "34077b500d37b06125628ef6ac6bb98a469f260abdc8624f02ac5c08eaa4ee63",
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "51f864a15af13309cdb4846b26ceea1c0adb6b31c595c1579e25dcb6f838cf13",
+            "construction_sha256": "34077b500d37b06125628ef6ac6bb98a469f260abdc8624f02ac5c08eaa4ee63",
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference --candidate fallback1 --output .runtime-work/c230222-offline-v4-reference-fallback1",
             "log": "selected-reference-fallback1-offline.log",
-            "log_sha256": "14b23872ce1ec074aaf23f98131a6b366dec922bdc57ed592dc251742c752eee"
+            "log_sha256": "353e82937475f29a2c9c8d92c3b993369eef24ac27ce6efb1fedf9112b239f9c"
           },
           "changed_knobs": [
             "each phase throttle request raised by 0.10"
@@ -36,6 +36,12 @@
             "source": "original Native ego frame trace",
             "metric": "600-frame forward progress",
             "failure_condition": "primary source fails to reach 75 m engineering progress floor"
+          },
+          "compatibility": {
+            "receipt": "compat-reference-fb/receipt.json",
+            "sha256": "69fbc199429050497151f21576ae65bf5d1b16c515ad3047509a4badf8ff8413",
+            "log": "compat-reference-fb/analysis.log",
+            "negative_log": "compat-reference-fb/negative.log"
           }
         }
       ],
@@ -53,6 +59,108 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/reference/proof.json",
+        "sha256": "5d2ee15bdec3e9e3fcd4ba55e61ef442ffa1490374e3722c0cae68946f3f075d"
+      },
+      "compatibility": {
+        "receipt": "compat-reference-pr/receipt.json",
+        "sha256": "1b1457d982cec11187aa4ef0986bfba536b2f1469388c15e301111eb7055a5e7",
+        "log": "compat-reference-pr/analysis.log",
+        "negative_log": "compat-reference-pr/negative.log"
+      },
+      "negative": {
+        "log": "compat-reference-pr/negative.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_pose": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_speed": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_yaw_rate": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_acceleration": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "driver_reference_video": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "saved-reference-processing.json",
+        "test_log_sha256": "7cabc9b6ef5377bf0205773d492920d72270d7141d69ae4edd53b7e7028a96c9",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit-selected-delivery.py",
+        "script_sha256": "2bdfaceb92ce1327700b9043f512ff42a7471fe596445330d669d88c53d9f9a4",
+        "command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-delivery.py --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference",
+        "test_exit_code": 0,
+        "test_log": "delivery-reference-positive.log",
+        "test_log_sha256": "c7d0d7c891dd9726130d3d7b4c5243cf2646d1ed02f38a5e46018e5272e30d5e",
+        "negative_command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-delivery.py --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__reference --remove-native-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native-ego-frames.jsonl",
+        "negative_log": "delivery-reference-negative.log",
+        "negative_log_sha256": "ed0c44034bc6d7ab9215e5ebaabacf76b5a92930b241bd09ba5d054e391b6ce3",
+        "cpu_scope": "synthetic source/receipt audit; actual operator-facing pixels and attention remain for local review"
+      },
+      "comparison_audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "275a87b3b83528ca1d17dfdb95a6dd8124a04a333a317eb5955d94f20af471cf",
+        "command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-positive.log",
+        "test_log_sha256": "e130f8005f4bc74b37c8d165b34a0b3a29143adbf72bb3c2db46d5c2cc6b0123",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py --reject-fixed-drift",
+        "negative_log": "comparison-negative.log",
+        "negative_log_sha256": "5e4087a74f63885d6ee3a59b1e917721c87907bf229249777276d4d578abe4cb",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed capture or attention context changed"
       }
     },
     {
@@ -60,25 +168,25 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "native/selected-contrast-primary-construction.json",
-      "construction_sha256": "99036dff8a7986cd9b6918eb4dcc69127168fb92be2e740751583239d014de1c",
+      "construction_sha256": "a8eb991203f3580e5b80710eb4ca61863b8a93e30a051f9ad8cf765c9e081def",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "99036dff8a7986cd9b6918eb4dcc69127168fb92be2e740751583239d014de1c",
+        "construction_sha256": "a8eb991203f3580e5b80710eb4ca61863b8a93e30a051f9ad8cf765c9e081def",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast --candidate primary --output .runtime-work/c230222-offline-v4-contrast-primary",
         "log": "selected-contrast-primary-offline.log",
-        "log_sha256": "f58164918870337e722fc4efc5c05955bc3db69d1dab6518a5b9f67fbe5d2647"
+        "log_sha256": "837d15925241ebcd9fb5825b662662d6dc120e2c729953f0118b71274a87d22e"
       },
       "candidates": [
         {
           "id": "fallback1",
           "construction": "native/selected-contrast-fallback1-construction.json",
-          "construction_sha256": "ad4aa6070708d9497c1c07ede8922a034100b39e31d8d65a50724ac29e921630",
+          "construction_sha256": "d95e9a4b0ddfd9f0d3de43ebf508a9258518d7adad45d80ec7daa10fdfec4a63",
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "ad4aa6070708d9497c1c07ede8922a034100b39e31d8d65a50724ac29e921630",
+            "construction_sha256": "d95e9a4b0ddfd9f0d3de43ebf508a9258518d7adad45d80ec7daa10fdfec4a63",
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast --candidate fallback1 --output .runtime-work/c230222-offline-v4-contrast-fallback1",
             "log": "selected-contrast-fallback1-offline.log",
-            "log_sha256": "5f6e3d785d873e516e4deb02f85763456d44cdc600cec2e4bdc99ce8e3f7f3da"
+            "log_sha256": "5482e818fa6aea4392f94a1760cec24453f9b0257e497603a991f76bfc6798f1"
           },
           "changed_knobs": [
             "each phase throttle request raised by 0.10"
@@ -87,6 +195,12 @@
             "source": "original Native ego frame trace",
             "metric": "600-frame forward progress",
             "failure_condition": "primary source fails to reach 75 m engineering progress floor"
+          },
+          "compatibility": {
+            "receipt": "compat-contrast-fb/receipt.json",
+            "sha256": "f3fadb03ad17eaaf4fdbcf2d5b4e1787b36a895c3168d4056081e3fbbed0f95d",
+            "log": "compat-contrast-fb/analysis.log",
+            "negative_log": "compat-contrast-fb/negative.log"
           }
         }
       ],
@@ -104,6 +218,108 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/contrast/proof.json",
+        "sha256": "01da2479f4a4b346b0d001fa0be963163c01a4edb05910babfea8f0c6adbfa1b"
+      },
+      "compatibility": {
+        "receipt": "compat-contrast-pr/receipt.json",
+        "sha256": "b991e119a6e3c87f489987e385bf3a270a6b222733692a633fd64baf2720281b",
+        "log": "compat-contrast-pr/analysis.log",
+        "negative_log": "compat-contrast-pr/negative.log"
+      },
+      "negative": {
+        "log": "compat-contrast-pr/negative.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_pose": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_speed": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_yaw_rate": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "ego_acceleration": {
+          "entrypoint": "attention_observation.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "driver_reference_video": {
+          "entrypoint": "runner.py",
+          "method": "original Native source capture and selected source-joined finalization",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "saved-contrast-processing.json",
+        "test_log_sha256": "7fc54fc7604133ebcdb17c7419a9e3522f2813757f653de729602978fd2b94a8",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit-selected-delivery.py",
+        "script_sha256": "2bdfaceb92ce1327700b9043f512ff42a7471fe596445330d669d88c53d9f9a4",
+        "command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-delivery.py --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast",
+        "test_exit_code": 0,
+        "test_log": "delivery-contrast-positive.log",
+        "test_log_sha256": "8dc348416b78342282ccca1871db4e47e25847bda1a9e03b6477cb45e42d79c4",
+        "negative_command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-delivery.py --case training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast --remove-native-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native-ego-frames.jsonl",
+        "negative_log": "delivery-contrast-negative.log",
+        "negative_log_sha256": "ed0c44034bc6d7ab9215e5ebaabacf76b5a92930b241bd09ba5d054e391b6ce3",
+        "cpu_scope": "synthetic source/receipt audit; actual operator-facing pixels and attention remain for local review"
+      },
+      "comparison_audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "275a87b3b83528ca1d17dfdb95a6dd8124a04a333a317eb5955d94f20af471cf",
+        "command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-positive.log",
+        "test_log_sha256": "e130f8005f4bc74b37c8d165b34a0b3a29143adbf72bb3c2db46d5c2cc6b0123",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py --reject-fixed-drift",
+        "negative_log": "comparison-negative.log",
+        "negative_log_sha256": "5e4087a74f63885d6ee3a59b1e917721c87907bf229249777276d4d578abe4cb",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed capture or attention context changed"
       }
     }
   ]

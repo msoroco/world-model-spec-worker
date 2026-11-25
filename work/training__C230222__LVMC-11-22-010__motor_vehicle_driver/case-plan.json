@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C230222",
   "law_id": "LVMC-11-22-010",
-  "selected_branch": null,
+  "selected_branch": "Continuous vehicle operation",
   "scope_branches": [
     "Continuous vehicle operation"
   ],
@@ -71,7 +71,7 @@
         "training__C230222__LVMC-11-22-010__motor_vehicle_driver__contrast"
       ],
       "deliberate_differences": [
-        "driver_attention_to_operation"
+        "throttle_request and measured speed cue; driver attention remains unobserved"
       ],
       "fixed_conditions": [
         "cell",
@@ -82,7 +82,20 @@
         "other controller settings",
         "camera and capture profile"
       ],
-      "status": "planned_unverified"
+      "status": "selected_cpu_preparation",
+      "audit": {
+        "script": "audit-selected-comparison.py",
+        "script_sha256": "275a87b3b83528ca1d17dfdb95a6dd8124a04a333a317eb5955d94f20af471cf",
+        "command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py",
+        "test_log": "comparison-positive.log",
+        "test_log_sha256": "e130f8005f4bc74b37c8d165b34a0b3a29143adbf72bb3c2db46d5c2cc6b0123",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/training__C230222__LVMC-11-22-010__motor_vehicle_driver/audit-selected-comparison.py --reject-fixed-drift",
+        "negative_log": "comparison-negative.log",
+        "negative_log_sha256": "5e4087a74f63885d6ee3a59b1e917721c87907bf229249777276d4d578abe4cb",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Comparison fixed capture or attention context changed"
+      }
     }
   ],
   "observations": [
@@ -101,7 +114,7 @@
     {
       "name": "driver_attention_to_operation",
       "unit": "unknown",
-      "mandatory": true,
+      "mandatory": false,
       "purpose": "attention cannot be established from vehicle trajectory alone"
     },
     {
@@ -206,13 +219,37 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
-    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
-    "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified.",
-    "Intent or attention cannot be inferred from trajectory; admissible direct/context evidence is unresolved."
+    "Actual CARLA spawn geometry, motion and operator-facing visibility require local review.",
+    "Vehicle motion and synthetic pixels do not establish a person's full attention or a legal outcome."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego vehicle and roadway operation",
+        "interval": "all 600 synchronized frames / 30 seconds"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle entry and travel context",
+        "interval": "all 600 synchronized frames / 30 seconds"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "roadway and traffic-control context",
+        "interval": "all 600 synchronized frames / 30 seconds"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "operator-facing source; visibility and attention require independent review",
+        "interval": "all 600 synchronized frames / 30 seconds"
+      }
+    ]
+  }
 }

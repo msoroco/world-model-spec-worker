@@ -27,7 +27,6 @@ def channels():
              'uncertainty':'Original source and operator visibility require independent review'}
             for name,unit in [('ego_pose','structured'),('ego_speed','m/s'),
                               ('ego_yaw_rate','deg/s'),('ego_acceleration','m/s2'),
-                              ('driver_attention_to_operation','unknown'),
                               ('driver_reference_video','video')]]
 
 
@@ -41,7 +40,9 @@ def build():
             'context_inputs':[{'name':'native_driving_context','unit':'structured',
                                'method':'sealed original vehicle/camera source context'},
                               {'name':'driver_attention_source_review','unit':'structured',
-                               'method':'independent original operator-facing review, pending'}],
+                               'method':'independent original operator-facing review, pending'},
+                              {'name':'driver_attention_to_operation','unit':'structured',
+                               'method':'unresolved original-source judgment; no inferred value'}],
             'limitations':['Vehicle motion or synthetic camera pixels cannot establish a person\'s attention.',
                            'Actual operator-facing pixels and independent episode review remain required.']}
         base['measurement_plan']='Finalize 600 original Native motion and four decoded camera streams; measure complete operation and driving cues while leaving attention and legal verdict null.'

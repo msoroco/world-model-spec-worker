@@ -124,9 +124,9 @@ def capture(bundle, output, host, port):
         elevated = cfg["camera_policy"] == "elevated"
         specs = (("overview", 1920, 1080, 90 if elevated else 80,
                   (48, -16, 45 if elevated else 25), -70 if elevated else -55),
-                 ("rider_forward", 1280, 720, 90, (1, 0, 1.5), 0),
-                 ("officer_side", 1280, 720, 75, (42, -12, 4), -15),
-                 ("device_side", 1280, 720, 75, (56, -11, 5), -20))
+                 ("approach", 1280, 720, 90, (1, 0, 1.5), 0),
+                 ("reference_corner", 1280, 720, 75, (42, -12, 4), -15),
+                 ("driver_reference", 1280, 720, 75, (56, -11, 5), -20))
         for name, width, height, fov, xyz, pitch in specs:
             bp = library.find("sensor.camera.rgb")
             for key, value in (("image_size_x", width), ("image_size_y", height),
@@ -134,7 +134,7 @@ def capture(bundle, output, host, port):
                 bp.set_attribute(key, str(value))
             camera = world.spawn_actor(
                 bp, carla.Transform(carla.Location(*xyz), carla.Rotation(pitch=pitch)),
-                attach_to=rider if name == "rider_forward" else None)
+                attach_to=rider if name == "approach" else None)
             owned.append(camera)
             queues[name] = queue.Queue()
             camera.listen(queues[name].put)
@@ -222,9 +222,9 @@ def capture(bundle, output, host, port):
             composite = subprocess.run(
                 ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
                  "-i", str(output / "overview.mkv"),
-                 "-i", str(output / "rider_forward.mkv"),
-                 "-i", str(output / "officer_side.mkv"),
-                 "-i", str(output / "device_side.mkv"),
+                 "-i", str(output / "approach.mkv"),
+                 "-i", str(output / "reference_corner.mkv"),
+                 "-i", str(output / "driver_reference.mkv"),
                  "-filter_complex", COMPOSE_LAYOUT,
                  "-an", "-c:v", "ffv1", str(output / "raw.mkv")],
                 capture_output=True, text=True, timeout=600)

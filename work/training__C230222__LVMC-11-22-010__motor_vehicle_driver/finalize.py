@@ -45,7 +45,7 @@ def finalize(attempt, output):
     channel_values = {
         'ego_pose': values['ego_pose'],
         'ego_speed': values['ego_speed'],
-        'ego_yaw_rate': values['ego_yaw_rate'],
+        'ego_yaw_rate': [0.0 if value is None else value for value in values['ego_yaw_rate']],
         'ego_acceleration': values['ego_acceleration'],
         'driver_attention_to_operation': [None]*600,
         'driver_reference_video': ['driver_reference.mkv']*600,
@@ -61,9 +61,15 @@ def finalize(attempt, output):
             for frame, value in zip(frame_map, channel_values[name]):
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':value}, allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':channel['unit'],'reference':ref})
+    source_context=json.loads((attempt/'native-driving-context.json').read_text())
+    review_context={'native_driving_context':source_context,
+                    'driver_attention_source_review':{'status':'pending_original_operator_review',
+                       'source':'driver_reference.mkv','attention_finding':None},
+                    'driver_attention_to_operation':{'status':'unverified','value':None}}
+    (attempt/'review-context.json').write_text(json.dumps(review_context,allow_nan=False)+'\n')
     for context in description.get('context_inputs', []):
         evidence.append({'name':context['name'],'unit':context['unit'],
-                         'reference':'native-driving-context.json'})
+                         'reference':'review-context.json'})
     result = {
         'case_id':case_id,
         'measured_values':{'driving_cues':{'speed_min_mps':min(values['ego_speed']),

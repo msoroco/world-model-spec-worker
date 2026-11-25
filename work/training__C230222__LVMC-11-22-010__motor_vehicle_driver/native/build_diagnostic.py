@@ -97,7 +97,7 @@ def build(short):
     files['capture/manifest.json']=json.dumps(manifest,separators=(',',':'))+'\n'
     videos=[{'path':v+'.mkv','frames':COUNT,'width':1920 if v=='overview' else 1280,
              'height':1080 if v=='overview' else 720,'fps':20,
-             'color':'black' if short=='reference' else 'gray'} for v in VIEWS]
+             'color':'black'} for v in VIEWS]
     spec={'files':files,'graphs':graphs,'videos':videos}
     path=ROOT/f'diagnostic-{short}.json'
     path.write_text(json.dumps(spec,separators=(',',':'))+'\n')
