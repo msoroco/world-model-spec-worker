@@ -22,6 +22,11 @@ def packet(control="stop_sign"):
         frames.append({
             "native_frame": i, "camera_frame": i, "time_s": i / 20,
             "control_context": control,
+            "authority": {"native_frame": i, "control_context": control,
+                          "ego_control_actor_id": 45, "signal_controlling": False,
+                          "officer_controlling": control == "officer_exception",
+                          "signal_state": "green" if control == "signal_exception" else None,
+                          "officer_actor_visible": control == "officer_exception"},
             "ego": {"body_vertices_xy": body(x, 0), "speed_mps": 0 if i == 90 else 2,
                     "applied_controls": {"throttle": .2, "brake": 0}},
             "counterpart": {"body_vertices_xy": body(0, 0), "obligated_to_stop_or_yield": False},
@@ -79,6 +84,17 @@ class WitnessTest(unittest.TestCase):
         self.assertEqual((result["entry_frame"], result["clearance_frame"]), (100, 160))
         self.assertEqual(result["legal_hazard_judgment"], "unresolved")
         self.assertEqual(len(result["counterpart_within_frames"]), 60)
+
+    def test_original_native_frames_may_start_after_world_initialization(self):
+        p = packet()
+        for frame in p["frames"]:
+            frame["native_frame"] += 1042
+            frame["time_s"] += 52.1
+            frame["authority"]["native_frame"] += 1042
+        self.assertEqual(mod.measure(p, "stop_sign")["entry_frame"], 100)
+        p["frames"][40]["native_frame"] += 1
+        with self.assertRaisesRegex(ValueError, "reordered original frame"):
+            mod.measure(p, "stop_sign")
 
     def test_no_stopped_history_rejected(self):
         p = packet()

@@ -17,14 +17,15 @@ def write(path: Path, value: dict) -> None:
 def construction(case: dict, config_path: Path) -> dict:
     config = json.loads(config_path.read_text())
     paths = [("config.json", config_path)]
-    for name in ("case-plan.json", "runner.py", "analysis.py", "native_capture.py",
+    for name in ("case-plan.json", "runner.py", "analysis.py", "physical_parking.py", "native_capture.py",
+                 "finalize_native.py",
                  "carla_alley_adapter.py", "alley_construction.py",
                  "parking_controller.py", "access_measurement.py",
                  "delivery_audit.py", "comparison_audit.py",
                  "measurement-contract.json"):
         paths.append((name, ROOT / name))
     for name in ("test_access_measurement.py", "test_native_capture.py",
-                 "test_carla_adapter.py"):
+                 "test_carla_adapter.py", "test_physical_parking.py"):
         paths.append(("tests/" + name, ROOT / "tests" / name))
     files = [{"path": dest, "source": str(path.relative_to(REPO)),
               "content": path.read_text(encoding="utf-8")} for dest, path in paths]

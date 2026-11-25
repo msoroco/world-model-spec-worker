@@ -192,7 +192,7 @@ class CaptureTests(unittest.TestCase):
             self.assertEqual(report["measurements"]["access_position_measurement"]["value"]
                              ["statutory_blocking_judgment"], None)
             (root / "original-attempt/activity.json").unlink()
-            with self.assertRaisesRegex(ValueError, "original alley source missing"):
+            with self.assertRaisesRegex(ValueError, "Missing required source: original-attempt/activity.json"):
                 build(root)
 
     def test_controller_requires_real_stop_and_hold_before_departure(self):

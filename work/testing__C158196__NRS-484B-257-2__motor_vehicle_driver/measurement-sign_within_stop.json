@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_within_stop",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Non-through intersection with stop sign: actual pre-entry cessation and subsequent cautious passage",
+      "source": "NRS 484B.257(2)",
+      "output_key": "stop_yield_observation",
+      "method": "measure_stop_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.json",
+        "video_frames.jsonl",
+        "site.json",
+        "devices.json",
+        "routes.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Priority counterpart already within intersection during ego crossing",
+      "source": "NRS 484B.257(2)",
+      "output_key": "priority_within_observation",
+      "method": "measure_priority_within",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.json",
+        "video_frames.jsonl",
+        "site.json",
+        "devices.json",
+        "routes.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Subsection 1 manner of stop or yield, retained as a cross-reference and source-bound observation",
+      "source": "NRS 484B.257(2)",
+      "output_key": "subsection_one_observation",
+      "method": "measure_subsection_one",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.json",
+        "video_frames.jsonl",
+        "site.json",
+        "devices.json",
+        "routes.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "devices.json"
+    ],
+    "error_contains": "Missing required source: devices.json"
+  }
+}

@@ -98,10 +98,14 @@ class World:
 def docs():
     def point(x, y):
         return {"x": x, "y": y, "z": 0.1, "yaw": 0}
+    cameras = {name: {"x": 0, "y": 0, "z": 3, "pitch": -5, "yaw": 0,
+                      "roll": 0, "fov_deg": 90} for name in
+               ("overview", "approach", "reference_corner", "driver_reference")}
     return {
         "site.json": {"cell_id": "C158196", "layout": "one_way_to_two_way_intersection",
                       "through_highway": False, "native_map_name": "TownSurvey",
-                      "intersection_rectangle_xy": [-2, -2, 2, 2]},
+                      "intersection_rectangle_xy": [-2, -2, 2, 2],
+                      "camera_poses": cameras},
         "devices.json": {"case_id": CASE, "control_context": "stop_sign",
                          "ego_control_actor_id": 45, "sign_kind": "stop_sign",
                          "facing_road_id": 1, "facing_lane_id": -1,

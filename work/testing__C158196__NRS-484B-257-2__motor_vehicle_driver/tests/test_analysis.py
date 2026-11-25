@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from test_native_witness import packet
+from test_native_adapter import docs
 
 FOLDER = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FOLDER))
@@ -25,11 +26,14 @@ def prepare(root):
     history = packet()
     history.update(case_id=CASE, control_context="stop_sign")
     (root / "original-history.json").write_text(json.dumps(history) + "\n")
+    for name, value in docs().items():
+        (root / name).write_text(json.dumps(value) + "\n")
     rows = [json.dumps({"video_frame": i, "carla_frame": i,
                         "time_s": i / 20}) for i in range(900)]
     (root / "video_frames.jsonl").write_text("\n".join(rows) + "\n")
     acquisition = {}
-    for name in ("original-history.json", "video_frames.jsonl"):
+    for name in ("original-history.json", "video_frames.jsonl", "site.json",
+                 "devices.json", "routes.json"):
         acquisition[name] = {"kind": "original_native", "sha256": hashlib.sha256(
             (root / name).read_bytes()).hexdigest()}
     (root / "acquisition.json").write_text(json.dumps(acquisition) + "\n")
@@ -43,6 +47,9 @@ class AnalysisTest(unittest.TestCase):
             report = mod.analyze(root)
             self.assertEqual(report["measurements"]["intersection_approach"]["value"]["entry_frame"], 100)
             self.assertFalse(report["physical_acceptance_claimed"])
+            from worker_exchange.measurement_contract import verify_report
+            contract = json.loads((FOLDER / "measurement-sign_within_stop.json").read_text())
+            self.assertEqual(len(verify_report(contract, report, root)), 3)
             (root / "video_frames.jsonl").write_text("{}\n")
             with self.assertRaisesRegex(ValueError, "stale original"):
                 mod.analyze(root)

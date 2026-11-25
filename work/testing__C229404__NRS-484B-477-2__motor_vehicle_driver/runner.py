@@ -67,6 +67,8 @@ def main() -> None:
                                                    args.output_dir, case_id)
         capture(session, case_id, args.output_dir / "original-attempt",
                 after_tick=session.pipeline_capture.capture)
+        from finalize_native import finalize
+        finalize(args.output_dir, case_id=case_id, restored=session.restored)
     finally:
         # capture owns brake and teardown after start; a pre-start failure still
         # needs the same cleanup. Session.cleanup raises on failed restoration.

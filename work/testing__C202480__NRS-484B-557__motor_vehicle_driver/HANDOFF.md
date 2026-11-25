@@ -1,32 +1,19 @@
-# testing__C202480__NRS-484B-557__motor_vehicle_driver
+# C202480 NRS 484B.557 delivery handoff
 
-Status: partial delivery preparation. No case is ready, no CARLA capture is claimed, and no legal verdict is assigned.
+Status: `ready` for CPU delivery preparation. The exact scoped strict gate passed on 2026-11-25. No actual CARLA capture, physical completion, or legal verdict is claimed.
 
-## Exact source and coverage
+## Exact package
 
-NRS 484B.557 requires an official stop sign governing a DOT-designated highway railroad grade crossing, complete cessation within 50 feet but not less than 15 feet from the nearest track, and due care before proceeding. Frozen accepted evidence inventory is empty. `case-plan.json` now lists nine exact cases: below/at/above 15 feet, below/at/above 50 feet, rolling passage, and clear/conflicted departures. Four comparisons isolate lower distance, upper distance, cessation, and departure conflict. Distance values are commanded body-gap targets; the statute does not specify a vehicle reference point, so measured original body-corner ranges remain unlabelled. No judgment-range entry exists for this exact law and actor.
+`case-plan.json`, `proposals/cases.json`, and `execution-manifest.json` bind nine rail-stop cases and four comparisons to NRS 484B.557. The stop-position cases command 14.9, 15.0, 15.1, 49.9, 50.0, and 50.1 foot body gaps; rolling passage and clear/conflicted departure cover cessation and subsequent care. These are engineering targets and measurements, not legal labels. Every case has an exact source-hashed primary bundle, Native runner, selected measurement contract, synthetic physical met/not-met/unverified fixture proofs, ordered lifecycle proof, offline proof, positive and source-negative compatibility proof, saved-only positive and source-negative proof, and independent diagnostic delivery audit with tampered-source and incomplete-seal negatives. Each also has one source-hashed fallback for measured brake margin or cessation risk, with offline and compatibility proofs.
 
-## Implemented CPU construction and proof
+The Native runner requires a reviewed source packet for DOT crossing designation, official governing stop device, rail geometry, live map, and ego blueprint before spawn. The fixed four-view 20 Hz capture records original frame joins and PNG samples; the production delivery audit checks a complete sealed source inventory, full video decode, original PNG-to-video pixels, source joins, and an independent source-bound physical review. Synthetic diagnostics cannot pass production delivery. `comparison_delivery.py` requires production audits of every member before reporting measured contrasts, without a legal judgment.
 
-`native_construction.py` requires source-hashed OpenDRIVE, crossing authority, rail geometry, official stop-sign landmark, and blueprint before requesting a Native spawn. It checks live map/sign identity and computes a stop centre from the reviewed rail and source half extent. Tests cover spawn, authority, tamper, map mismatch and sign absence. A reviewed real site packet and exact per-case runner bundles are still needed.
+## CPU evidence
 
-`native_control.py` requests approach, braking, stop hold, rolling and subsequent departure from live Native position/velocity, including both approach directions. One zero-speed frame is an engineering command state, not proof of cessation or due care.
+The 40 focused unit tests passed (`cpu-tests.log`). All nine current primary and fallback offline/compatibility proofs passed. All nine saved-only positives and source-change negatives passed. All nine diagnostic delivery audits passed, along with source-change and incomplete-seal negatives. Four diagnostic comparison contrasts passed; synthetic sources were rejected by the production comparison path. `cpu-static-check.log` and `cpu-strict-check.log` record successful assignment-scoped checks.
 
-`rail_stop_audit.py` verifies all five original source-file hashes, complete sequential 20 Hz frame timing, four body corners, nearest rail geometry, precontact zero speed, and subsequent movement. It preserves due-care review as unresolved. `comparison_audit.py` rejects absent original sources, changed fixed crossing context and missing or identical measured contrast. These are implementations and synthetic source-shaped tests, not captured evidence.
+The exact command was `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c202480-owner" TMPDIR="$PWD/.runtime-work/c202480-owner" .venv-cpu/bin/python worker_check.py --assignment testing__C202480__NRS-484B-557__motor_vehicle_driver --complete --require-delivery-ready`. It exited 0. `queue-proposal.json` contains nine exact case commands and four comparison commands for lead integration.
 
-Focused command: `.venv-cpu/bin/python -m unittest discover -s work/testing__C202480__NRS-484B-557__motor_vehicle_driver/tests -v`. Result: 28 tests passed; `cpu-tests.log` SHA256 `a33a949f43b3667fc917baac000e7b9ba6d052fe2f479bf1a2fc6d57f38321f3`.
+## Physical delivery
 
-## Next CPU work
-
-1. Author and independently review a real C202480 crossing site packet with source-hashed DOT or approved local designation, governing stop sign, nearest rail geometry, map and four camera poses. Do not infer authority from the visible sign alone.
-2. Build nine exact runner/config/construction bundles, selected-requirement measurement contracts and canonical semantic proposals; bind each to the reviewed site. Add risk-based fallbacks only for concrete placement or visibility failures.
-3. Run exact offline and positive/negative compatibility proof for every case and candidate. Implement saved-only processing, independent four-camera delivery audit and candidate-selection review; record all hashes in `execution-manifest.json`.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C202480__NRS-484B-557__motor_vehicle_driver --complete --require-delivery-ready`; keep status partial until it passes. After CPU delivery, actual motion, distance and camera visibility remain GPU checks.
-
-No frozen input, runtime, or batch file was changed. No external blocker is asserted for remaining CPU work.
-
-## 2026-11-23 original-frame and rail-contact checkpoint
-
-- `rail_stop_audit.py` now requires an integer original Native source-frame sequence that advances once per sampled 20 Hz frame. It records first/last source IDs, rejecting repeated or skipped source identities even if local frame/time remain correct. Nearest-rail selection uses the full four-corner signed interval, so a body straddling a rail registers contact at zero gap, including when other tracks are present. These are geometric observations, not a legal vehicle-reference convention or due-care verdict. SHA-256 `8a4371216360ae2454bf40852415e7d4f21b830de4ea39d6fa8f52e36cc0dcfe`.
-- Pinned preflight passed. Thirty focused tests passed (`cpu-tests.log` SHA-256 `1d50e18875afb30a8733d03bda7cbb56b0d9ab942f9a6ebe9eb2ce478c493064`), including repeated source frame and rail-straddling negatives. Scoped static complete passed (`cpu-static-check.log` SHA-256 `2cd1d1ae920d609f79a3546c1a32db4eb5121df48e4c29c160598a521fc9ca78`).
-- Exact scoped strict gate exited 1 at truthful partial-package acceptance; `cpu-strict-check.log` SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. Next CPU work remains reviewed crossing site packets, nine exact bundles and Native runner, semantic proposals, source-hashed diagnostics, offline and positive/negative compatibility, saved-only process, delivery audit and justified fallback receipts.
+Supply a reviewed real site packet and a fresh CARLA attempt under `.runtime-work`, then run the canonical prepare, execute, owner-release, saved-processing, independent audit, and accept commands in the queue proposal. The production audit fails closed until an independent reviewer verifies original rail lines, stop device and authority, ego stop footprint, cessation, and departure clearance against original PNG/video frames and the capture seal. The fixed legal distance range remains an observed measurement pending review; due care remains unresolved until original scene and conflict evidence is reviewed.

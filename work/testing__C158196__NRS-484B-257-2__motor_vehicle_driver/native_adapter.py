@@ -67,6 +67,17 @@ def load_site(bundle, case_id, control_context):
             not all(type(x) in (int, float) and isfinite(x) for x in bounds) or
             not bounds[0] < bounds[2] or not bounds[1] < bounds[3]):
         raise ValueError("reviewed intersection bounds missing")
+    views = {"overview", "approach", "reference_corner", "driver_reference"}
+    poses = site.get("camera_poses")
+    if not isinstance(poses, dict) or set(poses) != views:
+        raise ValueError("four source-surveyed original camera poses required")
+    for name, pose in poses.items():
+        if not isinstance(pose, dict) or set(pose) != {"x", "y", "z", "pitch", "yaw", "roll", "fov_deg"}:
+            raise ValueError("source-surveyed camera pose incomplete: " + name)
+        for key, value in pose.items():
+            _finite(value, name + "." + key)
+        if not 30 <= pose["fov_deg"] <= 120:
+            raise ValueError("source-surveyed camera FOV invalid: " + name)
     if (devices.get("case_id") != case_id or
             devices.get("control_context") != control_context or
             not isinstance(devices.get("ego_control_actor_id"), int) or

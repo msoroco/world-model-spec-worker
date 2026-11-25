@@ -55,6 +55,16 @@ class ControllerTest(unittest.TestCase):
         devices = {"control_context": "yield_sign", "ego_control_actor_id": 45}
         self.assertGreater(policy("ego", Actor(), 2.5, ROUTE, BOUNDS, devices)["brake"], 0)
 
+    def test_fallback_throttle_changes_only_engineering_control(self):
+        authority, other = readers(context="yield_sign", other=(20, 20))
+        primary = mod.IntersectionController(other, authority, 1.0)
+        fallback = mod.IntersectionController(other, authority, .75)
+        devices = {"control_context": "yield_sign", "ego_control_actor_id": 45}
+        first = primary("ego", Actor(speed=0), 2.5, ROUTE, BOUNDS, devices)
+        second = fallback("ego", Actor(speed=0), 2.5, ROUTE, BOUNDS, devices)
+        self.assertGreater(first["throttle"], second["throttle"])
+        self.assertEqual(first["steer"], second["steer"])
+
     def test_exception_requires_live_authority_and_same_frame_priority(self):
         authority, other = readers(context="officer_exception", other=(20, 20))
         policy = mod.IntersectionController(other, authority)

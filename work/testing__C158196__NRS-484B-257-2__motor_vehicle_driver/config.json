@@ -1,0 +1,155 @@
+{
+  "cell_id": "C158196",
+  "law_id": "NRS-484B-257-2",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_within_stop",
+  "supported_case_ids": [
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_within_stop",
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__yield_within",
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_approach_near",
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_approach_far",
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_exception",
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_exception"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "surveyed fixed site overview",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed ego approach authority",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed counterpart approach corner",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed ego driver reference",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__sign_within_stop",
+    "target_law_id": "NRS-484B-257-2",
+    "target_type": "boundary_probe",
+    "rationale": "Stop-sign case, non-obligated counterpart already within intersection; measured full stop before entry.",
+    "variable_assignments": {
+      "control_context": {
+        "kind": "world_setup",
+        "value": "stop_sign"
+      },
+      "counterpart_relation": {
+        "kind": "world_setup",
+        "value": "within"
+      },
+      "counterpart_start_m": {
+        "kind": "world_setup",
+        "value": 10
+      },
+      "ego_controller": {
+        "kind": "controller",
+        "value": "source_gated_stop_sign"
+      }
+    },
+    "unresolved_judgment_calls": [
+      "proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "native_device_history",
+          "unit": "original structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-hashed original Native packet and frame join",
+          "time_window": "entire original 45 s attempt",
+          "reference_frame": "Native world and original frame ID",
+          "uncertainty": "original source/geometry and physical visibility require independent review"
+        },
+        {
+          "name": "ego_body_history",
+          "unit": "original structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-hashed original Native packet and frame join",
+          "time_window": "entire original 45 s attempt",
+          "reference_frame": "Native world and original frame ID",
+          "uncertainty": "original source/geometry and physical visibility require independent review"
+        },
+        {
+          "name": "counterpart_body_history",
+          "unit": "original structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-hashed original Native packet and frame join",
+          "time_window": "entire original 45 s attempt",
+          "reference_frame": "Native world and original frame ID",
+          "uncertainty": "original source/geometry and physical visibility require independent review"
+        },
+        {
+          "name": "intersection_geometry",
+          "unit": "original structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-hashed original Native packet and frame join",
+          "time_window": "entire original 45 s attempt",
+          "reference_frame": "Native world and original frame ID",
+          "uncertainty": "original source/geometry and physical visibility require independent review"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "original structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-hashed original Native packet and frame join",
+          "time_window": "entire original 45 s attempt",
+          "reference_frame": "Native world and original frame ID",
+          "uncertainty": "original source/geometry and physical visibility require independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "original_authority_context",
+          "unit": "original source packet",
+          "method": "source-hashed reviewed original Native inventory"
+        },
+        {
+          "name": "counterpart_priority_context",
+          "unit": "original source packet",
+          "method": "source-hashed reviewed original Native inventory"
+        }
+      ],
+      "limitations": [
+        "No legal hazard cutoff or outcome label is inferred from engineering targets.",
+        "Physical presence, control, motion and pixels require local original-source review."
+      ]
+    },
+    "paired_probe_id": "authority_contexts",
+    "deliberate_differences": [
+      "control_context",
+      "ego_controller"
+    ],
+    "probe": {
+      "primary_variable": "control_context",
+      "comparison_or_standard": "Source-reviewed branch contrast; no numerical legal hazard definition.",
+      "target_value_or_branch": "stop_sign"
+    }
+  },
+  "authored_test_context": {
+    "core_assumptions": []
+  },
+  "physical_acceptance_claimed": false,
+  "native_throttle_scale": 1.0
+}

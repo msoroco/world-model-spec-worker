@@ -108,21 +108,40 @@ def measure(packet, expected_control, expected_relation="within"):
     frames = packet.get("frames")
     if not isinstance(frames, list) or len(frames) != FRAMES:
         raise ValueError("expected full 900-frame original history")
+    first_native_frame = frames[0].get("native_frame")
+    if type(first_native_frame) is not int or first_native_frame < 0:
+        raise ValueError("original Native first frame missing")
+    first_time_s = frames[0].get("time_s")
+    if type(first_time_s) not in (int, float) or not isfinite(first_time_s):
+        raise ValueError("original Native first time missing")
     ego_overlap = []
     other_inside = []
     other_center = []
     speeds = []
     distances = []
     for index, frame in enumerate(frames):
-        if frame.get("native_frame") != index:
+        if frame.get("native_frame") != first_native_frame + index:
             raise ValueError("missing or reordered original frame")
         time_s = frame.get("time_s")
-        if not isinstance(time_s, (int, float)) or abs(time_s - index / FPS) > 0.001:
+        if not isinstance(time_s, (int, float)) or abs(time_s - first_time_s - index / FPS) > 0.001:
             raise ValueError("non-20Hz original elapsed time")
         if frame.get("camera_frame") != index:
             raise ValueError("camera and Native frame maps differ")
         if frame.get("control_context") != expected_control:
             raise ValueError("device/officer context changed within attempt")
+        authority = frame.get("authority")
+        if (not isinstance(authority, dict) or
+                authority.get("native_frame") != first_native_frame + index or
+                authority.get("control_context") != expected_control or
+                type(authority.get("ego_control_actor_id")) is not int):
+            raise ValueError("original same-frame controlling authority missing")
+        if expected_control in {"stop_sign", "yield_sign"}:
+            if authority.get("signal_controlling") is not False or authority.get("officer_controlling") is not False:
+                raise ValueError("sign lost independent control")
+        if expected_control == "signal_exception" and authority.get("signal_state") is None:
+            raise ValueError("original controlling signal state missing")
+        if expected_control == "officer_exception" and authority.get("officer_actor_visible") is not True:
+            raise ValueError("original officer control observation missing")
         ego = frame.get("ego")
         other = frame.get("counterpart")
         if not isinstance(ego, dict) or not isinstance(other, dict):

@@ -21,11 +21,14 @@ def _inside(x, y, bounds):
 class IntersectionController:
     """One policy instance per exact attempt, with explicit source readers."""
 
-    def __init__(self, counterpart_reader, authority_reader):
+    def __init__(self, counterpart_reader, authority_reader, throttle_scale=1.0):
         if not callable(counterpart_reader) or not callable(authority_reader):
             raise ValueError("original counterpart and authority readers required")
+        if type(throttle_scale) not in (int, float) or not .5 <= throttle_scale <= 1:
+            raise ValueError("engineering throttle scale outside reviewed range")
         self.counterpart_reader = counterpart_reader
         self.authority_reader = authority_reader
+        self.throttle_scale = float(throttle_scale)
         self.full_stop_observed = False
 
     def __call__(self, role, actor, target, route, bounds, devices):
@@ -55,7 +58,7 @@ class IntersectionController:
         error = atan2(sin(desired - heading), cos(desired - heading))
         steer = max(-0.65, min(0.65, error / 1.2))
         if role == "counterpart":
-            return {"throttle": 0.3 if speed < target else 0.0,
+            return {"throttle": 0.3 * self.throttle_scale if speed < target else 0.0,
                     "brake": 0.15 if speed > target + 0.6 else 0.0,
                     "steer": steer}
         context = devices["control_context"]
@@ -93,6 +96,6 @@ class IntersectionController:
                 return {"throttle": 0.0, "brake": 0.75, "steer": steer}
         if not go or (before_entry and occupied_or_close):
             return {"throttle": 0.0, "brake": 0.7, "steer": steer}
-        return {"throttle": 0.25 if speed < target else 0.0,
+        return {"throttle": 0.25 * self.throttle_scale if speed < target else 0.0,
                 "brake": 0.12 if speed > target + 0.5 else 0.0,
                 "steer": steer}

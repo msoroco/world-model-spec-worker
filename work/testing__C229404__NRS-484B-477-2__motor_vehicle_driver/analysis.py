@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from access_measurement import measure
+from physical_parking import assess
 
 
 def rows(path: Path) -> list[dict]:
@@ -90,12 +91,18 @@ def save_result(attempt: Path, report: dict, measurement: dict) -> dict:
                 stream.write(json.dumps({"time_s": row["time_s"], "value": value}) + "\n")
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": str(path.relative_to(attempt))})
+    context_path = channels / "context.json"
+    context_path.write_text(json.dumps({"reviewed_alley_packet": {
+        "geometry_sha256": inventory["sources"]["alley_geometry"]["sha256"],
+        "map_sha256": inventory["map_sha256"],
+        "review_status": "pending independent original-source review"}}) + "\n")
     for context in construction["recording_description"]["context_inputs"]:
         evidence.append({"name": context["name"], "unit": context["unit"],
-                         "reference": "original-attempt/alley_geometry.json"})
+                         "reference": str(context_path.relative_to(attempt))})
     target = (measurement["max_access_intrusion_area_m2"] == 0 if
               config["parking_position"] == "clear" else
               measurement["max_access_intrusion_area_m2"] > 0)
+    physical = assess(attempt, config, measurement)
     result = {"case_id": config["selected_case_id"],
               "measured_values": report["measurements"]["access_position_measurement"]["value"],
               "target_checks": [{"target": "original body position relative to abutting access",
@@ -104,20 +111,20 @@ def save_result(attempt: Path, report: dict, measurement: dict) -> dict:
                                  "method": "measure_alley_access", "tolerance": 0,
                                  "matched": target, "physical_cause_confirmed": False,
                                  "cause_evidence": measurement["source_sha256"]}],
-              "setup_confirmed": False, "behavior_attempted": False,
-              "maneuver_completed": False,
+              "setup_confirmed": physical["setup_confirmed"],
+              "behavior_attempted": physical["behavior_attempted"],
+              "maneuver_completed": physical["maneuver_completed"],
               "termination_reason": "Saved original access evidence awaits independent physical and legal review",
               "physical_failure_flags": [], "trace_reference": "trace.jsonl",
               "video_references": [name + ".mkv" for name in
                                    ("overview", "approach", "reference_corner", "driver_reference")],
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],
-              "recording_evidence": evidence, "realized_observables": {},
-              "physical_checks": {name: {"status": "unverified",
-                                         "method": "independent original-source review pending",
-                                         "sources": measurement["source_sha256"],
-                                         "legal_verdict_claimed": False}
-                                  for name in ("setup", "target", "maneuver")},
+              "recording_evidence": evidence,
+              "realized_observables": physical["realized_observables"],
+              "physical_checks": physical["physical_checks"],
+              "provenance_kind": "synthetic_fixture" if inventory["diagnostic_fixture"] else "native",
+              "diagnostic_fixture": inventory["diagnostic_fixture"],
               "physical_acceptance_claimed": False}
     validate_result(result)
     return result
@@ -131,6 +138,8 @@ def main() -> None:
     attempt = args.attempt.resolve()
     report, measurement = build(attempt)
     result = save_result(attempt, report, measurement)
+    report["physical_checks"] = result["physical_checks"]
+    report["realized_observables"] = result["realized_observables"]
     if (attempt / "result.json").exists() or args.output.exists():
         raise ValueError("refusing to replace saved original alley analysis")
     (attempt / "result.json").write_text(json.dumps(result, indent=2) + "\n")
