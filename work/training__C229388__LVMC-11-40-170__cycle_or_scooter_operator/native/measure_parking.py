@@ -9,7 +9,7 @@ from pathlib import Path
 from shapely.geometry import Polygon
 
 AID = 'training__C229388__LVMC-11-40-170__cycle_or_scooter_operator'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -47,7 +47,7 @@ def measure(root):
         raise ValueError('Assignment or source provenance mismatch')
     hashes = {}
     for name in CAMERAS:
-        path = root / ('camera_' + name + '.mkv')
+        path = root / (name + '.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing source camera: ' + name)
         run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -56,7 +56,7 @@ def measure(root):
         if run.returncode:
             raise ValueError('Source camera decode failed: ' + name)
         streams = json.loads(run.stdout).get('streams', [])
-        wanted = (1920, 1080) if name == 'forward' else (1280, 720)
+        wanted = (1920, 1080) if name == 'overview' else (1280, 720)
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: ' + name)
         if kind == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != wanted:
@@ -65,6 +65,7 @@ def measure(root):
     if context.get('camera_sha256') != hashes:
         raise ValueError('Context not bound to source camera bytes')
     for key in ('reviewer', 'device_subtype_source', 'rack_support_source', 'sidewalk_geometry_source',
+                'roadway_geometry_source', 'curb_geometry_source',
                 'pedestrian_corridor_source', 'operator_join_source', 'parking_state_source'):
         if not context.get(key):
             raise ValueError('Missing reviewed context source: ' + key)
@@ -73,6 +74,13 @@ def measure(root):
     if type(context.get('rack_support_confirmed')) is not bool:
         raise ValueError('Missing rack support review')
     sidewalk = polygon(context.get('sidewalk_polygon_xy_m'), 'sidewalk')
+    roadway = polygon(context.get('roadway_polygon_xy_m'), 'roadway')
+    curb = context.get('curb_polyline_xy_m')
+    if not isinstance(curb, list) or len(curb) < 2 or any(
+            not isinstance(point, list) or len(point) != 2 or
+            any(type(value) not in (int, float) or not math.isfinite(value) for value in point)
+            for point in curb):
+        raise ValueError('Invalid reviewed curb geometry')
     rack = polygon(context.get('rack_polygon_xy_m'), 'rack')
     corridor = polygon(context.get('pedestrian_corridor_polygon_xy_m'), 'pedestrian corridor')
     expected = 'synthetic_native_sample' if kind == 'synthetic_diagnostic' else 'original_native_pose'
@@ -115,6 +123,7 @@ def measure(root):
             'pedestrian_corridor_intersection_frame_count': sum(corridor_overlap[i] > 0 for i in at_rest),
             'minimum_corridor_gap_m_at_rest': min(corridor_gap[i] for i in at_rest),
             'sidewalk_intersection_frame_count': sum(sidewalk_overlap[i] > 0 for i in at_rest),
+            'roadway_polygon_area_m2': roadway.area,
             'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
 
 

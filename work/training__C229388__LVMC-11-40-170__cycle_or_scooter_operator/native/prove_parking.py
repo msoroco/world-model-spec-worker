@@ -52,20 +52,23 @@ def main():
     with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as tmp:
         root = Path(tmp)
         for name in CAMERAS:
-            path = root / ('camera_' + name + '.mkv')
+            path = root / (name + '.mkv')
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=64x48:r=20',
                             '-frames:v', '600', '-c:v', 'ffv1', str(path)], check=True)
-        camera_hashes = {('camera_' + name + '.mkv'): hashlib.sha256(
-            (root / ('camera_' + name + '.mkv')).read_bytes()).hexdigest() for name in CAMERAS}
+        camera_hashes = {(name + '.mkv'): hashlib.sha256(
+            (root / (name + '.mkv')).read_bytes()).hexdigest() for name in CAMERAS}
         frame_rows = [{'video_frame': i, 'native_frame': 1000+i, 'time_s': round(i*.05, 4)} for i in range(600)]
         (root/'video_frames.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in frame_rows))
         context = {'assignment_id': AID, 'review_kind': 'synthetic_diagnostic', 'camera_sha256': camera_hashes,
                    'reviewer': 'synthetic-software-test', 'device_subtype': 'bicycle',
                    'device_subtype_source': 'synthetic fixture', 'rack_support_confirmed': True,
                    'rack_support_source': 'synthetic fixture', 'sidewalk_geometry_source': 'synthetic fixture',
+                   'roadway_geometry_source': 'synthetic fixture', 'curb_geometry_source': 'synthetic fixture',
                    'pedestrian_corridor_source': 'synthetic fixture', 'operator_join_source': 'synthetic fixture',
                    'parking_state_source': 'synthetic fixture', 'operator_actor_id': 7, 'device_actor_id': 8,
                    'sidewalk_polygon_xy_m': [[-5, -3], [5, -3], [5, 3], [-5, 3]],
+                   'roadway_polygon_xy_m': [[-5, -7], [5, -7], [5, -3], [-5, -3]],
+                   'curb_polyline_xy_m': [[-5, -3], [5, -3]],
                    'rack_polygon_xy_m': [[-1, 1], [1, 1], [1, 2], [-1, 2]],
                    'pedestrian_corridor_polygon_xy_m': [[-5, -1], [5, -1], [5, 1], [-5, 1]]}
         save(root/'parking_context.json', context)

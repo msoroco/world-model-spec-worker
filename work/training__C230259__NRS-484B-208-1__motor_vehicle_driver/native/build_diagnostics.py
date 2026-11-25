@@ -79,6 +79,9 @@ def build(label, candidate):
         'cell_id':'C230259','actor':'motor_vehicle_driver',
         'city_or_town_geography_verified':False,'hov_lane_present':False,
         'left_turn_requested':False,'maintenance_or_emergency_duty_verified':False,
+        'subject_overtaking_other_vehicle_requested':False,
+        'official_control_reviewed':False,
+        'emergency_authorization_reviewed':False,
         'weather':'clear','legal_verdict':None,
         'fixed_conditions_id':'c230259-left-lane-v1'}
     suffix = label+'-'+candidate

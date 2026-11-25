@@ -1,4 +1,4 @@
-"""Independent exact-case source and delivery audit for roundabout entry."""
+"""Independent exact-case source and delivery audit for roundabout circulation direction."""
 import argparse
 import hashlib
 import json
@@ -76,7 +76,7 @@ def audit(case, attempt, processing, diagnostic=False):
                 physical.get("actual_pixels") is not True or
                 physical.get("physical_completion") is not True):
             raise ValueError("Original physical review incomplete or stale")
-    return {"format": "c239014-delivery-audit-diagnostic-v1" if diagnostic else
+    return {"format": "c238396-delivery-audit-diagnostic-v1" if diagnostic else
             "worker-delivery-audit", "case_id": case, "diagnostic_fixture": diagnostic,
             "processing_sha256": sha(processing), "source_hashes": {name: originals[name]
                                                           for name in required},
@@ -85,7 +85,7 @@ def audit(case, attempt, processing, diagnostic=False):
                        "actual_pixels": physical is not None,
                        "physical_completion": physical is not None},
             "source_decode_receipts": video_receipts,
-            "measured_entry_frame": measurement["first_entry_frame"],
+            "measured_translational_direction": measurement["direction"]["translational_direction"],
             "physical_acceptance_claimed": physical is not None,
             "legal_verdict_claimed": False}
 

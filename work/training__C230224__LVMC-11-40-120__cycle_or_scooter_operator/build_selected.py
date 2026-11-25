@@ -51,8 +51,13 @@ def main():
                 entry.update(construction=str(path.relative_to(HERE)), construction_sha256=digest)
                 if suffix == 'probe_01':
                     (HERE/'runner.py').write_text(runner)
+                    (HERE/'tests').mkdir(exist_ok=True)
+                    (HERE/'tests/test_bundle.py').write_text(original_test)
+                    (HERE/'measure_path.py').write_text((HERE/'native/measure_path.py').read_text())
                     write(HERE/'config.json', config)
-                    write(HERE/'construction.json', construction)
+                    root_construction = dict(construction)
+                    root_construction.update(static_checks=['exact selected case, camera, rate and duration verification', 'surveyed path usability and source-gated device/rider identity', 'saved source measurements and negative proof'], termination_rules=['600 original Native frames at 20 Hz', 'nonzero capture or restoration error retained; no synthetic Native claim'], mechanisms=['survey-gated rideable device and attached rider', 'Native footprint, path/road occupancy and obstruction source capture', 'four original FFV1 cameras', 'saved-only source finalizer'])
+                    write(HERE/'construction.json', root_construction)
             else:
                 entry['candidates'].append({'id': 'fallback1', 'construction': str(path.relative_to(HERE)),
                     'construction_sha256': digest, 'trigger': {'source': 'original Native spawn receipt',

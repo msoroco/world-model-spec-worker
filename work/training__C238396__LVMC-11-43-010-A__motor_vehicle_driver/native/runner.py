@@ -22,7 +22,7 @@ def check(config=None):
         raise ValueError("Thirty seconds and four source cameras required")
     if config is not None:
         assignment = "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver"
-        case_ids = {assignment + "__selected_a60a4f45__" + condition: release
+        case_ids = {assignment + "__" + condition: release
                     for condition, release in RELEASE.items()}
         case_id = config.get("case_id")
         if case_id not in case_ids or config.get("selected_case_id") != case_id:

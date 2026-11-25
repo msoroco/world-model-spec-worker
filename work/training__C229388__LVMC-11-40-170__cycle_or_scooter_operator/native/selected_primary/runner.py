@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C229388__LVMC-11-40-170__cycle_or_scooter_operator'
 CASE = AID + '__probe_01'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -30,7 +30,7 @@ def config_check():
 def survey_check(survey):
     for key in ('map_name', 'survey_source', 'rack_support_source', 'sidewalk_geometry_source',
                 'pedestrian_corridor_source', 'device_subtype_source', 'device_blueprint',
-                'operator_blueprint', 'rack_blueprint', 'device_spawn_xyz_m', 'device_spawn_yaw_deg',
+                'operator_blueprint', 'rack_blueprint', 'device_spawn_xyz_m', 'obstructing_device_spawn_xyz_m', 'fallback_device_spawn_xyz_m', 'fallback_obstructing_device_spawn_xyz_m', 'device_spawn_yaw_deg',
                 'operator_spawn_xyz_m', 'rack_spawn_xyz_m', 'rack_spawn_yaw_deg', 'camera_world_transforms'):
         if not survey.get(key) and survey.get(key) != 0:
             raise ValueError('Missing reviewed Native survey source: ' + key)
@@ -38,7 +38,7 @@ def survey_check(survey):
         raise ValueError('Unsupported surveyed device subtype')
     if set(survey['camera_world_transforms']) != set(CAMERAS):
         raise ValueError('Four surveyed source cameras required')
-    for key in ('device_spawn_xyz_m', 'operator_spawn_xyz_m', 'rack_spawn_xyz_m'):
+    for key in ('device_spawn_xyz_m', 'obstructing_device_spawn_xyz_m', 'fallback_device_spawn_xyz_m', 'fallback_obstructing_device_spawn_xyz_m', 'operator_spawn_xyz_m', 'rack_spawn_xyz_m'):
         xyz = survey[key]
         if len(xyz) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in xyz):
             raise ValueError('Invalid surveyed transform: ' + key)
@@ -89,7 +89,7 @@ def capture(survey, output, host, port):
             actors.append(actor)
             return actor
         rack = spawn(survey['rack_blueprint'], survey['rack_spawn_xyz_m'], survey['rack_spawn_yaw_deg'])
-        device = spawn(survey['device_blueprint'], survey['device_spawn_xyz_m'], survey['device_spawn_yaw_deg'])
+        device = spawn(survey['device_blueprint'], survey[cfg['spawn_key']], survey['device_spawn_yaw_deg'])
         operator = spawn(survey['operator_blueprint'], survey['operator_spawn_xyz_m'])
         queues = {}
         for spec in cfg['cameras']:
@@ -107,7 +107,7 @@ def capture(survey, output, host, port):
                 ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                  '-video_size', f"{spec['width']}x{spec['height']}", '-framerate', '20',
                  '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+                 str(output/(spec['name']+'.mkv'))], stdin=subprocess.PIPE)
         first_elapsed = None
         with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_parking_trace.jsonl').open('w') as trace_file:
             for i in range(COUNT):
@@ -139,7 +139,7 @@ def capture(survey, output, host, port):
             'assignment_id': AID, 'review_kind': 'original_source_review',
             'device_subtype': survey['device_subtype'], 'device_actor_id': device.id,
             'operator_actor_id': operator.id, 'rack_actor_id': rack.id,
-            'camera_sha256': {}, 'review_required': True}, indent=2)+'\n')
+            'camera_sha256': {}, 'parking_context': {'source_kind': 'original_source_review'}, 'review_required': True}, indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT, 'physical_acceptance_claimed': False}
     finally:
         for actor in reversed(actors):

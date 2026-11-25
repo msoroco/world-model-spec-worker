@@ -74,8 +74,17 @@ def main():
                    ['native-map-readback.json', 'native-road-context.json']),
         'text-1': ('speed_and_overtake', 'measure_speed_and_overtake',
                    ['native-actors.jsonl', 'native-road-context.json']),
+        'text-2': ('exception_scope', 'measure_exception_scope', ['context.json']),
+        'text-3': ('subject_overtake_exception', 'measure_subject_overtake_exception',
+                   ['native-actors.jsonl', 'context.json']),
+        'text-4': ('left_turn_exception', 'measure_left_turn_exception', ['context.json']),
+        'text-5': ('hov_exception', 'measure_hov_exception', ['context.json']),
         'text-6': ('maintenance_exception', 'measure_maintenance_exception',
                    ['context.json']),
+        'text-7': ('hazard_exception', 'measure_hazard_exception', ['context.json']),
+        'text-8': ('control_exception', 'measure_control_exception', ['context.json']),
+        'text-9': ('emergency_exception', 'measure_emergency_exception', ['context.json']),
+        'text-10': ('geography_exception', 'measure_geography_exception', ['context.json']),
         'reviewed-scope-0': ('selected_witness', 'measure_selected_witness',
                    ['native-actors.jsonl', 'native-road-context.json'])}
     for case_id, continued in zip(IDS, (True, False)):

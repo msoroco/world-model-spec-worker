@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "LVMC 11.43.010(A)",
+      "output_key": "roundabout_context",
+      "method": "measure_roundabout_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "roundabout-map-readback.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "LVMC 11.43.010(A)",
+      "output_key": "circulation_direction",
+      "method": "measure_circulation_direction",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "roundabout-map-readback.json"
+    ],
+    "error_contains": "Missing required source: roundabout-map-readback.json"
+  }
+}

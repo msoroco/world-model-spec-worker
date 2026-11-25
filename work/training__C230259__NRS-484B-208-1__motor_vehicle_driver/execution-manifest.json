@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "native/selected-drafts/reference/fallback1/construction.json",
-          "construction_sha256": "3a2e7960e4fc0c1d10c0751e9495f8cb1d1173ade80ba1bea573d1ad584944bf",
+          "construction_sha256": "111659a8bb4f08edae0468ed5d8b27d1dcee1b0c318ccf0ed925c0f9b7b65dc5",
           "trigger": {
             "source": "native-capture-report.json",
             "metric": "rear_spawn_and_overtake_window",
@@ -24,7 +24,23 @@
           },
           "changed_knobs": [
             "rear_initial_x_m -5 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference --candidate fallback1 --output .runtime-work/c230259-208-offline/v4-reference-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "111659a8bb4f08edae0468ed5d8b27d1dcee1b0c318ccf0ed925c0f9b7b65dc5",
+            "log": "proofs/reference/fallback1/offline.log",
+            "log_sha256": "d4e86b87fbe2ac2bfd8996f508acc32a2d7dd432045385cdbc32a553745e5df0"
+          },
+          "compatibility": {
+            "receipt": "proofs/reference/fallback1/compatibility.json",
+            "sha256": "623edf8fbd6c90c7ed898f05ec4db26a1c340dbd37b2b1f6220a84037e85f6fd",
+            "log": "proofs/reference/fallback1/analysis.log",
+            "negative_log": "proofs/reference/fallback1/negative-analysis.log"
+          },
+          "negative": {
+            "log": "proofs/reference/fallback1/negative-analysis.log"
+          }
         }
       ],
       "measurement_contract": "measurement-reference.json",
@@ -166,7 +182,53 @@
         }
       },
       "construction": "native/selected-drafts/reference/primary/construction.json",
-      "construction_sha256": "c789210a7a603b79d497826e5ee21802872563517a7019395d1acb625f4a3470"
+      "construction_sha256": "517c3b485e4b648282fbc3473003013b90979a53bd05f3265d21a38b7f3e38b1",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference --candidate primary --output .runtime-work/c230259-208-offline/v4-reference-primary",
+        "exit_code": 0,
+        "construction_sha256": "517c3b485e4b648282fbc3473003013b90979a53bd05f3265d21a38b7f3e38b1",
+        "log": "proofs/reference/primary/offline.log",
+        "log_sha256": "69d3402674ae0ae4bdf0275e241fed7056877237c3185fcd1181627fe3670a42"
+      },
+      "compatibility": {
+        "receipt": "proofs/reference/primary/compatibility.json",
+        "sha256": "31bb11eec2f88381760612bd0c5748125b8d2984e74325192f085cf22df26a10",
+        "log": "proofs/reference/primary/analysis.log",
+        "negative_log": "proofs/reference/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/reference/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-reference-preparation.json",
+        "sha256": "f815a22e1a98b895a542c714e8bd9ca3aaf32ccd9101c7829ee1e1c903599608"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "d521857106c17048407b24adcc4ed8793f4d0ebc6c7bc69c4fd9f43bf92c1b41",
+        "command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c230259-208-compat/v4-reference-primary --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference --diagnostic --output work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery-reference-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-reference-positive.log",
+        "test_log_sha256": "94a6eb1aaf998ff44dcbce4edc9c394693fde0cb8252587ec209752fec7aa1d0",
+        "negative_command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c230259-208-compat/v4-reference-primary --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference --output work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery-reference-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: capture-seal.json",
+        "negative_log": "delivery-reference-negative.log",
+        "negative_log_sha256": "ca09f002ea3c695eb659418316336ad9c86e4a524c118e695c0a58d75e426d86",
+        "proof_scope": "Synthetic source join and synthetic-as-physical rejection only"
+      }
     },
     {
       "case_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast",
@@ -180,7 +242,7 @@
         {
           "id": "fallback1",
           "construction": "native/selected-drafts/contrast/fallback1/construction.json",
-          "construction_sha256": "92a845d0c51c934852b3088f8770a7d479e60980cc63b4455048252b0e95ea51",
+          "construction_sha256": "71b36a24ed3dd06f7b7a13e4ebe1d36afdeb9fdbd25723539f7d19fb1ef9188b",
           "trigger": {
             "source": "native-capture-report.json",
             "metric": "rear_spawn_and_overtake_window",
@@ -188,7 +250,23 @@
           },
           "changed_knobs": [
             "rear_initial_x_m -5 m"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast --candidate fallback1 --output .runtime-work/c230259-208-offline/v4-contrast-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "71b36a24ed3dd06f7b7a13e4ebe1d36afdeb9fdbd25723539f7d19fb1ef9188b",
+            "log": "proofs/contrast/fallback1/offline.log",
+            "log_sha256": "8d6e77b127bdf214383c5038e13cf13b437243da93ec5d67533ef157b683d943"
+          },
+          "compatibility": {
+            "receipt": "proofs/contrast/fallback1/compatibility.json",
+            "sha256": "e9fa1b7250395f3c439684049054d02e2a1c4a662fe558f57ee11f324a779766",
+            "log": "proofs/contrast/fallback1/analysis.log",
+            "negative_log": "proofs/contrast/fallback1/negative-analysis.log"
+          },
+          "negative": {
+            "log": "proofs/contrast/fallback1/negative-analysis.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contrast.json",
@@ -330,7 +408,53 @@
         }
       },
       "construction": "native/selected-drafts/contrast/primary/construction.json",
-      "construction_sha256": "e050d8fee91432261e42c535ecd249678c2cfbf7f052c18a57da1818fef98c0d"
+      "construction_sha256": "35fc92d02a589b3e5577fcd77ad1c2af4b4387ea1fe79d9b76314cb53d1855dc",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast --candidate primary --output .runtime-work/c230259-208-offline/v4-contrast-primary",
+        "exit_code": 0,
+        "construction_sha256": "35fc92d02a589b3e5577fcd77ad1c2af4b4387ea1fe79d9b76314cb53d1855dc",
+        "log": "proofs/contrast/primary/offline.log",
+        "log_sha256": "e3e5c7f7a2a77be652c4f6b8c2ad3d76b178a7ecc8ab46772de41f3035f8d52c"
+      },
+      "compatibility": {
+        "receipt": "proofs/contrast/primary/compatibility.json",
+        "sha256": "93390c3f9a80ffe3ba86fc9ee9ba5f9b43b1890741dc202a6dfc848a3d527c33",
+        "log": "proofs/contrast/primary/analysis.log",
+        "negative_log": "proofs/contrast/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/contrast/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-contrast-preparation.json",
+        "sha256": "504e411d29084a96767c97e618f566500eabcd0b61aab69f026d714298fc155c"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "d521857106c17048407b24adcc4ed8793f4d0ebc6c7bc69c4fd9f43bf92c1b41",
+        "command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c230259-208-compat/v4-contrast-primary --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast --diagnostic --output work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery-contrast-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-contrast-positive.log",
+        "test_log_sha256": "46a591851fff67df0d4abbd6e5739f8ad9b4d5316dc3b816f8f2bce91dafe313",
+        "negative_command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c230259-208-compat/v4-contrast-primary --case training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast --output work/training__C230259__NRS-484B-208-1__motor_vehicle_driver/delivery-contrast-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: capture-seal.json",
+        "negative_log": "delivery-contrast-negative.log",
+        "negative_log_sha256": "ca09f002ea3c695eb659418316336ad9c86e4a524c118e695c0a58d75e426d86",
+        "proof_scope": "Synthetic source join and synthetic-as-physical rejection only"
+      }
     }
   ]
 }

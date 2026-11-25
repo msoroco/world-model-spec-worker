@@ -42,6 +42,49 @@ def measure_maintenance_exception(observed, road, context):
             'subsection_2_exception_review_pending': True}
 
 
+def measure_exception_scope(observed, road, context):
+    return {'subsection_2_exception_review_pending': True,
+            'context_source_kind': context['source_kind']}
+
+
+def measure_subject_overtake_exception(observed, road, context):
+    return {'subject_overtaking_other_vehicle_requested':
+            context['subject_overtaking_other_vehicle_requested'],
+            'actual_overtaking_exception_review_pending': True}
+
+
+def measure_left_turn_exception(observed, road, context):
+    return {'left_turn_requested': context['left_turn_requested'],
+            'left_turn_preparation_review_pending': True}
+
+
+def measure_hov_exception(observed, road, context):
+    return {'hov_lane_present': context['hov_lane_present'],
+            'designation_and_eligibility_review_pending': True}
+
+
+def measure_hazard_exception(observed, road, context):
+    return {'weather': context['weather'],
+            'traffic_hazard_necessity_review_pending': True}
+
+
+def measure_control_exception(observed, road, context):
+    return {'official_control_reviewed': context['official_control_reviewed'],
+            'control_necessity_review_pending': True}
+
+
+def measure_emergency_exception(observed, road, context):
+    return {'emergency_authorization_reviewed':
+            context['emergency_authorization_reviewed'],
+            'official_duty_review_pending': True}
+
+
+def measure_geography_exception(observed, road, context):
+    return {'city_or_town_geography_verified':
+            context['city_or_town_geography_verified'],
+            'geographic_boundary_review_pending': True}
+
+
 def measure_selected_witness(observed, road, context):
     return {'slow_extreme_left_after_overtake_frames':
             observed['slow_extreme_left_after_overtake_frames'],
@@ -54,7 +97,16 @@ MEASUREMENTS = (
     ('activation', measure_activation, ('native-map-readback.json', 'native-road-context.json')),
     ('speed_and_overtake', measure_speed_and_overtake,
      ('native-actors.jsonl', 'native-road-context.json')),
+    ('exception_scope', measure_exception_scope, ('context.json',)),
+    ('subject_overtake_exception', measure_subject_overtake_exception,
+     ('native-actors.jsonl', 'context.json')),
+    ('left_turn_exception', measure_left_turn_exception, ('context.json',)),
+    ('hov_exception', measure_hov_exception, ('context.json',)),
     ('maintenance_exception', measure_maintenance_exception, ('context.json',)),
+    ('hazard_exception', measure_hazard_exception, ('context.json',)),
+    ('control_exception', measure_control_exception, ('context.json',)),
+    ('emergency_exception', measure_emergency_exception, ('context.json',)),
+    ('geography_exception', measure_geography_exception, ('context.json',)),
     ('selected_witness', measure_selected_witness,
      ('native-actors.jsonl', 'native-road-context.json')),
 )

@@ -82,7 +82,7 @@ def measure(rows, source_kind):
             'signed_radial_cross_sum_m2': sum(signed),
             'translational_direction': ('counterclockwise' if positives > 0 and negatives == 0
                 else 'clockwise' if negatives > 0 and positives == 0 else 'mixed_or_unknown'),
-            'physical_completion': False, 'legal_verdict': None,
+            'physical_completion': False,
             'original_native_observed': source_kind == 'original_native'}
 
 

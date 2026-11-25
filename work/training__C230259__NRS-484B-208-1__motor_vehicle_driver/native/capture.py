@@ -138,6 +138,9 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
             'law_id': 'NRS-484B-208-1', 'cell_id': 'C230259',
             'source_kind': 'original_native', 'city_or_town_geography_verified': False,
             'hov_lane_present': False, 'left_turn_requested': False,
+            'subject_overtaking_other_vehicle_requested': False,
+            'official_control_reviewed': False,
+            'emergency_authorization_reviewed': False,
             'maintenance_or_emergency_duty_verified': False,
             'weather': 'clear', 'legal_verdict': None})
         for name, x, y, z in VIEWS:

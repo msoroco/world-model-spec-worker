@@ -6,33 +6,46 @@
   "selected_branch": "Vehicular circulation within a roundabout.",
   "requirement_dispositions": [
     {
-      "requirement": "LVMC-11-43-010-A",
+      "requirement": "text-0",
       "source": "LVMC 11.43.010(A)",
-      "branch": "Vehicular circulation within a roundabout.",
+      "source_text": "The following regulations pertain to the operation of vehicles within a roundabout:",
       "status": "selected_required",
       "case_ids": [
         "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a",
         "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Roundabout setting selected; original island, roadway boundary and jurisdiction need review."
+    },
+    {
+      "requirement": "text-1",
+      "source": "LVMC 11.43.010(A)",
+      "source_text": "All vehicular travel shall be in a counterclockwise direction.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a",
+        "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b"
+      ],
+      "evidence_or_gap": "Exact opposite-direction comparison selected; original positions and continuous occupancy need review."
     }
   ],
   "cases": [
     {
       "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a",
       "target_law_id": "LVMC-11-43-010-A",
-      "kind": "planned_only",
+      "kind": "selected_delivery",
       "target_type": "compliant_attempt",
       "physical_target": "circulate counterclockwise",
-      "comparison_variable": "roundabout_circulation_direction"
+      "comparison_variable": "roundabout_circulation_direction",
+      "planning_status": "cpu_prepared_original_source_pending"
     },
     {
       "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b",
       "target_law_id": "LVMC-11-43-010-A",
-      "kind": "planned_only",
+      "kind": "selected_delivery",
       "target_type": "violating_attempt",
       "physical_target": "circulate clockwise within same roundabout",
-      "comparison_variable": "roundabout_circulation_direction"
+      "comparison_variable": "roundabout_circulation_direction",
+      "planning_status": "cpu_prepared_original_source_pending"
     }
   ],
   "comparisons": [
@@ -47,39 +60,49 @@
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
-      ]
+      ],
+      "status": "cpu_source_comparison_passed_original_pending",
+      "audit_gap": "Original Native physical outcomes pending.",
+      "audit": "proofs/comparison-positive.log",
+      "negative_audit": "proofs/comparison-negative.log"
     }
   ],
   "observations": [
     {
       "name": "st.roundabout",
       "mandatory": true,
-      "reason": "the roundabout, its island and circulatory roadway"
+      "reason": "the roundabout, its island and circulatory roadway",
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "the subject within it"
+      "reason": "the subject within it",
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "kin.heading",
       "mandatory": true,
-      "reason": "the direction of travel around the island"
+      "reason": "the direction of travel around the island",
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "kin.position",
       "mandatory": true,
-      "reason": "the path relative to the island's centre"
+      "reason": "the path relative to the island's centre",
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "kin.yaw_rate",
       "mandatory": true,
-      "reason": "the sense of rotation, which decides counterclockwise"
+      "reason": "the sense of rotation, which decides counterclockwise",
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.wrong_way",
       "mandatory": true,
-      "reason": "travel against the circulatory direction"
+      "reason": "travel against the circulatory direction",
+      "status": "source_channel_defined_original_review_pending"
     }
   ],
   "sources": [
@@ -90,8 +113,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Original roundabout island, outer boundary, jurisdiction, participant lane occupancy and pixels require Native source review.",
+    "Clockwise target may fail physically on the authored counterclockwise carriageway; source-measured fallback trigger applies."
   ],
   "statutory_text": "The following regulations pertain to the operation of vehicles within a roundabout: All vehicular travel shall be in a counterclockwise direction.",
   "activation_conditions_from_unreviewed_summary": [
@@ -109,79 +132,120 @@
     "kin.yaw_rate",
     "drv.wrong_way"
   ],
-  "source_observation_mapping": [
-    {
-      "term": "st.roundabout",
-      "measurement": "Authored connected roundabout road IDs 21 and 23, center island and roadway annulus; actual Native topology must be read back",
+  "source_observation_mapping": {
+    "st.roundabout": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "roundabout-road.xodr",
-        "native map readback"
+        "st.roundabout"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json",
-        "native/roundabout-road.xodr"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
-    {
-      "term": "rel.occupies",
-      "measurement": "Frame-joined original ego position within measured circulatory road boundary",
+    "rel.occupies": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "original native ego position",
-        "native map readback"
+        "rel.occupies"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
-    {
-      "term": "kin.heading",
-      "measurement": "Original ego yaw retained as context, not a directional substitute",
+    "kin.heading": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "original native ego pose"
+        "kin.heading"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
-    {
-      "term": "kin.position",
-      "measurement": "Original consecutive ego x/y positions in authored OpenDRIVE frame",
+    "kin.position": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "original native ego pose"
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
-    {
-      "term": "kin.yaw_rate",
-      "measurement": "Original yaw-rate trace retained as corroboration only; translational signed radial cross product measures direction",
+    "kin.yaw_rate": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "original native ego pose",
-        "native/roundabout_direction.py"
+        "kin.yaw_rate"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/witnesses.json"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
-    {
-      "term": "drv.wrong_way",
-      "measurement": "Source-bound direction and lane-flow comparison; legal judgment deferred to independent audit",
+    "drv.wrong_way": {
+      "evidence": "Saved-only original actor/map/frame source join; original physical and legal review pending.",
       "channels": [
-        "original native ego position",
-        "native map readback",
-        "native/roundabout_direction.py"
+        "drv.wrong_way"
       ],
       "source_refs": [
-        "inputs/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "roundabout-map-readback.json",
+        "video_frames.jsonl"
       ]
     }
-  ],
+  },
   "construction_checkpoint": {
-    "manifest": "draft-native-manifest.json",
-    "comparison_proof": "native/request-comparison-proof.json",
-    "comparison_proof_sha256": "78fd780905d1ab753bca1b3baf292d690cdbd7256f71d614dbfe9b880ffc97b6",
-    "selected": false,
+    "manifest": "execution-manifest.json",
+    "selected": true,
+    "comparison_proof": "proofs/comparison-positive.log",
+    "comparison_proof_sha256": "a0411269dca4c4652b363c59d34a5721388609b8e6f87fcb901e264b97740ab0",
     "original_native_observed": false
+  },
+  "source_topic_inventory": [
+    {
+      "topic_id": "text-0",
+      "kind": "statutory_text",
+      "text": "The following regulations pertain to the operation of vehicles within a roundabout:",
+      "source": "LVMC 11.43.010(A)"
+    },
+    {
+      "topic_id": "text-1",
+      "kind": "statutory_text",
+      "text": "All vehicular travel shall be in a counterclockwise direction.",
+      "source": "LVMC 11.43.010(A)"
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and other circulating vehicle",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego and other circulating vehicle",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego and other circulating vehicle",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego and other circulating vehicle",
+        "interval": "all 600 source frames"
+      }
+    ]
   }
 }

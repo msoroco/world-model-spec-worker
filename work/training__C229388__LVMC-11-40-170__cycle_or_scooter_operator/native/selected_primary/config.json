@@ -12,12 +12,153 @@
   "duration_s": 30,
   "frames": 600,
   "cameras": [
-    {"name": "forward", "width": 1920, "height": 1080},
-    {"name": "rear", "width": 1280, "height": 720},
-    {"name": "left", "width": 1280, "height": 720},
-    {"name": "right", "width": 1280, "height": 720}
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed_world_transform",
+      "fov_deg": 80
+    }
   ],
-  "recording_description": "Thirty-second parked cycle or scooter in reviewed supporting rack with original operator and device identities, footprint, pedestrian corridor, and four source cameras",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ru.bicycle",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "ru.electric_bicycle",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "ru.electric_scooter",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "st.roadway",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "st.road_edge",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "st.sidewalk",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "ru.pedestrian",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "rel.surface_gap",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      },
+      {
+        "name": "st.obstruction",
+        "unit": "structured",
+        "method": "Native source frame joined to reviewed parking geometry and identity",
+        "sampling_rate_hz": 20,
+        "reference_frame": "original Native frame and reviewed street geometry",
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; least pedestrian obstruction is an independent qualitative judgment"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "parking_context",
+        "unit": "structured",
+        "method": "source-reviewed rack, sidewalk, roadway, curb and pedestrian corridor geometry"
+      }
+    ],
+    "limitations": [
+      "Diagnostic fixture does not establish physical parking suitability or a legal verdict"
+    ]
+  },
   "physical_acceptance_claimed": false,
-  "legal_verdict": null
+  "legal_verdict": null,
+  "supported_case_ids": [
+    "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_01",
+    "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_02"
+  ],
+  "spawn_key": "device_spawn_xyz_m"
 }

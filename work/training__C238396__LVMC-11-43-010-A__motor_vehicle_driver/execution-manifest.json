@@ -1,0 +1,310 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_original_source_pending",
+  "cases": [
+    {
+      "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "native/probe_a/construction.json",
+      "construction_sha256": "72f76f37ee8cb2ebe6090991aefa401e3fc2bb3571d7646687332167a98324f1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Vehicle may leave the annulus or miss the commanded direction on a one-way authored ring."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/probe_a/fallback1/construction.json",
+          "construction_sha256": "0bdacc161438efc4fec1edb7fb9dee97dfdee33fb7a7d5e93b40714232541fe5",
+          "trigger": {
+            "source": "original Native actor poses and map readback",
+            "metric": "ring occupancy and signed radial cross product",
+            "failure_condition": "primary ego leaves ring or measured motion differs from requested direction"
+          },
+          "changed_knobs": [
+            "steer_gain 1.3 to 2.0",
+            "max_steer .75 to .95"
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_a/public-fallback1/receipt.json",
+            "sha256": "3c3f7073e824be3797e412ecb80ddceedef72c567f5b0fc0dd0fb58a5463964f",
+            "log": "proofs/probe_a/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_a/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c238396-final-offline-probe_a-fallback1",
+            "construction_sha256": "0bdacc161438efc4fec1edb7fb9dee97dfdee33fb7a7d5e93b40714232541fe5",
+            "exit_code": 0,
+            "log": "proofs/probe_a/public-fallback1/static.log",
+            "log_sha256": "55d3b8cc9b12dc92fd3749a3d77232397d433171cfcf17d39072a9e1126ba023"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/probe_a/measurement-contract.json",
+      "fixture_recipe": "work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/diagnostic-probe_a-recipe.json",
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_a/public-primary/receipt.json",
+        "sha256": "a4612b3962bba4c041f434e378a16eb717e673e064ba5089a9a3734fa8a59d0a",
+        "log": "proofs/probe_a/public-primary/analysis.log",
+        "negative_log": "proofs/probe_a/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c238396-final-offline-probe_a-primary",
+        "construction_sha256": "72f76f37ee8cb2ebe6090991aefa401e3fc2bb3571d7646687332167a98324f1",
+        "exit_code": 0,
+        "log": "proofs/probe_a/public-primary/static.log",
+        "log_sha256": "83fc319575f55aea446aefef810dfdb7d66685994181ffc26be70e511dd99cce"
+      },
+      "negative": {
+        "log": "proofs/probe_a/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_a/saved-processing.json",
+        "test_log_sha256": "f1cdeda47ca3a65978722763b22c40b5a8d41766ce94e3f0c3b1ca25089b342f"
+      },
+      "acquisition": {
+        "drv.wrong_way": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.yaw_rate": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_ego_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_other_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "st.roundabout": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_a/proof.json",
+        "sha256": "520a35fc60e095f147e5b25c6bc833d861a3b61c73481e1fb1b095a433da0b24"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e0c752158271a95fc699534667f938cdedade92fa53505498b375f15cf5ea564",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/delivery_audit.py --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a --attempt .runtime-work/c238396-saved-attempt-a --processing .runtime-work/c238396-saved-output-a/v0001/processing.json --output .runtime-work/c238396-delivery-a.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_a/delivery-positive.log",
+        "test_log_sha256": "3201fe041d5805f9e6f09e4b09f54f656762567582da940cdc08833e1d0316be",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/delivery_audit.py --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_a --attempt .runtime-work/c238396-saved-attempt-a --processing .runtime-work/c238396-negative-processing-a.json --output .runtime-work/c238396-delivery-negative-a.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: roundabout-map-readback.json",
+        "negative_log": "proofs/probe_a/delivery-negative.log",
+        "negative_log_sha256": "63359e2c2964923847fe77b71531fd54889ed951fab753b4b518720d78fbc189"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "native/probe_b/construction.json",
+      "construction_sha256": "f5835d10b15257cd3f40ec245df72a70cc977d765cd4c4d1f91b75a86ac188f4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Vehicle may leave the annulus or miss the commanded direction on a one-way authored ring."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/probe_b/fallback1/construction.json",
+          "construction_sha256": "59764185c8205bf9b71c646741fb282540e27672bd193a73844185e596291251",
+          "trigger": {
+            "source": "original Native actor poses and map readback",
+            "metric": "ring occupancy and signed radial cross product",
+            "failure_condition": "primary ego leaves ring or measured motion differs from requested direction"
+          },
+          "changed_knobs": [
+            "steer_gain 1.3 to 2.0",
+            "max_steer .75 to .95"
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_b/public-fallback1/receipt.json",
+            "sha256": "8bef1d4f6ba34aab0cd0791e0a23f2688c6a39e71fc68718d3155c2ca072a419",
+            "log": "proofs/probe_b/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_b/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c238396-final-offline-probe_b-fallback1",
+            "construction_sha256": "59764185c8205bf9b71c646741fb282540e27672bd193a73844185e596291251",
+            "exit_code": 0,
+            "log": "proofs/probe_b/public-fallback1/static.log",
+            "log_sha256": "83fc319575f55aea446aefef810dfdb7d66685994181ffc26be70e511dd99cce"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/probe_b/measurement-contract.json",
+      "fixture_recipe": "work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/diagnostic-probe_b-recipe.json",
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_b/public-primary/receipt.json",
+        "sha256": "b1a2b5a9b0c4589190fdabd3b7e00a8c5ae461af692af87a3446121d9afc64e0",
+        "log": "proofs/probe_b/public-primary/analysis.log",
+        "negative_log": "proofs/probe_b/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c238396-final-offline-probe_b-primary",
+        "construction_sha256": "f5835d10b15257cd3f40ec245df72a70cc977d765cd4c4d1f91b75a86ac188f4",
+        "exit_code": 0,
+        "log": "proofs/probe_b/public-primary/static.log",
+        "log_sha256": "fd0d04d0ed4e757e01fcc01515cd8069756afcf8a39bc3aa3fab501a9275c797"
+      },
+      "negative": {
+        "log": "proofs/probe_b/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/execution-manifest.json --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_b/saved-processing.json",
+        "test_log_sha256": "e81718629fae27f99e866df241bba8d7432692fa34117b0971a778153efcf9c2"
+      },
+      "acquisition": {
+        "drv.wrong_way": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.heading": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.yaw_rate": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_ego_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_other_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "st.roundabout": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed radial position change",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_b/proof.json",
+        "sha256": "05ba039a1dce9a052e138fc139739faf704951389ac7dc2acc8feef853dbe5f1"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e0c752158271a95fc699534667f938cdedade92fa53505498b375f15cf5ea564",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/delivery_audit.py --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b --attempt .runtime-work/c238396-saved-attempt-b --processing .runtime-work/c238396-saved-output-b/v0001/processing.json --output .runtime-work/c238396-delivery-b.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_b/delivery-positive.log",
+        "test_log_sha256": "a5c0dba709efa2a1657a435dfdb1e7bc0584f3de1c4a9e16feff4e8cf681176e",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C238396__LVMC-11-43-010-A__motor_vehicle_driver/delivery_audit.py --case training__C238396__LVMC-11-43-010-A__motor_vehicle_driver__probe_b --attempt .runtime-work/c238396-saved-attempt-b --processing .runtime-work/c238396-negative-processing-b.json --output .runtime-work/c238396-delivery-negative-b.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: roundabout-map-readback.json",
+        "negative_log": "proofs/probe_b/delivery-negative.log",
+        "negative_log_sha256": "63359e2c2964923847fe77b71531fd54889ed951fab753b4b518720d78fbc189"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ]
+}

@@ -18,11 +18,11 @@ def sha(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def build(condition):
+def build(probe):
     with tempfile.TemporaryDirectory(dir=HERE.parents[2] / ".runtime-work",
-                                     prefix="c239014-source-") as temporary:
+                                     prefix="c238396-source-") as temporary:
         root = Path(temporary)
-        create(root, condition)
+        create(root, probe)
         files = {name: (root / name).read_text() for name in
             ("native-raw-actors.jsonl", "control-intent.jsonl", "video_frames.jsonl",
              "trace.jsonl", "roundabout-map-readback.json", "road.xodr",
@@ -85,7 +85,7 @@ def build(condition):
                "fps": 20, "color": color} for camera, color in zip(
                    CAMERAS, ("blue", "green", "white", "red"))]
     diagnostic = {"files": files, "graphs": graphs, "videos": videos}
-    path = HERE.parent / ("diagnostic-" + condition + ".json")
+    path = HERE.parent / ("diagnostic-" + probe + ".json")
     path.write_text(compact(diagnostic) + "\n")
     if path.stat().st_size > 2 * 1024 * 1024:
         raise ValueError("Diagnostic source exceeds 2 MiB")
@@ -95,12 +95,12 @@ def build(condition):
               "sources": [{"path": "diagnostic-input.json", "source": rel,
                            "sha256": sha(path.read_text())}],
               "generator": {"source": rel, "sha256": sha(path.read_text())}}
-    (HERE.parent / ("diagnostic-" + condition + "-recipe.json")).write_text(
+    (HERE.parent / ("diagnostic-" + probe + "-recipe.json")).write_text(
         json.dumps(recipe, indent=2) + "\n")
-    return {"condition": condition, "bytes": path.stat().st_size,
+    return {"probe": probe, "bytes": path.stat().st_size,
             "sha256": sha(path.read_text())}
 
 
 if __name__ == "__main__":
-    print(json.dumps([build(condition) for condition in ("condition_a", "condition_b")],
+    print(json.dumps([build(probe) for probe in ("probe_a", "probe_b")],
                      indent=2))

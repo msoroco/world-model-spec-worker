@@ -16,11 +16,11 @@ for entry in m['cases']:
     label=entry['case_id'].rsplit('__',1)[-1]
     for cand in ('primary','fallback1'):
         choice=entry if cand=='primary' else entry['candidates'][0]
-        source=R/'.runtime-work/c230259-208-offline'/f'v3-{label}-{cand}/offline.log'
+        source=R/'.runtime-work/c230259-208-offline'/f'v4-{label}-{cand}/offline.log'
         log=F/'proofs'/label/cand/'offline.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         log.write_text(source.read_text().rstrip()+'\n')
-        command=f'.venv-cpu/bin/python runtime.py offline --manifest work/{A}/execution-manifest.json --case {entry["case_id"]} --candidate {cand} --output .runtime-work/c230259-208-offline/v3-{label}-{cand}'
+        command=f'.venv-cpu/bin/python runtime.py offline --manifest work/{A}/execution-manifest.json --case {entry["case_id"]} --candidate {cand} --output .runtime-work/c230259-208-offline/v4-{label}-{cand}'
         choice['offline']={'command':command,'exit_code':0,'construction_sha256':choice['construction_sha256'],
                            'log':str(log.relative_to(F)),'log_sha256':sha(log)}
 write(M,m)
