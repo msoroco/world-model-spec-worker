@@ -33,7 +33,35 @@
         "reason": "Loaded crest approach, speed response and camera visibility need original Native review.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "raise all four original camera mounts from 2.4 m to 2.8 m while preserving four-view dimensions, 20 Hz, 45 s and source-bound road/vehicles"
+          ],
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --candidate fallback1 --output .runtime-work/c104084-current/compat-fallback1-early_decrease --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-fallback1-early_decrease-analysis.log",
+            "negative_log": "compat-fallback1-early_decrease-negative.log",
+            "receipt": "compat-fallback1-early_decrease-receipt.json",
+            "sha256": "56b5ce7245c95bef79001f2524ed5229f79f9e72396a5b598ea4f1950437e27c"
+          },
+          "construction": "cases/early_decrease/fallback1-construction.json",
+          "construction_sha256": "dbdca49b74441cf3d81e0ef2d2e0e39c3df9c51b77c87df1ca6f6eef7ac30560",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --candidate fallback1 --output .runtime-work/c104084-current/offline-fallback1-early_decrease",
+            "construction_sha256": "dbdca49b74441cf3d81e0ef2d2e0e39c3df9c51b77c87df1ca6f6eef7ac30560",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-early_decrease.log",
+            "log_sha256": "14eb74781f371c78cf8d8dbdc7a9320b543496f6f5f6f2ff7a132e209a2947e6"
+          },
+          "trigger": {
+            "failure_condition": "vehicle body occluded at crest or outside both forward views for any required review interval",
+            "metric": "minimum visible opposing-vehicle body fraction in overview and approach views",
+            "source": "original four-view saved video and body visibility review"
+          }
+        }
+      ],
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
       "compatibility": {
         "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --output .runtime-work/c104084-current/compat-early-v2 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
@@ -43,6 +71,34 @@
       },
       "construction": "construction.json",
       "construction_sha256": "b608ebba8c1970065ac88df5a80de921fff187b0d7f7cb4e30dec483b0692072",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --attempt .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-early_decrease-proof.json",
+        "diagnostic_fixture": true,
+        "legal_acceptance_claimed": false,
+        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --attempt .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-early_decrease-proof.json --omit-limit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "reviewed original prescribed limit source missing",
+        "negative_log": "delivery-early_decrease-negative.log",
+        "negative_log_sha256": "2a68e0f2171d5cf394e3c60fa7faf725c7ea2c5b4401161dcd2a20d6f99bc5de",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_acceptance.py",
+        "script_sha256": "49d7cddbce9fa40d926607581b182c9d2999e1be324c57c48983fc5c724533e7",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-early_decrease-positive.log",
+        "test_log_sha256": "1fc77cd3a00834ce13e02c98542a4db0d695069b218d8f61aa7b4b492217080d"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/diagnostic-early_decrease-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -63,6 +119,21 @@
         "exit_code": 0,
         "log": "proof-offline-early_decrease.log",
         "log_sha256": "fb454213867dc326ba304fca3086f29156079b2b3d10dedbcb451e7b7b2eab7e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-early_decrease-proof.json",
+        "sha256": "ceb9056a44e53fcab2339ebe8b16d8ee29b6df6688b977174e8220bed0da0bb5"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_fixture": true,
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "saved_processing_receipt": "saved-early_decrease-receipt.json",
+        "saved_processing_receipt_sha256": "c29efe80f810201a66df8358718de6e9cd29d8f5bc45e67254e4fa0e439c4204",
+        "test_exit_code": 0,
+        "test_log": "physical-early_decrease-lifecycle.log",
+        "test_log_sha256": "787e7f918dcf98d6de238cd1e500d035bd4b9ee39eb2f16942a416d537814af1"
       }
     },
     {
@@ -97,7 +168,35 @@
         "reason": "Loaded crest approach, speed response and camera visibility need original Native review.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "raise all four original camera mounts from 2.4 m to 2.8 m while preserving four-view dimensions, 20 Hz, 45 s and source-bound road/vehicles"
+          ],
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --candidate fallback1 --output .runtime-work/c104084-current/compat-fallback1-late_decrease --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-fallback1-late_decrease-analysis.log",
+            "negative_log": "compat-fallback1-late_decrease-negative.log",
+            "receipt": "compat-fallback1-late_decrease-receipt.json",
+            "sha256": "1cccb02eb19925750de02e7e0a9fc4a4c162eade0cd642428e34e24151cd1efc"
+          },
+          "construction": "cases/late_decrease/fallback1-construction.json",
+          "construction_sha256": "8e7ec130fb628d5b09d4cf6fd3ab22aa46638ee32005b990cf57d63383b63748",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --candidate fallback1 --output .runtime-work/c104084-current/offline-fallback1-late_decrease",
+            "construction_sha256": "8e7ec130fb628d5b09d4cf6fd3ab22aa46638ee32005b990cf57d63383b63748",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-late_decrease.log",
+            "log_sha256": "ea545b7f5e1047d6444fd83a98d571eebe880e1f31f53377758de518f1099f96"
+          },
+          "trigger": {
+            "failure_condition": "vehicle body occluded at crest or outside both forward views for any required review interval",
+            "metric": "minimum visible opposing-vehicle body fraction in overview and approach views",
+            "source": "original four-view saved video and body visibility review"
+          }
+        }
+      ],
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
       "compatibility": {
         "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --output .runtime-work/c104084-current/compat-late-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
@@ -107,6 +206,34 @@
       },
       "construction": "cases/late_decrease/construction.json",
       "construction_sha256": "8050a21c9557456aad4b32c09c5775b74a495008f316fb7a788a1b3fbbd0bfd4",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --attempt .runtime-work/c104084-current/saved-late-attempt --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-late_decrease-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-late_decrease-proof.json",
+        "diagnostic_fixture": true,
+        "legal_acceptance_claimed": false,
+        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --attempt .runtime-work/c104084-current/saved-late-attempt --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-late_decrease-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-late_decrease-proof.json --omit-limit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "reviewed original prescribed limit source missing",
+        "negative_log": "delivery-late_decrease-negative.log",
+        "negative_log_sha256": "2a68e0f2171d5cf394e3c60fa7faf725c7ea2c5b4401161dcd2a20d6f99bc5de",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_acceptance.py",
+        "script_sha256": "49d7cddbce9fa40d926607581b182c9d2999e1be324c57c48983fc5c724533e7",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-late_decrease-positive.log",
+        "test_log_sha256": "65489ddfdd5dbf2aa116a9085b4100bdac927f8b673828e504ad5a5f8259b1da"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/diagnostic-late_decrease-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -127,6 +254,21 @@
         "exit_code": 0,
         "log": "proof-offline-late_decrease.log",
         "log_sha256": "adf38a13ad8e4a9b4458e5e04d4294defac61bfec87c7d8ef2c921f1aa69b26d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-late_decrease-proof.json",
+        "sha256": "39ce73800f8271ab46661b92d071556a203701ad5ddbb2f58a641a461ddfd19e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_fixture": true,
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "saved_processing_receipt": "saved-late_decrease-receipt.json",
+        "saved_processing_receipt_sha256": "11ec2f5ff51c73b4a8b180993655e75dda1f6f2fc961586c8e7c65b7df1c7fb1",
+        "test_exit_code": 0,
+        "test_log": "physical-late_decrease-lifecycle.log",
+        "test_log_sha256": "68f6a222701bcb4aa2d6508b9e49e2b3280ec532327899e0068483de27347cd0"
       }
     },
     {
@@ -161,7 +303,29 @@
         "reason": "Loaded crest approach, speed response and camera visibility need original Native review.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "raise all four original camera mounts from 2.4 m to 2.8 m while preserving four-view dimensions, 20 Hz, 45 s and source-bound road/vehicles"
+          ],
+          "compatibility": {},
+          "construction": "cases/steady_approach/fallback1-construction.json",
+          "construction_sha256": "fb140cf0b73dc6a8c19a9fa30e89c011b1f0a612f50f2e989cc91104ef5fcd98",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --candidate fallback1 --output .runtime-work/c104084-current/offline-fallback1-steady_approach",
+            "construction_sha256": "fb140cf0b73dc6a8c19a9fa30e89c011b1f0a612f50f2e989cc91104ef5fcd98",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-steady_approach.log",
+            "log_sha256": "62383aad78457632bfe180d0bcd6a5169460715ab9c27ea9694c14650198ceb9"
+          },
+          "trigger": {
+            "failure_condition": "vehicle body occluded at crest or outside both forward views for any required review interval",
+            "metric": "minimum visible opposing-vehicle body fraction in overview and approach views",
+            "source": "original four-view saved video and body visibility review"
+          }
+        }
+      ],
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach",
       "compatibility": {
         "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --output .runtime-work/c104084-current/compat-steady-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
@@ -171,6 +335,34 @@
       },
       "construction": "cases/steady_approach/construction.json",
       "construction_sha256": "4c223fbb4917a00b271c6f92f7bf4b66e5688da7e272d19e9e20e4243fbae29b",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --attempt .runtime-work/c104084-current/saved-steady-attempt --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-steady_approach-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-steady_approach-proof.json",
+        "diagnostic_fixture": true,
+        "legal_acceptance_claimed": false,
+        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/delivery_acceptance.py testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --attempt .runtime-work/c104084-current/saved-steady-attempt --processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-steady_approach-receipt.json --physical work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/physical-steady_approach-proof.json --omit-limit",
+        "negative_exit_code": 1,
+        "negative_expected_error": "reviewed original prescribed limit source missing",
+        "negative_log": "delivery-steady_approach-negative.log",
+        "negative_log_sha256": "2a68e0f2171d5cf394e3c60fa7faf725c7ea2c5b4401161dcd2a20d6f99bc5de",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_acceptance.py",
+        "script_sha256": "49d7cddbce9fa40d926607581b182c9d2999e1be324c57c48983fc5c724533e7",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-steady_approach-positive.log",
+        "test_log_sha256": "e7cd3714989831cdfdf8781f6e2053178ea79786f368151ffbb0579a2771f509"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/diagnostic-steady_approach-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -191,6 +383,21 @@
         "exit_code": 0,
         "log": "proof-offline-steady_approach.log",
         "log_sha256": "073d1ca13991339fa9606a020431812d6d53c83148658ae49f13a057f7e385b1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-steady_approach-proof.json",
+        "sha256": "1b7f92119eeee81625a0f6ccf15808f495ff96152980779709497eb446ac683f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_fixture": true,
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "saved_processing_receipt": "saved-steady_approach-receipt.json",
+        "saved_processing_receipt_sha256": "1f51a01ebf2bbcffec7442d35920c9a985b1d427bcca20d7d8dbf05947f985aa",
+        "test_exit_code": 0,
+        "test_log": "physical-steady_approach-lifecycle.log",
+        "test_log_sha256": "5506ec7aa8a361308454a6270fc95f7884ee4cc94cc1b59326fbc981ea51d1d4"
       }
     }
   ],

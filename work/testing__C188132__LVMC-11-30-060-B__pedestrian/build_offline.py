@@ -26,12 +26,36 @@ def main():
         scene_file = ROOT/('scene-'+variant+'.json')
         scene = json.loads(scene_file.read_text())
         case_id = scene['case_id']
+        recording_description = {
+            'channels':[{'name':name,'unit':unit,
+                         'method':'source-bound saved original measurement',
+                         'time_window':'entire 45 second crossing',
+                         'sampling_rate_hz':20,
+                         'reference_frame':'original Native frame and world XY',
+                         'uncertainty':'physical structure and legal judgment pending'}
+                        for name,unit in (
+                ('crossing_order','structured'),
+                ('roadway_vehicle_inventory','structured'),
+                ('provided_overhead_crossing','structured'),
+                ('designated_place_prohibition','boolean'))],
+            'context_inputs':[],
+            'limitations':['Original structure, accessible deck, pixels and legal judgment require independent local review']}
         config = {'law_id':'LVMC-11-30-060-B','cell_id':'C188132',
                   'actor':'pedestrian','selected_case_id':case_id,
                   'supported_case_ids':[ASSIGNMENT+'__'+v for v in VARIANTS],
                   'rate_hz':20,'duration_s':45.0,'required_atoms':[],
-                  'source_packets':[], 'case':{'case_id':case_id},
-                  'cameras':[{'name':name,'width':w,'height':h,'fps':20}
+                  'source_packets':[], 'case':{'case_id':case_id,
+                    'recording_description':recording_description},
+                  'recording_description':recording_description,
+                  'physical_completion':{'criterion':'travel_progress',
+                      'motion_source':'body-history.jsonl',
+                      'position_key':'pedestrian_xyz_m',
+                      'minimum_progress_m':10.0,
+                      'minimum_samples':900,
+                      'direction_xy':[0,1],
+                      'context_sources':['reviewed-site.json']},
+                  'cameras':[{'name':name,'width':w,'height':h,'fps':20,
+                              'fov_deg':90,'pose_strategy':'fixed_overpass_and_surface_road'}
                              for name,(w,h) in (('overview',(1920,1080)),
                                  ('approach',(1280,720)),('reference_corner',(1280,720)),
                                  ('driver_reference',(1280,720)))]}
@@ -40,6 +64,8 @@ def main():
                    'overpass_source.py':'overpass_source.py',
                    'native_capture.py':'native_capture.py',
                    'media_audit.py':'media_audit.py',
+                   'site_review.py':'site_review.py',
+                   'analysis.py':'analysis.py',
                    'walker_pipeline_capture.py':'walker_pipeline_capture.py',
                    'scene.json':scene_file.name,
                    'candidate-overpass.xodr':'candidate-overpass.xodr'}
@@ -68,12 +94,7 @@ class ExactConstruction(unittest.TestCase):
         construction={'law_id':'LVMC-11-30-060-B','cell_id':'C188132',
                       'actor':'pedestrian','case_id':case_id,
                       'entrypoint':'runner.py','files':files,
-                      'recording_description':{
-                          'channels':['original 20 Hz pedestrian and vehicle body history',
-                                      'four synchronized original RGB camera views'],
-                          'context':['source-hashed elevated OpenDRIVE pedestrian deck',
-                                     'designated-place prohibition source context'],
-                          'limitations':['Physical realization and legal judgment unconfirmed']}}
+                      'recording_description':recording_description}
         construction_path=ROOT/'cases'/variant/'construction.json'
         write(construction_path,construction)
         manifest['cases'].append({'case_id':case_id,

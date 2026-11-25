@@ -1,4 +1,14 @@
 # testing__C111260__NRS-484B-270-5a__motor_vehicle_driver
+## Current handoff, 2026-11-25
+
+Status: ready for source-gated GPU delivery preparation. The exact scoped strict gate passed after six selected cases, twelve primary/fallback constructions and their canonical offline proofs, positive/negative compatibility, physical preparation receipts, saved processing, and independent delivery and comparison audits were completed. The older dated checkpoints below describe earlier partial states.
+
+The six cases pair brake and maintain responses for a person riding a bicycle, electric bicycle, or electric scooter. Each selected bundle binds the original Native site and rider review, 45 seconds at 20 Hz, four source cameras, saved history, and a case-specific measurement contract. The Native runner verifies original map/rider/camera sources before world contact and seals the attempt after lifecycle restoration. No CARLA physical run or due-care verdict is claimed by the CPU fixtures.
+
+`execution-manifest.json` binds six selected cases and six risk-triggered fallback1 candidates, twelve offline proofs, twelve positive and negative compatibility receipts, six physical preparation receipts, six `runtime.py process-saved` diagnostic receipts, six independent delivery audits with tampered-pixel negative probes, and three source-bound comparison audits with changed-plan negative probes. The focused suite passed 42 tests in `cpu-analysis-tests.log`. The canonical exact check `.venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete --require-delivery-ready` passed; `proof-strict-assignment.log` records the result.
+
+`gpu-queue-proposal.json` supplies six queue rows and three comparison audit commands for lead integration into the shared queue. Actual Native capture, mounted-rider visibility, independent pixel review, and physical movement remain for the GPU delivery phase. The source-gated commands require reviewed original assets and attempts; diagnostic fixture acceptance is not physical acceptance.
+
 
 Status: partial construction and saved-source checkpoint. Six exact cases are proposed; no physical recording or legal conclusion is claimed.
 

@@ -4,12 +4,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 
 from native_capture import FourVideoRecorder, sample_original_walker
 from media_audit import audit_media
 from overpass_source import (FRAMES, native_sample, request_controls, sha,
                              spawn_pair, validate_case)
+from site_review import inspect as inspect_site
 
 
 def write(path, value):
@@ -28,6 +30,20 @@ def run(scene_path, map_path, output, host, port):
         raise ValueError('original attempt already exists')
     scene = json.loads(Path(scene_path).read_text())
     validate_case(scene, map_path)
+    reviewed = os.environ.get('C188132_REVIEWED_SITE_PACKET')
+    if not reviewed:
+        raise ValueError('C188132_REVIEWED_SITE_PACKET original review required before Native capture')
+    reviewed_path = Path(reviewed).resolve()
+    inspect_site(reviewed_path, map_path, scene)
+    packet = json.loads(reviewed_path.read_text())
+    review_sources = {'reviewed-site.json': reviewed_path,
+                      'reviewed-site-source.txt': reviewed_path.parent/packet['independent_review']['source'],
+                      'municipal-designation-source.txt': reviewed_path.parent/packet['municipal_designation']['source']}
+    for name, source in review_sources.items():
+        target = output/name
+        if target.exists():
+            raise ValueError('reviewed source target already exists: '+name)
+        shutil.copy2(source, target)
     os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(safe/'c188132-native-runtime')
     import carla
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -107,7 +123,10 @@ def run(scene_path, map_path, output, host, port):
              'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv')
     sources = {'scene':'scene.json', 'map':'candidate-overpass.xodr',
                'body_history':'body-history.jsonl', 'frame_map':'video_frames.jsonl',
-               'camera_joins':'camera-frame-joins.jsonl'}
+               'camera_joins':'camera-frame-joins.jsonl',
+               'site_review':'reviewed-site.json',
+               'site_review_source':'reviewed-site-source.txt',
+               'municipal_source':'municipal-designation-source.txt'}
     sources.update({'video_'+name:name+'.mkv' for name in
                     ('overview','approach','reference_corner','driver_reference')})
     write(output/'source-manifest.json', {'format':'c188132-original-sources-v1',

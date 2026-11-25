@@ -12,6 +12,14 @@ from rider_sources import verify_inventory, KINDS
 
 ASSIGNMENT = 'testing__C111260__NRS-484B-270-1__motor_vehicle_driver'
 MODES = ('maintain_clearance', 'cross_rider_path')
+CASE_VARIANTS = {
+    mode: {'mode': mode, 'rider_kind': 'human_powered_bicycle'}
+    for mode in MODES
+}
+CASE_VARIANTS.update({
+    f'{kind}__{mode}': {'mode': mode, 'rider_kind': kind}
+    for kind in ('electric_bicycle', 'electric_scooter') for mode in MODES
+})
 
 class SourceError(ValueError):
     pass
@@ -60,6 +68,12 @@ def verify_site(site, root):
     bicycle_packet=json.loads(source_paths[site['bicycle_classification_source_path']].read_text())
     rider_rules_packet=json.loads(source_paths[site['rider_rules_source_path']].read_text())
     require(map_packet.get('native_map_name')==site['native_map_name'] and map_packet.get('ego_route_xy')==site['ego_route_xy'] and map_packet.get('rider_route_xy')==site['rider_route_xy'], 'surveyed map/route packet mismatch')
+    if 'camera_poses' in site:
+        require(map_packet.get('camera_poses') == site['camera_poses'],
+                'surveyed camera poses differ from source')
+    if 'rider_throttle' in site:
+        require(map_packet.get('rider_throttle') == site['rider_throttle'],
+                'surveyed rider control differs from source')
     if 'native_opendrive' in map_packet:
         raw = map_packet['native_opendrive']
         require(raw in refs and raw['path'] in source_paths, 'surveyed Native map source unbound')

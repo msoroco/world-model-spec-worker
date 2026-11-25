@@ -9,6 +9,7 @@ from overpass_source import (CASES, FRAMES, audit_pair, audit_saved, measure_ori
                              native_sample, request_controls, sha, spawn_pair,
                              validate_case, validate_map)
 from native_capture import CAMERA_SPECS, camera_placements
+from site_review import inspect as inspect_site
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -123,8 +124,29 @@ def write_attempt(root, variant, *, vehicle_shift=0):
     (root/'body.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in source))
     (root/'frames.jsonl').write_text(''.join(json.dumps(
         {'frame':r['frame'],'time_s':r['time_s']})+'\n' for r in source))
+    (root/'reviewed-site-source.txt').write_text('Synthetic overpass site review fixture\n')
+    (root/'municipal-designation-source.txt').write_text('Synthetic designation review fixture\n')
+    packet = {'format':'c188132-reviewed-overpass-site-v1',
+              'provenance_kind':'synthetic_fixture',
+              'case_id':scene(variant)['case_id'],
+              'map_sha256':sha(root/'map.xodr'),
+              'crossing_point_xy_m':[0.0,0.0],
+              'surface_road_id':1,'deck_road_id':2,
+              'roadway_y_bounds_m':[-3.5,3.5],
+              'provided_overhead_crossing':True,
+              'usable_deck_access':True,
+              'independent_review':{'reviewer':'synthetic unit fixture',
+                                    'source':'reviewed-site-source.txt',
+                                    'sha256':sha(root/'reviewed-site-source.txt')},
+              'municipal_designation':{'prohibited':variant=='designated_prohibition',
+                                       'source':'municipal-designation-source.txt',
+                                       'sha256':sha(root/'municipal-designation-source.txt')}}
+    (root/'reviewed-site.json').write_text(json.dumps(packet))
     paths = {'map':'map.xodr','scene':'scene.json',
-             'body_history':'body.jsonl','frame_map':'frames.jsonl'}
+             'body_history':'body.jsonl','frame_map':'frames.jsonl',
+             'site_review':'reviewed-site.json',
+             'site_review_source':'reviewed-site-source.txt',
+             'municipal_source':'municipal-designation-source.txt'}
     manifest = {'format':'c188132-original-sources-v1'}
     manifest.update({key:{'path':name,'sha256':sha(root/name)}
                      for key,name in paths.items()})
@@ -222,29 +244,29 @@ class OverpassSourceTests(unittest.TestCase):
             manifest['body_history']['sha256'] = sha(rows_path)
             manifest_path.write_text(json.dumps(manifest))
             with self.assertRaisesRegex(ValueError, 'all-vehicle inventory changed'):
-                audit_pair(first, second, 'entry_timing')
+                audit_pair(first, second, 'entry_timing', diagnostic=True)
 
     def test_sealed_source_manifest_and_missing_evidence(self):
         variant = CASES[0]
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)/'attempt'
             write_attempt(root, variant)
-            self.assertEqual(audit_saved(root)['measurement']['frames'], FRAMES)
+            self.assertEqual(audit_saved(root, diagnostic=True)['measurement']['frames'], FRAMES)
             (root/'body.jsonl').write_text('')
             with self.assertRaisesRegex(ValueError, 'stale original source'):
-                audit_saved(root)
+                audit_saved(root, diagnostic=True)
 
     def test_entry_and_exception_pairs(self):
         with tempfile.TemporaryDirectory() as tmp:
             roots = [Path(tmp)/v for v in CASES]
             for root, variant in zip(roots, CASES):
                 write_attempt(root, variant)
-            self.assertEqual(audit_pair(roots[0], roots[1], 'entry_timing')[
+            self.assertEqual(audit_pair(roots[0], roots[1], 'entry_timing', diagnostic=True)[
                 'comparison_id'], 'entry_timing')
-            self.assertEqual(audit_pair(roots[1], roots[2], 'designated_exception')[
+            self.assertEqual(audit_pair(roots[1], roots[2], 'designated_exception', diagnostic=True)[
                 'comparison_id'], 'designated_exception')
             with self.assertRaisesRegex(ValueError, 'wrong entry-timing pair'):
-                audit_pair(roots[1], roots[2], 'entry_timing')
+                audit_pair(roots[1], roots[2], 'entry_timing', diagnostic=True)
 
     def test_comparison_rejects_changed_vehicle(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -252,7 +274,32 @@ class OverpassSourceTests(unittest.TestCase):
             write_attempt(first, CASES[0])
             write_attempt(second, CASES[1], vehicle_shift=.1)
             with self.assertRaisesRegex(ValueError, 'vehicle trajectory changed'):
-                audit_pair(first, second, 'entry_timing')
+                audit_pair(first, second, 'entry_timing', diagnostic=True)
+
+    def test_reviewed_site_is_required_and_source_bound(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)/'attempt'
+            write_attempt(root, CASES[2])
+            packet = root/'reviewed-site.json'
+            with self.assertRaisesRegex(ValueError, 'original reviewed site source required'):
+                audit_saved(root)
+            self.assertTrue(inspect_site(packet, root/'map.xodr', scene(CASES[2]),
+                                         diagnostic=True)['designation_prohibited'])
+            wrong = json.loads(packet.read_text())
+            wrong['case_id'] = scene(CASES[0])['case_id']
+            packet.write_text(json.dumps(wrong))
+            with self.assertRaisesRegex(ValueError, 'another case'):
+                inspect_site(packet, root/'map.xodr', scene(CASES[2]), diagnostic=True)
+            wrong['case_id'] = scene(CASES[2])['case_id']
+            wrong['municipal_designation']['prohibited'] = False
+            packet.write_text(json.dumps(wrong))
+            with self.assertRaisesRegex(ValueError, 'municipal designation differs'):
+                inspect_site(packet, root/'map.xodr', scene(CASES[2]), diagnostic=True)
+            wrong['municipal_designation']['prohibited'] = True
+            packet.write_text(json.dumps(wrong))
+            (root/'municipal-designation-source.txt').write_text('tampered source\n')
+            with self.assertRaisesRegex(ValueError, 'hash differs'):
+                inspect_site(packet, root/'map.xodr', scene(CASES[2]), diagnostic=True)
 
 
 if __name__ == '__main__':

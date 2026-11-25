@@ -12,9 +12,14 @@ import math
 import subprocess
 from pathlib import Path
 
-from bicycle_encounter import ASSIGNMENT, MODES, SourceError, require, read_source
+from bicycle_encounter import ASSIGNMENT, CASE_VARIANTS, SourceError, require, read_source
 from delivery_decode import finalize_delivery
 from saved_attempt import VIEWS
+
+CAMERA_SIZES = {'overview': (1920, 1080),
+                'approach': (1280, 720),
+                'reference_corner': (1280, 720),
+                'driver_reference': (1280, 720)}
 
 
 def _sha(path):
@@ -44,9 +49,9 @@ def compare_original_image_to_video(video, frame, png, width, height):
 def audit(attempt, case_id, pixel_review, *, expected_frames=900):
     root = Path(attempt).resolve()
     require(root.is_dir(), 'saved original attempt missing')
-    require(case_id in {ASSIGNMENT + '__' + mode for mode in MODES},
+    require(case_id in {ASSIGNMENT + '__' + suffix for suffix in CASE_VARIANTS},
             'wrong exact bicycle case')
-    mode = case_id.removeprefix(ASSIGNMENT + '__')
+    mode = CASE_VARIANTS[case_id.removeprefix(ASSIGNMENT + '__')]['mode']
     index_path = root / 'source-index.json'
     require(index_path.is_file(), 'original source index missing')
     index = json.loads(index_path.read_text(encoding='utf-8'))
@@ -117,6 +122,9 @@ def audit(attempt, case_id, pixel_review, *, expected_frames=900):
         decoded = receipt['camera_decode_receipts'][view]
         require(image_sizes[view] == {(decoded['width'], decoded['height'])},
                 'original PNG/video dimensions differ: ' + view)
+        if expected_frames == 900:
+            require(image_sizes[view] == {CAMERA_SIZES[view]},
+                    'original camera profile dimensions differ: ' + view)
     review_path = Path(pixel_review).resolve()
     require(review_path.is_file(), 'independent pixel review missing')
     review = json.loads(review_path.read_text(encoding='utf-8'))

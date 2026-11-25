@@ -1,0 +1,114 @@
+{
+  "assignment_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-270-1",
+  "cell_id": "C111260",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+  "supported_case_ids": [
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path",
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__maintain_clearance",
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__cross_rider_path",
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__maintain_clearance",
+    "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "frame_count": 900,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "source-reviewed fixed elevated crossing view",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed ego approach and rider path view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed crossing geometry and rider body view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed ego attached rider approach view",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
+    "rider_kind": "human_powered_bicycle",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "rider_identity",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "original actor identity, reviewed device and rider source packet",
+          "time_window": "full 45-second attempt",
+          "reference_frame": "original Native frame",
+          "uncertainty": "rider pixels and legal classification need independent review"
+        },
+        {
+          "name": "encounter_motion",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "original ego and rider poses with commanded target speed",
+          "time_window": "full 45-second attempt",
+          "reference_frame": "original Native frame",
+          "uncertainty": "sampled center gap is not an interference or intent threshold"
+        },
+        {
+          "name": "rider_conduct",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound applicable rules and original conduct observations",
+          "time_window": "full 45-second attempt",
+          "reference_frame": "original Native frame",
+          "uncertainty": "lawful-riding verdict remains unresolved"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "four original PNG frame identities, hashes and encoded video decodes",
+          "time_window": "full 45-second attempt",
+          "reference_frame": "original Native frame",
+          "uncertainty": "image visibility requires independent pixel review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_original_site",
+          "unit": "structured record",
+          "method": "source-sealed Native OpenDRIVE, route, rider classification, conduct and camera pose inventory"
+        }
+      ],
+      "limitations": [
+        "Actual rider motion and four-view visibility require local Native capture and independent review.",
+        "Lawful riding, intent and interference are unresolved legal terms."
+      ]
+    },
+    "mode_command": "maintain_clearance"
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 8,
+    "minimum_samples": 900,
+    "engineering_tolerances_not_legal": true
+  }
+}

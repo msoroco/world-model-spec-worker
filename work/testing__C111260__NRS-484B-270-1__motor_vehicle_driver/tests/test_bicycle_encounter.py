@@ -6,6 +6,8 @@ import sys
 import tempfile
 import unittest
 import subprocess
+import shutil
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -17,6 +19,9 @@ from comparison_audit import ComparisonError, audit
 from saved_attempt import finalize, probe_video
 from delivery_decode import audit as audit_decode, finalize_delivery
 from delivery_audit import audit as audit_delivery, compare_original_image_to_video
+from original_source_index import build as build_original_index
+from native_capture import run as run_native_capture, build_cameras
+from analysis import analyze as analyze_saved
 
 class Actor:
     def __init__(self,id):self.type_id=id;self.destroyed=False
@@ -294,7 +299,7 @@ class EncounterTests(unittest.TestCase):
         event_path.write_text(json.dumps(rows),encoding='utf-8')
         def ref(path):
             return {'path':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
-        frame_map_path=self.root/'frame-map.jsonl'
+        frame_map_path=self.root/'video_frames.jsonl'
         frame_map_path.write_text(''.join(json.dumps({'video_frame':i,'carla_frame':i,
                                                        'native_frame':i,'time_s':i/20})+'\n'
                                           for i in range(3)),encoding='utf-8')
@@ -309,14 +314,15 @@ class EncounterTests(unittest.TestCase):
             refs[view]=ref(path)
             originals[view]=[]
             for i in range(3):
-                image=self.root/(view+'-'+str(i)+'.png')
+                image=self.root/'camera-originals'/view/f'{i:08d}.png'
+                image.parent.mkdir(parents=True,exist_ok=True)
                 from PIL import Image
                 Image.new('RGB',(32,32),'blue').save(image)
-                originals[view].append({'frame':i,'time_s':i/20,'image':ref(image)})
-        index={'format':'c111260-original-index-v1','case_id':case,
-               'frame_count':3,'sources':refs,'camera_originals':originals}
+                originals[view].append({'frame':i,'time_s':i/20,
+                                        'image':{'path':image.relative_to(self.root).as_posix(),
+                                                 'sha256':hashlib.sha256(image.read_bytes()).hexdigest()}})
+        index=build_original_index(self.root,case,expected_frames=3)
         index_path=self.root/'source-index.json'
-        index_path.write_text(json.dumps(index),encoding='utf-8')
         measured=finalize_delivery(self.site,self.root,refs['events'],
                                    {view:refs[view] for view in ('overview','approach','reference_corner','driver_reference')},
                                    'cross_rider_path',3)
@@ -364,5 +370,145 @@ class EncounterTests(unittest.TestCase):
         index_path.write_text(json.dumps(index),encoding='utf-8')
         with self.assertRaisesRegex(ValueError,'original source index identity'):
             audit_delivery(self.root,case,review_path,expected_frames=3)
+        index_path.unlink()
+        (self.root/'camera-originals'/'overview'/'00000001.png').unlink()
+        with self.assertRaisesRegex(ValueError,'original camera image count mismatch'):
+            build_original_index(self.root,case,expected_frames=3)
+
+    def test_native_capture_owns_original_frames_and_restores_world(self):
+        case=self.site['assignment_id']+'__cross_rider_path'
+        self.site['case_id']=case
+        self.site['rider_throttle']=.25
+        poses={view:{'x':0,'y':0,'z':10,'pitch':-45,'yaw':0,'roll':0,'fov_deg':90,
+                     'attachment':'ego' if view=='driver_reference' else 'world'}
+               for view in ('overview','approach','reference_corner','driver_reference')}
+        self.site['camera_poses']=poses
+        map_path=self.root/'map.json'
+        packet=json.loads(map_path.read_text())
+        packet['camera_poses']=poses
+        packet['rider_throttle']=.25
+        map_path.write_text(json.dumps(packet),encoding='utf-8')
+        next(ref for ref in self.site['original_sources'] if ref['path']=='map.json')['sha256']=hashlib.sha256(map_path.read_bytes()).hexdigest()
+        class LiveActor(Actor):
+            def __init__(self,id,world,number):
+                super().__init__(id)
+                self.id=number
+                self.world=world
+            def get_location(self):
+                return SimpleNamespace(x=-3+self.world.ticks if self.id==1 else 0,
+                                       y=0 if self.id==1 else -3+self.world.ticks)
+            def get_velocity(self):
+                return SimpleNamespace(x=1,y=0)
+            def apply_control(self,value):
+                self.last_control=value
+        class Settings:
+            synchronous_mode=False
+            fixed_delta_seconds=.1
+        class LiveWorld(World):
+            def __init__(self):
+                super().__init__()
+                self.settings=Settings()
+                self.weather='clear'
+                self.ticks=0
+                self.sensors=[]
+            def get_settings(self):return self.settings
+            def apply_settings(self,value):self.settings=value
+            def get_weather(self):return self.weather
+            def set_weather(self,value):self.weather=value
+            def try_spawn_actor(self,bp,transform):
+                actor=LiveActor(bp.id,self,len(self.spawned)+1)
+                self.spawned.append(actor)
+                return actor
+            def tick(self):
+                self.ticks+=1
+                for sensor in self.sensors:sensor.emit(self.ticks)
+                return self.ticks
+            def get_snapshot(self):
+                return SimpleNamespace(timestamp=SimpleNamespace(elapsed_seconds=self.ticks/20))
+        class Sensor:
+            def __init__(self,world,view,width,height,number):
+                self.world=world;self.view=view;self.width=width;self.height=height
+                self.id=number;self.destroyed=False;world.sensors.append(self)
+            def listen(self,callback):self.callback=callback
+            def emit(self,frame):
+                width,height=self.width,self.height
+                class ImagePacket:
+                    def __init__(self):self.frame=frame;self.width=width;self.height=height
+                    def save_to_disk(self,path):
+                        from PIL import Image
+                        Image.new('RGB',(width,height),'blue').save(path)
+                self.callback(ImagePacket())
+            def stop(self):pass
+            def destroy(self):self.destroyed=True
+        class NativeCarla(Carla):
+            @staticmethod
+            def VehicleControl(**values):return values
+        def cameras(world,carla,site,actors):
+            sizes={'overview':(1920,1080),'approach':(1280,720),
+                   'reference_corner':(1280,720),'driver_reference':(1280,720)}
+            return {view:Sensor(world,view,*size,number=i+10)
+                    for i,(view,size) in enumerate(sizes.items())}
+        world=LiveWorld()
+        saved_root=self.root/'saved'
+        capture_root=saved_root/'capture'
+        result=run_native_capture(world,NativeCarla,self.site,self.root,
+                                  capture_root,'cross_rider_path',cameras,frames=3)
+        self.assertTrue(result['capture_complete'])
+        self.assertEqual(len(list((capture_root/'camera-originals'/'overview').glob('*.png'))),3)
+        self.assertEqual(len((capture_root/'video_frames.jsonl').read_text().splitlines()),3)
+        self.assertEqual(len((capture_root/'trace.jsonl').read_text().splitlines()),3)
+        self.assertFalse(world.get_settings().synchronous_mode)
+        self.assertTrue(all(actor.destroyed for actor in world.spawned))
+        self.assertTrue(all(sensor.destroyed for sensor in world.sensors))
+        for view in ('overview','approach','reference_corner','driver_reference'):
+            video=capture_root/(view+'.mkv')
+            subprocess.run(['ffmpeg','-v','error','-framerate','20','-start_number','1',
+                            '-i',str(capture_root/'camera-originals'/view/'%08d.png'),
+                            '-frames:v','3','-c:v','ffv1',str(video)],check=True)
+            shutil.copyfile(video,saved_root/(view+'.mkv'))
+        build_original_index(capture_root,case,expected_frames=3)
+        for name in ('trace.jsonl','video_frames.jsonl'):
+            shutil.copyfile(capture_root/name,saved_root/name)
+        config=json.loads((HERE/'config.json').read_text())
+        config['frame_count']=3
+        config['selected_case_id']=case
+        config['case']['case_id']=case
+        (saved_root/'config.json').write_text(json.dumps(config),encoding='utf-8')
+        analyzed=analyze_saved(saved_root)
+        self.assertEqual(analyzed[4]['bicycle_encounter_measurement']['value']['rider_kind'],
+                         'human_powered_bicycle')
+        env=os.environ.copy()
+        env['PYTHONPATH']=str(HERE.parents[1]/'runtime'/'scenario_pipeline')
+        env['SCENARIO_PIPELINE_OUTPUT_ROOT']=str(HERE.parents[1]/'.runtime-work'/'c111260-owner'/'output')
+        subprocess.run([sys.executable,str(HERE/'analysis.py'),'--attempt',str(saved_root),
+                        '--output',str(saved_root/'analysis-report.json')],
+                       env=env,check=True,capture_output=True,text=True)
+        self.assertTrue((saved_root/'result.json').is_file())
+        self.assertTrue(json.loads((saved_root/'analysis-report.json').read_text())['analysis_complete'])
+        class CameraBP(BP):
+            def __init__(self,id):super().__init__(id);self.attributes={}
+            def set_attribute(self,key,value):self.attributes[key]=value
+        class CameraWorld(LiveWorld):
+            def get_blueprint_library(self):return SimpleNamespace(find=lambda key:CameraBP(key))
+            def spawn_actor(self,bp,transform,attach_to=None):
+                sensor=Sensor(self,bp.id,*((1920,1080) if not self.sensors else (1280,720)),
+                              len(self.sensors)+30)
+                sensor.blueprint=bp; sensor.parent=attach_to
+                return sensor
+        camera_world=CameraWorld()
+        actors=[LiveActor('vehicle.tesla.model3',camera_world,1)]
+        sourced=build_cameras(camera_world,NativeCarla,self.site,actors)
+        self.assertEqual(set(sourced),set(poses))
+        self.assertIs(sourced['driver_reference'].parent,actors[0])
+        self.assertEqual(sourced['overview'].blueprint.attributes['image_size_x'],'1920')
+        self.assertEqual(sourced['approach'].blueprint.attributes['sensor_tick'],'.05')
+        world2=LiveWorld()
+        with self.assertRaisesRegex(ValueError,'four distinct original camera sensors'):
+            run_native_capture(world2,NativeCarla,self.site,self.root,
+                               self.root/'bad-attempt','cross_rider_path',
+                               lambda w,c,s,a:{'overview':Sensor(w,'overview',1920,1080,20)},
+                               frames=3)
+        self.assertFalse(world2.get_settings().synchronous_mode)
+        self.assertTrue(all(actor.destroyed for actor in world2.spawned))
 
 if __name__=='__main__':unittest.main()

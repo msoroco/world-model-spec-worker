@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 from xml.etree import ElementTree as ET
+from site_review import inspect as inspect_site
 
 
 ASSIGNMENT = "testing__C188132__LVMC-11-30-060-B__pedestrian"
@@ -213,7 +214,7 @@ def measure_original(scene, rows):
             "legal_right_of_way": "unresolved"}
 
 
-def audit_saved(attempt):
+def audit_saved(attempt, *, diagnostic=False):
     """Independent hash and frame audit; no synthetic physical acceptance."""
     attempt = Path(attempt).resolve()
     manifest = json.loads((attempt/"source-manifest.json").read_text())
@@ -227,22 +228,32 @@ def audit_saved(attempt):
         return path
     scene = json.loads(source("scene").read_text())
     validate_case(scene, source("map"))
+    site = inspect_site(source("site_review"), source("map"), scene,
+                        diagnostic=diagnostic)
+    for key, expected in (("site_review_source", site["site_source_sha256"]),
+                          ("municipal_source", site["municipal_source_sha256"])):
+        if sha(source(key)) != expected:
+            raise ValueError("reviewed source differs from original source manifest: "+key)
     rows = [json.loads(line) for line in source("body_history").read_text().splitlines() if line]
     measured = measure_original(scene, rows)
     joins = [json.loads(line) for line in source("frame_map").read_text().splitlines() if line]
     if [(r["frame"], r["time_s"]) for r in rows] != [
-        (r["frame"], r["time_s"]) for r in joins]:
+        (r.get("carla_frame", r.get("frame")), r["time_s"]) for r in joins]:
         raise ValueError("original video frame map differs")
+    measured["roadway_classification"] = "reviewed_surface_bounds_and_native_inventory"
+    measured["reviewed_roadway_y_bounds_m"] = site["roadway_y_bounds_m"]
+    measured["reviewed_municipal_designation"] = site["designation_prohibited"]
     return {"format": "c188132-saved-source-audit-v1", "measurement": measured,
             "source_hashes": {k: manifest[k]["sha256"] for k in
-                              ("scene", "map", "body_history", "frame_map")},
+                              ("scene", "map", "body_history", "frame_map",
+                               "site_review", "site_review_source", "municipal_source")},
             "physical_acceptance_claimed": False}
 
 
-def audit_pair(first, second, comparison):
+def audit_pair(first, second, comparison, *, diagnostic=False):
     """Compare original histories with only declared source changes."""
     roots = [Path(first).resolve(), Path(second).resolve()]
-    saved = [audit_saved(root) for root in roots]
+    saved = [audit_saved(root, diagnostic=diagnostic) for root in roots]
     scenes = [json.loads((root/"scene.json").read_text()) for root in roots]
     if saved[0]["source_hashes"]["map"] != saved[1]["source_hashes"]["map"]:
         raise ValueError("comparison physical map differs")

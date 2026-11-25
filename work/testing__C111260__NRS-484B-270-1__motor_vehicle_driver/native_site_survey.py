@@ -78,9 +78,30 @@ def survey(world, carla, requested, output_dir):
               'crossings_xy': [list(p) for p in crossings if p is not None],
               'max_waypoint_snap_m': snap_limit,
               'legal_verdict': None, 'physical_visibility_verdict': None}
+    if 'camera_poses' in requested:
+        poses = requested['camera_poses']
+        require(isinstance(poses, dict) and set(poses) ==
+                {'overview', 'approach', 'reference_corner', 'driver_reference'},
+                'four original camera poses required')
+        for view, pose in poses.items():
+            require(all(isinstance(pose.get(key), (int, float)) and
+                        math.isfinite(pose[key]) for key in
+                        ('x', 'y', 'z', 'pitch', 'yaw', 'roll', 'fov_deg')) and
+                    0 < pose['fov_deg'] <= 180 and
+                    pose.get('attachment') in ('world', 'ego'),
+                    'invalid reviewed camera pose: ' + view)
+        packet['camera_poses'] = poses
+    if 'rider_throttle' in requested:
+        throttle = requested['rider_throttle']
+        require(isinstance(throttle, (int, float)) and
+                math.isfinite(throttle) and 0 < throttle <= 1,
+                'invalid source-reviewed rider throttle')
+        packet['rider_throttle'] = throttle
     packet_ref = _write_json(out / 'native-route-survey.json', packet)
     return {'map_source_path': packet_ref['path'], 'original_sources': [raw_ref, packet_ref],
-            'native_map_name': name, **routes, 'crossings_xy': packet['crossings_xy']}
+            'native_map_name': name, **routes, 'crossings_xy': packet['crossings_xy'],
+            **({'camera_poses': packet['camera_poses']} if 'camera_poses' in packet else {}),
+            **({'rider_throttle': packet['rider_throttle']} if 'rider_throttle' in packet else {})}
 
 
 def verify_packet(root, ref):
