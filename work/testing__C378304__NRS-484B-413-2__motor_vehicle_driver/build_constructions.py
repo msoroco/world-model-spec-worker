@@ -102,6 +102,19 @@ def main() -> None:
         manifest_cases.append({"case_id": case_id, "kind": "delivery",
                                "construction": construction_path.relative_to(ROOT).as_posix(),
                                "construction_sha256": sha(construction_path),
+                               "fixture_recipe": (ROOT / ("diagnostic-" + tag + "-recipe.json")).relative_to(REPO).as_posix(),
+                               "measurement_contract": "measurement-contract.json",
+                               "measurement_procedure": {"entrypoint": "analysis.py"},
+                               "acquisition": {name: {"entrypoint": "analysis.py",
+                                  "evidence": "channels/" + name + ".jsonl",
+                                  "method": "Saved projection of SHA-verified original Native samples"}
+                                  for name in ("native_frame", "ego_xy", "right_signal",
+                                               "course_change", "weather", "four_camera_frames")},
+                               "native_handoff": {"host_env_var": "CARLA_HOST",
+                                                  "port_env_var": "CARLA_PORT",
+                                                  "python_env_var": "CARLA_PYTHON",
+                                                  "site_env_var": "SIGNAL_SITE_PATH",
+                                                  "site_sha256_env_var": "SIGNAL_SITE_SHA256"},
                                "candidate_risk": item["physical_risk"],
                                "candidates": [{"id": "fallback1",
                                                "construction": fallback_path.relative_to(ROOT).as_posix(),
@@ -110,8 +123,16 @@ def main() -> None:
                                                "trigger": {"source": "original Native turn signal samples and saved signal_measure.py result",
                                                            "metric": "sampled uninterrupted preturn signal distance and course-change onset",
                                                            "failure_condition": "primary signal onset drift leaves measured preturn distance below its selected target or course-change onset outside the reviewed route"}}]})
+        for context_name in ("highway", "business_district_frontage_and_use",
+                             "freight_loading_zone", "driver_and_vehicle"):
+            manifest_cases[-1]["acquisition"][context_name] = {
+                "entrypoint": "analysis.py", "evidence": "channels/context.json",
+                "method": "Saved projection of SHA-verified original site inventory"}
     dump(ROOT / "execution-manifest.json",
-         {"assignment_id": PLAN["assignment_id"], "cases": manifest_cases,
+         {"format": "worker-execution-manifest",
+          "assignment_id": PLAN["assignment_id"],
+          "runtime_manifest_sha256": json.loads((REPO / "batch.json").read_text())["runtime"]["source_manifest_sha256"],
+          "cases": manifest_cases,
           "comparisons": PLAN["comparisons"]})
 
 

@@ -72,3 +72,26 @@ def audit_saved(packet, measurement, source_root):
     return {"passed": True, "case_id": packet["case_id"],
             "frame_count": packet["frame_count"], "source_sha256": actual,
             "physical_visibility": "unverified", "legal_practicability": "unresolved"}
+
+
+def main():
+    """Decode a sealed saved attempt independently; diagnostic runs stay labeled."""
+    import argparse
+    import json
+    from independent_cpu_delivery import audit
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--case-id", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--diagnostic", action="store_true")
+    args = parser.parse_args()
+    result = audit(args.attempt, args.case_id, args.diagnostic)
+    path = Path(args.output)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    print(json.dumps({"case_id": args.case_id, "passed": True}))
+
+
+if __name__ == "__main__":
+    main()

@@ -11,12 +11,14 @@ from native_construction import ASSIGNMENT, VARIANTS
 HERE = Path(__file__).resolve().parent
 FILES = ("runner.py", "native_session.py", "native_construction.py",
          "native_readbacks.py", "camera_capture.py", "media_encode.py",
-         "finalize_lane_change.py", "lane_change_timing.py")
+         "finalize_lane_change.py", "lane_change_timing.py", "analysis.py")
 
 
-def construct(variant: str) -> dict:
+def construct(variant: str, candidate: str = "primary") -> dict:
     if variant not in VARIANTS:
         raise ValueError("unknown controlled lane-change case")
+    if candidate not in ("primary", "fallback1"):
+        raise ValueError("unknown lane-change engineering candidate")
     case_id = ASSIGNMENT + "__" + variant
     config = json.loads((HERE / "config.json").read_text())
     config["selected_case_id"] = case_id
@@ -54,6 +56,18 @@ def construct(variant: str) -> dict:
                         "Driver-input event is not a legal ascertainment finding."]}
     config["recording_description"] = description
     files = [{"path": name, "content": (HERE / name).read_text()} for name in FILES]
+    if candidate == "fallback1":
+        # Change only the ego route follower. The target traffic, signal and
+        # independent driver-input policies stay identical across comparisons.
+        code = next(item for item in files if item["path"] == "native_construction.py")
+        original = code["content"]
+        original_steer = "steer = max(-0.65, min(0.65, 1.2 * error))"
+        original_throttle = "throttle=0.0 if arrived else 0.3,"
+        if original.count(original_steer) != 1 or original.count(original_throttle) != 1:
+            raise ValueError("ego controller fallback patch no longer matches source")
+        code["content"] = original.replace(original_steer,
+            "steer = max(-0.65, min(0.65, 0.85 * error))").replace(
+            original_throttle, "throttle=0.0 if arrived else 0.22,")
     files.append({"path": "config.json", "content": json.dumps(config, indent=2, sort_keys=True) + "\n"})
     files.append({"path": "tests/test_bundle_smoke.py", "content":
         "import unittest\nfrom runner import check\n\n"
@@ -87,6 +101,10 @@ def build():
         target = root / variant / "construction.json"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(construct(variant), indent=2, sort_keys=True) + "\n")
+        fallback = root / variant / "fallback1" / "construction.json"
+        fallback.parent.mkdir(parents=True, exist_ok=True)
+        fallback.write_text(json.dumps(construct(variant, "fallback1"), indent=2,
+            sort_keys=True) + "\n")
     (HERE / "construction.json").write_text(
         json.dumps(construct("both_observed"), indent=2, sort_keys=True) + "\n")
 

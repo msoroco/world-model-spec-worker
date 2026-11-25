@@ -55,8 +55,9 @@ def build():
         participants = []
         for index, row in enumerate(mapping):
             y = (8 - index if reverse else index)
+            observed_x = .1 if obstructed and 2 <= y <= 6 else x
             positions.append({"frame": row["carla_frame"], "elapsed_s": row["time_s"],
-                "pedestrian_id": "synthetic-walker", "pedestrian_xy": [x, y],
+                "pedestrian_id": "synthetic-walker", "pedestrian_xy": [observed_x, y],
                 "pedestrian_source_sha256": site["pedestrian_source_sha256"]})
             obstacles.append({"frame": row["carla_frame"],
                 "source_sha256": site["obstacle_source_sha256"],

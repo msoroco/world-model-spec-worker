@@ -72,3 +72,20 @@ Next CPU actions: implement the owned four-camera 900-frame Native session with 
 Three exact current-runtime controlled bundles were materialized under `cases/` with `bundle_builder.py` and passed `runtime.py offline`: `both_observed` `proof-offline-both_observed.log`, `signal_missing` `proof-offline-signal_missing.log`, `check_missing` `proof-offline-check_missing.log`. `manifest.draft.json` binds their construction/log hashes; it is not a selected delivery manifest. Twenty-two focused tests pass (`proof-native-session-tests.log`, SHA256 `bbb826c26a488ec243b4953d684fee92f98e719122bd349da0b5ade1a67d35a0`), including fake-world ownership/restoration, stale sensor timestamp, source substitution, and four-view lossless encoder contract. Scoped static passes (`proof-native-session-static.log`, SHA256 `f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d`). Generated media and temporary attempts remain only under `.runtime-work/`.
 
 Next CPU actions remain source-hashed saved-only analysis/recording evidence and physical completion, diagnostic compatibility positive/missing-source proofs, canonical semantic proposals, exact selected manifest, and independent delivery/comparison audits. Existing accepted traces/video are absent; the three accepted-source case IDs stay review candidates pending source review, while the three controlled case IDs are source-gated constructions. No new accepted-recording reuse or physical acceptance is claimed.
+
+## 2026-11-25 saved-source and independent audit checkpoint
+
+Saved-only `analysis.py` now SHA-joins all four independent 900-frame readback packets, retained original driver-input and target-traffic streams, reviewed site, and four original camera PNG streams at the Native frame/time. It emits the exact recording channels and an unresolved legal finding; a separately measured destination-center distance is an engineering completion check, not a safety or statutory cutoff. `comparison_audit.py` tests both declared conjunctive controls against source-hashed reports and identical fixed geometry/traffic/camera context. `delivery_audit.py` requires full video pixel decode and original camera PNG decode, and gates production acceptance on an independent SHA-bound original-source review plus Native exit and owner release. Diagnostic paths cannot claim physical or legal acceptance.
+
+All 28 focused tests pass; three regenerated controlled bundles pass `runtime.py offline`. Scoped static passes. Exact scoped strict remains exit 1 because this package is truthfully partial. Accepted original trace/video and reviewed site are still absent, and their source-review cases are not claimed as constructions.
+
+| Receipt | SHA256 |
+| --- | --- |
+| `proof-saved-audits-tests.log` | `01ea7eee44c4013a4a8bbc20ff0c42b0539ab98ac1891fb59093274de7a33e1f` |
+| `proof-saved-audits-static.log` | `f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d` |
+| `proof-saved-audits-strict.log` | `fc7782ab1c5e4fd09e7114614b45ca9e0c619d5171e25cd7ce04792fe2f0459c` |
+| `proof-offline-both_observed.log` | `3b4a28407c2bc813b2ccdcca4cce6da45b675bc9ad31b7e3e2400650f18f48d7` |
+| `proof-offline-signal_missing.log` | `2063c3a380f995751bac4b3fa7067d9c957cdf1e321c946fb0d01c62a94b8960` |
+| `proof-offline-check_missing.log` | `065281492d8bcb09efe6cc84ecfa0ebc42c87610eda2007b781f6e22f0c6ce44` |
+
+Remaining CPU work: prove selected saved processing with owner release and negative source cases, positive/negative compatibility for each controlled construction, semantic proposals, risk-tested fallbacks, selected execution manifest, and six-case source disposition. Keep physical and legal status unresolved until original local review.

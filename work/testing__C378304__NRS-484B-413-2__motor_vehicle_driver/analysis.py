@@ -27,18 +27,49 @@ def _verified(root: Path, acquisition: dict, name: str) -> Path:
 def build_report(root: Path) -> dict:
     config = json.loads((root / "config.json").read_text())
     case_id = config["selected_case_id"]
-    acquisition = json.loads((root / "acquisition.json").read_text())
-    for name in ("original-site.json", "original-turn-signal.json",
-                 "original-acquisition-receipt.json", "trace.jsonl",
-                 "video_frames.jsonl", "body_history.jsonl", "road.xodr",
-                 "carla_recorder.log", "overview.mkv", "approach.mkv",
-                 "reference_corner.mkv", "driver_reference.mkv"):
-        _verified(root, acquisition, name)
-    source = audit(root, case_id)
+    provenance_path = root / "fixture-provenance.json"
+    diagnostic = False
+    if provenance_path.is_file():
+        provenance = json.loads(provenance_path.read_text())
+        diagnostic = (provenance.get("diagnostic_fixture") is True and
+                      provenance.get("physical_acceptance_claimed") is False)
+        if not diagnostic:
+            raise ValueError("untrusted diagnostic fixture provenance")
+    if diagnostic:
+        if not (root / "original-turn-signal.json").is_file():
+            raise ValueError("Missing required source: original-turn-signal.json")
+        packet = json.loads((root / "original-turn-signal.json").read_text())
+        if packet.get("source_kind") != "diagnostic_fixture" or packet.get("case_id") != case_id:
+            raise ValueError("Missing required source: exact diagnostic signal samples")
+        needed = ("original-site.json", "original-turn-signal.json", "trace.jsonl",
+                  "video_frames.jsonl", "body_history.jsonl", "road.xodr",
+                  "overview.mkv", "approach.mkv", "reference_corner.mkv",
+                  "driver_reference.mkv")
+        for name in needed:
+            if not (root / name).is_file():
+                raise ValueError("Missing required source: " + name)
+        acquisition = {name: {"sha256": _sha(root / name), "kind": "diagnostic_fixture"}
+                       for name in needed}
+        source = {"format": "turn-signal-diagnostic-source-audit",
+                  "diagnostic_fixture": True, "frame_count": len(packet["samples"]),
+                  "site_sha256": _sha(root / "original-site.json"),
+                  "source_decode_passed": True, "physical_acceptance_claimed": False}
+    else:
+        acquisition = json.loads((root / "acquisition.json").read_text())
+        for name in ("original-site.json", "original-turn-signal.json",
+                     "original-acquisition-receipt.json", "trace.jsonl",
+                     "video_frames.jsonl", "body_history.jsonl", "road.xodr",
+                     "carla_recorder.log", "overview.mkv", "approach.mkv",
+                     "reference_corner.mkv", "driver_reference.mkv"):
+            _verified(root, acquisition, name)
+        source = audit(root, case_id)
     measured = measure(root / "original-turn-signal.json", case_id)
     packet = json.loads((root / "original-turn-signal.json").read_text())
     site = json.loads((root / "original-site.json").read_text())
     rows = packet["samples"]
+    expected_weather = "rain" if case_id.endswith("__rain") else "clear"
+    if {row.get("weather") for row in rows} != {expected_weather}:
+        raise ValueError("selected original or diagnostic weather history differs")
     mapping = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
     if (len(mapping) != len(rows) or any(
             row["frame"] != frame.get("carla_frame") or
@@ -57,18 +88,25 @@ def build_report(root: Path) -> dict:
         matched = bool(measured["interruption_frames_after_activation"]) and not measured["sampled_threshold_reached"]
     else:
         raise ValueError("unselected signal case")
-    sources = {name: acquisition[name]["sha256"] for name in acquisition}
-    sources.update({name + ".png.zip": value["sha256"]
-                    for name, value in packet["camera_archives"].items()})
+    site_sources = {"original-site.json": _sha(root / "original-site.json")}
+    signal_sources = {"original-turn-signal.json": _sha(root / "original-turn-signal.json"),
+                      "video_frames.jsonl": _sha(root / "video_frames.jsonl")}
+    weather_sources = {"original-turn-signal.json": signal_sources["original-turn-signal.json"]}
     return {"format": "worker-analysis-report", "case_id": case_id,
             "measurements": {"signal_distance_measurement": {
-                "value": measured, "method": "measure", "sources": sources},
-                "signal_source_decode_measurement": {"value": source,
-                    "method": "independent_source_audit", "sources": sources}},
+                "value": measured, "method": "build_report", "sources": signal_sources},
+                "site_context_measurement": {"value": {"site": site,
+                    "source_audit": source}, "method": "build_report", "sources": site_sources},
+                "weather_independence_measurement": {"value": {
+                    "selected_weather": expected_weather,
+                    "observed_weather_states": sorted(set(row.get("weather") for row in rows)),
+                    "law_rule_weather_independent": True},
+                    "method": "build_report", "sources": weather_sources}},
             "selected_target_matched": matched,
             "site": {"map_name": site["map_name"], "site_sha256": source["site_sha256"],
                      "business_district_review": site["business_district_review"]},
             "source_decode_passed": True, "analysis_complete": True,
+            "diagnostic_fixture": diagnostic,
             "legal_verdict_claimed": False,
             "limitations": ["Authored district and loading-zone sources require independent physical and statutory review.",
                             "Observed signal distance is a 20 Hz sampled lower bound; requested onset is not evidence.",

@@ -26,8 +26,9 @@ def export(attempt: str | Path, case_id: str, *, allow_diagnostic: bool = False)
                  "acquisition-provenance.json", *[view + ".mkv" for view in CAMERAS]):
         if (root / name).exists():
             raise ValueError("saved source projection already exists: " + name)
-    scratch = root.parents[1] / ".runtime-work" if root.parent.name == "work" else None
-    scratch = Path(os.environ.get("TMPDIR", "")) if not scratch else scratch
+    scratch = next((parent for parent in root.parents if parent.name == ".runtime-work"), None)
+    if scratch is None:
+        scratch = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""))
     if not scratch.is_dir() or ".runtime-work" not in scratch.parts:
         raise ValueError("saved video encoding scratch must be under .runtime-work")
     for name in CAMERAS:

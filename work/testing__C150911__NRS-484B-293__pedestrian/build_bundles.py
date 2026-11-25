@@ -6,7 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-MODULES = ("runner.py", "analysis.py", "crosswalk_delivery.py", "delivery_audit.py")
+MODULES = ("runner.py", "native_entry.py", "reviewed_site.py", "analysis.py",
+           "crosswalk_delivery.py", "delivery_audit.py")
 OFFLINE_TEST = '''import json
 import unittest
 from pathlib import Path

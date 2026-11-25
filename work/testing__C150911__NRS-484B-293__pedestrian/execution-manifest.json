@@ -1,0 +1,627 @@
+{
+  "assignment_id": "testing__C150911__NRS-484B-293__pedestrian",
+  "cases": [
+    {
+      "acquisition": {
+        "crosswalk_passage": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "original-site.json",
+            "original-pedestrian.jsonl",
+            "original-obstacles.jsonl",
+            "original-participants.jsonl",
+            "original-receipt.json"
+          ],
+          "method": "run_native"
+        },
+        "nearby_participants": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/nearby_participants.jsonl",
+          "method": "original participant actor and pose readback"
+        },
+        "pedestrian_crosswalk_motion": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_crosswalk_motion.jsonl",
+          "method": "source-bound original walker position and passage station"
+        },
+        "right_half_space": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/right_half_space.jsonl",
+          "method": "source-bound original obstacle and available-space readback"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker can overshoot source path or leave four-camera footprint before full crossing",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker speed 1.2 to 0.8 m/s on unchanged site and route"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+            "log": "cases/forward_right/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/forward_right/proof-compatibility-fallback1-negative.log",
+            "receipt": "cases/forward_right/proof-compatibility-fallback1.json",
+            "sha256": "aa4a41912373d1c262bc8a65d882b58184a1915f139dba88ecf1a8894d3db69c"
+          },
+          "construction": "cases/forward_right/fallback1-construction.json",
+          "construction_sha256": "b8f009b88b9f2c1d13db3fc6196dda725be2299ec26b866a0589cba74407760f",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_right/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "b8f009b88b9f2c1d13db3fc6196dda725be2299ec26b866a0589cba74407760f",
+            "exit_code": 0,
+            "log": "cases/forward_right/proof-offline-fallback1.log",
+            "log_sha256": "111330559cc4cf6b6eca64098f481236edb7b59bf27a896967576c51bfa8f56c"
+          },
+          "trigger": {
+            "failure_condition": "primary leaves reviewed crosswalk geometry or loses a camera frame",
+            "metric": "path deviation or missing synchronized camera frame",
+            "source": "original walker position and four-view frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+        "log": "cases/forward_right/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/forward_right/proof-compatibility-primary-negative.log",
+        "receipt": "cases/forward_right/proof-compatibility-primary.json",
+        "sha256": "59321c0f19d4794d1fc518429c0580e716e1c8aa6c20caffb26d5958d91f0c9d"
+      },
+      "construction": "cases/forward_right/construction.json",
+      "construction_sha256": "80151fa8b31a72bb7921cad3efeaf2ad69430d9717383a2b29130e9d89eace30",
+      "delivery_acceptance": {
+        "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right/primary --case-id testing__C150911__NRS-484B-293__pedestrian__forward_right --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-forward_right.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-independent-negative/forward_right --case-id testing__C150911__NRS-484B-293__pedestrian__forward_right --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-negative-forward_right.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-site.json",
+        "negative_log": "cases/forward_right/cpu-independent-negative.log",
+        "negative_log_sha256": "b1aee21d9dc2533dd20d29cb15bbf5945ddaff6edc1d3b34d54afa4da4f500cd",
+        "script": "delivery_audit.py",
+        "script_sha256": "531afca7e1a3b1f70f9984cf74bfab2b4f1f2a6f01a4c78ad08bfb08bf349cfa",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/forward_right/cpu-independent-positive.log",
+        "test_log_sha256": "6ee1777e6f369c7d978d33ee02e7c081b5aa23b007977f9ae4ada1c901389f05"
+      },
+      "fixture_recipe": "work/testing__C150911__NRS-484B-293__pedestrian/cases/forward_right/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/forward_right/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "site_review_env_var": "C150911_CROSSWALK_REVIEW"
+      },
+      "negative": {
+        "log": "cases/forward_right/proof-compatibility-primary-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_right/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "80151fa8b31a72bb7921cad3efeaf2ad69430d9717383a2b29130e9d89eace30",
+        "exit_code": 0,
+        "log": "cases/forward_right/proof-offline-primary.log",
+        "log_sha256": "5ac44b933aee85763512b862c53ac949f34386019fc0713c2e9a4c31af1f96bb"
+      },
+      "physical_preparation": {
+        "receipt": "cases/forward_right/physical-preparation.json",
+        "sha256": "c6f655ac1c23e4cb6e728df6984076ddd84a9ba9d9d45738fe7b3776aff1778a"
+      }
+    },
+    {
+      "acquisition": {
+        "crosswalk_passage": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "original-site.json",
+            "original-pedestrian.jsonl",
+            "original-obstacles.jsonl",
+            "original-participants.jsonl",
+            "original-receipt.json"
+          ],
+          "method": "run_native"
+        },
+        "nearby_participants": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/nearby_participants.jsonl",
+          "method": "original participant actor and pose readback"
+        },
+        "pedestrian_crosswalk_motion": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_crosswalk_motion.jsonl",
+          "method": "source-bound original walker position and passage station"
+        },
+        "right_half_space": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/right_half_space.jsonl",
+          "method": "source-bound original obstacle and available-space readback"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker can overshoot source path or leave four-camera footprint before full crossing",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker speed 1.2 to 0.8 m/s on unchanged site and route"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_left/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+            "log": "cases/forward_left/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/forward_left/proof-compatibility-fallback1-negative.log",
+            "receipt": "cases/forward_left/proof-compatibility-fallback1.json",
+            "sha256": "c1ec815f4d1a289e2032d750c0a7882752ac59fd7dba3edcb906d76cabd60b1e"
+          },
+          "construction": "cases/forward_left/fallback1-construction.json",
+          "construction_sha256": "9a002d89c5a85fd026241ff8b1eb251549746511b09b37740bfe829a7ad8d4ec",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_left/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "9a002d89c5a85fd026241ff8b1eb251549746511b09b37740bfe829a7ad8d4ec",
+            "exit_code": 0,
+            "log": "cases/forward_left/proof-offline-fallback1.log",
+            "log_sha256": "462461fb05bdab6d22bc03654d86771663e44c3e030398d6e032ebe3c2e6a6ba"
+          },
+          "trigger": {
+            "failure_condition": "primary leaves reviewed crosswalk geometry or loses a camera frame",
+            "metric": "path deviation or missing synchronized camera frame",
+            "source": "original walker position and four-view frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_left",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_left --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_left/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+        "log": "cases/forward_left/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/forward_left/proof-compatibility-primary-negative.log",
+        "receipt": "cases/forward_left/proof-compatibility-primary.json",
+        "sha256": "985c90eb81e93bde8a2ed50f7fa24809b7bc0e3c877e09fd63ddc606f26a38f8"
+      },
+      "construction": "cases/forward_left/construction.json",
+      "construction_sha256": "5a245517bbe3156434732c00d0a236599569bfbfa9ec2cfee3fee845c99fc0dc",
+      "delivery_acceptance": {
+        "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_left",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_left/primary --case-id testing__C150911__NRS-484B-293__pedestrian__forward_left --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-forward_left.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-independent-negative/forward_left --case-id testing__C150911__NRS-484B-293__pedestrian__forward_left --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-negative-forward_left.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-site.json",
+        "negative_log": "cases/forward_left/cpu-independent-negative.log",
+        "negative_log_sha256": "b1aee21d9dc2533dd20d29cb15bbf5945ddaff6edc1d3b34d54afa4da4f500cd",
+        "script": "delivery_audit.py",
+        "script_sha256": "531afca7e1a3b1f70f9984cf74bfab2b4f1f2a6f01a4c78ad08bfb08bf349cfa",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/forward_left/cpu-independent-positive.log",
+        "test_log_sha256": "b5d81aa945663978fbbbcb9d9678cbe7e61ec9fbbaf8723697ea7ba9b7bfea3d"
+      },
+      "fixture_recipe": "work/testing__C150911__NRS-484B-293__pedestrian/cases/forward_left/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/forward_left/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "site_review_env_var": "C150911_CROSSWALK_REVIEW"
+      },
+      "negative": {
+        "log": "cases/forward_left/proof-compatibility-primary-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_left --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_left/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "5a245517bbe3156434732c00d0a236599569bfbfa9ec2cfee3fee845c99fc0dc",
+        "exit_code": 0,
+        "log": "cases/forward_left/proof-offline-primary.log",
+        "log_sha256": "76d4de5f390a6e49ab79feb9268cca6dbd810a473b2df20b0d94152e4624b691"
+      },
+      "physical_preparation": {
+        "receipt": "cases/forward_left/physical-preparation.json",
+        "sha256": "77c2ef85723fc7736d17f8a3ad180cec314db40c227ac510ffc6f1cbe6c86573"
+      }
+    },
+    {
+      "acquisition": {
+        "crosswalk_passage": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "original-site.json",
+            "original-pedestrian.jsonl",
+            "original-obstacles.jsonl",
+            "original-participants.jsonl",
+            "original-receipt.json"
+          ],
+          "method": "run_native"
+        },
+        "nearby_participants": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/nearby_participants.jsonl",
+          "method": "original participant actor and pose readback"
+        },
+        "pedestrian_crosswalk_motion": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_crosswalk_motion.jsonl",
+          "method": "source-bound original walker position and passage station"
+        },
+        "right_half_space": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/right_half_space.jsonl",
+          "method": "source-bound original obstacle and available-space readback"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker can overshoot source path or leave four-camera footprint before full crossing",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker speed 1.2 to 0.8 m/s on unchanged site and route"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_right --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_right/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+            "log": "cases/reverse_right/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/reverse_right/proof-compatibility-fallback1-negative.log",
+            "receipt": "cases/reverse_right/proof-compatibility-fallback1.json",
+            "sha256": "8996e3a9850eb2faf7471c6bb12ab24c3e7c38197ad67f638f621ab9c3ce4130"
+          },
+          "construction": "cases/reverse_right/fallback1-construction.json",
+          "construction_sha256": "2ebd4b0047bc19295d6eca9e56f17fa7973f36d10319e5279a3df0f79f5e1ca1",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_right --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/reverse_right/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "2ebd4b0047bc19295d6eca9e56f17fa7973f36d10319e5279a3df0f79f5e1ca1",
+            "exit_code": 0,
+            "log": "cases/reverse_right/proof-offline-fallback1.log",
+            "log_sha256": "59151ef0508b987630736c270682f9be5939604ccfa504259046aa942b3d08f2"
+          },
+          "trigger": {
+            "failure_condition": "primary leaves reviewed crosswalk geometry or loses a camera frame",
+            "metric": "path deviation or missing synchronized camera frame",
+            "source": "original walker position and four-view frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_right --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_right/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+        "log": "cases/reverse_right/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/reverse_right/proof-compatibility-primary-negative.log",
+        "receipt": "cases/reverse_right/proof-compatibility-primary.json",
+        "sha256": "07f97575316119badf18725f8579f5c12fb7ef71c60249aa16f7ecbbb9946afc"
+      },
+      "construction": "cases/reverse_right/construction.json",
+      "construction_sha256": "80e291a7ecf649e41c8bb96c8fa15c0f7b86a07f69db214cc05a5e2034998381",
+      "delivery_acceptance": {
+        "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_right/primary --case-id testing__C150911__NRS-484B-293__pedestrian__reverse_right --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-reverse_right.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-independent-negative/reverse_right --case-id testing__C150911__NRS-484B-293__pedestrian__reverse_right --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-negative-reverse_right.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-site.json",
+        "negative_log": "cases/reverse_right/cpu-independent-negative.log",
+        "negative_log_sha256": "b1aee21d9dc2533dd20d29cb15bbf5945ddaff6edc1d3b34d54afa4da4f500cd",
+        "script": "delivery_audit.py",
+        "script_sha256": "531afca7e1a3b1f70f9984cf74bfab2b4f1f2a6f01a4c78ad08bfb08bf349cfa",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/reverse_right/cpu-independent-positive.log",
+        "test_log_sha256": "3a3b5d5f16b174b31b3f925c945da7bc946174d7507dd6c7122dd51cd7ba5d7d"
+      },
+      "fixture_recipe": "work/testing__C150911__NRS-484B-293__pedestrian/cases/reverse_right/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/reverse_right/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "site_review_env_var": "C150911_CROSSWALK_REVIEW"
+      },
+      "negative": {
+        "log": "cases/reverse_right/proof-compatibility-primary-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_right --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/reverse_right/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "80e291a7ecf649e41c8bb96c8fa15c0f7b86a07f69db214cc05a5e2034998381",
+        "exit_code": 0,
+        "log": "cases/reverse_right/proof-offline-primary.log",
+        "log_sha256": "39338cf1a83a13c0410b4c15b100d897e83a4b0950ea54f6f574883484fd9f8a"
+      },
+      "physical_preparation": {
+        "receipt": "cases/reverse_right/physical-preparation.json",
+        "sha256": "f6a5c24521395c673da11605de207410b8f1a46a3dfd524357d1387c2b350213"
+      }
+    },
+    {
+      "acquisition": {
+        "crosswalk_passage": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "original-site.json",
+            "original-pedestrian.jsonl",
+            "original-obstacles.jsonl",
+            "original-participants.jsonl",
+            "original-receipt.json"
+          ],
+          "method": "run_native"
+        },
+        "nearby_participants": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/nearby_participants.jsonl",
+          "method": "original participant actor and pose readback"
+        },
+        "pedestrian_crosswalk_motion": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_crosswalk_motion.jsonl",
+          "method": "source-bound original walker position and passage station"
+        },
+        "right_half_space": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/right_half_space.jsonl",
+          "method": "source-bound original obstacle and available-space readback"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker can overshoot source path or leave four-camera footprint before full crossing",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker speed 1.2 to 0.8 m/s on unchanged site and route"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_left/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+            "log": "cases/reverse_left/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/reverse_left/proof-compatibility-fallback1-negative.log",
+            "receipt": "cases/reverse_left/proof-compatibility-fallback1.json",
+            "sha256": "54d06bcdcbd420cfab34fe959ffb8a99b756686e62bca859305d6b2d5a7eec9c"
+          },
+          "construction": "cases/reverse_left/fallback1-construction.json",
+          "construction_sha256": "1a252a45013dcaf94395120b77f2357804d2c404eba0ec64510a10b31b2023b5",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_left --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/reverse_left/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "1a252a45013dcaf94395120b77f2357804d2c404eba0ec64510a10b31b2023b5",
+            "exit_code": 0,
+            "log": "cases/reverse_left/proof-offline-fallback1.log",
+            "log_sha256": "1bb3eeb9b0df0d30b4081a491e1b9dc75b20ee99f14a465c5a687e8fb459c6b2"
+          },
+          "trigger": {
+            "failure_condition": "primary leaves reviewed crosswalk geometry or loses a camera frame",
+            "metric": "path deviation or missing synchronized camera frame",
+            "source": "original walker position and four-view frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_left --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_left/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+        "log": "cases/reverse_left/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/reverse_left/proof-compatibility-primary-negative.log",
+        "receipt": "cases/reverse_left/proof-compatibility-primary.json",
+        "sha256": "14ca339fefeb9a575594bbc3d929b114facc78152706dbba3c1d046d99f134f6"
+      },
+      "construction": "cases/reverse_left/construction.json",
+      "construction_sha256": "cdc11795da92795f263406cec32f5142842e54bfa5450e065f20b0a84817e5dd",
+      "delivery_acceptance": {
+        "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/reverse_left/primary --case-id testing__C150911__NRS-484B-293__pedestrian__reverse_left --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-reverse_left.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-independent-negative/reverse_left --case-id testing__C150911__NRS-484B-293__pedestrian__reverse_left --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-negative-reverse_left.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-site.json",
+        "negative_log": "cases/reverse_left/cpu-independent-negative.log",
+        "negative_log_sha256": "b1aee21d9dc2533dd20d29cb15bbf5945ddaff6edc1d3b34d54afa4da4f500cd",
+        "script": "delivery_audit.py",
+        "script_sha256": "531afca7e1a3b1f70f9984cf74bfab2b4f1f2a6f01a4c78ad08bfb08bf349cfa",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/reverse_left/cpu-independent-positive.log",
+        "test_log_sha256": "37548645bb6fb6bb3d3153c170ed419580f71ecda06e9a88c19c0c80c518db64"
+      },
+      "fixture_recipe": "work/testing__C150911__NRS-484B-293__pedestrian/cases/reverse_left/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/reverse_left/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "site_review_env_var": "C150911_CROSSWALK_REVIEW"
+      },
+      "negative": {
+        "log": "cases/reverse_left/proof-compatibility-primary-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__reverse_left --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/reverse_left/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "cdc11795da92795f263406cec32f5142842e54bfa5450e065f20b0a84817e5dd",
+        "exit_code": 0,
+        "log": "cases/reverse_left/proof-offline-primary.log",
+        "log_sha256": "524acb45f53568407ae227368add64a18997b3708e6d99679aeae83ace6ea213"
+      },
+      "physical_preparation": {
+        "receipt": "cases/reverse_left/physical-preparation.json",
+        "sha256": "e7d7c36b783fd74d219af3b84a2c7ad810da1fa61c7a7f503c2b5a4cec391338"
+      }
+    },
+    {
+      "acquisition": {
+        "crosswalk_passage": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "original-site.json",
+            "original-pedestrian.jsonl",
+            "original-obstacles.jsonl",
+            "original-participants.jsonl",
+            "original-receipt.json"
+          ],
+          "method": "run_native"
+        },
+        "nearby_participants": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/nearby_participants.jsonl",
+          "method": "original participant actor and pose readback"
+        },
+        "pedestrian_crosswalk_motion": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/pedestrian_crosswalk_motion.jsonl",
+          "method": "source-bound original walker position and passage station"
+        },
+        "right_half_space": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/right_half_space.jsonl",
+          "method": "source-bound original obstacle and available-space readback"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker can overshoot source path or leave four-camera footprint before full crossing",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker speed 1.2 to 0.8 m/s on unchanged site and route"
+          ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right_obstructed/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+            "log": "cases/forward_right_obstructed/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/forward_right_obstructed/proof-compatibility-fallback1-negative.log",
+            "receipt": "cases/forward_right_obstructed/proof-compatibility-fallback1.json",
+            "sha256": "431eef5e12182ff154721e92f1e863c962d40ed3c4d1836b3ad1cfb1e1157346"
+          },
+          "construction": "cases/forward_right_obstructed/fallback1-construction.json",
+          "construction_sha256": "192730fd6c7230ec168164f9d07eec06bdbf7c322c029fe2fd847f1fad5d5da1",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_right_obstructed/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "192730fd6c7230ec168164f9d07eec06bdbf7c322c029fe2fd847f1fad5d5da1",
+            "exit_code": 0,
+            "log": "cases/forward_right_obstructed/proof-offline-fallback1.log",
+            "log_sha256": "7090945ee58393cb6044b2aa6cc20553cfd36bad92b40a0b3a4642f31b5a9257"
+          },
+          "trigger": {
+            "failure_condition": "primary leaves reviewed crosswalk geometry or loses a camera frame",
+            "metric": "path deviation or missing synchronized camera frame",
+            "source": "original walker position and four-view frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/run_compat_deterministic.py --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right_obstructed/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-decoder/.lake/build/bin/adapterCheck",
+        "log": "cases/forward_right_obstructed/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/forward_right_obstructed/proof-compatibility-primary-negative.log",
+        "receipt": "cases/forward_right_obstructed/proof-compatibility-primary.json",
+        "sha256": "f897c8b316de46c9fc30e2f66b18a49f6187c067d8f7ee6c01990c20a02fae0e"
+      },
+      "construction": "cases/forward_right_obstructed/construction.json",
+      "construction_sha256": "29ac12e7c716c1e171010c7e4d2c13ab10cc151cbe6684b315be867c97b3410b",
+      "delivery_acceptance": {
+        "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-compat-selected/forward_right_obstructed/primary --case-id testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-forward_right_obstructed.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-independent-negative/forward_right_obstructed --case-id testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-proof/independent-negative-forward_right_obstructed.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-site.json",
+        "negative_log": "cases/forward_right_obstructed/cpu-independent-negative.log",
+        "negative_log_sha256": "b1aee21d9dc2533dd20d29cb15bbf5945ddaff6edc1d3b34d54afa4da4f500cd",
+        "script": "delivery_audit.py",
+        "script_sha256": "531afca7e1a3b1f70f9984cf74bfab2b4f1f2a6f01a4c78ad08bfb08bf349cfa",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/forward_right_obstructed/cpu-independent-positive.log",
+        "test_log_sha256": "537e51ea3abb9472842d2e2d3523b04a07c60fc358c3b83a3d1231f0d61c63f0"
+      },
+      "fixture_recipe": "work/testing__C150911__NRS-484B-293__pedestrian/cases/forward_right_obstructed/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/forward_right_obstructed/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "site_review_env_var": "C150911_CROSSWALK_REVIEW"
+      },
+      "negative": {
+        "log": "cases/forward_right_obstructed/proof-compatibility-primary-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150911__NRS-484B-293__pedestrian/execution-manifest.draft.json --case testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150911-offline-native-v2/forward_right_obstructed/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "29ac12e7c716c1e171010c7e4d2c13ab10cc151cbe6684b315be867c97b3410b",
+        "exit_code": 0,
+        "log": "cases/forward_right_obstructed/proof-offline-primary.log",
+        "log_sha256": "cb3ea23416cf9065c926c0e63f426123484920974bb84de01a897e5fdf7d5f09"
+      },
+      "physical_preparation": {
+        "receipt": "cases/forward_right_obstructed/physical-preparation.json",
+        "sha256": "12e48f67180335237d2ec3d3d814948c89fa5a67c75652c689e1beec7803c85a"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

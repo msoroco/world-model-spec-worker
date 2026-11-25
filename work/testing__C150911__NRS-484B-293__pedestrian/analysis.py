@@ -25,6 +25,17 @@ def lines(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
+def measure_crosswalk_passage(root, measurement):
+    files = ("original-site.json", "original-pedestrian.jsonl",
+             "original-obstacles.jsonl", "original-participants.jsonl",
+             "original-receipt.json")
+    return {"method": "measure_crosswalk_passage",
+        "sources": {name: sha(root / name) for name in files},
+        "value": {"right_half_sample_count": measurement["right_half_sample_count"],
+            "crosswalk_sample_count": measurement["crosswalk_sample_count"],
+            "legal_practicability": "unresolved"}}
+
+
 def analyze(root, output):
     root, output = Path(root).resolve(), Path(output).resolve()
     config = json.loads(required(root, "config.json").read_text())
@@ -77,8 +88,9 @@ def analyze(root, output):
                     "value": values[name](i)}, separators=(",", ":")) + "\n")
         evidence.append({"name": name, "unit": channel["unit"], "reference": relative})
     context = "channels/crosswalk_source.json"
-    (root / context).write_text(json.dumps({"site_source_sha256":
-        measurement["site_source_sha256"], "legal_practicability": "unresolved"}) + "\n")
+    (root / context).write_text(json.dumps({"crosswalk_source": {
+        "site_source_sha256": measurement["site_source_sha256"],
+        "legal_practicability": "unresolved"}}) + "\n")
     evidence.append({"name": "crosswalk_source", "unit": "source", "reference": context})
     native = {"case_id": case_id, "measured_values": {"crosswalk": measurement},
         "target_checks": [{"target": "source-bound pedestrian crosswalk passage",
@@ -95,11 +107,7 @@ def analyze(root, output):
         "realized_observables": {}}
     (root / "result.json").write_text(json.dumps(native, indent=2, allow_nan=False) + "\n")
     report = {"format": "worker-analysis-report", "case_id": case_id,
-        "measurements": {"crosswalk_passage": {"method": "measure_crosswalk_passage",
-            "sources": {name: sha(root / name) for name in files},
-            "value": {"right_half_sample_count": measurement["right_half_sample_count"],
-                "crosswalk_sample_count": measurement["crosswalk_sample_count"],
-                "legal_practicability": "unresolved"}}},
+        "measurements": {"crosswalk_passage": measure_crosswalk_passage(root, measurement)},
         "limitations": ["Original site and legal practicability remain source-gated."]}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

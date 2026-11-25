@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
   "input_sha256": "22dd585ca1d8bb3d093053cea0fb8b766f9f14ec4eff378e0282ac315e7c860b",
-  "readiness_kind": "source_gated_native_capture_and_three_offline_bundles_partial",
-  "reason": "Source-gated reviewed marked-lane Native construction, two owned vehicle controllers, four-camera 900-frame capture/encoding, original signal/driver-input readbacks and saved timing finalizer are CPU-tested; 22 focused tests, scoped static, and three controlled-case offline bundles pass. Exact selected semantic/compatibility/saved/delivery/comparison proofs remain CPU work. Accepted original trace/video and reviewed site are absent in the export; no physical or legal result claimed.",
+  "readiness_kind": "source_gated_native_capture_three_offline_saved_analysis_partial",
+  "reason": "Source-gated Native construction and three controlled-case offline bundles pass. Saved-only analyzer now independently joins 900-frame signal, driver-input, ego, target traffic and four original camera sources; independent comparison and delivery audit code has focused CPU tests. Canonical semantic proposals, six-case source disposition, positive/negative compatibility, saved-process and delivery receipts, risk fallbacks and selected manifest remain unfinished. No physical or legal result claimed.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -86,6 +86,24 @@
       "exit_code": 0,
       "log": "proof-native-session-static.log",
       "sha256": "f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "proof-saved-audits-tests.log",
+      "sha256": "01ea7eee44c4013a4a8bbc20ff0c42b0539ab98ac1891fb59093274de7a33e1f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "proof-saved-audits-static.log",
+      "sha256": "f5e364ae41c091e61a0fe5d8910bd685b82f7ed4ae980f43ff9cce974e35793d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C144550__NRS-484B-223-1b__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "proof-saved-audits-strict.log",
+      "sha256": "fc7782ab1c5e4fd09e7114614b45ca9e0c619d5171e25cd7ce04792fe2f0459c"
     }
   ]
 }
