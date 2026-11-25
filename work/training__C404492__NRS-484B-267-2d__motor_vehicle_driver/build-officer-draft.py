@@ -41,6 +41,9 @@ def main():
                     {'path': 'base_finalize.py', 'content': (HERE / 'finalize.py').read_text()},
                     {'path': 'finalize.py', 'content': (HERE / 'native' / 'officer_finalize.py').read_text()},
                 ])
+            elif entry['path'] == 'measure_emergency.py':
+                files.append({'path': 'measure_emergency.py',
+                              'content': (HERE / 'measure_emergency.py').read_text()})
             elif entry['path'] == 'config.json':
                 cfg = json.loads(entry['content'])
                 cfg.update(case_id=CASE, selected_case_id=CASE,

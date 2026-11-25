@@ -8,6 +8,10 @@ import base_finalize
 CASE = base_finalize.AID + '__officer_directed'
 
 
+def source_joined_same_direction_abreast_and_order(measured):
+    return base_finalize.source_joined_same_direction_abreast_and_order(measured)
+
+
 def check_context(source_dir, case_id, diagnostic):
     if case_id != CASE:
         raise ValueError('Exact directed-officer case required')

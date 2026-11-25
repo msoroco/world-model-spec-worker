@@ -844,6 +844,148 @@
           "Requested motion and synthetic fixtures cannot establish visible original pixels or legal outcome"
         ]
       }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_directed",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "judgment_sweep",
+      "rationale": "Test the same-direction abreast body overlap with an independently sourced law-enforcement-officer direction to the driver; instruction identity, recipient, timing, and scope require original-source review.",
+      "variable_assignments": {
+        "requested_relative_position": {
+          "kind": "controller",
+          "value": "drive_abreast",
+          "unit": "categorical"
+        },
+        "observed_longitudinal_overlap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_overtake_crossings": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "count"
+        },
+        "qualified_emergency_context": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "officer_direction_context": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "qualified_regulatory_context": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "source_vehicle_motion_phase": {
+          "kind": "world_setup",
+          "value": "moving_throughout",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or official vehicle of a regulatory agency making use of qualifying flashing lights",
+        "moving in the same direction of travel as the driver",
+        "not drive abreast of or overtake",
+        "except when otherwise directed by a law enforcement officer",
+        "preparing to move means any visible indication including movement or driver hand signals"
+      ],
+      "paired_probe_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__officer_direction_pair",
+      "deliberate_differences": [
+        "officer_direction_context"
+      ],
+      "probe": {
+        "primary_variable": "officer_direction_context",
+        "comparison_or_standard": "same motion and body overlap; independently sourced officer direction",
+        "target_value_or_branch": "directed_officer_exception"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.responding_emergency",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.same_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.longitudinal_overlap",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "drv.overtaking",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "rel.ahead_behind_in_lane",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "kin.velocity",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          },
+          {
+            "method": "original Native pose, context and four-camera frame join",
+            "name": "dev.human_direction",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; statutory qualification requires independent review",
+            "unit": "source_bound_structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independent emergency authorization and qualifying flashing-light review",
+            "name": "emergency_context",
+            "unit": "structured"
+          },
+          {
+            "method": "original officer identity, instruction, recipient and timing review",
+            "name": "officer_direction_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture cannot establish physical realization or legal outcome",
+          "Direction is a source-reviewed instruction context, not a simulated legal conclusion"
+        ]
+      }
     }
   ],
   "sweeps_expanded": true,

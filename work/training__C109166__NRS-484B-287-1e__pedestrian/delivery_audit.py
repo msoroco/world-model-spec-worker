@@ -72,6 +72,8 @@ def audit(case, candidate, attempt, processing, diagnostic):
         statute_path = exception_source.get('exact_statute_source_path', '')
         person_path = exception_source.get('person_specific_evidence_path', '')
         if (exception_source.get('review_status') != 'independently_reviewed' or
+                exception_source.get('synthetic_diagnostic') is True or
+                exception_source.get('original_review_pending') is True or
                 not exception_source.get('independent_reviewer') or
                 exception_source.get('applicability') not in ('applicable', 'not_applicable', 'undetermined') or
                 not statute_path or Path(statute_path).is_absolute() or '..' in Path(statute_path).parts or

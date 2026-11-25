@@ -1,6 +1,6 @@
 # C109166 NRS 484B.287(1)(e) handoff
 
-Status: `partial`. The exact scoped `--complete` check passes. The exact scoped `--complete --require-delivery-ready` check exits 1 with `Preparation acceptance failed: partial/missing packages remain`. The selected manifest SHA-256 is `f70251b7518927a418f6e0daa5bb8f65a670be84e06554d4c09fa4fcdf92e7aa`. No original Native attempt has been observed.
+Status: `ready` for current-runtime CPU delivery preparation. The exact scoped `--complete --require-delivery-ready` check passes, including an independent lead rerun. The selected manifest SHA-256 is `eca06573ac150bc7f5f65bc70742001051ad303466ae8a72d765f2f5f05b36ae`. No original Native attempt has been observed.
 
 Two controlled cases keep one diagonal route and differ only in the governing diagonal instruction at first road entry: walk versus do not walk. Each has a primary and a camera-height fallback construction. Four current-runtime offline checks and four public compatibility checks pass. Both 600-frame saved-only positive checks pass. Removing the original device source produces incomplete-source feedback and both independent delivery negatives reject it. Semantic delivery, physical-preparation protocol, controlled comparison, selected-construction audit, and all direct CPU contract validators pass.
 
@@ -8,6 +8,6 @@ The Native runner requires three distinct original survey documents and media fo
 
 The original survey, Native capture and device pixels, full-body road-boundary review, and person-specific exception evidence are absent. They require local source acquisition/review. No physical completion or legal verdict is claimed. Do not promote the package merely because CPU diagnostic fixtures pass.
 
-Key proof SHA-256 values: selected-draft `e0765b1d874aabd518bd502e809cd997164c1ccfa18ae024077e790f28f6d94c`; comparison `7c2bf8b3716f5b46e5ec5345dffd8c931e7c27e3ba9e6a592b52c1e3c2686cd3`; exception review `9f89e1ad6f9ac0c13f7d0611abd7a262fd68cfbdd1265895f24e731f4d7a48c8`; saved-only `69834ff09c4fbd6da25b9ede0c4e17df4b6f90e92beb3f4b980a274fda346acb`; semantic index `86f0d27d04480669102162bbba35e738ba4596122a49e0c71a54f867bf893495`; scoped strict log `d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba`. See `result.json` for each selected test log and hash.
+Key proof SHA-256 values: selected-draft audit `f60cfe3f36193b365e6085408d0126facbffc4f515edff18bb9a37eb11061246`; comparison `7c2bf8b3716f5b46e5ec5345dffd8c931e7c27e3ba9e6a592b52c1e3c2686cd3`; exception review `9f89e1ad6f9ac0c13f7d0611abd7a262fd68cfbdd1265895f24e731f4d7a48c8`; saved-only `b8ed8b65ff033522b445b71c1c52a9b08fe8a15304bd1e469602298e786e824f`; semantic index `86f0d27d04480669102162bbba35e738ba4596122a49e0c71a54f867bf893495`; scoped strict log `c7365291d6e16eea2e394a8e14d652c3c7260c6704043feba4eca38389329a8d`. See `result.json` for each selected test log and hash.
 
 Recheck with `PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.runtime-work/c109166-287-1e-tmp" .venv-cpu/bin/python worker_check.py --assignment training__C109166__NRS-484B-287-1e__pedestrian --complete --require-delivery-ready`. Keep scratch and any runtime output under `.runtime-work/`.

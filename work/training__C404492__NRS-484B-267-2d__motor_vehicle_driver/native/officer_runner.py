@@ -52,6 +52,7 @@ def config():
 
 
 def survey_check(survey):
+    cfg = config()
     if survey.get('officer_directed_otherwise') is not True:
         raise ValueError('Officer-directed exception requires reviewed direction')
     for key in ('officer_instruction_source', 'officer_identity_source',
@@ -60,6 +61,15 @@ def survey_check(survey):
         value = survey.get(key)
         if not isinstance(value, str) or not value or value.startswith('synthetic-fixture:'):
             raise ValueError('Original officer instruction source missing: ' + key)
+    motion_case = AID + '__controlled_2'
+    motion = dict(cfg, case_id=motion_case,
+                  selected_case_id=motion_case, case_suffix='controlled_2')
+    original = base_runner.config
+    base_runner.config = lambda: motion
+    try:
+        base_runner.survey_check(survey)
+    finally:
+        base_runner.config = original
     return survey
 
 

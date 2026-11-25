@@ -35,7 +35,7 @@ def actor_row(actor):
 
 def control(actor, request, carla, *, other=False):
     phase = request['other_phase_requested'] if other else request['ego_phase_requested']
-    target = 0 if phase == 'hold_pre_line' else 1.0 if phase == 'approach' else 2.0
+    target = 0 if phase == 'hold_pre_line' else 1.0 if phase == 'approach' else 4.0
     velocity = actor.get_velocity()
     speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
     if target == 0:
