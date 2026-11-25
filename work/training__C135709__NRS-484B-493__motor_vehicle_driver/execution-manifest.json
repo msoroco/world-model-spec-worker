@@ -1,0 +1,74 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135709__NRS-484B-493__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_delivery_cpu_in_progress",
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "construction": "native/controlled_1/construction.json",
+      "construction_sha256": "91de33b3cd3c0b32466eda4d8bff2ae2ba7452b42179113ee745e613da2951bf",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary may brake outside the governed curb extent or leave the shoulder in Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/controlled_1/fallback1/construction.json",
+          "construction_sha256": "abeea382967afb5c7211d5fa7495e2617852e987029bcbcf538198a15580b1aa",
+          "trigger": {
+            "source": "original Native vehicle-pose.jsonl and reviewed street extent",
+            "metric": "stationary footprint within governed extent and curb shoulder",
+            "failure_condition": "primary stops outside governed extent or fails to settle at requested curb"
+          },
+          "changed_knobs": [
+            "moving_throttle .18 to .23",
+            "brake_start_frame 210 to 260"
+          ]
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/controlled_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C135709__NRS-484B-493__motor_vehicle_driver/diagnostic-controlled_1-recipe.json",
+      "delivery_readiness": "incomplete",
+      "id": "primary"
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "construction": "native/controlled_2/construction.json",
+      "construction_sha256": "7056a3d3cd8d72f1e1900fd9f59f47ba519abff561afee1365800c15e8d6463d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary may brake outside the governed curb extent or leave the shoulder in Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/controlled_2/fallback1/construction.json",
+          "construction_sha256": "ff783f7f51b4b4ef3cb86b408d6dbdf41ccfd72238395cf718fe8fadfe732043",
+          "trigger": {
+            "source": "original Native vehicle-pose.jsonl and reviewed street extent",
+            "metric": "stationary footprint within governed extent and curb shoulder",
+            "failure_condition": "primary stops outside governed extent or fails to settle at requested curb"
+          },
+          "changed_knobs": [
+            "moving_throttle .18 to .23",
+            "brake_start_frame 210 to 260"
+          ]
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "selected-measurements/controlled_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C135709__NRS-484B-493__motor_vehicle_driver/diagnostic-controlled_2-recipe.json",
+      "delivery_readiness": "incomplete",
+      "id": "primary"
+    }
+  ]
+}

@@ -29,7 +29,8 @@ def write(name, value):
 assignment = json.loads((R/'inputs'/A/'assignment.json').read_text())
 quote = assignment['law']['text']
 original = json.loads((F/'proposals/cases.json').read_text())
-selected = original['cases']
+selected = [case for case in original['cases']
+            if case.get('case_id') in (A+'__reference', A+'__contrast')]
 desc = selected[0]['recording_description']
 relevance = {'cell_id':'C230259','actor':ACTOR,'status':'draft',
     'relevant_laws':[{'law_id':LAW,'quote':quote,'applies_to':[ACTOR],
@@ -43,7 +44,7 @@ exceptions = [
     ('Engaged in the construction, maintenance or repair of the highway', 'Worker duty requires evidence beyond actor motion.'),
     ('traffic conditions, inclement weather, obstructions or hazards make it necessary', 'Necessity is qualitative.'),
     ('official traffic control device or the directions given by a peace officer', 'Control and direction source review pending.'),
-    ('authorized emergency vehicle in the course of official duties', 'Authorization and duty cannot be inferred from a blueprint.'),
+    ('authorized emergency vehicle in the course of his or her official duties', 'Authorization and duty cannot be inferred from a blueprint.'),
     ('within the geographical limits of a city or town', 'Location boundary requires independent geospatial source.')]
 template = {'template_id':TEMPLATE,'law_id':LAW,'actor':ACTOR,
     'status':'draft','quote':quote,
@@ -75,6 +76,14 @@ baseline = {'case_id':A+'__baseline','target_law_id':None,
 baseline['variable_assignments']['slow_extreme_left_lane_continuation']['value'] = None
 for case in selected:
     case['unresolved_judgment_calls'] = [phrase for phrase,_ in PHRASES]
+    case['target_type'] = 'judgment_sweep'
+    case['paired_probe_id'] = A + '__left_lane_pair'
+    case['deliberate_differences'] = ['slow_extreme_left_lane_continuation']
+    case['probe'] = {
+        'primary_variable': 'slow_extreme_left_lane_continuation',
+        'comparison_or_standard': 'measured post-overtake left-lane occupancy, not a legal verdict',
+        'target_value_or_branch': case['variable_assignments']['slow_extreme_left_lane_continuation']['value'],
+    }
 cases = {'format':'worker-case-proposals','cell_id':'C230259','actor':ACTOR,
     'law_id':LAW,'status':'draft','cases':[baseline,*selected],
     'sweep_specs':[{'sweep_id':A+'__notice_and_necessity_review',

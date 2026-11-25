@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0-activation",
+      "source": "NRS 484B.493",
+      "output_key": "notice_context",
+      "method": "measure_notice_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "authority-review/device-authority.json",
+        "authority-review/one-way-designation.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-0-side",
+      "source": "NRS 484B.493",
+      "output_key": "stationary_side",
+      "method": "measure_stationary_side",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "authority-review/device-authority.json"
+    ],
+    "error_contains": "Missing required source: authority-review/device-authority.json"
+  }
+}

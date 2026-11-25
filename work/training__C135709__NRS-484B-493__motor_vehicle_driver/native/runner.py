@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 import queue
 import subprocess
+import shutil
 import xml.etree.ElementTree as ET
 
 from geometry import SIGN_NAME, check as geometry_check, open_drive
@@ -13,17 +14,37 @@ from geometry import SIGN_NAME, check as geometry_check, open_drive
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -18, 16, -40),
-    ('sign_approach', 1280, 720, -15, -12, 7, -18),
-    ('sign_face', 1280, 720, -42, 7, 5, -8),
-    ('parking_side', 1280, 720, 22, -14, 9, -30),
+    ('overview', 1920, 1080, 0, -18, 16, -40),
+    ('approach', 1280, 720, -15, -12, 7, -18),
+    ('reference_corner', 1280, 720, -42, 7, 5, -8),
+    ('driver_reference', 1280, 720, 22, -14, 9, -30),
 )
 
 
-def check():
+def check(config=None):
     geometry = geometry_check()
     if FRAMES / RATE != 30 or len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4:
         raise ValueError('four cameras and 30-second capture required')
+    if config is not None:
+        assignment = 'training__C135709__NRS-484B-493__motor_vehicle_driver'
+        cases = {assignment + '__controlled_1': 'right',
+                 assignment + '__controlled_2': 'left'}
+        case = config.get('case_id')
+        if case not in cases or config.get('selected_case_id') != case:
+            raise ValueError('Exact selected case differs')
+        if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
+                'NRS-484B-493', 'C135709', 'motor_vehicle_driver'):
+            raise ValueError('Law/cell/actor identity differs')
+        if config.get('parking_side') != cases[case] or (config.get('rate_hz'),
+                config.get('duration_s')) != (20, 30):
+            raise ValueError('Selected side or duration differs')
+        if [(c.get('name'), c.get('width'), c.get('height')) for c in
+                config.get('cameras', [])] != [(c[0], c[1], c[2]) for c in CAMERAS]:
+            raise ValueError('Four-view source profile differs')
+        candidates = {'primary': (.18, 210), 'fallback1': (.23, 260)}
+        if (config.get('moving_throttle'), config.get('brake_start_frame')) != candidates.get(
+                config.get('candidate_id')):
+            raise ValueError('Physical-risk candidate knobs differ')
     return {'passed': True, 'geometry': geometry, 'frames': FRAMES,
             'rate_hz': RATE, 'camera_names': [c[0] for c in CAMERAS],
             'physical_acceptance_claimed': False}
@@ -51,9 +72,10 @@ def survey(world, carla):
             'physical_sign_pixels_verified': False}
 
 
-def execute(output_dir, side, host, port):
+def execute(output_dir, side, host, port, source_review_dir=None):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
     check()
     if side not in ('left', 'right'):
@@ -68,8 +90,15 @@ def execute(output_dir, side, host, port):
     if saved['settings'].synchronous_mode or any(a.type_id.startswith(
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
+    config = json.loads(Path('config.json').read_text())
+    check(config)
+    if config.get('parking_side') != side:
+        raise ValueError('Exact selected parking side differs')
     owned, encoders, queues = [], {}, {}
     changed = False
+    failure, errors, encoder_codes = None, [], {}
+    restoration = {'restored': False}
+    completed = 0
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
@@ -128,12 +157,17 @@ def execute(output_dir, side, host, port):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-pose.jsonl').open('x') as poses:
+        with PipelineCapture(client, vehicle, output, config['case_id'],
+                required_observations=config.get('required_atoms', [])) as capture, (
+                FrameMap(output / 'video_frames.jsonl')) as frame_map, (
+                output / 'vehicle-pose.jsonl').open('x') as poses, (
+                output / 'trace.jsonl').open('x') as trace:
             first_elapsed = None
             for index in range(FRAMES):
                 # Engineering parking controller; stop timing and actual footprint are measured later.
-                vehicle.apply_control(carla.VehicleControl(throttle=.18 if index < 210 else 0,
-                                                           brake=0 if index < 210 else 1,
+                brake_start = config['brake_start_frame']
+                vehicle.apply_control(carla.VehicleControl(throttle=config['moving_throttle'] if index < brake_start else 0,
+                                                           brake=0 if index < brake_start else 1,
                                                            hand_brake=index >= 300))
                 native_frame = world.tick()
                 snap = world.get_snapshot()
@@ -161,18 +195,40 @@ def execute(output_dir, side, host, port):
                     encoders[name].stdin.write(image.raw_data)
                     mapped[name] = image.frame
                 frame_map.append(native_frame, relative, camera_native_frames=mapped)
+                capture.capture(native_frame, relative, extra={'video_frame': index})
                 poses.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
                     'time_s': relative, 'native_elapsed_seconds': absolute,
                     'vehicle_id': str(vehicle.id), 'vehicle_blueprint_id': vehicle.type_id,
                     'speed_mps': velocity.length(), 'yaw_deg': transform.rotation.yaw,
                     'footprint_corners_xy_m': corners, 'camera_native_frames': mapped}) + '\n')
+                trace.write(json.dumps({'frame': native_frame, 'time_s': relative,
+                    'position': {'x': x, 'y': y, 'z': transform.location.z},
+                    'heading_deg': transform.rotation.yaw, 'speed_mps': velocity.length(),
+                    'parking_side_request': side}) + '\n')
+                completed += 1
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_codes[name] = process.wait(timeout=180)
+            if encoder_codes[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: ' + name + ': ' + stderr.decode()[-400:])
-        return {'frames': FRAMES, 'side': side, 'native_survey': readback,
-                'source_review_required': True, 'physical_acceptance_claimed': False}
+        if source_review_dir:
+            from source_review import REQUIRED, reviewed_context
+            source_review_dir = Path(source_review_dir).resolve()
+            if not source_review_dir.is_dir():
+                raise ValueError('Reviewed source directory missing')
+            destination = output / 'authority-review'
+            destination.mkdir(exist_ok=False)
+            for name in REQUIRED:
+                for suffix in ('.json', '.source.txt'):
+                    source = source_review_dir / (name + suffix)
+                    if not source.is_file():
+                        raise ValueError('Reviewed source role missing: ' + name + suffix)
+                    shutil.copy2(source, destination / source.name)
+            reviewed_context(output, diagnostic=False)
+    except BaseException as error:
+        failure = error
+        errors.append(f'{type(error).__name__}: {error}')
     finally:
         for process in encoders.values():
             if process.poll() is None:
@@ -183,10 +239,32 @@ def execute(output_dir, side, host, port):
                 if hasattr(actor, 'stop'):
                     actor.stop()
                 actor.destroy()
-            except Exception:
-                pass
+            except Exception as error:
+                errors.append(f'actor destroy: {error}')
         if changed:
-            restore(client, saved)
+            try:
+                restoration = restore(client, saved)
+            except Exception as error:
+                errors.append(f'world restore: {error}')
+        if output.exists():
+            (output / 'native-run-status.json').write_text(json.dumps({
+                'case_id': config['case_id'], 'frames': completed,
+                'errors': errors, 'restoration': restoration,
+                'encoder_exit_codes': encoder_codes,
+                'capture_finished': completed == FRAMES and failure is None,
+                'acceptance_claimed': False}, indent=2) + '\n')
+    if failure is not None:
+        raise failure
+    if errors:
+        raise RuntimeError('; '.join(errors))
+    seal_capture(output, frames=completed, restoration=restoration, errors=errors,
+                 encoder_exit_codes=encoder_codes,
+                 context={'case_id': config['case_id'],
+                          'source': 'original Native CARLA capture',
+                          'official_authority_verified': False,
+                          'one_way_designation_verified': False})
+    return {'frames': completed, 'side': side, 'native_survey': readback,
+            'source_review_required': True, 'physical_acceptance_claimed': False}
 
 
 if __name__ == '__main__':
@@ -195,6 +273,7 @@ if __name__ == '__main__':
     p.add_argument('--execute', action='store_true')
     p.add_argument('--output-dir')
     p.add_argument('--side', choices=('left', 'right'))
+    p.add_argument('--authority-review-dir')
     p.add_argument('--host', default='127.0.0.1')
     p.add_argument('--port', type=int, default=2000)
     a = p.parse_args()
@@ -206,4 +285,5 @@ if __name__ == '__main__':
         if not a.output_dir:
             raise SystemExit('--output-dir required for Native execution')
         side = a.side or json.loads((Path(__file__).parent / 'config.json').read_text())['parking_side']
-        print(json.dumps(execute(a.output_dir, side, a.host, a.port)))
+        print(json.dumps(execute(a.output_dir, side, a.host, a.port,
+                                 a.source_review_dir)))

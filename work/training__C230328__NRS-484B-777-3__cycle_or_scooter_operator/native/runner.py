@@ -8,7 +8,7 @@ import subprocess
 
 AID='training__C230328__NRS-484B-777-3__cycle_or_scooter_operator'
 CASE=AID+'__controlled_1'
-CAMERAS=('overview','side','rear','subject')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 COUNT=600
 RATE=20
 
@@ -16,7 +16,7 @@ RATE=20
 def config_check():
     cfg=json.loads((Path(__file__).resolve().parent/'config.json').read_text())
     if (cfg.get('assignment_id')!=AID or cfg.get('case_id')!=CASE or cfg.get('selected_case_id')!=CASE
-            or cfg.get('candidate_id')!='primary' or cfg.get('law_id')!='NRS-484B-777-3'
+            or cfg.get('candidate_id') not in ('primary','fallback1') or cfg.get('law_id')!='NRS-484B-777-3'
             or cfg.get('cell_id')!='C230328' or cfg.get('actor')!='cycle_or_scooter_operator'
             or cfg.get('frames')!=COUNT or cfg.get('rate_hz')!=RATE or cfg.get('duration_s')!=30
             or [c.get('name') for c in cfg.get('cameras',[])]!=list(CAMERAS)
@@ -78,7 +78,7 @@ def execute(output,survey,host,port):
         pairs=[]
         for r in survey['riders']:
             dev=world.try_spawn_actor(lib.find(r['device_blueprint']),
-                transform(carla,r['spawn_xyz_m'],[0,r.get('spawn_yaw_deg',0),0]))
+                transform(carla,[r['spawn_xyz_m'][0],r['spawn_xyz_m'][1]+config_check().get('spawn_shift_y_m',0),r['spawn_xyz_m'][2]],[0,r.get('spawn_yaw_deg',0),0]))
             if dev is None:raise RuntimeError('Reviewed bicycle spawn failed')
             owned.append(dev)
             rider=world.try_spawn_actor(lib.find(r['rider_blueprint']),

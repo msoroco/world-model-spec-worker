@@ -7,7 +7,7 @@ from pathlib import Path
 
 AID = 'training__C230328__NRS-484B-777-3__cycle_or_scooter_operator'
 COUNT = 600
-CAMERAS = ('overview', 'side', 'rear', 'subject')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):

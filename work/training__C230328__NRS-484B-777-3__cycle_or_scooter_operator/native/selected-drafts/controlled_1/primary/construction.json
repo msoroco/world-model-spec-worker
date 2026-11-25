@@ -1,0 +1,166 @@
+{
+  "case_id": "training__C230328__NRS-484B-777-3__cycle_or_scooter_operator__controlled_1",
+  "cell_id": "C230328",
+  "law_id": "NRS-484B-777-3",
+  "actor": "cycle_or_scooter_operator",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/training__C230328__NRS-484B-777-3__cycle_or_scooter_operator/native/runner.py",
+      "content": "\"\"\"Survey-gated two-rider Native roadway capture; CPU --check avoids CARLA import.\"\"\"\nimport argparse\nimport json\nimport math\nfrom pathlib import Path\nimport queue\nimport subprocess\n\nAID='training__C230328__NRS-484B-777-3__cycle_or_scooter_operator'\nCASE=AID+'__controlled_1'\nCAMERAS=('overview','approach','reference_corner','driver_reference')\nCOUNT=600\nRATE=20\n\n\ndef config_check():\n    cfg=json.loads((Path(__file__).resolve().parent/'config.json').read_text())\n    if (cfg.get('assignment_id')!=AID or cfg.get('case_id')!=CASE or cfg.get('selected_case_id')!=CASE\n            or cfg.get('candidate_id') not in ('primary','fallback1') or cfg.get('law_id')!='NRS-484B-777-3'\n            or cfg.get('cell_id')!='C230328' or cfg.get('actor')!='cycle_or_scooter_operator'\n            or cfg.get('frames')!=COUNT or cfg.get('rate_hz')!=RATE or cfg.get('duration_s')!=30\n            or [c.get('name') for c in cfg.get('cameras',[])]!=list(CAMERAS)\n            or cfg.get('physical_acceptance_claimed') is not False):\n        raise ValueError('Selected exact Native contract differs')\n    return cfg\n\n\ndef survey_check(s):\n    for key in ('map_name','map_source','public_dedication_source','public_vehicle_access_source',\n                'roadway_boundary_source','shoulder_boundary_source','exclusive_use_source',\n                'rider_device_source','bicycle_wheel_source','bicycle_diameter_source',\n                'bicycle_moped_exclusion_source'):\n        if not s.get(key):\n            raise ValueError('Missing reviewed Native source: '+key)\n    if s.get('exclusive_use_reviewed') is not True:\n        raise ValueError('Exclusive-use exception not reviewed')\n    riders=s.get('riders')\n    if not isinstance(riders,list) or len(riders)!=2 or {r.get('rider_id') for r in riders}!=set((1,2)):\n        raise ValueError('Selected source needs two distinct riders')\n    for r in riders:\n        if r.get('device_subtype')!='bicycle' or not r.get('device_blueprint') or not r.get('rider_blueprint'):\n            raise ValueError('Qualifying bicycle identities required')\n        if len(r.get('spawn_xyz_m',[]))!=3 or len(r.get('attach_xyz_m',[]))!=3:\n            raise ValueError('Reviewed bicycle/rider transform missing')\n        if not 0<r.get('target_speed_mps',0)<10:\n            raise ValueError('Invalid rider travel speed')\n        if r.get('roadway_occupied') is not True or r.get('shoulder_occupied') is not False or r.get('exclusive_use_occupied') is not False:\n            raise ValueError('Roadway, shoulder, exclusive-use occupancy unreviewed')\n    if set(s.get('camera_world_transforms',{}))!=set(CAMERAS):\n        raise ValueError('Four reviewed camera transforms required')\n    return s\n\n\ndef transform(carla,xyz,rotation):\n    return carla.Transform(carla.Location(x=xyz[0],y=xyz[1],z=xyz[2]),\n                           carla.Rotation(pitch=rotation[0],yaw=rotation[1],roll=rotation[2]))\n\n\ndef execute(output,survey,host,port):\n    import carla\n    from worker_exchange.native_output import FrameMap\n    from worker_exchange.world_restore import snapshot,restore\n    config_check();survey_check(survey)\n    output=Path(output).resolve()\n    if any((output/name).exists() for name in ('video_frames.jsonl','rider_poses.jsonl')):\n        raise ValueError('Original frame sources already exist')\n    client=carla.Client(host,port);client.set_timeout(120)\n    saved=snapshot(client);world=client.get_world()\n    if world.get_map().name!=survey['map_name']:\n        raise ValueError('Live Native map differs from reviewed map')\n    if saved['settings'].synchronous_mode:\n        raise RuntimeError('Exclusive asynchronous Native world required')\n    owned=[];encoders={};queues={}\n    try:\n        settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/RATE\n        world.apply_settings(settings)\n        lib=world.get_blueprint_library()\n        pairs=[]\n        for r in survey['riders']:\n            dev=world.try_spawn_actor(lib.find(r['device_blueprint']),\n                transform(carla,[r['spawn_xyz_m'][0],r['spawn_xyz_m'][1]+config_check().get('spawn_shift_y_m',0),r['spawn_xyz_m'][2]],[0,r.get('spawn_yaw_deg',0),0]))\n            if dev is None:raise RuntimeError('Reviewed bicycle spawn failed')\n            owned.append(dev)\n            rider=world.try_spawn_actor(lib.find(r['rider_blueprint']),\n                transform(carla,r['attach_xyz_m'],[0,0,0]),attach_to=dev)\n            if rider is None:raise RuntimeError('Reviewed rider spawn failed')\n            owned.append(rider);pairs.append((r,dev,rider))\n        output.mkdir(parents=True,exist_ok=True)\n        for c in config_check()['cameras']:\n            bp=lib.find('sensor.camera.rgb')\n            bp.set_attribute('image_size_x',str(c['width']))\n            bp.set_attribute('image_size_y',str(c['height']))\n            bp.set_attribute('sensor_tick',str(1/RATE))\n            spec=survey['camera_world_transforms'][c['name']]\n            cam=world.spawn_actor(bp,transform(carla,spec['xyz_m'],spec['rotation_deg']))\n            owned.append(cam);q=queue.Queue();cam.listen(q.put);queues[c['name']]=q\n            encoders[c['name']]=subprocess.Popen(['ffmpeg','-nostdin','-v','error','-y',\n                '-f','rawvideo','-pix_fmt','bgra','-s',f\"{c['width']}x{c['height']}\",\n                '-r',str(RATE),'-i','-','-frames:v',str(COUNT),'-c:v','ffv1',\n                str(output/(c['name']+'.mkv'))],stdin=subprocess.PIPE,stderr=subprocess.PIPE)\n        first=None\n        with FrameMap(output/'video_frames.jsonl') as fmap,(output/'rider_poses.jsonl').open('x') as poses:\n            for i in range(COUNT):\n                for spec,dev,_ in pairs:\n                    dev.set_target_velocity(carla.Vector3D(x=spec['target_speed_mps'],y=0,z=0))\n                native=world.tick();snap=world.get_snapshot()\n                if snap.frame!=native:raise RuntimeError('Original Native frame differs')\n                if first is None:first=snap.timestamp.elapsed_seconds\n                t=snap.timestamp.elapsed_seconds-first\n                mapped={}\n                for name,q in queues.items():\n                    image=q.get(timeout=30)\n                    if image.frame!=native:raise RuntimeError('Original camera frame differs')\n                    encoders[name].stdin.write(image.raw_data);mapped[name]=image.frame\n                fmap.append(native,t,camera_native_frames=mapped)\n                riders=[]\n                for spec,dev,rider in pairs:\n                    pose=dev.get_transform();vel=dev.get_velocity();extent=dev.bounding_box.extent\n                    riders.append({'rider_id':spec['rider_id'],'native_device_actor_id':dev.id,\n                        'native_rider_actor_id':rider.id,'longitudinal_m':pose.location.x,\n                        'lateral_m':pose.location.y,'half_length_m':extent.x,\n                        'speed_mps':math.sqrt(vel.x*vel.x+vel.y*vel.y+vel.z*vel.z),\n                        'roadway_occupied':spec['roadway_occupied'],\n                        'shoulder_occupied':spec['shoulder_occupied'],\n                        'exclusive_use_occupied':spec['exclusive_use_occupied']})\n                poses.write(json.dumps({'video_frame':i,'native_frame':native,\n                    'source_kind':'original_native_pose','riders':riders})+'\\n')\n        for name,proc in encoders.items():\n            proc.stdin.close();err=proc.stderr.read()\n            if proc.wait(timeout=180):raise RuntimeError('Camera encoding failed: '+name+' '+err.decode()[-300:])\n        (output/'road_context.template.json').write_text(json.dumps({'assignment_id':AID,\n            'review_kind':'original_source_review','rider_ids':[1,2],\n            'device_subtypes':{'1':'bicycle','2':'bicycle'},'review_required':True},indent=2)+'\\n')\n        return {'case_id':CASE,'original_frames':COUNT,'physical_acceptance_claimed':False}\n    finally:\n        for proc in encoders.values():\n            if proc.poll() is None:proc.kill();proc.wait()\n        for actor in reversed(owned):\n            try:\n                if hasattr(actor,'stop'):actor.stop()\n                actor.destroy()\n            except Exception:pass\n        restore(client,saved)\n\n\nif __name__=='__main__':\n    parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true')\n    parser.add_argument('--survey',type=Path);parser.add_argument('--output-dir',type=Path)\n    parser.add_argument('--host',default='127.0.0.1');parser.add_argument('--port',type=int,default=2000)\n    a=parser.parse_args();config_check()\n    if a.check:print(json.dumps({'passed':True,'case_id':CASE,'frames':COUNT,'cameras':list(CAMERAS),'native_imported':False,'physical_acceptance_claimed':False}))\n    else:\n        if a.survey is None or a.output_dir is None:parser.error('--survey and --output-dir required')\n        print(json.dumps(execute(a.output_dir,json.loads(a.survey.read_text()),a.host,a.port)))\n"
+    },
+    {
+      "path": "tests/test_native.py",
+      "source": "work/training__C230328__NRS-484B-777-3__cycle_or_scooter_operator/native/tests/test_native.py",
+      "content": "import unittest\nimport runner\n\nclass TestNative(unittest.TestCase):\n    def test_exact_cpu_contract(self):\n        self.assertEqual(runner.config_check()['law_id'],'NRS-484B-777-3')\n        self.assertEqual(runner.COUNT,600)\n        self.assertEqual(len(runner.CAMERAS),4)\n\nif __name__=='__main__':unittest.main()\n"
+    },
+    {
+      "path": "finalize.py",
+      "source": "work/training__C230328__NRS-484B-777-3__cycle_or_scooter_operator/native/finalize.py",
+      "content": "\"\"\"Saved-only rider geometry. No geometric cutoff or legal verdict is inferred.\"\"\"\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\n\nfrom measure_abreast import CAMERAS, measure\n\n\ndef digest(path):\n    return hashlib.sha256(path.read_bytes()).hexdigest()\n\n\ndef required(root, name):\n    path = root / name\n    if not path.is_file():\n        raise ValueError('Missing required source: ' + name)\n    return path\n\n\ndef measure_roadway_riding(geometry, context):\n    return {'rider_count': geometry['rider_count'],\n            'source_review_kind': context['review_kind'],\n            'roadway_source': context['roadway_boundary_source'],\n            'bicycle_device_source': context['rider_device_source'],\n            'original_physical_qualification_review_pending': True}\n\n\ndef measure_exclusive_use_exception(geometry, context):\n    return {'reviewed': context['exclusive_use_reviewed'],\n            'exclusive_use_source': context['exclusive_use_source'],\n            'exclusive_use_review_source': context['exclusive_use_review_source'],\n            'legal_exception_result': None}\n\n\nMEASUREMENTS = (\n    ('roadway_riding', measure_roadway_riding, ('rider_poses.jsonl', 'road_context.json')),\n    ('exclusive_use_exception', measure_exclusive_use_exception,\n     ('rider_poses.jsonl', 'road_context.json')),\n)\n\n\ndef finalize(attempt, output):\n    root = Path(attempt)\n    config = json.loads(required(root, 'config.json').read_text())\n    for name in ('video_frames.jsonl', 'rider_poses.jsonl', 'road_context.json',\n                 'trace.jsonl', 'capture/evidence.jsonl'):\n        required(root, name)\n    for name in CAMERAS:\n        required(root, name + '.mkv')\n    context = json.loads((root / 'road_context.json').read_text())\n    if context.get('assignment_id') != config['assignment_id']:\n        raise ValueError('Saved roadway review belongs to another assignment')\n    if context.get('legal_verdict') is not None:\n        raise ValueError('Saved context asserts a legal verdict')\n    geometry = measure(root)\n    expected = 2 if config['case_id'].endswith('__controlled_1') else 3\n    if geometry['rider_count'] != expected:\n        raise ValueError('Selected rider count differs from original source')\n    frames = [json.loads(line) for line in (root / 'video_frames.jsonl').read_text().splitlines()]\n    poses = [json.loads(line) for line in (root / 'rider_poses.jsonl').read_text().splitlines()]\n    trace = [json.loads(line) for line in (root / 'trace.jsonl').read_text().splitlines()]\n    events = [json.loads(line) for line in (root / 'capture/evidence.jsonl').read_text().splitlines()]\n    if any(len(stream) != 600 for stream in (frames, poses, trace, events)):\n        raise ValueError('Full 600-frame saved source required')\n    for frame, pose, state, event in zip(frames, poses, trace, events):\n        original = frame['native_frame']\n        if (pose['native_frame'] != original or state.get('frame') != original or\n                event.get('original_frame') != original or\n                any(frame.get('camera_native_frames', {}).get(name) != original for name in CAMERAS)):\n            raise ValueError('Saved rider, trace and camera frame join differs')\n    measurements = {key: {'method': function.__name__,\n                          'value': function(geometry, context),\n                          'sources': {name: digest(root / name) for name in sources}}\n                    for key, function, sources in MEASUREMENTS}\n    channel_dir = root / 'channels'\n    channel_dir.mkdir(exist_ok=True)\n    recording = []\n    for item in config['recording_description']['channels']:\n        name = item['name']\n        path = channel_dir / (name.replace('/', '_') + '.jsonl')\n        path.write_text(''.join(json.dumps({'time_s': frame['time_s'],\n            'value': {'native_frame': frame['native_frame'],\n                      'riders': pose['riders'],\n                      'source_kind': pose['source_kind']}}, separators=(',', ':')) + '\\n'\n            for frame, pose in zip(frames, poses)))\n        recording.append({'name': name, 'unit': item['unit'],\n                          'reference': 'channels/' + path.name})\n    for item in config['recording_description']['context_inputs']:\n        name = item['name']\n        path = channel_dir / (name + '.json')\n        path.write_text(json.dumps({name: context}, separators=(',', ':')) + '\\n')\n        recording.append({'name': name, 'unit': item['unit'],\n                          'reference': 'channels/' + path.name})\n    diagnostic = context['review_kind'] == 'synthetic_diagnostic'\n    overlaps = [sample['pairwise'] for sample in geometry['per_frame_geometry']]\n    matching = all(len(pairwise) == expected * (expected - 1) // 2 for pairwise in overlaps)\n    result = {'case_id': config['case_id'],\n              'measured_values': {'rider_count': expected,\n                                  'pair_count_per_frame': len(overlaps[0]),\n                                  'abreast_classification': None,\n                                  'legal_result': None},\n              'target_checks': [{'target': 'requested_rider_count',\n                'requested': expected, 'measured': geometry['rider_count'],\n                'method': '600 source-joined original rider identities', 'tolerance': 0,\n                'matched': matching, 'physical_cause_confirmed': False,\n                'cause_evidence': ['rider_poses.jsonl', 'road_context.json']}],\n              'setup_confirmed': not diagnostic, 'behavior_attempted': not diagnostic,\n              'maneuver_completed': not diagnostic,\n              'termination_reason': 'full original source window' if not diagnostic else 'synthetic diagnostic window',\n              'physical_failure_flags': ['original_rider_and_roadway_review_pending'],\n              'trace_reference': 'trace.jsonl',\n              'video_references': [name + '.mkv' for name in CAMERAS],\n              'video_frame_map_reference': 'video_frames.jsonl',\n              'recording_description': config['recording_description'],\n              'recording_evidence': recording,\n              'realized_observables': {'rider_count': {'value': expected,\n                'unit': 'count', 'method': 'saved rider identity join',\n                'time_window': '600 frames', 'statistic': 'exact',\n                'reference': 'rider_poses.jsonl'}},\n              'provenance_kind': 'synthetic_cpu' if diagnostic else 'native',\n              'accepted': False, 'legal_verdict_claimed': False}\n    from worker_exchange.native_output import validate_result\n    validate_result(result)\n    if (root / 'result.json').exists():\n        raise ValueError('Saved processing cannot overwrite a prior result')\n    (root / 'result.json').write_text(json.dumps(result, indent=2) + '\\n')\n    report = {'format': 'c230328-abreast-saved-analysis-v1',\n              'case_id': config['case_id'], 'measurements': measurements,\n              'source_geometry': geometry,\n              'original_native_source': not diagnostic,\n              'abreast_classification': None, 'legal_verdict': None}\n    Path(output).write_text(json.dumps(report, indent=2) + '\\n')\n    return report\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--attempt', required=True)\n    parser.add_argument('--output', required=True)\n    args = parser.parse_args()\n    report = finalize(args.attempt, args.output)\n    print(json.dumps({'case_id': report['case_id'],\n                      'source_frames': report['source_geometry']['sample_count'],\n                      'legal_verdict': None}))\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"training__C230328__NRS-484B-777-3__cycle_or_scooter_operator\",\n  \"case_id\": \"training__C230328__NRS-484B-777-3__cycle_or_scooter_operator__controlled_1\",\n  \"selected_case_id\": \"training__C230328__NRS-484B-777-3__cycle_or_scooter_operator__controlled_1\",\n  \"candidate_id\": \"primary\",\n  \"cell_id\": \"C230328\",\n  \"law_id\": \"NRS-484B-777-3\",\n  \"actor\": \"cycle_or_scooter_operator\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"ru.bicycle\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"ru.electric_bicycle\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"ru.electric_scooter\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"rel.longitudinal_overlap\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"rel.bearing\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"st.roadway\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"st.bicycle_lane_or_path\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"rel.occupies\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"rider_identity\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"rider_pose\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"camera_frame_join\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      },\n      {\n        \"name\": \"roadway_and_exception_review\",\n        \"unit\": \"structured\",\n        \"method\": \"600 original Native rider poses, roadway review and four-camera source join\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"30 s / 600 original frames\",\n        \"reference_frame\": \"original Native map and frame\",\n        \"uncertainty\": \"Bicycle classification, roadway and exclusive-use legal review pending\"\n      }\n    ],\n    \"context_inputs\": [\n      {\n        \"name\": \"roadway_exception_context\",\n        \"unit\": \"structured\",\n        \"method\": \"Original public-road, shoulder, device and exclusive-use source review\"\n      }\n    ],\n    \"limitations\": [\n      \"Longitudinal footprint overlap and lateral bearing are measurements, not a legal abreast cutoff.\",\n      \"Synthetic CPU fixtures cannot prove original physical riding or legal status.\"\n    ]\n  },\n  \"physical_acceptance_claimed\": false,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"spawn_shift_y_m\": 0.0,\n  \"physical_completion\": {\n    \"criterion\": \"travel_progress\",\n    \"motion_source\": \"trace.jsonl\",\n    \"position_key\": \"position_m\",\n    \"minimum_progress_m\": 10,\n    \"engineering_tolerances_not_legal\": true\n  }\n}\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ru.bicycle",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "ru.electric_bicycle",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "ru.electric_scooter",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "rel.longitudinal_overlap",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "rel.bearing",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "st.roadway",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "st.bicycle_lane_or_path",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "rider_identity",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "rider_pose",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      },
+      {
+        "name": "roadway_and_exception_review",
+        "unit": "structured",
+        "method": "600 original Native rider poses, roadway review and four-camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "Bicycle classification, roadway and exclusive-use legal review pending"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "roadway_exception_context",
+        "unit": "structured",
+        "method": "Original public-road, shoulder, device and exclusive-use source review"
+      }
+    ],
+    "limitations": [
+      "Longitudinal footprint overlap and lateral bearing are measurements, not a legal abreast cutoff.",
+      "Synthetic CPU fixtures cannot prove original physical riding or legal status."
+    ]
+  },
+  "status": "selected_cpu_construction",
+  "measurement_plan": "Saved original rider intervals, lateral bearings, roadway and exclusive-use review; legal judgment unresolved.",
+  "static_checks": [
+    "source-hashed rider identities and camera construction",
+    "600 original frame source join"
+  ],
+  "termination_rules": [
+    "600 original frames at 20 Hz",
+    "reject source gaps and restore owned world"
+  ],
+  "mechanisms": [
+    "Native bicycle and rider actors",
+    "roadway and exclusive-use review",
+    "source-joined saved geometry and independent review"
+  ]
+}

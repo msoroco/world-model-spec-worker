@@ -24,15 +24,26 @@
   ],
   "requirement_dispositions": [
     {
-      "requirement": "NRS-484B-493",
+      "requirement": "text-0-activation",
       "source": "NRS 484B.493",
-      "branch": "park_left_side",
+      "source_text": "When official traffic-control devices are erected giving notice thereof,",
       "status": "selected_required",
       "case_ids": [
         "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
         "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Two parked-side Native primary drafts and source-bound diagnostic pass CPU offline/fixture checks; standing alternative, source authority, all selected delivery chains and independent audits remain incomplete."
+      "evidence_or_gap": "Separate official source and legal one-way designation are required; authored OpenDRIVE signal alone cannot supply them."
+    },
+    {
+      "requirement": "text-0-side",
+      "source": "NRS 484B.493",
+      "source_text": "a person shall not stand or park a vehicle upon the left-hand side of a one-way street.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
+        "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Exact opposite parked-side requests selected; source-observed stationary footprint and legal purpose need original review."
     }
   ],
   "neutral_baseline": {
@@ -43,7 +54,7 @@
     {
       "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-493",
-      "kind": "planned_only",
+      "kind": "selected_delivery_cpu_preparation",
       "source_branch": "park_left_side",
       "physical_target": "park on right side of signed one-way street",
       "comparison_variable": "parked side of posted one-way street",
@@ -57,12 +68,13 @@
         "offline_log": "controlled-1-offline.log",
         "offline_log_sha256": "821e113393c861bdea172700dc56365e7b368ef92ecbd2473488fd0871530853",
         "status": "offline_draft_passed_not_delivery_ready"
-      }
+      },
+      "planning_status": "selected_cpu_preparation_in_progress"
     },
     {
       "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-493",
-      "kind": "planned_only",
+      "kind": "selected_delivery_cpu_preparation",
       "source_branch": "park_left_side",
       "physical_target": "park on left side of signed one-way street",
       "comparison_variable": "parked side of posted one-way street",
@@ -76,7 +88,8 @@
         "offline_log": "controlled-2-offline.log",
         "offline_log_sha256": "821e113393c861bdea172700dc56365e7b368ef92ecbd2473488fd0871530853",
         "status": "offline_draft_passed_not_delivery_ready"
-      }
+      },
+      "planning_status": "selected_cpu_preparation_in_progress"
     }
   ],
   "comparisons": [
@@ -173,9 +186,9 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Two authored primary Native drafts pass current pinned-runtime offline construction checks; original CARLA motion, notice pixels, curb location and source designations remain unverified.",
-    "Official notice authority/conformity, one-way legal designation, and legal standing/parking purpose need separate source-bound proof.",
-    "Standing alternative, no-notice and two-way controls, fallbacks, compatibility/process-saved, Core/semantic and independent audit work remain."
+    "Official device authority, erection, notice content, one-way legal designation and street boundary need separate original sources; no supplied accepted recording proves them.",
+    "Standing versus parking purpose and activity need original review; stationary speed is not a legal definition.",
+    "Original Native curb motion, sign pixels, camera framing and legal applicability remain unverified."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -206,5 +219,134 @@
     "proof_sha256": "70613c7128249ea3cb3cb23419fb59b5c64a82ff19fbafea18383db5bce4dd7d",
     "test_scope": "four 600-frame/20-Hz synthetic source-shaped positives, ten source/frame negatives, original FrameMap join and OpenDRIVE hash checks",
     "legal_result": null
-  }
+  },
+  "source_topic_inventory": [
+    {
+      "topic_id": "text-0",
+      "kind": "statutory_text",
+      "text": "When official traffic-control devices are erected giving notice thereof, a person shall not stand or park a vehicle upon the left-hand side of a one-way street.",
+      "source": "NRS 484B.493"
+    },
+    {
+      "topic_id": "reviewed-scope-0",
+      "kind": "reviewed_scope",
+      "text": "park_left_side",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "st.one_way_roadway"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "st.lane_direction"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Saved original footprint/frame join and separately reviewed source records; physical pixels and legal purpose pending.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "road-context.json",
+        "authority-review/device-authority.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego vehicle and posted left-side notice",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego vehicle and posted left-side notice",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego vehicle and posted left-side notice",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego vehicle and posted left-side notice",
+        "interval": "all 600 source frames"
+      }
+    ]
+  },
+  "controlled_activation_negatives": [
+    {
+      "kind": "absent_notice",
+      "source_role": "device-content",
+      "expected": "Required activation unverified: device-content",
+      "proof": "finalizer-source-proof.log"
+    },
+    {
+      "kind": "two_way",
+      "source_role": "one-way-designation",
+      "expected": "Required activation unverified: one-way-designation",
+      "proof": "finalizer-source-proof.log"
+    }
+  ]
 }

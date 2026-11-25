@@ -10,7 +10,9 @@ def enc(x):
 
 
 def sample(stop=True, pedestrian_clear=True):
-    site = {"assignment_id": ASSIGNMENT, "source_kind": "synthetic_native_sample",
+    site = {"assignment_id": ASSIGNMENT, "case_id": ASSIGNMENT+'__probe_01',
+            "pedestrian_conflict_source_id": "synthetic-pedestrian-conflict-survey",
+            "source_kind": "synthetic_native_sample",
             "district": "residence", "district_source_id": "synthetic-district-survey",
             "origin_kind": "driveway", "origin_source_id": "synthetic-driveway-survey",
             "sidewalk_continuation_across_origin": True,

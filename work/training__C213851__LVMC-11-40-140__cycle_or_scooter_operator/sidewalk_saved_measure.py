@@ -21,6 +21,8 @@ def measure(frame_bytes, site_bytes):
     require(packet["assignment_id"] == ASSIGNMENT and site["assignment_id"] == ASSIGNMENT, "assignment mismatch")
     kind = packet["source_kind"]
     require(kind in {"synthetic_native_sample", "native_saved_sample"} and site["source_kind"] == kind, "source kind mismatch")
+    require(site.get('case_id') in (ASSIGNMENT+'__probe_01', ASSIGNMENT+'__probe_02'), 'exact case source missing')
+    require(site.get('pedestrian_conflict_source_id'), 'pedestrian conflict source missing')
     require(site["district"] in {"business", "residence"} and site["district_source_id"], "district source missing")
     require(site["origin_kind"] in {"driveway", "alley", "building"} and site["origin_source_id"], "origin source missing")
     require(site["sidewalk_continuation_across_origin"] is True and site["sidewalk_continuation_source_id"], "sidewalk continuation source missing")

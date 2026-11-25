@@ -9,11 +9,12 @@ import math
 import os
 from pathlib import Path
 import queue
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
 CASE = "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_01"
-VIEWS = ("overview", "rider_front", "sidewalk_side", "pedestrian_side")
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def require(ok, message):
@@ -22,7 +23,7 @@ def require(ok, message):
 
 
 def check(config):
-    require(config["case_id"] == CASE, "exact case changed")
+    require(config["case_id"] in (CASE, CASE.replace('probe_01', 'probe_02')), "exact case changed")
     require(config["law_id"] == "LVMC-11-40-140" and config["cell_id"] == "C213851"
             and config["actor"] == "cycle_or_scooter_operator", "assignment changed")
     require(config["frozen_cell"] == {"layout": "residence_district", "maneuver": "exit_road",
@@ -46,14 +47,19 @@ def read_survey(path):
     require(survey["source_kind"] == "original_native_sidewalk_survey", "original sidewalk survey required")
     require(survey["map_name"] and survey["district_source_id"] and survey["driveway_source_id"]
             and survey["sidewalk_continuation_source_id"] and survey["sidewalk_boundary_source_id"]
-            and survey["rider_blueprint_source_id"], "district/sidewalk/rider survey missing")
+            and survey["rider_blueprint_source_id"] and survey.get('pedestrian_conflict_source_id'),
+            "district/sidewalk/rider/pedestrian survey missing")
     require(survey["district"] == "residence" and survey["origin_kind"] == "driveway"
             and survey["sidewalk_continuation_across_driveway"] is True, "selected branch survey differs")
-    require(len(survey["rider_spawn_xyz_yaw_deg"]) == 4 and len(survey["pedestrian_spawn_xyz_yaw_deg"]) == 4
+    require(len(survey[config.get('spawn_key', 'rider_spawn_xyz_yaw_deg')]) == 4 and len(survey["pedestrian_spawn_xyz_yaw_deg"]) == 4
             and len(survey["pre_sidewalk_stop_xyz_m"]) == 3 and len(survey["after_sidewalk_xyz_m"]) == 3,
             "surveyed spawns or route missing")
     require(len(survey["pedestrian_direction_xyz"]) == 3 and survey["pedestrian_speed_mps"] >= 0,
             "pedestrian controller survey missing")
+    require(len(survey['sidewalk_boundary_point_xyz_m']) == 3 and
+            len(survey['sidewalk_approach_direction_xyz']) == 3 and
+            len(survey['pedestrian_conflict_polygon_xy_m']) >= 3,
+            'surveyed sidewalk boundary and conflict geometry missing')
     return survey
 
 
@@ -64,8 +70,8 @@ def execute(config, output_dir, survey_path, host, port):
     require(".runtime-work" in os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""),
             "set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     repo = ROOT.parents[2]
-    sys.path.insert(0, str(repo / "runtime" / "pipeline" / "scenario_pipeline"))
-    sys.path.insert(1, str(repo / "runtime" / "pipeline" / "python"))
+    sys.path.insert(0, str(repo / "runtime" / "scenario_pipeline"))
+    sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -80,7 +86,7 @@ def execute(config, output_dir, survey_path, host, port):
     client.set_timeout(15)
     world = client.get_world()
     original = snapshot(client)
-    actors, sensors = [], []
+    actors, sensors, encoders = [], [], {}
     images = queue.Queue()
     try:
         require(world.get_map().name == survey["map_name"], "survey map differs")
@@ -90,7 +96,7 @@ def execute(config, output_dir, survey_path, host, port):
         world.apply_settings(settings)
         library = world.get_blueprint_library()
         require(library.find(config["rider_blueprint"]) is not None, "rider blueprint unavailable")
-        x, y, z, yaw = survey["rider_spawn_xyz_yaw_deg"]
+        x, y, z, yaw = survey[config.get('spawn_key', 'rider_spawn_xyz_yaw_deg')]
         rider = world.try_spawn_actor(library.find(config["rider_blueprint"]),
                                       carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(yaw=yaw)))
         require(rider is not None, "rider spawn occupied")
@@ -111,7 +117,11 @@ def execute(config, output_dir, survey_path, host, port):
                                        carla.Rotation(pitch=pitch, yaw=cyaw, roll=roll)), attach_to=rider)
             actors.append(sensor)
             sensors.append(sensor)
-            (output / camera["name"]).mkdir()
+            encoders[camera['name']] = subprocess.Popen(
+                ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
+                 '-video_size', f"{camera['width']}x{camera['height']}", '-framerate', '20',
+                 '-i', '-', '-frames:v', '600', '-c:v', 'ffv1',
+                 str(output / (camera['name'] + '.mkv'))], stdin=subprocess.PIPE)
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
         with PipelineCapture(client, rider, output, CASE, required_observations=config["required_atoms"]) as capture, \
                 FrameMap(output / "video_frames.jsonl") as frame_map, \
@@ -120,13 +130,15 @@ def execute(config, output_dir, survey_path, host, port):
                 pose, velocity = rider.get_transform(), rider.get_velocity()
                 ped_pose = pedestrian.get_transform()
                 speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
-                target = survey["pre_sidewalk_stop_xyz_m"] if frame < 260 else survey["after_sidewalk_xyz_m"]
+                target = (survey["pre_sidewalk_stop_xyz_m"] if frame < 260 else survey["after_sidewalk_xyz_m"])
+                if config.get('control_mode') == 'roll_through':
+                    target = survey['after_sidewalk_xyz_m']
                 dx, dy = target[0] - pose.location.x, target[1] - pose.location.y
                 distance = math.hypot(dx, dy)
                 heading = math.atan2(dy, dx) - math.radians(pose.rotation.yaw)
                 heading = math.atan2(math.sin(heading), math.cos(heading))
                 steer = max(-0.6, min(0.6, heading))
-                if 180 <= frame < 260:
+                if config.get('control_mode', 'stop_and_yield') == 'stop_and_yield' and 180 <= frame < 260:
                     throttle, brake = 0.0, 1.0
                 else:
                     throttle, brake = (0.3, 0.0) if speed < 3 else (0.0, 0.15)
@@ -138,7 +150,7 @@ def execute(config, output_dir, survey_path, host, port):
                     name, image = images.get(timeout=15)
                     if image.frame != native_frame or name in seen:
                         continue
-                    image.save_to_disk(str(output / name / f"{frame:06d}.png"))
+                    encoders[name].stdin.write(image.raw_data)
                     seen.add(name)
                 capture.capture(native_frame, frame / 20, extra={"video_frame": frame,
                                                                "pedestrian_actor_id": pedestrian.id})
@@ -151,12 +163,37 @@ def execute(config, output_dir, survey_path, host, port):
                                         "rider_speed_mps": speed,
                                         "pedestrian_x_m": ped_pose.location.x,
                                         "pedestrian_y_m": ped_pose.location.y,
-                                        "requested_stop_phase": 180 <= frame < 260}) + "\n")
+                                        "requested_stop_phase": config.get('control_mode', 'stop_and_yield') == 'stop_and_yield' and 180 <= frame < 260}) + "\n")
+        for proc in encoders.values():
+            proc.stdin.close()
+            require(proc.wait(timeout=120) == 0, 'source camera encoding failed')
+        (output / 'sidewalk_context.template.json').write_text(json.dumps({
+            'assignment_id': config['assignment_id'],
+            'case_id': config['case_id'],
+            'source_kind': 'original_source_review',
+            'district': survey['district'],
+            'district_source_id': survey['district_source_id'],
+            'origin_kind': survey['origin_kind'],
+            'origin_source_id': survey['driveway_source_id'],
+            'sidewalk_continuation_across_origin': survey['sidewalk_continuation_across_driveway'],
+            'sidewalk_continuation_source_id': survey['sidewalk_continuation_source_id'],
+            'sidewalk_boundary_source_id': survey['sidewalk_boundary_source_id'],
+            'rider_class': config['rider_class'],
+            'rider_class_source_id': survey['rider_blueprint_source_id'],
+            'pedestrian_conflict_source_id': survey['pedestrian_conflict_source_id'],
+            'sidewalk_boundary_point_xyz_m': survey['sidewalk_boundary_point_xyz_m'],
+            'sidewalk_approach_direction_xyz': survey['sidewalk_approach_direction_xyz'],
+            'pedestrian_conflict_polygon_xy_m': survey['pedestrian_conflict_polygon_xy_m'],
+            'review_required': True}, indent=2) + '\n')
     finally:
         for sensor in sensors:
             sensor.stop()
         for actor in reversed(actors):
             actor.destroy()
+        for proc in encoders.values():
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
         restore(client, original)
 
 
