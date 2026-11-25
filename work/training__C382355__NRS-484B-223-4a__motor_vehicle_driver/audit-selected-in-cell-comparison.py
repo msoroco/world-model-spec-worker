@@ -16,8 +16,9 @@ def audit():
     roots=[HERE/'selected-source'/name for name in ('controlled_1','controlled_2')]
     traces=[rows(root/'trace.jsonl') for root in roots]
     samples=[rows(root/'native_samples.jsonl') for root in roots]
+    evidence=[rows(root/'capture/evidence.jsonl') for root in roots]
     maps=[rows(root/'video_frames.jsonl') for root in roots]
-    if any(len(x)!=480 for group in (traces,samples,maps) for x in group):
+    if any(len(x)!=480 for group in (traces,samples,evidence,maps) for x in group):
         raise ValueError('Selected source frame count differs')
     if (sha(roots[0]/'road.xodr')!=sha(roots[1]/'road.xodr') or
             sha(roots[0]/'video_frames.jsonl')!=sha(roots[1]/'video_frames.jsonl')):
@@ -27,6 +28,9 @@ def audit():
             if traces[run][index]['frame']!=maps[run][index]['native_frame'] or \
                     samples[run][index]['native_frame']!=maps[run][index]['native_frame']:
                 raise ValueError('Original source join differs')
+            projection=evidence[run][index]['world']['road_projection']
+            if (projection['road_id'],projection['lane_id'])!=(samples[run][index]['native_road_id'],samples[run][index]['native_lane_id']):
+                raise ValueError('Evidence road projection differs from Native samples')
     first=[row for row in samples[0] if row['native_road_id']==1 and row['native_center_xy_m'][0]<-10]
     second=[row for row in samples[1] if row['native_road_id']==1 and row['native_center_xy_m'][0]<-10]
     if not first or not second or {row['native_lane_id'] for row in first}!={-2} or \

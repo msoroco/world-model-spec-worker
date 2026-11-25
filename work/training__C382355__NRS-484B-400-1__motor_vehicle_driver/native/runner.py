@@ -91,6 +91,8 @@ def map_survey(carla, mapping, native_hash, right_only=True):
     requests={"right_turn_lane":(-30,5.25,1,-2,[1,0]),
               "inner_approach_lane":(-30,1.75,1,-1,[1,0]),
               "destination_lane":(-5.25,30,4,-2,[0,1])}
+    if not right_only:
+        requests['through_connector']=(0,5.25,14,-2,[1,0])
     observed={};waypoints={}
     for name,(x,y,road_id,lane_id,expected) in requests.items():
         wp=mapping.get_waypoint(carla.Location(x=x,y=y,z=.2),project_to_road=False,lane_type=carla.LaneType.Driving)
@@ -112,6 +114,7 @@ def map_survey(carla, mapping, native_hash, right_only=True):
             "rightmost_lane_id":-2,"designated_turn_lane_id":-2 if right_only else None,
             "turn_connector_lane_id":-2,
             "approach_road_id":1,"turn_connector_road_id":13,
+            "through_connector_road_id":None if right_only else 14,
             "right_turn_lane_id":-2,"right_turn_lane_native_y_bounds_m":[3.5,7.0],
             "right_turn_lane_design_native_verified":False,
             "intersection_native_xy_bounds_m":[-7,-7,7,7],

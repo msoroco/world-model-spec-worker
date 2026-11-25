@@ -19,6 +19,11 @@ def open_drive(right_only=True):
     roads=((1,-100,0,0,93,-1),(2,7,0,0,93,-1),
            (3,0,100,-math.pi/2,93,-1),(4,0,-7,-math.pi/2,93,-1),
            (13,-7,0,0,7*math.pi/2,100))
+    if not right_only:
+        # The alternate rightmost lane also continues straight. The split at
+        # the junction is what makes it an extreme-right alternative rather
+        # than a second unmarked right-only lane.
+        roads += ((14,-7,0,0,14,100),)
     for ident,x,y,heading,length,junction in roads:
         road=ET.SubElement(root,'road',id=str(ident),name=f'C382355_{ident}',
                            length=str(length),junction=str(junction))
@@ -28,6 +33,9 @@ def open_drive(right_only=True):
         if ident==13:
             ET.SubElement(link,'predecessor',elementType='road',elementId='1',contactPoint='end')
             ET.SubElement(link,'successor',elementType='road',elementId='4',contactPoint='start')
+        if ident==14:
+            ET.SubElement(link,'predecessor',elementType='road',elementId='1',contactPoint='end')
+            ET.SubElement(link,'successor',elementType='road',elementId='2',contactPoint='start')
         geometry=ET.SubElement(ET.SubElement(road,'planView'),'geometry',s='0',x=str(x),y=str(y),
                                hdg=str(heading),length=str(length))
         ET.SubElement(geometry,'arc',curvature=str(-1/7)) if ident==13 else ET.SubElement(geometry,'line')
@@ -39,7 +47,7 @@ def open_drive(right_only=True):
             for lane_id in ids:
                 lane=ET.SubElement(group,'lane',id=str(lane_id),type='none' if lane_id==0 else 'driving',level='false')
                 if lane_id:
-                    if ident==13:
+                    if ident in (13,14):
                         lane_link=ET.SubElement(lane,'link')
                         ET.SubElement(lane_link,'predecessor',id=str(lane_id))
                         ET.SubElement(lane_link,'successor',id=str(lane_id))
@@ -60,6 +68,9 @@ def open_drive(right_only=True):
     junction=ET.SubElement(root,'junction',id='100',name='right_turn_lane_connector')
     connection=ET.SubElement(junction,'connection',id='0',incomingRoad='1',connectingRoad='13',contactPoint='start')
     ET.SubElement(connection,'laneLink',**{'from':'-2','to':'-2'})
+    if not right_only:
+        through=ET.SubElement(junction,'connection',id='1',incomingRoad='1',connectingRoad='14',contactPoint='start')
+        ET.SubElement(through,'laneLink',**{'from':'-2','to':'-2'})
     return ET.tostring(root,encoding='unicode')
 
 
@@ -91,7 +102,10 @@ def check():
     assert arrow is not None and arrow.attrib['name']=='right_turn_arrow' and arrow.attrib['t']=='-5.25'
     alternate=ET.fromstring(open_drive(right_only=False))
     assert alternate.find("road[@id='1']/objects/object") is None
-    assert alternate.find("junction/connection/laneLink").attrib=={'from':'-2','to':'-2'}
+    assert {int(r.attrib['id']) for r in alternate.findall('road')}=={1,2,3,4,13,14}
+    assert {c.attrib['connectingRoad'] for c in alternate.findall('junction/connection')}=={'13','14'}
+    assert all(c.find('laneLink').attrib=={'from':'-2','to':'-2'} for c in alternate.findall('junction/connection'))
+    assert alternate.find("road[@id='14']/link/successor").attrib['elementId']=='2'
     links=root.findall('junction/connection/laneLink')
     assert len(links)==1 and links[0].attrib=={'from':'-2','to':'-2'}
     surface=unary_union((box(-100,-7,100,7),box(-7,-100,7,100)))

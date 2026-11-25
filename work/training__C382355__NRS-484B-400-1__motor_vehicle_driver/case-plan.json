@@ -16,7 +16,7 @@
     "text": "If the driver of a vehicle intends to turn at an intersection and: The turn is a right turn, both the approach for the right turn and the right turn must be made from the right turn lane if the highway has a right turn lane as set forth in subsection 4 of NRS 484B.223 [NRS-484B-223-4a, NRS-484B-223-4b], or must be made from the extreme right lane.",
     "sha256": "d79f4c2261b770a65cbb0d1aa4c0000869d7f0684fdc4f154ae5539cb2516aa8"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "selected_cpu_preparation",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
     "Referenced right-turn-lane branch."
@@ -233,37 +233,37 @@
     {
       "term": "drv.turning",
       "purpose": "the right turn at the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "st.intersection",
       "purpose": "the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "st.turn_lane",
       "purpose": "a right turn lane, side=right, where the highway has one",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "drv.extreme_lane",
       "purpose": "otherwise the extreme right lane, side=right",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "rel.occupies",
       "purpose": "the lane occupied on the approach and through the turn",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "drv.approaching",
       "purpose": "the approach phase",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     },
     {
       "term": "st.lane_adjacency",
       "purpose": "the lane ordinal in the subject's direction",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_sources"
     }
   ],
   "observations": [
@@ -481,5 +481,97 @@
     "offline_audit_sha256": "9d9a0e2ad8de8bdd6de6e1747431c05aa5111cf039216c089bec6d8d5c254bb7",
     "selected_delivery_cases": 0,
     "native_executed": false
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original Native heading and turn-connector/exit rows",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "native_samples.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original Native map survey and body trajectory across intersection bounds",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "st.turn_lane": {
+      "evidence": "Original Native map readback of qualifying right-only lane; independent pixel/design review remains required",
+      "channels": [
+        "st.turn_lane"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "drv.extreme_lane": {
+      "evidence": "Original rightmost lane ID and through option in alternate Native map; independent design review remains required",
+      "channels": [
+        "drv.extreme_lane"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original same-frame full-body vertices and road/lane identity",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "body_history.jsonl"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Original approach phase pose and frame/time rows",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": [
+        "native_samples.jsonl"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original lane ordinal and adjacent lane survey",
+      "channels": [
+        "st.lane_adjacency"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and both lane alternatives",
+        "interval": "full 24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "rightmost lane and qualifying right-only or through option",
+        "interval": "approach through intersection"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "full body through right turn and exit",
+        "interval": "junction through exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-facing road and lane cues",
+        "interval": "full 24 s"
+      }
+    ]
   }
 }

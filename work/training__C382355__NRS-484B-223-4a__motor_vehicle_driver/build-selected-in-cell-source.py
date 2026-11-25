@@ -31,6 +31,9 @@ def main():
     if target.exists():
         shutil.rmtree(target)
     shutil.copytree(source,target)
+    inherited_channels=target/'channels'
+    if inherited_channels.exists():
+        shutil.rmtree(inherited_channels)
     trace=rows(target/'trace.jsonl')
     evidence=rows(target/'capture/evidence.jsonl')
     samples=rows(target/'native_samples.jsonl')

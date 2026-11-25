@@ -34,6 +34,7 @@ def make_base(destination,suffix,approach_y,frame_count=480):
     (destination/'config.json').write_text(json.dumps(config))
     geometry={'native_map_sha256':'a'*64,'approach_road_id':1,
               'turn_connector_road_id':13,'right_turn_lane_id':-2,
+              'through_connector_road_id':None if suffix.startswith('witness_') else 14,
               'design_source':'synthetic_native_map_survey',
               'single_right_only_turn_lane':suffix.startswith('witness_'),
               'rightmost_lane_id':-2,'turn_connector_lane_id':-2,

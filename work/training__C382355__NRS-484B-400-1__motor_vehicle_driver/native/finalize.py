@@ -118,6 +118,28 @@ def measure_right_turn_lane(attempt):
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
 
 
+def independent_lane_review(attempt, case_id, branch, count):
+    review_path=attempt/'right-turn-lane-review.json'
+    if not review_path.is_file():return False
+    review=json.loads(review_path.read_text())
+    if (review.get('format')!='c382355-400-1-original-lane-review-v1' or
+            review.get('source_kind')!='original_native_review' or
+            review.get('case_id')!=case_id or not review.get('reviewer_id') or
+            review.get('single_right_only_turn_lane_verified') is not
+                (branch=='qualifying_right_only_lane') or
+            review.get('approach_and_turn_full_body_verified') is not True):
+        raise ValueError('Independent original lane review incomplete')
+    for field,name in (('video_frames_sha256','video_frames.jsonl'),
+                       ('road_geometry_sha256','road_geometry.json'),
+                       ('native_samples_sha256','native_samples.jsonl')):
+        if review.get(field)!=sha(attempt/name):
+            raise ValueError('Independent original lane review source changed: '+field)
+    pixels=review.get('reviewed_frames',[])
+    if not pixels or any(type(i) is not int or i<0 or i>=count for i in pixels):
+        raise ValueError('Independent original lane review lacks decisive frames')
+    return True
+
+
 def derive_selected_channels(attempt,count,description):
     """Materialize declared channels from retained same-frame Native-shaped sources."""
     mapping=rows(attempt/'video_frames.jsonl')
@@ -185,6 +207,8 @@ def finalize(attempt,output):
         if not (attempt/'context.json').is_file():raise ValueError('Missing required source: context.json')
         recording_evidence.append({'name':context['name'],'unit':context['unit'],
                                    'reference':'context.json'})
+    lane_reviewed=native and independent_lane_review(
+        attempt,config['case_id'],actual['statutory_branch'],count)
     result={'case_id':config['case_id'],'measured_values':actual,
       'target_checks':[{'target':'sampled right-turn-lane approach engineering target',
         'requested':requested,'measured':observed,
@@ -192,10 +216,10 @@ def finalize(attempt,output):
         'tolerance':'all sampled approach bodies and IDs','matched':matched,
         'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':native and actual['right_turn_lane_design_native_verified'],
+      'setup_confirmed':lane_reviewed,
       'behavior_attempted':native,'maneuver_completed':native and actual['right_turn_observed_at_complete_exit'],
       'termination_reason':'full original duration retained',
-      'physical_failure_flags':['qualifying_lane_design_and_pixels_unverified']+
+      'physical_failure_flags':([] if lane_reviewed else ['lane_design_and_pixels_unverified'])+
            ([] if matched else ['approach_lane_target_not_measured']),
       'trace_reference':'trace.jsonl','video_references':videos,
       'video_frame_map_reference':'video_frames.jsonl',
