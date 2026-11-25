@@ -151,9 +151,10 @@ def finalize_native_outputs(attempt: Path, report: dict) -> dict:
         if any(type(value) not in (int, float) or not isfinite(value) for value in (*xyz, heading, time_s)):
             raise ValueError('original position, height, heading or time source missing')
         trace.append({'frame': frame, 'time_s': time_s,
-                      'position_m': list(ego['xy']),
+                      'position_m': xyz,
                       'position': dict(zip(('x', 'y', 'z'), xyz)),
-                      'heading_deg': heading, 'speed_mps': ego['speed_mps']})
+                      'heading_deg': heading, 'speed_mps': ego['speed_mps'],
+                      'speed_mph': ego['speed_mps'] / .44704})
         mapping.append({'video_frame': index, 'carla_frame': frame, 'time_s': time_s})
         values = {
             'access_context': {'public_access_basis': site['public_access_basis'],
@@ -177,7 +178,10 @@ def finalize_native_outputs(attempt: Path, report: dict) -> dict:
             raise ValueError('sealed original output missing: ' + name)
         if hashlib.sha256(path.read_bytes()).hexdigest() != receipt.get(key):
             raise ValueError('sealed original output hash mismatch: ' + name)
-        if [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()] != rows:
+        actual_rows = [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()]
+        if len(actual_rows) != len(rows) or any(
+                any(actual.get(key) != value for key, value in expected.items())
+                for actual, expected in zip(actual_rows, rows)):
             raise ValueError('sealed original output content mismatch: ' + name)
     for name, rows in channels.items():
         _write_new(attempt / (name + '.jsonl'), rows)

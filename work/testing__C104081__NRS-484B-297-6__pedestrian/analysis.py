@@ -43,6 +43,8 @@ def analyze(attempt: Path, output: Path, *, diagnostic: bool = False) -> dict:
             raise ValueError("Missing required source: " + name)
     result = build_result(attempt, case_id, diagnostic=diagnostic, decode_media=True)
     measured = result["measured_values"]
+    if (attempt / "trace.jsonl").is_file():
+        result["trace_reference"] = "trace.jsonl"
     if isinstance(result["recording_description"], dict):
         channels = attempt / "channels"
         if channels.exists():

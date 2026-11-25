@@ -91,3 +91,11 @@ SHA-256 source and proof index:
 - `cpu-cycle-window-offline-fails_to_yield.log`: `8f457ef914694165adb4c34e3268bf21cb8566cf81499625eef6dbe1a1753bcb`
 - `cpu-cycle-window-static.log`: `4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035`
 - `cpu-cycle-window-strict.log`: `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+
+## 2026-11-24 reciprocal site source and original readback checkpoint
+
+`signal_trial.construct_plan` now parses the four hashed site source packets. The map must bind the exact cell, lanes and stop/entry stations. The official device and detector must name one another and the detector's zone must bind the bicycle approach lane. The bicycle blueprint packet must name the same blueprint class and an explicit rider model. Source hashes alone or a site-level `detector_controls_subject_signal` assertion do not establish these links; a rehashed detector naming another signal is rejected by a focused test. These CPU packets describe an executable source contract and are not a reviewed physical C111125 installation.
+
+`measure_attempt` now rejects nonfinite time or bicycle motion, negative speed, nonboolean detector/participant states and unsupported original signal states, in addition to its existing sealed stream joins and two-cycle occupancy window. The 25-test focused suite passes, including the rehashed-source and resealed-original negatives. The five exact diagnostic constructions were rebuilt with the changed implementation and each passed pinned `runtime.py offline`. Pinned preflight and the exact static gate pass. `result.json` binds the current commands and SHA-256 logs, including `cpu-source-binding-strict.log`, whose exit 1 reflects truthful `partial` status.
+
+Next: obtain a genuinely reviewed Native map, official device, detector link and bicycle-with-rider packet matching this contract; author the selected semantic proposals, measurement contracts, canonical manifest, source-shaped compatibility, saved-only and independent delivery receipts. The current five bundles remain diagnostic-only; their synthetic source packet tests do not establish the statutory detector failure or physical rider visibility. Actual two cycles, directed-participant yielding and original four-camera visibility remain GPU review checks after CPU package completion.

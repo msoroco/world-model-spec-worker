@@ -148,11 +148,13 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
             raise ValueError('case or site source mismatch')
         ego = packet['actors']['ego']
         elapsed = row['elapsed_seconds'] - histories[0]['elapsed_seconds']
-        if traces[offset] != {
+        expected_trace = {
                 'frame': frame, 'time_s': elapsed,
-                'position_m': list(ego['xy']),
+                'position_m': [*ego['xy'], ego.get('z')],
                 'position': {'x': ego['xy'][0], 'y': ego['xy'][1], 'z': ego.get('z')},
-                'heading_deg': ego.get('heading_deg'), 'speed_mps': ego['speed_mps']}:
+                'heading_deg': ego.get('heading_deg'), 'speed_mps': ego['speed_mps'],
+                'speed_mph': ego['speed_mps'] / .44704}
+        if any(traces[offset].get(key) != value for key, value in expected_trace.items()):
             raise ValueError('original trace source join mismatch')
         if frame_maps[offset] != {'video_frame': offset, 'carla_frame': frame, 'time_s': elapsed}:
             raise ValueError('original frame map source join mismatch')

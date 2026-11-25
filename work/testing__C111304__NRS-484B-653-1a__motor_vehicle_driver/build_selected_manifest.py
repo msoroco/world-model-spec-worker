@@ -37,11 +37,13 @@ def main() -> None:
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest '
                            'work/' + HERE.name + '/execution-manifest.draft.json --case '
                            + case_id + ' --output .runtime-work/c111304-offline-'
-                           + suffix + '-semantic-v5 --python ' + str(REPO / '.venv-cpu/bin/python'),
+                           + suffix + '-semantic-v7 --python ' + str(REPO / '.venv-cpu/bin/python'),
                 'construction_sha256': row['construction_sha256'],
                 'exit_code': 0, 'log': log, 'log_sha256': sha(source),
             },
             'measurement_contract': 'measurement-contract.json',
+            **({'fixture_recipe': 'work/' + HERE.name + '/fixture-recipe-' + suffix + '.json'}
+               if (HERE / ('fixture-recipe-' + suffix + '.json')).is_file() else {}),
             'measurement_procedure': {'entrypoint': 'analysis.py'},
             'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                'host_env_var': 'CARLA_HOST',

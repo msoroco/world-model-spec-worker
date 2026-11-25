@@ -97,6 +97,31 @@ def actors(case):
 
 
 class NativeAcquisitionTests(unittest.TestCase):
+    def test_pipeline_capture_reuses_original_trace_and_closes_before_cleanup(self):
+        case = encounter.CASES[0]
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            class Pipeline:
+                closed = False
+                def __init__(self):
+                    (root / 'trace.jsonl').write_text('', encoding='utf-8')
+                def capture(self, frame, elapsed):
+                    row = {'frame': frame, 'time_s': elapsed,
+                           'position_m': [float(frame - 99), 3.0, 0.0],
+                           'position': {'x': float(frame - 99), 'y': 3.0, 'z': 0.0},
+                           'heading_deg': 0.0, 'speed_mps': 2.0,
+                           'speed_mph': 2.0 / .44704,
+                           'velocity_mps': [2.0, 0.0, 0.0]}
+                    with (root / 'trace.jsonl').open('a', encoding='utf-8') as stream:
+                        stream.write(json.dumps(row) + '\n')
+                def close(self, confirmed=True):
+                    self.closed = True
+            pipeline = Pipeline()
+            receipt = native.capture(Adapter(), actors(case), case, site(), root,
+                                     pipeline=pipeline)
+            self.assertTrue(pipeline.closed)
+            self.assertEqual(saved_audit.audit_native_acquisition(root, receipt)['frame_count'], 900)
+
     def test_saved_approach_pair_reopens_opposed_original_motion(self):
         north, south = encounter.CASES[0], encounter.CASES[2]
         with TemporaryDirectory() as tmp:

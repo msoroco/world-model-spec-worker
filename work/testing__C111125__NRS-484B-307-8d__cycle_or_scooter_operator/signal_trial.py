@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -34,13 +35,41 @@ def construct_plan(site: dict, root: Path, case_suffix: str) -> dict:
     The site packet is produced from map and device inspection, not an authored
     legal assertion. Spawn is deferred to an owner-controlled CARLA adapter.
     """
+    source_packets = {}
     for key in ("map_ref", "device_ref", "detector_ref", "blueprint_ref"):
-        _source(site.get(key), root)
+        try:
+            source_packets[key] = json.loads(_source(site.get(key), root))
+        except json.JSONDecodeError as exc:
+            raise SourceError("site source JSON invalid: " + key) from exc
+        _require(isinstance(source_packets[key], dict), "site source object missing: " + key)
     _require(site.get("cell_id") == "C111125", "wrong cell")
     _require(site.get("maneuver") == "straight", "wrong maneuver")
     _require(site.get("device_kind") == "official_traffic_control_device", "unverified device")
     _require(site.get("ego_blueprint_class") == "bicycle", "ego is not sourced bicycle")
     _require(site.get("detector_controls_subject_signal") is True, "detector/device link not sourced")
+    map_source = source_packets["map_ref"]
+    device_source = source_packets["device_ref"]
+    detector_source = source_packets["detector_ref"]
+    blueprint_source = source_packets["blueprint_ref"]
+    _require(all(isinstance(site.get(key), str) and site[key] for key in
+                 ("device_id", "detector_id", "ego_blueprint_id", "rider_model_id")),
+             "original device, detector, bicycle or rider identity missing")
+    _require(all(map_source.get(key) == site.get(key) for key in
+                 ("cell_id", "approach_lane_id", "cross_lane_id", "stop_boundary_station_m", "entry_station_m")),
+             "site map geometry lacks original source binding")
+    _require(device_source.get("device_id") == site.get("device_id") and
+             device_source.get("device_kind") == site.get("device_kind") and
+             device_source.get("detector_id") == site.get("detector_id"),
+             "official device lacks original source binding")
+    _require(detector_source.get("detector_id") == site.get("detector_id") and
+             detector_source.get("controls_device_id") == site.get("device_id") and
+             detector_source.get("zone_lane_id") == site.get("approach_lane_id"),
+             "detector/device causal link lacks original source binding")
+    _require(blueprint_source.get("ego_blueprint_id") == site.get("ego_blueprint_id") and
+             blueprint_source.get("ego_blueprint_class") == site.get("ego_blueprint_class") and
+             blueprint_source.get("rider_model_id") == site.get("rider_model_id") and
+             isinstance(site.get("rider_model_id"), str) and site["rider_model_id"],
+             "bicycle and rider lack original source binding")
     _require(site.get("approach_lane_id") != site.get("cross_lane_id"), "cross approach not separated")
     _require(site.get("stop_boundary_station_m") is not None, "stop boundary missing")
     _require(site.get("entry_station_m") is not None, "entry boundary missing")
@@ -173,12 +202,26 @@ def measure_attempt(packet: dict, root: Path, plan: dict) -> dict:
                             "cross_signal": f.get("cross_signal")} and
                  detector == {"frame": f.get("frame"), "occupied": f.get("detector_occupied"),
                               "output": f.get("detector_output")}, "original source streams disagree")
+    _require(isinstance(frames[0]["frame"], int) and not isinstance(frames[0]["frame"], bool) and frames[0]["frame"] >= 0,
+             "invalid first frame")
     _require([f.get("frame") for f in frames] == list(range(frames[0]["frame"], frames[0]["frame"] + len(frames))), "frame discontinuity")
-    _require(all(f.get("timestamp_s") is not None for f in frames), "timestamps missing")
+    _require(all(isinstance(f.get("timestamp_s"), (int, float)) and
+                 not isinstance(f["timestamp_s"], bool) and math.isfinite(f["timestamp_s"])
+                 for f in frames), "finite timestamps missing")
     _require(all(0.049 <= frames[i + 1]["timestamp_s"] - frames[i]["timestamp_s"] <= 0.051 for i in range(len(frames) - 1)), "not 20 Hz")
     needed = ("subject_signal", "cross_signal", "detector_occupied", "detector_output", "ego_speed_mps", "ego_station_m", "directed_participant_conflict")
     _require(all(all(k in f for k in needed) for f in frames), "required original readback missing")
-    _require(all(f["subject_signal"] in ("red", "yellow", "green", "unknown") for f in frames), "invalid subject signal")
+    _require(all(f["subject_signal"] in ("red", "yellow", "green", "unknown") and
+                 f["cross_signal"] in ("red", "yellow", "green", "unknown") for f in frames),
+             "invalid original signal")
+    _require(all(type(f["detector_occupied"]) is bool and type(f["detector_output"]) is bool and
+                 type(f["directed_participant_conflict"]) is bool for f in frames),
+             "invalid original detector or participant state")
+    _require(all(isinstance(f["ego_speed_mps"], (int, float)) and
+                 not isinstance(f["ego_speed_mps"], bool) and math.isfinite(f["ego_speed_mps"]) and
+                 f["ego_speed_mps"] >= 0 and isinstance(f["ego_station_m"], (int, float)) and
+                 not isinstance(f["ego_station_m"], bool) and math.isfinite(f["ego_station_m"])
+                 for f in frames), "invalid original bicycle motion")
     entry = next((i for i, f in enumerate(frames) if f["ego_station_m"] >= plan["entry_station_m"]), None)
     _require(entry is not None, "no observed straight entry")
     _require(all(frames[i]["ego_station_m"] <= frames[i + 1]["ego_station_m"] for i in range(len(frames) - 1)), "route not straight/monotone")

@@ -157,6 +157,39 @@ class NearestViewTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "crosswalk"):
             construction.validate_site(value, "nearest_view_hold")
 
+    def test_production_site_sources_verify_original_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            value = site()
+            value["source_files"] = {}
+            for name in construction.SITE_SOURCES:
+                path = root / (name + ".json")
+                path.write_text(name + "\n", encoding="utf-8")
+                value[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                value["source_files"][name] = {"path": path.name, "origin": "original_native"}
+            self.assertEqual(construction.verify_site_sources(value, "nearest_view_hold", root)["case"],
+                             "nearest_view_hold")
+            (root / "raycast_hash.json").write_text("tampered\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "raycast_hash original source hash mismatch"):
+                construction.verify_site_sources(value, "nearest_view_hold", root)
+
+    def test_production_site_sources_reject_diagnostic_and_escape(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            value = site()
+            value["source_files"] = {name: {"path": name + ".json", "origin": "original_native"}
+                                     for name in construction.SITE_SOURCES}
+            for name in construction.SITE_SOURCES:
+                path = root / (name + ".json")
+                path.write_text(name + "\n", encoding="utf-8")
+                value[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            value["source_files"]["map_hash"]["origin"] = "synthetic"
+            with self.assertRaisesRegex(ValueError, "original Native provenance"):
+                construction.verify_site_sources(value, "nearest_view_hold", root)
+            value["source_files"]["map_hash"] = {"path": "../outside.json", "origin": "original_native"}
+            with self.assertRaisesRegex(ValueError, "outside site"):
+                construction.verify_site_sources(value, "nearest_view_hold", root)
+
     def test_controller_response_isolated(self):
         observed = {"ego_speed_mps": 3.0, "ego_front_station_m": 2.1,
                     "through_occupied": True}

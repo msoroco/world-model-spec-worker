@@ -64,6 +64,8 @@ def capture_saved(*, attempt_root: Path, authority_root: Path, site: dict,
         raise ValueError("Native completion failed; attempt cannot be sealed")
     if frame_count < 2:
         raise ValueError("capture needs at least two observed frames")
+    if not diagnostic_fixture and frame_count != 900:
+        raise ValueError("original delivery requires exactly 900 observed frames")
     root = Path(attempt_root).resolve()
     root.mkdir(parents=True, exist_ok=False)
     archives = {name: ZipFile(root / f"camera-{name}.zip", "w", compression=ZIP_STORED) for name in CAMERAS}

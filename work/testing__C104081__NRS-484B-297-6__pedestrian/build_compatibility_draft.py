@@ -109,9 +109,18 @@ def _case_spec(case_id, params, media_hashes, road_text):
                          "replay_frame": frame, "replay_simulation_time_s": when,
                          "original_observations": observed,
                          "world": {"weather": {}}, "ego": {"position_m": [x, y, 0],
-                                                              "speed_mps": 1.4}, "actor_id": 7})
+                                                              "speed_mps": 1.4,
+                                                              "heading_deg": 0 if params["direction"] == 1 else 180,
+                                                              "body_vertices_m": [[dx, dy, dz] for dx in (-.5, .5)
+                                                                                  for dy in (-.5, .5) for dz in (0, 1)],
+                                                              "speed_provenance": "synthetic_native_sample"},
+                         "actor_id": 7})
         trace.append({"frame": frame, "time_s": when,
+                      "position": {"x": x, "y": y, "z": 0.0},
                       "position_m": [x, y, 0], "speed_mps": 1.4,
+                      "speed_mph": 1.4 / .44704,
+                      "velocity_mps": [1.4 * params["direction"], 0.0, 0.0],
+                      "control": {},
                       "heading_deg": 0 if params["direction"] == 1 else 180})
         graph_path = f"graphs/base/{frame:08d}.adapter.json"
         graph_rows.append({"frame": frame, "simulation_time": when,

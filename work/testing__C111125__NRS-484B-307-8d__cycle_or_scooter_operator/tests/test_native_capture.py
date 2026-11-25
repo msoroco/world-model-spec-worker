@@ -35,12 +35,19 @@ class OriginalCaptureTests(unittest.TestCase):
         self.site = {"cell_id": "C111125", "maneuver": "straight",
                      "device_kind": "official_traffic_control_device",
                      "ego_blueprint_class": "bicycle", "ego_blueprint_id": "vehicle.bicycle.test",
+                     "rider_model_id": "walker.rider.test", "device_id": "signal.1", "detector_id": "loop.1",
                      "detector_controls_subject_signal": True, "approach_lane_id": 1,
                      "cross_lane_id": 2, "stop_boundary_station_m": 1.0,
                      "entry_station_m": 9.0}
-        for name in ("map", "device", "detector", "blueprint"):
+        packets = {
+            "map": {k: self.site[k] for k in ("cell_id", "approach_lane_id", "cross_lane_id", "stop_boundary_station_m", "entry_station_m")},
+            "device": {k: self.site[k] for k in ("device_id", "device_kind", "detector_id")},
+            "detector": {"detector_id": self.site["detector_id"], "controls_device_id": self.site["device_id"], "zone_lane_id": self.site["approach_lane_id"]},
+            "blueprint": {k: self.site[k] for k in ("ego_blueprint_id", "ego_blueprint_class", "rider_model_id")},
+        }
+        for name, data in packets.items():
             path = self.authority / (name + ".json")
-            path.write_text(json.dumps({"source": name}) + "\n")
+            path.write_text(json.dumps(data, sort_keys=True) + "\n")
             self.site[name + "_ref"] = {"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         self.policy = {"device_sha256": self.site["device_ref"]["sha256"],
                        "detector_sha256": self.site["detector_ref"]["sha256"]}
@@ -100,11 +107,15 @@ class OriginalCaptureTests(unittest.TestCase):
         receipt = json.loads(receipt_path.read_text())
         receipt["diagnostic_fixture"] = False
         receipt_path.write_text(json.dumps(receipt) + "\n")
-        result = saved.process_saved(attempt, self.authority, self.site, self.case_id)
+        with self.assertRaisesRegex(saved.SavedAttemptError, "exactly 900"):
+            saved.process_saved(attempt, self.authority, self.site, self.case_id)
+        receipt["diagnostic_fixture"] = True
+        receipt_path.write_text(json.dumps(receipt) + "\n")
+        result = saved.process_saved(attempt, self.authority, self.site, self.case_id, allow_diagnostic=True)
         self.assertEqual(result["original_media_audit"]["decoded_original_images"], 36)
         (attempt / "camera-driver_reference.zip").unlink()
         with self.assertRaisesRegex(saved.SavedAttemptError, "four-camera media rejected"):
-            saved.process_saved(attempt, self.authority, self.site, self.case_id)
+            saved.process_saved(attempt, self.authority, self.site, self.case_id, allow_diagnostic=True)
 
     def test_non_diagnostic_capture_rejects_wrong_profile(self):
         self.count = 9
@@ -114,7 +125,19 @@ class OriginalCaptureTests(unittest.TestCase):
                                   actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
                                   policy_receipt=self.policy, sample_tick=self.tick,
                                   native_exit_code=0,
-                                  frame_count=9, diagnostic_fixture=False)
+                                  frame_count=900, diagnostic_fixture=False)
+
+    def test_non_diagnostic_capture_rejects_short_duration_before_writing(self):
+        self.count = 9
+        attempt = self.root / "short-delivery"
+        with self.assertRaisesRegex(ValueError, "exactly 900"):
+            capture.capture_saved(attempt_root=attempt, authority_root=self.authority,
+                                  site=self.site, case_suffix="two_cycles_failed_detection",
+                                  actor_id=23, observed_blueprint_id="vehicle.bicycle.test",
+                                  policy_receipt=self.policy, sample_tick=self.tick,
+                                  native_exit_code=0, frame_count=9,
+                                  diagnostic_fixture=False)
+        self.assertFalse(attempt.exists())
 
     def test_reject_camera_hash_pixel_and_missing_source(self):
         attempt = self.make()

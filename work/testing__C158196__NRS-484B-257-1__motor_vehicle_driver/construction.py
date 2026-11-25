@@ -7,6 +7,8 @@ This module never creates a sign, crosswalk, or through highway by declaration.
 from __future__ import annotations
 
 import math
+import hashlib
+from pathlib import Path
 
 
 CASES = {
@@ -15,6 +17,8 @@ CASES = {
     "nearest_view_clear": "continue_after_clear_observation",
     "active_signal_exception": "observe_signal_governance",
 }
+
+SITE_SOURCES = ("map_hash", "device_hash", "raycast_hash", "camera_plan_hash")
 
 
 def validate_site(site: dict, case: str) -> dict:
@@ -45,13 +49,38 @@ def validate_site(site: dict, case: str) -> dict:
         raise ValueError("Native viewpoint and entry geometry missing")
     if view >= entry:
         raise ValueError("viewpoint must precede intersection entry")
-    for source in ("map_hash", "device_hash", "raycast_hash", "camera_plan_hash"):
+    for source in SITE_SOURCES:
         value = site.get(source)
         if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
             raise ValueError(f"{source} source missing")
     return {"case": case, "engineering_policy": CASES[case], "view_station_m": float(view),
             "entry_station_m": float(entry), "source_hashes": {k: site[k] for k in
-            ("map_hash", "device_hash", "raycast_hash", "camera_plan_hash")}}
+            SITE_SOURCES}}
+
+
+def verify_site_sources(site: dict, case: str, source_root: Path) -> dict:
+    """Check original site bytes before a production Native construction is selected."""
+    selected = validate_site(site, case)
+    root = source_root.resolve()
+    files = site.get("source_files")
+    if not isinstance(files, dict) or set(files) != set(SITE_SOURCES):
+        raise ValueError("four original Native site source files required")
+    seen: set[Path] = set()
+    for name in SITE_SOURCES:
+        entry = files[name]
+        if not isinstance(entry, dict) or entry.get("origin") != "original_native":
+            raise ValueError(f"{name} original Native provenance required")
+        rel = entry.get("path")
+        if not isinstance(rel, str) or not rel or Path(rel).is_absolute():
+            raise ValueError(f"{name} source path invalid")
+        path = (root / rel).resolve()
+        if not path.is_relative_to(root) or path in seen or not path.is_file():
+            raise ValueError(f"{name} source path missing, duplicate or outside site")
+        seen.add(path)
+        data = path.read_bytes()
+        if not data or hashlib.sha256(data).hexdigest() != site[name]:
+            raise ValueError(f"{name} original source hash mismatch")
+    return selected
 
 
 def controller(case: str, site: dict, observed: dict) -> dict:

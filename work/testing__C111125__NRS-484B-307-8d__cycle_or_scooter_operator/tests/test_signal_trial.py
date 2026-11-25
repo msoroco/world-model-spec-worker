@@ -18,17 +18,29 @@ class SignalTrialTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.refs = {}
-        for name in ("map", "device", "detector", "blueprint", "native_trace", "device_trace", "detector_trace", "geometry"):
+        for name in ("native_trace", "device_trace", "detector_trace", "geometry"):
             path = self.root / (name + ".json")
             path.write_text('{"source":"' + name + '"}\n')
             self.refs[name] = {"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         self.site = {"cell_id": "C111125", "maneuver": "straight",
                      "device_kind": "official_traffic_control_device", "ego_blueprint_class": "bicycle",
-                     "ego_blueprint_id": "vehicle.bicycle.test",
+                     "ego_blueprint_id": "vehicle.bicycle.test", "rider_model_id": "walker.rider.test",
+                     "device_id": "signal.1", "detector_id": "loop.1",
                      "detector_controls_subject_signal": True, "approach_lane_id": 1,
                      "cross_lane_id": 2, "stop_boundary_station_m": 1.0,
                      "entry_station_m": 9.0,
-                     **{k + "_ref": self.refs[k] for k in ("map", "device", "detector", "blueprint")}}
+                     }
+        packets = {
+            "map": {k: self.site[k] for k in ("cell_id", "approach_lane_id", "cross_lane_id", "stop_boundary_station_m", "entry_station_m")},
+            "device": {k: self.site[k] for k in ("device_id", "device_kind", "detector_id")},
+            "detector": {"detector_id": self.site["detector_id"], "controls_device_id": self.site["device_id"], "zone_lane_id": self.site["approach_lane_id"]},
+            "blueprint": {k: self.site[k] for k in ("ego_blueprint_id", "ego_blueprint_class", "rider_model_id")},
+        }
+        for name, data in packets.items():
+            path = self.root / (name + ".json")
+            path.write_text(json.dumps(data, sort_keys=True) + "\n")
+            self.refs[name] = {"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            self.site[name + "_ref"] = self.refs[name]
 
     def frames(self, cycles=2, stop=True, detector_failure=True, conflict=False):
         # Each element is an original 20 Hz readback. Repetition keeps the
@@ -71,6 +83,15 @@ class SignalTrialTests(unittest.TestCase):
         self.site["detector_controls_subject_signal"] = False
         with self.assertRaisesRegex(mod.SourceError, "detector/device link"):
             mod.construct_plan(self.site, self.root, "one_cycle")
+
+    def test_rejects_rehashed_but_unbound_site_packets(self):
+        detector = self.root / "detector.json"
+        content = json.loads(detector.read_text())
+        content["controls_device_id"] = "another.signal"
+        detector.write_text(json.dumps(content, sort_keys=True) + "\n")
+        self.site["detector_ref"]["sha256"] = hashlib.sha256(detector.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(mod.SourceError, "causal link lacks original source binding"):
+            mod.construct_plan(self.site, self.root, "two_cycles_failed_detection")
 
     def test_measure_original_cycles_and_reject_missing_readbacks(self):
         plan = mod.construct_plan(self.site, self.root, "two_cycles_failed_detection")
@@ -120,6 +141,27 @@ class SignalTrialTests(unittest.TestCase):
         self.assertFalse(measured["detector_occupied_through_completed_cycles"])
         self.assertFalse(measured["detector_failure_observed"])
         self.assertEqual(measured["completed_cycle_window_frames"], [1, 6])
+
+    def test_rejects_resealed_invalid_original_readbacks(self):
+        plan = mod.construct_plan(self.site, self.root, "two_cycles_failed_detection")
+        bad_values = (
+            ("timestamp_s", float("nan"), "joined frames differ"),
+            ("timestamp_s", float("inf"), "finite timestamps"),
+            ("ego_speed_mps", -0.1, "invalid original bicycle motion"),
+            ("ego_speed_mps", float("nan"), "joined frames differ"),
+            ("ego_station_m", float("inf"), "invalid original bicycle motion"),
+            ("detector_occupied", 1, "invalid original detector"),
+            ("detector_output", None, "invalid original detector"),
+            ("directed_participant_conflict", "false", "invalid original detector"),
+            ("cross_signal", "flashing_red", "invalid original signal"),
+        )
+        for field, value, message in bad_values:
+            with self.subTest(field=field, value=value):
+                frames = self.frames()
+                frames[2][field] = value
+                packet = self.packet(plan["case_suffix"], frames)
+                with self.assertRaisesRegex(mod.SourceError, message):
+                    mod.measure_attempt(packet, self.root, plan)
 
     def test_native_spawn_readback_policy_and_cleanup(self):
         class Actor:

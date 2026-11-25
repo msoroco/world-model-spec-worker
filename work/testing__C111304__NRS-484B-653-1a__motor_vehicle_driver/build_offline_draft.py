@@ -79,7 +79,8 @@ def main():
     client.set_timeout(20.0)
     print(json.dumps(run(client.get_world(), carla,
                          case_id.removeprefix(config["assignment_id"] + "__"),
-                         *(Path(value) for value in sources), Path(args.output_dir)),
+                         *(Path(value) for value in sources), Path(args.output_dir),
+                         client=client),
                      sort_keys=True))
 
 

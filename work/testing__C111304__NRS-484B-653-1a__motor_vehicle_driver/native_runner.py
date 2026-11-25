@@ -8,12 +8,12 @@ import shutil
 
 from carla_adapter import CarlaEncounterAdapter
 from encounter import CASES, build_case
-from native_acquisition import capture
+from native_acquisition import ASSIGNMENT, capture
 from site_binding import bind_world_site
 
 
 def run(world, carla, case_id: str, site_path: Path, access_source: Path,
-        access_review: Path, camera_plan_path: Path, output: Path):
+        access_review: Path, camera_plan_path: Path, output: Path, *, client=None):
     matches = [case for case in CASES if case.case_id == case_id]
     if len(matches) != 1:
         raise ValueError('unknown exact C111304 case')
@@ -37,7 +37,16 @@ def run(world, carla, case_id: str, site_path: Path, access_source: Path,
                              (access_review, 'access-review.json'),
                              (camera_plan_path, 'camera-plan.json')):
             shutil.copyfile(source, output / name)
-        return capture(adapter, actors, case, site, output)
+        pipeline = None
+        if client is not None:
+            from pipeline_capture import PipelineCapture
+            pipeline = PipelineCapture(client, actors['ego'], output,
+                                       f'{ASSIGNMENT}__{case.case_id}')
+        try:
+            return capture(adapter, actors, case, site, output, pipeline=pipeline)
+        finally:
+            if pipeline is not None and not pipeline.closed:
+                pipeline.close(confirmed=False)
     finally:
         adapter.cleanup()
 
@@ -58,7 +67,7 @@ def main():
     client.set_timeout(20.0)
     receipt = run(client.get_world(), carla, args.case, args.site,
                   args.access_source, args.access_review, args.camera_plan,
-                  args.output_dir)
+                  args.output_dir, client=client)
     print(json.dumps(receipt, sort_keys=True))
 
 

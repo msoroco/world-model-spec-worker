@@ -80,6 +80,8 @@ def process_saved(attempt_root: Path, authority_root: Path, site: dict,
         raise SavedAttemptError("attempt format or case identity mismatch")
     if receipt.get("diagnostic_fixture") is True and not allow_diagnostic:
         raise SavedAttemptError("diagnostic fixture cannot establish delivery evidence")
+    if receipt.get("diagnostic_fixture") is not True and receipt.get("frame_count") != 900:
+        raise SavedAttemptError("original delivery requires exactly 900 observed frames")
     if receipt.get("native_exit_code") != 0 or not isinstance(receipt.get("actor_id"), int):
         raise SavedAttemptError("Native completion or actor readback missing")
     if receipt.get("observed_blueprint_id") != site.get("ego_blueprint_id"):

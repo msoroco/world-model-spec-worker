@@ -31,12 +31,19 @@ class SavedAttemptTests(unittest.TestCase):
             "cell_id": "C111125", "maneuver": "straight",
             "device_kind": "official_traffic_control_device",
             "ego_blueprint_class": "bicycle", "ego_blueprint_id": "vehicle.bicycle.test",
+            "rider_model_id": "walker.rider.test", "device_id": "signal.1", "detector_id": "loop.1",
             "detector_controls_subject_signal": True,
             "approach_lane_id": 1, "cross_lane_id": 2,
             "stop_boundary_station_m": 1.0, "entry_station_m": 9.0,
         }
-        for name in ("map", "device", "detector", "blueprint"):
-            self.site[name + "_ref"] = self.ref(self.authority, name + ".json", {"source": name})
+        packets = {
+            "map": {k: self.site[k] for k in ("cell_id", "approach_lane_id", "cross_lane_id", "stop_boundary_station_m", "entry_station_m")},
+            "device": {k: self.site[k] for k in ("device_id", "device_kind", "detector_id")},
+            "detector": {"detector_id": self.site["detector_id"], "controls_device_id": self.site["device_id"], "zone_lane_id": self.site["approach_lane_id"]},
+            "blueprint": {k: self.site[k] for k in ("ego_blueprint_id", "ego_blueprint_class", "rider_model_id")},
+        }
+        for name, data in packets.items():
+            self.site[name + "_ref"] = self.ref(self.authority, name + ".json", data)
         self.case_id = saved.ASSIGNMENT_ID + "__two_cycles_failed_detection"
         self.build_attempt()
 

@@ -43,7 +43,8 @@ def _point(packet, label):
     return xy, speed
 
 
-def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: int = 900):
+def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: int = 900,
+            pipeline=None):
     """Capture original 20 Hz readbacks and four camera source hashes.
 
     adapter.tick() returns (original_frame, elapsed_seconds); read_actor returns
@@ -59,10 +60,14 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
              _digest(site.get('camera_plan_sha256')), 'site/map/camera source missing')
     _require(site.get('public_access_basis') == case.public_access_basis, 'public access basis mismatch')
     _require(output.is_dir(), 'attempt output directory missing')
+    prior = ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl',
+             'video_frames.jsonl', 'native-receipt.json')
     _require(not any((output / name).exists() for name in
-                 ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl',
-                  'trace.jsonl', 'video_frames.jsonl', 'native-receipt.json')),
+                 (prior if pipeline is not None else (*prior, 'trace.jsonl'))),
              'attempt output already exists')
+    if pipeline is not None:
+        _require((output / 'trace.jsonl').is_file() and not (output / 'trace.jsonl').is_symlink(),
+                 'PipelineCapture original trace missing')
     histories = []
     packet_rows = []
     camera_rows = []
@@ -79,6 +84,8 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
             _require(frame == first_frame + index, 'original frame discontinuity')
             _require(abs(elapsed - (first_time + index / 20)) <= 0.001,
                      '20 Hz elapsed-time discontinuity')
+            if pipeline is not None:
+                pipeline.capture(frame, elapsed - first_time)
             packets = {role: adapter.read_actor(actors[role]) for role in
                        ('ego', 'crossing_vehicle', 'occupant', 'property')}
             for role, packet in packets.items():
@@ -134,6 +141,8 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
                  'ego never moved in original acquisition')
         _require(any(row['crossing_speed_mps'] > 0 for row in histories[1:]),
                  'crossing vehicle never moved in original acquisition')
+        if pipeline is not None:
+            pipeline.close(confirmed=True)
         encoded_history = b''.join(_encoded(row) + b'\n' for row in histories)
         encoded_packets = b''.join(_encoded(row) + b'\n' for row in packet_rows)
         encoded_cameras = b''.join(_encoded(row) + b'\n' for row in camera_rows)
@@ -147,12 +156,20 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
                      'original ego height or heading missing')
             elapsed = row['elapsed_seconds'] - first_time
             trace_rows.append({'frame': row['original_frame'], 'time_s': elapsed,
-                               'position_m': list(ego['xy']),
+                               'position_m': [*ego['xy'], z],
                                'position': {'x': ego['xy'][0], 'y': ego['xy'][1], 'z': z},
-                               'heading_deg': heading, 'speed_mps': ego['speed_mps']})
+                               'heading_deg': heading, 'speed_mps': ego['speed_mps'],
+                               'speed_mph': ego['speed_mps'] / .44704})
             frame_map_rows.append({'video_frame': index, 'carla_frame': row['original_frame'],
                                    'time_s': elapsed})
-        encoded_trace = b''.join(_encoded(row) + b'\n' for row in trace_rows)
+        encoded_trace = ((output / 'trace.jsonl').read_bytes() if pipeline is not None
+                         else b''.join(_encoded(row) + b'\n' for row in trace_rows))
+        if pipeline is not None:
+            actual_trace = [json.loads(line) for line in encoded_trace.decode('utf-8').splitlines()]
+            _require(len(actual_trace) == frames and all(
+                all(actual.get(key) == expected for key, expected in row.items())
+                for actual, row in zip(actual_trace, trace_rows)),
+                'PipelineCapture trace differs from original actor readback')
         encoded_map = b''.join(_encoded(row) + b'\n' for row in frame_map_rows)
         receipt = {'format': 'worker-native-encounter-acquisition',
                    'assignment_id': ASSIGNMENT, 'case_id': f'{ASSIGNMENT}__{case.case_id}',
@@ -173,15 +190,18 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
         for name, data in (('original-history.jsonl', encoded_history),
                            ('original-packets.jsonl', encoded_packets),
                            ('original-cameras.jsonl', encoded_cameras),
-                           ('trace.jsonl', encoded_trace),
                            ('video_frames.jsonl', encoded_map),
                            ('native-receipt.json', _encoded(receipt) + b'\n')):
             tmp = output / (name + '.tmp')
             tmp.write_bytes(data)
             os.replace(tmp, output / name)
+        if pipeline is None:
+            (output / 'trace.jsonl').write_bytes(encoded_trace)
         return receipt
     finally:
         try:
+            if pipeline is not None and not pipeline.closed:
+                pipeline.close(confirmed=False)
             adapter.brake(actors['ego'])
         finally:
             for actor in reversed(actors['owned']):
