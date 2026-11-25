@@ -10,6 +10,42 @@
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The entrant may contact the drawn unit or brake abruptly during entry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/towed_entrant_can_occupy_gap-fallback1-construction.json",
+          "construction_sha256": "3b453270f76fcc90f828c7d1a5975c7e6c47f59343bdedb92896dcf5608d62b5",
+          "changed_knobs": [
+            "target_speed_cap_mps: absent to 2.5"
+          ],
+          "trigger": {
+            "source": "original Native per-frame control and drawn-body history",
+            "metric": "entrant contact or emergency brake before gap approach",
+            "failure_condition": "contact with drawn unit or abrupt full brake before planned merge"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-diagnostic-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --candidate fallback1 --output .runtime-work/c160013-towing-fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "3b453270f76fcc90f828c7d1a5975c7e6c47f59343bdedb92896dcf5608d62b5",
+            "exit_code": 0,
+            "log": "cases/towing-fallback1-offline.log",
+            "log_sha256": "c54eae206fa33c8a50117a4990d40a963bd51a95c4c929633635278cae3d34b1"
+          },
+          "compatibility": {
+            "receipt": "cases/towing-fallback1-compatibility.json",
+            "sha256": "cd55366f7e8fa71aa1c6aef5dec1db3b8ccc584f7c8381bc28927c44beefad02",
+            "log": "cases/towing-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/towing-fallback1-compatibility-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "cases/towing-physical-preparation.json",
+        "sha256": "186dbe9cd82eb1ef92d2039408fbab228eef782da9a085906cfc9fcc1344cea4"
       }
     }
   ],

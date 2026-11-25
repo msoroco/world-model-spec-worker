@@ -9,7 +9,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "ed1a14aef48bde46ebd216325b3480f7193226d9b755163bee23215daf727ea7"
+      "sha256": "c6dbfe7d0cbe9e9685be04cdc02464c3b311c1d2fed7b35d60570ad7b326406b"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-comparison-proof PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_comparison.py",
@@ -42,20 +42,62 @@
       "sha256": "2eab6dcb6fbca3cbbd02db36bf2d30951f7e06b33eff3a346bec0c7de1a59fb6"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/towing-diagnostic-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --candidate primary --output .runtime-work/c160013-towing-draft-offline --python $PWD/.venv-cpu/bin/python",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-diagnostic-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --candidate primary --output .runtime-work/c160013-towing-draft-offline-v3 --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "cases/towing-draft-offline.log",
-      "sha256": "6a1dc9031aba77dd33442c4481e2500cb2480c93495a7d94a04f3fde5b19d16f"
+      "sha256": "3d5569e0892be2f4861fd3538952d7ccac34d6fa69ca9bc38f0ba2b7e3c98803"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-towing-finalizer-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_towing_finalizer.py",
       "exit_code": 0,
       "log": "cases/towing-finalizer-proof.log",
-      "sha256": "572a35018a23d477c398a6f4a2a8e285b28d6a9a09442beb145f217b5daf6a18"
+      "sha256": "caf442d0cd2d75243146d683617ecce912d4d82e977894669dda9dbc062a18b2"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/run_towing_compatibility.py",
+      "exit_code": 0,
+      "log": "cases/towing-compatibility.json",
+      "sha256": "c9777e1cc137f12cd2e05eff6d1b0d850c3f089aae429aa055294592f615e12d"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-towing-semantic-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_towing_semantics.py",
+      "exit_code": 0,
+      "log": "cases/towing-semantic-proof.log",
+      "sha256": "520a87c6b48065ef1a0b43e4743c69d24bb53e2f6635f9a0b01c448927df8ca2"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c160013-towing-compat-manifest/manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --attempt .runtime-work/c160013-towing-compat-v1 --output .runtime-work/c160013-towing-saved-v1 --library runtime/library --validator .runtime-work/c215286-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/towing-saved-command.log",
+      "sha256": "9a7867f0b0f1c3dde750f157a7f0ca403ea43dbcb6eb09244e75e34ebb506d4a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing_delivery_audit.py --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --attempt .runtime-work/c160013-towing-saved-v1/v0001/analysis --mode positive",
+      "exit_code": 0,
+      "log": "cases/towing-delivery-positive.log",
+      "sha256": "e7adf4f0486337640a7e3f4cee772436e148d90992c6ec1d2c390e23ab18e860"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/towing-diagnostic-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap --candidate fallback1 --output .runtime-work/c160013-towing-fallback1-offline --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cases/towing-fallback1-offline.log",
+      "sha256": "c54eae206fa33c8a50117a4990d40a963bd51a95c4c929633635278cae3d34b1"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/run_towing_compatibility.py --candidate fallback1",
+      "exit_code": 0,
+      "log": "cases/towing-fallback1-compatibility.json",
+      "sha256": "cd55366f7e8fa71aa1c6aef5dec1db3b8ccc584f7c8381bc28927c44beefad02"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-towing-physical-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_towing_physical.py",
+      "exit_code": 0,
+      "log": "cases/towing-physical-preparation.log",
+      "sha256": "012dc3ffc9346d01d242db6123cd053f455864960c08317d3e047eccfe5583ce"
     }
   ],
   "remaining_gpu_checks": [
     "Actual outside-business highway status, caravan membership, gap occupation without danger and camera visibility."
   ],
-  "reason": "Twenty-eight CPU unit tests, four exact primary/fallback offline proofs, four positive/negative compatibility proofs, and two recorded-only saved-processing rebuilds pass. Both independent diagnostic delivery audits pass 900-frame source joins and four full video decodes; changed original frame maps are rejected. Six canonical semantic stages validate for the selected pair, with the qualitative spacing judgment sweep explicitly incomplete. The pinned physical assessor distinguishes met, not_met and unverified synthetic outcomes. The execution manifest, delivery receipt validator, semantic validator, and assignment-scoped complete static checker pass. Source-bound two-body combination measurement, reviewed Native drawn-unit spawn, and original-frame capture helpers pass focused CPU tests and a 900-frame diagnostic source-bound proof, but a delivery-selected Native towing construction with exact compatibility, recorded-only processing and semantic coverage, complete judgment sweep, Native source/pixel/physical acceptance, and scoped strict readiness remain unfinished. No Native or legal acceptance is claimed."
+  "reason": "The two delivery-selected cases retain prior CPU proofs. An isolated towing candidate now passes exact primary and risk-triggered slower fallback offline materialization, source-bound positive/negative compatibility, 900-frame saved finalization and recorded-only reconstruction, six-stage staged semantic validation, independent positive/negative delivery audit, and synthetic complete/incomplete/missing physical preparation. The fallback and physical receipts validate against the current candidate and physical contracts. The towing case is still diagnostic: selected manifest, canonical on-disk proposals, comparison/delivery integration, judgment sweep and reviewed Native site/pixels remain worker-owned CPU preparation. Actual Native motion and statutory without-danger judgment remain unverified."
 }
