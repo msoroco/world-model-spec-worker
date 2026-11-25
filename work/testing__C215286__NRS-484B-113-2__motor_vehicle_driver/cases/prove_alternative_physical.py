@@ -15,10 +15,10 @@ from worker_exchange.native_output import assess_physical  # noqa: E402
 
 
 ROWS = (
-    ("intersection-entry", "reverse_into_intersection", "c215286-alt-intersection-compat-v4"),
-    ("intersection-stop", "reverse_stops_before_intersection", "c215286-alt-intersection-stop-compat"),
-    ("corner-entry", "reverse_around_street_corner", "c215286-alt-corner-entry-compat-v3"),
-    ("corner-stop", "reverse_stops_before_street_corner", "c215286-alt-corner-stop-compat"),
+    ("intersection-entry", "reverse_into_intersection"),
+    ("intersection-stop", "reverse_stops_before_intersection"),
+    ("corner-entry", "reverse_around_street_corner"),
+    ("corner-stop", "reverse_stops_before_street_corner"),
 )
 SOURCES = ("config.json", "trace.jsonl", "video_frames.jsonl", "reverse_history.jsonl",
            "reverse_site_context.json")
@@ -39,18 +39,18 @@ def run():
         raise ValueError("Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work before runtime import")
     staged = []
     lines = []
-    manifest = json.loads((ROOT / ".runtime-work/c215286-intersection-stage/manifest.json").read_text())
+    manifest = json.loads((PACKAGE / "execution-manifest.json").read_text())
     entries = {row["case_id"]: row for row in manifest["cases"]}
     command = "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c215286-physical-proof .venv-cpu/bin/python work/" + PACKAGE.name + "/cases/prove_alternative_physical.py"
-    for label, suffix, source_name in ROWS:
+    for label, suffix in ROWS:
         case_id = PACKAGE.name + "__" + suffix
         entry = entries[case_id]
-        saved = PACKAGE / "cases" / (label + "-saved-processing-receipt.json")
+        saved = PACKAGE / entry["saved_processing"]["receipt"]
         receipt = json.loads(saved.read_text())
         if not (receipt["passed"] and receipt["recorded_only"] and receipt["originals_preserved"]
                 and not receipt["missing_evidence"] and receipt["case_id"] == case_id):
             raise ValueError("Recorded-only proof missing: " + case_id)
-        source = ROOT / ".runtime-work" / source_name
+        source = ROOT / ".runtime-work/c215286-current-runtime-reproof" / suffix / "primary/compatibility"
         config = json.loads((source / "config.json").read_text())
         fixtures = []
         for kind in KINDS:

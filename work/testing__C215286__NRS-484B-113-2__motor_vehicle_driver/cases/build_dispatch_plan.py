@@ -44,7 +44,7 @@ def build():
     return {"format": "worker-assignment-dispatch-plan", "assignment_id": AID,
             "status": "partial_cpu_prepared", "cases": rows,
             "comparison_audit_commands": commands,
-            "scope": "Exact local commands; Native site review and physical acceptance remain pending"}
+            "scope": "Exact local commands; set REVIEW_BUNDLE to an absolute five-packet reviewed source directory before Native execution. Physical acceptance remains pending"}
 
 
 if __name__ == "__main__":
