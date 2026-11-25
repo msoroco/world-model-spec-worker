@@ -1,11 +1,20 @@
 # C135087 Native source handoff
 
-`runner.py` requires an adapter module with `open_session(host, port, config)`.
+`runner.py` bundles the lazy `native_adapter.py` module with
+`open_session(host, port, config)`. The optional `C135087_NATIVE_ADAPTER`
+override is for a reviewed operator module with the same contract.
 The two input references must hash-match real, separately reviewed site and
 vehicle JSON; records labeled as synthetic diagnostics are rejected before
 the Native session starts.
-The session supplies the live world, three actors, observer, controller and four
-camera lifecycle methods already used by the case bundle. After the 900th tick
+The site record additionally needs `native_binding`: exact sign and curb actor
+IDs and blueprints, passenger blueprint, four `camera_transforms` with XYZ metres
+and pitch/yaw/roll degrees, an `access_polygon`, positive engineering observation
+distances, and a control schedule. These are source facts and reviewed run design,
+not defaults synthesized by the worker. Missing fields fail before opening the
+Native world. The session checks map, sign and curb actor identity and curb
+geometry before applying 20 Hz synchronous settings. It then supplies the live
+world, three actors, measured observer, control actions and four RGB cameras.
+After the 900th tick
 and camera finalization, it must also implement
 `export_converter_sources(output_dir, constructed_case, attempt_source)`.
 

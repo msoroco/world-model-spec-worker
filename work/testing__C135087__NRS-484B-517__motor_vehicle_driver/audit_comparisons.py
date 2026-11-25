@@ -8,7 +8,7 @@ from pathlib import Path
 from build_bundles import HERE, AID
 from stand import SourceError, audit_comparison
 
-SCRATCH = HERE.parents[1] / ".runtime-work" / "c135087-selected-analysis-v4"
+SCRATCH = HERE.parents[1] / ".runtime-work" / "c135087-selected-analysis-v5"
 MODES = ("loading_mode", "entrant_mode", "access_mode")
 
 

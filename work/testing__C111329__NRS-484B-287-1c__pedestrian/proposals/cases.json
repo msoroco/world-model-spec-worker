@@ -1,46 +1,109 @@
 {
-  "format": "worker-cases-proposal",
+  "status": "draft",
   "cell_id": "C111329",
   "actor": "pedestrian",
-  "status": "draft",
   "sweep_specs": [
     {
-      "comparison_id": "between_intersections_marking",
-      "case_ids": [
-        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
-        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating"
+      "sweep_id": "source-gated-judgment-coverage",
+      "target_law_id": "NRS-484B-287-1c",
+      "judgment_refs": [
+        {
+          "phrase": "adjacent intersections",
+          "note": "Retain independent source review before a legal finding."
+        },
+        {
+          "phrase": "official traffic-control devices are in operation",
+          "note": "Retain independent source review before a legal finding."
+        },
+        {
+          "phrase": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]",
+          "note": "Retain independent source review before a legal finding."
+        }
       ],
-      "fixed_conditions": [
-        "same two source-identified junctions and direct segment",
-        "same highway crossing station and route",
-        "both official-device candidates operating",
-        "same camera and duration contract"
-      ],
-      "deliberate_differences": [
-        "surveyed marked-crosswalk extent contains the crossing versus does not contain it"
-      ]
-    },
-    {
-      "comparison_id": "both_devices_operating",
-      "case_ids": [
-        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
-        "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive"
-      ],
-      "fixed_conditions": [
-        "same two junctions, highway banks and crossing station",
-        "same unmarked crossing survey",
-        "same camera and duration contract"
-      ],
-      "deliberate_differences": [
-        "one endpoint official-device candidate inactive versus both operating during crossing"
+      "rationale": "No numeric judgment sweep can be selected without the reviewed original site and legal source.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "reviewed original C111329 two-junction source",
+        "official-device authority and operation review",
+        "NRS 484B.290 exception review"
       ]
     }
   ],
   "cases": [
     {
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral comparison anchor; no separate recording.",
+      "variable_assignments": {
+        "between_intersections": {
+          "kind": "world_setup",
+          "value": "source-bound direct segment and crossing station"
+        },
+        "marked_crosswalk_present": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "both_devices_operating": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original RGB views, 20 Hz, 900 frames"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "adjacent intersections",
+        "official traffic-control devices are in operation",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original walker body centers and bank crossing order",
+            "name": "walker_crossing_route",
+            "reference_frame": "reviewed site world XY",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "uncertainty": "physical realization pending",
+            "unit": "m"
+          },
+          {
+            "method": "original two-device actor state and is_frozen health readback",
+            "name": "device_operation",
+            "reference_frame": "source device identities",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "uncertainty": "legal official status unresolved",
+            "unit": "state"
+          },
+          {
+            "method": "reviewed original site and complete marking survey",
+            "name": "marking_and_junction_context",
+            "reference_frame": "source junction and crossing station",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "uncertainty": "legal adjacency and NRS 484B.290 exception unresolved",
+            "unit": "source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "separately reviewed original records",
+            "name": "highway_and_exception_review",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Source record IDs are not legal conclusions."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
       "target_law_id": "NRS-484B-287-1c",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "rationale": "Cross between adjacent-intersection candidates outside surveyed marked crosswalk while both devices operate",
       "variable_assignments": {
         "between_intersections": {
@@ -61,9 +124,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "legal adjacency of the two source-identified intersections",
-        "official status and participant governance of both devices",
-        "NRS 484B.290 exception"
+        "adjacent intersections",
+        "official traffic-control devices are in operation",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
       ],
       "recording_description": {
         "channels": [
@@ -105,12 +168,21 @@
         "limitations": [
           "Source record IDs are not legal conclusions."
         ]
+      },
+      "paired_probe_id": "marking_probe",
+      "deliberate_differences": [
+        "marked_crosswalk_present"
+      ],
+      "probe": {
+        "primary_variable": "marked_crosswalk_present",
+        "comparison_or_standard": "same source-bound site, crossing station and capture profile",
+        "target_value_or_branch": false
       }
     },
     {
       "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating",
       "target_law_id": "NRS-484B-287-1c",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "rationale": "Same crossing station within a documented marked crosswalk while both devices operate",
       "variable_assignments": {
         "between_intersections": {
@@ -131,9 +203,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "legal adjacency of the two source-identified intersections",
-        "official status and participant governance of both devices",
-        "NRS 484B.290 exception"
+        "adjacent intersections",
+        "official traffic-control devices are in operation",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
       ],
       "recording_description": {
         "channels": [
@@ -175,12 +247,21 @@
         "limitations": [
           "Source record IDs are not legal conclusions."
         ]
+      },
+      "paired_probe_id": "marking_probe",
+      "deliberate_differences": [
+        "marked_crosswalk_present"
+      ],
+      "probe": {
+        "primary_variable": "marked_crosswalk_present",
+        "comparison_or_standard": "same source-bound site, crossing station and capture profile",
+        "target_value_or_branch": true
       }
     },
     {
       "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
       "target_law_id": "NRS-484B-287-1c",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "rationale": "Same unmarked crossing with one device documented inactive, probing the operation condition",
       "variable_assignments": {
         "between_intersections": {
@@ -201,9 +282,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "legal adjacency of the two source-identified intersections",
-        "official status and participant governance of both devices",
-        "NRS 484B.290 exception"
+        "adjacent intersections",
+        "official traffic-control devices are in operation",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
       ],
       "recording_description": {
         "channels": [
@@ -245,6 +326,15 @@
         "limitations": [
           "Source record IDs are not legal conclusions."
         ]
+      },
+      "paired_probe_id": "operation_probe",
+      "deliberate_differences": [
+        "both_devices_operating"
+      ],
+      "probe": {
+        "primary_variable": "both_devices_operating",
+        "comparison_or_standard": "same source-bound site, crossing station and capture profile",
+        "target_value_or_branch": false
       }
     }
   ]

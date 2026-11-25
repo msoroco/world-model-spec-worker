@@ -1,0 +1,243 @@
+{
+  "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
+  "measured_values": {
+    "site": {
+      "between_junction_ids": [
+        "west",
+        "east"
+      ],
+      "crossing_station_fraction": 0.5,
+      "crosses_both_highway_banks": true,
+      "device_ids": [
+        "east-signal",
+        "west-signal"
+      ],
+      "device_operation_observed": false,
+      "marked_crosswalk_ids_at_crossing": [],
+      "marked_crosswalk_present": false,
+      "legal_adjacency": "undetermined",
+      "legal_official_status": "undetermined",
+      "nrs_484b_290_exception": "undetermined",
+      "source_sha256": {
+        "map": "b92a0f85b085bbdfb714c0dbd49c539cf37e0555a546ff3d0d80c6caf7cbd15d",
+        "route": "357725fd9fda1fcffbe2610717ffc1649e23f24dd06451568e8508d47f3c6cf4",
+        "devices": "b8746a26624540076be2e95bca1b2b362932b092087b84b54f5e1c382d5b79e2",
+        "markings": "d8a5a881baeb9bf00a12d192613f2f1baa489903d8f7bb5d67c42e0e0af8cd0f",
+        "highway": "d45381489771b5d95cca06cf4fb572a7ead85295b43ee5ef72df0bc7f77eeb39"
+      }
+    },
+    "motion": {
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
+      "frame_count": 900,
+      "original_observation_sha256": "039f59cc6156ec4258e587e6f68a6e4d2314f7270193d018acf79b0ce39080fb",
+      "crossed_both_highway_banks": true,
+      "both_devices_operating_all_frames": false,
+      "both_devices_operating_during_crossing": false,
+      "observed_crossing_frame_range": [
+        315,
+        586
+      ],
+      "observed_crossing_time_s": [
+        15.7,
+        29.25
+      ],
+      "marked_crosswalk_present_in_survey": false,
+      "legal_adjacency": "undetermined",
+      "legal_official_status": "undetermined",
+      "nrs_484b_290_exception": "undetermined"
+    }
+  },
+  "target_checks": [
+    {
+      "target": "source-bound between-junction crossing and exact case distinction",
+      "requested": true,
+      "measured": true,
+      "method": "measure_original_crossing",
+      "tolerance": 0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "effective-site-packet.json",
+        "original-site-observation.json"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "method": "original walker body centers and bank crossing order",
+        "name": "walker_crossing_route",
+        "reference_frame": "reviewed site world XY",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "uncertainty": "physical realization pending",
+        "unit": "m"
+      },
+      {
+        "method": "original two-device actor state and is_frozen health readback",
+        "name": "device_operation",
+        "reference_frame": "source device identities",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "uncertainty": "legal official status unresolved",
+        "unit": "state"
+      },
+      {
+        "method": "reviewed original site and complete marking survey",
+        "name": "marking_and_junction_context",
+        "reference_frame": "source junction and crossing station",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "uncertainty": "legal adjacency and NRS 484B.290 exception unresolved",
+        "unit": "source"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "separately reviewed original records",
+        "name": "highway_and_exception_review",
+        "unit": "source"
+      }
+    ],
+    "limitations": [
+      "Source record IDs are not legal conclusions."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "walker_crossing_route",
+      "unit": "m",
+      "reference": "channels/walker_crossing_route.jsonl"
+    },
+    {
+      "name": "device_operation",
+      "unit": "state",
+      "reference": "channels/device_operation.jsonl"
+    },
+    {
+      "name": "marking_and_junction_context",
+      "unit": "source",
+      "reference": "channels/marking_and_junction_context.jsonl"
+    },
+    {
+      "name": "highway_and_exception_review",
+      "unit": "source",
+      "reference": "channels/highway_and_exception_review.json"
+    }
+  ],
+  "realized_observables": {},
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "1359ba28ee58a49c0a3f7371c158b284309475969ad2441abb642241ec77bc6b",
+        "video_frames.jsonl": "9c2e59ccbf6dcc4ebd89e5e3eb308f21001c6eb8ecad566ff956ebe9f90058d3"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 6.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "engineering route progress plus independent two-bank crossing audit; not legal cutoff"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "1359ba28ee58a49c0a3f7371c158b284309475969ad2441abb642241ec77bc6b",
+        "video_frames.jsonl": "9c2e59ccbf6dcc4ebd89e5e3eb308f21001c6eb8ecad566ff956ebe9f90058d3"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 6.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "engineering route progress plus independent two-bank crossing audit; not legal cutoff"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "1359ba28ee58a49c0a3f7371c158b284309475969ad2441abb642241ec77bc6b",
+        "video_frames.jsonl": "9c2e59ccbf6dcc4ebd89e5e3eb308f21001c6eb8ecad566ff956ebe9f90058d3"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 6.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "engineering route progress plus independent two-bank crossing audit; not legal cutoff"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "1359ba28ee58a49c0a3f7371c158b284309475969ad2441abb642241ec77bc6b",
+        "video_frames.jsonl": "9c2e59ccbf6dcc4ebd89e5e3eb308f21001c6eb8ecad566ff956ebe9f90058d3"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "provenance_kind": "synthetic_fixture",
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}

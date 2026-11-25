@@ -8,8 +8,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-SOURCES = ("runner.py", "stand.py", "stand_capture.py", "stand_delivery.py",
-           "stand_media_audit.py", "stand_converter_source.py", "analysis.py", "tests/test_bundle.py")
+SOURCES = ("runner.py", "native_adapter.py", "stand.py", "stand_capture.py",
+           "stand_delivery.py", "stand_media_audit.py", "stand_converter_source.py",
+           "analysis.py", "tests/test_bundle.py", "tests/test_native_adapter.py")
 
 
 def sha(data):

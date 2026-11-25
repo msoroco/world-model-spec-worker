@@ -1,0 +1,64 @@
+{
+  "status": "draft",
+  "law_id": "NRS-484B-287-1c",
+  "actor": "pedestrian",
+  "template_id": "NRS-484B-287-1c@pedestrian",
+  "quote": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]: Between adjacent intersections at which official traffic-control devices are in operation pedestrians shall not cross at any place except in a marked crosswalk.",
+  "parameter_refs": [
+    {
+      "name": "between_intersections",
+      "kind": "world_setup",
+      "range_or_domain": "source-bound direct segment and crossing station"
+    },
+    {
+      "name": "marked_crosswalk_present",
+      "kind": "world_setup",
+      "range_or_domain": "source-surveyed marked extent contains crossing station"
+    },
+    {
+      "name": "both_devices_operating",
+      "kind": "world_setup",
+      "range_or_domain": "two source-identified device histories during crossing"
+    },
+    {
+      "name": "capture_profile",
+      "kind": "world_setup",
+      "range_or_domain": "four original RGB views, 20 Hz, 900 frames"
+    }
+  ],
+  "structure": {
+    "activation": {
+      "condition": "Pedestrian crosses between source-identified adjacent intersection candidates whose official traffic-control devices are in operation.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not cross outside a marked crosswalk when the source-supported conditions apply.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]",
+        "review_status": "source-gated"
+      }
+    ],
+    "timing": {
+      "description": "Join original crossing to device operation at both endpoints and marked extent.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "adjacent intersections",
+        "note": "Retain independent source review before a legal finding."
+      },
+      {
+        "phrase": "official traffic-control devices are in operation",
+        "note": "Retain independent source review before a legal finding."
+      },
+      {
+        "phrase": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]",
+        "note": "Retain independent source review before a legal finding."
+      }
+    ]
+  }
+}

@@ -40,8 +40,10 @@ class BundleTests(unittest.TestCase):
                              "sha256": hashlib.sha256(source.read_bytes()).hexdigest()})
             with patch.object(runner.importlib, "import_module",
                               return_value=SimpleNamespace(open_session=object())):
-                with self.assertRaisesRegex(SourceError, "materialized by runtime.py capture"):
-                    runner.run(*refs, "native_test_adapter", root / "unmaterialized")
+                with patch.object(runner, "validate_source"), patch.object(
+                        runner, "validate_native_sources"):
+                    with self.assertRaisesRegex(SourceError, "materialized by runtime.py capture"):
+                        runner.run(*refs, "native_test_adapter", root / "unmaterialized")
 
 
 if __name__ == "__main__":

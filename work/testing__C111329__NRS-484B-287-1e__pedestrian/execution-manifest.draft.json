@@ -11,9 +11,38 @@
       "construction_sha256": "58837cad59fc520f788e9b2775d2a1c091067a0129ce2223cc648d17094e7322",
       "candidate_risk": {
         "status": "physical",
-        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+        "reason": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources."
       },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/permissive_whole_crossing/fallback1-construction.json",
+          "construction_sha256": "4b67cd2feca0f4febc5aee8330ab06e9473fb88c4291ca36d8aa4e7784af1522",
+          "trigger": {
+            "source": "original walker 20 Hz center history",
+            "metric": "distance to surveyed destination and corner overshoot",
+            "failure_condition": "primary route control overshoots the destination or fails to settle"
+          },
+          "changed_knobs": [
+            "walker requested route speed 1.25 to 1.05 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-offline-permissive_whole_crossing-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "nov25-fallback-offline-permissive_whole_crossing.log",
+            "log_sha256": "c0e1babb938bfb065b1279df0939c0f7ca5d3de87d48a56d57235768587fae1a",
+            "construction_sha256": "4b67cd2feca0f4febc5aee8330ab06e9473fb88c4291ca36d8aa4e7784af1522"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-compat-permissive_whole_crossing-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "receipt": "cases/permissive_whole_crossing/fallback1-receipt.json",
+            "sha256": "6d405a114f820b3609eddb8d35a51fc11eb85acc3c6f6894e78797334e8bf98b",
+            "log": "cases/permissive_whole_crossing/fallback1-positive.log",
+            "negative_log": "cases/permissive_whole_crossing/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/permissive_whole_crossing/measurement-contract.json",
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1e__pedestrian/cases/permissive_whole_crossing/fixture-recipe.json",
       "measurement_procedure": {
@@ -24,7 +53,7 @@
         "sha256": "4bc145bfbcd703bd8c84c6ecb87896bf579a136173872c0e14a1585ce121500f",
         "log": "cases/permissive_whole_crossing/analysis-positive.log",
         "negative_log": "cases/permissive_whole_crossing/negative-analysis.log",
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --output .runtime-work/c111329-compat-permissive_whole_crossing-v3 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__permissive_whole_crossing --output .runtime-work/c111329-compat-permissive_whole_crossing-semantic-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -45,6 +74,23 @@
         "test_exit_code": 0,
         "test_log": "nov25-saved-permissive_whole_crossing.log",
         "test_log_sha256": "34944a9bebe61c77eacdd113596ab675e8bc04e2e1e74fda18b876f6076a54e8"
+      },
+      "acquisition": {
+        "walker_center_xy": {
+          "entrypoint": "native_capture.py",
+          "method": "original walker pose readback at each synchronous tick",
+          "evidence": "walker.json and original frame map"
+        },
+        "governing_diagonal_instruction": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing pedestrian device readback at each tick",
+          "evidence": "device.json and official device-inventory source SHA"
+        },
+        "camera_original_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "four original camera frame identity and pixel joins",
+          "evidence": "camera-frames.json and four original FFV1 videos"
+        }
       }
     },
     {
@@ -54,9 +100,38 @@
       "construction_sha256": "957673d4c42ba234078bd70c6e35b816dbf984956caaaadb54d704162daf5499",
       "candidate_risk": {
         "status": "physical",
-        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+        "reason": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources."
       },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/prohibitive_whole_crossing/fallback1-construction.json",
+          "construction_sha256": "f94f5ad146c5258dc94080968d0e26154a5a1c6b41ea48b1bae4bd6d8e6ecc09",
+          "trigger": {
+            "source": "original walker 20 Hz center history",
+            "metric": "distance to surveyed destination and corner overshoot",
+            "failure_condition": "primary route control overshoots the destination or fails to settle"
+          },
+          "changed_knobs": [
+            "walker requested route speed 1.25 to 1.05 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-offline-prohibitive_whole_crossing-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "nov25-fallback-offline-prohibitive_whole_crossing.log",
+            "log_sha256": "d11b803e219fbdca0046a6d6b89193aeb5124dafb4750d9844a459eed61362d5",
+            "construction_sha256": "f94f5ad146c5258dc94080968d0e26154a5a1c6b41ea48b1bae4bd6d8e6ecc09"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-compat-prohibitive_whole_crossing-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "receipt": "cases/prohibitive_whole_crossing/fallback1-receipt.json",
+            "sha256": "1ebb00449a42ba7ab49ef50eced403abc7f850c0bef983f8a069adfa2076dee5",
+            "log": "cases/prohibitive_whole_crossing/fallback1-positive.log",
+            "negative_log": "cases/prohibitive_whole_crossing/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/prohibitive_whole_crossing/measurement-contract.json",
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1e__pedestrian/cases/prohibitive_whole_crossing/fixture-recipe.json",
       "measurement_procedure": {
@@ -67,7 +142,7 @@
         "sha256": "6768eb2254cd7be4c53e4b409b25da191222cf14279c0a034dd6690f34697e07",
         "log": "cases/prohibitive_whole_crossing/analysis-positive.log",
         "negative_log": "cases/prohibitive_whole_crossing/negative-analysis.log",
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --output .runtime-work/c111329-compat-prohibitive_whole_crossing-v3 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__prohibitive_whole_crossing --output .runtime-work/c111329-compat-prohibitive_whole_crossing-semantic-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -88,6 +163,23 @@
         "test_exit_code": 0,
         "test_log": "nov25-saved-prohibitive_whole_crossing.log",
         "test_log_sha256": "839a3672a8b9b4c05263eb922c9ea1d7a26fa05e0e4cb7e1972fad24f8a74299"
+      },
+      "acquisition": {
+        "walker_center_xy": {
+          "entrypoint": "native_capture.py",
+          "method": "original walker pose readback at each synchronous tick",
+          "evidence": "walker.json and original frame map"
+        },
+        "governing_diagonal_instruction": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing pedestrian device readback at each tick",
+          "evidence": "device.json and official device-inventory source SHA"
+        },
+        "camera_original_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "four original camera frame identity and pixel joins",
+          "evidence": "camera-frames.json and four original FFV1 videos"
+        }
       }
     },
     {
@@ -97,9 +189,38 @@
       "construction_sha256": "8abc7f2a8fc5b60afbee4c39bf80c17067a0345a104b8475589980dda2b77fac",
       "candidate_risk": {
         "status": "physical",
-        "risk": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources.",
-        "fallback_policy": "No fallback asserted without a tested site and exact construction; preserve the same corner route, governing device, cameras and comparison controls."
+        "reason": "The frozen cell does not identify surveyed four-corner pedestrian geometry or an official diagonal-governing device; actual route reachability and device readback must be established from original site sources."
       },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/instruction_changes_during_crossing/fallback1-construction.json",
+          "construction_sha256": "3af76a61d3b356af9e3c237f1640c7a83dac2da90769e59ce9c96da27b96d4d4",
+          "trigger": {
+            "source": "original walker 20 Hz center history",
+            "metric": "distance to surveyed destination and corner overshoot",
+            "failure_condition": "primary route control overshoots the destination or fails to settle"
+          },
+          "changed_knobs": [
+            "walker requested route speed 1.25 to 1.05 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-offline-instruction_changes_during_crossing-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "nov25-fallback-offline-instruction_changes_during_crossing.log",
+            "log_sha256": "4fffe8b648e3ea5d890214a7e49379891469b6eaeca0d75195e3f86a181cb7c6",
+            "construction_sha256": "3af76a61d3b356af9e3c237f1640c7a83dac2da90769e59ce9c96da27b96d4d4"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --candidate fallback1 --output .runtime-work/c111329-fallback-compat-instruction_changes_during_crossing-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "receipt": "cases/instruction_changes_during_crossing/fallback1-receipt.json",
+            "sha256": "e31a8979b772706ab7a51114c6fc9873719f82a1b4af64d1c87c6160767c137a",
+            "log": "cases/instruction_changes_during_crossing/fallback1-positive.log",
+            "negative_log": "cases/instruction_changes_during_crossing/fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/instruction_changes_during_crossing/measurement-contract.json",
       "fixture_recipe": "work/testing__C111329__NRS-484B-287-1e__pedestrian/cases/instruction_changes_during_crossing/fixture-recipe.json",
       "measurement_procedure": {
@@ -110,7 +231,7 @@
         "sha256": "4c09b97fb25aec0691d34bc9a8def26a7004f1137f91e7a22252bafac5dc89f0",
         "log": "cases/instruction_changes_during_crossing/analysis-positive.log",
         "negative_log": "cases/instruction_changes_during_crossing/negative-analysis.log",
-        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --output .runtime-work/c111329-compat-instruction_changes_during_crossing-v3 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111329__NRS-484B-287-1e__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1e__pedestrian__instruction_changes_during_crossing --output .runtime-work/c111329-compat-instruction_changes_during_crossing-semantic-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -131,6 +252,23 @@
         "test_exit_code": 0,
         "test_log": "nov25-saved-instruction_changes_during_crossing.log",
         "test_log_sha256": "f4c42f314f3072b7e362df8a10720e688eb1bd40ac233e935b01f1a49c9512df"
+      },
+      "acquisition": {
+        "walker_center_xy": {
+          "entrypoint": "native_capture.py",
+          "method": "original walker pose readback at each synchronous tick",
+          "evidence": "walker.json and original frame map"
+        },
+        "governing_diagonal_instruction": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing pedestrian device readback at each tick",
+          "evidence": "device.json and official device-inventory source SHA"
+        },
+        "camera_original_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "four original camera frame identity and pixel joins",
+          "evidence": "camera-frames.json and four original FFV1 videos"
+        }
       }
     }
   ]

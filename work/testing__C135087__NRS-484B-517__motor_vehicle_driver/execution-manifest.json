@@ -1,909 +1,648 @@
 {
+  "format": "worker-execution-manifest",
   "assignment_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_source_gated",
   "cases": [
     {
-      "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
-        "official stand designation and sign": {
-          "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
-        },
-        "subject passenger vehicle and driver": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
-        },
-        "taxicab entrant and approach": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
-        }
-      },
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_approaching",
+      "construction": "construction-loading_open_approaching.json",
+      "construction_sha256": "3388bfea6b35bd5d0be39465062cbd2c994a02195e032878e61c95f7f328ed6e",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_open_approaching-fallback1.json",
+          "construction_sha256": "2bdfb9ddc7c63d8f6dd13e40d96f97153c1f6a49161cddcfbeae09ee529310fa",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_open_approaching-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_open_approaching-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_open_approaching-fallback1/receipt.json",
-            "sha256": "1ffc7ac83ff866d8f299253a1dabd58a7eb08d3cefeb0568e7a996722cb2466d"
-          },
-          "construction": "construction-loading_open_approaching-fallback1.json",
-          "construction_sha256": "b382bef85f9d21e0644f839952c1ae0f956f13a17da65b756a7f39878ed9eec1",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_approaching --candidate fallback1",
-            "construction_sha256": "b382bef85f9d21e0644f839952c1ae0f956f13a17da65b756a7f39878ed9eec1",
+            "construction_sha256": "2bdfb9ddc7c63d8f6dd13e40d96f97153c1f6a49161cddcfbeae09ee529310fa",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_open_approaching-fallback1.log",
-            "log_sha256": "7c15134af5412697b0d21145ea9f63a223dc88b000a3273c77d0a2f98049667e"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_open_approaching-fallback1.log",
+            "log_sha256": "81638c954a8fc653a2955fb87bda8c11beda9a63c13403c8cc098ca1f38800e7"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_approaching",
-      "compatibility": {
-        "log": "proofs/selected-loading_open_approaching-primary/analysis.log",
-        "receipt": "proofs/selected-loading_open_approaching-primary/receipt.json",
-        "sha256": "9c01ac1889ea929d78ca4202fde9c101e976f989ee2b7f4fed0c0a1b06456021"
-      },
-      "construction": "construction-loading_open_approaching.json",
-      "construction_sha256": "595b39f4cbddf3a6d689f0deca4de90f2e2ba43e5d10a4a0339044035956e823",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_approaching-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_open_approaching-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_open_approaching-positive.log",
-        "positive_log_sha256": "a226cbcebee79dc038f45aa245fd5615062d726348d309390b7e4427448aec83",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_open_approaching.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_open_approaching-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_approaching --candidate primary",
-        "construction_sha256": "595b39f4cbddf3a6d689f0deca4de90f2e2ba43e5d10a4a0339044035956e823",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_open_approaching.log",
-        "log_sha256": "73423480c8d41757291ffc62350b8e8a7026de246ec27bcf226d3e46ab023513"
-      },
-      "physical_preparation": {
-        "receipt": "physical-loading_open_approaching-receipt.json",
-        "sha256": "abb2cc6b99d329ce878e7e75f3d3609fcf5b13127af6e47961387b45da37daa4"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_open_approaching/analysis.log",
-        "analysis_log_sha256": "972e11b613ad115a3e77d96ccb2d1fe55d96a7d92a6695bf72a852b395416045",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_open_approaching/receipt.json",
-        "sha256": "4ea2bf16345033ff95e6ec870da3acdc7a79add8c5c8a8fdd71a7fa8e1a72f72",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_approaching-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_open_approaching-receipt.json",
+        "sha256": "9786222880ae997a321cd4751e42848d69f25663c0cfb0e2b631d8255941a0a4"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_approaching --candidate primary",
+        "construction_sha256": "3388bfea6b35bd5d0be39465062cbd2c994a02195e032878e61c95f7f328ed6e",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_open_approaching.log",
+        "log_sha256": "627598ccd9d8c2a3694e6160a49baf7190393340359fc10726e2bfe0acdca6a8"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_approaching",
+      "construction": "construction-loading_constrained_approaching.json",
+      "construction_sha256": "712c1a7ef384653d3ee670e8bd5b745e944ba59585b7ef16c5a9038a63b60483",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_constrained_approaching-fallback1.json",
+          "construction_sha256": "995e28c5f266a16964eb757528377c0800219904bcb3d44a1c7865d577480f9b",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_constrained_approaching-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_constrained_approaching-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_constrained_approaching-fallback1/receipt.json",
-            "sha256": "110b09c2e42a7d56eca410a07ca4d63f52482e52b531e750dc1c55fd9e7f8d9c"
-          },
-          "construction": "construction-loading_constrained_approaching-fallback1.json",
-          "construction_sha256": "42b0ef4efb7a2b67bfdd520b54fb966d33b3313ec3d09d3a1b95391196d3bcde",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_approaching --candidate fallback1",
-            "construction_sha256": "42b0ef4efb7a2b67bfdd520b54fb966d33b3313ec3d09d3a1b95391196d3bcde",
+            "construction_sha256": "995e28c5f266a16964eb757528377c0800219904bcb3d44a1c7865d577480f9b",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_constrained_approaching-fallback1.log",
-            "log_sha256": "c6696ad03068b73ebac9f1f8b1a4aa03aba9c865d2880a7cdcdc0472b580420b"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_constrained_approaching-fallback1.log",
+            "log_sha256": "c93f40025387b4722f704b9a0e796ef9055d8a12151342f559e7a5e2132f4383"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_approaching",
-      "compatibility": {
-        "log": "proofs/selected-loading_constrained_approaching-primary/analysis.log",
-        "receipt": "proofs/selected-loading_constrained_approaching-primary/receipt.json",
-        "sha256": "abc5f35d2f70b44717a2c7a6b2880e8735095920f993c8cc17393cb98c284e24"
-      },
-      "construction": "construction-loading_constrained_approaching.json",
-      "construction_sha256": "32cc12651be509a60c8ec71159b7d73df97a0db7647ee5c419a1ac5601a51fd0",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_approaching-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_constrained_approaching-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_constrained_approaching-positive.log",
-        "positive_log_sha256": "4ed6259829de6583aa7c17dd749d666232f6b3fc85df61b21f483b046d17d518",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_constrained_approaching.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_constrained_approaching-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_approaching --candidate primary",
-        "construction_sha256": "32cc12651be509a60c8ec71159b7d73df97a0db7647ee5c419a1ac5601a51fd0",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_constrained_approaching.log",
-        "log_sha256": "5a64d0525550fbe72d01b80699b407b238ed3ef921664457f99718bd89b8e8f4"
-      },
-      "physical_preparation": {
-        "receipt": "physical-loading_constrained_approaching-receipt.json",
-        "sha256": "7b132788b3f98602dbb948a41596730e35e00faf1dbf1b1d0046881982ea206b"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_constrained_approaching/analysis.log",
-        "analysis_log_sha256": "fdb856ae965fcb60d2b861d0c6e3bee5ae656336964d9038a555beecfab0338e",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_constrained_approaching/receipt.json",
-        "sha256": "075fc351ff4a3aa769e7ac98656eec889715abcddb32f1b55bc7b34be7c66f59",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_approaching-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_constrained_approaching-receipt.json",
+        "sha256": "d25c7d287de1edc2a33b002bfdc1cffc296f225604f34c8eb3bee5eb532c6273"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_approaching --candidate primary",
+        "construction_sha256": "712c1a7ef384653d3ee670e8bd5b745e944ba59585b7ef16c5a9038a63b60483",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_constrained_approaching.log",
+        "log_sha256": "f2ea6ef85c610e09b45a43b911d12ac0e57ce779a5662ed61a756705f33cfe82"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_waiting",
+      "construction": "construction-loading_open_waiting.json",
+      "construction_sha256": "a81ff242aebbea89440cd477c77348f98d1e636e464acbcc238a45af0a936391",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_open_waiting-fallback1.json",
+          "construction_sha256": "eeb5c3c0ce3114be085b8ad5b768683e9981534c214e8bdc344bddc4bba20831",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_open_waiting-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_open_waiting-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_open_waiting-fallback1/receipt.json",
-            "sha256": "153263125a991b82aedc6552548014fc4a7484cd3ee197c951fc06dadfc08456"
-          },
-          "construction": "construction-loading_open_waiting-fallback1.json",
-          "construction_sha256": "bf7920efd8df6b4f88f9cf5489c7832b9810e5753e4dc67c02f87b7f4cf14181",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_waiting --candidate fallback1",
-            "construction_sha256": "bf7920efd8df6b4f88f9cf5489c7832b9810e5753e4dc67c02f87b7f4cf14181",
+            "construction_sha256": "eeb5c3c0ce3114be085b8ad5b768683e9981534c214e8bdc344bddc4bba20831",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_open_waiting-fallback1.log",
-            "log_sha256": "0458d0d7d5a8ad0166638f1964e559dab533a5bd41248c69430573abf93256f7"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_open_waiting-fallback1.log",
+            "log_sha256": "b9723f0e3b3d85f4af3c3dd68f2fbd701edb71279466e4f04d191fd8e1f57b69"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_waiting",
-      "compatibility": {
-        "log": "proofs/selected-loading_open_waiting-primary/analysis.log",
-        "receipt": "proofs/selected-loading_open_waiting-primary/receipt.json",
-        "sha256": "674e3144d22210e4d82ef3f8e9ec867938d9dbd11f6ba6fdd7cd5f3812523581"
-      },
-      "construction": "construction-loading_open_waiting.json",
-      "construction_sha256": "0c4897923fe42707e202f4f7c95bba14e21376079d110e9b819d251add337e5c",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_waiting-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_open_waiting-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_open_waiting-positive.log",
-        "positive_log_sha256": "03ec7e8db75b0c10587dfbae67a6ba31cfff11c7285312dd6314b23004f8e453",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_open_waiting.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_open_waiting-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_waiting --candidate primary",
-        "construction_sha256": "0c4897923fe42707e202f4f7c95bba14e21376079d110e9b819d251add337e5c",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_open_waiting.log",
-        "log_sha256": "01b55af1440a4376fb8f38fba842c4d1b8033a318f666ac40472391173273b5c"
-      },
-      "physical_preparation": {
-        "receipt": "physical-loading_open_waiting-receipt.json",
-        "sha256": "004e7098aa73d8fc071a23a5ad56367446144d3820c10ebd92a1d80a71efbb0f"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_open_waiting/analysis.log",
-        "analysis_log_sha256": "09a016b70db037f384386b384b859fbd3c4d0d83e3aaef4a894d29c0e59d5903",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_open_waiting/receipt.json",
-        "sha256": "ae5fc2deacfd9c0a2f2ed915f35a79c1e9995cde20c25e90585b7f5db695ab58",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_waiting-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_open_waiting-receipt.json",
+        "sha256": "58fda5e0dc127008a081821e1bd934c4f1a0866efa0adb03e7a55388538912d5"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_waiting --candidate primary",
+        "construction_sha256": "a81ff242aebbea89440cd477c77348f98d1e636e464acbcc238a45af0a936391",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_open_waiting.log",
+        "log_sha256": "e32c106f3c8298d8f30011a134a680a652ceff8e3ed008b25095019e86f1f213"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_waiting",
+      "construction": "construction-loading_constrained_waiting.json",
+      "construction_sha256": "84d66b5430de13b6e311dd73f161c8ca5ba87b2d12336be25e8683b71edee636",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_constrained_waiting-fallback1.json",
+          "construction_sha256": "b01f537b4849feab9acb57e643516af417c3e61cb43ce96ce1a38e4532cb83b9",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_constrained_waiting-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_constrained_waiting-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_constrained_waiting-fallback1/receipt.json",
-            "sha256": "72ae146da0f7e841efa7cee5bbacef91c9c136d1102a313fa0c508f0702527c6"
-          },
-          "construction": "construction-loading_constrained_waiting-fallback1.json",
-          "construction_sha256": "dd7cff91e6c7658991dde5ac43f495f0a563224c6e3512f903ae23d53f181760",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_waiting --candidate fallback1",
-            "construction_sha256": "dd7cff91e6c7658991dde5ac43f495f0a563224c6e3512f903ae23d53f181760",
+            "construction_sha256": "b01f537b4849feab9acb57e643516af417c3e61cb43ce96ce1a38e4532cb83b9",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_constrained_waiting-fallback1.log",
-            "log_sha256": "263b1b7d764ae7318373dff768748cac9cd292f8167c2fd2a9751bf395e3ecf7"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_constrained_waiting-fallback1.log",
+            "log_sha256": "cf3d5897740921bff053364c21389ceaf09ce48b63e520d659fa3d370d5c3aa8"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_waiting",
-      "compatibility": {
-        "log": "proofs/selected-loading_constrained_waiting-primary/analysis.log",
-        "receipt": "proofs/selected-loading_constrained_waiting-primary/receipt.json",
-        "sha256": "c0261e1edab81efb26af3112cb8b27437098c2cc445a49e5904db61edd6f2f9e"
-      },
-      "construction": "construction-loading_constrained_waiting.json",
-      "construction_sha256": "3b7d316b2b1a32e01f1bed47865cdde27c19bd7c5e8ea97fa56fd1fcf7ee3835",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_waiting-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_constrained_waiting-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_constrained_waiting-positive.log",
-        "positive_log_sha256": "e602d3e52aa6e53818a395f65fd98d8aa139f847e50cf2269e86d7fcf39b5e27",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_constrained_waiting.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_constrained_waiting-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_waiting --candidate primary",
-        "construction_sha256": "3b7d316b2b1a32e01f1bed47865cdde27c19bd7c5e8ea97fa56fd1fcf7ee3835",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_constrained_waiting.log",
-        "log_sha256": "b567eff371bf9b3e965172f5f3a989c9c640031862533882b842f09508874077"
-      },
-      "physical_preparation": {
-        "receipt": "physical-loading_constrained_waiting-receipt.json",
-        "sha256": "96e228fe03f357614c704b4558f1e8ebb939a345173dcd8772bf88741323da14"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_constrained_waiting/analysis.log",
-        "analysis_log_sha256": "ca0145d16669b100175393db8110497a781fdc5c870ff015203643561eeed5f3",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_constrained_waiting/receipt.json",
-        "sha256": "6af9dc0024fd019dfd8b2b0bfbcdc2b6a110c1b91755467f5a45ffe96037c88f",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_waiting-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_constrained_waiting-receipt.json",
+        "sha256": "35575c59d2872e1dfd9f49f9878691723347879c9f8dd05540c857bb0a9fd7e3"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_waiting --candidate primary",
+        "construction_sha256": "84d66b5430de13b6e311dd73f161c8ca5ba87b2d12336be25e8683b71edee636",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_constrained_waiting.log",
+        "log_sha256": "a9e835f79a80e817521a36f7aebe4d1962d6915da0f0f992309f8ce17e09fb9f"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_constrained_waiting",
+      "construction": "construction-ceased_constrained_waiting.json",
+      "construction_sha256": "52ef931bd93c88b17f4a32acead306e4135f635a84fe5990c6271d636961eeb2",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-ceased_constrained_waiting-fallback1.json",
+          "construction_sha256": "999a8375e6a29f307c2dce0b4af20f797b75895e60602c6d63b03f5cda33d257",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-ceased_constrained_waiting-fallback1/analysis.log",
-            "negative_log": "proofs/selected-ceased_constrained_waiting-fallback1/negative.log",
-            "receipt": "proofs/selected-ceased_constrained_waiting-fallback1/receipt.json",
-            "sha256": "68d549afec370775a4a5794850b6e1a941a314230f5283eec5a3e9161983f6b5"
-          },
-          "construction": "construction-ceased_constrained_waiting-fallback1.json",
-          "construction_sha256": "89afc2dab7a343c33426c1342df341c349f2b22a0c7616ac93c7a4eae78282e4",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_constrained_waiting --candidate fallback1",
-            "construction_sha256": "89afc2dab7a343c33426c1342df341c349f2b22a0c7616ac93c7a4eae78282e4",
+            "construction_sha256": "999a8375e6a29f307c2dce0b4af20f797b75895e60602c6d63b03f5cda33d257",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-ceased_constrained_waiting-fallback1.log",
-            "log_sha256": "647d517dec13de99d9757e7d859ea1c133d2181af477224c30e38d465926322c"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-ceased_constrained_waiting-fallback1.log",
+            "log_sha256": "da54f50cd981752532c7a7b088d6c9d3d78f1368101783cd61e163b6955259cf"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_constrained_waiting",
-      "compatibility": {
-        "log": "proofs/selected-ceased_constrained_waiting-primary/analysis.log",
-        "receipt": "proofs/selected-ceased_constrained_waiting-primary/receipt.json",
-        "sha256": "d0dd3b03f932c96b5614c97f201e94f6041707a413ba2f8ee7e11db451f16381"
-      },
-      "construction": "construction-ceased_constrained_waiting.json",
-      "construction_sha256": "3fb25a56f9645ae7ad9f74ab783e31480560a6b2968da7f2d9d22c4943effef3",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/ceased_constrained_waiting-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-ceased_constrained_waiting-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-ceased_constrained_waiting-positive.log",
-        "positive_log_sha256": "7ba6494e498bdf2cac845a664e9686c59cf0b80d9f69bf9591106a330835f184",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/ceased_constrained_waiting.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-ceased_constrained_waiting-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_constrained_waiting --candidate primary",
-        "construction_sha256": "3fb25a56f9645ae7ad9f74ab783e31480560a6b2968da7f2d9d22c4943effef3",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-ceased_constrained_waiting.log",
-        "log_sha256": "94f119557e612411ee97c9b24910f203b4029aadb799576b1bdedae876a63003"
-      },
-      "physical_preparation": {
-        "receipt": "physical-ceased_constrained_waiting-receipt.json",
-        "sha256": "17ecc081c77845a4e6231db4c84c950097682d43ea6808effd24b7ea14c89851"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-ceased_constrained_waiting/analysis.log",
-        "analysis_log_sha256": "f713d99011758503b8efe55d764fdac80953305c04fa6abe09aed35e367e3b0e",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-ceased_constrained_waiting/receipt.json",
-        "sha256": "e38f1bbfb249e5b8e066364a0b3aec7d11b38c8d96d869c7f7e639a613af4de9",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/ceased_constrained_waiting-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-ceased_constrained_waiting-receipt.json",
+        "sha256": "2d22cb3c840d442feacbe58de3cbc5e1a1838adf199a67698f32ba86f424b85f"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_constrained_waiting --candidate primary",
+        "construction_sha256": "52ef931bd93c88b17f4a32acead306e4135f635a84fe5990c6271d636961eeb2",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-ceased_constrained_waiting.log",
+        "log_sha256": "2139a1e3c1269f6f9c9c3bec93f8856e21f7dbf845288ee12741010749ca5a02"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_open_waiting",
+      "construction": "construction-ceased_open_waiting.json",
+      "construction_sha256": "01396148d680861bf3ae0e5fc5b77ff6f8d7c94092eaa98c3aea66a311e28acc",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-ceased_open_waiting-fallback1.json",
+          "construction_sha256": "72145fa3ac17fa18b2b7fc0228183a0a1ea6051b5383610e6d740109ac0c7735",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-ceased_open_waiting-fallback1/analysis.log",
-            "negative_log": "proofs/selected-ceased_open_waiting-fallback1/negative.log",
-            "receipt": "proofs/selected-ceased_open_waiting-fallback1/receipt.json",
-            "sha256": "ff7348d9cfc7a317a5a3b8737e56d0396a197a6f297337563793a13a49b32b20"
-          },
-          "construction": "construction-ceased_open_waiting-fallback1.json",
-          "construction_sha256": "628f5b2451fd06b4cbdb7888f894f1a2f2a8d566aea3c4ce316e6e7987fe1d07",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_open_waiting --candidate fallback1",
-            "construction_sha256": "628f5b2451fd06b4cbdb7888f894f1a2f2a8d566aea3c4ce316e6e7987fe1d07",
+            "construction_sha256": "72145fa3ac17fa18b2b7fc0228183a0a1ea6051b5383610e6d740109ac0c7735",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-ceased_open_waiting-fallback1.log",
-            "log_sha256": "40717cad0435f96566e61b19042aa01d3ef989260a9024faa05685a751712c58"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-ceased_open_waiting-fallback1.log",
+            "log_sha256": "70ae9352bf1c343742478996569109d38c595c5bf4f55d2bc398c76c53065636"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_open_waiting",
-      "compatibility": {
-        "log": "proofs/selected-ceased_open_waiting-primary/analysis.log",
-        "receipt": "proofs/selected-ceased_open_waiting-primary/receipt.json",
-        "sha256": "10168e17c5a973aa82da9f48197eefc42f9093c8b230b883bc32b3abea6f66ac"
-      },
-      "construction": "construction-ceased_open_waiting.json",
-      "construction_sha256": "d9d70399c980feda4226a1415db6b5020cc4439a7c44608ca4253ebb0dd9d130",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/ceased_open_waiting-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-ceased_open_waiting-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-ceased_open_waiting-positive.log",
-        "positive_log_sha256": "5e0ced67a7560e4557be20c96d68161a26ff6bf4f4fc9323a868d6ab2648cc09",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/ceased_open_waiting.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-ceased_open_waiting-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_open_waiting --candidate primary",
-        "construction_sha256": "d9d70399c980feda4226a1415db6b5020cc4439a7c44608ca4253ebb0dd9d130",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-ceased_open_waiting.log",
-        "log_sha256": "a7faf43c66aad3ccc924483b2eb1764991b1bcb1f218b8aab2486bd27e5aa425"
-      },
-      "physical_preparation": {
-        "receipt": "physical-ceased_open_waiting-receipt.json",
-        "sha256": "97af8fa9c1b08b06624dd6c0379b811b72ec2f77dc9e3e0d3ab32e2024a83a1c"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-ceased_open_waiting/analysis.log",
-        "analysis_log_sha256": "e96a2ffb17022f0c02c56986e5b9fff201a0baabf16377e790353b1595cf70b1",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-ceased_open_waiting/receipt.json",
-        "sha256": "527845cc29cf3d47d184c298f0727860c9c2af9c2186b414dd29c55ae21dd503",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/ceased_open_waiting-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-ceased_open_waiting-receipt.json",
+        "sha256": "8897c261e9d79c5b3b1b53df6c2b34a1342a7eb1a06653cfc22c240d09ddba8f"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__ceased_open_waiting --candidate primary",
+        "construction_sha256": "01396148d680861bf3ae0e5fc5b77ff6f8d7c94092eaa98c3aea66a311e28acc",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-ceased_open_waiting.log",
+        "log_sha256": "7c337523016fd7de2032aa9da3cbc4ba4fcdfa9a0c128487a413d1a2dd33ad6a"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_no_entrant",
+      "construction": "construction-loading_open_no_entrant.json",
+      "construction_sha256": "e25c566c38ff2de296f5b7c461f02024c7ac186303d12ef17aa978dce2d471bb",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_open_no_entrant-fallback1.json",
+          "construction_sha256": "2d8d846cf16f284fa6804239dfbd7212f14d8756bafd8da4ebb11b92b4ab6fcf",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_open_no_entrant-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_open_no_entrant-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_open_no_entrant-fallback1/receipt.json",
-            "sha256": "8b7e5b864a0547eb8445dde78932b84d34a4ab2e3935a21db820c2c69200e1ea"
-          },
-          "construction": "construction-loading_open_no_entrant-fallback1.json",
-          "construction_sha256": "31fe16c7d429d9f433f70479278649bb3661a23dab5e2db64bdba8c288e0a6e0",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_no_entrant --candidate fallback1",
-            "construction_sha256": "31fe16c7d429d9f433f70479278649bb3661a23dab5e2db64bdba8c288e0a6e0",
+            "construction_sha256": "2d8d846cf16f284fa6804239dfbd7212f14d8756bafd8da4ebb11b92b4ab6fcf",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_open_no_entrant-fallback1.log",
-            "log_sha256": "4c0df50aa42c84c0c36344046059b5dc51ef2aaaafb0d7a1a0705e1548b051e2"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_open_no_entrant-fallback1.log",
+            "log_sha256": "5bb76fb003d2ce7c7c726dc95919b16cecb2fbc049c9ed64a47a9e599f71f7c1"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_no_entrant",
-      "compatibility": {
-        "log": "proofs/selected-loading_open_no_entrant-primary/analysis.log",
-        "receipt": "proofs/selected-loading_open_no_entrant-primary/receipt.json",
-        "sha256": "b4de8f004dcf74ccbdf02aaa8eea05e87c0e430f69f91bd79c24c08255b4968c"
-      },
-      "construction": "construction-loading_open_no_entrant.json",
-      "construction_sha256": "f2a41c466dd53cc11f8baca575fb9f9145aec1638d35c404b99f05ad1185c895",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_no_entrant-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_open_no_entrant-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_open_no_entrant-positive.log",
-        "positive_log_sha256": "a10b42b8f942ce14b5b2975b11f267b0f5b9ff9226c67922eb73acee10db79da",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_open_no_entrant.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "native_handoff": {
-        "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_open_no_entrant-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_no_entrant --candidate primary",
-        "construction_sha256": "f2a41c466dd53cc11f8baca575fb9f9145aec1638d35c404b99f05ad1185c895",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_open_no_entrant.log",
-        "log_sha256": "fbeea9da50ef2d55268eb8d43b654f123fa052d1a5a5e29a53880c4a02c359b0"
-      },
-      "physical_preparation": {
-        "receipt": "physical-loading_open_no_entrant-receipt.json",
-        "sha256": "473224fa970d4dc48482665d406ddd3ea68d323379df4486786ccd5f31809c08"
-      },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_open_no_entrant/analysis.log",
-        "analysis_log_sha256": "c21f8f3b12b0cdc79f3d263a848a76e65777379b52bd89488756bd3ba8235862",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_open_no_entrant/receipt.json",
-        "sha256": "7d47333f4827b0d45e7e1946a0ebd1b1910ac79febbda1b2be19fc86f3dfeb73",
-        "synthetic_only": true
-      }
-    },
-    {
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_open_no_entrant-recipe.json",
       "acquisition": {
-        "four synchronized camera views": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "video_frames.jsonl",
-          "method": "four Native RGB encoders with exact frame map"
-        },
-        "loading, waiting, entry and access": {
-          "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "20 Hz observer readback"
-        },
         "official stand designation and sign": {
           "entrypoint": "runner.py",
-          "evidence": "site-original.json",
-          "method": "source-sealed site and Native sign readback"
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
         },
         "subject passenger vehicle and driver": {
           "entrypoint": "stand_capture.py",
-          "evidence": "vehicle-original.json",
-          "method": "original actor identity and vehicle-role source"
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
         },
         "taxicab entrant and approach": {
           "entrypoint": "stand_capture.py",
-          "evidence": "actor-rows.json",
-          "method": "original entrant identity, speed and waiting readback"
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
         }
       },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_open_no_entrant-receipt.json",
+        "sha256": "83e70b61e7de003541cce1ada96522c70ab2104ee7c163443328c54de5cc8056"
+      },
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_open_no_entrant --candidate primary",
+        "construction_sha256": "e25c566c38ff2de296f5b7c461f02024c7ac186303d12ef17aa978dce2d471bb",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_open_no_entrant.log",
+        "log_sha256": "673edea8689e6e55021d198cc09e6f3a94c0342052a2ccaf574cae7c8ecdf56f"
+      }
+    },
+    {
+      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_no_entrant",
+      "construction": "construction-loading_constrained_no_entrant.json",
+      "construction_sha256": "00d50c85355ee8ab662c5808a8b88677ae374d5a33b4dc29f88d51a4d760904b",
       "candidate_risk": {
-        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video.",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Narrow stand entry and passenger activity may fail physical motion or four-camera visibility at the source map; verify Native readback and full promoted video."
       },
       "candidates": [
         {
+          "id": "fallback1",
+          "construction": "construction-loading_constrained_no_entrant-fallback1.json",
+          "construction_sha256": "139941041b07289b30b1e5cc50011cf2128db49e40178b2358d967d041f58018",
+          "trigger": {
+            "source": "Native subject spawn and curb readback",
+            "metric": "subject stand placement accepted inside reviewed curb polygon",
+            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"
+          },
           "changed_knobs": [
             "source-bounded stand_offset_m=0.25"
           ],
-          "compatibility": {
-            "log": "proofs/selected-loading_constrained_no_entrant-fallback1/analysis.log",
-            "negative_log": "proofs/selected-loading_constrained_no_entrant-fallback1/negative.log",
-            "receipt": "proofs/selected-loading_constrained_no_entrant-fallback1/receipt.json",
-            "sha256": "0b1d32204445afe283a1771d0060590bf3211a8bbf9d237ce71d4b7da480d0d9"
-          },
-          "construction": "construction-loading_constrained_no_entrant-fallback1.json",
-          "construction_sha256": "287c4f4eb3b66176a7529df09f2288fac6f8aa6e25e122826f3639974483c135",
-          "id": "fallback1",
           "offline": {
             "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_no_entrant --candidate fallback1",
-            "construction_sha256": "287c4f4eb3b66176a7529df09f2288fac6f8aa6e25e122826f3639974483c135",
+            "construction_sha256": "139941041b07289b30b1e5cc50011cf2128db49e40178b2358d967d041f58018",
             "exit_code": 0,
-            "log": "cpu-20261125-offline-v10-loading_constrained_no_entrant-fallback1.log",
-            "log_sha256": "7994ee44ff00d2999dcd641ab86d4e2fec19a0ab606ac6f02556da6992fb1fa6"
-          },
-          "trigger": {
-            "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility",
-            "metric": "subject stand placement accepted inside reviewed curb polygon",
-            "source": "Native subject spawn and curb readback"
+            "log": "cpu-20261125-offline-v11-loading_constrained_no_entrant-fallback1.log",
+            "log_sha256": "d47ddacaa6f5d119cd1251cb1faf1d65fc1deef07ca47ed65f0efe00f40e1067"
           }
         }
       ],
-      "case_id": "testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_no_entrant",
-      "compatibility": {
-        "log": "proofs/selected-loading_constrained_no_entrant-primary/analysis.log",
-        "receipt": "proofs/selected-loading_constrained_no_entrant-primary/receipt.json",
-        "sha256": "915a7101fde90c5aa667596976ca112c41ad2818b24e45f795f9bb26222a90f9"
-      },
-      "construction": "construction-loading_constrained_no_entrant.json",
-      "construction_sha256": "2b43ef436cfa602efad07ad7c6e0cb3d5290124551a8f5d44db80b629a6788f6",
-      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_no_entrant-recipe.json",
-      "independent_delivery_diagnostic": {
-        "negative_log": "audit-loading_constrained_no_entrant-negative.log",
-        "negative_log_sha256": "440edce968da31d40dec1cc095f70fad5920c8c65fd454f785d54a8351a7ccfb",
-        "physical_acceptance_claimed": false,
-        "positive_log": "audit-loading_constrained_no_entrant-positive.log",
-        "positive_log_sha256": "4e3fc2b334850bb53f79877a77105289c96d097ec92c502defff20a223bbfc17",
-        "script": "audit_delivery_prepared.py",
-        "script_sha256": "fc8ab618ec550c87879cd571c1743b8978e19bc113b10720cabce3d2db33350b",
-        "synthetic_only": true
-      },
       "kind": "delivery",
       "measurement_contract": "contracts/loading_constrained_no_entrant.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
+      "fixture_recipe": "work/testing__C135087__NRS-484B-517__motor_vehicle_driver/diagnostics/loading_constrained_no_entrant-recipe.json",
+      "acquisition": {
+        "official stand designation and sign": {
+          "entrypoint": "runner.py",
+          "method": "source-sealed site and Native sign readback",
+          "evidence": "site-original.json"
+        },
+        "subject passenger vehicle and driver": {
+          "entrypoint": "stand_capture.py",
+          "method": "original actor identity and vehicle-role source",
+          "evidence": "vehicle-original.json"
+        },
+        "taxicab entrant and approach": {
+          "entrypoint": "stand_capture.py",
+          "method": "original entrant identity, speed and waiting readback",
+          "evidence": "actor-rows.json"
+        },
+        "loading, waiting, entry and access": {
+          "entrypoint": "stand_capture.py",
+          "method": "20 Hz observer readback",
+          "evidence": "actor-rows.json"
+        },
+        "four synchronized camera views": {
+          "entrypoint": "stand_capture.py",
+          "method": "four Native RGB encoders with exact frame map",
+          "evidence": "video_frames.jsonl"
+        }
+      },
       "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT",
-        "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proofs/selected-loading_constrained_no_entrant-primary/negative.log"
-      },
-      "offline": {
-        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_no_entrant --candidate primary",
-        "construction_sha256": "2b43ef436cfa602efad07ad7c6e0cb3d5290124551a8f5d44db80b629a6788f6",
-        "exit_code": 0,
-        "log": "cpu-20261125-offline-v10-loading_constrained_no_entrant.log",
-        "log_sha256": "56efa2a971fddc6bf6a0f30533e8fa2ee4f6a93456d9b03ebc98e137cb08e6ed"
+        "port_env_var": "CARLA_PORT"
       },
       "physical_preparation": {
         "receipt": "physical-loading_constrained_no_entrant-receipt.json",
-        "sha256": "983c15e1b044696248378aa9d2b7d37cc087762ef23436d3f9a661e4ad745a1d"
+        "sha256": "56d95e47fafd62b72e79e06ee19c57f72ffaf220142495b54d924814b6ba6762"
       },
-      "saved_processing_diagnostic": {
-        "analysis_log": "proofs/saved-loading_constrained_no_entrant/analysis.log",
-        "analysis_log_sha256": "574cb22922b0be0f08b2b11b44f9f5cf1c0a70196fad54c8d1cf50a72216e55d",
-        "originals_preserved": true,
-        "receipt": "proofs/saved-loading_constrained_no_entrant/receipt.json",
-        "sha256": "3e1c9380f24d5ad7f3e21a74ecab4008b937a5b038fe24ea229b7d6c61227d6d",
-        "synthetic_only": true
+      "offline": {
+        "command": "runtime.py offline --case testing__C135087__NRS-484B-517__motor_vehicle_driver__loading_constrained_no_entrant --candidate primary",
+        "construction_sha256": "00d50c85355ee8ab662c5808a8b88677ae374d5a33b4dc29f88d51a4d760904b",
+        "exit_code": 0,
+        "log": "cpu-20261125-offline-v11-loading_constrained_no_entrant.log",
+        "log_sha256": "ce45019284911645fe3d4c66a7833c4debf283e8e06f4991f145b479841383d4"
       }
     }
-  ],
-  "format": "worker-execution-manifest",
-  "independent_comparison_diagnostic": {
-    "receipt": "comparison-audit-receipt.json",
-    "sha256": "8a39486abce055fa88d1ea299599649772a7f5e215938b9ba302a71bc3bbf7bf",
-    "synthetic_only": true
-  },
-  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial_source_gated"
+  ]
 }

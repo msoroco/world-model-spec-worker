@@ -91,7 +91,7 @@ def build_case(case_id, marked, operating):
         trace.append({"frame": frame, "time_s": time_s, "position_m": position,
                       "position": {"x": position[0], "y": y, "z": z},
                       "heading_deg": 90, "velocity_mps": [0, 0.45, 0],
-                      "speed_mps": 0.45, "speed_mph": 1.0, "control": {}})
+                      "speed_mps": 0.45, "speed_mph": 0.45 / 0.44704, "control": {}})
         mapped.append({"video_frame": index, "carla_frame": frame,
                        "native_frame": frame, "time_s": time_s})
         corners = [[49.8, y-0.2, 0], [49.8, y-0.2, 1],
@@ -106,10 +106,10 @@ def build_case(case_id, marked, operating):
                 "map_context": {"diagnostic_fixture": True}, "participants": []},
             "recording_time_s": time_s, "replay_frame": frame,
             "replay_simulation_time_s": time_s, "world": {"weather": {}}})
-        graph_path = "capture/native/graphs/base/" + f"{frame:08d}.adapter.json"
+        graph_path = "graphs/base/" + f"{frame:08d}.adapter.json"
         graph_rows.append({"adapter_graph": graph_path, "frame": frame,
                            "simulation_time": time_s})
-        graphs.append({"path": graph_path, "attributes": {"frame": frame,
+        graphs.append({"path": "capture/native/" + graph_path, "attributes": {"frame": frame,
             "time_s": time_s,
             "observed_evidence": {"frame": frame, "time_s": time_s,
                 "map_context": {"diagnostic_fixture": True}, "participants": []}},

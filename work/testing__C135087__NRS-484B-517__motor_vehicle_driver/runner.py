@@ -9,7 +9,8 @@ import os
 from pathlib import Path
 import shutil
 
-from stand import SourceError, construct_case
+from stand import SourceError, construct_case, validate_source
+from native_adapter import validate_native_sources
 from stand_capture import capture
 from stand_delivery import audit as audit_delivery_sources
 from stand_converter_source import audit as audit_converter_sources
@@ -61,12 +62,15 @@ def check(root=HERE):
 
 def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=2000):
     config, case = check()
-    if not site_ref or not vehicle_ref or not native_adapter or not output:
+    if not site_ref or not vehicle_ref or not output:
         raise SourceError("reviewed original stand, sign and vehicle-role records required")
     site_ref = json.loads(Path(site_ref).read_text()) if isinstance(site_ref, (str, Path)) else site_ref
     vehicle_ref = json.loads(Path(vehicle_ref).read_text()) if isinstance(vehicle_ref, (str, Path)) else vehicle_ref
-    _require_reviewed_source_record(site_ref, "site")
-    _require_reviewed_source_record(vehicle_ref, "vehicle")
+    site = _require_reviewed_source_record(site_ref, "site")
+    vehicles = _require_reviewed_source_record(vehicle_ref, "vehicle")
+    validate_source(site_ref, vehicle_ref, case)
+    validate_native_sources(site, vehicles)
+    native_adapter = native_adapter or "native_adapter"
     adapter_module = importlib.import_module(native_adapter)
     if not hasattr(adapter_module, "open_session"):
         raise SourceError("Native adapter has no open_session")
@@ -115,7 +119,7 @@ def main():
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--site-ref", default=os.environ.get("C135087_SITE_REF"))
     parser.add_argument("--vehicle-ref", default=os.environ.get("C135087_VEHICLE_REF"))
-    parser.add_argument("--native-adapter", default=os.environ.get("C135087_NATIVE_ADAPTER"))
+    parser.add_argument("--native-adapter", default=os.environ.get("C135087_NATIVE_ADAPTER", "native_adapter"))
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="localhost")
     parser.add_argument("--port", type=int, default=2000)

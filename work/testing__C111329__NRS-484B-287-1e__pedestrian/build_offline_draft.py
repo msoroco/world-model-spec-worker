@@ -94,6 +94,16 @@ def build():
                         'files': [{'path': name, 'content': content} for name, content in files.items()]}
         path = HERE / ('construction-' + suffix + '.json')
         path.write_text(json.dumps(construction, indent=2) + '\n')
+        fallback = json.loads(json.dumps(construction))
+        fallback_runner = next(item for item in fallback['files'] if item['path'] == 'runner.py')
+        if fallback_runner['content'].count('route_index, 1.25,') != 1:
+            raise ValueError('primary walker speed source changed')
+        fallback_runner['content'] = fallback_runner['content'].replace(
+            'route_index, 1.25,', 'route_index, 1.05,')
+        fallback['candidate_id'] = 'fallback1'
+        fallback_path = HERE / 'cases' / suffix / 'fallback1-construction.json'
+        fallback_path.parent.mkdir(parents=True, exist_ok=True)
+        fallback_path.write_text(json.dumps(fallback, indent=2) + '\n')
         contract_path = HERE / 'cases' / suffix / 'measurement-contract.json'
         contract_path.parent.mkdir(parents=True, exist_ok=True)
         contract_path.write_text(json.dumps({
@@ -114,10 +124,28 @@ def build():
         entries.append({'case_id': case_id, 'kind': 'diagnostic_source_gated',
                         'construction': path.name,
                         'construction_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-                        'candidate_risk': case['physical_risk_assessment'],
+                        'candidate_risk': {'status': 'physical',
+                                           'reason': case['physical_risk_assessment']['risk']},
+                        'candidates': [{'id': 'fallback1',
+                                        'construction': str(fallback_path.relative_to(HERE)),
+                                        'construction_sha256': hashlib.sha256(fallback_path.read_bytes()).hexdigest(),
+                                        'trigger': {'source': 'original walker 20 Hz center history',
+                                                    'metric': 'distance to surveyed destination and corner overshoot',
+                                                    'failure_condition': 'primary route control overshoots the destination or fails to settle'},
+                                        'changed_knobs': ['walker requested route speed 1.25 to 1.05 m/s']}],
                         'measurement_contract': str(contract_path.relative_to(HERE)),
                         'fixture_recipe': str((HERE / 'cases' / suffix / 'fixture-recipe.json').relative_to(HERE.parents[1])),
-                        'measurement_procedure': {'entrypoint': 'analysis.py'}})
+                        'measurement_procedure': {'entrypoint': 'analysis.py'},
+                        'acquisition': {
+                            'walker_center_xy': {'entrypoint': 'native_capture.py',
+                                                 'method': 'original walker pose readback at each synchronous tick',
+                                                 'evidence': 'walker.json and original frame map'},
+                            'governing_diagonal_instruction': {'entrypoint': 'native_capture.py',
+                                                               'method': 'original governing pedestrian device readback at each tick',
+                                                               'evidence': 'device.json and official device-inventory source SHA'},
+                            'camera_original_frame_map': {'entrypoint': 'native_capture.py',
+                                                          'method': 'four original camera frame identity and pixel joins',
+                                                          'evidence': 'camera-frames.json and four original FFV1 videos'}}})
         proposals.append({'case_id': case_id, 'target_law_id': plan['law_id'],
                           'target_type': 'boundary_probe', 'rationale': case['purpose'],
                           'variable_assignments': {'governing_diagonal_instruction': {

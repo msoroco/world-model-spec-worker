@@ -141,6 +141,7 @@ def build():
         entries.append(entry)
     _write(ROOT / "execution-manifest.draft.json", {
         "format": "worker-execution-manifest-draft", "assignment_id": ROOT.name,
+        "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
         "status": "original_reviewed_site_and_selected_proofs_pending",
         "cases": entries})
     return entries
