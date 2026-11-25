@@ -57,11 +57,17 @@ class DeliveryAuditTests(unittest.TestCase):
             roots = {}
             baseline = {name: json.loads((ROOT / name).read_text())
                         for name in ('config.json', 'road_packet.json', 'surface_packet.json')}
+            baseline['config.json']['condition_target']['lane_width_m'] = [3, 4]
             baseline['surface_packet.json']['surface'] = 'dry'
+            baseline['surface_packet.json']['road_id'] = 7
             baseline['road_packet.json']['weather_profile']['precipitation'] = 0
+            baseline['road_packet.json']['road_id'] = 7
+            baseline['road_packet.json']['ego_spawn']['y'] = 0
             baseline['road_packet.json']['lead_spawn']['x'] = 25
+            baseline['road_packet.json']['lead_spawn']['y'] = 0
             baseline['road_packet.json']['lead_target_speed_mps'] = 7
-            for suffix in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic'):
+            for suffix in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
+                           'narrow_same_traffic'):
                 root = Path(folder) / suffix
                 root.mkdir()
                 docs = json.loads(json.dumps(baseline))
@@ -73,6 +79,12 @@ class DeliveryAuditTests(unittest.TestCase):
                 elif suffix == 'dense_traffic':
                     docs['road_packet.json']['lead_spawn']['x'] += 10
                     docs['road_packet.json']['lead_target_speed_mps'] += 2
+                elif suffix == 'narrow_same_traffic':
+                    docs['config.json']['condition_target']['lane_width_m'] = [2.5, 2.9]
+                    docs['road_packet.json']['road_id'] = 8
+                    docs['surface_packet.json']['road_id'] = 8
+                    docs['road_packet.json']['ego_spawn']['y'] = 50
+                    docs['road_packet.json']['lead_spawn']['y'] = 50
                 for name, doc in docs.items():
                     (root / name).write_text(json.dumps(doc) + '\n')
                 roots[suffix] = root

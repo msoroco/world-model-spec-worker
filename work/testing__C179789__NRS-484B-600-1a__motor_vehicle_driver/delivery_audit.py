@@ -11,6 +11,9 @@ import argparse
 from pathlib import Path
 
 ASSIGNMENT = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver'
+EXACT_CASES = {ASSIGNMENT + '__' + suffix for suffix in (
+    'dry_open_traffic', 'wet_same_traffic', 'narrow_same_traffic',
+    'dense_traffic', 'low_visibility', 'ice_or_snow')}
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 SOURCE_NAMES = ('road_context.json', 'condition_history.jsonl',
@@ -35,7 +38,7 @@ def audit_delivery(attempt, analysis_path):
     analysis = _json(Path(analysis_path))
     config = _json(attempt / 'config.json')
     case = config['selected_case_id']
-    if not case.startswith(ASSIGNMENT + '__') or case != result.get('case_id') or case != analysis.get('case_id'):
+    if case not in EXACT_CASES or case != result.get('case_id') or case != analysis.get('case_id'):
         raise ValueError('Exact saved case join failed')
     if result.get('physical_acceptance_claimed') is not False or analysis.get('physical_acceptance_claimed') is not False:
         raise ValueError('Unreviewed physical acceptance claimed')
@@ -98,9 +101,10 @@ def audit_delivery(attempt, analysis_path):
 
 
 def audit_comparison(attempts):
-    """Check the declared dry/wet/dense changes from source packet values."""
-    if set(attempts) != {'dry_open_traffic', 'wet_same_traffic', 'dense_traffic'}:
-        raise ValueError('Three exact controlled comparison members required')
+    """Check declared dry/wet/dense/narrow changes from source packet values."""
+    if set(attempts) != {'dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
+                         'narrow_same_traffic'}:
+        raise ValueError('Four exact controlled comparison members required')
     docs = {}
     for suffix, root in attempts.items():
         root = Path(root)
@@ -109,12 +113,18 @@ def audit_comparison(attempts):
         if config['selected_case_id'] != ASSIGNMENT + '__' + suffix or road['case_id'] != config['selected_case_id']:
             raise ValueError('Controlled comparison case join failed')
         docs[suffix] = (config, road, _json(root / 'surface_packet.json'))
-    dry, wet, dense = (docs[key] for key in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic'))
+    dry, wet, dense, narrow = (docs[key] for key in (
+        'dry_open_traffic', 'wet_same_traffic', 'dense_traffic', 'narrow_same_traffic'))
     for other in (wet, dense):
         for key in ('native_map_id', 'road_id', 'lane_id', 'ego_spawn',
                     'ego_target_speed_mps', 'vehicle_blueprint_id', 'lead_blueprint_id'):
             if other[1][key] != dry[1][key]:
                 raise ValueError('Undeclared fixed road or ego change: ' + key)
+    for key in ('native_map_id', 'lane_id', 'ego_target_speed_mps',
+                'vehicle_blueprint_id', 'lead_blueprint_id'):
+        if narrow[1][key] != dry[1][key]:
+            raise ValueError('Undeclared narrow vehicle or control change: ' + key)
+    for other in (wet, dense, narrow):
         for key in ('rate_hz', 'duration_s', 'cameras', 'requested_speed_mps'):
             if other[0][key] != dry[0][key]:
                 raise ValueError('Undeclared fixed capture change: ' + key)
@@ -126,6 +136,20 @@ def audit_comparison(attempts):
         raise ValueError('Dense case changed fixed surface/weather')
     if dense[1]['lead_spawn'] == dry[1]['lead_spawn'] or dense[1]['lead_target_speed_mps'] == dry[1]['lead_target_speed_mps']:
         raise ValueError('Dense case lacks declared traffic change')
+    def relative_gap(packet):
+        return [packet['lead_spawn'][axis] - packet['ego_spawn'][axis]
+                for axis in ('x', 'y', 'z')]
+    if (narrow[2]['surface'] != dry[2]['surface'] or
+            narrow[2]['road_id'] != narrow[1]['road_id'] or
+            narrow[1]['road_id'] == dry[1]['road_id'] or
+            narrow[1]['ego_spawn'] == dry[1]['ego_spawn'] or
+            narrow[1]['weather_profile'] != dry[1]['weather_profile'] or
+            relative_gap(narrow[1]) != relative_gap(dry[1]) or
+            narrow[1]['lead_target_speed_mps'] != dry[1]['lead_target_speed_mps']):
+        raise ValueError('Narrow case changed fixed surface, weather or traffic')
+    if (narrow[0]['condition_target']['lane_width_m'] != [2.5, 2.9]
+            or dry[0]['condition_target']['lane_width_m'] != [3, 4]):
+        raise ValueError('Narrow case lacks declared lane-width change')
     return {'format': 'worker-c179789-independent-comparison-audit', 'passed': True,
             'cases': [ASSIGNMENT + '__' + key for key in attempts],
             'physical_realization_verified': False}
@@ -138,15 +162,17 @@ def main():
     parser.add_argument('--dry')
     parser.add_argument('--wet')
     parser.add_argument('--dense')
+    parser.add_argument('--narrow')
     args = parser.parse_args()
-    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense)):
+    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense, args.narrow)):
         receipt = audit_delivery(args.attempt, args.analysis)
-    elif all((args.dry, args.wet, args.dense)) and not any((args.attempt, args.analysis)):
+    elif all((args.dry, args.wet, args.dense, args.narrow)) and not any((args.attempt, args.analysis)):
         receipt = audit_comparison({'dry_open_traffic': args.dry,
                                     'wet_same_traffic': args.wet,
-                                    'dense_traffic': args.dense})
+                                    'dense_traffic': args.dense,
+                                    'narrow_same_traffic': args.narrow})
     else:
-        parser.error('Supply an attempt and analysis, or dry/wet/dense source roots')
+        parser.error('Supply an attempt and analysis, or dry/wet/dense/narrow source roots')
     print(json.dumps(receipt, indent=2))
 
 

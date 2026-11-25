@@ -73,6 +73,32 @@ class ConditionConstructionTests(unittest.TestCase):
             MODULE.sample_lane_and_sight(world, waypoint, Location(x=0, y=0, z=1.5),
                                          (1, 0, 0), 30, map_source="", ray_source="ray")
 
+    def test_narrow_route_surveys_native_width_and_continuity(self):
+        class Waypoint:
+            def __init__(self, distance, width=2.8, lane=-1, junction=False, branch=False):
+                self.distance = distance
+                self.lane_width = width
+                self.road_id = 7
+                self.lane_id = lane
+                self.is_junction = junction
+                self.branch = branch
+
+            def next(self, step):
+                if self.branch:
+                    return [Waypoint(self.distance + step), Waypoint(self.distance + step)]
+                return [Waypoint(self.distance + step)]
+
+        receipt = MODULE.survey_narrow_route(Waypoint(0), target_width_m=[2.5, 3.0])
+        self.assertEqual(receipt['surveyed_length_m'], 110)
+        self.assertEqual(len(receipt['samples']), 23)
+        self.assertFalse(receipt['physical_motion_verified'])
+        with self.assertRaisesRegex(ValueError, 'width or continuity'):
+            MODULE.survey_narrow_route(Waypoint(0, width=3.5), target_width_m=[2.5, 3.0])
+        with self.assertRaisesRegex(ValueError, 'width or continuity'):
+            MODULE.survey_narrow_route(Waypoint(0, lane=1, junction=True), target_width_m=[2.5, 3.0])
+        with self.assertRaisesRegex(ValueError, 'missing or branching'):
+            MODULE.survey_narrow_route(Waypoint(0, branch=True), target_width_m=[2.5, 3.0])
+
 
 if __name__ == "__main__":
     unittest.main()

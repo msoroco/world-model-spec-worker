@@ -90,3 +90,44 @@ def sample_lane_and_sight(world, waypoint, eye, forward, max_distance_m, *,
             "map_source": map_source, "ray_source": ray_source,
             "original_camera_visibility_verified": False,
             "road_surface_verified": False}
+
+
+def survey_narrow_route(start_waypoint, *, target_width_m, route_length_m=110,
+                        sample_step_m=5):
+    """Check a continuous Native lane, rather than trusting a width flag.
+
+    The source waypoint must be from the reviewed site packet. A branch,
+    junction, lane change or missing route segment requires a new site review.
+    """
+    if (not isinstance(target_width_m, list) or len(target_width_m) != 2 or
+            any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in target_width_m) or
+            not 0 < target_width_m[0] < target_width_m[1]):
+        raise ValueError('Finite narrow-lane target interval required')
+    length = _finite(route_length_m, 'survey length')
+    step = _finite(sample_step_m, 'survey step')
+    if length < 100 or step <= 0 or length / step > 1000:
+        raise ValueError('Narrow route must cover at least 100 m at bounded resolution')
+    road_id, lane_id = start_waypoint.road_id, start_waypoint.lane_id
+    if type(road_id) is not int or type(lane_id) is not int:
+        raise ValueError('Original Native road/lane identity required')
+    samples = []
+    current = start_waypoint
+    count = math.ceil(length / step)
+    for index in range(count + 1):
+        width = _finite(getattr(current, 'lane_width', None), 'lane width')
+        if ((current.road_id, current.lane_id) != (road_id, lane_id) or
+                getattr(current, 'is_junction', False) or
+                not target_width_m[0] <= width <= target_width_m[1]):
+            raise ValueError('Native narrow lane width or continuity differs')
+        samples.append({'distance_m': min(index * step, length), 'lane_width_m': width})
+        if index < count:
+            advance = min(step, length - index * step)
+            choices = current.next(advance)
+            if len(choices) != 1:
+                raise ValueError('Native narrow route missing or branching')
+            current = choices[0]
+    return {'road_id': road_id, 'lane_id': lane_id,
+            'surveyed_length_m': length, 'sample_step_m': step,
+            'samples': samples, 'source': 'original Native waypoint.next',
+            'physical_motion_verified': False}

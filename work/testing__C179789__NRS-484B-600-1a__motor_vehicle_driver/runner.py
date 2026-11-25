@@ -14,7 +14,7 @@ from queue import Empty, Queue
 from camera_encoder import FFV1Writer
 from camera_setup import PROFILE, source_cameras
 from condition_capture import sample_frame, validate_surface_packet
-from condition_construction import apply_sourced_weather
+from condition_construction import apply_sourced_weather, survey_narrow_route
 from traffic_construction import spawn_lead_traffic
 from traffic_controller import LongitudinalController
 
@@ -188,6 +188,10 @@ def capture(args, config):
                                          project_to_road=False)
             if waypoint is None or (waypoint.road_id, waypoint.lane_id) != (packet['road_id'], packet['lane_id']):
                 raise ValueError('Ego spawn differs from reviewed road/lane')
+            narrow_survey = None
+            if config['selected_case_id'].endswith('__narrow_same_traffic'):
+                narrow_survey = survey_narrow_route(
+                    waypoint, target_width_m=config['condition_target']['lane_width_m'])
             ego_blueprint = world.get_blueprint_library().find(packet['vehicle_blueprint_id'])
             ego = world.try_spawn_actor(ego_blueprint, _transform(carla, start))
             if ego is None:
@@ -216,6 +220,8 @@ def capture(args, config):
                            'diagnostic_reaction_time_s': packet['diagnostic_reaction_time_s'],
                            'diagnostic_braking_deceleration_mps2': packet['diagnostic_braking_deceleration_mps2'],
                            'legal_threshold_claimed': False}
+                if narrow_survey is not None:
+                    context['narrow_route_survey'] = narrow_survey
                 (output / 'road_context.json').write_text(json.dumps(context, indent=2) + '\n')
                 with source_cameras(world, ego, _camera_transforms(carla, start), config['cameras']) as sensors:
                     queues = {name: Queue() for name in CAMERAS}
