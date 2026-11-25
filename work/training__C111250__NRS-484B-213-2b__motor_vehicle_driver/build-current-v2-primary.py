@@ -66,6 +66,7 @@ def main():
         trace.append({'frame': frame, 'time_s': time,
                       'position': {'x': x, 'y': y, 'z': 0.5},
                       'position_m': [x, y, 0.5], 'heading_deg': 0,
+                      'velocity_mps': [3.4, 0.0, 0.0],
                       'speed_mps': 3.4, 'speed_mph': 3.4 * 2.2369362920544,
                       'control': {'throttle': 0, 'brake': 0, 'hand_brake': False}})
         frame_map.append({'carla_frame': frame, 'native_frame': frame,

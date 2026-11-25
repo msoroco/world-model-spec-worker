@@ -80,7 +80,7 @@ def finalize(attempt, output):
                            'physical_cause_confirmed': False,
                            'cause_evidence': ['native_samples.jsonl', 'road.xodr']}],
         'setup_confirmed': False, 'behavior_attempted': True, 'maneuver_completed': False,
-        'termination_reason': 'Synthetic saved software stop measured; physical review pending',
+        'termination_reason': 'Saved source stop measured; physical review pending',
         'physical_failure_flags': ['physical_stop_sign_crosswalk_and_pixels_unverified'],
         'trace_reference': 'trace.jsonl',
         'video_references': [name + '.mkv' for name in CAMERAS],
@@ -95,7 +95,7 @@ def finalize(attempt, output):
                                           'time_window': 'before first full-body crosswalk entry',
                                           'statistic': 'longest consecutive run',
                                           'reference': 'native_samples.jsonl'}},
-        'provenance_kind': 'synthetic_native_sample', 'accepted': False,
+        'provenance_kind': observed['source_kind'], 'accepted': False,
         'legal_verdict_claimed': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)

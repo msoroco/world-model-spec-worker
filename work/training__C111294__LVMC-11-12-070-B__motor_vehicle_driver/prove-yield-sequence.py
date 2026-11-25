@@ -109,6 +109,21 @@ def main():
     invalid[190]['entrant']['road_id'] = 1
     write_fixture(damaged, case1, invalid)
     negatives.append(reject('wrong-road', damaged, case1, 'Native road/lane roles differ'))
+    damaged = FIXTURES / 'reversed-through-road'
+    invalid = deepcopy(source1)
+    invalid[0]['through']['road_id'] = 1
+    write_fixture(damaged, case1, invalid)
+    negatives.append(reject('reversed-through-road', damaged, case1, 'Native road/lane roles differ'))
+    damaged = FIXTURES / 'wrong-through-lane'
+    invalid = deepcopy(source1)
+    invalid[0]['through']['lane_id'] = -1
+    write_fixture(damaged, case1, invalid)
+    negatives.append(reject('wrong-through-lane', damaged, case1, 'Native road/lane roles differ'))
+    damaged = FIXTURES / 'centerline-instead-of-lane'
+    invalid = deepcopy(source1)
+    invalid[0]['through']['x_m'] = 0
+    write_fixture(damaged, case1, invalid)
+    negatives.append(reject('centerline-instead-of-lane', damaged, case1, 'Native road/lane roles differ'))
     proof = {'format': 'c111294-paired-source-proof-v1', 'assignment_id': HERE.name,
              'source_kind': 'synthetic_native_sample', 'physical_observation_claimed': False,
              'legal_verdict': None, 'positive': positive, 'negatives': negatives,

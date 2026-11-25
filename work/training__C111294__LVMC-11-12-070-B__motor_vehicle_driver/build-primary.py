@@ -30,7 +30,7 @@ def main():
                   for name in ('through_body_pose', 'entrant_body_pose', 'frame_join')],
                   'context_inputs': [],
                   'limitations': ['Through-highway designation and first lawful yield need original physical review']}}
-    runtime_sha = sha(ROOT / 'runtime/pipeline/SOURCE-MANIFEST.json')
+    runtime_sha = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
                 'assignment_id': HERE.name, 'runtime_manifest_sha256': runtime_sha,
                 'status': 'draft_not_selected', 'cases': []}

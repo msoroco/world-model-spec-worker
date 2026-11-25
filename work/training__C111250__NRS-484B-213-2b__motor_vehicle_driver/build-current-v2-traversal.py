@@ -63,6 +63,8 @@ def main():
     trace = read_rows(BASE / 'trace.jsonl')
     evidence = read_rows(BASE / 'capture/evidence.jsonl')
     spec = json.loads((HERE / 'current-v2-primary-fixture-spec.json').read_text())
+    for row in trace:
+        row['velocity_mps'] = [row['speed_mps'], 0.0, 0.0]
     for frame in range(400, 451):
         footprints[frame]['body_xy_m'] = [shift(p) for p in footprints[frame]['body_xy_m']]
         trace[frame]['position']['y'] += 3.5

@@ -27,7 +27,9 @@ def measure(root, expected_case):
     if not manifest_path.is_file():
         raise ValueError('Missing required source: diagnostic-source-manifest.json')
     manifest = json.loads(manifest_path.read_text())
-    if manifest.get('case_id') != expected_case or manifest.get('source_kind') != 'synthetic_native_sample':
+    source_kind = manifest.get('source_kind')
+    if manifest.get('case_id') != expected_case or source_kind not in (
+            'synthetic_native_sample', 'native_observation'):
         raise ValueError('Diagnostic source identity differs')
     for name in ('road.xodr', 'native_samples.jsonl'):
         if manifest.get('sha256', {}).get(name) != sha(root / name):
@@ -45,11 +47,17 @@ def measure(root, expected_case):
     first_crossing = None
     first_intersection = None
     halted_before_crossing = []
+    first_native_frame = rows[0].get('native_frame')
+    first_time = rows[0].get('time_s')
+    if type(first_native_frame) is not int or not isinstance(first_time, (int, float)):
+        raise ValueError('Original Native frame/time start absent')
     for index, row in enumerate(rows):
-        if row.get('video_frame') != index or row.get('native_frame') != 100 + index \
-                or not math.isclose(row.get('time_s', -1), index / RATE_HZ, abs_tol=1e-6):
+        expected_native_frame = 100 + index if source_kind == 'synthetic_native_sample' else first_native_frame + index
+        expected_time = index / RATE_HZ if source_kind == 'synthetic_native_sample' else first_time + index / RATE_HZ
+        if row.get('video_frame') != index or row.get('native_frame') != expected_native_frame \
+                or not math.isclose(row.get('time_s', -1), expected_time, abs_tol=1e-5):
             raise ValueError('Original frame/time join differs')
-        if row.get('source_kind') != 'synthetic_native_sample' or row.get('road_id') not in (1, 13, 4) \
+        if row.get('source_kind') != source_kind or row.get('road_id') not in (1, 13, 4) \
                 or row.get('lane_id') != -1:
             raise ValueError('Native approach road/lane role differs')
         vertices = row.get('body_vertices_m')
@@ -80,7 +88,7 @@ def measure(root, expected_case):
         else:
             run = 0
     return {'format': 'c111325-crosswalk-stop-diagnostic-v1', 'case_id': expected_case,
-            'frames': FRAMES, 'rate_hz': RATE_HZ, 'source_kind': 'synthetic_native_sample',
+            'frames': FRAMES, 'rate_hz': RATE_HZ, 'source_kind': source_kind,
             'source_hashes': {n: sha(root / n) for n in ('road.xodr', 'native_samples.jsonl')},
             'first_crosswalk_body_frame': first_crossing,
             'first_intersection_body_frame': first_intersection,

@@ -28,7 +28,8 @@ def measure(root, expected_case):
     if not manifest_path.is_file():
         raise ValueError('Missing required source: diagnostic-source-manifest.json')
     manifest = json.loads(manifest_path.read_text())
-    if manifest.get('case_id') != expected_case or manifest.get('source_kind') != 'synthetic_native_sample':
+    source_kind = manifest.get('source_kind')
+    if manifest.get('case_id') != expected_case or source_kind not in ('synthetic_native_sample', 'native_observation'):
         raise ValueError('Diagnostic source identity differs')
     for name in ('road.xodr', 'native_samples.jsonl'):
         if manifest.get('sha256', {}).get(name) != sha(root / name):
@@ -48,10 +49,15 @@ def measure(root, expected_case):
     through_approach = []
     through_hold = []
     early_through_entry = []
+    first_native_frame = rows[0].get('native_frame')
+    first_time = rows[0].get('time_s')
+    if type(first_native_frame) is not int or not isinstance(first_time, (int, float)):
+        raise ValueError('Original frame join differs')
     for index, row in enumerate(rows):
-        if row.get('video_frame') != index or row.get('native_frame') != 100 + index:
+        if row.get('video_frame') != index or row.get('native_frame') != first_native_frame + index \
+                or row.get('source_kind') != source_kind:
             raise ValueError('Original frame join differs')
-        if not math.isclose(row.get('time_s', -1), index / RATE_HZ, abs_tol=1e-6):
+        if not math.isclose(row.get('time_s', -1), first_time + index / RATE_HZ, abs_tol=1e-3):
             raise ValueError('Original time join differs')
         ego, entrant = row.get('through'), row.get('entrant')
         if not isinstance(ego, dict) or not isinstance(entrant, dict):
@@ -85,7 +91,7 @@ def measure(root, expected_case):
     if not entrant_in or not through_approach:
         raise ValueError('Crossing entrant or through approach absent')
     return {'format': 'c111294-yield-sequence-diagnostic-v1', 'case_id': expected_case,
-            'frames': FRAMES, 'rate_hz': RATE_HZ, 'source_kind': 'synthetic_native_sample',
+            'frames': FRAMES, 'rate_hz': RATE_HZ, 'source_kind': source_kind,
             'road_sha256': sha(root / 'road.xodr'),
             'native_samples_sha256': sha(root / 'native_samples.jsonl'),
             'entrant_prior_stopped_frames': len(stopped), 'about_to_enter_first_frame': min(about),

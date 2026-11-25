@@ -55,7 +55,10 @@ def check(config):
                 for camera in config.get('cameras', [])]
     if declared != list(CAMERAS):
         raise ValueError('Current four-camera profile differs')
-    root = ET.parse(HERE / 'authored-road.xodr').getroot()
+    road_path = HERE / 'authored-road.xodr'
+    if not road_path.is_file():
+        road_path = HERE / 'road.xodr'
+    root = ET.parse(road_path).getroot()
     roads = {int(road.get('id')) for road in root.findall('road')}
     approach = next(road for road in root.findall('road') if road.get('id') == '1')
     signs = approach.findall('signals/signal')
@@ -75,7 +78,14 @@ def check(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
-    if not args.check:
-        raise SystemExit('Native capture/controller loop remains unfinished')
-    print(json.dumps(check(json.loads((HERE / 'config.json').read_text())), sort_keys=True))
+    if args.check:
+        print(json.dumps(check(json.loads((HERE / 'config.json').read_text())), sort_keys=True))
+    elif args.output_dir:
+        from live_capture import acquire
+        print(json.dumps(acquire(HERE, args.output_dir, args.host, args.port), sort_keys=True))
+    else:
+        parser.error('Supply --check or --output-dir')

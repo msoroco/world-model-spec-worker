@@ -27,23 +27,28 @@ def request(index, case):
             'requested_yield_hold': case.endswith('probe_1') and 142 <= index < 335}
 
 
-def capture_row(index, frame, elapsed_s, through, entrant):
+def capture_row(index, frame, elapsed_s, through, entrant, through_waypoint, entrant_waypoint):
     """Extract observed post-tick CARLA body/pose/velocity for later capture code."""
     if type(index) is not int or not 0 <= index < FRAMES or type(frame) is not int:
         raise ValueError('Native frame identity absent')
     if not isinstance(elapsed_s, (int, float)) or not math.isfinite(elapsed_s):
         raise ValueError('Native elapsed time absent')
+    if through_waypoint is None or entrant_waypoint is None:
+        raise ValueError('Original road/lane projection absent')
     actors = {}
-    for name, actor in (('through', through), ('entrant', entrant)):
+    for name, actor, waypoint in (('through', through, through_waypoint),
+                                  ('entrant', entrant, entrant_waypoint)):
         transform = actor.get_transform()
         velocity = actor.get_velocity()
         vertices = actor.bounding_box.get_world_vertices(transform)
         if len(vertices) != 8:
             raise ValueError('Full Native vehicle body absent')
         actors[name] = {'actor_id': actor.id, 'blueprint_id': actor.type_id,
-                        'x_m': transform.location.x, 'y_m': transform.location.y,
+                        'road_id': waypoint.road_id, 'lane_id': waypoint.lane_id,
+                        'x_m': transform.location.x, 'y_m': -transform.location.y,
                         'speed_mps': math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2),
-                        'body_vertices_m': [[v.x, v.y, v.z] for v in vertices]}
+                        'velocity_mps': [velocity.x, -velocity.y, velocity.z],
+                        'body_vertices_m': [[v.x, -v.y, v.z] for v in vertices]}
     return {'video_frame': index, 'native_frame': frame, 'time_s': elapsed_s,
             'through': actors['through'], 'entrant': actors['entrant'],
             'source_kind': 'native_observation'}
@@ -61,7 +66,10 @@ def check(config):
                 for camera in config.get('cameras', [])]
     if declared != list(CAMERAS):
         raise ValueError('Current four-camera profile differs')
-    tree = ET.parse(HERE / 'authored-road.xodr')
+    road_path = HERE / 'authored-road.xodr'
+    if not road_path.is_file():
+        road_path = HERE / 'road.xodr'
+    tree = ET.parse(road_path)
     roads = {int(item.attrib['id']) for item in tree.findall('road')}
     links = {(item.attrib['incomingRoad'], item.attrib['connectingRoad'])
              for item in tree.findall('junction/connection')}

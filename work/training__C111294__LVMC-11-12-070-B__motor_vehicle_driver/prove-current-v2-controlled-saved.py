@@ -20,7 +20,7 @@ def sha(path):
 
 
 def main():
-    source = ROOT / '.runtime-work/c111294-geometry-output/compat-probe-2'
+    source = ROOT / '.runtime-work/c111294-geometry-output/compat-probe-2-r2'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
