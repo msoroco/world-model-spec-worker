@@ -1,0 +1,825 @@
+{
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Operative governing signal controls ego; subsection-2 sign duty excepted",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -4.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "active_vs_off_signal_exception",
+      "deliberate_differences": [
+        "Operative governing signal controls ego; subsection-2 sign duty excepted"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "active_signal_controls"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Governing signal Off, properly erected ego sign and non-obligated other vehicle within intersection",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -4.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "active_vs_off_signal_exception",
+      "deliberate_differences": [
+        "Governing signal Off, properly erected ego sign and non-obligated other vehicle within intersection"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "signal_off_signed_duty"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Illuminated signal elsewhere does not govern ego; signed-entrance duty remains candidate",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -4.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "governing_vs_elsewhere_signal",
+      "deliberate_differences": [
+        "Illuminated signal elsewhere does not govern ego; signed-entrance duty remains candidate"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "signal_elsewhere_no_control"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Stop-sign alternative with governing signal Off and other traffic not obliged to stop",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -4.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "yield_vs_stop_signed_duty",
+      "deliberate_differences": [
+        "Stop-sign alternative with governing signal Off and other traffic not obliged to stop"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "signal_off_stop_signed_duty"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Yield-sign entrance with an approaching non-obligated vehicle at the nearer engineering spawn",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -22.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "approaching_traffic_separation",
+      "deliberate_differences": [
+        "Yield-sign entrance with an approaching non-obligated vehicle at the nearer engineering spawn"
+      ],
+      "probe": {
+        "primary_variable": "other_approach_start_y_m",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "approaching_traffic_close"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Yield-sign entrance with an approaching non-obligated vehicle at the farther engineering spawn",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Off",
+          "unit": "Native signal state"
+        },
+        "ego_entrance_device": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "sign type"
+        },
+        "other_approach_start_y_m": {
+          "kind": "world_setup",
+          "value": -48.0,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback at each joined frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane readback joined to ego entrance",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete ego body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_crossing_body",
+            "unit": "structured record",
+            "method": "Original complete other-vehicle body vertices",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_approach_speed",
+            "unit": "m/s",
+            "method": "Original other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "ego_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          },
+          {
+            "name": "other_time_to_conflict",
+            "unit": "structured record",
+            "method": "Original source distance to crossing divided by speed; defined flag and value in seconds, null when stopped",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "authored Native junction and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical realization and statutory judgment require independent local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entrance_inventory",
+            "unit": "structured record",
+            "method": "Authored full entrance inventory and original Native governance",
+            "source_refs": [
+              "entrance_inventory.json",
+              "crossing_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "proper sign erection and non-through legal status unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction does not establish physical sign visibility, official control, actual motion or immediate hazard"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "physical sign validity",
+        "official or operative control",
+        "immediate hazard",
+        "cautious progression",
+        "subsection 1 stopping manner"
+      ],
+      "paired_probe_id": "approaching_traffic_separation",
+      "deliberate_differences": [
+        "Yield-sign entrance with an approaching non-obligated vehicle at the farther engineering spawn"
+      ],
+      "probe": {
+        "primary_variable": "other_approach_start_y_m",
+        "comparison_or_standard": "NRS 484B.257(2), subject to original Native and camera review",
+        "target_value_or_branch": "approaching_traffic_far"
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

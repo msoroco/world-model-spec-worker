@@ -21,8 +21,8 @@ CHANNELS = {
     "other_crossing_body": ("structured record", lambda s: s["other_body_vertices_xy_m"]),
     "ego_approach_speed": ("m/s", lambda s: s["ego_speed_mps"]),
     "other_approach_speed": ("m/s", lambda s: s["other_speed_mps"]),
-    "ego_time_to_conflict": ("s", lambda s: s["ego_time_to_conflict_s"]),
-    "other_time_to_conflict": ("s", lambda s: s["other_time_to_conflict_s"]),
+    "ego_time_to_conflict": ("structured record", lambda s: {"defined": s["ego_time_to_conflict_s"] is not None, "value_s": s["ego_time_to_conflict_s"]}),
+    "other_time_to_conflict": ("structured record", lambda s: {"defined": s["other_time_to_conflict_s"] is not None, "value_s": s["other_time_to_conflict_s"]}),
 }
 
 
@@ -100,6 +100,9 @@ def finalize(attempt, output):
                                          "time_s": frame["time_s"], "value": value},
                                         allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": unit, "reference": "channels/" + path.name})
+    context_path = channels / "entrance_inventory.json"
+    context_path.write_text(json.dumps({"entrance_inventory": json.loads((attempt / "entrance_inventory.json").read_text())}, allow_nan=False) + "\n")
+    evidence.append({"name": "entrance_inventory", "unit": "structured record", "reference": "channels/entrance_inventory.json"})
     case_id = config["selected_case_id"]
     suffix = case_id[len(PREFIX):]
     entry_control = report["operative_signal_controls_ego_at_entry_observed"]
