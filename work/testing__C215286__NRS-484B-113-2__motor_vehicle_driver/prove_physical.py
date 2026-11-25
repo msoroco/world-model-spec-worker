@@ -29,6 +29,8 @@ def main():
     lines = []
     staged = []
     for entry in manifest['cases']:
+        if 'crosswalk' not in entry['case_id']:
+            continue
         short = entry['case_id'].endswith('__reverse_stops_before_crosswalk')
         saved_ref = entry['saved_processing']
         saved_path = ROOT / saved_ref['receipt']
