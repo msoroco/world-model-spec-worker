@@ -68,6 +68,23 @@ def _transform(carla, xyz, rpy):
                            carla.Rotation(roll=roll, pitch=pitch, yaw=yaw))
 
 
+def validate_spawn(survey, plan):
+    """Bind the reviewed candidate spawn to its exact planned approach."""
+    x, y, _ = _triple(survey.get("spawn_xyz_m"), "vehicle spawn")
+    _, _, yaw = _triple(survey.get("spawn_rpy_deg"), "vehicle rotation")
+    start = plan["start_xy_m"]
+    if math.dist((x, y), start) > 2.0:
+        raise ValueError("reviewed spawn is not on the selected candidate approach")
+    axis = plan["route_axis_xy"]
+    expected_yaw = math.degrees(math.atan2(axis[1], axis[0]))
+    if plan["approach_direction"] == -1:
+        expected_yaw += 180.0
+    error = (yaw - expected_yaw + 180.0) % 360.0 - 180.0
+    if abs(error) > 20.0:
+        raise ValueError("reviewed spawn heading differs from selected candidate approach")
+    return True
+
+
 class CameraBuffer:
     def __init__(self):
         self.condition = threading.Condition()
@@ -112,12 +129,36 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def retain_packet(packet_path, survey, hashes, output):
+    """Copy reviewed source bytes into the immutable Native attempt envelope."""
+    output = Path(output)
+    (output / "original-reviewed-survey.json").write_bytes(Path(packet_path).read_bytes())
+    if _sha(output / "original-reviewed-survey.json") != _sha(packet_path):
+        raise ValueError("reviewed survey changed during retention")
+    retained_sources = {}
+    for name, reference in survey["sources"].items():
+        source = Path(packet_path).resolve().parent / reference["path"]
+        target = output / "reviewed-packet" / reference["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            if _sha(target) != hashes[name]:
+                raise ValueError("reviewed source path collision: " + name)
+        else:
+            target.write_bytes(source.read_bytes())
+        if _sha(target) != hashes[name]:
+            raise ValueError("reviewed source changed during retention: " + name)
+        retained_sources[name] = dict(reference, path=str(target.relative_to(output)),
+                                      source_kind="original_reviewed_packet")
+    return retained_sources
+
+
 def capture(case_id, packet_path, output, *, host="localhost", port=2000,
             approach_direction=1):
     """Capture a sealed original attempt; output must not already exist."""
     packet_path, output = Path(packet_path), Path(output)
     survey, hashes = validate_packet(packet_path, case_id)
     plan = build_plan(packet_path, case_id, approach_direction=approach_direction)
+    validate_spawn(survey, plan)
     map_path = packet_path.resolve().parent / survey["sources"]["opendrive"]["path"]
     map_bytes = map_path.read_bytes()
     if hashlib.sha256(map_bytes).hexdigest() != hashes["opendrive"]:
@@ -125,6 +166,7 @@ def capture(case_id, packet_path, output, *, host="localhost", port=2000,
     if output.exists():
         raise ValueError("retain existing Native attempt")
     output.mkdir(parents=True)
+    retained_sources = retain_packet(packet_path, survey, hashes, output)
     import carla
     client = carla.Client(host, int(port))
     client.set_timeout(30)
@@ -222,7 +264,7 @@ def capture(case_id, packet_path, output, *, host="localhost", port=2000,
                              ("purpose_source", "purpose"),
                              ("traffic_direction_source", "traffic_direction"),
                              ("postal_status_source", "postal_status")):
-            context[name] = survey["sources"][source]
+            context[name] = retained_sources[source]
         (output / "reviewed-context.json").write_text(json.dumps(context, sort_keys=True) + "\n")
         (output / "body-control-trace.jsonl").write_text(
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in trace))

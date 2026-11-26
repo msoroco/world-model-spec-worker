@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCES = ("case-plan.json", "runner.py", "native_driveway.py", "finalize_native.py", "parking_controller.py",
+SOURCES = ("case-plan.json", "runner.py", "native_driveway.py", "finalize_native.py", "analysis.py", "parking_controller.py",
            "driveway_construction.py", "driveway_measurements.py", "driveway_comparisons.py",
            "tests/test_bundle_contract.py")
 
@@ -118,6 +118,13 @@ def main():
         entries.append({"case_id": row["case_id"], "kind": "delivery",
                         "construction": str(candidates[0][0].relative_to(ROOT)),
                         "construction_sha256": candidates[0][1],
+                        "measurement_contract": f"diagnostics/{slug}/measurement-contract.json",
+                        "measurement_procedure": {"entrypoint": "analysis.py"},
+                        "fixture_recipe": str((ROOT / "diagnostics" / slug /
+                                                "fixture-recipe.json").relative_to(REPO)),
+                        "native_handoff": {"python_env_var": "CARLA_PYTHON",
+                                           "host_env_var": "CARLA_HOST",
+                                           "port_env_var": "CARLA_PORT"},
                         "candidate_risk": {"status": "physical",
                                            "reason": "surveyed approach may be obstructed in Native map"},
                         "candidates": [{"id": "fallback1",
@@ -129,6 +136,7 @@ def main():
                                         "changed_knobs": ["approach_direction: +1 to -1"]}]})
     write(ROOT / "execution-manifest.draft.json",
           {"format": "worker-execution-manifest", "assignment_id": plan["assignment_id"],
+           "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
            "cases": entries, "draft_missing_proofs": ["semantic", "offline", "compatibility",
                                                "saved", "physical", "delivery"]})
     print(len(entries), "exact LVMC driveway bundles and reverse-approach candidates built")

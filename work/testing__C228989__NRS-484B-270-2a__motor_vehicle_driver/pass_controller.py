@@ -33,27 +33,37 @@ def command(request: str, sample: Observation) -> dict:
         raise ValueError("unknown exact maneuver request")
     if not isinstance(sample.source_frame, int) or sample.source_frame < 0:
         raise ValueError("source frame required")
-    if not sample.ego_lane or not sample.control_lane or sample.ego_lane != sample.control_lane:
-        raise ValueError("same initial actor lane source required")
+    if not sample.ego_lane or not sample.control_lane:
+        raise ValueError("sampled actor lane sources required")
     if sample.same_direction_lane_count not in {1, 2}:
         raise ValueError("unsupported source lane count")
     if not all(math.isfinite(x) for x in (sample.longitudinal_gap_m, sample.relative_speed_mps)):
         raise ValueError("finite relative motion required")
-    if sample.longitudinal_gap_m <= 0:
-        raise ValueError("control must be ahead")
+    # The initial observation establishes that the control is ahead. During a
+    # successful pass this signed gap changes sign and must remain readable.
     if not isinstance(sample.left_lane_occupants, tuple) or any(not isinstance(x, str) or not x for x in sample.left_lane_occupants):
         raise ValueError("source left-lane occupancy required")
     if sample.same_direction_lane_count == 1 and sample.immediate_left_lane is not None:
         raise ValueError("single-lane scene cannot claim immediate-left lane")
-    if sample.same_direction_lane_count == 2 and (not sample.immediate_left_lane or sample.immediate_left_lane == sample.ego_lane):
+    if sample.same_direction_lane_count == 2 and (not sample.immediate_left_lane or sample.immediate_left_lane == sample.control_lane):
         raise ValueError("source immediate-left lane required")
     if request in {"move_left", "stay"} and sample.same_direction_lane_count != 2:
         raise ValueError("two-lane request in one-lane scene")
     if request in {"pass", "follow"} and sample.same_direction_lane_count != 1:
         raise ValueError("one-lane request in two-lane scene")
     if request == "move_left":
+        if sample.ego_lane not in {sample.control_lane, sample.immediate_left_lane}:
+            raise ValueError("ego left the surveyed pass lanes")
+    elif sample.ego_lane != sample.control_lane:
+        raise ValueError("ego left the requested same-lane route")
+    if request == "move_left":
         adverse = (sample.left_lane_occupants or sample.left_lane_restricted or
                    sample.left_lane_obstructed)
+        if sample.ego_lane == sample.immediate_left_lane:
+            return {"source_frame": sample.source_frame, "lane_change": "none",
+                    "longitudinal": "hold_back" if adverse else "pass_control",
+                    "reason": "left_lane_entered_with_constraint" if adverse else
+                              "left_lane_entered"}
         if adverse:
             return {"source_frame": sample.source_frame, "lane_change": "none",
                     "longitudinal": "hold_back", "reason": "sampled_left_lane_constraint"}
@@ -69,7 +79,7 @@ def command(request: str, sample: Observation) -> dict:
             "longitudinal": "pass_control", "reason": "two_lane_stay_request"}
 
 
-def command_for_case(case: dict, sample: Observation) -> dict:
+def command_for_case(case: dict, sample: Observation, *, initial=True) -> dict:
     """Bind one planned exact case to sampled Native lane/traffic state."""
     if case.get("target_law_id") != "NRS-484B-270-2a" or case.get("cell_id") != "C228989":
         raise ValueError("wrong exact law or cell")
@@ -79,10 +89,13 @@ def command_for_case(case: dict, sample: Observation) -> dict:
     if case.get("same_direction_lane_count_requested") != sample.same_direction_lane_count:
         raise ValueError("actual lane count differs from planned case")
     requested_traffic = case.get("left_lane_traffic_requested")
-    if requested_traffic == "open" and sample.left_lane_occupants:
-        raise ValueError("open-lane case has source-recorded occupant")
-    if requested_traffic == "occupied" and not sample.left_lane_occupants:
-        raise ValueError("occupied-lane case lacks source-recorded occupant")
     if requested_traffic not in {"open", "occupied", "not_applicable"}:
         raise ValueError("unknown traffic request")
+    if initial:
+        if sample.ego_lane != sample.control_lane or sample.longitudinal_gap_m <= 0:
+            raise ValueError("qualifying control must start ahead in the same lane")
+        if requested_traffic == "open" and sample.left_lane_occupants:
+            raise ValueError("open-lane case has source-recorded occupant")
+        if requested_traffic == "occupied" and not sample.left_lane_occupants:
+            raise ValueError("occupied-lane case lacks source-recorded occupant")
     return command(case.get("ego_maneuver_request"), sample)

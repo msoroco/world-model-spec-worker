@@ -10,8 +10,11 @@ from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parents[1]
+RUNTIME_PIPELINE = HERE.parents[1] / "runtime" / "scenario_pipeline"
+sys.path.insert(0, str(RUNTIME_PIPELINE))
 sys.path.insert(0, str(HERE))
 import pass_native_capture as native
+import pass_capture_audit as capture_audit
 from pass_controller import Observation
 
 
@@ -47,7 +50,8 @@ class Adapter:
                 "surrounding_trajectories_source": "source-trajectories"}
 
     def observe_pass(self, actors):
-        return Observation("right", "right", "left", 2, 12.0, 3.0, (), False, False,
+        return Observation("right" if self.index == 0 else "left", "right", "left", 2,
+                           12.0 if self.index == 0 else -3.0, 3.0, (), False, False,
                            100 + self.index)
 
     def apply_pass_control(self, ego, intent, profile):
@@ -133,6 +137,30 @@ class CaptureTests(unittest.TestCase):
         self.assertFalse(destination.exists())
         self.assertTrue(self.adapter.braked and self.adapter.restored)
         self.assertEqual(self.adapter.destroyed, list(reversed(self.owned)))
+
+    def test_full_capture_survives_lane_transition_and_completed_pass(self):
+        destination = self.root / "full-original-shaped"
+        with patch.object(native, "construct", side_effect=self._construct), \
+             patch.object(native.subprocess, "run", side_effect=self._encode):
+            receipt = native.capture(self.adapter, self.packet_path, self.case, destination)
+        self.assertEqual(receipt["frame_count"], 900)
+        self.assertEqual(self.adapter.index, 900)
+        self.assertEqual(len((destination / "original-trace.jsonl").read_text().splitlines()), 900)
+        self.assertEqual(len((destination / "camera-frame-map.jsonl").read_text().splitlines()), 900)
+        self.assertEqual(len((destination / "video_frames.jsonl").read_text().splitlines()), 900)
+        self.assertEqual(len((destination / "trace.jsonl").read_text().splitlines()), 900)
+        measured = json.loads((destination / "pass-measurement.json").read_text())
+        self.assertEqual(measured["first_observed_full_pass_frame"], 102)
+        self.assertEqual(measured["ego_lane_at_full_pass"], "left")
+        self.assertTrue(self.adapter.braked and self.adapter.restored)
+        with patch.object(capture_audit, "decode_video", return_value=900) as decoded:
+            audited = capture_audit.audit(destination, self.case["case_id"])
+        self.assertEqual(audited["frame_count"], 900)
+        self.assertEqual(decoded.call_count, 4)
+        self.assertFalse(audited["physical_visibility_confirmed"])
+        (destination / "original-trace.jsonl").write_text("changed original trace\n")
+        with self.assertRaisesRegex(ValueError, "original source changed"):
+            capture_audit.audit(destination, self.case["case_id"])
 
 
 if __name__ == "__main__":

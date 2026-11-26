@@ -31,7 +31,7 @@ def build():
              'input_sha256': sha(ROOT / 'inputs' / AID / 'assignment.json'),
              'status': 'ready', 'readiness_kind': 'delivery_prepared',
              'applied_update': json.loads((ROOT / 'batch.json').read_text())['update_version'],
-             'tests': [{'command': f'PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/{AID}/tests -v',
+             'tests': [{'command': f'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c179789-new/pipeline-tests" PYTHONPATH="$PWD/runtime/scenario_pipeline:$PWD/runtime/python" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/{AID}/tests -v',
                         'exit_code': 0, 'log': test_log.name, 'sha256': sha(test_log)}],
              'remaining_gpu_checks': [
                  'Review and source-hash original municipal jurisdiction, through-highway designation, entrance control, distinct routes and subsection A antecedent before Native capture.',

@@ -2,12 +2,11 @@
   "applied_update": 0,
   "assignment_id": "testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver",
   "input_sha256": "c7dabf7835856a35c34a4557968cfe74b23baebe94faff851e8780b24fe25f30",
-  "readiness_kind": "exact_case_measurement_checkpoint",
-  "reason": "Sixteen exact driveway targets and eleven comparisons remain unexecuted. Original Native measurement binds map/context/trace, settled 20 Hz activity and full vehicle-footprint distance. Independent saved-packet audit now covers all eleven exact comparisons, remeasures source bytes, rejects diagnostic and tampered packets, checks fixed source conditions and each deliberate observed difference; 15 focused tests pass. Original physical scenes/capture, semantic proposals, compatibility, saved-only processing and independent delivery receipts remain CPU work. Frontage, necessity and exceptions remain unresolved.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Run original CARLA capture with a reviewed driveway packet and evaluate actual camera pixels, settled motion, source custody, and statutory context for every selected case and comparison."
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -16,22 +15,11 @@
       "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver/tests -v",
+      "command": "PYTHONPATH=work/testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver .venv-cpu/bin/python -m unittest discover -s work/testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-driveway-tests.log",
-      "sha256": "b158fdb499bac56b76a997246b23d03f54fe7e87d4d3e21e69a1c8eeed67f506"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-check.log",
-      "sha256": "9e0f830ca52b025f15cfdecd0c412351fe47ca5cecb2baefc1ef32416fdb6ae4"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-gate.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "sha256": "189c99ef8f2b616943210972b4ef2862986de2d1959af3fc6c422d23d82fd47d"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "LVMC_DRIVEWAY_REVIEWED_PACKET=\"$REVIEWED_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver --case testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver__public_park_front --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

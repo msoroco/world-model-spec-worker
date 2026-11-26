@@ -25,7 +25,15 @@ def main():
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
         offline = SCRATCH / ('offline-' + name + '-final') / 'offline.log'
-        compatible = SCRATCH / ('compat-' + name + '-final')
+        compatible = next(
+            (candidate for candidate in (
+                SCRATCH / ('compat-' + name + '-resumed'),
+                SCRATCH / ('compat-' + name + '-final'))
+             if (candidate / 'compatibility.json').is_file() and
+             json.loads((candidate / 'compatibility.json').read_text()).get('construction_sha256') == entry['construction_sha256']),
+            None)
+        if compatible is None:
+            raise ValueError('current compatibility proof missing: ' + name)
         proof = json.loads((compatible / 'compatibility.json').read_text())
         if proof.get('passed') is not True or proof.get('case_id') != case or proof.get('construction_sha256') != entry['construction_sha256']:
             raise ValueError('current compatibility proof missing: ' + name)
@@ -37,7 +45,7 @@ def main():
         local_negative.write_text(clean((compatible / 'negative-analysis.log').read_text()))
         proof['log_sha256'] = sha(local_analysis)
         proof['negative_log_sha256'] = sha(local_negative)
-        receipt = HERE / ('compatibility-' + name + '-receipt.json')
+        receipt = HERE / ('cpu-compat-' + name + '-receipt.json')
         receipt.write_text(json.dumps(proof, indent=2) + '\n')
         command = ('.venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name +
                    '/execution-manifest.json --case ' + case + ' --output $OUTPUT --python $CPU_PYTHON')

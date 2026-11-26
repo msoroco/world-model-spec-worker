@@ -1,6 +1,16 @@
 # testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for delivery preparation. The exact scoped strict CPU gate passed on 2026-11-26. The earlier dated checkpoints below are historical.
+
+## 2026-11-26 selected delivery handoff
+
+Sixteen selected driveway cases and eleven controlled comparisons are bound to `execution-manifest.json` and `gpu-queue-proposal.json`. Every case has a source-shaped synthetic diagnostic, a primary and a reverse approach construction, an original reviewed-packet retention path, a selected measurement contract, semantic stage proposals, a saved-only process command, and an independent source-custody audit. Original Native capture, actual camera pixel review, physical scene acceptance and legal exception judgments remain for GPU delivery and human review; the CPU fixtures explicitly disclaim those conclusions.
+
+Current construction-hash proof counts: exact offline 32/32; positive and negative compatibility with Lean decode and full video decode 32/32; three physical-outcome diagnostic fixtures with Native-to-saved lifecycle closure 16/16; exact saved-only processing 16/16; independent source-custody audit positive 16/16 and tampered-source rejection 16/16; focused tests 24/24. The exact scoped command `.venv-cpu/bin/python worker_check.py --assignment testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`.
+
+The original reviewed packet is supplied to the Native capture through `LVMC_DRIVEWAY_REVIEWED_PACKET` or `runner.py --packet`. `native_driveway.py` copies the reviewed survey and all nine source files into the original attempt, checks every source hash and candidate spawn against the reviewed route, and retains the selected packet bytes. `delivery_audit.py` independently checks those retained bytes, original body/control frames, camera frame join, source hashes and restoration marker for Native attempts. Its positive CPU fixtures are explicitly synthetic protocol tests; its negative tests change original trace bytes and require rejection. The eleven comparison audits require source-verified original packets with common fixed conditions and each exact deliberate difference.
+
+Only `work/testing__C229404__LVMC-11-52-130-A7__motor_vehicle_driver/` is returned. All scratch outputs are under `.runtime-work/`. At handoff, every owned returned file is at most 2 MiB and has no trailing whitespace or blank line at EOF. The shared queue integration is delegated to the lead via `gpu-queue-proposal.json`.
 
 Exact law: LVMC 11.52.130(A)(7); with 11.52.130(B) — No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of or within five feet of a public or private driveway; provided, however, that this provision does not apply to the parking of a vehicle in or near a private driveway by a person who owns or is in control of that driveway, or who is a family member or invitee of the person so owning or controlling the driveway. The provisions of Paragraphs (1) and (7) of Subsection (A) of this Section do not apply to a United States Postal Service vehicle while it is being operated on official business.
 Assigned branch(es): parking at road driveway interface.

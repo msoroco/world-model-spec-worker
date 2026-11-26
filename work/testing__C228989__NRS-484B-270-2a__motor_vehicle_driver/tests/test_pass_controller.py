@@ -53,7 +53,7 @@ class ControllerTests(unittest.TestCase):
                                 ("pass", self.sample()),
                                 ("move_left", self.sample(immediate_left_lane=None)),
                                 ("unknown", self.sample()),
-                                ("move_left", self.sample(longitudinal_gap_m=0))):
+                                ("stay", self.sample(ego_lane="left"))):
             with self.subTest(request=request, sample=sample):
                 with self.assertRaises(ValueError):
                     controller.command(request, sample)
@@ -74,6 +74,27 @@ class ControllerTests(unittest.TestCase):
                     opposite = self.sample(left_lane_occupants=() if occupied else ("other_car",))
                     with self.assertRaises(ValueError):
                         controller.command_for_case(case, opposite)
+
+    def test_completed_lane_change_and_pass_keep_controller_live(self):
+        plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
+        case = next(c for c in plan["cases"] if c["case_id"].endswith("bicycle_open_move_left"))
+        initial = controller.command_for_case(case, self.sample())
+        self.assertEqual(initial["lane_change"], "immediate_left")
+        crossed = controller.command_for_case(
+            case, self.sample(ego_lane="left", longitudinal_gap_m=-3,
+                              source_frame=21), initial=False)
+        self.assertEqual((crossed["lane_change"], crossed["longitudinal"]),
+                         ("none", "pass_control"))
+        with self.assertRaisesRegex(ValueError, "start ahead"):
+            controller.command_for_case(case, self.sample(longitudinal_gap_m=-3))
+
+    def test_traffic_change_after_initial_frame_inhibits_new_move(self):
+        plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
+        case = next(c for c in plan["cases"] if c["case_id"].endswith("bicycle_open_move_left"))
+        later = self.sample(left_lane_occupants=("other_car",), source_frame=21)
+        intent = controller.command_for_case(case, later, initial=False)
+        self.assertEqual((intent["lane_change"], intent["longitudinal"]),
+                         ("none", "hold_back"))
 
 
 if __name__ == "__main__":

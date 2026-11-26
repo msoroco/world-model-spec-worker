@@ -20,6 +20,11 @@ def measure(path: str | Path) -> dict:
     path = Path(path)
     raw = path.read_bytes()
     packet = json.loads(raw)
+    return measure_packet(packet, {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()})
+
+
+def measure_packet(packet: dict, source: dict) -> dict:
+    """Measure an already authenticated saved packet without a second copy."""
     if packet.get("assignment_id") != ASSIGNMENT or not packet.get("original_trace_id"):
         raise ValueError("original assignment and trace identity required")
     if packet.get("ego_device_type") not in DEVICES or not packet.get("ego_actor_id"):
@@ -53,7 +58,7 @@ def measure(path: str | Path) -> dict:
                              "on_roadway": frame["ego_body_on_roadway"],
                              "on_designated_path": frame["ego_body_on_designated_path"]})
     return {"assignment_id": ASSIGNMENT, "original_trace_id": packet["original_trace_id"],
-            "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
+            "source": source,
             "ego_actor_id": packet["ego_actor_id"], "ego_device_type": packet["ego_device_type"],
             "roadway_id": packet["roadway_id"], "path_id": packet["path_id"],
             "path_designation_source": packet["path_designation_source"],

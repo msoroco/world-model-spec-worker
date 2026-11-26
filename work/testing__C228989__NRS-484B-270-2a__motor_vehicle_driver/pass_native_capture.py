@@ -66,7 +66,7 @@ def capture(adapter, packet_path, case, destination, *, control_profile=None):
             observed = adapter.observe_pass(scene["actors"])
             if not isinstance(observed, Observation):
                 raise ValueError("original per-frame lane/traffic observation required")
-            intent = command_for_case(case, observed)
+            intent = command_for_case(case, observed, initial=index == 0)
             adapter.apply_pass_control(scene["actors"]["ego"], intent, control_profile or {})
             snapshot = adapter.tick(scene["actors"])
             frame, time_s = snapshot.get("frame"), snapshot.get("time_s")
@@ -101,11 +101,25 @@ def capture(adapter, packet_path, case, destination, *, control_profile=None):
         trace_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in trace), encoding="utf-8")
         frame_map_path = stage / "camera-frame-map.jsonl"
         frame_map_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in frame_map), encoding="utf-8")
+        from worker_exchange.native_output import FrameMap
+        with FrameMap(stage / "video_frames.jsonl") as canonical_frames:
+            for row in frame_map:
+                canonical_frames.append(row["frame"], row["time_s"],
+                                        camera_png_sha256=row["camera_png_sha256"])
+        (stage / "trace.jsonl").write_text("".join(
+            json.dumps({"frame": row["frame"], "time_s": row["time_s"],
+                        "position_m": [sum(vertex[i] for vertex in row["ego_vertices"]) / 8
+                                       for i in (0, 1)],
+                        "ego_lane_id": row["ego_lane_id"],
+                        "control_lane_id": row["control_lane_id"]}, sort_keys=True) + "\n"
+            for row in trace), encoding="utf-8")
         receipt = {"assignment_id": ASSIGNMENT_ID,
                    "case_id": case["case_id"], "source_kind": "original_native_capture",
                    "diagnostic_fixture": False, "fps": 20, "frame_count": FRAME_COUNT,
                    "context_sha256": _sha(context_path), "trace_sha256": _sha(trace_path),
                    "frame_map_sha256": _sha(frame_map_path),
+                   "canonical_frame_map_sha256": _sha(stage / "video_frames.jsonl"),
+                   "canonical_trace_sha256": _sha(stage / "trace.jsonl"),
                    "reviewed_packet_sha256": _sha(packet_path),
                    "physical_acceptance": False, "legal_verdict": None}
         videos = {}

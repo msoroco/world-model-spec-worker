@@ -14,17 +14,21 @@ VALIDATOR = ROOT / '.runtime-work/c179789-decoder/.lake/build/bin/adapterCheck'
 def run(entry):
     case = entry['case_id']
     name = case.removeprefix(HERE.name + '__')
-    attempt = SCRATCH / ('compat-' + name + '-final')
+    attempt = next(
+        (candidate for candidate in (
+            SCRATCH / ('compat-' + name + '-resumed'),
+            SCRATCH / ('compat-' + name + '-final'))
+         if (candidate / 'compatibility.json').is_file() and
+         json.loads((candidate / 'compatibility.json').read_text()).get('construction_sha256') == entry['construction_sha256']),
+        None)
+    if attempt is None:
+        return name, 1, 'current compatibility attempt missing'
     output = SCRATCH / ('saved-' + name)
-    prior = output / 'v0001/processing.json'
-    if prior.is_file():
+    for prior in sorted(output.glob('v*/processing.json'), reverse=True):
         receipt = json.loads(prior.read_text())
         if (receipt.get('passed') is True and receipt.get('recorded_only') is True and
                 receipt.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256']):
-            return name, 0, 'passed prior v0001'
-    selection = attempt / 'candidate-selection.json'
-    if selection.exists():
-        selection.unlink()
+            return name, 0, 'passed prior recorded-only replay'
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / ('pipeline-saved-' + name)))
     command = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py'),

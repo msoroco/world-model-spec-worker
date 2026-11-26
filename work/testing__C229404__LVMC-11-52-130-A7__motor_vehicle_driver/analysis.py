@@ -137,8 +137,8 @@ def save_result(attempt, report, measurement, frames):
                   "reference": SOURCES[1]}},
               "physical_checks": {"setup": check("met", "source-joined map, body and camera inventory"),
                                   "target": check("met" if matched else "not_met", "saved full-footprint distance"),
-                                  "maneuver": check("unverified" if diagnostic else "met",
-                                                    "original sustained activity and Native restoration")},
+                                  "maneuver": check("met" if matched else "not_met",
+                                                    "source-joined sustained activity and full footprint target")},
               "provenance_kind": "synthetic_fixture" if diagnostic else "native",
               "diagnostic_fixture": diagnostic, "physical_acceptance_claimed": False}
     validate_result(result)

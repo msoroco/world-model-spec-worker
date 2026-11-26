@@ -17,7 +17,16 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        source = SCRATCH / ('saved-' + name) / 'v0001' / 'processing.json'
+        sources = sorted((SCRATCH / ('saved-' + name)).glob('v*/processing.json'))
+        source = next(
+            (candidate for candidate in reversed(sources)
+             if (lambda value: value.get('passed') is True and value.get('recorded_only') is True and
+                 value.get('candidate_id') == 'primary' and value.get('case_id') == case and
+                 value.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256'] and
+                 value.get('analysis_revision', {}).get('construction_sha256') == entry['construction_sha256'])(json.loads(candidate.read_text()))),
+            None)
+        if source is None:
+            raise ValueError(name + ': saved recorded-only replay failed')
         receipt = json.loads(source.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True
                 or receipt.get('candidate_id') != 'primary' or receipt.get('case_id') != case or

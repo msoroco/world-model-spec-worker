@@ -88,8 +88,34 @@ def build():
                             "disposition": "original source review required; no invented threshold"}],
             "timing": {"description": "At original overtaking or passing interval and lane movement.",
                        "numeric_conditions": []},
-            "judgment_calls_needed": ["due care", "lane available", "reasonably safe"]},
+            "judgment_calls_needed": [
+                {"phrase": "due care", "note": "No measured gap or motion alone resolves qualitative due care."},
+                {"phrase": "lane available", "note": "Source traffic and restrictions require contextual review."},
+                {"phrase": "reasonably safe", "note": "No engineering clearance is an invented legal cutoff."}]},
         "parameter_refs": parameters})
+    judgments = [
+        ("due-care", "due care", "No measured gap or motion alone resolves qualitative due care.",
+         ["ego_control_body", "relative_motion", "camera_frame_identity"]),
+        ("lane-available", "lane available", "Source traffic and restrictions require contextual review.",
+         ["lane_topology", "left_lane_traffic", "camera_frame_identity"]),
+        ("reasonably-safe", "reasonably safe", "No engineering clearance is an invented legal cutoff.",
+         ["ego_control_body", "left_lane_traffic", "relative_motion", "camera_frame_identity"]),
+    ]
+    judgment_refs = []
+    for slug, phrase, note, channels in judgments:
+        judgment_refs.append(put("judgment-" + slug + ".json", {
+            "template_id": template_id, "phrase": phrase, "note": note, "status": "draft",
+            "observable_requirements": {
+                "observables": [{"name": channel, "unit": "source observation",
+                                 "description": "Original source-joined " + channel.replace("_", " ")}
+                                for channel in channels],
+                "context_inputs": [{"name": "reviewed_native_lane_packet", "unit": "source record",
+                                    "description": "Source-hashed original map, lane and participant inventory"}],
+                "sweep_dimensions": [], "landmarks": [],
+                "recording_needs": [{"name": channel, "unit": "source observation",
+                                     "description": "Original 20 Hz " + channel.replace("_", " ")}
+                                    for channel in channels],
+                "limitations": ["Qualitative legal judgments require independent original review."]}}))
     binding_ref = put("bindings.json", {"cell_id": plan["cell_id"], "actor": actor,
         "status": "draft", "law_refs": [{"template_id": template_id, "binding_kind": "direct"}],
         "context_refs": [], "fixed_parameters": [],
@@ -122,7 +148,7 @@ def build():
         "status": "draft", "sweep_specs": [], "sweeps_expanded": True, "cases": selected})
     put("semantic-index.json", {"format": "worker-semantic-delivery", "assignment_id": aid,
         "stages": {"relevance_batch": relevance_ref, "relevance": relevance_ref,
-                   "template": template_ref, "judgment_observables": [],
+                   "template": template_ref, "judgment_observables": judgment_refs,
                    "bindings": binding_ref, "cases": cases_ref},
         "status": "source_gated_draft"})
     return len(cases)

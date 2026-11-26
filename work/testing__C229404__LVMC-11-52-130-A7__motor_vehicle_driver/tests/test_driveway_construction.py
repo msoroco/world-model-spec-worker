@@ -11,7 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from driveway_construction import build_plan
-from native_driveway import validate_packet
+from native_driveway import retain_packet, validate_packet, validate_spawn
 from parking_controller import ParkingController
 
 
@@ -113,6 +113,36 @@ class DrivewayConstructionTest(unittest.TestCase):
         self.assertEqual(control.plan["controller"]["activity"], "park")
         self.assertEqual(control.step(xy_m=plan["start_xy_m"], yaw_rad=0,
                                       speed_mps=0, time_s=0)["phase"], "approach")
+
+    def test_reviewed_spawn_follows_each_candidate_route(self):
+        packet, survey = self.packet("public")
+        case = self.plan["cases"][0]["case_id"]
+        forward = build_plan(packet, case, approach_direction=1)
+        reverse = build_plan(packet, case, approach_direction=-1)
+        survey["spawn_xyz_m"] = [*forward["start_xy_m"], 1]
+        survey["spawn_rpy_deg"] = [0, 0, 0]
+        self.assertTrue(validate_spawn(survey, forward))
+        with self.assertRaisesRegex(ValueError, "selected candidate approach"):
+            validate_spawn(survey, reverse)
+        survey["spawn_xyz_m"] = [*reverse["start_xy_m"], 1]
+        with self.assertRaisesRegex(ValueError, "heading differs"):
+            validate_spawn(survey, reverse)
+        survey["spawn_rpy_deg"] = [0, 0, 180]
+        self.assertTrue(validate_spawn(survey, reverse))
+
+    def test_reviewed_packet_bytes_retained_and_tamper_rejected(self):
+        packet, survey = self.packet("public")
+        hashes = {name: ref["sha256"] for name, ref in survey["sources"].items()}
+        output = self.base / "original-attempt"
+        output.mkdir()
+        retained = retain_packet(packet, survey, hashes, output)
+        self.assertEqual((output / "original-reviewed-survey.json").read_bytes(), packet.read_bytes())
+        for name, ref in retained.items():
+            self.assertEqual(ref["source_kind"], "original_reviewed_packet")
+            self.assertEqual(hashlib.sha256((output / ref["path"]).read_bytes()).hexdigest(), hashes[name])
+        (output / retained["mouth"]["path"]).write_text("tampered\n")
+        with self.assertRaisesRegex(ValueError, "path collision"):
+            retain_packet(packet, survey, hashes, output)
 
 
 if __name__ == "__main__":

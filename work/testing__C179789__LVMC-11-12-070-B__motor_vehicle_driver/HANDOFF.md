@@ -1,6 +1,6 @@
 # C179789 through-highway delivery preparation
 
-Status: partial while final current-hash compatibility, saved-processing, physical, delivery and comparison proofs are completed. No original Native capture, physical visibility, subsection A satisfaction or legal verdict is claimed.
+Status: ready for the CPU delivery-preparation contract. The exact assignment scoped strict gate passed. No original Native capture, physical visibility, subsection A satisfaction or legal verdict is claimed.
 
 ## Exact scope
 
@@ -12,11 +12,10 @@ LVMC 11.12.070(B) concerns the approaching through-highway driver's yielding dut
 
 `analysis.py` has separate synthetic diagnostic and original Native saved-history paths. The original path verifies the capture seal, source inventory, Native revision, reviewed packet and all 900 two-actor rows before measuring conflict traversal and writing seven recording channels. It leaves antecedent and legal right-of-way unresolved. `delivery_audit.py` independently recalculates the saved measurement, checks 900 camera/Native joins, decodes all four original camera streams and requires an original physical completion result. `compare_saved.py` binds each exact comparison ID, fixed source hashes and observed engineering differences.
 
-Canonical semantic delivery validates ten selected cases and two complete qualitative engineering sweep specs. All ten current selected offline checks passed. Fifteen focused tests pass, including positive source-shaped original analysis and tamper rejection. Final compatibility proofs are running in separate `.runtime-work/c179789-new/` paths. All synthetic fixture results are software evidence only. `result.json` remains partial until the exact scoped strict gate exits zero.
+Canonical semantic delivery validates ten selected cases and two complete qualitative engineering sweep specs. All ten current selected offline checks passed. Ten current-hash compatibility receipts and ten recorded-only saved-processing receipts passed. The ten physical three-state and lifecycle receipts, ten independent delivery bindings, four independent comparison bindings, selected diagnostic audit, queue proposal and fifteen focused tests also passed. Synthetic fixture results are software evidence only.
 
-## Remaining CPU work
+## Strict gate and handoff
 
-1. Bind final current-hash offline and positive/missing-source compatibility receipts for every exact case.
-2. Bind three synthetic physical outcome states and ordered lifecycle proof, then recorded-only saved processing for each case.
-3. Bind independent delivery negative tests, selected diagnostic/comparison audit, queue proposal and current test log.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__LVMC-11-12-070-B__motor_vehicle_driver --complete --require-delivery-ready` and keep the package stable for lead independent review.
+The command `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__LVMC-11-12-070-B__motor_vehicle_driver --complete --require-delivery-ready` exited 0 on 2026-11-26 with `static_checks_passed: true` and this assignment in `reported`. Its log is `.runtime-work/c179789-new/strict-resume-2.log`. The selected manifest SHA-256 is `99c3650cc8cd1816563d6ea6f06c53ddccafc4a073981b8b361684cb96a7691a`; the semantic index SHA-256 is `da3854d4c87d750611467dc225bd56d4802eda20c8a2b927d22519a759794007`. The current focused test command and log digest are recorded in `result.json`.
+
+Original local review still needs source-hashed municipal jurisdiction, through-highway designation, entrance control, distinct routes and subsection A antecedent; then 900 synchronized original frames of both actors and four cameras, physical traversal review and independent legal judgment. `result.json` lists the first original capture command and remaining checks. The lead can independently rerun this exact assignment scoped strict gate without changing the package.
