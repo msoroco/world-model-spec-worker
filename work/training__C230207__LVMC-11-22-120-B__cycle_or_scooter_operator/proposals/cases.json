@@ -1,22 +1,54 @@
 {
-  "format": "scenario-cases-proposal",
   "cell_id": "C230207",
   "actor": "cycle_or_scooter_operator",
   "status": "draft",
-  "sweep_specs": [],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "LVMC-11-22-120-B-designation-and-sign-review",
+      "target_law_id": "LVMC-11-22-120-B",
+      "judgment_refs": [
+        {
+          "phrase": "heavily traveled streets",
+          "note": "The City Traffic Engineer determination and designation require an original authority source, not a synthetic traffic count."
+        },
+        {
+          "phrase": "appropriate signs",
+          "note": "Sign face, erected position, governed direction and restriction wording require original source and pixel review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative designation and appropriate sign require original authority and physical face review.",
+      "missing_inputs": [
+        "Original City Traffic Engineer designation and actual sign face/location/direction are absent from frozen inputs."
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
-      "target_law_id": "LVMC-11-22-120-B",
-      "target_type": "controlled_attempt",
-      "rationale": "Compare original human-propelled bicycle roadway use after the same sign with shoulder travel.",
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared sign and roadway reference without a legal label.",
       "variable_assignments": {
-        "surface": "shoulder"
+        "designation_context": {
+          "kind": "world_setup",
+          "value": "requested_designation_pending_review"
+        },
+        "signed_restriction": {
+          "kind": "world_setup",
+          "value": "authored_bicycles_prohibited_roadway_sign_pending_pixel_review"
+        },
+        "commanded_surface": {
+          "kind": "controller",
+          "value": "shoulder"
+        },
+        "observed_roadway_use": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
-      "unresolved_judgment_calls": [
-        "City Traffic Engineer designation and sign adequacy",
-        "physical sign legibility and rider bicycle subtype"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -73,16 +105,31 @@
       }
     },
     {
-      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
       "target_law_id": "LVMC-11-22-120-B",
-      "target_type": "controlled_attempt",
-      "rationale": "Compare original human-propelled bicycle roadway use after the same sign with shoulder travel.",
+      "target_type": "compliant_attempt",
+      "rationale": "Controlled bicycle surface-choice attempt under the same signed road; legal and authority conclusions remain source-gated.",
       "variable_assignments": {
-        "surface": "roadway"
+        "designation_context": {
+          "kind": "world_setup",
+          "value": "requested_designation_pending_review"
+        },
+        "signed_restriction": {
+          "kind": "world_setup",
+          "value": "authored_bicycles_prohibited_roadway_sign_pending_pixel_review"
+        },
+        "commanded_surface": {
+          "kind": "controller",
+          "value": "shoulder"
+        },
+        "observed_roadway_use": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
-        "City Traffic Engineer designation and sign adequacy",
-        "physical sign legibility and rider bicycle subtype"
+        "heavily traveled streets",
+        "appropriate signs"
       ],
       "recording_description": {
         "channels": [
@@ -136,6 +183,156 @@
         "limitations": [
           "City Traffic Engineer designation unavailable in Native simulation",
           "Sign face and bicycle wheels require independent physical review"
+        ]
+      },
+      "paired_probe_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__surface_choice",
+      "deliberate_differences": [
+        "commanded_surface"
+      ],
+      "probe": {
+        "primary_variable": "commanded_surface",
+        "comparison_or_standard": "Original bicycle footprint on shoulder versus roadway after same sign",
+        "target_value_or_branch": "shoulder"
+      },
+      "deterministic_branch": {
+        "source_clause": "When signs are erected giving notice thereof, no person shall disobey the restriction stated on such signs.",
+        "judgment_context": [
+          {
+            "phrase": "heavily traveled streets",
+            "note": "The City Traffic Engineer determination and designation require an original authority source, not a synthetic traffic count.",
+            "status": "fixed_assumption",
+            "reason": "Both cases request one fixed source-reviewed designation and sign; verify originals after Native capture.",
+            "world_setup_refs": [
+              "designation_context",
+              "signed_restriction"
+            ]
+          },
+          {
+            "phrase": "appropriate signs",
+            "note": "Sign face, erected position, governed direction and restriction wording require original source and pixel review.",
+            "status": "fixed_assumption",
+            "reason": "Both cases request one fixed source-reviewed designation and sign; verify originals after Native capture.",
+            "world_setup_refs": [
+              "designation_context",
+              "signed_restriction"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
+      "target_law_id": "LVMC-11-22-120-B",
+      "target_type": "violating_attempt",
+      "rationale": "Controlled bicycle surface-choice attempt under the same signed road; legal and authority conclusions remain source-gated.",
+      "variable_assignments": {
+        "designation_context": {
+          "kind": "world_setup",
+          "value": "requested_designation_pending_review"
+        },
+        "signed_restriction": {
+          "kind": "world_setup",
+          "value": "authored_bicycles_prohibited_roadway_sign_pending_pixel_review"
+        },
+        "commanded_surface": {
+          "kind": "controller",
+          "value": "roadway"
+        },
+        "observed_roadway_use": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "heavily traveled streets",
+        "appropriate signs"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bicycle poses joined to sign and road readback",
+            "time_window": "600 frames",
+            "reference_frame": "signed roadway",
+            "uncertainty": "50 ms sample spacing; sign face and city designation pending review"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bicycle poses joined to sign and road readback",
+            "time_window": "600 frames",
+            "reference_frame": "signed roadway",
+            "uncertainty": "50 ms sample spacing; sign face and city designation pending review"
+          },
+          {
+            "name": "ru.bicycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bicycle poses joined to sign and road readback",
+            "time_window": "600 frames",
+            "reference_frame": "signed roadway",
+            "uncertainty": "50 ms sample spacing; sign face and city designation pending review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bicycle poses joined to sign and road readback",
+            "time_window": "600 frames",
+            "reference_frame": "signed roadway",
+            "uncertainty": "50 ms sample spacing; sign face and city designation pending review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native bicycle poses joined to sign and road readback",
+            "time_window": "600 frames",
+            "reference_frame": "signed roadway",
+            "uncertainty": "50 ms sample spacing; sign face and city designation pending review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "City Traffic Engineer designation unavailable in Native simulation",
+          "Sign face and bicycle wheels require independent physical review"
+        ]
+      },
+      "paired_probe_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__surface_choice",
+      "deliberate_differences": [
+        "commanded_surface"
+      ],
+      "probe": {
+        "primary_variable": "commanded_surface",
+        "comparison_or_standard": "Original bicycle footprint on shoulder versus roadway after same sign",
+        "target_value_or_branch": "roadway"
+      },
+      "deterministic_branch": {
+        "source_clause": "When signs are erected giving notice thereof, no person shall disobey the restriction stated on such signs.",
+        "judgment_context": [
+          {
+            "phrase": "heavily traveled streets",
+            "note": "The City Traffic Engineer determination and designation require an original authority source, not a synthetic traffic count.",
+            "status": "fixed_assumption",
+            "reason": "Both cases request one fixed source-reviewed designation and sign; verify originals after Native capture.",
+            "world_setup_refs": [
+              "designation_context",
+              "signed_restriction"
+            ]
+          },
+          {
+            "phrase": "appropriate signs",
+            "note": "Sign face, erected position, governed direction and restriction wording require original source and pixel review.",
+            "status": "fixed_assumption",
+            "reason": "Both cases request one fixed source-reviewed designation and sign; verify originals after Native capture.",
+            "world_setup_refs": [
+              "designation_context",
+              "signed_restriction"
+            ]
+          }
         ]
       }
     }

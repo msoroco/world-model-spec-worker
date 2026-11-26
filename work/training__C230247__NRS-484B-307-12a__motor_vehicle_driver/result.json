@@ -3,7 +3,7 @@
   "input_sha256": "b773fe1f1903bad8489648064c6d0c2c02f02443e1a2a64268a239311bc70253",
   "applied_update": 16,
   "status": "partial",
-  "reason": "Source-bound lane-arrow meter and two exact unselected Native drafts pass CPU checks. Selected CARLA capture, official-device and actual indication provenance, saved processing, compatibility, fallbacks, proposals, and independent audits remain unfinished.",
+  "reason": "Current-runtime offline proofs pass for two unselected lane-control drafts. Native map inventory and exact lane-arrow actor/state acquisition are fail-closed; source-row/meter joins original frames, map inventory and whole-body lane footprint. A generic Green light is rejected. Selected capture, saved processing, compatibility, semantic proposals and independent audits remain unfinished.",
   "readiness_kind": "implementation_checkpoint",
   "counts": {
     "source_topics": 3,
@@ -16,22 +16,22 @@
   },
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python native/prove_lane_arrow.py",
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B work/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/native/prove_lane_arrow.py",
       "exit_code": 0,
       "log": "native/lane-arrow-proof.log",
-      "log_sha256": "fa72a8b5078557b973ee82c362e8a2765bdf37fa8a5c099a7618289983dff265"
+      "log_sha256": "55cffd89e0be8e20df972891db3cea06a3d1576762f0dfd177a169856dd974dd"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_same_lane --output .runtime-work/c230247-12a-same-20261123",
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_same_lane --output .runtime-work/c230247-12a-same_lane-20261126b",
       "exit_code": 0,
       "log": "draft-same_lane/offline.log",
-      "log_sha256": "de60e0abaddac6040808275543a43f42d2c8e28e663a11bab611ba1ebe9c0971"
+      "log_sha256": "43d3415fffba8337d957356dd1b31dc27ace0c846dbeb955dd9adb94e97d4769"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane --output .runtime-work/c230247-12a-other-20261123",
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12a__motor_vehicle_driver__probe_other_lane --output .runtime-work/c230247-12a-other_lane-20261126b",
       "exit_code": 0,
       "log": "draft-other_lane/offline.log",
-      "log_sha256": "9f4c8c5c52db93e99b73029ab8906a30737359a08b9374ff27bce4877be4610d"
+      "log_sha256": "1823537a168a1416bddbb8325d47ac17255e9d528d96afc14e634b6317dfbc57"
     }
   ]
 }

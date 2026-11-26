@@ -1,0 +1,64 @@
+{
+  "template_id": "LVMC-11-22-120-B@cycle_or_scooter_operator",
+  "law_id": "LVMC-11-22-120-B",
+  "actor": "cycle_or_scooter_operator",
+  "quote": "The City Traffic Engineer is authorized to determine and designate those heavily traveled streets upon which shall be prohibited the use of the roadway by motor-driven cycles, bicycles, horse-drawn vehicles or other nonmotorized traffic and shall erect appropriate signs giving notice thereof. When signs are erected giving notice thereof, no person shall disobey the restriction stated on such signs.",
+  "status": "draft",
+  "structure": {
+    "law_id": "LVMC-11-22-120-B",
+    "activation": {
+      "condition": "City Traffic Engineer designates a heavily traveled roadway and an appropriate sign states its restriction.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "A person shall not disobey the restriction stated on an erected notice sign.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "While the sign is erected and governing roadway use.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "heavily traveled streets",
+        "note": "The City Traffic Engineer determination and designation require an original authority source, not a synthetic traffic count."
+      },
+      {
+        "phrase": "appropriate signs",
+        "note": "Sign face, erected position, governed direction and restriction wording require original source and pixel review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "designation_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed City Traffic Engineer designation"
+    },
+    {
+      "name": "signed_restriction",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed erected sign face, position and direction"
+    },
+    {
+      "name": "bicycle_class",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed human-propelled bicycle subtype"
+    },
+    {
+      "name": "commanded_surface",
+      "kind": "controller",
+      "range_or_domain": [
+        "shoulder",
+        "roadway"
+      ]
+    },
+    {
+      "name": "observed_roadway_use",
+      "kind": "subject_behavior",
+      "range_or_domain": "source-joined rider footprint after sign"
+    }
+  ]
+}

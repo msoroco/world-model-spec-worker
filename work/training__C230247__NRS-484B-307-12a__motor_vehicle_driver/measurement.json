@@ -1,0 +1,51 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.307(12)(a)",
+      "output_key": "overhead_lane_mapping",
+      "method": "overhead_lane_mapping",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl",
+        "native-map-readback.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.307(12)(a)",
+      "output_key": "facing_downward_arrow_frames",
+      "method": "facing_downward_arrow",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "proposed_lane_witness",
+      "method": "proposed_lane_witness",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-signal-rows.jsonl"
+    ],
+    "error_contains": "Missing required source: native-signal-rows.jsonl"
+  }
+}

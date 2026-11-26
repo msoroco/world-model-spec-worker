@@ -1,6 +1,7 @@
 """Survey-gated Native bridge speed capture; CPU --check never imports CARLA."""
 import argparse
 import json
+import math
 from pathlib import Path
 import queue
 import subprocess
@@ -54,22 +55,32 @@ def survey(world,carla):
             'sign_pixels_verified':False,'department_determination_verified':False}
 
 
+def validate_attempt_destination(output_dir):
+    output=Path(output_dir).resolve()
+    if not output.is_dir():
+        raise ValueError('runtime materialized attempt directory is missing')
+    if any((output/name).exists() for name in
+           ('video_frames.jsonl','bridge-speed-history.jsonl','bridge-context.json')):
+        raise ValueError('original Native capture already exists in attempt directory')
+    return output
+
+
 def execute(case_id,output_dir,host,port):
+    output=validate_attempt_destination(output_dir)
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap,seal_capture
     from worker_exchange.world_restore import snapshot,restore
     from measure import measure
     check()
     suffix=case_id.rsplit('__',1)[-1]
     if suffix not in TARGET_MPS:raise ValueError('unknown exact case')
-    output=Path(output_dir).resolve()
-    if output.exists():raise ValueError('choose fresh original Native attempt directory')
     client=carla.Client(host,port);client.set_timeout(180)
     saved=snapshot(client);old=client.get_world()
     if saved['settings'].synchronous_mode or any(a.type_id.startswith(
         ('vehicle.','walker.','sensor.','controller.')) for a in old.get_actors()):
         raise RuntimeError('requires exclusive idle asynchronous Native world')
-    owned=[];queues={};encoders={};changed=False
+    owned=[];queues={};encoders={};changed=False;capture=None;complete=False
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
             vertex_distance=.5,max_road_length=25,wall_height=0,additional_width=0,
@@ -80,8 +91,11 @@ def execute(case_id,output_dir,host,port):
         settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings)
         seen=survey(world,carla)
-        output.mkdir(parents=True)
+        output.mkdir(parents=True,exist_ok=True)
         (output/'road.xodr').write_text(world.get_map().to_opendrive())
+        (output/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind':'native','diagnostic_fixture':False,
+            'physical_acceptance_claimed':False},indent=2)+'\n')
         (output/'bridge-context.json').write_text(json.dumps({
             'bridge_x_m':[0.0,100.0],'sign_limit_mph':25.0,'posting_distance_m':30.48,
             'native_sign_survey':seen['signs'],'native_bridge_survey':seen['bridge'],
@@ -91,6 +105,8 @@ def execute(case_id,output_dir,host,port):
         bp.set_attribute('role_name','c32014_bridge_speed_subject')
         vehicle=world.spawn_actor(bp,carla.Transform(carla.Location(x=-70,y=-1.75,z=1),carla.Rotation(yaw=0)))
         owned.append(vehicle)
+        capture=PipelineCapture(client,vehicle,output,case_id,visibility=False,
+            required_observations=json.loads((Path(__file__).parent/'config.json').read_text()).get('required_atoms',[]))
         for name,width,height,x,y,z,pitch,attached in CAMERAS:
             sensor_bp=library.find('sensor.camera.rgb')
             sensor_bp.set_attribute('image_size_x',str(width));sensor_bp.set_attribute('image_size_y',str(height))
@@ -102,7 +118,7 @@ def execute(case_id,output_dir,host,port):
                 '-f','rawvideo','-pix_fmt','bgra','-s',f'{width}x{height}','-r','20','-i','-',
                 '-frames:v','600','-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-        with FrameMap(output/'video_frames.jsonl') as frame_map,(output/'bridge-speed-history.jsonl').open('x') as history:
+        with FrameMap(output/'video_frames.jsonl') as frame_map,(output/'bridge-speed-history.jsonl').open('x') as history,(output/'trace.jsonl').open('x') as trace:
             first_time=None
             for index in range(FRAMES):
                 x=vehicle.get_transform().location.x
@@ -113,6 +129,7 @@ def execute(case_id,output_dir,host,port):
                 absolute_time=snap.timestamp.elapsed_seconds
                 if first_time is None:first_time=absolute_time
                 relative_time=absolute_time-first_time
+                capture.capture(frame,relative_time)
                 pose=vehicle.get_transform();velocity=vehicle.get_velocity();mapped={}
                 for name in queues:
                     image=queues[name].get(timeout=30)
@@ -126,15 +143,26 @@ def execute(case_id,output_dir,host,port):
                         pose.location.x,pose.location.y,pose.location.z],
                     'velocity_xyz_mps':[velocity.x,velocity.y,velocity.z],
                     'requested_speed_mps':requested})+'\n')
+                trace.write(json.dumps({'frame':frame,'time_s':relative_time,
+                    'position':{'x':pose.location.x,'y':pose.location.y,'z':pose.location.z},
+                    'position_m':[pose.location.x,pose.location.y,pose.location.z],
+                    'heading_deg':pose.rotation.yaw,
+                    'speed_mps':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
+                    'speed_mph':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)/.44704,
+                    'control':{'throttle':vehicle.get_control().throttle,
+                               'brake':vehicle.get_control().brake,
+                               'hand_brake':vehicle.get_control().hand_brake}})+'\n')
         for name,process in encoders.items():
             process.stdin.close();stderr=process.stderr.read()
             if process.wait(timeout=180) or not (output/(name+'.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: '+name+': '+stderr.decode()[-400:])
         measured=measure(output/'bridge-speed-history.jsonl',output/'bridge-context.json')
         (output/'bridge-speed-measurement.json').write_text(json.dumps(measured,indent=2)+'\n')
+        complete=True
         return {'frames':FRAMES,'camera_names':list(queues),'measurement':measured,
                 'physical_acceptance_claimed':False}
     finally:
+        if capture is not None:capture.close(confirmed=complete)
         for process in encoders.values():
             if process.poll() is None:process.kill();process.wait()
         for actor in reversed(owned):
@@ -142,13 +170,18 @@ def execute(case_id,output_dir,host,port):
                 if hasattr(actor,'stop'):actor.stop()
                 actor.destroy()
             except Exception:pass
-        if changed:restore(client,saved)
+        restoration=restore(client,saved) if changed else {'restored':True,'world_unchanged':True}
+        if complete:
+            seal_capture(output,frames=FRAMES,restoration=restoration,errors=[],
+                encoder_exit_codes={name:process.returncode for name,process in encoders.items()},
+                context={'case_id':case_id,'candidate_id':'primary',
+                         'bridge_sign_and_department_review':'pending_original_source'})
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--execute',action='store_true')
+    p=argparse.ArgumentParser();p.add_argument('--check',action='store_true')
     p.add_argument('--case-id');p.add_argument('--output-dir');p.add_argument('--host',default='127.0.0.1')
     p.add_argument('--port',type=int,default=2000);a=p.parse_args()
-    if a.check==a.execute:raise SystemExit('choose --check or --execute')
-    if a.execute and (not a.case_id or not a.output_dir):raise SystemExit('--case-id and --output-dir required')
+    if not a.check and (not a.case_id or not a.output_dir):
+        raise SystemExit('--case-id and --output-dir required')
     print(json.dumps(check() if a.check else execute(a.case_id,a.output_dir,a.host,a.port)))

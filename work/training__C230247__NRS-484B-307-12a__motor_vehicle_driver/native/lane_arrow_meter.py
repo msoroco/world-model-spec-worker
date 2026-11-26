@@ -43,8 +43,10 @@ def measure(packet):
             raise ValueError('signal state or authority provenance absent')
         if signal.get('mount_source') != 'map_signal_transform':
             raise ValueError('overhead mount provenance absent')
-        if type(signal.get('id')) is not int or not signal.get('authority_verified'):
-            raise ValueError('official signal authority unverified')
+        if type(signal.get('id')) is not int or not signal.get('inventory_verified'):
+            raise ValueError('original map signal inventory unverified')
+        if signal.get('official_authority_review_pending') is not True:
+            raise ValueError('official authority review status absent')
         mount = signal.get('mount_m')
         if not isinstance(mount, list) or len(mount)!=3 or not all(isinstance(x,(int,float)) and math.isfinite(x) for x in mount):
             raise ValueError('signal mount position absent')
@@ -66,6 +68,11 @@ def measure(packet):
         lane = vehicle.get('lane_id')
         if lane not in (-1,-2):
             raise ValueError('occupied lane absent')
+        # The authored straight OpenDRIVE road has 3.5 m right-hand lanes.
+        # A waypoint at the actor centre alone cannot establish occupancy.
+        lower, upper = ((-3.5,0.0) if lane == -1 else (-7.0,-3.5))
+        if any(not lower <= vertex[1] <= upper for vertex in vertices):
+            raise ValueError('actor body does not occupy the reported lane')
         proposed = vehicle.get('proposed_lane_id')
         if proposed not in (-1,-2):
             raise ValueError('proposed lane absent')

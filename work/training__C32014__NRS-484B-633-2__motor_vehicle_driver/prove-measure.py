@@ -14,6 +14,7 @@ def fixture(label,speed):
     folder=SCRATCH/label;folder.mkdir(exist_ok=True)
     context=folder/'bridge-context.json';history=folder/'bridge-speed-history.jsonl'
     context.write_text(json.dumps({'bridge_x_m':[0.0,100.0],'sign_limit_mph':25.0,
+       'posting_distance_m':30.48,
        'native_bridge_survey':[{'x':0},{'x':50},{'x':100}],
        'native_sign_survey':[{'id':'101'},{'id':'102'}],
        'fixture_only':True})+'\n')

@@ -1,0 +1,275 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "delivery_prepared",
+  "cases": [
+    {
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
+      "kind": "delivery",
+      "construction": "draft-signed-roadway/probe_01/primary/construction.json",
+      "construction_sha256": "75abb42b0d9ff50760df9419961f53b4cc6111a3ffd23bcb717561abd5f3fbd5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Sign pixels and bicycle motion require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-signed-roadway/probe_01/fallback1/construction.json",
+          "construction_sha256": "6a7a8748b32eba304f1ae0a49277c30de61b755027671be04c30713cc9ec2944",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "reviewed sign-face readability in original source frames",
+            "failure_condition": "sign wording cannot be independently read at the approach frames"
+          },
+          "changed_knobs": [
+            "reference_corner camera x -55 to -44 m and pitch -10 to -5 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/selected-offline-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --candidate fallback1 --output .runtime-work/c230207-offline-probe_01-fallback1",
+            "construction_sha256": "6a7a8748b32eba304f1ae0a49277c30de61b755027671be04c30713cc9ec2944",
+            "exit_code": 0,
+            "log": "proof-offline-probe_01-fallback1.log",
+            "log_sha256": "dbe7f8f0a68e3db1c8f2b190bb15d6c7dcb37a7b32a4a2538a2014f02aa9bde2"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_01/fallback1-compatibility.json",
+            "sha256": "dcb01618edb91946fb0549ffa745988970e549d0fc6eab7bb80dd1d3161d8735",
+            "log": "cases/probe_01/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/probe_01/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "cases/probe_01/measurement-contract.json",
+      "fixture_recipe": "work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/cases/probe_01/recipe.json",
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_01/proof.json",
+        "sha256": "ab73ba56b00219980c9aaf2612e9aea097214a82f4518db61a37f7fb698f73dc"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/selected-offline-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --candidate primary --output .runtime-work/c230207-offline-probe_01-primary",
+        "construction_sha256": "75abb42b0d9ff50760df9419961f53b4cc6111a3ffd23bcb717561abd5f3fbd5",
+        "exit_code": 0,
+        "log": "proof-offline-probe_01-current.log",
+        "log_sha256": "68d1e97816c17d20392b87a8e7157e1304a8ab4a81f373974b4a595fc2f85ae0"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_01/primary-compatibility.json",
+        "sha256": "e0f9d3e8aa7825d5c3495eec8ddea603934477e4195fda747cc0bb842d277d0c",
+        "log": "cases/probe_01/primary-compatibility-analysis.log",
+        "negative_log": "cases/probe_01/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_01/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Original sign and face source review joined to Native readback",
+          "evidence": "restriction-context.json,road.xodr,original-source-review.json"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Original sign orientation and governed road/survey join",
+          "evidence": "restriction-context.json,road.xodr"
+        },
+        "ru.bicycle": {
+          "entrypoint": "finalize.py",
+          "method": "Original bicycle blueprint and wheel/subtype review",
+          "evidence": "bicycle-poses.jsonl,restriction-context.json,original-source-review.json"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "Native surveyed roadway lane and rider footprint join",
+          "evidence": "road.xodr,restriction-context.json,bicycle-poses.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Original frame-joined bicycle position and signed road polygon",
+          "evidence": "bicycle-poses.jsonl,video_frames.jsonl,restriction-context.json"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "68ac523e538a21dfdc20384a65806df2ad721bc9a417c2a9bfafd3f134f0ee47",
+        "command": ".venv-cpu/bin/python -B work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --selftest",
+        "test_exit_code": 0,
+        "test_log": "cases/probe_01/delivery-positive.log",
+        "test_log_sha256": "32aa795de5021f0e3eb5eebaf6322bf6c6ac92a8bd3735d8d74a2949b5b4244f",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: bicycle-poses.jsonl",
+        "negative_log": "cases/probe_01/delivery-negative.log",
+        "negative_log_sha256": "b5983957fec6d02010e60a2554ad7e88a4f3d290e4d87c257aa8a32469b2a170",
+        "scope": "Synthetic CPU audit mechanics; original designation, sign pixels, bicycle subtype and physical completion remain source-gated"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/execution-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "cat \"$SAVED_VERSION/processing.json\"",
+        "test_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/draft-signed-roadway-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01 --attempt .runtime-work/c230207-compat-probe_01-v3 --output .runtime-work/c230207-saved-probe_01 --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "test_exit_code": 0,
+        "test_log": "cases/probe_01/process-saved.log",
+        "test_log_sha256": "fa9a249aaf9423e6d91f3834ccb8b00b3cf839920e7d4890091b30461054eb14",
+        "test_receipt": "cases/probe_01/process-saved.json",
+        "test_receipt_sha256": "fa9a249aaf9423e6d91f3834ccb8b00b3cf839920e7d4890091b30461054eb14"
+      }
+    },
+    {
+      "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
+      "kind": "delivery",
+      "construction": "draft-signed-roadway/probe_02/primary/construction.json",
+      "construction_sha256": "f863d5f619bf3cd09ef4f675d9d3772d77787a86275b2c990416d3ce94ce385e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Sign pixels and bicycle motion require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-signed-roadway/probe_02/fallback1/construction.json",
+          "construction_sha256": "f24e0c3b9be9616e6e821bdf8ec4aa1fea12f94a5133dac922f1ea4c7fdd202a",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "reviewed sign-face readability in original source frames",
+            "failure_condition": "sign wording cannot be independently read at the approach frames"
+          },
+          "changed_knobs": [
+            "reference_corner camera x -55 to -44 m and pitch -10 to -5 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/selected-offline-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --candidate fallback1 --output .runtime-work/c230207-offline-probe_02-fallback1",
+            "construction_sha256": "f24e0c3b9be9616e6e821bdf8ec4aa1fea12f94a5133dac922f1ea4c7fdd202a",
+            "exit_code": 0,
+            "log": "proof-offline-probe_02-fallback1.log",
+            "log_sha256": "334f918514bdce7f6f34eed8b88d9f8b0efb91de8c0f0e6d4933bf20e5b55cc4"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_02/fallback1-compatibility.json",
+            "sha256": "f6112893982d81afafdd9f3e9ea69e0cfb52d88f2cb2d69cf819a01e7722f842",
+            "log": "cases/probe_02/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/probe_02/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "cases/probe_02/measurement-contract.json",
+      "fixture_recipe": "work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/cases/probe_02/recipe.json",
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_02/proof.json",
+        "sha256": "550fa1d90b73cf696c6141b4ba6fdc3400444d40325879091351973882f69e0e"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/selected-offline-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --candidate primary --output .runtime-work/c230207-offline-probe_02-primary",
+        "construction_sha256": "f863d5f619bf3cd09ef4f675d9d3772d77787a86275b2c990416d3ce94ce385e",
+        "exit_code": 0,
+        "log": "proof-offline-probe_02-current.log",
+        "log_sha256": "ffd64e6f4ed358e04528e73a795517361c454f634b9668f00aea2090378fbb15"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_02/primary-compatibility.json",
+        "sha256": "6fe26bd36d9e0a13593904d45175244599c23392f22378b5a9840807c4331b12",
+        "log": "cases/probe_02/primary-compatibility-analysis.log",
+        "negative_log": "cases/probe_02/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_02/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "Original sign and face source review joined to Native readback",
+          "evidence": "restriction-context.json,road.xodr,original-source-review.json"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "Original sign orientation and governed road/survey join",
+          "evidence": "restriction-context.json,road.xodr"
+        },
+        "ru.bicycle": {
+          "entrypoint": "finalize.py",
+          "method": "Original bicycle blueprint and wheel/subtype review",
+          "evidence": "bicycle-poses.jsonl,restriction-context.json,original-source-review.json"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "Native surveyed roadway lane and rider footprint join",
+          "evidence": "road.xodr,restriction-context.json,bicycle-poses.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "Original frame-joined bicycle position and signed road polygon",
+          "evidence": "bicycle-poses.jsonl,video_frames.jsonl,restriction-context.json"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "68ac523e538a21dfdc20384a65806df2ad721bc9a417c2a9bfafd3f134f0ee47",
+        "command": ".venv-cpu/bin/python -B work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --selftest",
+        "test_exit_code": 0,
+        "test_log": "cases/probe_02/delivery-positive.log",
+        "test_log_sha256": "33f8739baa0a38bc87d9847d79e551e0d9d4ad51f609b5423918e840ca32c0bd",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: bicycle-poses.jsonl",
+        "negative_log": "cases/probe_02/delivery-negative.log",
+        "negative_log_sha256": "b5983957fec6d02010e60a2554ad7e88a4f3d290e4d87c257aa8a32469b2a170",
+        "scope": "Synthetic CPU audit mechanics; original designation, sign pixels, bicycle subtype and physical completion remain source-gated"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/execution-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "cat \"$SAVED_VERSION/processing.json\"",
+        "test_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/draft-signed-roadway-manifest.json --case training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02 --attempt .runtime-work/c230207-compat-probe_02-v3 --output .runtime-work/c230207-saved-probe_02 --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "test_exit_code": 0,
+        "test_log": "cases/probe_02/process-saved.log",
+        "test_log_sha256": "86b61372dd6444316afa08fedd3949fdffc9c06d6b2a36cf0ef10558bd32ef35",
+        "test_receipt": "cases/probe_02/process-saved.json",
+        "test_receipt_sha256": "86b61372dd6444316afa08fedd3949fdffc9c06d6b2a36cf0ef10558bd32ef35"
+      }
+    }
+  ],
+  "delivery_ready": true
+}

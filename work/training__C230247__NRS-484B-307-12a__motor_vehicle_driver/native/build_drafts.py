@@ -7,9 +7,9 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
 REPO=HERE.parents[2]
 ASSIGNMENT='training__C230247__NRS-484B-307-12a__motor_vehicle_driver'
-RUNTIME_SHA=hashlib.sha256((REPO/'runtime/pipeline/SOURCE-MANIFEST.json').read_bytes()).hexdigest()
+RUNTIME_SHA=hashlib.sha256((REPO/'runtime/SOURCE-MANIFEST.json').read_bytes()).hexdigest()
 CAMERAS=[{'name':n,'width':w,'height':h} for n,w,h in (
-    ('overview',1920,1080),('approach',1280,720),('overhead_signal',1280,720),('driver_reference',1280,720))]
+    ('overview',1920,1080),('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720))]
 entries=[]
 for tag,lane in (('same_lane',-1),('other_lane',-2)):
     cid=ASSIGNMENT+'__probe_'+tag
@@ -25,6 +25,8 @@ for tag,lane in (('same_lane',-1),('other_lane',-2)):
                                   'limitations':['official device authority and actual green arrow display unverified',
                                                  'Native route, four-camera capture, and saved processing unfinished']}}
     files=[{'path':'runner.py','content':(HERE/'draft_runner.py').read_text()},
+           {'path':'signal_source.py','content':(HERE/'signal_source.py').read_text()},
+           {'path':'capture.py','content':(HERE/'capture.py').read_text()},
            {'path':'road.xodr','content':(HERE/'road.xodr').read_text()},
            {'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'},
            {'path':'tests/test_draft.py','content':(HERE/'draft_test.py').read_text()}]

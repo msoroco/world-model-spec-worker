@@ -91,7 +91,7 @@ def build(suffix, y):
              'trace.jsonl': lines(trace), 'road.xodr': open_drive() + '\n',
              'capture/evidence.jsonl': lines(evidence),
              'capture/native/frames.jsonl': lines(native_frames),
-             'capture/recorder_info.txt': 'C230207 synthetic software diagnostic only\n'}
+             'capture/recorder_info.txt': 'Create 1: vehicle.bh.crossbike (0) at (0, 0, 0)\n'}
     capture_manifest = {'extraction_confirmed': True, 'frames': 600,
                         'required_observations': [],
                         'sources': {name: digest_text(files[name]) for name in ('trace.jsonl', 'road.xodr')},
