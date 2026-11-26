@@ -52,14 +52,14 @@
   "cell_id": "C329654",
   "comparisons": [
     {
-      "audit_gap": "Independent saved-source comparison code and synthetic positive/negative tests pass. Recorded-only finalization and selected measurement contracts pass synthetic CPU diagnostics. Original Native acquisition, selected end-to-end package compatibility and independent original-source proof remain pending.",
+      "audit_gap": "Complete semantic sweep and source-bound selected synthetic fixture finalization now pass CPU validators. Original Native acquisition, selected end-to-end package compatibility and independent original-source delivery proof remain pending.",
       "case_ids": [
         "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_a",
         "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_b"
       ],
       "comparison_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
       "deliberate_differences": [
-        "left_turn_yield_sequence"
+        "turn_release_s"
       ],
       "fixed_conditions": {
         "actor": "motor_vehicle_driver",
@@ -266,12 +266,15 @@
       "status": "selected_required"
     },
     {
-      "case_ids": [],
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
+      "case_ids": [
+        "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_a",
+        "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_b"
+      ],
+      "evidence_or_gap": "Both exact turn-sequence cases include source-bound signal and later opposing-stream response measurements; actual Native realization, legal judgment and independent delivery acceptance remain pending.",
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Conditional subsequent permission to turn.",
-      "status": "alternative_pending"
+      "status": "selected_required"
     }
   ],
   "runtime_uncertainties": [
@@ -292,7 +295,7 @@
   "source_observation_mapping": {
     "drv.approaching": {
       "channels": [
-        "source_capture.sample.oncoming.distance_to_conflict_m"
+        "drv.approaching"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -302,9 +305,7 @@
     },
     "drv.arrival_order": {
       "channels": [
-        "observed_left_turn.measure.first_opponent_conflict_frame",
-        "observed_left_turn.measure.first_turn_progress_frame",
-        "observed_left_turn.measure.subsequent_opponent_conflict_frame"
+        "drv.arrival_order"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -314,8 +315,7 @@
     },
     "drv.in_intersection": {
       "channels": [
-        "source_capture.sample.ego.inside_intersection",
-        "survey.intersection_polygon_xy_m"
+        "drv.in_intersection"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -325,8 +325,7 @@
     },
     "drv.time_to_conflict": {
       "channels": [
-        "source_capture.sample.oncoming.distance_to_conflict_m",
-        "source_capture.sample.oncoming.speed_mps"
+        "drv.time_to_conflict"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -336,8 +335,7 @@
     },
     "drv.turning": {
       "channels": [
-        "source_capture.sample.ego.left_turn_progress",
-        "left_turn_controller.command.ego.phase"
+        "drv.turning"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -347,8 +345,7 @@
     },
     "drv.yields_to": {
       "channels": [
-        "observed_left_turn.measure.preturn_wait_observed",
-        "observed_left_turn.measure.initial_opponent_passed_before_turn"
+        "drv.yields_to"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -358,8 +355,7 @@
     },
     "kin.speed": {
       "channels": [
-        "source_capture.sample.oncoming.speed_mps",
-        "observed_left_turn.measure.subsequent_opponent_min_speed_after_turn_mps"
+        "kin.speed"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -369,9 +365,9 @@
     },
     "post_yield_signal_and_subsequent_response": {
       "channels": [
-        "observed_left_turn.measure.turn_signal_observed_before_and_at_turn",
-        "observed_left_turn.measure.subsequent_yield_response_observed",
-        "comparison_audit.audit_attempts"
+        "sig.turn_indicator",
+        "drv.arrival_order",
+        "kin.speed"
       ],
       "evidence": "Saved meter requires sampled lamp before/at turn and independent comparison requires subsequent opposing deceleration after observed turn commitment. This is an operational response, not legal yield or physical acceptance.",
       "source_refs": [
@@ -381,8 +377,7 @@
     },
     "rel.oncoming": {
       "channels": [
-        "source_capture.sample.oncoming.actor_id",
-        "survey.opposing_approach_direction_xy"
+        "rel.oncoming"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -392,8 +387,7 @@
     },
     "sig.turn_indicator": {
       "channels": [
-        "source_capture.sample.ego.left_indicator_on",
-        "observed_left_turn.measure.turn_signal_observed_before_and_at_turn"
+        "sig.turn_indicator"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -403,8 +397,7 @@
     },
     "st.lane_enters": {
       "channels": [
-        "survey.ego_approach_direction_xy",
-        "survey.opposing_approach_direction_xy"
+        "st.lane_enters"
       ],
       "evidence": "Named CPU-tested source path; original Native actor/map sources and physical outcome remain unverified. Summary term is not asserted as a pinned Core atom.",
       "source_refs": [
@@ -440,5 +433,32 @@
       "path": "inputs/coverage/branch-sources.json",
       "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject and two opposing vehicles through intersection",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "both opposing approach lanes and conflict region",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "intersection boundary and departure",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject steering, signal and forward path",
+        "interval": "all 600 original frames"
+      }
+    ]
+  }
 }

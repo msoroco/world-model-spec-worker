@@ -31,6 +31,9 @@ def check(config):
         raise ValueError("Exact law, actor or 600-frame window differs")
     if [item.get("name") for item in config.get("cameras", [])] != list(CAMERAS):
         raise ValueError("Four named Native cameras required")
+    if any(item.get("fov_deg") != 90 or not item.get("pose_strategy")
+           for item in config["cameras"]):
+        raise ValueError("Four-view pose and field-of-view contract differs")
     if (config.get("yield_policy"), config.get("turn_release_s")) != CASES[case]:
         raise ValueError("Controlled original turn policy differs")
     return {"case_id": case, "native_acquisition_implemented": True,
@@ -130,7 +133,7 @@ def execute(config, output_dir, host="127.0.0.1", port=2000):
             bp = world.get_blueprint_library().find("sensor.camera.rgb")
             bp.set_attribute("image_size_x", str(item["width"]))
             bp.set_attribute("image_size_y", str(item["height"]))
-            bp.set_attribute("fov", "90")
+            bp.set_attribute("fov", str(item["fov_deg"]))
             bp.set_attribute("sensor_tick", "0")
             pose, attached = _camera_pose(carla, name, survey["conflict_xy_m"])
             camera = world.spawn_actor(bp, pose, attach_to=ego if attached else None)

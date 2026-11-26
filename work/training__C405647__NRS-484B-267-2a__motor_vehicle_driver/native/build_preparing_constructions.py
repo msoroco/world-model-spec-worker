@@ -72,15 +72,27 @@ def build():
         case = item["exact_case_id"]
         branch = item["activation_branch"]
         config = {"case_id": case, "law_id": "NRS-484B-267-2a",
+                  "selected_case_id": case,
                   "cell_id": "C405647", "actor": "motor_vehicle_driver",
                   "activation_branch": branch, "already_moving": False,
-                  "duration_frames": 600, "rate_hz": 20,
+                  "duration_frames": 600, "duration_s": 30, "rate_hz": 20,
+                  "cameras": [{"name": name, "fps": 20,
+                               "width": 1920 if name == "overview" else 1280,
+                               "height": 1080 if name == "overview" else 720}
+                              for name in item["required_views"]],
+                  "ego_initial_speed_mps": 14, "ego_target_speed_mps": 7,
+                  "other_vehicle_start_frame": 120, "other_vehicle_speed_mps": 1,
+                  "posted_limit_mps": 15, "visibility_m": 200, "wet_road": False,
+                  "required_atoms": [], "source_packets": [],
                   "required_views": item["required_views"],
                   "original_source_requirements": item["required_original_sources"] + item["required_branch_sources"],
                   "physical_verified": False, "legal_verdict": None}
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"},
                  {"path": "runner.py", "content": (HERE / "preparing_runner.py").read_text()},
                  {"path": "preparing_runner.py", "content": (HERE / "preparing_runner.py").read_text()},
+                 {"path": "preparing_finalize.py", "content": (HERE / "preparing_finalize.py").read_text()},
+                 {"path": "preparing_movement_capture.py", "content": (HERE / "preparing_movement_capture.py").read_text()},
+                 {"path": "preparing_hand_signal_rig.py", "content": (HERE / "preparing_hand_signal_rig.py").read_text()},
                  {"path": "branch_alternatives.py", "content": (HERE / "branch_alternatives.py").read_text()},
                  {"path": "tests/test_exact.py", "content": TEST}]
         construction = {"format": "worker-inline-construction", "assignment_id": AID,
@@ -88,6 +100,11 @@ def build():
                         "actor": "motor_vehicle_driver", "entrypoint": "runner.py",
                         "files": files,
                         "measurement_plan": {"entrypoint": "runner.py",
+                                             "saved_finalizer": "preparing_finalize.py",
+                                             "movement_capture_entrypoint": "preparing_movement_capture.py"
+                                             if branch == "visible_vehicle_movement" else None,
+                                             "hand_signal_rig": "preparing_hand_signal_rig.py"
+                                             if branch == "visible_driver_hand_signal" else None,
                                              "sources": config["original_source_requirements"],
                                              "legal_result": None},
                         "recording_description": {"channels": [], "context_inputs": [],
@@ -99,6 +116,8 @@ def build():
         cases.append({"case_id": case, "kind": "prospective_preparing_cpu",
                       "id": "primary", "construction": str(path.relative_to(HERE)),
                       "construction_sha256": sha(path),
+                      "post_capture": "preparing_finalize.py",
+                      "independent_source_audit": "preparing_source_audit.py",
                       "physical_evidence_pending": True})
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,
                 "status": "prospective_cpu_not_delivery_ready", "delivery_ready": False,

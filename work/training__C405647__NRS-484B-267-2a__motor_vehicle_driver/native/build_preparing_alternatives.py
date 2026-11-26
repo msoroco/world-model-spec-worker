@@ -25,6 +25,12 @@ def build():
             "flashing_equipment_source_id", "flashing_pixel_source_id",
             "flashing_qualification_source_id", "officer_direction_source_id",
             "road_context_source_id", "weather_context_source_id"],
+        "independent_source_audit": "native/preparing_source_audit.py",
+        "independent_source_audit_sha256": sha(FOLDER / "native/preparing_source_audit.py"),
+        "recorded_only_finalizer": "native/preparing_finalize.py",
+        "recorded_only_finalizer_sha256": sha(FOLDER / "native/preparing_finalize.py"),
+        "preparing_observation_source": "preparing_observations.jsonl",
+        "required_pixel_review": "original_primary_frame_actor_join",
         "status": "prospective_original_source_pending",
         "legal_outcome_claimed": False,
     }
@@ -39,6 +45,14 @@ def build():
                              "already_moving": False,
                              "required_branch_sources": extra,
                              "classification_script": "native/branch_alternatives.py",
+                             "movement_capture_script": "native/preparing_movement_capture.py"
+                             if branch == "visible_vehicle_movement" else None,
+                             "movement_capture_script_sha256": sha(FOLDER / "native/preparing_movement_capture.py")
+                             if branch == "visible_vehicle_movement" else None,
+                             "hand_signal_rig_script": "native/preparing_hand_signal_rig.py"
+                             if branch == "visible_driver_hand_signal" else None,
+                             "hand_signal_rig_script_sha256": sha(FOLDER / "native/preparing_hand_signal_rig.py")
+                             if branch == "visible_driver_hand_signal" else None,
                              "selected_for_current_pair": False})
     output = FOLDER / "native/preparing-alternative-plan.json"
     output.write_text(json.dumps({"format": "c405647-preparing-alternatives-v1",

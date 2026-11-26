@@ -8,7 +8,15 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent.name
 CASES = {"condition_a": ("yield_then_turn", 15.0),
          "condition_b": ("turn_before_pass", 9.0)}
+OBSERVED_CHANNELS = ("drv.in_intersection", "st.lane_enters", "drv.turning",
+    "sig.turn_indicator", "rel.oncoming", "drv.approaching",
+    "drv.time_to_conflict", "drv.yields_to", "drv.arrival_order", "kin.speed",
+    "turn_release_s")
 RECORDING_DESCRIPTION = {"channels": [
+    {"name": name, "unit": "s" if name == "turn_release_s" else "structured",
+     "method": "saved original Native actor and map readback",
+     "sampling_rate_hz": 20, "time_window": "600 frames"}
+    for name in OBSERVED_CHANNELS] + [
     {"name": "raw_ego_motion", "unit": "structured",
      "method": "original ego actor readback", "sampling_rate_hz": 20,
      "time_window": "600 frames"},
@@ -21,7 +29,12 @@ RECORDING_DESCRIPTION = {"channels": [
     {"name": "four_camera_video", "unit": "structured",
      "method": "four named source streams", "sampling_rate_hz": 20,
      "time_window": "600 frames"}],
+    "context_inputs": [{"name": "intersection_context", "unit": "structured",
+        "method": "source-hashed Native map survey and road polygon readback"}],
     "limitations": ["Native motion, signal pixels and legal hazard unverified"]}
+for channel in RECORDING_DESCRIPTION["channels"]:
+    channel["reference_frame"] = "original Native frame and timestamp"
+    channel["uncertainty"] = "50 ms sampling; physical pixels and legal priority require review"
 RUNNER = '''import argparse
 import json
 from pathlib import Path
@@ -107,7 +120,12 @@ def build():
                   "law_id": "NRS-484B-253", "cell_id": "C329654",
                   "actor": "motor_vehicle_driver", "rate_hz": 20,
                   "duration_s": 30, "duration_frames": 600,
-                  "cameras": [{"name": n, "fps": 20, "width": w, "height": h}
+                  "cameras": [{"name": n, "fps": 20, "width": w, "height": h,
+                               "fov_deg": 90,
+                               "pose_strategy": "fixed_intersection_overview" if n == "overview" else
+                                   "fixed_intersection_approach" if n == "approach" else
+                                   "fixed_intersection_corner" if n == "reference_corner" else
+                                   "attached_driver_reference"}
                               for n,w,h in (("overview",1920,1080),("approach",1280,720),
                                              ("reference_corner",1280,720),
                                              ("driver_reference",1280,720))],

@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "reference_corner camera mount from (4,-5,2,-12) to (3,-6,3,-16) meters/degrees; all cases and observations fixed"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1ee04f1896426656ddd49f9177f71e22613ccfbe8d8173042a3d546aecec1144",
+            "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__reference --candidate fallback1",
+            "log": "selected-grade-reference-fallback1-offline.log",
+            "log_sha256": "bbd9f020417c49b38622495eb7b13f062b09ba29d4caf34ab3d7a3ee89fd6c0e"
+          },
+          "compatibility": {
+            "receipt": "proofs/reference/fallback1-compatibility.json",
+            "sha256": "da42ed5eec6a288b78c4bde0581b7e3187620b5eaa0ea01ff66fb74f2709a42c",
+            "log": "proofs/reference/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/reference/fallback1-negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -38,6 +51,88 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/reference/physical-preparation.json",
+        "sha256": "89a64c1c6516713f1e8a0a5a5781128a43004716521cf19d9e31fec9bdd255b2"
+      },
+      "acquisition": {
+        "engine_running": {
+          "entrypoint": "runner.py",
+          "method": "original same-frame engine operation sensor after actuator receipt",
+          "evidence": [
+            "engine-preparation.json",
+            "instrument-frames.jsonl"
+          ]
+        },
+        "parking_brake_set": {
+          "entrypoint": "runner.py",
+          "method": "original vehicle control and brake readback",
+          "evidence": [
+            "vehicle-frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "front_wheel_heading_to_curb_deg": {
+          "entrypoint": "runner.py",
+          "method": "calibrated original front-wheel sensor with separate Native angles",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "vehicle-frames.jsonl"
+          ]
+        },
+        "unattended_interval": {
+          "entrypoint": "runner.py",
+          "method": "original occupancy and responsible-person sensor",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "occupancy-frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "b72aa52ed66acf345d75df7a7097e8a8c433d3c5e32016e43be8c1b9213c1f8c",
+        "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__reference --candidate primary",
+        "log": "selected-grade-reference-primary-offline.log",
+        "log_sha256": "ce4bad3df937319b01c120be0e7ad02105203a9a0400b8ed58ea7aaa90006a9a"
+      },
+      "compatibility": {
+        "receipt": "proofs/reference/primary-compatibility.json",
+        "sha256": "a0a5dee514987044d5ec2a26408ab2d5029ad1831c72625fead1f8fb53032b04",
+        "log": "proofs/reference/primary-compatibility-analysis.log",
+        "negative_log": "proofs/reference/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/reference/primary-negative-analysis.log",
+        "log_sha256": "4783db7df164547cf3a01c4eda7f0c83eea816eba6b0affb8248460586f9ce5a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "engine_actuator_and_sensor",
+          "independent_source_audit"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "69dda7100be8f70ee904324d3fb053f012ce425de18f89e2aea078a7996cd01d",
+        "command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $ATTEMPT --case training__C276263__NRS-484B-533__motor_vehicle_driver__reference --review $REVIEW --output $AUDIT_OUTPUT",
+        "negative_command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $MISSING_ENGINE_PREPARATION --case training__C276263__NRS-484B-533__motor_vehicle_driver__reference --review $REVIEW --output $AUDIT_OUTPUT",
+        "test_log": "proofs/reference/delivery-positive.log",
+        "test_log_sha256": "36595bc62421788974488e860247dde33acb0b0e819d610fde047314b5c6828d",
+        "test_exit_code": 0,
+        "negative_log": "proofs/reference/delivery-negative.log",
+        "negative_log_sha256": "e41477b64d47abf56695938eae193401ec5f6e97ae390789a344011ef6fcfd47",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original engine actuator preparation missing"
       }
     },
     {
@@ -61,7 +156,20 @@
           },
           "changed_knobs": [
             "reference_corner camera mount from (4,-5,2,-12) to (3,-6,3,-16) meters/degrees; all cases and observations fixed"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d05f2185cb7e7f7576797616e3f5cbb0cec65c88ab55f0f5ebb9fe8287f07091",
+            "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__contrast --candidate fallback1",
+            "log": "selected-grade-contrast-fallback1-offline.log",
+            "log_sha256": "d73293b01405d120234bbbb95ebe608f05013a77c51fe9100c9a8e3d524383bf"
+          },
+          "compatibility": {
+            "receipt": "proofs/contrast/fallback1-compatibility.json",
+            "sha256": "5784f93a13801175a506a77e74ad1b5870dd5a85e71065a161dc35484bb94346",
+            "log": "proofs/contrast/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/contrast/fallback1-negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -74,6 +182,88 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/contrast/physical-preparation.json",
+        "sha256": "73d8dbe540baaa337dd091af65da59f7c04512a4adc3c9e0fec5ac5bbd35a8b1"
+      },
+      "acquisition": {
+        "engine_running": {
+          "entrypoint": "runner.py",
+          "method": "original same-frame engine operation sensor after actuator receipt",
+          "evidence": [
+            "engine-preparation.json",
+            "instrument-frames.jsonl"
+          ]
+        },
+        "parking_brake_set": {
+          "entrypoint": "runner.py",
+          "method": "original vehicle control and brake readback",
+          "evidence": [
+            "vehicle-frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "front_wheel_heading_to_curb_deg": {
+          "entrypoint": "runner.py",
+          "method": "calibrated original front-wheel sensor with separate Native angles",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "vehicle-frames.jsonl"
+          ]
+        },
+        "unattended_interval": {
+          "entrypoint": "runner.py",
+          "method": "original occupancy and responsible-person sensor",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "occupancy-frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a6379183ea0446b5caf9b12b7a22221549496f385f41ed4ec1c30692984aa184",
+        "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__contrast --candidate primary",
+        "log": "selected-grade-contrast-primary-offline.log",
+        "log_sha256": "8a94352379f6cf2344d6c1f74bd899bf966901f6bd30c2a37ef63a2ee13e61f7"
+      },
+      "compatibility": {
+        "receipt": "proofs/contrast/primary-compatibility.json",
+        "sha256": "2b1c28e44779fd401e6db642405574155150a4dbdc226f4a0c62cecdc4e25846",
+        "log": "proofs/contrast/primary-compatibility-analysis.log",
+        "negative_log": "proofs/contrast/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/contrast/primary-negative-analysis.log",
+        "log_sha256": "93cfb47536c1a729771adaecd43da0016c9615af83aea8e1ea48252967adbb80"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "engine_actuator_and_sensor",
+          "independent_source_audit"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "69dda7100be8f70ee904324d3fb053f012ce425de18f89e2aea078a7996cd01d",
+        "command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $ATTEMPT --case training__C276263__NRS-484B-533__motor_vehicle_driver__contrast --review $REVIEW --output $AUDIT_OUTPUT",
+        "negative_command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $MISSING_ENGINE_PREPARATION --case training__C276263__NRS-484B-533__motor_vehicle_driver__contrast --review $REVIEW --output $AUDIT_OUTPUT",
+        "test_log": "proofs/contrast/delivery-positive.log",
+        "test_log_sha256": "c76224ed02b44374d8d9bda5d45cc26426775ecc3235343d236ea66293fa885b",
+        "test_exit_code": 0,
+        "negative_log": "proofs/contrast/delivery-negative.log",
+        "negative_log_sha256": "e41477b64d47abf56695938eae193401ec5f6e97ae390789a344011ef6fcfd47",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original engine actuator preparation missing"
       }
     },
     {
@@ -97,7 +287,20 @@
           },
           "changed_knobs": [
             "reference_corner camera mount from (4,-5,2,-12) to (3,-6,3,-16) meters/degrees; all cases and observations fixed"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "ed813435a35b9ca5cb576b37c8c4fb6590b52931b7f48b5e7383e013198fa098",
+            "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on --candidate fallback1",
+            "log": "selected-grade-engine_on-fallback1-offline.log",
+            "log_sha256": "d795823f1986e89fdd77ca52e37168cd27631100db7d76b072c7de8b08003024"
+          },
+          "compatibility": {
+            "receipt": "proofs/engine_on/fallback1-compatibility.json",
+            "sha256": "ccf42ef0150b319163fc11aa84127f232288274588306f32dce4c444bc5194c9",
+            "log": "proofs/engine_on/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/engine_on/fallback1-negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -110,6 +313,88 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/engine_on/physical-preparation.json",
+        "sha256": "91339402bc8e50743a33e2fe457a9736e144101b6590b1e1e03d6c00689fe2fd"
+      },
+      "acquisition": {
+        "engine_running": {
+          "entrypoint": "runner.py",
+          "method": "original same-frame engine operation sensor after actuator receipt",
+          "evidence": [
+            "engine-preparation.json",
+            "instrument-frames.jsonl"
+          ]
+        },
+        "parking_brake_set": {
+          "entrypoint": "runner.py",
+          "method": "original vehicle control and brake readback",
+          "evidence": [
+            "vehicle-frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "front_wheel_heading_to_curb_deg": {
+          "entrypoint": "runner.py",
+          "method": "calibrated original front-wheel sensor with separate Native angles",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "vehicle-frames.jsonl"
+          ]
+        },
+        "unattended_interval": {
+          "entrypoint": "runner.py",
+          "method": "original occupancy and responsible-person sensor",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "occupancy-frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "fd4e409a31a240062a5ebf54ee2014d3176f8c0e33bc9cbac46609cb41841d19",
+        "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on --candidate primary",
+        "log": "selected-grade-engine_on-primary-offline.log",
+        "log_sha256": "8006e3ef69354ce7dd84caedb082aa797234de0776774a5bcbb8c51932dde02b"
+      },
+      "compatibility": {
+        "receipt": "proofs/engine_on/primary-compatibility.json",
+        "sha256": "42464ffb3b78935187f8634ed9f3f3812eba23f6206921152bfe422f396e26e3",
+        "log": "proofs/engine_on/primary-compatibility-analysis.log",
+        "negative_log": "proofs/engine_on/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/engine_on/primary-negative-analysis.log",
+        "log_sha256": "ac89f2923790079d400843969b0631a4083a6a6d83915c5e52b492548eeb5063"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "engine_actuator_and_sensor",
+          "independent_source_audit"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "69dda7100be8f70ee904324d3fb053f012ce425de18f89e2aea078a7996cd01d",
+        "command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $ATTEMPT --case training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on --review $REVIEW --output $AUDIT_OUTPUT",
+        "negative_command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $MISSING_ENGINE_PREPARATION --case training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on --review $REVIEW --output $AUDIT_OUTPUT",
+        "test_log": "proofs/engine_on/delivery-positive.log",
+        "test_log_sha256": "d36120f381f9c27034e3a3605be08390046d7e69dce78eacb96a30d5c6e0988d",
+        "test_exit_code": 0,
+        "negative_log": "proofs/engine_on/delivery-negative.log",
+        "negative_log_sha256": "e41477b64d47abf56695938eae193401ec5f6e97ae390789a344011ef6fcfd47",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original engine actuator preparation missing"
       }
     },
     {
@@ -133,7 +418,20 @@
           },
           "changed_knobs": [
             "reference_corner camera mount from (4,-5,2,-12) to (3,-6,3,-16) meters/degrees; all cases and observations fixed"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1a6e9fca2ce1dba0611868e5daabafb6545b920e98e5f01b00ec4f9837ffa6c6",
+            "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset --candidate fallback1",
+            "log": "selected-grade-brake_unset-fallback1-offline.log",
+            "log_sha256": "1f86a4ba62c7e09ea424f8032fe83c59bbb2bf088e64fc7520c8afab06ce67be"
+          },
+          "compatibility": {
+            "receipt": "proofs/brake_unset/fallback1-compatibility.json",
+            "sha256": "d5b22f6d6dd8eb80a7b16849e1df728119069b136a5641824083424df821b337",
+            "log": "proofs/brake_unset/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/brake_unset/fallback1-negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -146,6 +444,88 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/brake_unset/physical-preparation.json",
+        "sha256": "b1c59739ba258c18736c968efc88ee0d3712246c455b069052ac4ba9a36cb1ee"
+      },
+      "acquisition": {
+        "engine_running": {
+          "entrypoint": "runner.py",
+          "method": "original same-frame engine operation sensor after actuator receipt",
+          "evidence": [
+            "engine-preparation.json",
+            "instrument-frames.jsonl"
+          ]
+        },
+        "parking_brake_set": {
+          "entrypoint": "runner.py",
+          "method": "original vehicle control and brake readback",
+          "evidence": [
+            "vehicle-frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "front_wheel_heading_to_curb_deg": {
+          "entrypoint": "runner.py",
+          "method": "calibrated original front-wheel sensor with separate Native angles",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "vehicle-frames.jsonl"
+          ]
+        },
+        "unattended_interval": {
+          "entrypoint": "runner.py",
+          "method": "original occupancy and responsible-person sensor",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "occupancy-frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "d64a30c81b1a3b051a86b3c82739e645179241cd53bf7c4675676eaee77d7c27",
+        "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset --candidate primary",
+        "log": "selected-grade-brake_unset-primary-offline.log",
+        "log_sha256": "79892d9e63de4528eafd0216d4937cb3633a205114e0180cbfebec644ccc395f"
+      },
+      "compatibility": {
+        "receipt": "proofs/brake_unset/primary-compatibility.json",
+        "sha256": "bfbfe5e273d41e53e78c9e7ef615d637bee94da5b7efba465fa57b3f802b0e3c",
+        "log": "proofs/brake_unset/primary-compatibility-analysis.log",
+        "negative_log": "proofs/brake_unset/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/brake_unset/primary-negative-analysis.log",
+        "log_sha256": "65c7f7f9409403df4f6e35a8a0e38b5e958e627724e2c37f084bc1e57938c664"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "engine_actuator_and_sensor",
+          "independent_source_audit"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "69dda7100be8f70ee904324d3fb053f012ce425de18f89e2aea078a7996cd01d",
+        "command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $ATTEMPT --case training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset --review $REVIEW --output $AUDIT_OUTPUT",
+        "negative_command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $MISSING_ENGINE_PREPARATION --case training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset --review $REVIEW --output $AUDIT_OUTPUT",
+        "test_log": "proofs/brake_unset/delivery-positive.log",
+        "test_log_sha256": "53b7466eb1d6622f65bc43d4865a7096153e3e73369a3016fb0ecaf421ea0201",
+        "test_exit_code": 0,
+        "negative_log": "proofs/brake_unset/delivery-negative.log",
+        "negative_log_sha256": "e41477b64d47abf56695938eae193401ec5f6e97ae390789a344011ef6fcfd47",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original engine actuator preparation missing"
       }
     },
     {
@@ -169,7 +549,20 @@
           },
           "changed_knobs": [
             "reference_corner camera mount from (4,-5,2,-12) to (3,-6,3,-16) meters/degrees; all cases and observations fixed"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "06b726c9fed59ba67518bae9f6bd3cf7acebf368795cdbd597de8ca12fb11644",
+            "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight --candidate fallback1",
+            "log": "selected-grade-wheel_straight-fallback1-offline.log",
+            "log_sha256": "d268ff3fc8db49a7a845ba7e85c23426bba6e2ddfe420433ad7c1b5f6d859c72"
+          },
+          "compatibility": {
+            "receipt": "proofs/wheel_straight/fallback1-compatibility.json",
+            "sha256": "94539ddb76ece3829a70c9ebc7cc1b17a4bb439e99b360cd109a5e4631c61337",
+            "log": "proofs/wheel_straight/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/wheel_straight/fallback1-negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -182,6 +575,88 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/wheel_straight/physical-preparation.json",
+        "sha256": "f1ebfc39bf0fe955350562097a5bd5bd746162116467fe727b18b7c0673956ff"
+      },
+      "acquisition": {
+        "engine_running": {
+          "entrypoint": "runner.py",
+          "method": "original same-frame engine operation sensor after actuator receipt",
+          "evidence": [
+            "engine-preparation.json",
+            "instrument-frames.jsonl"
+          ]
+        },
+        "parking_brake_set": {
+          "entrypoint": "runner.py",
+          "method": "original vehicle control and brake readback",
+          "evidence": [
+            "vehicle-frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "front_wheel_heading_to_curb_deg": {
+          "entrypoint": "runner.py",
+          "method": "calibrated original front-wheel sensor with separate Native angles",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "vehicle-frames.jsonl"
+          ]
+        },
+        "unattended_interval": {
+          "entrypoint": "runner.py",
+          "method": "original occupancy and responsible-person sensor",
+          "evidence": [
+            "instrument-frames.jsonl",
+            "occupancy-frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "d776eda952983989b83841d3e10e09c37ef1c035d4bcdebe471098a9093dd5c6",
+        "command": "runtime.py offline --manifest work/training__C276263__NRS-484B-533__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight --candidate primary",
+        "log": "selected-grade-wheel_straight-primary-offline.log",
+        "log_sha256": "0efb9f80849d864abd457680343ef583f8ea0b3f13d0878dce9ee7f97af3300f"
+      },
+      "compatibility": {
+        "receipt": "proofs/wheel_straight/primary-compatibility.json",
+        "sha256": "b88f8f742ebb4f0f15cbfa928aa82f3f8aca295b32176a5fdca016f382e46c78",
+        "log": "proofs/wheel_straight/primary-compatibility-analysis.log",
+        "negative_log": "proofs/wheel_straight/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/wheel_straight/primary-negative-analysis.log",
+        "log_sha256": "90ad9afa352b1d1381c95ac526f58f1ae5fca8ef078e8f0934756784afe6eb17"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "engine_actuator_and_sensor",
+          "independent_source_audit"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "69dda7100be8f70ee904324d3fb053f012ce425de18f89e2aea078a7996cd01d",
+        "command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $ATTEMPT --case training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight --review $REVIEW --output $AUDIT_OUTPUT",
+        "negative_command": "$CARLA_PYTHON work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/delivery_audit.py --attempt $MISSING_ENGINE_PREPARATION --case training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight --review $REVIEW --output $AUDIT_OUTPUT",
+        "test_log": "proofs/wheel_straight/delivery-positive.log",
+        "test_log_sha256": "c1256693c4c0e3c55e44dfcf35b22c47ce5fc0f931bd2ed56cd53fbadf9d6da6",
+        "test_exit_code": 0,
+        "negative_log": "proofs/wheel_straight/delivery-negative.log",
+        "negative_log_sha256": "e41477b64d47abf56695938eae193401ec5f6e97ae390789a344011ef6fcfd47",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original engine actuator preparation missing"
       }
     }
   ]

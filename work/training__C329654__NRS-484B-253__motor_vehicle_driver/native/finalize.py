@@ -47,6 +47,23 @@ def measure_yield_sequence(attempt, report):
     return {"value": value, "method": "measure_yield_sequence", "sources": hashes}
 
 
+def measure_post_yield_phase(attempt, report):
+    """Measure signal and subsequent stream response without granting permission."""
+    names = ("left-turn-actors.jsonl", "camera-frames.jsonl", "map-survey.json")
+    hashes = {name: sha(required(attempt, name)) for name in names}
+    measured = report["measured"]
+    return {"value": {
+        "initial_opponent_passed_before_turn":
+            measured["initial_opponent_passed_before_turn"],
+        "signal_observed_before_and_at_turn":
+            measured["turn_signal_observed_before_and_at_turn"],
+        "subsequent_opponent_decelerated_after_turn":
+            measured["subsequent_opponent_decelerated_after_turn"],
+        "subsequent_opponent_conflict_frame":
+            measured["subsequent_opponent_conflict_frame"]},
+        "method": "measure_post_yield_phase", "sources": hashes}
+
+
 def source_join(attempt, report):
     actors = read_rows(required(attempt, "left-turn-actors.jsonl"))
     mapping = read_rows(required(attempt, "video_frames.jsonl"))
@@ -81,7 +98,41 @@ def source_join(attempt, report):
 def derive_channels(attempt, actors):
     channels = attempt / "channels"
     channels.mkdir(exist_ok=True)
-    selectors = {"raw_ego_motion": lambda row: row["ego"],
+    survey = json.loads(required(attempt, "map-survey.json").read_text())
+    road = json.loads(required(attempt, "road_geometry.json").read_text())
+    turn_start = next(index for index, row in enumerate(actors)
+                      if row["ego"]["left_turn_progress"] > 0)
+    (channels / "context.json").write_text(json.dumps({
+        "intersection_context": {"map_survey": survey,
+                                 "road_geometry": road}}, allow_nan=False) + "\n")
+    selectors = {
+        "drv.in_intersection": lambda row: row["ego"]["inside_intersection"],
+        "st.lane_enters": lambda row: {"ego_road_lane": survey.get("ego_road_lane"),
+            "opposing_road_lane": survey.get("opposing_road_lane")},
+        "drv.turning": lambda row: row["ego"]["left_turn_progress"],
+        "sig.turn_indicator": lambda row: row["ego"]["left_indicator_on"],
+        "rel.oncoming": lambda row: [{"actor_id": item["actor_id"],
+            "approach_lane_opposite": item["approach_lane_opposite"]}
+            for item in row["oncoming"]],
+        "drv.approaching": lambda row: [{"actor_id": item["actor_id"],
+            "distance_to_conflict_m": item["distance_to_conflict_m"],
+            "speed_mps": item["speed_mps"]} for item in row["oncoming"]],
+        "drv.time_to_conflict": lambda row: [{"actor_id": item["actor_id"],
+            "projected_s": item["distance_to_conflict_m"] / item["speed_mps"]
+                if item["speed_mps"] > 0 else None}
+            for item in row["oncoming"]],
+        "drv.yields_to": lambda row: {"ego_speed_mps": row["ego"]["speed_mps"],
+            "initial_opponent_distance_to_conflict_m":
+                row["oncoming"][0]["distance_to_conflict_m"]},
+        "drv.arrival_order": lambda row: {"ego_left_turn_progress":
+            row["ego"]["left_turn_progress"],
+            "opposing_distances_to_conflict_m":
+                [item["distance_to_conflict_m"] for item in row["oncoming"]]},
+        "kin.speed": lambda row: {"ego_speed_mps": row["ego"]["speed_mps"],
+            "opposing_speed_mps": [item["speed_mps"] for item in row["oncoming"]]},
+        "turn_release_s": lambda row: turn_start / 20
+            if row["frame"] >= turn_start else 0,
+        "raw_ego_motion": lambda row: row["ego"],
                  "raw_oncoming_motion": lambda row: row["oncoming"],
                  "turn_signal_source": lambda row: {
                      "left_indicator_on": row["ego"]["left_indicator_on"],
@@ -112,10 +163,17 @@ def finalize(attempt, output):
     derive_channels(attempt, actors)
     measured = saved["measured"]
     description = config.get("recording_description")
+    expected_channels = ["drv.in_intersection", "st.lane_enters", "drv.turning",
+        "sig.turn_indicator", "rel.oncoming", "drv.approaching",
+        "drv.time_to_conflict", "drv.yields_to", "drv.arrival_order",
+        "kin.speed", "turn_release_s", "raw_ego_motion", "raw_oncoming_motion",
+        "turn_signal_source", "four_camera_video"]
     if not isinstance(description, dict) or [item.get("name") for item in
-            description.get("channels", [])] != ["raw_ego_motion",
-            "raw_oncoming_motion", "turn_signal_source", "four_camera_video"]:
+            description.get("channels", [])] != expected_channels:
         raise ValueError("Frozen recording description differs")
+    if [item.get("name") for item in description.get("context_inputs", [])] != [
+            "intersection_context"]:
+        raise ValueError("Frozen recording context differs")
     result = {"case_id": config["case_id"],
         "measured_values": {
             "initial_opponent_passed_before_turn":
@@ -137,19 +195,27 @@ def finalize(attempt, output):
         "trace_reference": "trace.jsonl", "video_references": list(videos),
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description,
-        "recording_evidence": [{"name": name, "unit": "structured",
+        "recording_evidence": [{"name": name,
+            "unit": "s" if name == "turn_release_s" else "structured",
             "reference": "channels/" + name + ".jsonl"}
-            for name in ("raw_ego_motion", "raw_oncoming_motion",
-                         "turn_signal_source", "four_camera_video")],
+            for name in expected_channels] + [{"name": "intersection_context",
+            "unit": "structured", "reference": "channels/context.json"}],
         "realized_observables": {}, "legal_verdict_claimed": False,
         "physical_acceptance_claimed": False}
     from worker_exchange.native_output import physical_result, validate_result
     physical_result(attempt, result)
+    result["realized_observables"]["turn_release_s"] = {
+        "value": measured["first_turn_progress_frame"] / 20,
+        "unit": "s", "statistic": "max",
+        "method": "first observed nonzero left-turn progress from saved actor frames",
+        "time_window": "600 original frames", "sample_window_s": [0, 599 / 20],
+        "reference": "channels/turn_release_s.jsonl"}
     validate_result(result)
     measurement = measure_yield_sequence(attempt, saved)
     report = {"format": "c329654-left-turn-final-analysis-v1",
         "case_id": config["case_id"],
-        "measurements": {"yield_sequence": measurement},
+        "measurements": {"yield_sequence": measurement,
+                         "post_yield_phase": measure_post_yield_phase(attempt, saved)},
         "saved_analysis": saved, "original_source_hashes": source_hashes,
         "four_camera_frames": videos, "legal_verdict_claimed": False,
         "physical_acceptance_claimed": False}

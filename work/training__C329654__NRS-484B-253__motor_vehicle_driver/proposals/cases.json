@@ -1,0 +1,780 @@
+{
+  "cell_id": "C329654",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
+      "target_law_id": "NRS-484B-253",
+      "judgment_refs": [
+        {
+          "phrase": "having so yielded",
+          "note": "Original wait, signal, turn and later opposing response are measured without a priority verdict."
+        },
+        {
+          "phrase": "immediate hazard",
+          "note": "Opposing distance, speed and occupancy are measured; legal closeness remains unresolved."
+        }
+      ],
+      "rationale": "Sample two requested release times across initial-hazard passage while retaining the later opposing vehicle and signal phase.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "turn_release_s",
+          "observable": "turn_release_s",
+          "unit": "s",
+          "min": 9.0,
+          "max": 15.0,
+          "spacing": 6.0,
+          "range_rationale": "Two contrasting requested releases around the fixed initial passage; no legal time threshold.",
+          "spacing_rationale": "180 and 300 frame requests at 20 Hz.",
+          "feasibility_evidence": "Exact CPU offline bundles and synthetic saved-source comparison.",
+          "measurement": {
+            "method": "first observed nonzero left-turn progress from saved actor frames",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "turn_release_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 9.0
+        },
+        "opposing_stream_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-way intersection, initial and subsequent opposing actors"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_release_s",
+            "unit": "s",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_ego_motion",
+            "unit": "structured",
+            "method": "original ego actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_oncoming_motion",
+            "unit": "structured",
+            "method": "original opposing actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_signal_source",
+            "unit": "structured",
+            "method": "original lamp state and control request",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "structured",
+            "method": "four named source streams",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured",
+            "method": "source-hashed Native map survey and road polygon readback"
+          }
+        ],
+        "limitations": [
+          "Native motion, signal pixels and legal hazard unverified"
+        ]
+      },
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_b",
+        "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_a"
+      ],
+      "spec_version": "7fbedad2c77446710100982cd79ae17ce0332572a2a14ff7df520950111ea1a0"
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source geometry and opposing-stream context without a priority judgment.",
+      "variable_assignments": {
+        "turn_release_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 9.0
+        },
+        "opposing_stream_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-way intersection, initial and subsequent opposing actors"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "having so yielded",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_release_s",
+            "unit": "s",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_ego_motion",
+            "unit": "structured",
+            "method": "original ego actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_oncoming_motion",
+            "unit": "structured",
+            "method": "original opposing actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_signal_source",
+            "unit": "structured",
+            "method": "original lamp state and control request",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "structured",
+            "method": "four named source streams",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured",
+            "method": "source-hashed Native map survey and road polygon readback"
+          }
+        ],
+        "limitations": [
+          "Native motion, signal pixels and legal hazard unverified"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_b",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare requested turn release against an initially approaching and later opposing stream; original passage, signal and response remain observations.",
+      "paired_probe_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
+      "deliberate_differences": [
+        "turn_release_s"
+      ],
+      "probe": {
+        "primary_variable": "turn_release_s",
+        "comparison_or_standard": "measured initial passage, signal and later opposing response; no legal verdict",
+        "target_value_or_branch": 9.0
+      },
+      "variable_assignments": {
+        "turn_release_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 9.0
+        },
+        "opposing_stream_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-way intersection, initial and subsequent opposing actors"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "having so yielded",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_release_s",
+            "unit": "s",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_ego_motion",
+            "unit": "structured",
+            "method": "original ego actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_oncoming_motion",
+            "unit": "structured",
+            "method": "original opposing actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_signal_source",
+            "unit": "structured",
+            "method": "original lamp state and control request",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "structured",
+            "method": "four named source streams",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured",
+            "method": "source-hashed Native map survey and road polygon readback"
+          }
+        ],
+        "limitations": [
+          "Native motion, signal pixels and legal hazard unverified"
+        ]
+      },
+      "sweep_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
+      "sweep_point": {
+        "turn_release_s": 9.0
+      },
+      "selection_rank": 0,
+      "sweep_measurements": [
+        {
+          "variable": "turn_release_s",
+          "observable": "turn_release_s",
+          "unit": "s",
+          "measurement": {
+            "method": "first observed nonzero left-turn progress from saved actor frames",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "sweep_spec_version": "7fbedad2c77446710100982cd79ae17ce0332572a2a14ff7df520950111ea1a0"
+    },
+    {
+      "case_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_a",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare requested turn release against an initially approaching and later opposing stream; original passage, signal and response remain observations.",
+      "paired_probe_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
+      "deliberate_differences": [
+        "turn_release_s"
+      ],
+      "probe": {
+        "primary_variable": "turn_release_s",
+        "comparison_or_standard": "measured initial passage, signal and later opposing response; no legal verdict",
+        "target_value_or_branch": 15.0
+      },
+      "variable_assignments": {
+        "turn_release_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 15.0
+        },
+        "opposing_stream_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-way intersection, initial and subsequent opposing actors"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "having so yielded",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_release_s",
+            "unit": "s",
+            "method": "saved original Native actor and map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_ego_motion",
+            "unit": "structured",
+            "method": "original ego actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "raw_oncoming_motion",
+            "unit": "structured",
+            "method": "original opposing actor readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "turn_signal_source",
+            "unit": "structured",
+            "method": "original lamp state and control request",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "structured",
+            "method": "four named source streams",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "original Native frame and timestamp",
+            "uncertainty": "50 ms sampling; physical pixels and legal priority require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_context",
+            "unit": "structured",
+            "method": "source-hashed Native map survey and road polygon readback"
+          }
+        ],
+        "limitations": [
+          "Native motion, signal pixels and legal hazard unverified"
+        ]
+      },
+      "sweep_id": "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__comparison",
+      "sweep_point": {
+        "turn_release_s": 15.0
+      },
+      "selection_rank": 1,
+      "sweep_measurements": [
+        {
+          "variable": "turn_release_s",
+          "observable": "turn_release_s",
+          "unit": "s",
+          "measurement": {
+            "method": "first observed nonzero left-turn progress from saved actor frames",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "sweep_spec_version": "7fbedad2c77446710100982cd79ae17ce0332572a2a14ff7df520950111ea1a0"
+    }
+  ]
+}

@@ -31,6 +31,20 @@ def audit_attempt(folder, expected_case, review_path):
     observations = measure(folder, inventory, diagnostic=False)
     packets = [json.loads(line) for line in
                (folder / 'instrument-frames.jsonl').read_text().splitlines()]
+    preparation_path = folder / 'engine-preparation.json'
+    if not preparation_path.is_file():
+        raise ValueError('Original engine actuator preparation missing')
+    preparation = json.loads(preparation_path.read_text())
+    target = config.get('required_original_engine_running')
+    if (preparation.get('format') != 'c276263-engine-preparation-receipt-v1' or
+            preparation.get('case_id') != expected_case or
+            preparation.get('actor_id') != provenance['native_vehicle_actor_id'] or
+            preparation.get('source_kind') != 'original_actuator' or
+            preparation.get('requested_engine_running') is not target or
+            preparation.get('actuator_accepted') is not True or
+            not preparation.get('actuator_id') or
+            any(packet.get('engine_running') is not target for packet in packets)):
+        raise ValueError('Original engine actuator and operation readback differ')
     source_audit = audit_stream(packets)
     retained_audit = json.loads((folder / 'instrument-audit.json').read_text())
     if retained_audit != source_audit:

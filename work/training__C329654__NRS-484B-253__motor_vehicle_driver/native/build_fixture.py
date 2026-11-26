@@ -55,6 +55,9 @@ def build(suffix):
     survey = {"source_kind": "synthetic_cpu",
         "source_sha256": hashlib.sha256(road.encode()).hexdigest(),
         "intersection_polygon_xy_m": geometry["intersection_polygon_xy_m"],
+        "ego_road_lane": [1, -1], "opposing_road_lane": [1, 1],
+        "ego_approach_direction_xy": [1, 0],
+        "opposing_approach_direction_xy": [-1, 0],
         "synthetic_diagnostic": True}
     mapping, camera, trace, evidence, bodies, graph_rows, graphs = [], [], [], [], [], [], []
     for index, actor in enumerate(data):
