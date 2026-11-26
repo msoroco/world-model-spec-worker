@@ -1,0 +1,63 @@
+{
+  "template_id": "LVMC-11-52-030-B@taxi_driver",
+  "law_id": "LVMC-11-52-030-B",
+  "actor": "taxi_driver",
+  "status": "draft",
+  "quote": "The parking of vehicles is prohibited or restricted in certain zones as set forth in this Section. The location of such zones shall be established by posting appropriate signage or other durable markings, by painting curbs or the edges of road surfaces in accordance with the colors listed below, or by a combination thereof: Yellow indicates a zone for: (1) Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign; and (2) Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.",
+  "structure": {
+    "activation": {
+      "description": "A vehicle stops, stands or parks in an established yellow zone with an accompanying sign.",
+      "source_clause": "Yellow indicates a zone for:"
+    },
+    "obligation": {
+      "description": "Measure taxi standing, observed purpose, sign terms and civil time without a legal verdict.",
+      "type": "conditional_permission",
+      "source_clause": "Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Commercial vehicles loading or unloading freight require a compatible commercial actor and purpose source.",
+        "source_clause": "Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign;"
+      },
+      {
+        "description": "Taxi passenger loading, unloading or waiting subject to the source-reviewed posted conditions and times.",
+        "source_clause": "Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign."
+      }
+    ],
+    "timing": {
+      "description": "Measure the complete 600-frame standing interval at 20 Hz and join civil time to source-reviewed posted hours."
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "conditions and times posted on an accompanying sign",
+        "note": "The authored 09:00–17:00 sign is a construction proposal. Its wording, authority, governed curb and ordinary rules outside posted hours need independent source review."
+      },
+      {
+        "phrase": "Taxicabs",
+        "note": "A vehicle blueprint and role name do not establish taxicab licensing or status; retain original vehicle identity and independent classification source."
+      },
+      {
+        "phrase": "for the purpose of loading, unloading or waiting for passengers",
+        "note": "Requested walker motion is not observed passenger exchange or purpose. Retain original activity and independent purpose review over the standing interval."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "civil_start_local",
+      "kind": "world_setup",
+      "range_or_domain": "source-joined civil clock time"
+    },
+    {
+      "name": "requested_passenger_purpose",
+      "kind": "controller",
+      "range_or_domain": "waiting, loading or unloading request"
+    },
+    {
+      "name": "taxi_stop_x_m",
+      "kind": "controller",
+      "range_or_domain": "stop target along the same authored yellow zone"
+    }
+  ]
+}

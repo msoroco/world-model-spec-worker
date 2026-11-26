@@ -41,6 +41,7 @@ def build(side):
                'highway_half_width_m': 6.0, 'highway_centerline_anchor_xy_m': [0.0, 0.0],
                'traffic_direction_xy': [1.0, 0.0]}
     write(source / 'reviewed-road-source.json', context)
+    write(source / 'road.xodr', '<OpenDRIVE><header revMajor="1" revMinor="4" name="C230259-synthetic-diagnostic-road" version="1" north="50" south="-50" east="50" west="-50"/><road id="1" name="diagnostic-highway" length="100" junction="-1"><link/><planView><geometry s="0" x="-50" y="0" hdg="0" length="100"><line/></geometry></planView><elevationProfile><elevation s="0" a="0" b="0" c="0" d="0"/></elevationProfile><lanes><laneOffset s="0" a="0" b="0" c="0" d="0"/><laneSection s="0"><left><lane id="1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></left><center><lane id="0" type="none" level="false"/></center><right><lane id="-1" type="driving" level="false"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></right></laneSection></lanes><objects/><signals/></road></OpenDRIVE>\n')
     write(source / 'acquisition-provenance.json', {
         'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
         'scope': 'Source-shaped software test; no original Native capture or physical verification'})
@@ -96,8 +97,9 @@ def build(side):
         write(source / name, line(rows))
     write(source / 'capture/manifest.json', {
         'extraction_confirmed': True, 'frames': 600, 'synthetic_diagnostic': True,
-        'sources': {'trace.jsonl': sha(source / 'trace.jsonl')}})
-    write(source / 'capture/recorder_info.txt', 'Synthetic diagnostic recorder metadata only.\n')
+        'sources': {'trace.jsonl': sha(source / 'trace.jsonl'),
+                    'road.xodr': sha(source / 'road.xodr')}})
+    write(source / 'capture/recorder_info.txt', 'Create 17: walker.pedestrian.synthetic\nSynthetic diagnostic recorder metadata only.\n')
     generator = {'files': {}, 'graphs': graphs,
                  'videos': [{'path': name + '.mkv', 'frames': 600, 'width': width,
                              'height': height, 'fps': 20, 'color': 'black'}

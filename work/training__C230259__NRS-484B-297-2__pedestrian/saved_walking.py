@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from walking_side import FRAMES, measure
+from source_channels import write_channels
 
 
 def digest(path):
@@ -44,21 +45,6 @@ def measure_exception(context, trace):
             'source_frames': len(trace)}
 
 
-def ensure_recording_channels(attempt, original_trace):
-    """Rebuild derived channel copies from the retained original trace."""
-    channel_dir = attempt / 'channels'
-    channel_dir.mkdir(exist_ok=True)
-    for name, value in (('kin.position', lambda row: row['position_m']),
-                        ('kin.speed', lambda row: row['speed_mps'])):
-        expected = [{'time_s': row['time_s'], 'value': value(row)} for row in original_trace]
-        path = channel_dir / (name + '.jsonl')
-        if path.is_file():
-            if rows(path) != expected:
-                raise ValueError('Recording channel disagrees with original trace: ' + name)
-        else:
-            path.write_text(''.join(json.dumps(row) + '\n' for row in expected))
-
-
 def finalize(attempt):
     attempt = Path(attempt)
     config = json.loads(require_file(attempt, 'config.json').read_text())
@@ -81,7 +67,7 @@ def finalize(attempt):
     for sample, original in zip(trace, original_trace):
         if sample['native_frame'] != original['frame'] or abs(sample['time_s'] - original['time_s']) > 1e-6:
             raise ValueError('Walking source and original trace differ')
-    ensure_recording_channels(attempt, original_trace)
+    write_channels(attempt, context, trace, original_trace)
     native_path = attempt / 'result.json'
     if not native_path.is_file():
         marker = json.loads(require_file(attempt, 'acquisition-provenance.json').read_text())

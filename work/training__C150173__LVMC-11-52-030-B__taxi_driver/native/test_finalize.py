@@ -9,6 +9,8 @@ from finalize_original import SOURCES, inspect, sha
 from seal_review import seal
 from audit_original import decode
 import subprocess
+from unittest.mock import patch
+from audit_original import audit
 
 PACKAGE = Path(__file__).resolve().parent.parent
 ROOT = PACKAGE.parents[1]
@@ -70,7 +72,53 @@ def fixture(folder):
     return manifest
 
 
+def structural_original_fixture(folder):
+    """Fabricated Native-shaped bytes for audit logic, never original evidence."""
+    folder = Path(folder)
+    fixture(folder).unlink()
+    for name in ('yellow-zone-native.jsonl', 'observed-passenger-activity.jsonl'):
+        rows = [json.loads(line) for line in (folder / name).read_text().splitlines()]
+        for row in rows:
+            row['source_kind'] = 'original_native'
+        (folder / name).write_text(''.join(json.dumps(row) + '\n' for row in rows))
+    for name in ('taxicab-review.json', 'sign-review.json',
+                 'passenger-purpose-review.json', 'ordinary-rules-review.json'):
+        value = json.loads((folder / name).read_text())
+        value['source_kind'] = 'original_native'
+        if name == 'sign-review.json':
+            value['observed_sign_content'] = 'TAXI PASSENGERS 09:00-17:00 PROPOSAL'
+        write(folder / name, value)
+    write(folder / 'capture-seal.json', {
+        'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': 600,
+        'sources': {name: sha(folder / name) for name in SOURCES}})
+    seal(folder)
+
+
 class SourceJoin(unittest.TestCase):
+    def test_independent_original_audit_rejects_changed_source_and_activity(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as tmp:
+            folder = Path(tmp)
+            structural_original_fixture(folder)
+            fake_decode = {'frames': 600, 'width': 1, 'height': 1,
+                           'sha256': 'synthetic-structure-only'}
+            with patch('audit_original.decode', return_value=fake_decode):
+                self.assertEqual(audit(folder)['frames'], 600)
+                (folder / 'road.xodr').write_text('changed road readback\n')
+                with self.assertRaisesRegex(ValueError, 'Original source changed'):
+                    audit(folder)
+                (folder / 'road.xodr').write_text('synthetic CPU road readback\n')
+                activity = (folder / 'observed-passenger-activity.jsonl')
+                rows = [json.loads(line) for line in activity.read_text().splitlines()]
+                rows[10]['observed_occupant_count'] = -1
+                activity.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                write(folder / 'capture-seal.json', {
+                    'provenance_kind': 'native', 'diagnostic_fixture': False,
+                    'frames': 600, 'sources': {name: sha(folder / name) for name in SOURCES}})
+                (folder / 'source-manifest.json').unlink()
+                seal(folder)
+                with self.assertRaisesRegex(ValueError, 'Original taxi passenger activity join differs'):
+                    audit(folder)
+
     def test_full_video_decoder_and_profile_rejection(self):
         with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as tmp:
             video = Path(tmp) / 'diagnostic.mkv'

@@ -140,6 +140,25 @@ def main():
                                 'comparison_or_standard': 'Original candidate actor trace and independent officer identity/direction review, without legal outcome',
                                 'target_value_or_branch': suffix},
                       'recording_description': description})
+    for present in (False, True):
+        suffix = 'official_device_present' if present else 'official_device_absent'
+        device_description = json.loads((HERE / ('selected-' + suffix.replace('_', '-') +
+                                                  '/construction.json')).read_text())['recording_description']
+        cases.append({'case_id': HERE.name + '__' + suffix,
+                      'target_law_id': LAW_ID, 'target_type': 'boundary_probe',
+                      'rationale': 'Controlled original traffic-device prop candidate presence; official status, direction, temporal compliance and exception require independent original-source review.',
+                      'variable_assignments': {
+                          'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': True},
+                          'other_traffic_actor_present': {'kind': 'world_setup', 'value': None},
+                          'device_candidate_present': {'kind': 'world_setup', 'value': present}},
+                      'unresolved_judgment_calls': ['on a sidewalk',
+                          'in compliance with law or the directions of a police officer or official traffic-control device'],
+                      'paired_probe_id': 'official-device-context',
+                      'deliberate_differences': ['device_candidate_present'],
+                      'probe': {'primary_variable': 'device_candidate_present',
+                                'comparison_or_standard': 'Original prop trace and independent official device status/direction review, without legal outcome',
+                                'target_value_or_branch': suffix},
+                      'recording_description': device_description})
     cases_ref = write('cases.json', {
         'status': 'draft', 'assignment_id': HERE.name, 'law_id': LAW_ID,
         'cell_id': SOURCE['cell_id'], 'actor': ACTOR,

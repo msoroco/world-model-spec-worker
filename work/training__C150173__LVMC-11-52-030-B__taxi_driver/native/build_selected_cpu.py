@@ -22,6 +22,12 @@ def main():
     case_plan = json.loads((BASE / 'case-plan.json').read_text())
     if len(draft['cases']) != 4 or len(case_plan['comparisons']) != 3:
         raise ValueError('Exact four-case taxi plan required')
+    public_summary = BASE / 'native-selected' / 'public-compatibility-summary.json'
+    saved_summary = BASE / 'native-selected' / 'saved-processing-summary.json'
+    comparison_summary = BASE / 'native-selected' / 'saved-comparison-summary.json'
+    for proof in (public_summary, saved_summary, comparison_summary):
+        if not proof.is_file():
+            raise ValueError('Missing selected public/saved proof: ' + proof.name)
     entries = []
     for item in draft['cases']:
         case_id = item['case_id']
@@ -80,7 +86,12 @@ def main():
                         'fixture_recipe': str(recipe_path.relative_to(ROOT)),
                         'fixture_recipe_sha256': digest(recipe_path),
                         'offline_cpu': receipt_map,
-                        'compatibility': 'pending', 'saved_processing': 'pending',
+                        'compatibility': {
+                            'summary': str(public_summary.relative_to(BASE)),
+                            'summary_sha256': digest(public_summary)},
+                        'saved_processing': {
+                            'summary': str(saved_summary.relative_to(BASE)),
+                            'summary_sha256': digest(saved_summary)},
                         'delivery_audit': 'pending'})
     selected = {'format': 'c150173-selected-cpu-preparation-v1',
                 'assignment_id': BASE.name, 'delivery_ready': False,
@@ -89,6 +100,10 @@ def main():
                 'independent_request_audit': 'native/audit_draft_comparisons.py',
                 'independent_saved_source_audit': 'native/audit_original.py',
                 'independent_saved_source_audit_sha256': digest(BASE / 'native' / 'audit_original.py'),
+                'independent_saved_comparison_audit': 'native/audit_saved_comparison.py',
+                'independent_saved_comparison_audit_sha256': digest(BASE / 'native' / 'audit_saved_comparison.py'),
+                'saved_comparison_summary': str(comparison_summary.relative_to(BASE)),
+                'saved_comparison_summary_sha256': digest(comparison_summary),
                 'source_authority_status': 'unverified', 'legal_verdict': None}
     write(BASE / 'native-selected-cpu.json', selected)
     print(json.dumps({'cases': len(entries), 'offline_receipts': len(entries) * 2,

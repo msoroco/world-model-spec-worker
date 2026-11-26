@@ -71,7 +71,7 @@
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
       "target_law_id": "NRS-484B-297-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "selected_requirement_measurement_draft",
+      "planning_status": "selected_cpu_preparation",
       "source_branch": "Pedestrian highway travel with approaching traffic",
       "comparison_variable": "pedestrian_highway_side",
       "condition_index": 0,
@@ -89,14 +89,14 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/a/construction.json",
-      "draft_native_construction_sha256": "70e4c5b37b10cd00c8b469b722df3b5e9cb6d8f4d33c5dc4b31eb226edcd3867",
+      "draft_native_construction_sha256": "bdd5722a18db3d2e7321a5eb6f8cb5eda287a8c1f04414f8e3736ffd13bcccc8",
       "draft_native_offline_log": "native/draft-offline-a.log"
     },
     {
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b",
       "target_law_id": "NRS-484B-297-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "selected_requirement_measurement_draft",
+      "planning_status": "selected_cpu_preparation",
       "source_branch": "Pedestrian highway travel with approaching traffic",
       "comparison_variable": "pedestrian_highway_side",
       "condition_index": 1,
@@ -114,7 +114,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/b/construction.json",
-      "draft_native_construction_sha256": "8a4bebcf0e3d42d9eeff21a0087581b8e339746ea6412ea374f95478d3be55b8",
+      "draft_native_construction_sha256": "6ad5db4c81c72f5e778c14bff4a25deab0957795d2938a5f65092303e46be9f2",
       "draft_native_offline_log": "native/draft-offline-b.log"
     }
   ],
@@ -155,43 +155,43 @@
       "name": "ru.subject",
       "mandatory": true,
       "source_note": "the pedestrian judged",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "st.sidewalk",
       "mandatory": true,
       "source_note": "whether a sidewalk is provided",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "st.highway",
       "mandatory": true,
       "source_note": "the highway walked along",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "which side of the highway the pedestrian is on",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "kin.heading",
       "mandatory": true,
       "source_note": "the pedestrian's direction",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "st.lane_direction",
       "mandatory": true,
       "source_note": "the direction of the adjacent traffic",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     },
     {
       "name": "rel.oncoming",
       "mandatory": true,
       "source_note": "'facing the approaching traffic'",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_diagnostic; original Native not yet observed"
     }
   ],
   "sources": [
@@ -212,14 +212,14 @@
   "runtime_uncertainties": [
     "Original reviewed Native map packet is unavailable: authority, highway boundary, sidewalk inventory and subsection-6 context remain unverified.",
     "Physical pedestrian travel, source camera visibility and composed primary video remain untested.",
-    "Current PipelineCapture/SGG source path assumes a vehicle ego control and light interface; a live pedestrian Core graph needs a package-local compatible acquisition path or runtime capability update before selection.",
-    "Selected execution manifest, exact positive/negative runtime compatibility, saved-only runtime process, physical preparation and independent delivery audit remain CPU work."
+    "Package-local Walker adapter passes a CPU interface probe but has not run against a live CARLA Walker; diagnostic compatibility does not establish physical behavior.",
+    "Selected full CPU public/saved/physical/delivery proof chain remains in progress; readiness requires the exact strict assignment gate."
   ],
   "source_observation_mapping": {
     "ru.subject": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound ru.subject channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "walking-source.jsonl.pedestrian_id"
+        "ru.subject"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -228,9 +228,9 @@
       ]
     },
     "st.sidewalk": {
-      "evidence": "The meter requires a sourced no-sidewalk inventory and an explicit false subsection-6 obstruction context; 600-frame synthetic proof is diagnostic only.",
+      "evidence": "Per-frame source-bound st.sidewalk channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "reviewed-road-source.json.sidewalk_inventory_source"
+        "st.sidewalk"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -240,10 +240,9 @@
       ]
     },
     "st.highway": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound st.highway channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "reviewed-road-source.json.highway_boundary_source",
-        "reviewed-road-source.json.highway_authority_source"
+        "st.highway"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -252,10 +251,9 @@
       ]
     },
     "rel.occupies": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound rel.occupies channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "walking-source.jsonl.pedestrian_xy_m",
-        "reviewed-road-source.json.highway_centerline_anchor_xy_m"
+        "rel.occupies"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -264,9 +262,9 @@
       ]
     },
     "kin.heading": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound kin.heading channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "walking-source.jsonl.pedestrian_heading_xy"
+        "kin.heading"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -275,9 +273,9 @@
       ]
     },
     "st.lane_direction": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound st.lane_direction channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "reviewed-road-source.json.traffic_direction_xy"
+        "st.lane_direction"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -286,11 +284,9 @@
       ]
     },
     "rel.oncoming": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "Per-frame source-bound rel.oncoming channel reconstructed from retained original trace, walking source and reviewed road packet; original Native physical truth remains unobserved.",
       "channels": [
-        "walking-source.jsonl.pedestrian_xy_m",
-        "walking-source.jsonl.vehicle_xy_m",
-        "walking-source.jsonl.pedestrian_heading_xy"
+        "rel.oncoming"
       ],
       "source_refs": [
         "native/walking_side.py",
@@ -300,7 +296,7 @@
     }
   },
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
-  "readiness": "selected_requirement_measurement_draft",
+  "readiness": "selected_cpu_preparation_partial",
   "physical_prerequisites": "Confirm absence of a sidewalk, pedestrian travel along highway, left-side occupancy and facing approaching traffic.",
   "legal_interpretation_limit": "Subsection 6 obstruction bypass is an express exception and needs separate scope handling.",
   "camera_plan": {

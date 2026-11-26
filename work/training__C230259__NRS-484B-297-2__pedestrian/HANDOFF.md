@@ -1,6 +1,12 @@
 # C230259 / NRS 484B.297(2) pedestrian handoff
 
-Status: partial CPU checkpoint. The two exact cases are unselected drafts. No original Native observation, accepted recording, legal verdict or delivery readiness is claimed.
+Status: partial selected CPU preparation. The two exact cases have selected, source-shaped constructions. No original Native observation, accepted recording, legal verdict or delivery readiness is claimed.
+
+## 2026-11-26 selected compatibility and Walker adapter update
+
+The two selected constructions now have a package-local `walker_capture_adapter.py`, which binds the real pedestrian actor ID through the pinned PipelineCapture and SGG world lookup. It delegates physical actor methods, exposes unsupported vehicle-only control and light fields as null/not applicable, and separately records the actual WalkerControl direction, speed and jump from the live actor. `native/prove_walker_adapter.py` exercises the frozen interface calls using a CPU mock; this is an interface probe, not an observed CARLA run. The adapter remains unproved on an actual CARLA server.
+
+Both selected bundles passed the current `runtime.py offline` after this adapter was included. Selected construction SHA-256 values are A `c1f0e390a29cc403173d654a7c441e34a6aa8fdc62faf025e10ee0ca6adc9130` and B `49c40bdebe224abd63e31039f67c312c90fb7f6b49551173f87dcce301df6502`. Diagnostic recipes retain 600 source frames and four 20 Hz FFV1 camera streams; the context input is bound to the actual `highway_boundary_source` key, derived channels are rebuilt from retained trace, and the synthetic speed marker uses the runtime's explicit `synthetic_native_sample` value. Public compatibility is being rerun after those repairs. Result remains partial.
 
 ## 2026-11-26 current-runtime repair and validation
 

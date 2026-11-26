@@ -10,7 +10,7 @@
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c1f0e390a29cc403173d654a7c441e34a6aa8fdc62faf025e10ee0ca6adc9130",
+      "construction_sha256": "c74521bfc280c987246ec37564433d62508da97c26d9ff9547bf7de3ad1cb8bc",
       "measurement_contract": "native/measurement-a.json",
       "measurement_procedure": {
         "entrypoint": "saved_walking.py",
@@ -19,9 +19,27 @@
       "fixture_recipe": "work/training__C230259__NRS-484B-297-2__pedestrian/diagnostic/a/recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native highway boundary, sidewalk absence, pedestrian route and camera visibility require source review; fallback not yet built."
+        "reason": "Original walker spawn may collide with the sourced road surface; a measured clearance or collision triggers a 0.15 m vertical spawn offset."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/a/construction.json",
+          "construction_sha256": "5b07ace0944e2759f82ad2d96ad9bdf0ab6c1efda5aac5c49656487ecbdd5316",
+          "trigger": {
+            "source": "original_native_spawn_and_ground_clearance",
+            "metric": "walker_initial_vertical_clearance_m",
+            "failure_condition": "original walker spawn collision or clearance below 0.05 m"
+          },
+          "changed_knobs": [
+            "walker_spawn_height_adjustment_m: 0.0 to 0.15"
+          ],
+          "offline": {},
+          "compatibility": {},
+          "negative": {},
+          "saved_processing": {}
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -30,7 +48,10 @@
       "offline": {},
       "compatibility": {},
       "negative": {},
-      "physical_preparation": {},
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_a/proof.json",
+        "sha256": "655945dee80602a9363bed403fbfb118e32a7c9c0920406a6423ed3f28cddcae"
+      },
       "acquisition": {},
       "delivery_acceptance": {},
       "post_capture": {}
@@ -39,7 +60,7 @@
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b",
       "kind": "delivery",
       "construction": "cases/condition_b/construction.json",
-      "construction_sha256": "49c40bdebe224abd63e31039f67c312c90fb7f6b49551173f87dcce301df6502",
+      "construction_sha256": "9f91502ea2918d3d3c72ce0912fbe4e0c9e98687f1b58a58f2df655274ba18dd",
       "measurement_contract": "native/measurement-b.json",
       "measurement_procedure": {
         "entrypoint": "saved_walking.py",
@@ -48,9 +69,27 @@
       "fixture_recipe": "work/training__C230259__NRS-484B-297-2__pedestrian/diagnostic/b/recipe.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native highway boundary, sidewalk absence, pedestrian route and camera visibility require source review; fallback not yet built."
+        "reason": "Original walker spawn may collide with the sourced road surface; a measured clearance or collision triggers a 0.15 m vertical spawn offset."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/b/construction.json",
+          "construction_sha256": "f90daa8c2e4874965094360a45a63cd2712c47a35d705855b1e8ca0f282ccb0b",
+          "trigger": {
+            "source": "original_native_spawn_and_ground_clearance",
+            "metric": "walker_initial_vertical_clearance_m",
+            "failure_condition": "original walker spawn collision or clearance below 0.05 m"
+          },
+          "changed_knobs": [
+            "walker_spawn_height_adjustment_m: 0.0 to 0.15"
+          ],
+          "offline": {},
+          "compatibility": {},
+          "negative": {},
+          "saved_processing": {}
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -59,7 +98,10 @@
       "offline": {},
       "compatibility": {},
       "negative": {},
-      "physical_preparation": {},
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_b/proof.json",
+        "sha256": "e30c4d5ba33f368f14229b1599882e9a9684caae7a5ba5663cd19d368528f7c3"
+      },
       "acquisition": {},
       "delivery_acceptance": {},
       "post_capture": {}

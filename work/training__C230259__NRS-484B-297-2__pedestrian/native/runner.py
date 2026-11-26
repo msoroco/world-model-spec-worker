@@ -16,6 +16,12 @@ from pathlib import Path
 from walking_side import FRAMES, HZ, _source, measure
 
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+PHYSICAL_CRITERION = {
+    'criterion': 'travel_progress', 'motion_source': 'trace.jsonl',
+    'position_key': 'position_m', 'direction_xy': [-1, 0],
+    'minimum_progress_m': 6.0,
+    'context_sources': ['reviewed-road-source.json'],
+}
 
 
 def check(config):
@@ -30,7 +36,11 @@ def check(config):
     for camera in config['cameras']:
         if not all(camera.get(k) for k in ('width', 'height', 'fov_deg', 'pose_strategy', 'location_xyz_m', 'rotation_pyr_deg')) or camera.get('fps') != HZ:
             raise ValueError('Source camera geometry incomplete')
-    if config.get('source_packet_required') is not True or config.get('physical_completion') != {} or config.get('legal_verdict') is not None:
+    if (config.get('source_packet_required') is not True or
+            config.get('requested_speed_mps') != .4 or
+            config.get('walker_spawn_height_adjustment_m') not in (0.0, 0.15) or
+            config.get('physical_completion') != PHYSICAL_CRITERION or
+            config.get('legal_verdict') is not None):
         raise ValueError('Source provenance and unknown outcome required')
     return {'case_id': config['case_id'], 'frames': FRAMES, 'rate_hz': HZ,
             'source_views': VIEWS, 'source_packet_required': True,
@@ -69,10 +79,13 @@ def execute(config, source_path, output_path, host, port):
     from worker_exchange.media import compose_four_views
     from pipeline_capture import PipelineCapture
     from walker_capture_adapter import adapt
+    from source_channels import write_channels, rows as read_source_rows
     import numpy as np
 
-    def transform(data):
-        return carla.Transform(carla.Location(**data['location']), carla.Rotation(**data['rotation']))
+    def transform(data, height_adjustment=0.0):
+        location = dict(data['location'])
+        location['z'] += height_adjustment
+        return carla.Transform(carla.Location(**location), carla.Rotation(**data['rotation']))
 
     output = Path(output_path)
     if not output.is_dir() or not (output / 'config.json').is_file() or not (output / 'construction.json').is_file():
@@ -107,7 +120,9 @@ def execute(config, source_path, output_path, host, port):
         settings.fixed_delta_seconds = 1 / HZ
         world.apply_settings(settings)
         blueprints = world.get_blueprint_library()
-        pedestrian = world.try_spawn_actor(blueprints.find(packet['pedestrian_blueprint']), transform(packet['pedestrian_spawn_transform']))
+        pedestrian = world.try_spawn_actor(blueprints.find(packet['pedestrian_blueprint']),
+                                           transform(packet['pedestrian_spawn_transform'],
+                                                     config['walker_spawn_height_adjustment_m']))
         vehicle = world.try_spawn_actor(blueprints.find(packet['vehicle_blueprint']), transform(packet['vehicle_spawn_transform']))
         if pedestrian is None or vehicle is None:
             raise ValueError('Participant spawn occupied')
@@ -201,11 +216,10 @@ def execute(config, source_path, output_path, host, port):
                   'trace_reference': 'trace.jsonl', 'video_references': ['raw.mkv'],
                   'video_frame_map_reference': 'video_frames.jsonl',
                   'recording_description': config['recording_description'],
-                  'recording_evidence': [{'name': 'kin.position', 'unit': 'm',
-                                          'reference': 'channels/kin.position.jsonl'},
-                                         {'name': 'kin.speed', 'unit': 'm/s',
-                                          'reference': 'channels/kin.speed.jsonl'},
-                                         {'name': 'highway_boundary_source', 'unit': 'structured',
+                  'recording_evidence': [{'name': item['name'], 'unit': item['unit'],
+                                          'reference': 'channels/' + item['name'] + '.jsonl'}
+                                         for item in config['recording_description']['channels']] +
+                                        [{'name': 'highway_boundary_source', 'unit': 'structured',
                                           'reference': 'reviewed-road-source.json'}],
                   'realized_observables': {}}
     except BaseException as exc:
@@ -245,6 +259,8 @@ def execute(config, source_path, output_path, host, port):
     composition = compose_four_views({name: output / (name + '.mkv') for name in VIEWS},
                                      output / 'video_frames.jsonl', output / 'raw.mkv')
     (output / 'four-view-receipt.json').write_text(json.dumps(composition, indent=2) + '\n')
+    write_channels(output, packet, read_source_rows(output / 'walking-source.jsonl'),
+                   read_source_rows(output / 'trace.jsonl'))
     seal_capture(output, frames=FRAMES, restoration=restored, errors=[], encoder_exit_codes=encoder_exit_codes,
                  context={'law_id': config['law_id'], 'cell_id': config['cell_id'],
                           'source_packet': 'reviewed-road-source.json', 'legal_verdict': None})

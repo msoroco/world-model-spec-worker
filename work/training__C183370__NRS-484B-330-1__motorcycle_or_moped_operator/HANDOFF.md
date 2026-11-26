@@ -1,5 +1,13 @@
 # NRS-484B-330-1 at C183370
 
+## 2026-11-26 independent original-review receipt binding
+
+A new review checker binds a reviewer receipt to the exact sealed original attempt, its four camera stream hashes, authority/zone/signal source copies, 600 frames and five required flagger/zone observations. The source-shaped synthetic proof passes four binding positives and ten altered/incomplete receipt negatives (`native/review-binding-proof.json` SHA-256 `721ca24003073e63675d8aea4c6235acf4ee67335302a166e835aed43d7bd679`). A self-declared original receipt is treated only as a bound declaration; the proof does not claim original pixels reviewed, physical completion or a legal outcome. C183370 stays partial pending accepted original authority/zone/signal sources and selected public/saved/semantic/delivery chains.
+
+## 2026-11-26 original-source observation mapping
+
+The case plan now maps all eight frozen source observation terms to named original measurement and reviewed-context sources (`case-plan.json` SHA-256 `3b8214cb17b4740fac788365a8c48d046e068f5f3976d23a9dc6617bddbb1c98`). It separates requested stop/release rows from actual flagger signal pixels, governing direction, authorization and zone designation; those original facts remain unresolved. An exact source-term reconciliation and current assignment-scoped partial `--complete` check pass. The selected cases and public/saved/semantic/delivery chains remain unfinished CPU work. The distinct clearly marked construction/maintenance alternative to a designated temporary zone still needs its own controlled branch construction and source review; the present pair covers only the designated-zone witness.
+
 ## 2026-11-26 saved source numeric and identity hardening
 
 The source-bound saved meter now rejects nonfinite original time, motorcycle position, body vertices and speed, and changed motorcycle or flagger actor IDs across joined frames. The synthetic structural proof passes two positive and sixteen negative checks, including resealed NaN time/speed and changed actor ID for both exact drafts (`native/saved-source-shape-proof.json` SHA-256 `46a7ca1b6ad182850a6362b7d939882be0b6057d014a78f6e6689c5874077095`). Eight focused construction tests and the assignment-scoped partial `--complete` check pass. The construction and original-source selection status remains partial.

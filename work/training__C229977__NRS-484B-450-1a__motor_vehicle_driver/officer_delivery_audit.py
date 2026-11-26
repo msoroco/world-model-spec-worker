@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 CHECKS = ('native_source', 'all_participants', 'time_join',
           'full_video_decode', 'actual_pixels', 'physical_completion')
@@ -60,6 +61,30 @@ def check_review(review, case, paths):
         raise ValueError('Review cannot prelabel legal outcome')
 
 
+def check_frame_sources(trace, officers, cameras, frames, case, measured):
+    if (len(trace) != 600 or len(officers) != 600 or
+            len(cameras) != 2400 or len(frames) != 600):
+        raise ValueError('Original sidewalk/camera frame count differs')
+    if any(trace[i].get('native_frame') != frames[i].get('native_frame') or
+           trace[i].get('frame') != i or frames[i].get('video_frame') != i
+           for i in range(600)):
+        raise ValueError('Original sidewalk/video frame join differs')
+    if any(officers[i].get('frame') != i or
+           officers[i].get('native_frame') != frames[i].get('native_frame') or
+           abs(float(officers[i]['time_s']) - float(frames[i]['time_s'])) > 1e-4
+           for i in range(600)):
+        raise ValueError('Original officer-candidate/video frame join differs')
+    expected_presence = case.endswith('_present')
+    if any(((row.get('actor_id') is not None) != expected_presence) or
+           row.get('source_kind') != 'original_native_post_tick' or
+           row.get('identity_verified') is not False or
+           row.get('direction_observed') is not None
+           for row in officers):
+        raise ValueError('Original officer candidate source differs from request')
+    if measured.get('officer_candidate_actor_count') != int(expected_presence):
+        raise ValueError('Original officer candidate count differs from request')
+
+
 def audit(args):
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime' / 'scenario_pipeline'))
@@ -82,27 +107,8 @@ def audit(args):
     officers = [json.loads(line) for line in paths['officer_trace'].read_text().splitlines()]
     cameras = [json.loads(line) for line in paths['cameras'].read_text().splitlines()]
     frames = [json.loads(line) for line in paths['video_frames'].read_text().splitlines()]
-    if (len(trace) != 600 or len(officers) != 600 or
-            len(cameras) != 2400 or len(frames) != 600):
-        raise ValueError('Original sidewalk/camera frame count differs')
-    if any(trace[i]['native_frame'] != frames[i]['native_frame'] or
-           trace[i]['frame'] != i or frames[i]['video_frame'] != i
-           for i in range(600)):
-        raise ValueError('Original sidewalk/video frame join differs')
-    if any(officers[i].get('frame') != i or
-           officers[i].get('native_frame') != frames[i]['native_frame'] or
-           abs(float(officers[i]['time_s']) - frames[i]['time_s']) > 1e-4
-           for i in range(600)):
-        raise ValueError('Original officer-candidate/video frame join differs')
-    expected_presence = args.case.endswith('_present')
-    if any((row.get('actor_id') is not None) is not expected_presence or
-           row.get('source_kind') != 'original_native_post_tick' or
-           row.get('identity_verified') is not False or
-           row.get('direction_observed') is not None
-           for row in officers):
-        raise ValueError('Original officer candidate source differs from request')
-    if measured['officer_candidate_actor_count'] != int(expected_presence):
-        raise ValueError('Original officer candidate count differs from request')
+    check_frame_sources(trace, officers, cameras, frames, args.case,
+                        result['measured_values'])
     for row in result['recording_evidence']:
         source(attempt, row['reference'])
     converted = source(attempt, args.trace)
@@ -152,7 +158,71 @@ def selftest(case, negative):
             pass
         else:
             raise AssertionError('Missing original source accepted: ' + key)
+    frames = [{'native_frame': i + 1, 'video_frame': i, 'time_s': i / 20}
+              for i in range(600)]
+    trace = [{'native_frame': i + 1, 'frame': i} for i in range(600)]
+    officers = [{'native_frame': i + 1, 'frame': i, 'time_s': i / 20,
+                 'actor_id': 207 if case.endswith('_present') else None,
+                 'source_kind': 'original_native_post_tick',
+                 'identity_verified': False, 'direction_observed': None}
+                for i in range(600)]
+    cameras = [{} for _ in range(2400)]
+    check_frame_sources(trace, officers, cameras, frames, case,
+                        sample['measured_values'])
+    altered = [dict(row) for row in officers]
+    altered[300]['native_frame'] += 1
+    try:
+        check_frame_sources(trace, altered, cameras, frames, case,
+                            sample['measured_values'])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Unjoined original officer frame accepted')
+    altered[300] = {**officers[300], 'identity_verified': True}
+    try:
+        check_frame_sources(trace, altered, cameras, frames, case,
+                            sample['measured_values'])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Preclaimed officer identity accepted')
+    scratch = Path('.runtime-work')
+    scratch.mkdir(exist_ok=True)
+    with TemporaryDirectory(prefix='c229977-officer-audit-', dir=scratch) as folder:
+        original = Path(folder) / 'original-source.json'
+        original.write_text('{}\n')
+        paths = {'authority_context': original}
+        review = {'format': 'c229977-original-officer-review-v1',
+                  'case_id': case, 'reviewer_id': 'diagnostic-reviewer',
+                  'authority_context_sha256': sha(original),
+                  'reviewed_frames': [300], 'legal_verdict_claimed': False}
+        for name in ('sidewalk_surface_source_reviewed', 'vehicle_body_reviewed',
+                     'stop_interval_reviewed', 'exception_authority_reviewed',
+                     'officer_identity_reviewed', 'officer_direction_reviewed',
+                     'temporal_compliance_reviewed', 'actual_pixels_reviewed',
+                     'physical_completion_reviewed'):
+            review[name] = True
+        check_review(review, case, paths)
+        for changed in ({**review, 'officer_direction_reviewed': False},
+                        {**review, 'reviewed_frames': []},
+                        {**review, 'authority_context_sha256': '0' * 64},
+                        {**review, 'legal_verdict_claimed': True}):
+            try:
+                check_review(changed, case, paths)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('Invalid independent review accepted')
+        original.write_text('{"changed":true}\n')
+        try:
+            check_review(review, case, paths)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('Changed original authority source accepted')
     return {'case_id': case, 'source_predicates_tested': True,
+            'officer_frame_join_tested': True,
+            'review_source_binding_tested': True,
             'original_capture_attested': False}
 
 

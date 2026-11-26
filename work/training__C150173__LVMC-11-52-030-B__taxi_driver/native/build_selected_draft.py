@@ -48,8 +48,11 @@ def selected(source, desc):
 
 def main():
     draft = json.loads((BASE / 'native-draft-manifest.json').read_text())
+    prior_path = BASE / 'selected-draft-manifest.json'
+    prior = json.loads(prior_path.read_text()) if prior_path.is_file() else {'cases': []}
+    by_case = {entry['case_id']: entry for entry in prior.get('cases', [])}
     desc = description()
-    entries, proposals = [], []
+    entries = []
     for item in draft['cases']:
         case = item['case_id']
         suffix = case.rsplit('__', 1)[1]
@@ -64,27 +67,26 @@ def main():
         candidate['construction_sha256'] = sha(selected_fallback)
         recipe = BASE / 'native/diagnostic' / suffix / 'fixture-recipe.json'
         contract = BASE / 'native-selected' / suffix / 'measurement-contract.json'
-        entries.append({'case_id': case, 'kind': 'delivery',
+        entry = {'case_id': case, 'kind': 'delivery',
             'construction': str(selected_primary.relative_to(BASE)),
             'construction_sha256': sha(selected_primary),
             'fixture_recipe': str(recipe.relative_to(ROOT)),
             'measurement_contract': str(contract.relative_to(BASE)),
             'measurement_procedure': {'entrypoint': 'selected_finalize.py'},
-            'candidate_risk': item['candidate_risk'], 'candidates': [candidate]})
-        proposals.append({'case_id': case, 'target_law_id': 'LVMC-11-52-030-B',
-            'target_type': 'measurement_attempt',
-            'rationale': 'Measure taxi yellow-zone passenger activity and posted hours',
-            'variable_assignments': {}, 'unresolved_judgment_calls': [
-                'source authority of posted sign', 'passenger purpose from original source',
-                'ordinary rules outside posted hours'],
-            'recording_description': desc})
-    write(BASE / 'proposals/cases.json', {'cell_id': 'C150173',
-        'actor': 'taxi_driver', 'status': 'draft', 'cases': proposals})
+            'candidate_risk': item['candidate_risk'], 'candidates': [candidate]}
+        previous = by_case.get(case, {})
+        if previous.get('construction_sha256') == entry['construction_sha256']:
+            for key in ('physical_preparation',):
+                if key in previous:
+                    entry[key] = previous[key]
+        entries.append(entry)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': BASE.name,
         'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),
         'delivery_ready': False, 'status': 'selected_cpu_proofs_pending',
         'cases': entries}
     write(BASE / 'selected-draft-manifest.json', manifest)
+    from build_semantics import make
+    make()
     print(json.dumps({'cases': len(entries),
                       'manifest_sha256': sha(BASE / 'selected-draft-manifest.json')}))
 

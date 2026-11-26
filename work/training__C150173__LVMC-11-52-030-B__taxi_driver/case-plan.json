@@ -16,7 +16,7 @@
         "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_c",
         "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_d"
       ],
-      "evidence_or_gap": "Four exact unselected Native request constructions cover waiting inside/outside posted hours and passenger loading/unloading; no authoritative sign, taxicab identity, observed passenger exchange or ordinary-rule review yet."
+      "evidence_or_gap": "Four selected Native request constructions and four stop-position fallbacks pass exact offline and positive/negative public compatibility; 600-frame synthetic saved processing and three controlled comparison audits pass. Authoritative sign, taxicab identity, actual passenger exchange and ordinary-rule review need original source evidence."
     },
     {
       "requirement": "Commercial vehicle freight-loading alternative",
@@ -118,7 +118,7 @@
     {
       "name": "st.curb_zone",
       "mandatory": true,
-      "reason": "colour yellow, kind freight_loading \u2014 the painted curb"
+      "reason": "colour yellow, kind freight_loading — the painted curb"
     },
     {
       "name": "dev.regulatory_sign",
@@ -174,8 +174,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Native request bundles are offline-proved but unselected; saved processing, compatibility, semantic, physical, delivery and comparison audits remain CPU work.",
-    "Authoritative sign, taxi identity, actual passenger purpose, and outside-hours ordinary rules require original source review."
+    "Selected exact offline, compatibility, saved-only processing, and synthetic comparison audits pass. Execution manifest, canonical semantic proposals, physical and independent delivery CPU audits remain worker-owned CPU work.",
+    "Authoritative sign, taxicab identity, actual passenger purpose, and outside-hours ordinary rules require original source review.",
+    "Commercial freight alternative needs separately bound compatible actor/cell evidence; no taxi passenger fixture is relabeled as freight."
   ],
   "statutory_text": "The parking of vehicles is prohibited or restricted in certain zones as set forth in this Section. The location of such zones shall be established by posting appropriate signage or other durable markings, by painting curbs or the edges of road surfaces in accordance with the colors listed below, or by a combination thereof: Yellow indicates a zone for: (1) Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign; and (2) Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.",
   "activation_conditions_from_unreviewed_summary": [
@@ -197,5 +198,136 @@
     "sig.door_open",
     "ru.occupant_count",
     "kin.time"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "taxi footprint, yellow curb, passenger proxy and sign context",
+        "interval": "all 600 source-joined frames"
+      },
+      {
+        "view": "approach",
+        "subject": "one-way approach and taxi stop maneuver",
+        "interval": "approach through standing interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "yellow curb, posted sign and passenger interaction beside taxi",
+        "interval": "all 600 source-joined frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "taxi forward scene and curb approach",
+        "interval": "approach through standing interval"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "st.curb_zone": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "st.curb_zone"
+      ],
+      "source_refs": [
+        "yellow-zone-native.jsonl",
+        "road.xodr",
+        "yellow-road.xodr",
+        "sign-review.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "sign-review.json",
+        "reference_corner.mkv",
+        "sign-authority-pending.json"
+      ]
+    },
+    "drv.condition_in_effect": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "drv.condition_in_effect"
+      ],
+      "source_refs": [
+        "sign-review.json",
+        "yellow-zone-native.jsonl",
+        "ordinary-rules-review.json"
+      ]
+    },
+    "env.civil_time": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "env.civil_time"
+      ],
+      "source_refs": [
+        "yellow-zone-native.jsonl",
+        "sign-review.json"
+      ]
+    },
+    "ru.commercial_motor_vehicle": {
+      "evidence": "Requires a separately compatible commercial-freight actor binding; the taxi request does not observe this alternative.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C150173__LVMC-11-52-030-B__taxi_driver/assignment.json"
+      ]
+    },
+    "ru.taxicab": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "ru.taxicab"
+      ],
+      "source_refs": [
+        "yellow-zone-native.jsonl",
+        "taxicab-review.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "yellow-zone-native.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "sig.door_open": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "sig.door_open"
+      ],
+      "source_refs": [
+        "observed-passenger-activity.jsonl",
+        "passenger-purpose-review.json"
+      ]
+    },
+    "ru.occupant_count": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "ru.occupant_count"
+      ],
+      "source_refs": [
+        "observed-passenger-activity.jsonl",
+        "passenger-purpose-review.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Original Native source and independent review must be joined; a requested or synthetic value alone is insufficient.",
+      "channels": [
+        "kin.time"
+      ],
+      "source_refs": [
+        "yellow-zone-native.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  }
 }
