@@ -46,6 +46,7 @@ class SourceBoundBundleTests(unittest.TestCase):
                                  entry['measurement_contract_sha256'])
                 self.assertEqual(entry['measurement_procedure']['entrypoint'], 'analysis.py')
                 description = json.loads(files['config.json'])['recording_description']
+                self.assertEqual(set(description), {'channels', 'context_inputs', 'limitations'})
                 expected = {item['name'] for item in description['channels'] + description['context_inputs']}
                 self.assertEqual(set(entry['acquisition']), expected)
                 self.assertIn('original_native', files['runner.py'])

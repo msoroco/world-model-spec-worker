@@ -44,6 +44,11 @@ def main():
         "coverage": [{"view": camera["name"], "subject": "ego, hose and private-way passage",
                       "interval": "all 900 original ticks"} for camera in config["cameras"]],
     }
+    plan["source_observation_mapping"] = {}
+    if plan["observations"] and isinstance(plan["observations"][0], str):
+        plan["observation_notes"] = plan["observations"]
+    plan["observations"] = [{"name": item["name"], "mandatory": True}
+                            for item in first["recording_description"]["channels"]]
     write(ROOT / "case-plan.json", plan)
 
 

@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Erected official traffic-control device at hazardous or congested place and person's stop, stand or park of a vehicle within such designated place",
+      "source": "NRS 484B.500",
+      "output_key": "designated_parking_measurement",
+      "method": "measure_saved",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "parking-history.jsonl",
+        "parking-context.json",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "parking-context.json"
+    ],
+    "error_contains": "Missing required source: parking-context.json"
+  }
+}

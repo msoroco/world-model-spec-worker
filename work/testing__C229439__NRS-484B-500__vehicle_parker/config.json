@@ -1,0 +1,141 @@
+{
+  "assignment_id": "testing__C229439__NRS-484B-500__vehicle_parker",
+  "selected_case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
+  "supported_case_ids": [
+    "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
+    "testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard",
+    "testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard",
+    "testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard",
+    "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested"
+  ],
+  "law_id": "NRS-484B-500",
+  "cell_id": "C229439",
+  "actor": "vehicle_parker",
+  "rate_hz": 20,
+  "duration_s": 20,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed overview of site, device and vehicle",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed vehicle approach and device",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed designated boundary and curb",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "vehicle mounted forward view",
+      "fov_deg": 90
+    }
+  ],
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "parking-history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  },
+  "case": {
+    "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
+    "requested_conduct": "park",
+    "requested_footprint": "inside",
+    "place_context_for_review": "hazardous",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "vehicle_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "vehicle_speed_and_control_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "designated_place_geometry",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "device_identity_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "place_context_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original CARLA frame acquisition and saved-only extraction",
+          "time_window": "approach through stationary observation",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "official_device_context",
+          "unit": "structured record",
+          "method": "Reviewed original source binding and Native actor/map readback"
+        },
+        {
+          "name": "designated_extent_context",
+          "unit": "structured record",
+          "method": "Reviewed original source binding and Native actor/map readback"
+        },
+        {
+          "name": "hazard_or_congestion_context",
+          "unit": "structured record",
+          "method": "Reviewed original source binding and Native actor/map readback"
+        }
+      ],
+      "limitations": [
+        "Legal official status, hazardous or congested character, and stop/stand/park conduct require independent review.",
+        "Actual device legibility and vehicle footprint require local camera review."
+      ]
+    }
+  }
+}

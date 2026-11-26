@@ -84,6 +84,9 @@ def capture(adapter, packet_path, source_root, output_dir, case, *, diagnostic=F
     if not diagnostic:
         require(adapter.provenance() == "original_native",
                 "original Native adapter provenance missing")
+        require(callable(getattr(adapter, "bind_site", None)),
+                "original Native adapter must bind reviewed site")
+        adapter.bind_site(site, case)
     out = Path(output_dir)
     require(not out.exists(), "attempt output already exists")
     settings = adapter.snapshot_settings()

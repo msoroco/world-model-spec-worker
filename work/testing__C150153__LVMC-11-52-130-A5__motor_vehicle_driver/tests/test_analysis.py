@@ -42,6 +42,7 @@ class SelectedAnalysisTests(unittest.TestCase):
             self.assertEqual(report['measurements']['observed_elevator_requirement']['value']['physical_maneuver_status'], 'not_met')
             result = json.loads((attempt / 'result.json').read_text())
             self.assertFalse(result['maneuver_completed'])
+            self.assertNotIn('elevator', result['realized_observables'])
             self.assertEqual(len(result['recording_evidence']), 7)
             required = selected / 'packet.json'
             required.unlink()
