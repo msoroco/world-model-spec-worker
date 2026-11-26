@@ -68,7 +68,14 @@ def run_case(entry, compatible):
     attempt = output_from_command(compatible["command"])
     if not attempt.is_dir():
         raise ValueError("Missing materialized positive fixture: " + case)
-    scope = SCRATCH / (suffix + "-" + entry["construction_sha256"][:10])
+    current_manifest_sha256 = sha(MANIFEST)
+    selection_path = attempt / "candidate-selection.json"
+    selection = json.loads(selection_path.read_text()) if selection_path.is_file() else {}
+    if (selection.get("manifest_sha256") != current_manifest_sha256 or
+            selection.get("construction_sha256") != entry["construction_sha256"]):
+        raise ValueError("Compatibility fixture binds an old manifest: " + case)
+    scope = SCRATCH / (suffix + "-" + entry["construction_sha256"][:10] +
+                       "-" + current_manifest_sha256[:10])
     positive = scope / "positive"
     negative = scope / "negative"
     if scope.exists():
@@ -102,6 +109,7 @@ def run_case(entry, compatible):
     proof_path = evidence / (suffix + "-proof.json")
     proof = {"format": "worker-nrs280-recorded-only-proof-v1", "case_id": case,
              "construction_sha256": entry["construction_sha256"],
+             "manifest_sha256": current_manifest_sha256,
              "positive_command": " ".join(positive_command),
              "negative_command": " ".join(negative_command),
              "positive_receipt_sha256": sha(positive_path),
@@ -114,7 +122,8 @@ def run_case(entry, compatible):
              "scope": "diagnostic saved-only software fixture"}
     atomic(proof_path, json.dumps(proof, indent=2))
     return {"case_id": case, "proof": str(proof_path.relative_to(ROOT)),
-            "proof_sha256": sha(proof_path), "construction_sha256": entry["construction_sha256"]}
+            "proof_sha256": sha(proof_path), "construction_sha256": entry["construction_sha256"],
+            "manifest_sha256": current_manifest_sha256}
 
 
 def main():
@@ -130,9 +139,21 @@ def main():
         for entry in entries:
             case = entry["case_id"]
             previous = passed.get(case)
-            if previous and previous.get("construction_sha256") == entry["construction_sha256"]:
+            if (previous and previous.get("construction_sha256") == entry["construction_sha256"]
+                    and previous.get("manifest_sha256") == sha(MANIFEST)):
                 continue
             if case not in compatible:
+                continue
+            compatibility_receipt = ROOT / compatible[case]["receipt"]
+            if not compatibility_receipt.is_file():
+                continue
+            proven = json.loads(compatibility_receipt.read_text())
+            if proven.get("construction_sha256") != entry["construction_sha256"]:
+                continue
+            attempt = output_from_command(compatible[case]["command"])
+            selection_path = attempt / "candidate-selection.json"
+            selection = json.loads(selection_path.read_text()) if selection_path.is_file() else {}
+            if selection.get("manifest_sha256") != sha(MANIFEST):
                 continue
             row = run_case(entry, compatible[case])
             passed[case] = row

@@ -102,7 +102,7 @@ def derive_channels(folder):
 
 
 def finalize(attempt, output):
-    from worker_exchange.native_output import provenance_record, write_result
+    from worker_exchange.native_output import physical_result, provenance_record, write_result
 
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / "result.json").exists():
@@ -147,6 +147,7 @@ def finalize(attempt, output):
         "provenance_kind": provenance["provenance_kind"],
         "diagnostic_fixture": provenance["diagnostic_fixture"],
         "accepted": False, "legal_verdict_claimed": False}
+    result = physical_result(attempt, result)
     write_result(attempt, result)
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

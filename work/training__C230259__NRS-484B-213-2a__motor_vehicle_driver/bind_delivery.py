@@ -47,7 +47,7 @@ def bind_proof(entry, candidate, suffix):
                    ' --output .runtime-work/nrs213-resume-5/offline-' +
                    candidate + '-' + suffix + tail + ' --python $PWD/.venv-cpu/bin/python')
     log = copy(SCRATCH / ('offline-' + candidate + '-' + suffix + tail + '.stdout'),
-               'selected-proofs/offline-' + candidate + '-' + suffix + '.log')
+               'selected-proofs/' + candidate + '-' + suffix + '-offline.log')
     selected['offline'] = {'case_id': case, 'candidate_id': candidate,
                            'construction_sha256': selected['construction_sha256'],
                            'command': offline_cmd, 'exit_code': 0,

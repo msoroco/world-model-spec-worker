@@ -2,22 +2,128 @@
   "cell_id": "C230266",
   "actor": "motor_vehicle_driver",
   "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "proper_caution_source_review",
+      "target_law_id": "NRS-484B-280-1c",
+      "judgment_refs": [
+        {
+          "phrase": "upon observing a pedestrian",
+          "note": "Actual driver observation requires original driver-view and independent source review; camera visibility and requested control do not prove perception."
+        },
+        {
+          "phrase": "proper caution",
+          "note": "The qualitative legal standard requires later independent judgment; requested speed and diagnostic motion are raw evidence only."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original driver observation and the qualitative proper-caution standard are not fixed by a controller speed contrast; physical sweep coverage remains to be authored without a legal cutoff.",
+      "missing_inputs": [
+        "Original source evidence of driver observation and each statutory position",
+        "Source-backed feasible range and spacing for a physical controller sweep"
+      ]
+    }
+  ],
   "cases": [
+    {
+      "cell_id": "C230266",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral comparison definition; no original recording or observation asserted.",
+      "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "post_observation_ego_speed_request": {
+          "kind": "controller",
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_vehicle_pedestrian_pose_and_control",
+            "method": "Native actor transform, velocity and requested control at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native 20 Hz frame and four-camera join",
+            "uncertainty": "synthetic software fixtures cannot establish physical visibility or perception"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "four synchronized named RGB source cameras",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native 20 Hz frame and four-camera join",
+            "uncertainty": "synthetic software fixtures cannot establish physical visibility or perception"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original statutory-position source, driver observation, Native motion and pixels remain unverified",
+          "Controller distance trigger is engineering policy, not legal threshold"
+        ]
+      }
+    },
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "road: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "road_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "road",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -50,18 +156,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "road: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "road_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "road",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -94,18 +224,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bus_stop_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "bus_stop: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "bus_stop_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -138,18 +292,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bus_stop_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "bus_stop: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "bus_stop_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -182,18 +360,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bench_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "bench: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "bench_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "bench",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -226,18 +428,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bench_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "bench: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "bench_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "bench",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -270,18 +496,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__shelter_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "shelter: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "shelter_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "shelter",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -314,18 +564,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__shelter_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "shelter: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "shelter_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "shelter",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -358,18 +632,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__transit_stop_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "transit_stop: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "transit_stop_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "transit_stop",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -402,18 +700,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__transit_stop_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "transit_stop: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "transit_stop_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "transit_stop",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -446,18 +768,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__boarding_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "boarding: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "boarding_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "boarding",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -490,18 +836,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__boarding_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "boarding: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "boarding_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "boarding",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -534,18 +904,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__other_transport_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "other_transport: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "other_transport_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "other_transport",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -578,18 +972,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__other_transport_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "other_transport: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "other_transport_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "other_transport",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -622,18 +1040,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__school_zone_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "school_zone: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "school_zone_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "school_zone",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -666,18 +1108,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__school_zone_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "school_zone: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "school_zone_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "school_zone",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -710,18 +1176,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__school_crossing_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "school_crossing: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "school_crossing_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "school_crossing",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -754,18 +1244,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__school_crossing_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "school_crossing: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "school_crossing_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "school_crossing",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -798,18 +1312,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "marked_crosswalk: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "marked_crosswalk_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "marked_crosswalk",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -842,18 +1380,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "marked_crosswalk: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "marked_crosswalk_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "marked_crosswalk",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -886,18 +1448,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk_caution",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "unmarked_crosswalk: observed driver slows after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "unmarked_crosswalk_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "caution"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "unmarked_crosswalk",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "caution"
+          "value": "caution",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -930,18 +1516,42 @@
     {
       "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk_maintain",
       "target_law_id": "NRS-484B-280-1c",
-      "target_type": "controlled_attempt",
-      "rationale": "unmarked_crosswalk: observed driver maintains approach request after a sourced pedestrian observation; outcome and legal judgment unverified",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed statutory-position construction and requested-control contrast; original observation, physical outcome, and legal judgment remain unverified.",
+      "paired_probe_id": "unmarked_crosswalk_requested_control_pair",
+      "deliberate_differences": [
+        "post_observation_ego_speed_request"
+      ],
+      "probe": {
+        "primary_variable": "post_observation_ego_speed_request",
+        "comparison_or_standard": "same-position requested-control contrast; not a legal threshold",
+        "target_value_or_branch": "maintain"
+      },
       "variable_assignments": {
+        "statutory_position_branch": {
+          "kind": "world_setup",
+          "value": "unmarked_crosswalk",
+          "unit": "categorical"
+        },
         "post_observation_ego_speed_request": {
           "kind": "controller",
-          "value": "maintain"
+          "value": "maintain",
+          "unit": "categorical"
+        },
+        "observed_driver_perception": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
-        "actual driver observation",
-        "whether pedestrian is in the sourced statutory position",
-        "proper caution after observation"
+        "upon observing a pedestrian",
+        "proper caution"
       ],
       "recording_description": {
         "channels": [
@@ -971,7 +1581,5 @@
         ]
       }
     }
-  ],
-  "sweep_specs": [],
-  "sweeps_expanded": true
+  ]
 }

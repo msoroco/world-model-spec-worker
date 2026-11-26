@@ -1,4 +1,16 @@
-# Current CPU checkpoint: six exact draft branches
+# Delivery-prepared CPU checkpoint
+
+Status is **ready / delivery_prepared** after the exact assignment strict gate passed on 2026-11-26. The six wall-enabled selected constructions and six predeclared physical fallback constructions all pass exact offline checks and current-runtime positive/negative public compatibility with the freshly built decoder. The selected six also have current physical completion/incompletion/missing-evidence fixtures and lifecycle-order receipts under `physical-proof/`.
+
+`execution-manifest.json` SHA-256 `f46029a92808837ee469e11061c68fe417aea94249c63206436d6ab1184e1447` binds all six exact selected cases, one fallback each, the twelve exact offline and compatibility proof sets, physical receipts, source acquisition mapping, and positive/negative independent delivery acceptance selftests. The direct execution-manifest, semantic, delivery-handoff and package-compatibility validators pass. The six-case root index test passes 2/2. Four source-bound comparison audits pass under `comparison-proofs/`; the audit accepts a nonphysical phase-label difference while rejecting frame and speed mutations. All twelve recorded-only selected/fallback processing runs pass with 600 frame joins, unchanged original sources and no Native replay. Original Native capture, roadway authority, actual pixels and legal hazard judgment remain local observations.
+
+The generated roadside wall is an explicit 4 m OpenDRIVE world-generation request with CPU tests that reject absent or changed wall height. Geometry supports possible obstruction; it does not establish the actual driver viewpoint or hazard-creating distance. The crest spawn was moved to the 30-second capture interval so its requested approach and feature phases appear in the diagnostic source packets.
+
+The exact gate `.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-213-2a__motor_vehicle_driver --complete --require-delivery-ready` exited 0. `result.json` SHA-256 `f2885358be24fc4f50fd1ae88de91292dc1377b88562486d76d77451aad62a35` declares delivery-prepared readiness and dispatches the exact `probe_a` case first. Native execution and final source review remain for the local owner.
+
+---
+
+# Earlier CPU checkpoint: six exact draft branches
 
 Status remains **partial**. The exact NRS 484B.213(2)(a) text is decomposed into a two-way crest right/left contrast, a flat two-way curve right/left contrast, and one-way crest/curve applicability contexts. The one-way pairs change roadway directionality, lane geometry and participant direction together; they are exception context, not a violation claim. The scope remains frozen C230259 / motor_vehicle_driver / road travel. Hazard-creating sight distance has no invented legal cutoff.
 

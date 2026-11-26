@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shlex
 import subprocess
 import sys
 
@@ -90,9 +91,15 @@ def main():
             receipt_path = ROOT / previous["receipt"]
             if receipt_path.is_file():
                 receipt = json.loads(receipt_path.read_text())
+                command_parts = shlex.split(previous["command"])
+                attempt = Path(command_parts[command_parts.index("--output") + 1])
+                selection_path = attempt / "candidate-selection.json"
+                selection = json.loads(selection_path.read_text()) if selection_path.is_file() else {}
                 valid_previous = (receipt.get("passed") is True and
                     receipt.get("construction_sha256") == entry["construction_sha256"] and
                     receipt.get("runtime_manifest_sha256") == manifest["runtime_manifest_sha256"] and
+                    selection.get("manifest_sha256") == sha(MANIFEST) and
+                    selection.get("construction_sha256") == entry["construction_sha256"] and
                     sha(receipt_path) == previous["receipt_sha256"])
         if suffix in args.skip or valid_previous:
             continue
