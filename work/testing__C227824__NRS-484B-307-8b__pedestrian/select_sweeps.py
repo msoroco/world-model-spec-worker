@@ -35,19 +35,26 @@ def main() -> None:
     values[AXIS] = {"kind": "controller", "unit": "m/s", "value": 0.8,
                     "note": "Requested walker speed; original body velocity measured separately"}
     values[OBSERVABLE] = {"kind": "subject_behavior", "unit": "m/s", "value": None}
+    sweep_description = deepcopy(reference["recording_description"])
+    sweep_description["channels"].append({
+        "name": OBSERVABLE, "unit": "m/s", "sampling_rate_hz": 20,
+        "method": "original consecutive walker body-center displacement divided by source time step",
+        "time_window": "full original 12-second episode; frozen sweep summary uses seconds 6 through 12",
+        "reference_frame": "original Native CARLA frame/time",
+        "uncertainty": "requested control may differ from realized movement; permission is unresolved"})
     proposal["sweep_specs"] = [{
         "status": "complete", "sweep_id": ROOT.name + "__other_device_permission",
         "target_law_id": previous["target_law_id"],
         "judgment_refs": deepcopy(previous["judgment_refs"]),
         "mode": "one_dimensional", "landmarks": [],
         "rationale": "Sample finite walker control requests with the other device displaying WALK; official authority and NRS 484B.283 permission remain unresolved.",
-        "recording_description": deepcopy(reference["recording_description"]),
+        "recording_description": sweep_description,
         "variable_assignments": values,
         "axes": [{
             "variable": AXIS, "observable": "original_pedestrian_speed_mps", "unit": "m/s",
             "min": 0.8, "max": 1.6, "spacing": 0.4,
-            "measurement": {"method": "original 20 Hz walker body displacement after startup, retaining original frame samples",
-                            "time_window": "original seconds 6 through 12, excluding startup transient",
+            "measurement": {"method": "original 20 Hz walker body-center displacement",
+                            "time_window": "original seconds 6 through 12 excluding startup transient",
                             "statistic": "mean"},
             "range_rationale": "Three source-gated pedestrian control requests fit the existing 12-second crossing episode; these values are not permission thresholds.",
             "spacing_rationale": "Separated control requests sample physical behavior while holding red head, WALK display, route and camera plan fixed.",

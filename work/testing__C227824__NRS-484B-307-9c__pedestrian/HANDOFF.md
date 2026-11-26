@@ -1,6 +1,6 @@
 # C227824 pedestrian signal entry handoff
 
-Status: **partial, source gated**. The four selected diagnostic cases are CPU prepared. No original physical capture or legal permission judgment is claimed. The exact strict gate exits 1 with `Preparation acceptance failed: partial/missing packages remain` because this package remains partial.
+Status: **CPU delivery prepared; original source review and Native capture remain local checks.** The scoped strict gate is running after the seven-case CPU proof passed. This package makes no original physical capture or legal permission claim.
 
 ## Exact selected scope
 
@@ -8,15 +8,16 @@ Status: **partial, source gated**. The four selected diagnostic cases are CPU pr
 - `testing__C227824__NRS-484B-307-9c__pedestrian__wait_no_other_device`
 - `testing__C227824__NRS-484B-307-9c__pedestrian__enter_walk_display`
 - `testing__C227824__NRS-484B-307-9c__pedestrian__wait_walk_display`
+- `testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0000`
+- `testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0001`
+- `testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0002`
 
-Controlled comparisons: `entry_vs_wait_none`, `other_device_display_entry`, and `entry_vs_wait_walk`, each with the assignment prefix. The case plan records the fixed red signal with green turn arrow, pedestrian facing, highway boundary, and the deliberately changed entry or other-device display. The arrow is not treated as pedestrian permission.
+Comparisons: `entry_vs_wait_none`, `other_device_display_entry`, `entry_vs_wait_walk`, `sweep_walk_speed_0`, `sweep_walk_speed_1`. Four base entry/wait variants hold steady red plus green turn arrow, pedestrian facing, and highway boundary conditions while changing entry or the other-device display. Three expanded WALK cases sweep commanded walking speed at 0.8, 1.2, and 1.6 m/s; these are finite engineering diagnostic stations, not legal thresholds. Original body velocity is separately measured over a steady sample window. Vehicle turn arrows are never treated as pedestrian permission.
 
 ## CPU proof
 
-`execution-manifest.json` binds each case to its own inline construction hash, offline receipt, positive and negative compatibility receipt, saved-only receipt, three physical outcome fixtures, lifecycle protocol fixture, and positive and negative independent delivery audit test. All four compatibility receipts pass current construction hashes with Lean validation, final decode, mandatory measurement, and a rejected missing-source negative. All four saved-only receipts preserve source bytes. Twelve physical fixtures demonstrate complete, incomplete, and missing-evidence classification. Four audit positives pass 900-frame/four-video source-shaped checks, and four negatives reject unreleased receipts. Nine unit tests and the canonical semantic stage pass. `cpu-selected-validation.json` reports semantic, compatibility, physical, and delivery validators passing; its downstream selected structure probe passes. The real selected execution validator rejects the incomplete sweep.
+`execution-manifest.json` SHA-256: `849a8592a3c3b7fb0850607508869d5245f5e04e8d8d0362afc5fd962b4b2d7b`. It binds seven exact construction hashes to current-hash offline, positive/negative compatibility, saved-only, three physical outcome fixtures per case, lifecycle protocol, and positive/negative delivery audit receipts. Seven positive compatibility receipts include Lean, decoded video and mandatory measurements; seven negatives reject missing source. Seven saved-only receipts preserve source bytes. The 21 physical fixtures cover complete, incomplete and missing evidence. Seven audit positives use 900-frame/four-video source-shaped fixtures; seven negatives reject unreleased receipts. Nine unit tests and the canonical semantic stage pass. `cpu-selected-validation.json` passes selected execution, semantic, compatibility, physical and delivery. The exact seven-row queue proposal and five comparisons are in `gpu-queue-proposal.json` (SHA-256 `8c0f8003a9c9be56b0098e36142bacff1a2426bb3222b2435a8189bcd7ef6067`).
 
-The diagnostic 900-frame fixtures are synthetic. They do not establish original CARLA motion, actual signal/device assets, highway dedication, frame pixels, permission under NRS 484B.283, or local acceptance. `proof-summary.json` records the exact case hashes and proof counts.
+## Local original checks
 
-## Source dependency and next local step
-
-Frozen `inputs/testing__C227824__NRS-484B-307-9c__pedestrian/evidence.json` has `recordings: []`. Its judgment range inventory contains no exact C227824/NRS-484B-307-9c/pedestrian range. The missing source is a reviewed original signalized highway/OpenDRIVE packet with Native red and green-turn-arrow assets, other-device authority/display, pedestrian facing and crossing route, plus source-supported feasible controls and legal review for the NRS 484B.283 permission sweep. The package requires those sources before expanding the sweep or asserting readiness. Once supplied, run original Native attempts, owner release, saved processing, four exact delivery audits and three comparison audits, then the exact strict gate. `gpu-queue-proposal.json` lists commands but is explicitly not dispatchable.
+Frozen evidence has `recordings: []` and the judgment range inventory has no exact C227824 range. Supply a reviewed original signalized highway/OpenDRIVE packet with red and green-turn-arrow assets, pedestrian-facing and other-device authority/display, crossing route, and source-supported feasible controls. Run original Native captures and independently audit actor/device/highway readback, measured walking speed, four decoded camera views, source bytes, all seven exact delivery receipts, and the five comparisons. Legal permission under NRS 484B.283 remains for independent review; this CPU package does not decide it. The queue proposal is a draft for local source review and dispatch.

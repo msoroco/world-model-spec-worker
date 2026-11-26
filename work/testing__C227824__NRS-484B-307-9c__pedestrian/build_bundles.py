@@ -13,7 +13,16 @@ REPO = HERE.parent.parent
 SOURCE_FILES = ("runner.py", "ped_entry.py", "reviewed_scene.py",
                 "native_adapter.py", "delivery_audit.py", "comparison_audit.py",
                 "process_recorded_only.py", "analysis.py")
-CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
+CAMERAS = [
+    {"name": "overview", "width": 1920, "height": 1080, "fov_deg": 75,
+     "pose_strategy": "whole signalized highway, pedestrian approach, and crossing"},
+    {"name": "approach", "width": 1280, "height": 720, "fov_deg": 75,
+     "pose_strategy": "pedestrian approaching the highway boundary"},
+    {"name": "reference_corner", "width": 1280, "height": 720, "fov_deg": 75,
+     "pose_strategy": "pedestrian facing, other device, and crosswalk boundary"},
+    {"name": "driver_reference", "width": 1280, "height": 720, "fov_deg": 75,
+     "pose_strategy": "official red and green turn arrow beside crossing"},
+]
 TEST = '''import json
 import unittest
 from runner import check_config
@@ -102,6 +111,8 @@ def main():
         construction_rel = "construction.json" if index == 0 else \
             "cases/" + case.case_id + "/construction.json"
         write(HERE / construction_rel, construction)
+        if index == 0:
+            (HERE / "config.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
         contract = {"format": "worker-measurement-contract",
                     "requirements": [{"disposition_index": 0,
                                       "requirement": plan["law_text"],

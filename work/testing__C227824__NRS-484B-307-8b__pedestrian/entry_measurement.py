@@ -162,5 +162,6 @@ def measure_walking_speed(rows, *, start_s=6.0, end_s=12.0):
     return {"value": sum(speeds) / len(speeds), "unit": "m/s", "statistic": "mean",
             "method": "original 20 Hz walker body-center displacement",
             "time_window": "original seconds 6 through 12 excluding startup transient",
+            "sample_window_s": [selected[1][1], selected[-1][1]],
             "first_frame": selected[0][0], "last_frame": selected[-1][0],
             "sample_count": len(speeds), "legal_permission_determined": False}

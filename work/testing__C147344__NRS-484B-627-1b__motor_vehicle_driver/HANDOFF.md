@@ -88,3 +88,23 @@ The four selected cases remain `slow_middle_follower`, `slow_right_follower`, `s
 The synthetic source-shaped tests exercise positive construction, runner binding, six-case comparison, and rejection of stale/missing/unsupported source and unspaced ranges. All 39 assignment tests pass. Scoped static passes. The exact scoped strict gate exits 1 with `Preparation acceptance failed: partial/missing packages remain`; see `cpu-sweep-strict.log`. `sweep-proof-summary.json` binds current hashes and IDs.
 
 The frozen judgment range inventory has zero entries for `NRS-484B-627-1b` with `motor_vehicle_driver`; frozen evidence has zero accepted recordings. The reviewed original site, OpenDRIVE, lane/actor packet, numeric control authority, physical feasible bounds and spacing for both phrases, and released original Native attempts are absent. Consequently the six staged points cannot be given source-supported numeric values and cannot truthfully enter selected proposals, construction hashes, manifest, or selected offline/compatibility/saved/delivery/physical proofs yet. No queue row is proposed. Resume by supplying reviewed original sources to `source_gated_sweeps.prepare`, generating the six exact plans, expanding canonical proposals and selected manifest with their current construction hashes, and running each selected proof plus the six-attempt comparison and exact strict gate. Preserve the four existing selected packages and do not promote synthetic fixture speeds to legal or physical authority.
+
+## 2026-11-26 ten-case delivery-prepared checkpoint
+
+Ten exact cases are canonical: four original controlled relation/position cases and six bounded engineering speed stations (`impediment-0000..0002`, `passing_necessity-0000..0002`). Two new controlled engineering comparisons join the original three. The numeric stations are controller requests for diagnostic coverage, not legal cutoffs, observed speed, or claims about an original reviewed highway. The source audit remains gated on SHA-bound original site, map, lane, actor, motion, and camera evidence.
+
+All ten selected cases passed pinned offline, compatibility, physical preparation, delivery preparation, and saved-only CPU proofs. The selected validator reports all five outcomes passed (`selected_execution`, `semantic`, `compatibility`, `physical`, `delivery`) and makes no original-source acceptance claim. The 48 assignment tests and scoped static check pass. The exact scoped strict command `.venv-cpu/bin/python worker_check.py --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --complete --require-delivery-ready` exited 0. `result.json` is ready with `delivery_prepared` readiness.
+
+The queue proposal contains ten exact case commands and five comparison commands. Every source audit command binds `--case` to its queue case and `audit_exact_case.py` rejects a mismatched receipt before dispatching the appropriate source audit. Every accept command uses literal `--review-archive /external/archive`; pinned CLI help and command structure were checked. No CARLA capture, visual review, physical completion, or legal judgment has been claimed.
+
+| File | SHA256 |
+| --- | --- |
+| `case-plan.json` | `f364a8a41aa5f2a2bc1be26851998b3a97a7c53907d413eebd21d4f5cdd3a5f2` |
+| `proposals/cases.json` | `c3803d4edb3dc42abae45a416837d135b7e3c5c9573959014ece809125454676` |
+| `execution-manifest.json` | `525522250e6a4f81d1f7b603ad770f537bcb0515011d25ad3f9e56531f780e42` |
+| `selected-validator-report.json` | `14a333fedd9b374fa2c61ac0bff272c295a143a2d4286b4d8319bc8fc5263f9c` |
+| `gpu-queue-proposal.json` | `981b633921d272ed6cbcc629f598c57bb853744b18831a50edee823c8cdd61f5` |
+| `result.json` | `9b9026902135f711b8e83c4b9038512287af320cc352109c9de8dfa284489ace` |
+| `cpu-final-strict.log` | `edc0436fde98171827bcdac9065e8b83b908253d8cfd8d52fd6007bc7cf39a44` |
+
+Next GPU work requires original reviewed highway/OpenDRIVE and physical/authority packets, source-bound attempts, four-view original recordings, saved-only processing, and independent physical and legal review of impediment and passing necessity. Retain the original source uncertainty until those reviews pass.

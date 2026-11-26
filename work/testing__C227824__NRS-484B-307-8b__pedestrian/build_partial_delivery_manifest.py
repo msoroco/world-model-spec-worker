@@ -76,7 +76,6 @@ def build() -> dict:
         entry["missing_proofs"] = [
             "reviewed official route-facing signal/controller and pedestrian device driver",
             "reviewed full highway boundary and camera placement sources",
-            "expanded source-backed NRS 484B.283 permission sweep",
             "original Native acquisition and independent delivery audit"]
         entries.append(entry)
     comparison_proofs = {item["comparison_id"]: item["sha256"] for item in index["comparisons"]}
@@ -103,8 +102,9 @@ def build() -> dict:
                 "runtime_manifest_sha256": draft["runtime_manifest_sha256"],
                 "semantic_index_sha256": index["semantic_index_sha256"],
                 "status": "partial", "cases": entries, "comparisons": comparisons,
-                "source_gate": {"sweep_id": "c227824-other-device-permission",
-                                "status": "incomplete", "physical_acceptance_claimed": False,
+                "source_gate": {"sweep_id": aid + "__other_device_permission",
+                                "status": "engineering_sweep_selected_source_review_pending",
+                                "physical_acceptance_claimed": False,
                                 "legal_verdict_claimed": False}}
     (HERE / "execution-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest

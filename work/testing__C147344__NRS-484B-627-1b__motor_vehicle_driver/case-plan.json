@@ -376,7 +376,48 @@
   "law_id": "NRS-484B-627-1b",
   "law_source": "NRS 484B.627(1)(b)",
   "law_text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway has two or more clearly marked lanes for traffic traveling in the direction in which the driver or operator is traveling, drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles.",
-  "observations": [],
+  "observations": [
+    {
+      "measurement": "ego lane identity and distance to verified extreme right-hand lane for each selected case; retain raw frames",
+      "name": "marked highway lane identities",
+      "sample_rate_hz": 20,
+      "source": "original Native ego pose and source-bound highway lane markings",
+      "uncertainty": "Highway direction, usable lane markings, and geometry require independent original-source review.",
+      "unit": "lane relation and m"
+    },
+    {
+      "measurement": "ego lane, longitudinal motion, and realized speed for each selected case",
+      "name": "ego lane and motor-vehicle motion",
+      "sample_rate_hz": 20,
+      "source": "original Native ego pose and motion history",
+      "uncertainty": "Controller speed requests are engineering settings; realized motion and original geometry require source review.",
+      "unit": "lane identity, m, and m/s"
+    },
+    {
+      "measurement": "identity, lane relation, longitudinal gap, and closing speed of immediately following traffic over the capture",
+      "name": "following traffic and immediate relation",
+      "sample_rate_hz": 20,
+      "source": "original Native ego and surrounding actor poses, dimensions, and motion",
+      "uncertainty": "Actor association, momentary occlusion, and any traffic impediment remain physical review questions.",
+      "unit": "actor ID, m, and m/s"
+    },
+    {
+      "measurement": "slower vehicle speed, relative station, and ego overtaking progression over the capture",
+      "name": "passing and slower vehicle",
+      "sample_rate_hz": 20,
+      "source": "original Native ego and slower-vehicle trajectories with lane geometry",
+      "uncertainty": "Controller request is not realized speed; passing necessity and any legal exception require separate review.",
+      "unit": "m/s and m"
+    },
+    {
+      "measurement": "decode continuity, timing, and coverage for every selected case",
+      "name": "four synchronized camera views",
+      "sample_rate_hz": 20,
+      "source": "original overview, approach, reference-corner, and driver-reference camera recordings",
+      "uncertainty": "A successful decode does not establish lane identity, legal necessity, or physical quality.",
+      "unit": "frames and s"
+    }
+  ],
   "planning_status": "partial_exact_branch_cases_and_source_measurement",
   "requirement_dispositions": [
     {

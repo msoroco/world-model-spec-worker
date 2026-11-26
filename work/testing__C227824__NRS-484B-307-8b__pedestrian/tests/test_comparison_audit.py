@@ -27,6 +27,25 @@ def report(case, device="none", request="entry", entered=True):
 
 
 class ComparisonAuditTests(unittest.TestCase):
+    def test_speed_sweep_checks_fixed_walk_and_observed_samples(self):
+        left, right = report("sweep-a", device="walk"), report("sweep-b", device="walk")
+        for item, target, observed in ((left, 0.8, 0.79), (right, 1.2, 1.18)):
+            item["requested_walker_speed_mps"] = target
+            item["original_speed_summary"] = {"unit": "m/s", "value": observed,
+                                              "sample_count": 119}
+        result = MODULE.audit_pair(left, right, comparison_id="sweep_walk_speed_0",
+                                   deliberate_difference="walk_speed_target_mps")
+        self.assertTrue(result["diagnostic_audit_passed"])
+        right["planned_device_indication"] = "none"
+        with self.assertRaisesRegex(ValueError, "changed separate WALK"):
+            MODULE.audit_pair(left, right, comparison_id="sweep_walk_speed_0",
+                              deliberate_difference="walk_speed_target_mps")
+        right["planned_device_indication"] = "walk"
+        right["original_speed_summary"] = None
+        with self.assertRaisesRegex(ValueError, "post-startup speed"):
+            MODULE.audit_pair(left, right, comparison_id="sweep_walk_speed_0",
+                              deliberate_difference="walk_speed_target_mps")
+
     def test_exact_saved_attempt_pair_and_changed_source_rejection(self):
         safe = Path(__file__).resolve().parents[3] / ".runtime-work"
         safe.mkdir(exist_ok=True)

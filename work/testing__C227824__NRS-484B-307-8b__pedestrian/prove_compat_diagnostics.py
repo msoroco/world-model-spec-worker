@@ -62,6 +62,11 @@ def main():
                                    ("facing_signal_history", "signal-history.jsonl"),
                                    ("other_device_history", "device-history.jsonl"),
                                    ("camera_frame_map", "video_frames.jsonl"))}}
+        if case.get("sweep_id"):
+            receipts[case_id]["acquisition"]["original_pedestrian_speed_mps"] = {
+                "entrypoint": "analysis.py",
+                "method": "source-joined original walker body-center displacement and time",
+                "evidence": "walker-body-history.jsonl"}
         rows.append({"case_id": case_id, "compatibility_passed": True,
                      "checks": receipt["checks"],
                      "diagnostic_fixture_only": True})

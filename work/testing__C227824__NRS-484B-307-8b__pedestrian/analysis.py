@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -14,6 +15,7 @@ from pathlib import Path
 from saved_entry import CAMERAS, build_report
 from physical_entry import assess as assess_entry
 from entry_measurement import measure_walking_speed
+from entry_measurement import _polygon
 
 
 def _pipeline_output_root():
@@ -51,6 +53,27 @@ def _evidence(root, description, report):
     evidence = []
     for channel in channels:
         name = channel.get("name")
+        if name == "original_pedestrian_speed_mps":
+            if channel.get("unit") != "m/s":
+                raise ValueError("original walker speed channel unit differs")
+            bodies = _jsonl(root / "walker-body-history.jsonl")
+            target = root / "channels" / (name + ".jsonl")
+            previous = None
+            with target.open("x") as stream:
+                for body in bodies:
+                    polygon = _polygon(body.get("body_polygon_xy_m"))
+                    center = (sum(point[0] for point in polygon) / len(polygon),
+                              sum(point[1] for point in polygon) / len(polygon))
+                    time_s = body["time_s"]
+                    speed = 0.0 if previous is None else math.dist(center, previous[1]) / (time_s - previous[0])
+                    if not math.isfinite(speed):
+                        raise ValueError("original walker speed nonfinite")
+                    stream.write(json.dumps({"time_s": time_s, "value": speed},
+                                            allow_nan=False) + "\n")
+                    previous = (time_s, center)
+            evidence.append({"name": name, "unit": "m/s",
+                             "reference": str(target.relative_to(root))})
+            continue
         if name not in sources or not isinstance(channel.get("unit"), str):
             raise ValueError("unsupported declared channel: " + str(name))
         rows = _jsonl(root / sources[name])
@@ -120,7 +143,7 @@ def finalize(attempt):
         original_rows = _jsonl(root / "walker-body-history.jsonl")
         observed_speed = measure_walking_speed(original_rows)
         if observed_speed is not None:
-            observed_speed["reference"] = "walker-body-history.jsonl"
+            observed_speed["reference"] = "channels/original_pedestrian_speed_mps.jsonl"
             result["realized_observables"]["original_pedestrian_speed_mps"] = observed_speed
     entry_check = assess_entry(report, scene, _jsonl(root / "walker-body-history.jsonl"))
     result["physical_checks"]["maneuver"] = entry_check

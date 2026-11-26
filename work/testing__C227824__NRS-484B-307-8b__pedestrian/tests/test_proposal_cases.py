@@ -31,7 +31,8 @@ class CaseProposalTests(unittest.TestCase):
                      "other_device_history", "camera_frame_map"}
         for case in proposal["cases"]:
             description = case["recording_description"]
-            self.assertEqual({item["name"] for item in description["channels"]}, supported)
+            expected = supported | ({"original_pedestrian_speed_mps"} if case.get("sweep_id") else set())
+            self.assertEqual({item["name"] for item in description["channels"]}, expected)
             self.assertEqual([item["name"] for item in description["context_inputs"]],
                              ["highway_boundary"])
             self.assertTrue(all(item["sampling_rate_hz"] == 20

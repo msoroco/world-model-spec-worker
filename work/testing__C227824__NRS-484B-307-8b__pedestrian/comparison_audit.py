@@ -13,7 +13,7 @@ from saved_entry import build_report
 
 
 def audit_pair(left, right, *, comparison_id, deliberate_difference):
-    if deliberate_difference not in {"entry_request", "other_device_indication"}:
+    if deliberate_difference not in {"entry_request", "other_device_indication", "walk_speed_target_mps"}:
         raise ValueError("undeclared comparison variable")
     if not isinstance(comparison_id, str) or not comparison_id:
         raise ValueError("comparison identity missing")
@@ -50,7 +50,7 @@ def audit_pair(left, right, *, comparison_id, deliberate_difference):
         for report in (left, right):
             if report.get("planned_device_indication") != "none":
                 raise ValueError("entry/wait comparison changed another device")
-    else:
+    elif deliberate_difference == "other_device_indication":
         if left["entry_request"] != "entry" or right["entry_request"] != "entry":
             raise ValueError("device comparison changed movement request")
         if left.get("planned_device_indication") == right.get("planned_device_indication"):
@@ -67,6 +67,20 @@ def audit_pair(left, right, *, comparison_id, deliberate_difference):
                 raise ValueError("red-alone reference has another official device")
             if expected != "none" and indications != [expected]:
                 raise ValueError("planned device disagrees with original entry frame")
+    else:
+        if left["entry_request"] != "entry" or right["entry_request"] != "entry":
+            raise ValueError("speed sweep changed entry request")
+        if left.get("planned_device_indication") != "walk" or right.get("planned_device_indication") != "walk":
+            raise ValueError("speed sweep changed separate WALK indication")
+        targets = [report.get("requested_walker_speed_mps") for report in (left, right)]
+        if any(type(value) not in (int, float) for value in targets) or targets[0] == targets[1]:
+            raise ValueError("speed sweep control requests did not differ")
+        for report in (left, right):
+            if report["measurement"]["first_entry"] is None:
+                raise ValueError("speed sweep lacks original first entry")
+            speed = report.get("original_speed_summary")
+            if not isinstance(speed, dict) or speed.get("unit") != "m/s" or speed.get("sample_count", 0) < 20:
+                raise ValueError("speed sweep lacks original post-startup speed samples")
     return {"comparison_id": comparison_id, "case_ids": [left["case_id"], right["case_id"]],
             "fixed_source_conditions_checked": list(fixed),
             "deliberate_difference_checked": deliberate_difference,
@@ -87,8 +101,9 @@ def audit_attempts(left_attempt, right_attempt, comparison_id, plan_path):
     pair = matches[0]
     if [left["case_id"], right["case_id"]] != pair["case_ids"]:
         raise ValueError("saved attempts differ from exact comparison pair")
-    difference = ("entry_request" if comparison_id == "red_entry_vs_wait"
-                  else "other_device_indication")
+    difference = ("entry_request" if comparison_id == "red_entry_vs_wait" else
+                  "walk_speed_target_mps" if comparison_id.startswith("sweep_walk_speed_") else
+                  "other_device_indication")
     result = audit_pair(left, right, comparison_id=comparison_id,
                         deliberate_difference=difference)
     result["source_sha256"] = {left["case_id"]: left["source_sha256"],

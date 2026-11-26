@@ -98,6 +98,8 @@ def build_report(attempt):
                         "facing_traffic_signal": signal.get("facing_traffic_signal"),
                         "other_devices": device.get("other_devices")})
     measured = measure_entry(samples, scene.get("highway_polygon_xy_m"))
+    from entry_measurement import measure_walking_speed
+    speed_summary = measure_walking_speed(samples)
     def context_hash(value):
         return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"),
                                          allow_nan=False).encode()).hexdigest()
@@ -113,6 +115,8 @@ def build_report(attempt):
             "camera_plan_sha256": context_hash(scene.get("camera_placements")),
             "entry_request": scene.get("entry_request"),
             "planned_device_indication": scene.get("requested_pedestrian_indication"),
+            "requested_walker_speed_mps": scene.get("speed_mps"),
+            "original_speed_summary": speed_summary,
             "measurement": measured, "source_sha256": source_hashes,
             "actual_pixels_verified": False,
             "physical_acceptance_claimed": False,

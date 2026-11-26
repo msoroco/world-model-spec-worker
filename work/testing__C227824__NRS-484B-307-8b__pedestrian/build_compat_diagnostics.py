@@ -29,20 +29,20 @@ def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2) + "\n")
 
 
-def media():
-    output = PRIVATE / "media"
+def media(frames):
+    output = PRIVATE / ("media-" + str(frames))
     output.mkdir(parents=True, exist_ok=True)
     videos = []
     for name in saved_module.CAMERAS:
         width, height = SIZES[name]
-        spec = {"path": name + ".mkv", "frames": 3, "width": width,
+        spec = {"path": name + ".mkv", "frames": frames, "width": width,
                 "height": height, "fps": 20, "color": "black"}
         target = output / spec["path"]
         if target.exists():
             target.unlink()
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
                         "-f", "lavfi", "-i", f"color=c=black:s={width}x{height}:r=20",
-                        "-frames:v", "3", "-an", "-c:v", "ffv1", "-threads", "1",
+                        "-frames:v", str(frames), "-an", "-c:v", "ffv1", "-threads", "1",
                         "-fflags", "+bitexact", "-flags:v", "+bitexact", str(target)],
                        check=True, timeout=120)
         videos.append(spec)
@@ -51,7 +51,7 @@ def media():
 
 def main():
     PRIVATE.mkdir(parents=True, exist_ok=True)
-    videos = media()
+    video_sets = {3: media(3), 240: media(240)}
     template_path = REPO / "work" / "testing__C109171__NRS-484B-307-4b__pedestrian" / "cases" / "arrow_walk_wait" / "diagnostic.json"
     template = json.loads(template_path.read_text())
     plan = json.loads((ROOT / "case-plan.json").read_text())
@@ -67,10 +67,36 @@ def main():
         source.mkdir()
         make_attempt(source)
         _update_attempt(source, case)
+        frames_required = 240 if case.get("sweep_id") else 3
+        if frames_required == 240:
+            speed = case["walk_speed_target_mps"]
+            body_name, signal_name, device_name, map_name, joins_name = saved_module.PACKETS
+            templates = {name: json.loads((source / name).read_text().splitlines()[0])
+                         for name in saved_module.PACKETS}
+            for name in saved_module.PACKETS:
+                rows = []
+                for index in range(240):
+                    frame, when = index + 1, (index + 1) * .05
+                    row = json.loads(json.dumps(templates[name]))
+                    if name == map_name:
+                        row.update(video_frame=index, carla_frame=frame, time_s=when)
+                    else:
+                        row.update(frame=frame, time_s=when)
+                    if name == body_name:
+                        x = -2.0 + speed * when
+                        row["body_polygon_xy_m"] = [[x, 3], [x + 1, 3],
+                                                     [x + 1, 4], [x, 4]]
+                    if name == joins_name:
+                        row["cameras"] = {camera: {"frame": frame} for camera in saved_module.CAMERAS}
+                    rows.append(row)
+                (source / name).write_text("".join(json.dumps(row) + "\n" for row in rows))
         acquisition_path = source / "acquisition.json"
         acquisition = json.loads(acquisition_path.read_text())
+        videos = video_sets[frames_required]
+        for name in saved_module.PACKETS:
+            acquisition[name]["sha256"] = sha(source / name)
         for video in videos:
-            acquisition[video["path"]]["sha256"] = sha(PRIVATE / "media" / video["path"])
+            acquisition[video["path"]]["sha256"] = sha(PRIVATE / ("media-" + str(frames_required)) / video["path"])
         write(acquisition_path, acquisition)
         files = {p.name: p.read_text() for p in source.iterdir()
                  if p.is_file() and p.suffix in (".json", ".jsonl")
@@ -82,13 +108,15 @@ def main():
         graphs = []
         for row in mapping:
             frame, when = row["carla_frame"], row["time_s"]
-            x = float(frame - 1) if case["entry_request"] == "entry" else 0.0
+            x = (-2.0 + case["walk_speed_target_mps"] * when if case.get("sweep_id") else
+                 float(frame - 1) if case["entry_request"] == "entry" else 0.0)
+            speed_value = case["walk_speed_target_mps"] if case.get("sweep_id") else (1.0 if x else 0.0)
             trace.append({"frame": frame, "time_s": when,
                           "position": {"x": x, "y": 0.0, "z": 0.0},
                           "position_m": [x, 0.0, 0.0], "heading_deg": 0.0,
-                          "speed_mps": 1.0 if x else 0.0,
-                          "velocity_mps": [1.0 if x else 0.0, 0.0, 0.0],
-                          "speed_mph": 1.0 / .44704 if x else 0.0, "control": {}})
+                          "speed_mps": speed_value,
+                          "velocity_mps": [speed_value, 0.0, 0.0],
+                          "speed_mph": speed_value / .44704, "control": {}})
             observed = {"frame": frame, "time_s": when,
                         "participants": [], "map_context": {"diagnostic_fixture": True}}
             original = json.loads(template["files"]["capture/evidence.jsonl"].splitlines()[0])
@@ -98,7 +126,7 @@ def main():
             original["replay_simulation_time_s"] = when
             original["original_observations"] = observed
             original["ego"]["position_m"] = [x, 0.0, 0.0]
-            original["ego"]["speed_mps"] = 1.0 if x else 0.0
+            original["ego"]["speed_mps"] = speed_value
             evidence.append(original)
             graph = json.loads(json.dumps(template["graphs"][0]))
             graph["path"] = f"capture/native/graphs/base/{frame:08d}.adapter.json"
@@ -116,7 +144,7 @@ def main():
                                                       "case_id": case_id,
                                                       "diagnostic_fixture": True,
                                                       "extraction_confirmed": True,
-                                                      "frames": 3,
+                                                      "frames": frames_required,
                                                       "sources": {"road.xodr": sha(map_path),
                                                                   "trace.jsonl": hashlib.sha256(files["trace.jsonl"].encode()).hexdigest()}},
                                                      sort_keys=True) + "\n"

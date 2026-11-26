@@ -1,8 +1,13 @@
+## 2026-11-26 16:41 UTC: C158208 GPU command execution repair
+
+- Corrected the 35 C158208 `prepare-delivery`, `execute-delivery`, and `accept-delivery` command strings in its proposal and shared queue, plus `result.json.first_gpu_delivery_command`: the pinned CLI requires the subcommand before `--repo`, `--batch`, and `--db`. All changed shell strings passed `bash -n`; pinned CLI subcommand help parsed; the exact scoped strict gate passed again (`.runtime-work/c158208-command-repair/strict.log`, exit 0, `static_checks_passed: true`). No construction or bound proof changed.
+- Updated proposal SHA256 `2d4ae0c87c8489265a6fc80584b83de81cf879dc46014cbd4d733147e563cb81`; result SHA256 `71810ae9c374033b9439055d66c89f4a633af8b3b8241fb2c3e2291dab3a093d`. Shared queue remains 134 assignments, 785 cases, 515 comparisons; SHA256 `18c1755e43a76b134db79082e1519269b62a11c120c2f8ace47034f623ecd39b`. Pinned queue validator accepts rows through the later local-integration-proof stage.
+
 ## 2026-11-26 16:32 UTC: C228096 283(1)(b) delivered CPU package
 
 - Newly ready: `testing__C228096__NRS-484B-283-1b__pedestrian`; 11 exact cases, eight comparison audits, 85 GPU queue commands. Owner and lead independently passed `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian --complete --require-delivery-ready`; lead log `.runtime-work/c228096-lead/strict.log` exited 0 with `static_checks_passed: true`. Exact manifest/case-plan/proposal IDs and candidate IDs match; all command strings passed `bash -n`.
 - Manifest SHA256 `ab89a419c484e19ec802d6ad7900bb2f143601028b0bdb07be86c4e4ac348cdf`; proposal SHA256 `17f9c222be9ef995e2e0677c3444f6cef88b92f281d442aebc97c6d6119a5d48`. Shared queue now 134 assignments, 785 cases, 515 comparisons; SHA256 `05d77114da6d3d5461b476a659b31f0c4160962cb038bf4cf80facb1fcf3f85d`. Pinned queue validator accepts all rows through the later batch-level `local-integration-proof.json` stage.
-- Engineering sweep samples remain physical observation targets, not legal thresholds. Original CARLA motion/capture and independent acceptance remain later checks. C147344 is provisionally staging ready during its own strict validation and is not yet in the shared queue; the batch still has 107 partial results plus that unintegrated provisional package.
+- Engineering sweep samples remain physical observation targets, not legal thresholds. Original CARLA motion/capture and independent acceptance remain later checks. C147344 returned to partial while its exact-case audit command is repaired; the batch has 108 partial results.
 
 ## 2026-11-26 16:07 UTC: C158208 257(2) delivered CPU package
 

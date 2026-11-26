@@ -22,11 +22,10 @@ def main() -> None:
         selected = f"{COMMON} --case {case}"
         prepare = f"{PREFIX} prepare-delivery {selected}"
         execute = f"{SOURCE}{PREFIX} execute-delivery {selected} --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
-        accept = f"{PREFIX} accept-delivery {selected} --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive \"$REVIEW_ARCHIVE\""
+        accept = f"{PREFIX} accept-delivery {selected} --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive"
         release = f"CASE_ID={case} .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released"
         saved = f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case} --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""
-        audit = "engineering_delivery_audit.py" if engineering_station(case) else "delivery_audit.py"
-        source_audit = f".venv-cpu/bin/python work/{ASSIGNMENT}/{audit} --authority-root \"$C147344_AUTHORITY_ROOT\" --receipt \"$RECEIPT\" --output \"$AUDIT\""
+        source_audit = f".venv-cpu/bin/python work/{ASSIGNMENT}/audit_exact_case.py --case {case} --authority-root \"$C147344_AUTHORITY_ROOT\" --receipt \"$RECEIPT\" --output \"$AUDIT\""
         rows.append({"assignment_id": ASSIGNMENT, "case_id": case,
                      "prepare_command": prepare, "execute_command": execute,
                      "capture_command": execute, "accept_command": accept,

@@ -71,6 +71,15 @@
           "time_window": "all original recorded frames",
           "uncertainty": "Source authority, physical behavior and pixel visibility require separate review",
           "unit": "source packet"
+        },
+        {
+          "method": "original consecutive walker body-center displacement divided by source time step",
+          "name": "original_pedestrian_speed_mps",
+          "reference_frame": "original Native CARLA frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "full original 12-second episode; frozen sweep summary uses seconds 6 through 12",
+          "uncertainty": "requested control may differ from realized movement; permission is unresolved",
+          "unit": "m/s"
         }
       ],
       "context_inputs": [
@@ -91,9 +100,9 @@
     "sweep_measurements": [
       {
         "measurement": {
-          "method": "original 20 Hz walker body displacement after startup, retaining original frame samples",
+          "method": "original 20 Hz walker body-center displacement",
           "statistic": "mean",
-          "time_window": "original seconds 6 through 12, excluding startup transient"
+          "time_window": "original seconds 6 through 12 excluding startup transient"
         },
         "observable": "original_pedestrian_speed_mps",
         "unit": "m/s",
@@ -103,7 +112,7 @@
     "sweep_point": {
       "walk_speed_target_mps": 1.2
     },
-    "sweep_spec_version": "15cce88c3710d48530a956a21cc918c5005e502895a351bec65d668beb8ac166",
+    "sweep_spec_version": "e2ecdb9beb5d07470c38bd2703d6529811261cdca919251798e8e2fb420a7231",
     "target_law_id": "NRS-484B-307-8b",
     "target_type": "judgment_sweep",
     "unresolved_judgment_calls": [
@@ -114,6 +123,11 @@
         "kind": "controller",
         "unit": "categorical request",
         "value": "entry"
+      },
+      "original_pedestrian_speed_mps": {
+        "kind": "subject_behavior",
+        "unit": "m/s",
+        "value": null
       },
       "other_device_indication": {
         "kind": "world_setup",

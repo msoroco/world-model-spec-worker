@@ -28,7 +28,8 @@ def _update_attempt(root, case):
     scene_path = root / "scene.json"
     scene = json.loads(scene_path.read_text())
     scene.update(case_id=case_id, entry_request=case["entry_request"],
-                 requested_pedestrian_indication=case["other_device_indication"])
+                 requested_pedestrian_indication=case["other_device_indication"],
+                 speed_mps=case.get("walk_speed_target_mps", 1.0))
     _write(scene_path, scene)
     for name in saved_module.PACKETS:
         path = root / name
