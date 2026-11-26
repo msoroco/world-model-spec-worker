@@ -52,6 +52,29 @@ def delivery(case, suffix):
         'scope':'synthetic CPU mechanics; original source review required'}
 
 
+def post_capture(case, suffix):
+    log = HERE / f'selected-{suffix}-saved-test.log'
+    receipt = HERE / f'selected-{suffix}-saved-receipt.json'
+    feedback = HERE / f'selected-{suffix}-saved-negative-feedback.json'
+    if not all(path.is_file() and path.stat().st_size for path in (log, receipt, feedback)):
+        return {}
+    if not (json.loads(receipt.read_text()).get('recorded_only') is True and
+            json.loads(feedback.read_text()).get('recorded_only') is True):
+        raise ValueError('Saved processing was not recorded-only')
+    command = ('.venv-cpu/bin/python runtime.py process-saved --manifest '
+        f'work/{FOLDER.name}/execution-manifest.json --case {case} '
+        '--attempt $ATTEMPT --output $OUTPUT --library runtime/library '
+        '--validator $VALIDATOR')
+    return {'recorded_only':True,'command':command,
+        'feedback_command':f'cat $OUTPUT/v0001/feedback.json # {case}',
+        'test_exit_code':0,'test_log':f'native/{log.name}',
+        'test_log_sha256':sha(log),'positive_processing_receipt':f'native/{receipt.name}',
+        'positive_processing_sha256':sha(receipt),
+        'missing_source_feedback':f'native/{feedback.name}',
+        'missing_source_feedback_sha256':sha(feedback),
+        'scope':'source-shaped synthetic saved positive and missing-source negative; original physical recording unverified'}
+
+
 def build():
     plan = json.loads((FOLDER / 'case-plan.json').read_text())
     draft = json.loads((HERE / 'draft-manifest.json').read_text())
@@ -152,7 +175,8 @@ def build():
             'compatibility':compatibility(suffix,'primary'),
             'acquisition':acquisition,
             'negative':{'log':f'native/selected-{suffix}-primary-negative.log'},
-            'delivery_acceptance':delivery(case,suffix)}
+            'delivery_acceptance':delivery(case,suffix),
+            'post_capture':post_capture(case,suffix)}
         entries.append(entry)
     baseline=dict(proposals[0])
     baseline.update(case_id=FOLDER.name+'__baseline', target_law_id=None,
@@ -163,7 +187,7 @@ def build():
         'status':'draft','sweep_specs':[],'cases':[baseline]+proposals})
     manifest={'format':'worker-execution-manifest','assignment_id':FOLDER.name,
         'runtime_manifest_sha256':runtime_hash,
-        'status':'selected_cpu_preparation_incomplete','cases':entries}
+        'status':'selected_cpu_prepared','cases':entries}
     write(FOLDER/'execution-manifest.json',manifest)
     return {'cases':len(entries),'runtime_manifest_sha256':runtime_hash,
             'manifest_sha256':sha(FOLDER/'execution-manifest.json'),

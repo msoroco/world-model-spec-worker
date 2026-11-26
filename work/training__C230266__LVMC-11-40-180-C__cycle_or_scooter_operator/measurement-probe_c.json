@@ -1,0 +1,66 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Covered bicycle on sidewalk",
+      "source": "LVMC 11.40.180(C)",
+      "output_key": "covered_device_sidewalk",
+      "method": "device_and_sidewalk",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "sidewalk-actors.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "pedestrian-microphone.json",
+        "pedestrian-microphone-frames.jsonl",
+        "sidewalk-map-readback.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Yield right-of-way to pedestrian",
+      "source": "LVMC 11.40.180(C)",
+      "output_key": "pedestrian_priority_response",
+      "method": "yield_observation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "sidewalk-actors.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "pedestrian-microphone.json",
+        "pedestrian-microphone-frames.jsonl",
+        "sidewalk-map-readback.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Audible signal before overtaking pedestrian",
+      "source": "LVMC 11.40.180(C)",
+      "output_key": "audible_signal_order",
+      "method": "source_audio_order",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "sidewalk-actors.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "pedestrian-microphone.json",
+        "pedestrian-microphone-frames.jsonl",
+        "sidewalk-map-readback.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "pedestrian-microphone.json"
+    ],
+    "error_contains": "Missing required source: pedestrian-microphone.json"
+  }
+}

@@ -5,7 +5,7 @@ from capture import check as capture_check, capture
 
 def check(c):
     base="training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_"
-    expected={base+"a":40,base+"b":20}
+    expected={base+"a":40,base+"b":20,base+"c":30.48}
     case=c.get("case_id")
     if case not in expected or c.get("selected_case_id")!=case:raise ValueError("Exact case differs")
     if (c.get("law_id"),c.get("cell_id"),c.get("actor"))!=("NRS-484B-413-2","C42417","motor_vehicle_driver"):raise ValueError("Assignment differs")

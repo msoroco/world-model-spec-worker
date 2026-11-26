@@ -69,9 +69,8 @@ def description():
         'limitations':['No legal conclusion from offline or synthetic data',
                        'Original district, body, lamp pixels and four cameras require review']}
 def build():
-    prior=json.loads((HERE/'draft-manifest.json').read_text())
-    entries=[entry for entry in prior['cases'] if entry['case_id'] in (BASE+'a',BASE+'b')]
-    for suffix,distance in (('c',30.48),):
+    entries=[]
+    for suffix,distance in (('a',40),('b',20),('c',30.48)):
         case=BASE+suffix
         c={'case_id':case,'selected_case_id':case,'law_id':'NRS-484B-413-2','cell_id':'C42417',
            'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,'duration_frames':600,
@@ -84,7 +83,7 @@ def build():
            'required_atoms':['sig.turn_indicator','kin.heading','kin.speed'],
            'source_packets':[], 'recording_description':description(),
            'supported_case_ids':[BASE+'a',BASE+'b',BASE+'c'],
-           'case':{'case_id':case}}
+           'case':{'case_id':case,'recording_description':description()}}
         construction={'format':'worker-inline-construction','case_id':case,'cell_id':'C42417','actor':'motor_vehicle_driver',
                       'entrypoint':'runner.py','files':[{'path':'config.json','content':json.dumps(c,indent=2)+'\n'},
                                                     {'path':'runner.py','content':RUNNER},{'path':'tests/test_offline.py','content':TESTS}]

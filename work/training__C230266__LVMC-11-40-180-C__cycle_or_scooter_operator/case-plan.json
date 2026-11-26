@@ -6,7 +6,7 @@
   "selected_branch": "Pedestrian-controlled sidewalk encounter",
   "requirement_dispositions": [
     {
-      "requirement": "LVMC-11-40-180-C",
+      "requirement": "Covered bicycle on sidewalk",
       "source": "LVMC 11.40.180(C)",
       "branch": "Pedestrian-controlled sidewalk encounter",
       "status": "selected_required",
@@ -15,7 +15,47 @@
         "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
         "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Three selected requests use a Native bicycle blueprint and authored sidewalk; original device class and municipal applicability await source review."
+    },
+    {
+      "requirement": "Yield right-of-way to pedestrian",
+      "source": "LVMC 11.40.180(C)",
+      "branch": "Pedestrian-controlled sidewalk encounter",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
+      ],
+      "evidence_or_gap": "Pausing versus continuing requests are compared using original rider/pedestrian pose and speed; legal priority remains unjudged."
+    },
+    {
+      "requirement": "Audible signal before overtaking pedestrian",
+      "source": "LVMC 11.40.180(C)",
+      "branch": "Pedestrian-controlled sidewalk encounter",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
+      ],
+      "evidence_or_gap": "Live pedestrian-location microphone PCM is required and saved analysis measures order with an engineering margin; sound identity, placement and legal audibility require independent source review."
+    },
+    {
+      "requirement": "Electric bicycle device alternative",
+      "source": "LVMC 11.40.180(C)",
+      "branch": "Covered device alternative",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Frozen actor is broad but no exact Native electric bicycle blueprint or source-authorized rider asset has been demonstrated; ordinary bicycle may not be relabeled."
+    },
+    {
+      "requirement": "Electric scooter device alternative",
+      "source": "LVMC 11.40.180(C)",
+      "branch": "Covered device alternative",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "No exact Native electric scooter rider blueprint or source-authorized asset has been demonstrated; a synthetic label cannot establish the statutory class."
     }
   ],
   "cases": [
@@ -25,7 +65,11 @@
       "kind": "planned_only",
       "target_type": "compliant_attempt",
       "physical_target": "rider pauses for pedestrian and requests pedestrian-location audible signal before measured overtaking",
-      "comparison_variable": "sidewalk_pedestrian_pass"
+      "comparison_variable": "sidewalk_pedestrian_pass",
+      "gap_ids": [
+        "actual_native_yield_response_unverified",
+        "pedestrian_location_audio_unverified"
+      ]
     },
     {
       "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
@@ -33,7 +77,11 @@
       "kind": "planned_only",
       "target_type": "violating_attempt",
       "physical_target": "same rider/pedestrian path and pause, but no audible signal request before measured overtaking",
-      "comparison_variable": "sidewalk_pedestrian_pass"
+      "comparison_variable": "sidewalk_pedestrian_pass",
+      "gap_ids": [
+        "actual_native_yield_response_unverified",
+        "pedestrian_location_audio_unverified"
+      ]
     },
     {
       "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
@@ -43,7 +91,8 @@
       "physical_target": "same device/pedestrian path and early signal request, but no rider pause during encounter",
       "comparison_variable": "pedestrian_priority_response",
       "gap_ids": [
-        "actual_native_yield_response_unverified"
+        "actual_native_yield_response_unverified",
+        "pedestrian_location_audio_unverified"
       ]
     }
   ],
@@ -77,54 +126,24 @@
   ],
   "observations": [
     {
-      "name": "ru.bicycle",
+      "name": "rider_and_pedestrian_footprints",
       "mandatory": true,
-      "reason": "the machine"
+      "reason": "Original distinct rider and pedestrian actor transforms, body extents and speed"
     },
     {
-      "name": "ru.electric_bicycle",
+      "name": "pedestrian_location_audio",
       "mandatory": true,
-      "reason": "or an electric bicycle"
+      "reason": "Original PCM from live microphone positioned at pedestrian"
     },
     {
-      "name": "ru.electric_scooter",
+      "name": "sidewalk_map_context",
       "mandatory": true,
-      "reason": "or an electric scooter"
+      "reason": "Authored sidewalk and Native readback"
     },
     {
-      "name": "st.sidewalk",
+      "name": "four_source_views",
       "mandatory": true,
-      "reason": "the sidewalk ridden on"
-    },
-    {
-      "name": "ru.pedestrian",
-      "mandatory": true,
-      "reason": "the pedestrian"
-    },
-    {
-      "name": "drv.yields_to",
-      "mandatory": true,
-      "reason": "the right-of-way owed to them"
-    },
-    {
-      "name": "drv.overtaking",
-      "mandatory": true,
-      "reason": "the overtaking and passing"
-    },
-    {
-      "name": "sig.horn",
-      "mandatory": true,
-      "reason": "the audible signal — a bell or voice"
-    },
-    {
-      "name": "rel.ahead_behind_in_lane",
-      "mandatory": true,
-      "reason": "the rider behind, then ahead"
-    },
-    {
-      "name": "rel.surface_gap",
-      "mandatory": true,
-      "reason": "the clearance during the pass"
+      "reason": "Original synchronized camera frames and hashes"
     }
   ],
   "sources": [
@@ -137,7 +156,8 @@
   "runtime_uncertainties": [
     "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
     "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions.",
-    "Unselected exact 30-second four-camera CPU bundles and source-shaped meter pass, but Native capture, pedestrian-location audio, saved processing, compatibility and independent acceptance/comparison audits remain open."
+    "Unselected exact 30-second four-camera CPU bundles and source-shaped meter pass, but Native capture, pedestrian-location audio, saved processing, compatibility and independent acceptance/comparison audits remain open.",
+    "Live microphone and rider speaker ALSA devices require explicit local wiring and independent placement/audio review; silent controller requests are never audible evidence."
   ],
   "statutory_text": "Whenever any person is riding a bicycle, electric bicycle, or electric scooter upon a sidewalk, such person shall yield the right-of-way to any pedestrian and shall give audible signal before overtaking and passing such pedestrian.",
   "activation_conditions_from_unreviewed_summary": [
@@ -161,16 +181,125 @@
     "rel.surface_gap"
   ],
   "source_observation_mapping": {
-    "ru.bicycle": "covered device class in original Native blueprint/actor identity; this draft chooses bicycle class only",
-    "ru.electric_bicycle": "alternative device class requiring separate verified source; not claimed by this draft",
-    "ru.electric_scooter": "alternative device class requiring separate verified source; synthetic meter uses a labeled scooter only",
-    "st.sidewalk": "authored OpenDRIVE sidewalk plus original rider and pedestrian full footprints",
-    "ru.pedestrian": "distinct original pedestrian actor identity, transforms and full footprint",
-    "drv.yields_to": "measured rider speed/footprint response and pedestrian trajectory; legal right of way requires independent review",
-    "drv.overtaking": "first longitudinal footprint overlap and first full-ahead event in source frame map",
-    "sig.horn": "synchronized original microphone at pedestrian, separate from controller request; fixture proves detector software only",
-    "rel.ahead_behind_in_lane": "longitudinal full-footprint order on same sidewalk",
-    "rel.surface_gap": "minimum lateral full-footprint gap during overlap"
+    "ru.bicycle": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints",
+        "four_source_views"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Pending source-authorized alternative device binding; no original class claim",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Pending source-authorized alternative device binding; no original class claim",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "sidewalk_map_context",
+        "rider_and_pedestrian_footprints"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints",
+        "four_source_views"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "sig.horn": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "pedestrian_location_audio"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original source measurement with independent physical/legal review",
+      "channels": [
+        "rider_and_pedestrian_footprints"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+          "sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229"
+        }
+      ]
+    }
   },
   "evidence_review": {
     "reviewer": "worker source review",
@@ -188,6 +317,33 @@
         "requirement": "Synchronized audible signal at pedestrian before pass",
         "source": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/witnesses.json",
         "why_existing_insufficient": "No original pedestrian-location sound recording supplied."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "rider and pedestrian sidewalk encounter",
+        "interval": "all 600 frames",
+        "view": "overview"
+      },
+      {
+        "subject": "rider and pedestrian sidewalk encounter",
+        "interval": "all 600 frames",
+        "view": "approach"
+      },
+      {
+        "subject": "rider and pedestrian sidewalk encounter",
+        "interval": "all 600 frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "rider and pedestrian sidewalk encounter",
+        "interval": "all 600 frames",
+        "view": "driver_reference"
       }
     ]
   }

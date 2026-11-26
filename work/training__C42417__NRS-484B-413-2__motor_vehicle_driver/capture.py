@@ -20,7 +20,7 @@ HERE = Path(__file__).resolve().parent
 
 def check(config: dict) -> dict:
     case = config.get('case_id')
-    if case not in (CASE_PREFIX + 'a', CASE_PREFIX + 'b'):
+    if case not in (CASE_PREFIX + 'a', CASE_PREFIX + 'b', CASE_PREFIX + 'c'):
         raise ValueError('Exact C42417 case differs')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != \
             ('NRS-484B-413-2', 'C42417', 'motor_vehicle_driver'):
@@ -30,7 +30,7 @@ def check(config: dict) -> dict:
     if (config.get('layout'), config.get('maneuver'), config.get('precipitation')) != \
             ('business_district', 'right_turn', 'rain'):
         raise ValueError('Fixed business district scene differs')
-    expected = 40 if case.endswith('_a') else 20
+    expected = {'a':40,'b':20,'c':30.48}[case[-1]]
     if config.get('signal_distance_m') != expected:
         raise ValueError('Exact signal distance request differs')
     if config.get('controller_lookahead_base_m') not in (4.0, 2.5):

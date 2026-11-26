@@ -75,8 +75,8 @@ def audit(left_attempt: Path, right_attempt: Path, left_receipt: Path,
     return {'format': 'c42417-independent-comparison-audit-v1',
             'comparison_id': CASE_PREFIX[:-len('condition_')] + 'comparison',
             'case_ids': list(cases), 'fixed_conditions': measured[0][0],
-            'measured_distances_m': [measured[0][1], measured[1][1]],
-            'source_hashes': [measured[0][2], measured[1][2]],
+            'measured_distances_m': [row[1] for row in measured],
+            'source_hashes': [row[2] for row in measured],
             'diagnostic_fixture': allow_fixture,
             'physical_acceptance_claimed': False, 'legal_verdict': None}
 

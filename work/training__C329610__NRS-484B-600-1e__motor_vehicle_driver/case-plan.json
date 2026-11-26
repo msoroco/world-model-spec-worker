@@ -12,27 +12,39 @@
       "status": "selected_required",
       "case_ids": [
         "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_a",
+        "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_at",
         "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "75, 80 and 85 mph controller requests have exact 30-second, 600-frame same-cell left-turn offline constructions; original Native speed, selected compatibility and independent delivery evidence remain unverified."
     }
   ],
   "cases": [
     {
       "case_id": "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "draft_cpu_offline_only",
       "target_type": "compliant_attempt",
       "physical_target": "drive below 80 mph",
-      "comparison_variable": "vehicle_speed_mph"
+      "comparison_variable": "vehicle_speed_mph",
+      "construction": "draft-native/probe_a/construction.json"
+    },
+    {
+      "case_id": "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_at",
+      "target_law_id": "NRS-484B-600-1e",
+      "kind": "draft_cpu_offline_only",
+      "target_type": "boundary_attempt",
+      "physical_target": "drive at 80 mph",
+      "comparison_variable": "vehicle_speed_mph",
+      "construction": "draft-native/probe_at/construction.json"
     },
     {
       "case_id": "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "draft_cpu_offline_only",
       "target_type": "violating_attempt",
       "physical_target": "drive above 80 mph",
-      "comparison_variable": "vehicle_speed_mph"
+      "comparison_variable": "vehicle_speed_mph",
+      "construction": "draft-native/probe_b/construction.json"
     }
   ],
   "comparisons": [
@@ -40,6 +52,7 @@
       "comparison_id": "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__comparison",
       "case_ids": [
         "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_a",
+        "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_at",
         "training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_b"
       ],
       "deliberate_differences": [
@@ -64,7 +77,7 @@
     {
       "name": "ru.subject",
       "mandatory": true,
-      "reason": "the vehicle judged \u2014 any kind"
+      "reason": "the vehicle judged — any kind"
     }
   ],
   "sources": [
@@ -148,9 +161,40 @@
   "construction_checkpoint": {
     "manifest": "draft-native-manifest.json",
     "comparison_proof": "native/request-comparison-proof.json",
-    "comparison_proof_sha256": "b811bd0688b39693c71461d2b4ca27cabe90fc78e038905e5ea9a4ca4bd610f6",
     "selected": false,
-    "original_native_observed": false
+    "original_native_observed": false,
+    "boundary_targets_mph": [
+      75,
+      80,
+      85
+    ]
   },
-  "evidence_review_pending_note": "Three accepted recording IDs are membership context only; no local source-hashed equivalence receipt was found for this exact speed requirement. Do not claim existing coverage from membership."
+  "evidence_review_pending_note": "Three accepted recording IDs are membership context only; no local source-hashed equivalence receipt was found for this exact speed requirement. Do not claim existing coverage from membership.",
+  "evidence_review": {
+    "source": "inputs/training__C329610__NRS-484B-600-1e__motor_vehicle_driver/review-context/review.json",
+    "reviewed_memberships": [
+      {
+        "recording_id": "abe44714660b12c1daa34b44eb9fc8e8466096678dea8c7513631026c662f47a",
+        "historical_case_id": "C329610-600-1e-80-above",
+        "demonstrated": "Approach-speed request: 37.9984 m/s; accepted membership only",
+        "limitations": "No local original recording, trace, receipt or exact source-hashed equivalence is supplied.",
+        "reuse": false
+      },
+      {
+        "recording_id": "03447c598de1182f0a74d36cf80cb2f21f5afa727457978bee3b86255c6cfcaa",
+        "historical_case_id": "C329610-600-1e-80-at",
+        "demonstrated": "Approach-speed request: 35.5397 m/s; accepted membership only",
+        "limitations": "No local original recording, trace, receipt or exact source-hashed equivalence is supplied.",
+        "reuse": false
+      },
+      {
+        "recording_id": "2470b339011cd73ce1e604bfcd82d1a02a1977ddcecf6251d3f11f348d50cb3c",
+        "historical_case_id": "C329610-600-1e-80-below",
+        "demonstrated": "Approach-speed request: 33.528 m/s; accepted membership only",
+        "limitations": "No local original recording, trace, receipt or exact source-hashed equivalence is supplied.",
+        "reuse": false
+      }
+    ],
+    "new_evidence_reason": "Three exact current-runtime constructions are required for source-bound CPU delivery proof; they do not replay accepted originals."
+  }
 }
