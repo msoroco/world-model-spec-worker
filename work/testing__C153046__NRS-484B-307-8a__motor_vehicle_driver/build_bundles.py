@@ -67,7 +67,8 @@ def main() -> None:
                            'recording_description': RECORDING},
                   'plan_sha256': hashlib.sha256(plan_path.read_bytes()).hexdigest(),
                   'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
-                  'control': {'approach_hold_margin_m': 1.0},
+                  'control': {'approach_hold_margin_m': row['draft_variables'].get('stop_hold_margin_m', 1.0),
+                              'yield_release_delay_s': row['draft_variables'].get('yield_release_delay_s', 0.0)},
                   'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
                   'diagnostic_only': True, 'recording_description': RECORDING}
         files = [{'path': 'config.json', 'content': json.dumps(config, indent=2, sort_keys=True) + '\n'},
@@ -114,7 +115,9 @@ def main() -> None:
                     'negative': {'remove': ['original-attempt/site-packet.json'],
                                  'error_contains': 'Missing required source: original-attempt/site-packet.json'}}
         write(ROOT / f'measurement-{suffix}.json', contract)
-        fallback_config = dict(config, control={'approach_hold_margin_m': 2.0})
+        fallback_config = dict(config, control={
+            'approach_hold_margin_m': min(3.0, config['control']['approach_hold_margin_m'] + 0.5),
+            'yield_release_delay_s': min(2.0, config['control']['yield_release_delay_s'] + 0.5)})
         fallback_files = [dict(item, content=json.dumps(fallback_config, indent=2,
                           sort_keys=True) + '\n') if item['path'] == 'config.json'
                           else item for item in files]
@@ -134,7 +137,8 @@ def main() -> None:
                                         'trigger': {'source': 'original Native history',
                                                     'metric': 'body-front position at first zero-speed frame',
                                                     'failure_condition': 'first zero-speed frame crosses reviewed stop reference'},
-                                        'changed_knobs': ['approach_hold_margin_m: 1.0 to 2.0']}],
+                                        'changed_knobs': ['approach_hold_margin_m: +0.5 m (capped at 3.0 m)',
+                                                          'yield_release_delay_s: +0.5 s (capped at 2.0 s)']}],
                         'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                            'host_env_var': 'CARLA_HOST',
                                            'port_env_var': 'CARLA_PORT'}})

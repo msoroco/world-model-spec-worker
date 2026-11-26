@@ -25,7 +25,7 @@ def main() -> None:
     for pair in plan['comparisons']:
         ident = pair['comparison_id']
         paths = [REPO / '.runtime-work' / ('c153046-saved-proof-' +
-                 case.removeprefix(ROOT.name + '__') + '-v3') / 'v0001/analysis'
+                 case.removeprefix(ROOT.name + '__') + '-v4') / 'v0001/analysis'
                  for case in pair['case_ids']]
         command = [str(REPO / '.venv-cpu/bin/python'), str(SCRIPT), '--comparison', ident,
                    '--left', str(paths[0]), '--right', str(paths[1])]

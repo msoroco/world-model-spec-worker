@@ -18,6 +18,11 @@
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
         },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
+        },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
@@ -39,18 +44,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "220e296522cd5d13f3da333a80b514270dbf266d2a502a3fb375ab893f73e375",
             "log": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "220e296522cd5d13f3da333a80b514270dbf266d2a502a3fb375ab893f73e375"
           },
           "construction": "diagnostic/orientation_sweep-0000/construction-delivery-fallback1.json",
           "construction_sha256": "142a267c8cfca61e3171c618b582504880f455640e198c95f7b7b4450c4cef39",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0000/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "142a267c8cfca61e3171c618b582504880f455640e198c95f7b7b4450c4cef39",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0000/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "a944895a1f7460717095271f379155194f511d79050b4f5ce18a6ae8988d13c7",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -64,13 +69,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "4aab46a8773fcadc73c153310505db4ace0dddd2e559704373de26a9decc4182",
         "log": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "4aab46a8773fcadc73c153310505db4ace0dddd2e559704373de26a9decc4182"
       },
       "construction": "diagnostic/orientation_sweep-0000/construction-delivery.json",
       "construction_sha256": "20f9f1744b8695de98ced6425d930a60024a2e5ce4023056bb4aea6ff49a6a88",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0000-sweep-negative.log",
+        "negative_log_sha256": "f4d18353b34bf3cbdd543f0713ee6952fd76c584b12ffb4c18df62c17a5b8ac2",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0000-sweep-positive.log",
+        "test_log_sha256": "d5b22bea7f2ffe5bd3a209104861f989b60d483a5498e3b89df5a3f21a89fd35"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0000/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0000/measurement-contract.json",
@@ -88,8 +121,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0000/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "20f9f1744b8695de98ced6425d930a60024a2e5ce4023056bb4aea6ff49a6a88",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0000/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "b08353a6173e4f28e2598cc88437de1e348ab48d83b8d99cbf60c25f9e5ff28d",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -97,6 +130,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0000/physical-preparation.json",
         "sha256": "a30e73a33abfba6830a0d25eda2b7af80f24e13fb21565aaad032273d0385538"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0000/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "757aecde24d6d93810aa6894546a9d3627fda99eb2c5a62e8b5daaceb65203f2"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -116,6 +158,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -138,18 +185,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "0123583d0ecf9282192da2ad8851744b86f90190ed5209d8cb95b20ba2ea114e",
             "log": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "0123583d0ecf9282192da2ad8851744b86f90190ed5209d8cb95b20ba2ea114e"
           },
           "construction": "diagnostic/orientation_sweep-0001/construction-delivery-fallback1.json",
           "construction_sha256": "c2252c79e976af790716d075aa39974a2ad6e15f14f029b5aca8c779a22a42ec",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0001/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "c2252c79e976af790716d075aa39974a2ad6e15f14f029b5aca8c779a22a42ec",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0001/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "f9a6c0685dbd02c934dcfe8c1378ca074acb82a0da7bbbc088a38f638eff5592",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -163,13 +210,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "b9323eed14e44c9745d98d7adc520919148e398dbd8ff175c60dc4fcf205774d",
         "log": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "b9323eed14e44c9745d98d7adc520919148e398dbd8ff175c60dc4fcf205774d"
       },
       "construction": "diagnostic/orientation_sweep-0001/construction-delivery.json",
       "construction_sha256": "236cd361ffa30641a8b01c232ab2755ba2104573f7298cc81fc7639a2a1b64dc",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0001-sweep-negative.log",
+        "negative_log_sha256": "447f08709037dbd2ebbbb485d8b341ba8eaef5b503507a22313f110f0e98294d",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0001-sweep-positive.log",
+        "test_log_sha256": "ad4a8bc3fe5f9c9083958b023b4bfba8cb223a09eca06d3075a95715f7cd1030"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0001/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0001/measurement-contract.json",
@@ -187,8 +262,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0001/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "236cd361ffa30641a8b01c232ab2755ba2104573f7298cc81fc7639a2a1b64dc",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0001/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "650e099244706209fb102ca937cffad076569778b7e904b8edfaf628b950f683",
         "runtime_offline_log_sha256": "eabd5a34e81c4a0d6a32fd51360a6a5618d37376c8c5f354536fe85c53e730b6"
@@ -196,6 +271,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0001/physical-preparation.json",
         "sha256": "4a3abaa03cda75c9834be906d3d18fe0f34df9a98eca4144b790abbf9892802a"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0001/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "356df88d2ab46b79c1a112e2f9bd164ee2740d630fcde51dc880019a3c3a102b"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -215,6 +299,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -237,18 +326,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "fc2f18f307a72d334de1cc9750d11ee05bcd0bffa2ceb906fbe722a705c0a56e",
             "log": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "fc2f18f307a72d334de1cc9750d11ee05bcd0bffa2ceb906fbe722a705c0a56e"
           },
           "construction": "diagnostic/orientation_sweep-0002/construction-delivery-fallback1.json",
           "construction_sha256": "7aed14e014fccc33e5f5f45fc8dc3d56dfec9f425162c4a22dbee95f1ec0a9a3",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0002/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "7aed14e014fccc33e5f5f45fc8dc3d56dfec9f425162c4a22dbee95f1ec0a9a3",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0002/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "5fae16503571c5d0f9520057fae7e56fb480a552afdc6cea1ccb45f24a31fc43",
             "runtime_offline_log_sha256": "142c9237919d29d2980263df9740c25d80a346f07ec2bddb16a960664fccb3a9"
@@ -262,13 +351,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "aa2d2a9b38d2f89b20b0c7547ebc76832ea14087315bf26c763ee11049035002",
         "log": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "aa2d2a9b38d2f89b20b0c7547ebc76832ea14087315bf26c763ee11049035002"
       },
       "construction": "diagnostic/orientation_sweep-0002/construction-delivery.json",
       "construction_sha256": "dc05df5ba14ca921b9a01916bd8488c8ddf77597dddf31306c946fc673e4ad1f",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0002-sweep-negative.log",
+        "negative_log_sha256": "d4d1bb1bd5a2df10a21f11a97c63911ba63e3b6662673a08dd966f877323a0f8",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0002-sweep-positive.log",
+        "test_log_sha256": "794d2c321f27466d4124fe6688f7786987b8b326a0bfc5f1b43e3c4d7598a7a5"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0002/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0002/measurement-contract.json",
@@ -286,8 +403,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0002/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "dc05df5ba14ca921b9a01916bd8488c8ddf77597dddf31306c946fc673e4ad1f",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0002/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "5e019d1953116f9e80a28bb3eea7ba9be605b1e02b3dd56cb61d266d19ca2718",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -295,6 +412,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0002/physical-preparation.json",
         "sha256": "00c8ca8cb3136e613327c4bbd750ee4ad4981b2cf21c7ad68427eeac7ac58075"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0002/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "3f7939c0d94f9970ba7ef958e635bf989e4f65804e10887512d09930364a5907"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -314,6 +440,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -336,18 +467,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "063947cf267a7d8c2eb97346e8445454ac1c79b6a3de652c084d3f88cc946973",
             "log": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "063947cf267a7d8c2eb97346e8445454ac1c79b6a3de652c084d3f88cc946973"
           },
           "construction": "diagnostic/orientation_sweep-0003/construction-delivery-fallback1.json",
           "construction_sha256": "9421b01e5b85ec9d052553378cbb9b246ed4ea5ddfc7129e2ddd6a8014a4acc5",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0003/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "9421b01e5b85ec9d052553378cbb9b246ed4ea5ddfc7129e2ddd6a8014a4acc5",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0003/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "79f231a4bdec4459a1286ce9d46fc5a785cd06abac78c903dd54c131085da602",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -361,13 +492,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "c882744c63710ae53156763add19f3e4126f9013f29ba25c68d039dad89e4b05",
         "log": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "c882744c63710ae53156763add19f3e4126f9013f29ba25c68d039dad89e4b05"
       },
       "construction": "diagnostic/orientation_sweep-0003/construction-delivery.json",
       "construction_sha256": "a9a74cec57a2c6b8bddc21791fbba57af6624274e74a2afc80b7a53ed3d12842",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0003-sweep-negative.log",
+        "negative_log_sha256": "e35cd8db33444be15dc6c5cc07ecc4c1c01b76ccec42e3a418319b9535d00103",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0003-sweep-positive.log",
+        "test_log_sha256": "0ded5c33c140f74affab004888fd09aac4b431c646a5104c6a761956aa40fc5b"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0003/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0003/measurement-contract.json",
@@ -385,8 +544,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0003/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "a9a74cec57a2c6b8bddc21791fbba57af6624274e74a2afc80b7a53ed3d12842",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0003/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "ea2fddab98c5139657051d7851ab32a61105797589a2bb0348abca3ea2fc3a1b",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -394,6 +553,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0003/physical-preparation.json",
         "sha256": "4b14804ce932cdd5883b33564acc769c393957e96a7ff475b348e4447cd4098f"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0003/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "37b8f2d4e092f5bf258ff6de7a9f7f84cb7f186b1bf6ea298e5ba8b8d105d67f"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -413,6 +581,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -435,18 +608,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "71f6b24c59cf4f0fc5cdfda7acf92e9feaebf6596dadc55e55abcfb11b7bf423",
             "log": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "71f6b24c59cf4f0fc5cdfda7acf92e9feaebf6596dadc55e55abcfb11b7bf423"
           },
           "construction": "diagnostic/orientation_sweep-0004/construction-delivery-fallback1.json",
           "construction_sha256": "9eb20ba18a21ff07ae14244dcf602c18bf94fdb6c410c9ef0ae0cea9701f1ca2",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0004/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "9eb20ba18a21ff07ae14244dcf602c18bf94fdb6c410c9ef0ae0cea9701f1ca2",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0004/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "21415c629048ae72026206f20d3f577cd1d0354fcabd1a71f1bf818392caa8a2",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -460,13 +633,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "bdf98dbf325a7f09f5e5e3f366171a2d022d72a2cadd404b8ce300341182c7c0",
         "log": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "bdf98dbf325a7f09f5e5e3f366171a2d022d72a2cadd404b8ce300341182c7c0"
       },
       "construction": "diagnostic/orientation_sweep-0004/construction-delivery.json",
       "construction_sha256": "9e3ad704b74a73d8954b99fadba6b59b8d17441617b4d96ab9a3e0ee0e8d1830",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0004-sweep-negative.log",
+        "negative_log_sha256": "dfa09aa4bc02459b36d9ae2e82a4812b842d52497e2b0d92007c94a2cd383654",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0004-sweep-positive.log",
+        "test_log_sha256": "9dffd36ee524e601a1735ea8b50c81edf5c12f5ce807dc86e6825b42fea1860a"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0004/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0004/measurement-contract.json",
@@ -484,8 +685,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0004/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "9e3ad704b74a73d8954b99fadba6b59b8d17441617b4d96ab9a3e0ee0e8d1830",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0004/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "c6ced0dd106cecb8c2b2801818b4141a8695c2ea5156ff0c13889c3f65c9041e",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -493,6 +694,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0004/physical-preparation.json",
         "sha256": "510acd0358b1dbdc30cbfbc27e56664c57ada8b81a81df2c46832634651c1b64"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0004/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "c8723673d1e29d4fb60e67cd3a291063c08a04337bf2e86d3f6bb57fd2d6fbdb"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -512,6 +722,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -534,18 +749,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "2c6b8f4e404324b881a65f8d121f07b79b8350bae00bda01b3c55a81947f6b67",
             "log": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "2c6b8f4e404324b881a65f8d121f07b79b8350bae00bda01b3c55a81947f6b67"
           },
           "construction": "diagnostic/orientation_sweep-0005/construction-delivery-fallback1.json",
           "construction_sha256": "f61d5563cf277b94dd71a96c103181266f1b06c0b8e8f27b2f5b5614572a102e",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0005/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "f61d5563cf277b94dd71a96c103181266f1b06c0b8e8f27b2f5b5614572a102e",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0005/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "da71f9f2e13273f9a3ba51d83cba55785b01219ad40107eca58f9a2e070839c8",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -559,13 +774,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "17fa90f333ff24c34e290b30d20fb5a679c6326ed6467c1f6f17f5d8adfb1baa",
         "log": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "17fa90f333ff24c34e290b30d20fb5a679c6326ed6467c1f6f17f5d8adfb1baa"
       },
       "construction": "diagnostic/orientation_sweep-0005/construction-delivery.json",
       "construction_sha256": "941b275d206d8232022f0a037f25cef7a6c4e6653d2c609c44843aab08c8bdf0",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0005-sweep-negative.log",
+        "negative_log_sha256": "4bceac3ca586e2c96515ac48e0067d32493867b605579553151240dd005b7198",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0005-sweep-positive.log",
+        "test_log_sha256": "a26d8bd922c686a6c203729511b3162ba4957b753225f6043901d10c81dab267"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0005/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0005/measurement-contract.json",
@@ -583,8 +826,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0005/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "941b275d206d8232022f0a037f25cef7a6c4e6653d2c609c44843aab08c8bdf0",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0005/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "ea6aa7b2031d44b5ff04d5cc60b413d13a66a652990f8b96025487a55208e837",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -592,6 +835,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0005/physical-preparation.json",
         "sha256": "775370fae6f2bca91f9513ba29df2642e1511c919f97a2e6c7bd7730cb7ac262"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0005/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "23adeba06b2bbd49f5bab492e25441b63cc15798da5227f0f19615edbce9e9e6"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -611,6 +863,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -633,18 +890,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "d96b6c1b0d0b8b5b74cacb5222b0d6ecfd81e35a3015a876be6c1ee82943828b",
             "log": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "d96b6c1b0d0b8b5b74cacb5222b0d6ecfd81e35a3015a876be6c1ee82943828b"
           },
           "construction": "diagnostic/orientation_sweep-0006/construction-delivery-fallback1.json",
           "construction_sha256": "12dfbdfbefc0e6da61937584dcac97939090375943a1d35bc96e3052bb45b0c6",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0006/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "12dfbdfbefc0e6da61937584dcac97939090375943a1d35bc96e3052bb45b0c6",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0006/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "81dfcb064f82d022a63740c739f285dab490582149610639c29503ae7928dbde",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -658,13 +915,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "1fa769137b179703df57bbcb609b3cebd8da9c6f30eebda08f0094bfc9ae2b74",
         "log": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "1fa769137b179703df57bbcb609b3cebd8da9c6f30eebda08f0094bfc9ae2b74"
       },
       "construction": "diagnostic/orientation_sweep-0006/construction-delivery.json",
       "construction_sha256": "61b03dfa98dd25ff5a85bce3c8d2c4888250848bf6403014a40878d1f8c43c01",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0006-sweep-negative.log",
+        "negative_log_sha256": "e33c6ce7e792968adbf5012267e410a5abbeb7a8e8e5105d599a076b0780b960",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0006-sweep-positive.log",
+        "test_log_sha256": "7832123eebc4d2a33b89d724a0d5dfd0b4d547ec86d8fc412a08ea2a1e5853a9"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0006/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0006/measurement-contract.json",
@@ -682,8 +967,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0006/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "61b03dfa98dd25ff5a85bce3c8d2c4888250848bf6403014a40878d1f8c43c01",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0006/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "81ac2ea024e956bf38b8e5ab1439851cff2d48eb3ef9a0835a8096128b55934a",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -691,6 +976,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0006/physical-preparation.json",
         "sha256": "e99e9c8f1b3ca58eb162dc07ba89d37825d9b0247b3c2fd97e2305a9b7da4989"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0006/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "c109ff188484777e5828b786a018c91fef55fbef77e8ac23c030dbca0b3319f6"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -710,6 +1004,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -732,18 +1031,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "7ffb5426fa2dab95bd752496b0b3aebf060c1640a470d82d3d9bbf3247d9d09a",
             "log": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "7ffb5426fa2dab95bd752496b0b3aebf060c1640a470d82d3d9bbf3247d9d09a"
           },
           "construction": "diagnostic/orientation_sweep-0007/construction-delivery-fallback1.json",
           "construction_sha256": "1b8bbd95252582d0d93ed7c7812306f71f9d07b2bd6ef34c5a8ef17789db3ed9",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0007/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "1b8bbd95252582d0d93ed7c7812306f71f9d07b2bd6ef34c5a8ef17789db3ed9",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0007/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "18c468609b97dc630b5416be2967681aab0a8b1814eb63f08f3093ff11173f4e",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -757,13 +1056,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "30dd38d6d688e503eb0819407b71d2993a5d300be2358e6c588b51844a6076e8",
         "log": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "30dd38d6d688e503eb0819407b71d2993a5d300be2358e6c588b51844a6076e8"
       },
       "construction": "diagnostic/orientation_sweep-0007/construction-delivery.json",
       "construction_sha256": "9d46f59ee63214a70348ab375a59dec20d973d32de60966c57a13d3c656eae05",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0007-sweep-negative.log",
+        "negative_log_sha256": "a96ce7944cce7d8735890f531beb92d98f494947b5ec27052ae9885ef03a422e",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0007-sweep-positive.log",
+        "test_log_sha256": "33aef870dc2a0a37caeeee312ec2247db17327fe7bc95b9a0b686744c2b38886"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0007/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0007/measurement-contract.json",
@@ -781,8 +1108,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0007/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "9d46f59ee63214a70348ab375a59dec20d973d32de60966c57a13d3c656eae05",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0007/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "4a18f4bb48de8ec8edeeb9faf591623e543f334efdd42c5a5483b2b7661c8a98",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -790,6 +1117,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0007/physical-preparation.json",
         "sha256": "95ed7d037fca7bf6551b8340baad9cbd6d07822b82dca565ed9ee4de34813798"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0007/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "8d74044097ce4da83f471bc00221af467e9bc4179bc490829e745da973773ab1"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -809,6 +1145,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -831,18 +1172,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "2d87aabe876a8535152f422b1beab038db27a82e06d3aa04492bc4391d4e8ed4",
             "log": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "2d87aabe876a8535152f422b1beab038db27a82e06d3aa04492bc4391d4e8ed4"
           },
           "construction": "diagnostic/orientation_sweep-0008/construction-delivery-fallback1.json",
           "construction_sha256": "e7bf0fb85848ee78c81a48bed421a3d2c594a4fbacea114b24b0c9f42ce785dc",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0008/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "e7bf0fb85848ee78c81a48bed421a3d2c594a4fbacea114b24b0c9f42ce785dc",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0008/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "1843eae0ba1379b7ef3d45c320dd132593579e433e4f9cde01c2544204d80428",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -856,13 +1197,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "7f733ea253e36d596e618cdbacffc5f618566dde48711aab71480f9aaab228d4",
         "log": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "7f733ea253e36d596e618cdbacffc5f618566dde48711aab71480f9aaab228d4"
       },
       "construction": "diagnostic/orientation_sweep-0008/construction-delivery.json",
       "construction_sha256": "760f410278f4a8c1b7473d1d1ade02e870e140db7e6737aa242f60aca50ed609",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0008-sweep-negative.log",
+        "negative_log_sha256": "1c101f58dbab3a07dc62353fca80434c6457bfa75a44957599f7083b8b74a66e",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0008-sweep-positive.log",
+        "test_log_sha256": "33645c502101947a754c938ec4e398bd86723380e5a60bca781572aed27fffe4"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0008/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0008/measurement-contract.json",
@@ -880,8 +1249,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0008/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "760f410278f4a8c1b7473d1d1ade02e870e140db7e6737aa242f60aca50ed609",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0008/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "70f677e1f7565fbe63820e5a146274e3a32ccecb94b5adbdad69c9a1cb2c7597",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -889,6 +1258,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0008/physical-preparation.json",
         "sha256": "d1e2389013b33c6b63ef565ec004c97fe5b73cfa06190d0f318cf17f3c9fa51b"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0008/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "1d979bb59b9ccc57b468769b7b3395a7eedc8c3a26bdc6cc63e85a0300e33adb"
       },
       "preparation_status": "source_gated_cpu_construction"
     },
@@ -908,6 +1286,11 @@
           "entrypoint": "parking_native_capture.py",
           "evidence": "Original vehicle body vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl",
           "method": "capture_frame"
+        },
+        "parallel_deviation_deg": {
+          "entrypoint": "parking_analysis.py",
+          "evidence": "Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl",
+          "method": "analyze"
         },
         "speed_m_s": {
           "entrypoint": "parking_native_capture.py",
@@ -930,18 +1313,18 @@
             "approach_distance_m: 8.0 to 6.0"
           ],
           "compatibility": {
-            "receipt": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-compatibility-sweep-v3.json",
-            "sha256": "86f9645aabc3d01e9ce697bb4861ee69defb5f25f6d309a93faae70967bb574e",
             "log": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-compatibility-analysis-sweep-v3.log",
-            "negative_log": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-negative-analysis-sweep-v3.log"
+            "negative_log": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-negative-analysis-sweep-v3.log",
+            "receipt": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-compatibility-sweep-v3.json",
+            "sha256": "86f9645aabc3d01e9ce697bb4861ee69defb5f25f6d309a93faae70967bb574e"
           },
           "construction": "diagnostic/orientation_sweep-0009/construction-delivery-fallback1.json",
           "construction_sha256": "22e2b6c3835a4eb586643e3b77f211db6bf99ca10b40c09c38f0a85b86da36be",
           "id": "fallback1",
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0009/fallback1/offline",
-            "exit_code": 0,
             "construction_sha256": "22e2b6c3835a4eb586643e3b77f211db6bf99ca10b40c09c38f0a85b86da36be",
+            "exit_code": 0,
             "log": "diagnostic/orientation_sweep-0009/cpu-delivery-fallback1-offline-sweep-v3.log",
             "log_sha256": "b77851a49312c64f3d647656ebc013bdeb0f2f5e637bef06f77a2c296d54cdd0",
             "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -955,13 +1338,41 @@
       ],
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009",
       "compatibility": {
-        "receipt": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-compatibility-sweep-v3.json",
-        "sha256": "e8fdf0e10329923a557a76ae216a32a9c07ade9d0ca09782eac0f2f2fbf25b74",
         "log": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-compatibility-analysis-sweep-v3.log",
-        "negative_log": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-negative-analysis-sweep-v3.log"
+        "negative_log": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-negative-analysis-sweep-v3.log",
+        "receipt": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-compatibility-sweep-v3.json",
+        "sha256": "e8fdf0e10329923a557a76ae216a32a9c07ade9d0ca09782eac0f2f2fbf25b74"
       },
       "construction": "diagnostic/orientation_sweep-0009/construction-delivery.json",
       "construction_sha256": "063d79e5c39e97257b203299eb13fa808c7acc48d762153f4ea368bf4d5075c4",
+      "delivery_acceptance": {
+        "canonical_manifest_bound": true,
+        "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/independent/prove_delivery_audit.py testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review missing or stale",
+        "negative_log": "independent/orientation_sweep-0009-sweep-negative.log",
+        "negative_log_sha256": "d06224c7d29da94c904e7d778b2964b50c94d6723c0678a7bc0e941e805558bb",
+        "original_capture_reviewed": false,
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "3624d683db6f284ed91b2227311172a6dd74c004d8d0f2da27eb77e993634096",
+        "sets": [
+          "full-test"
+        ],
+        "status": "diagnostic_cpu_protocol_only",
+        "test_exit_code": 0,
+        "test_log": "independent/orientation_sweep-0009-sweep-positive.log",
+        "test_log_sha256": "9717139ea5a84a520f072051a33bb70837e35b6c438da9b349912677954cb50d"
+      },
       "fixture_recipe": "work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/diagnostic/orientation_sweep-0009/saved-fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostic/orientation_sweep-0009/measurement-contract.json",
@@ -979,8 +1390,8 @@
       },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/sweep-manifest-draft.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150041-sweep-proof-v3/orientation_sweep-0009/primary/offline",
-        "exit_code": 0,
         "construction_sha256": "063d79e5c39e97257b203299eb13fa808c7acc48d762153f4ea368bf4d5075c4",
+        "exit_code": 0,
         "log": "diagnostic/orientation_sweep-0009/cpu-delivery-primary-offline-sweep-v3.log",
         "log_sha256": "536497dfbd350576b54f286a2267e49c64766bf88d5daaf67e2d4d601638032e",
         "runtime_offline_log_sha256": "d1e8f1022c77907ffb65a3b1d9903ad52c2b755f0f4293fdcb61478377704312"
@@ -988,6 +1399,15 @@
       "physical_preparation": {
         "receipt": "diagnostic/orientation_sweep-0009/physical-preparation.json",
         "sha256": "c90fe88a59fe1306962542753d87ba44727d988c6cb3166596a28b08c1211a37"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "synthetic saved-only CPU fixture; original capture unreviewed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "diagnostic/orientation_sweep-0009/cpu-delivery-saved-sweep-v1.log",
+        "test_log_sha256": "08ef2f7abca0ede1c37721d33d5f7e7338684db91cc2f157102211e435f798a5"
       },
       "preparation_status": "source_gated_cpu_construction"
     }

@@ -43,16 +43,19 @@ class CanonicalStageTests(unittest.TestCase):
             receipt_path = stage(rebound, staged)
             receipt = json.loads(receipt_path.read_text())
             manifest = json.loads((staged / 'execution-manifest.json').read_text())
-            self.assertEqual(len(receipt['constructions']), 12)
+            self.assertEqual(len(receipt['constructions']), 32)
             self.assertFalse(receipt['original_review_claimed'])
             self.assertFalse(receipt['delivery_ready_claimed'])
-            self.assertEqual(len(manifest['cases']), 6)
+            self.assertEqual(len(manifest['cases']), 16)
             for entry in manifest['cases']:
                 self.assertNotIn('offline', entry)
                 self.assertNotIn('compatibility', entry)
-                self.assertEqual(set(entry['acquisition']), {
+                expected = {
                     'body_vertices_xy_m', 'vehicle_forward_xy', 'speed_m_s',
-                    'control', 'camera_frame_map'})
+                    'control', 'camera_frame_map'}
+                if 'orientation_sweep-' in entry['case_id']:
+                    expected.add('parallel_deviation_deg')
+                self.assertEqual(set(entry['acquisition']), expected)
                 self.assertEqual(entry['acquisition']['body_vertices_xy_m']['method'],
                                  'capture_frame')
                 self.assertEqual(entry['acquisition']['camera_frame_map']['method'],
@@ -81,9 +84,9 @@ class CanonicalStageTests(unittest.TestCase):
             self.assertTrue(temporary_dirs)
             self.assertEqual(set(temporary_dirs), {ROOT.parents[1] / '.runtime-work'})
             self.assertEqual(installed, mirror / 'execution-manifest.json')
-            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('primary.json'))), 6)
-            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('fallback1.json'))), 6)
-            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('fixture-recipe.json'))), 6)
+            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('primary.json'))), 16)
+            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('fallback1.json'))), 16)
+            self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('fixture-recipe.json'))), 16)
             self.assertEqual(installed.parents[2], root / 'mirror')
             changed = root / 'changed-packet.json'
             changed.write_text('{}\n')

@@ -1,4 +1,4 @@
-"""Draft semantic stages preserve the exact law and six unresolved cases."""
+"""Canonical semantic stages preserve the exact law and sixteen unresolved cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -38,10 +38,12 @@ class SemanticProposalTests(unittest.TestCase):
         planned_ids = {case["case_id"] for case in plan["cases"]}
         proposed_ids = {case["case_id"] for case in proposal["cases"] if case["target_law_id"]}
         self.assertEqual(planned_ids, proposed_ids)
-        self.assertTrue(all(case["target_type"] == "boundary_probe" for case in
+        self.assertTrue(all(case["target_type"] in {"boundary_probe", "judgment_sweep"} for case in
                             proposal["cases"] if case["target_law_id"]))
         self.assertTrue(all(PHRASE in case["unresolved_judgment_calls"] for case in proposal["cases"]))
-        self.assertEqual(proposal["sweep_specs"][0]["status"], "incomplete")
+        self.assertEqual(proposal["sweep_specs"][0]["status"], "complete")
+        self.assertEqual(len([case for case in proposal['cases']
+                              if case['target_type'] == 'judgment_sweep']), 10)
         self.assertEqual(proposal["sweep_specs"][0]["target_law_id"], LAW)
         self.assertEqual(proposal["sweep_specs"][0]["axes"][0]["max"], 90)
         self.assertIn("synthetic", proposal["sweep_specs"][0]["provisional_cpu_feasibility"]["scope"])

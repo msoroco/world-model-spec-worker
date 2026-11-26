@@ -16,7 +16,8 @@ def _number(value, name):
 
 class RedLeftController:
     def __init__(self, case_id: str, variables: dict, site: dict,
-                 approach_hold_margin_m: float = 1.0):
+                 approach_hold_margin_m: float = 1.0,
+                 yield_release_delay_s: float = 0.0):
         self.case_id = case_id
         self.variables = variables
         self.site = site
@@ -41,7 +42,11 @@ class RedLeftController:
         self.approach_hold_margin_m = _number(approach_hold_margin_m, 'approach hold margin')
         if not 0.5 <= self.approach_hold_margin_m <= 3.0:
             raise ValueError('approach hold margin outside tested range')
+        self.yield_release_delay_s = _number(yield_release_delay_s, 'yield release delay')
+        if not 0.0 <= self.yield_release_delay_s <= 2.0:
+            raise ValueError('yield release delay outside tested range')
         self.stop_seen = False
+        self.last_conflict_time = None
         self.previous_frame = None
         self.previous_time = None
 
@@ -90,6 +95,8 @@ class RedLeftController:
             'traffic' if policy.startswith('traffic') else None)
         if target and not any(p['kind'] == target for p in participants):
             raise ValueError('case conflict participant absent')
+        if target in occupied:
+            self.last_conflict_time = time_s
         self.previous_frame, self.previous_time = frame, time_s
         if distance > self.approach_hold_margin_m:
             action = 'approach_stop_reference'
@@ -99,6 +106,10 @@ class RedLeftController:
                 self.stop_seen = True
         elif target in occupied and policy.endswith('yield'):
             action = 'hold_for_directed_conflict'
+        elif (target and policy.endswith('yield') and
+              self.last_conflict_time is not None and
+              time_s - self.last_conflict_time < self.yield_release_delay_s):
+            action = 'hold_for_directed_conflict_release'
         else:
             action = 'turn_left_request'
         return {'case_id': self.case_id, 'native_frame': frame, 'action': action,

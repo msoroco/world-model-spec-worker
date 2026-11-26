@@ -138,12 +138,15 @@ def expand_canonical_plan(proposal):
         raise ValueError('canonical sweep point count differs')
     if {case['sweep_point']['orientation_request_deg'] for case in expanded} != set(ANGLE_REQUESTS):
         raise ValueError('canonical sweep points differ')
+    for case in expanded:
+        case['recording_description'] = copy.deepcopy(spec['recording_description'])
     from parking_pose import SWEEP_REQUESTS
     for case in expanded:
         suffix = case['case_id'].split('__')[-1]
         if SWEEP_REQUESTS[suffix][3] != case['sweep_point']['orientation_request_deg']:
             raise ValueError('canonical sweep ID and requested pose differ')
     result['source_review_required'] = True
+    result['sweeps_expanded'] = True
     result['delivery_status'] = 'source_gated_cpu_plan'
     result['physical_realization_claimed'] = False
     result['legal_judgment'] = 'unresolved'

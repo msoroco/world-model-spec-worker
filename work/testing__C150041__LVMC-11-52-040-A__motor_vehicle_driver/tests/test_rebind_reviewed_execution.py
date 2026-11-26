@@ -25,7 +25,7 @@ class ReboundExecutionTests(unittest.TestCase):
         destination = self.root / 'rebound'
         manifest_path = rebind(packets['park'], packets['stand'], destination)
         manifest = json.loads(manifest_path.read_text())
-        self.assertEqual(len(manifest['cases']), 6)
+        self.assertEqual(len(manifest['cases']), 16)
         self.assertEqual(manifest['preparation_status'],
                          'review_and_cpu_proofs_pending')
         for case in manifest['cases']:

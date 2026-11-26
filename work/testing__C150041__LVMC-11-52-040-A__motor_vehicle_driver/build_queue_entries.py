@@ -12,22 +12,22 @@ BASE = ' --repo "$WORKER_REPO" --batch full-test-delivery --db "$DB" --assignmen
 
 def build() -> dict:
     plan = json.loads((ROOT / "case-plan.json").read_text())
-    draft = json.loads((ROOT / "native-draft-manifest.json").read_text())
-    acceptance = json.loads((ROOT / "delivery-acceptance.partial.json").read_text())
+    draft = json.loads((ROOT / "execution-manifest.json").read_text())
+    acceptance = json.loads((ROOT / "execution-manifest.json").read_text())
     expected = {entry["case_id"] for entry in plan["cases"]}
     entries = {entry["case_id"]: entry for entry in draft["cases"]}
-    contracts = {entry["case_id"] for entry in acceptance["cases"]}
+    contracts = {entry["case_id"] for entry in acceptance["cases"] if entry.get("delivery_acceptance")}
     pairs = {entry["comparison_id"] for entry in plan["comparisons"]}
-    if (len(expected) != 6 or expected != set(entries) or expected != contracts or
-            len(pairs) != 4 or pairs != {entry["comparison_id"] for entry in acceptance["comparisons"]}):
+    if (len(expected) != 16 or expected != set(entries) or expected != contracts or
+            len(pairs) != 7 or pairs != {entry["comparison_id"] for entry in plan["comparisons"]}):
         raise ValueError("exact C150041 queue coverage differs")
     cases = []
-    for case in sorted(expected):
+    for order, case in enumerate(sorted(expected), 1):
         execute = (LOCAL + " execute-delivery" + BASE + ' --run "$RUN" --case ' + case +
                    ' --job "$JOB_ID" --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"')
         candidates = [entry["id"] for entry in entries[case].get("candidates", [])]
         cases.append({
-            "assignment_id": AID, "case_id": case,
+            "order": order, "assignment_id": AID, "case_id": case,
             "prepare_command": LOCAL + " prepare-delivery" + BASE + " --case " + case,
             "candidate_commands": {candidate: LOCAL + " prepare-delivery" + BASE +
                                    " --case " + case + " --candidate " + candidate
@@ -50,7 +50,7 @@ def build() -> dict:
                                                 ' --output "$AUDIT"'),
             "accept_command": (LOCAL + " accept-delivery" + BASE + ' --run "$RUN" --case ' + case +
                                ' --job "$JOB_ID" --attempt "$ATTEMPT_NUMBER" --audit "$AUDIT"'
-                               ' --review-archive "$REVIEW_ARCHIVE"')})
+                               ' --review-archive /external/archive')})
     comparisons = []
     for entry in plan["comparisons"]:
         pair = entry["comparison_id"]
@@ -61,13 +61,11 @@ def build() -> dict:
                         ' --baseline-attempt "$BASELINE_ATTEMPT" --changed-attempt "$CHANGED_ATTEMPT"'
                         ' --baseline-delivery "$BASELINE_DELIVERY" --changed-delivery "$CHANGED_DELIVERY"'
                         ' --output "$COMPARISON_AUDIT"')})
-    return {"format": "worker-assignment-queue-entries-partial", "assignment_id": AID,
-            "cases": cases, "comparison_audit_commands": comparisons,
-            "batch_queue_complete": False, "original_attempts_reviewed": False,
-            "canonical_manifest_bound": False}
+    return {"format": "worker-assignment-queue-proposal", "assignment_id": AID,
+            "cases": cases, "comparison_audit_commands": comparisons}
 
 
 if __name__ == "__main__":
     packet = build()
-    (ROOT / "queue-entries.partial.json").write_text(json.dumps(packet, indent=2) + "\n")
-    print("six exact cases and four comparison commands authored as partial")
+    (ROOT / "queue-proposal.json").write_text(json.dumps(packet, indent=2) + "\n")
+    print("sixteen exact cases and seven comparison commands proposed")

@@ -1,4 +1,4 @@
-"""Emit draft canonical stage proposals for the exact parking law and six cases.
+"""Emit canonical source-gated stage proposals for sixteen parking cases.
 
 This is a structural proposal only. Local review and stage-plan adoption remain
 separate, and unresolved site/activity/exception facts are not asserted.
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from parking_scene import ASSIGNMENT
+from parking_pose import REQUESTS
 
 
 ROOT = Path(__file__).resolve().parent
@@ -151,6 +152,8 @@ def build():
               "recording_description": _recording(),
               "unresolved_judgment_calls": [PHRASE]}]
     for planned in plan["cases"]:
+        if planned['case_id'].split('__')[-1] not in REQUESTS:
+            continue
         suffix = planned["case_id"].removeprefix(ASSIGNMENT + "__")
         activity = planned["activity_request"]
         variable = ("orientation_request" if planned["orientation_request"] == "angled"
@@ -195,6 +198,35 @@ def build():
                                        "rationale": "A synthetic authored lane bounds a provisional engineering grid; the exact Native site and landmarks are still unreviewed.",
                                        "variable_assignments": _assign("park", "parallel", "lawful"),
                                        "recording_description": _recording()}]}
+    template['parameter_refs'].extend([
+        {'name': 'orientation_request_deg', 'kind': 'controller',
+         'range_or_domain': '0 to 90 degree engineering request; no legal cutoff'},
+        {'name': 'parallel_deviation_deg', 'kind': 'world_setup',
+         'range_or_domain': 'pending original measured body deviation; no legal cutoff'}])
+    bindings['variable_parameters'].extend([
+        {'name': 'orientation_request_deg', 'kind': 'controller',
+         'range_or_domain': '0 to 90 degree engineering request; no legal cutoff',
+         'used_by_laws': [LAW]},
+        {'name': 'parallel_deviation_deg', 'kind': 'world_setup',
+         'range_or_domain': 'pending original measured body deviation; no legal cutoff',
+         'used_by_laws': [LAW]}])
+    judgment['observable_requirements']['sweep_dimensions'][0]['name'] = 'parallel_deviation_deg'
+    import sys
+    sys.path.insert(0, str(ROOT.parents[1] / 'runtime'))
+    from controlled_orientation_sweep import expand_canonical_plan
+    proposal_cases = expand_canonical_plan(proposal_cases)
+    for case in proposal_cases['cases']:
+        assigned = case['variable_assignments']
+        if 'orientation_request_deg' not in assigned:
+            angle = 30 if assigned['orientation_request']['value'] == 'angled' else 0
+            assigned['orientation_request_deg'] = {
+                'kind': 'controller', 'note': 'Engineering request only; original body angle measured separately',
+                'value': angle}
+        assigned['parallel_deviation_deg'] = {
+            'kind': 'world_setup', 'note': 'Original body deviation measured after source-bound Native capture',
+            'value': 'pending_original_measurement'}
+        if case['case_id'].split('__')[-1] in ('park_angled_lawful', 'stand_angled_lawful'):
+            case['deliberate_differences'].append('orientation_request_deg')
     stages = {"relevance_batch": _write(directory, "relevance_batch.json", relevance),
               "relevance": _write(directory, "relevance.json", relevance),
               "template": _write(directory, "template.json", template),
@@ -203,7 +235,7 @@ def build():
               "cases": _write(directory, "cases.json", proposal_cases)}
     _write(directory, "semantic-index.json",
            {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT,
-            "stages": stages, "status": "draft_source_binding_and_sweep_pending",
+            "stages": stages, "status": "source_gated_cpu_delivery_protocol",
             "exception_inventory": {"path": "diagnostic/chapter-exception-inventory.json",
                                     "sha256": hashlib.sha256(exception_path.read_bytes()).hexdigest()}})
     return stages

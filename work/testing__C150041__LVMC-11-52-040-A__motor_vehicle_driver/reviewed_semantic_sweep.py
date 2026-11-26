@@ -23,7 +23,8 @@ def expand(proposal: dict, park_packet: Path, stand_packet: Path) -> dict:
     """Return an exact six-case, source-sealed categorical sweep proposal."""
     binding = bind(park_packet, stand_packet)
     selected = [case for case in proposal.get("cases", [])
-                if case.get("target_type") != "baseline"]
+                if case.get("target_type") != "baseline" and
+                case["case_id"].split("__")[-1] in REQUESTS]
     proposed = {case["case_id"]: case for case in selected}
     expected = {ASSIGNMENT + "__" + suffix for suffix in REQUESTS}
     if len(selected) != len(proposed) or set(proposed) != expected:
@@ -82,10 +83,12 @@ def bind_rebound(expanded: dict, rebound_dir: Path) -> dict:
     execution = json.loads(execution_path.read_text())
     sweep = expanded["sweep_specs"][0]
     rows = {row["case_id"]: row for row in sweep["case_measurements"]}
-    source_cases = {row["case_id"]: row for row in source["cases"]}
-    execution_cases = {row["case_id"]: row for row in execution["cases"]}
-    if (len(rows) != 6 or len(source_cases) != 6 or len(execution_cases) != 6 or
-            len(source["cases"]) != 6 or len(execution["cases"]) != 6 or
+    selected_source = [row for row in source["cases"] if row["case_id"] in rows]
+    selected_execution = [row for row in execution["cases"] if row["case_id"] in rows]
+    source_cases = {row["case_id"]: row for row in selected_source}
+    execution_cases = {row["case_id"]: row for row in selected_execution}
+    if (len(rows) != 6 or len(selected_source) != 6 or len(selected_execution) != 6 or
+            len(source_cases) != 6 or len(execution_cases) != 6 or
             set(rows) != set(source_cases) or set(rows) != set(execution_cases) or
             source.get("packet_sha256") != sweep["source_packets_sha256"] or
             source.get("native_map") != sweep["native_map"]):

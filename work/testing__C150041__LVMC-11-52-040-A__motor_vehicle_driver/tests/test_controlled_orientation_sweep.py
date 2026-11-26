@@ -71,7 +71,7 @@ class ControlledOrientationSweepTests(unittest.TestCase):
             measure_original(self.packet, self.packet.parent, history, '0' * 64)
 
     def test_pinned_canonical_expansion_is_ten_unlabeled_points(self):
-        proposal = json.loads((ROOT / 'proposals/cases.json').read_text())
+        proposal = json.loads((ROOT / 'proposals/six-case-proposal-pre-sweep.json').read_text())
         expanded = expand_canonical_plan(proposal)
         sweep = [case for case in expanded['cases'] if case['target_type'] == 'judgment_sweep']
         self.assertEqual(len(sweep), 10)

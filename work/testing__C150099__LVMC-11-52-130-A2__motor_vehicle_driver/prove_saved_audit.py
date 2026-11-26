@@ -20,11 +20,11 @@ def main() -> None:
     for entry in manifest['cases']:
         case_id = entry['case_id']
         suffix = case_id.removeprefix(ROOT.name + '__')
-        attempt = REPO / '.runtime-work' / ('c150099-saved-proof-' + suffix + '-v8/v0001/analysis')
+        attempt = REPO / '.runtime-work' / ('c150099-saved-proof-' + suffix + '-v9/v0001/analysis')
         report['cases'][case_id] = audit_saved_channels(attempt, case_id, allow_diagnostic=True)
     first = manifest['cases'][0]['case_id']
-    source = REPO / '.runtime-work/c150099-saved-proof-public_park_attended-v8/v0001/analysis'
-    tampered = REPO / '.runtime-work/c150099-saved-audit-tamper-v5'
+    source = REPO / '.runtime-work/c150099-saved-proof-public_park_attended-v9/v0001/analysis'
+    tampered = REPO / '.runtime-work/c150099-saved-audit-tamper-v6'
     if tampered.exists():
         raise ValueError('retain prior tamper fixture; choose a new version')
     shutil.copytree(source, tampered)

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -26,6 +27,9 @@ def write(name: str, value: dict) -> dict:
 
 
 def judgment(phrase: str, channel: str) -> dict:
+    sweep_name = ('stop_reference_front_signed_distance' if channel == 'pre_entry_stop'
+                  else 'directed_conflict_release_delay')
+    sweep_unit = 'm' if channel == 'pre_entry_stop' else 's'
     need = {'name': channel, 'unit': 'source record',
             'description': 'Source-bound original frame evidence for ' + phrase}
     return {'template_id': IDENT, 'phrase': phrase, 'note': '', 'status': 'draft',
@@ -33,8 +37,8 @@ def judgment(phrase: str, channel: str) -> dict:
                 'observables': [need],
                 'context_inputs': [{'name': 'reviewed_red_left_site_packet', 'unit': 'source record',
                                     'description': 'Reviewed official signal, route and stop boundary'}],
-                'sweep_dimensions': [{'name': 'conflict_response_request', 'unit': 'categorical',
-                                      'description': 'Requested response, observed independently'}],
+                'sweep_dimensions': [{'name': sweep_name, 'unit': sweep_unit,
+                                      'description': 'Original physical quantity measured independently of controller request'}],
                 'landmarks': [], 'recording_needs': [need],
                 'limitations': ['Reviewed exact Native site and original frames are required; '
                                 'no legal boundary is supplied.']}}
@@ -58,6 +62,10 @@ def main() -> None:
                       ('receiving_direction', 'world_setup', 'one-way left or two-way route'),
                       ('conflict_response_request', 'controller',
                        'clear, pedestrian yield/advance, traffic yield/advance'),
+                      ('stop_hold_margin_m', 'controller', '0.5 to 2.0 m engineering stop request'),
+                      ('yield_release_delay_s', 'controller', '0 to 1 s engineering hold request'),
+                      ('stop_reference_front_signed_distance', 'world_setup', 'pending original body measurement'),
+                      ('directed_conflict_release_delay', 'world_setup', 'pending original timing measurement'),
                       ('signal_request', 'world_setup', 'official steady red alone'))]
     phrase_stop = 'must stop before entering the crosswalk on the nearest side of the intersection'
     phrase_yield = 'must yield the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection'
@@ -88,7 +96,10 @@ def main() -> None:
                'variable_parameters': [{**row, 'used_by_laws': [LAW['id']]} for row in parameters]}
     refs['bindings'] = write('bindings.json', binding)
     cases = []
-    base = PLAN['cases'][0]['draft_variables']
+    base = dict(PLAN['cases'][0]['draft_variables'], stop_hold_margin_m=1.0,
+                yield_release_delay_s=0.0,
+                stop_reference_front_signed_distance='pending_original_measurement',
+                directed_conflict_release_delay='pending_original_measurement')
     def assignments(values):
         return {p['name']: {'kind': p['kind'], 'value': values[p['name']],
                             'note': 'Requested setup/control; original behavior measured separately'}
@@ -102,8 +113,10 @@ def main() -> None:
              'stopped_leftmost_traffic_yield': ('traffic_response', 'conflict_response_request'),
              'stopped_leftmost_traffic_advance': ('traffic_response', 'conflict_response_request')}
     for row in PLAN['cases']:
+        if row.get('sweep_id'):
+            continue
         suffix = row['case_id'].removeprefix(ROOT.name + '__')
-        values = row['draft_variables']
+        values = dict(base, **row['draft_variables'])
         pair, primary = pairs.get(suffix, (suffix + '_standard',
                                           next((name for name in base if values[name] != base[name]),
                                                'stop_request')))
@@ -118,22 +131,42 @@ def main() -> None:
                       'variable_assignments': assignments(values),
                       'unresolved_judgment_calls': [phrase_stop, phrase_yield],
                       'recording_description': RECORDING})
-    sweep_specs = [
-        {'sweep_id': 'stop_reference_source_review', 'target_law_id': LAW['id'],
-         'judgment_refs': [{'phrase': phrase_stop, 'note': ''}], 'status': 'incomplete',
-         'rationale': 'The physical stop reference and feasible approach geometry require reviewed original sources.',
-         'missing_inputs': ['Reviewed crosswalk/sign/marking hierarchy and original stop-reference geometry']},
-        {'sweep_id': 'directed_yield_source_review', 'target_law_id': LAW['id'],
-         'judgment_refs': [{'phrase': phrase_yield, 'note': ''}], 'status': 'incomplete',
-         'rationale': 'Pedestrian and traffic route conflicts require reviewed signal-directed geometry.',
-         'missing_inputs': ['Reviewed directed participant routes and original conflict-zone timing']},
-    ]
-    refs['cases'] = write('cases.json', {'cell_id': PLAN['cell_id'], 'actor': PLAN['actor'],
-        'status': 'draft', 'cases': cases, 'sweep_specs': sweep_specs,
-        'sweeps_expanded': True, 'semantic_status': 'partial_source_gated_judgment_sweeps'})
+    sweep_specs = []
+    for name, phrase, variable, observable, unit, start, stop, spacing, method, values in (
+        ('stop_reference_source_review', phrase_stop, 'stop_hold_margin_m',
+         'stop_reference_front_signed_distance', 'm', 0.5, 2.0, 0.75,
+         'Original front-body offset to the reviewed applicable stop reference at first zero-speed frame',
+         dict(base, stop_request='complete_stop', conflict_response_request='no_conflict')),
+        ('directed_yield_source_review', phrase_yield, 'yield_release_delay_s',
+         'directed_conflict_release_delay', 's', 0.0, 1.0, 0.5,
+         'Original time from sourced directed pedestrian conflict clearing to ego turn-entry request',
+         dict(base, stop_request='complete_stop', conflict_response_request='pedestrian_yield'))):
+        sweep_specs.append({'sweep_id': ROOT.name + '__' + name, 'target_law_id': LAW['id'],
+            'judgment_refs': [{'phrase': phrase, 'note': ''}], 'status': 'complete',
+            'mode': 'one_dimensional', 'rationale':
+            'Fixed engineering controller requests; actual body motion, applicable source and legal judgment require original review.',
+            'axes': [{'variable': variable, 'observable': observable, 'unit': unit,
+                      'min': start, 'max': stop, 'spacing': spacing,
+                      'measurement': {'method': method, 'time_window': 'original 20 Hz approach and turn episode',
+                                      'statistic': 'first'},
+                      'range_rationale': 'Bounded controller request supported by red_left_controller.py; no legal threshold is inferred.',
+                      'spacing_rationale': 'Physical increments exceed one 20 Hz frame and separate requested maneuvers; no legal boundary is inferred.',
+                      'feasibility_evidence': 'red_left_controller.py bounded request checks and source-gated synthetic diagnostic tests'}],
+            'landmarks': [], 'variable_assignments': assignments(values),
+            'recording_description': RECORDING,
+            'production_source_requirements': ['reviewed C153046 official signal and applicable stop-reference geometry',
+                'reviewed one-way lanes and directed participant routes',
+                'retained original 20 Hz Native body, signal, participant and camera frames']})
+    proposal = {'cell_id': PLAN['cell_id'], 'actor': PLAN['actor'], 'status': 'draft',
+        'cases': cases, 'sweep_specs': sweep_specs, 'sweeps_expanded': False,
+        'semantic_status': 'complete_source_gated_engineering_sweeps'}
+    sys.path.insert(0, str(REPO / 'runtime'))
+    from scenario_pipeline.batch_pipeline.sweeps import expand_sweeps
+    expand_sweeps(proposal, [template], binding)
+    refs['cases'] = write('cases.json', proposal)
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
         'assignment_id': ROOT.name, 'stages': refs,
-        'status': 'partial_source_gated_judgment_sweeps'})
+        'status': 'complete_source_gated_engineering_sweeps'})
     print('canonical source-gated semantic stages:', len(refs), 'cases:', len(cases))
 
 
