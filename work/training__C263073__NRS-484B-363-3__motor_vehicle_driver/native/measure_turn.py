@@ -5,6 +5,7 @@ import json
 import math
 from pathlib import Path
 from review_context import verified_sources
+from branch_cases import CASES,check_review
 
 FRAMES=600
 CAMERAS=('overview','approach','reference_corner','driver_reference')
@@ -42,6 +43,8 @@ def measure(attempt):
     if context.get('path_is_kinematic') is not False:
         raise ValueError('Physically driven original path required')
     review=verified_sources(attempt,context)
+    config=json.loads((attempt/'config.json').read_text())
+    branch=check_review(review,config['case_suffix'])
     if not isinstance(zone,dict) or any(type(zone.get(k)) not in (int,float) for k in ('x_min_m','x_max_m','y_min_m','y_max_m')):
         raise ValueError('Original zone extent missing')
     motions,frames=rows(motion_path),rows(frames_path)
@@ -55,18 +58,22 @@ def measure(attempt):
             raise ValueError('Original video frame/time join differs')
         if frame.get('camera_native_frames')!={name:native for name in CAMERAS}:
             raise ValueError('Original four-camera join differs')
-        ego=row.get('ego',{});person=row.get('other_person',{})
+        ego=row.get('ego',{});person=row.get('other_person')
         control=row.get('control')
         if row.get('kinematic_path_only') is not False or not isinstance(control,dict) or any(
             type(control.get(key)) not in (int,float) or not math.isfinite(control[key])
             for key in ('steer','throttle','brake')):
             raise ValueError('Original physical vehicle control missing')
-        point=xy(ego);person_point=xy(person);heading=ego.get('heading_deg')
+        point=xy(ego)
+        if branch['child_actor'] != (person is not None):
+            raise ValueError('Original child-actor presence differs from selected branch')
+        person_point=xy(person) if person is not None else None
+        heading=ego.get('heading_deg')
         if type(heading) not in (int,float) or not math.isfinite(heading):
             raise ValueError('Original heading missing')
         headings.append(heading);positions.append(point)
         if inside(point,zone):inside_frames.append(index)
-        if inside(person_point,zone):person_inside.append(index)
+        if person_point is not None and inside(person_point,zone):person_inside.append(index)
     for name in CAMERAS:
         if not (attempt/(name+'.mkv')).is_file():raise ValueError('Missing required source: '+name+'.mkv')
     cumulative=sum(abs(((b-a+180)%360)-180) for a,b in zip(headings,headings[1:]))

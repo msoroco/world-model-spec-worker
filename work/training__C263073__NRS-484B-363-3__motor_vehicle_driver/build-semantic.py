@@ -21,9 +21,17 @@ def write(name, value):
 
 
 def main():
-    cases_path = ROOT / 'proposals/cases.json'
-    cases = json.loads(cases_path.read_text())
-    cases['cases'] = [case for case in cases['cases'] if case['target_type'] != 'baseline']
+    manifest = json.loads((ROOT / 'draft-execution-manifest.json').read_text())
+    cases = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
+             'sweep_specs': [], 'sweeps_expanded': True, 'cases': []}
+    for entry in manifest['cases']:
+        source = json.loads((ROOT / entry['construction']).read_text())
+        config = json.loads(next(item['content'] for item in source['files'] if item['path'] == 'config.json'))
+        cases['cases'].append({'case_id': entry['case_id'], 'target_law_id': LAW,
+            'target_type': 'compliant_attempt' if config['case_suffix'] == 'controlled_1' or config['branch_context']['target_exception'] else 'violating_attempt',
+            'rationale': 'Retain original motion and independently sourced ' + config['branch_context']['context'] + ' school-zone context.',
+            'variable_assignments': {}, 'unresolved_judgment_calls': [],
+            'recording_description': source['recording_description']})
     construction = json.loads((ROOT / 'native/bundles/controlled_1/construction.json').read_text())
     description = construction['recording_description']
     judgments = [
@@ -119,14 +127,15 @@ def main():
         'recording_description': description}
     for case in cases['cases']:
         suffix = case['case_id'].rsplit('__', 1)[-1]
-        case['target_type'] = 'compliant_attempt' if suffix == 'controlled_1' else 'violating_attempt'
-        case['paired_probe_id'] = 'school_zone_u_turn_pair'
-        case['deliberate_differences'] = ['commanded_turn_path']
+        source = json.loads((ROOT / 'native/bundles' / suffix / 'construction.json').read_text())
+        config = json.loads(next(item['content'] for item in source['files'] if item['path'] == 'config.json'))
+        case['paired_probe_id'] = 'school_zone_full_law_comparisons'
+        case['deliberate_differences'] = ['commanded_turn_path', 'school_zone_context']
         case['variable_assignments'] = {
             'u_turn_request': {'kind': 'subject_behavior', 'value': None},
-            'commanded_turn_path': {'kind': 'controller', 'value': suffix},
-            'school_zone_context': {'kind': 'world_setup', 'value': 'independent_review_pending'}}
-        case['probe'] = {'primary_variable': 'commanded_turn_path',
+            'commanded_turn_path': {'kind': 'controller', 'value': 'turn' if config['branch_context']['turn'] else 'defer'},
+            'school_zone_context': {'kind': 'world_setup', 'value': config['branch_context']['context']}}
+        case['probe'] = {'primary_variable': 'commanded_turn_path' if suffix in ('controlled_1','controlled_2') else 'school_zone_context',
                          'comparison_or_standard': 'NRS 484B.363(3) U-turn prohibition',
                          'target_value_or_branch': suffix}
         case['deterministic_branch'] = branch

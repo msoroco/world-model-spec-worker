@@ -3,6 +3,7 @@ import hashlib
 import json
 import copy
 from pathlib import Path
+from branch_cases import CASES
 
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parent;ASSIGNMENT=ROOT.name
 CAMERAS=['overview','approach','reference_corner','driver_reference']
@@ -13,7 +14,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def build():
     entries=[]
-    for suffix in ('controlled_1','controlled_2'):
+    for suffix, branch in CASES.items():
         case_id=ASSIGNMENT+'__'+suffix
         description={'channels':[{'name':name,'unit':'structured' if name not in ('kin.heading','drv.within_signed_zone') else
                          ('deg' if name=='kin.heading' else 'boolean'),
@@ -32,12 +33,13 @@ def build():
             'pose_strategy':'ego-relative driver view' if name=='driver_reference' else
                 'fixed world view of original school-zone road and participants'} for name in CAMERAS]
         config={'case_id':case_id,'selected_case_id':case_id,
-            'supported_case_ids':[ASSIGNMENT+'__controlled_1',ASSIGNMENT+'__controlled_2'],
+            'supported_case_ids':[ASSIGNMENT+'__'+name for name in CASES],
             'case_suffix':suffix,'cell_id':'C263073','law_id':'NRS-484B-363-3',
             'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,'cameras':camera_specs,
             'required_atoms':[],'source_packets':[],
             'vehicle_blueprint':'vehicle.tesla.model3',
-            'target':'defer U-turn and continue' if suffix=='controlled_1' else 'physically driven U-turn target within authored zone'}
+            'target':'defer U-turn and continue' if not branch['turn'] else 'physically driven U-turn target within authored zone',
+            'branch_context':branch}
         config['case']={'case_id':case_id,'recording_description':description}
         config['physical_completion']=(
             {'criterion':'turn','motion_source':'native-motion.jsonl',
@@ -45,12 +47,12 @@ def build():
              'turn_degrees':180,'turn_tolerance_deg':30,
              'minimum_progress_m':5,'minimum_samples':20,
              'engineering_tolerances_not_legal':True,'context_sources':['school-context.json']}
-            if suffix=='controlled_2' else
+            if branch['turn'] else
             {'criterion':'travel_progress','motion_source':'native-motion.jsonl',
              'body_key':'ego.body_xy_m','minimum_progress_m':5,'minimum_samples':20,
              'engineering_tolerances_not_legal':True,'context_sources':['school-context.json']})
         files=[{'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
-        for name in ('layout.py','drive.py','runner.py','measure_turn.py','review_context.py','finalize.py',
+        for name in ('layout.py','drive.py','runner.py','branch_cases.py','measure_turn.py','review_context.py','finalize.py',
                      'tests/test_native.py','tests/test_drive.py','tests/test_review_context.py'):
             files.append({'path':name,'content':(HERE/name).read_text()})
         for name in ('assignment.json','witnesses.json'):

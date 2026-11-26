@@ -15,6 +15,7 @@ GENERATOR = REPO / 'work/training__C24758__LVMC-11-16-040__motor_vehicle_driver/
 sys.path.insert(0, str(ROOT / 'native'))
 from prove_saved import fixture
 from layout import open_drive
+from branch_cases import CASES
 
 
 def sha(path):
@@ -30,12 +31,12 @@ def write_rows(path, values):
 
 
 def build(suffix):
-    if suffix not in ('controlled_1', 'controlled_2'):
+    if suffix not in CASES:
         raise ValueError('Select one original case')
     scratch = REPO / '.runtime-work/c263073-owner' / ('fixture-shape-' + suffix)
     if scratch.exists():
         shutil.rmtree(scratch)
-    fixture(scratch, suffix == 'controlled_2')
+    fixture(scratch, CASES[suffix]['turn'], suffix=suffix)
     target = ROOT / 'diagnostic-source' / suffix
     target.mkdir(parents=True, exist_ok=True)
     source_names = ('acquisition-provenance.json', 'capture/evidence.jsonl',
@@ -107,5 +108,5 @@ def build(suffix):
 
 
 if __name__ == '__main__':
-    for selected in ('controlled_1', 'controlled_2'):
+    for selected in CASES:
         build(selected)

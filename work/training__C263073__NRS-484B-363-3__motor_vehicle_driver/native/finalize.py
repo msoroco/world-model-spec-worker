@@ -6,6 +6,7 @@ from pathlib import Path
 
 from measure_turn import CAMERAS, FRAMES, measure
 from review_context import EXCEPTIONS, EXCEPTION_TOPICS
+from branch_cases import CASES
 
 
 def sha(path):
@@ -69,7 +70,7 @@ def run(attempt, output):
         'drv.u_turn': [{'heading_deg': row['ego']['heading_deg'],
                         'body_xy_m': row['ego'].get('body_xy_m')} for row in raw],
         'kin.heading': [row['ego']['heading_deg'] for row in raw],
-        'ru.child': [{'person_xy_m': row['other_person']['center_xy_m'],
+        'ru.child': [{'person_xy_m': row['other_person']['center_xy_m'] if row['other_person'] is not None else None,
                       'identity_source_sha256': review['records']['child_identity']['sha256']} for row in raw],
         'dev.speed_limit_beacon': [{'configuration_source_sha256': review['records']['beacon_configuration']['sha256'],
                                     'light_source_sha256': review['records']['beacon_lights']['sha256']}] * FRAMES,
@@ -83,7 +84,7 @@ def run(attempt, output):
     evidence = [{'name': item['name'], 'unit': item['unit'],
                  'reference': 'channels/' + item['name'] + '.jsonl'}
                 for item in description['channels']]
-    requested = 180 if config['case_suffix'] == 'controlled_2' else 0
+    requested = 180 if CASES[config['case_suffix']]['turn'] else 0
     measured = observed['cumulative_absolute_heading_change_deg']
     target_check = {'target': 'engineering heading change target', 'requested': requested,
                     'measured': measured, 'method': 'original physical vehicle trajectory',

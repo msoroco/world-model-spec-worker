@@ -1,0 +1,346 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_native_review",
+  "cases": [
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "construction": "native/bundles/controlled_1/construction.json",
+      "construction_sha256": "9d6a6210ac280319e3c55889df06b83f040a9913ffcb81b6f07c6246835dc0d2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/controlled_1/fallback1-construction.json",
+          "construction_sha256": "54c14372aad30a4db0b55e84994cd30889cb1df2cd75a47e036d1e05dcbe8727",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "54c14372aad30a4db0b55e84994cd30889cb1df2cd75a47e036d1e05dcbe8727",
+            "command": "runtime.py offline --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1 --candidate fallback1",
+            "log": "native/controlled_1-fallback1-offline-v10.log",
+            "log_sha256": "9ffe68bb2f281325c726b2d4930568be0c8b2e0348bb34f124381eac96333312"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_1/fallback1/compatibility.json",
+            "sha256": "a1d8c590a68eec0c7bdc3d78a01279f1d7dc03686590211fbe8c289ebbb1681d",
+            "log": "proofs/controlled_1/fallback1/public-analysis.log",
+            "negative_log": "proofs/controlled_1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-controlled_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      },
+      "compatibility": {
+        "receipt": "proofs/controlled_1/primary/compatibility.json",
+        "sha256": "3d0fc652501b4ecfde14a04d1f19f69854b444c4c64fd5f39c4e2dae4c047d1a",
+        "log": "proofs/controlled_1/primary/public-analysis.log",
+        "negative_log": "proofs/controlled_1/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/controlled_1/primary/negative-analysis.log",
+        "log_sha256": "0b4d03ba7f80fea0aa89b8c2f1f5bf4384a84e386f3aac0359d366f60a8d653c"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9d6a6210ac280319e3c55889df06b83f040a9913ffcb81b6f07c6246835dc0d2",
+        "command": "runtime.py offline --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1 --candidate primary",
+        "log": "native/controlled_1-primary-offline-v10.log",
+        "log_sha256": "1eac94cfbf19c4b93f92f22eadb8c973c037e68b2ab074d39b11aeb13196076f"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/controlled_1/physical-preparation.json",
+        "sha256": "854d76aff3e44e73ca667837a7aa671b6d26f6fa6532158bff692c7e837b5464"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/execution-manifest.json --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "test_log": "proofs/controlled_1/saved.log",
+        "test_log_sha256": "1a08111804d9035aac50783dbd89573b077018d1876d0a768fc5f9e1e2bc22fe",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "python delivery_audit.py --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --processing $PROCESSING --output $AUDIT",
+        "negative_command": "python delivery_audit.py --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --processing $PROCESSING --output $AUDIT --diagnostic --omit-source school-context.json",
+        "negative_expected_error": "Missing source: school-context.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "4a6bc7533202de71ac2259250f58926c6b1edb6a54d569e6133456044298d99e",
+        "test_log": "proofs/controlled_1/delivery-audit-positive.log",
+        "test_log_sha256": "f2f66a0eb22b4c88e71591baea02e8fe29ff34ee14c5a34d9ea5e3af34e53118",
+        "test_exit_code": 0,
+        "negative_log": "proofs/controlled_1/delivery-audit-negative.log",
+        "negative_log_sha256": "89cc0f5f2658b5c238ebaad9700dcd8a35a108aff079b5870cad93358129ca65",
+        "negative_exit_code": 1
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "construction": "native/bundles/controlled_2/construction.json",
+      "construction_sha256": "03d7c19ee42e96e1284bda20b36e0036129429f695d211f7406389bb1b56e49a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/controlled_2/fallback1-construction.json",
+          "construction_sha256": "fee6a3128fb369a94ee9c7d71645c2489fc8fba26b1e42fb307aa7fd5c64be11",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "fee6a3128fb369a94ee9c7d71645c2489fc8fba26b1e42fb307aa7fd5c64be11",
+            "command": "runtime.py offline --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2 --candidate fallback1",
+            "log": "native/controlled_2-fallback1-offline-v10.log",
+            "log_sha256": "0023981c29528e9711cb95d6ff9b57c43ab61f06b0decff2858346a5eca202cf"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_2/fallback1/compatibility.json",
+            "sha256": "fa7c8469fe2c76db052c0c8d0cb33ab6dc4ab085ea76c39d67e9f153e8302058",
+            "log": "proofs/controlled_2/fallback1/public-analysis.log",
+            "negative_log": "proofs/controlled_2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      },
+      "compatibility": {
+        "receipt": "proofs/controlled_2/primary/compatibility.json",
+        "sha256": "25b76d5aa4fc143cf50b877eb81d1e55ff603e6a12574eff7b3013ac4c95bb95",
+        "log": "proofs/controlled_2/primary/public-analysis.log",
+        "negative_log": "proofs/controlled_2/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/controlled_2/primary/negative-analysis.log",
+        "log_sha256": "f0da288afc0e3aa77a17673099a9c2340ce18a8f4bc1bfc8c286b9b9e376a9c7"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "03d7c19ee42e96e1284bda20b36e0036129429f695d211f7406389bb1b56e49a",
+        "command": "runtime.py offline --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2 --candidate primary",
+        "log": "native/controlled_2-primary-offline-v10.log",
+        "log_sha256": "caf03e8cd9a7b28ec4d4c74a7ba874c9b389c3e19c6743108b69254e9ac51374"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/controlled_2/physical-preparation.json",
+        "sha256": "8169385fc77d7ba7fb4f91c6b2be589c6c400b1f43f63646a806f995c6812024"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/execution-manifest.json --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
+        "test_log": "proofs/controlled_2/saved.log",
+        "test_log_sha256": "526e7ba9410fdeba004aa54c14911c5c2ba077226283b25926078f234abe9bee",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "python delivery_audit.py --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --processing $PROCESSING --output $AUDIT",
+        "negative_command": "python delivery_audit.py --case training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --processing $PROCESSING --output $AUDIT --diagnostic --omit-source school-context.json",
+        "negative_expected_error": "Missing source: school-context.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "4a6bc7533202de71ac2259250f58926c6b1edb6a54d569e6133456044298d99e",
+        "test_log": "proofs/controlled_2/delivery-audit-positive.log",
+        "test_log_sha256": "14580dbbede380b708bb7ee9aba7f3f25cd0937ed361c9b35cd573d67300bf1d",
+        "test_exit_code": 0,
+        "negative_log": "proofs/controlled_2/delivery-audit-negative.log",
+        "negative_log_sha256": "89cc0f5f2658b5c238ebaad9700dcd8a35a108aff079b5870cad93358129ca65",
+        "negative_exit_code": 1
+      }
+    }
+  ]
+}

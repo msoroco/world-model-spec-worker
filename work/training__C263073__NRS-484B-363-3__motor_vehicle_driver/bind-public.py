@@ -13,7 +13,7 @@ def sha(path):
 
 
 def bind(suffix, candidate):
-    source = REPO / '.runtime-work/c263073-owner' / ('public-' + suffix + '-' + candidate + '-v4')
+    source = REPO / '.runtime-work/c263073-owner' / ('public-' + suffix + '-' + candidate + '-v5')
     target = ROOT / 'proofs' / suffix / candidate
     target.mkdir(parents=True, exist_ok=True)
     for name in ('compatibility.json', 'negative-analysis.log'):
@@ -40,7 +40,7 @@ def main():
         entry['negative'] = {'log': entry['compatibility']['negative_log'],
                              'log_sha256': sha(ROOT / entry['compatibility']['negative_log'])}
         for candidate, source in [('primary', entry)] + [(c['id'], c) for c in entry['candidates']]:
-            log = ROOT / 'native' / (suffix + '-' + candidate + '-offline-v9.log')
+            log = ROOT / 'native' / (suffix + '-' + candidate + '-offline-v10.log')
             source['offline'] = {'exit_code': 0,
                                  'construction_sha256': source['construction_sha256'],
                                  'command': 'runtime.py offline --case ' + entry['case_id'] +

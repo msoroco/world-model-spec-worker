@@ -64,7 +64,7 @@ for suffix, y, moving, machine, police in (
         graph['attributes']['observed_evidence'] = original
         graph['nodes'][0]['attributes']['vertex'] = [x, y, 0]
         graph['nodes'][0]['attributes']['threedbbox'] = body
-        other_x = round((-15 + time) if moving else 0, 3)
+        other_x = round(time if moving else 0, 3)
         poses.append({'native_frame': native, 'video_frame': i, 'time_s': time,
             'subject_id': 1,
             'subject_footprint_m': {'min_x': x-.9, 'max_x': x+.9, 'min_y': y-.35, 'max_y': y+.35},

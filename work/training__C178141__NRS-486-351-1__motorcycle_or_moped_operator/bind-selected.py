@@ -24,7 +24,8 @@ def main():
         'rel.bearing': ['actor-poses.jsonl', 'video_frames.jsonl'],
         'rel.longitudinal_overlap': ['actor-poses.jsonl', 'video_frames.jsonl'],
         'ru.motor_vehicle': ['lane-inventory.json', 'actor-poses.jsonl'],
-        'kin.velocity': ['actor-poses.jsonl', 'video_frames.jsonl']}
+        'kin.velocity': ['actor-poses.jsonl', 'video_frames.jsonl'],
+        'police_duty_context': ['duty-review.json', 'actor-poses.jsonl']}
     for entry in manifest['cases']:
         suffix = entry['case_id'].split('__')[-1]
         proof = HERE / 'proofs' / suffix

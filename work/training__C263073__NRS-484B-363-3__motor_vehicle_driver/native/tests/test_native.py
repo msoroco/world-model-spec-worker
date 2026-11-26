@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import layout
 import runner
+from branch_cases import CASES
 
 
 class SchoolTurnDraftTests(unittest.TestCase):
@@ -17,7 +18,8 @@ class SchoolTurnDraftTests(unittest.TestCase):
         config={'cell_id':'C263073','law_id':'NRS-484B-363-3',
             'case_suffix':'controlled_2','duration_s':30,'rate_hz':20,
             'cameras':[{'name':name,'width':width,'height':height} for name,width,height,*_ in runner.CAMERAS],
-            'vehicle_blueprint':'vehicle.tesla.model3'}
+            'vehicle_blueprint':'vehicle.tesla.model3',
+            'branch_context':CASES['controlled_2']}
         with patch.object(Path,'read_text',return_value=json.dumps(config)):
             value=runner.check()
         self.assertEqual(value['frame_count'],600)

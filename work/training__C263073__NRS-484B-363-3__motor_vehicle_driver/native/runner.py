@@ -9,6 +9,7 @@ import subprocess
 from layout import ZONE,TURN,check as layout_check,open_drive,planned_pose
 from drive import command
 from review_context import attach_original_review
+from branch_cases import CASES,check_review
 
 FRAMES=600
 CAMERAS=(('overview',1920,1080,-12,-18,25,-65),('approach',1280,720,-25,-12,8,-30),
@@ -17,8 +18,10 @@ CAMERAS=(('overview',1920,1080,-12,-18,25,-65),('approach',1280,720,-25,-12,8,-3
 
 def check():
     cfg=json.loads(Path('config.json').read_text())
-    if cfg['cell_id']!='C263073' or cfg['law_id']!='NRS-484B-363-3' or cfg['case_suffix'] not in ('controlled_1','controlled_2'):
+    if cfg['cell_id']!='C263073' or cfg['law_id']!='NRS-484B-363-3' or cfg['case_suffix'] not in CASES:
         raise ValueError('Exact assignment differs')
+    if cfg.get('branch_context') != CASES[cfg['case_suffix']]:
+        raise ValueError('Exact selected branch context differs')
     if cfg.get('vehicle_blueprint') not in ('vehicle.tesla.model3','vehicle.mini.cooper_s'):
         raise ValueError('Unexpected original vehicle blueprint')
     if cfg['duration_s']!=30 or cfg['rate_hz']!=20 or len(CAMERAS)!=4 or CAMERAS[0][1:3]!=(1920,1080):
@@ -53,6 +56,7 @@ def execute(output,host,port,review_source_dir):
     try:
         review_packet=json.loads((review_source_dir/'review.json').read_text())
         verified_sources(review_source_dir,review_packet)
+        check_review(review_packet['independent_review'],cfg['case_suffix'])
     except BaseException as exc:
         (output/'native-run-status.json').write_text(json.dumps({
             'errors':[{'pre_capture_source_error':str(exc)}],'frames':0},indent=2)+'\n')
@@ -93,11 +97,13 @@ def execute(output,host,port,review_source_dir):
             'physical_acceptance_claimed':False},indent=2)+'\n')
         pipeline_capture=PipelineCapture(client,ego,output,cfg['case_id'],
             visibility=False,required_observations=cfg.get('required_atoms',[]))
-        walker_bp=next((x for x in world.get_blueprint_library().filter('walker.pedestrian.*')),None)
-        if walker_bp is None:raise RuntimeError('Original pedestrian blueprint missing')
-        walker=world.try_spawn_actor(walker_bp,carla.Transform(carla.Location(x=4,y=7.5,z=1.2)))
-        if walker is None:raise RuntimeError('Original pedestrian spawn failed')
-        owned.append(walker)
+        walker=None
+        if cfg['branch_context']['child_actor']:
+            walker_bp=next((x for x in world.get_blueprint_library().filter('walker.pedestrian.*')),None)
+            if walker_bp is None:raise RuntimeError('Original pedestrian blueprint missing')
+            walker=world.try_spawn_actor(walker_bp,carla.Transform(carla.Location(x=4,y=7.5,z=1.2)))
+            if walker is None:raise RuntimeError('Original pedestrian spawn failed')
+            owned.append(walker)
         for name,width,height,x,y,z,pitch in CAMERAS:
             cbp=world.get_blueprint_library().find('sensor.camera.rgb')
             for key,value in (('image_size_x',width),('image_size_y',height),('fov',85),('sensor_tick',.05)):
@@ -111,7 +117,7 @@ def execute(output,host,port,review_source_dir):
         with (output/'native-motion.jsonl').open('x') as motion,FrameMap(output/'video_frames.jsonl') as frame_map:
             for index in range(FRAMES):
                 transform=ego.get_transform();velocity=ego.get_velocity()
-                control=command(index,cfg['case_suffix']=='controlled_2',
+                control=command(index,cfg['branch_context']['turn'],
                     (transform.location.x,transform.location.y),transform.rotation.yaw,
                     (velocity.x**2+velocity.y**2)**.5)
                 ego.apply_control(carla.VehicleControl(steer=control['steer'],
@@ -120,7 +126,7 @@ def execute(output,host,port,review_source_dir):
                 pipeline_capture.capture(native,index/20)
                 motion.write(json.dumps({'frame':native,'native_frame':native,'video_frame':index,'time_s':index/20,
                     'source_kind':'original_native','ego':actor_row(ego),
-                    'other_person':actor_row(walker),'control':control,
+                    'other_person':actor_row(walker) if walker is not None else None,'control':control,
                     'kinematic_path_only':False},allow_nan=False)+'\n')
                 camera_frames={}
                 for name,*_ in CAMERAS:

@@ -211,7 +211,7 @@
       "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-363-3",
       "target_type": "compliant_attempt",
-      "rationale": "Exercise original school-zone U-turn source branch",
+      "rationale": "Retain original motion and independently sourced active_prohibition school-zone context.",
       "variable_assignments": {
         "u_turn_request": {
           "kind": "subject_behavior",
@@ -219,11 +219,11 @@
         },
         "commanded_turn_path": {
           "kind": "controller",
-          "value": "controlled_1"
+          "value": "defer"
         },
         "school_zone_context": {
           "kind": "world_setup",
-          "value": "independent_review_pending"
+          "value": "active_prohibition"
         }
       },
       "unresolved_judgment_calls": [
@@ -317,9 +317,10 @@
           "No legal heading threshold or presence radius is adopted"
         ]
       },
-      "paired_probe_id": "school_zone_u_turn_pair",
+      "paired_probe_id": "school_zone_full_law_comparisons",
       "deliberate_differences": [
-        "commanded_turn_path"
+        "commanded_turn_path",
+        "school_zone_context"
       ],
       "probe": {
         "primary_variable": "commanded_turn_path",
@@ -372,7 +373,7 @@
       "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-363-3",
       "target_type": "violating_attempt",
-      "rationale": "Exercise original school-zone U-turn source branch",
+      "rationale": "Retain original motion and independently sourced active_prohibition school-zone context.",
       "variable_assignments": {
         "u_turn_request": {
           "kind": "subject_behavior",
@@ -380,11 +381,11 @@
         },
         "commanded_turn_path": {
           "kind": "controller",
-          "value": "controlled_2"
+          "value": "turn"
         },
         "school_zone_context": {
           "kind": "world_setup",
-          "value": "independent_review_pending"
+          "value": "active_prohibition"
         }
       },
       "unresolved_judgment_calls": [
@@ -478,14 +479,987 @@
           "No legal heading threshold or presence radius is adopted"
         ]
       },
-      "paired_probe_id": "school_zone_u_turn_pair",
+      "paired_probe_id": "school_zone_full_law_comparisons",
       "deliberate_differences": [
-        "commanded_turn_path"
+        "commanded_turn_path",
+        "school_zone_context"
       ],
       "probe": {
         "primary_variable": "commanded_turn_path",
         "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
         "target_value_or_branch": "controlled_2"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_a",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Retain original motion and independently sourced no_children_present school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "no_children_present"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_a"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_b",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Retain original motion and independently sourced non_session_day school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "non_session_day"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_b"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_c",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Retain original motion and independently sourced half_hour_operation_interval school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "half_hour_operation_interval"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_c"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_d",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Retain original motion and independently sourced class_hours_nonflashing_beacon school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "class_hours_nonflashing_beacon"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_d"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_e_reference",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "violating_attempt",
+      "rationale": "Retain original motion and independently sourced no_operational_beacon_sign_limit_in_effect school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "no_operational_beacon_sign_limit_in_effect"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_e_reference"
+      },
+      "deterministic_branch": {
+        "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+        "judgment_context": [
+          {
+            "phrase": "area designated as a school zone or school crossing zone",
+            "note": "Official designation and boundaries require independent source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "children present",
+            "note": "Identity and presence require independent original-source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is not in session",
+            "note": "Session day requires independent school records and civil time.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "school is no longer in operation",
+            "note": "Operation interval and statutory half hours require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "operational speed limit beacon",
+            "note": "Beacon configuration, class hours and flashing state require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          },
+          {
+            "phrase": "speed limit is not in effect",
+            "note": "Sign schedule and beacon condition require source review.",
+            "status": "not_exercised",
+            "reason": "Original source and legal review remain unresolved."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_e",
+      "target_law_id": "NRS-484B-363-3",
+      "target_type": "compliant_attempt",
+      "rationale": "Retain original motion and independently sourced no_operational_beacon_sign_limit_not_in_effect school-zone context.",
+      "variable_assignments": {
+        "u_turn_request": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "turn"
+        },
+        "school_zone_context": {
+          "kind": "world_setup",
+          "value": "no_operational_beacon_sign_limit_not_in_effect"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "area designated as a school zone or school crossing zone",
+        "children present",
+        "school is not in session",
+        "school is no longer in operation",
+        "operational speed limit beacon",
+        "speed limit is not in effect"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.zone_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.within_signed_zone",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "dev.speed_limit_beacon",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native motion plus independent source review",
+            "time_window": "full 30-second attempt",
+            "reference_frame": "Native frame",
+            "uncertainty": "physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Driven path remains physically unconfirmed until CARLA and original pixel review",
+          "Generic walker blueprint does not establish child identity or legal presence",
+          "Diagnostic zone outline is not official designation",
+          "No legal heading threshold or presence radius is adopted"
+        ]
+      },
+      "paired_probe_id": "school_zone_full_law_comparisons",
+      "deliberate_differences": [
+        "commanded_turn_path",
+        "school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "school_zone_context",
+        "comparison_or_standard": "NRS 484B.363(3) U-turn prohibition",
+        "target_value_or_branch": "exception_e"
       },
       "deterministic_branch": {
         "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",

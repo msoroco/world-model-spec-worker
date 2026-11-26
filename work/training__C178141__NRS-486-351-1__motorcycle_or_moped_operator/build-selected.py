@@ -15,7 +15,8 @@ CASES = (('probe_1', 'beside', 'stationary', 'motorcycle', False),
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CHANNELS = ('ru.subject', 'ru.motorcycle', 'ru.moped', 'st.lane_adjacency',
             'rel.occupies', 'drv.straddles_marking', 'rel.bearing',
-            'rel.longitudinal_overlap', 'ru.motor_vehicle', 'kin.velocity')
+            'rel.longitudinal_overlap', 'ru.motor_vehicle', 'kin.velocity',
+            'police_duty_context')
 SOURCES = ['road.xodr', 'lane-inventory.json', 'split-review.json',
            'classification-review.json', 'duty-review.json',
            'actor-poses.jsonl', 'video_frames.jsonl', 'overview.mkv']

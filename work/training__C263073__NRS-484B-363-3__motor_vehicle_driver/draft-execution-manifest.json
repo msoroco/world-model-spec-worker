@@ -8,7 +8,7 @@
       "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "native/bundles/controlled_1/construction.json",
-      "construction_sha256": "9d6a6210ac280319e3c55889df06b83f040a9913ffcb81b6f07c6246835dc0d2",
+      "construction_sha256": "e0e1366312ccd194fe81eb886961fa9a3887e700155aecd2aae995154d60660f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven turn may fail to track the narrow two-way road envelope"
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "native/bundles/controlled_1/fallback1-construction.json",
-          "construction_sha256": "54c14372aad30a4db0b55e84994cd30889cb1df2cd75a47e036d1e05dcbe8727",
+          "construction_sha256": "30c0b0a8af7c24831bb3abd5b8c57d686caaf818416b05174a4d6a2e95eb8b4f",
           "trigger": {
             "source": "original Native ego body and heading readback",
             "metric": "U-turn tracking and roadway containment after complete source review",
@@ -29,7 +29,7 @@
         }
       ],
       "delivery_readiness": "incomplete",
-      "measurement_contract": "measurement-contract.json",
+      "measurement_contract": "measurement-contract-controlled_1.json",
       "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-controlled_1.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -110,7 +110,7 @@
       "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "native/bundles/controlled_2/construction.json",
-      "construction_sha256": "03d7c19ee42e96e1284bda20b36e0036129429f695d211f7406389bb1b56e49a",
+      "construction_sha256": "1c8d04bc84a078c3563ef3f5b7d2698fe0371bf04e0ae4cd1880751a7f173271",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven turn may fail to track the narrow two-way road envelope"
@@ -119,7 +119,7 @@
         {
           "id": "fallback1",
           "construction": "native/bundles/controlled_2/fallback1-construction.json",
-          "construction_sha256": "fee6a3128fb369a94ee9c7d71645c2489fc8fba26b1e42fb307aa7fd5c64be11",
+          "construction_sha256": "a73dead7a563c6f1f91440bd952459a952c375f78882aae06343c725f9b3bf67",
           "trigger": {
             "source": "original Native ego body and heading readback",
             "metric": "U-turn tracking and roadway containment after complete source review",
@@ -131,8 +131,620 @@
         }
       ],
       "delivery_readiness": "incomplete",
-      "measurement_contract": "measurement-contract.json",
+      "measurement_contract": "measurement-contract-controlled_2.json",
       "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_a",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_a/construction.json",
+      "construction_sha256": "01747b0f2bfe4d1a1f986d86ce17c643a92812203b66c18679f6f4a2ef47b4fd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_a/fallback1-construction.json",
+          "construction_sha256": "5157f5a298ea99b13bbc16b1e84453ab4c84de1365d793b0e198a0beea238044",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_a.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_b",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_b/construction.json",
+      "construction_sha256": "6ed5ae11549050f3a88b24abfc8159d277f4fa355098ae087765ebad49c4cedc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_b/fallback1-construction.json",
+          "construction_sha256": "da98aac53647c0d0ac72ee2ec31b9f2fcab74b30e594036f8a0b60987263e859",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_b.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_c",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_c/construction.json",
+      "construction_sha256": "86fc9c0509048e4a7a166382941b2c6df27129e9a6badc69c828f667305b62a8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_c/fallback1-construction.json",
+          "construction_sha256": "97deea5b0b2f35211d4ff19fe4d612d6609f15ca07e7a3a35895562cb18add83",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_c.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_c.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_d",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_d/construction.json",
+      "construction_sha256": "aa01e070722249822c5006b753de12df02d0d04ba3522e0beff731d111c1ae8a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_d/fallback1-construction.json",
+          "construction_sha256": "f7334d70c37e33840b5754bba45abe03e3673a21a2d55948ead1c66e0e8f3a2c",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_d.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_d.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_e_reference",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_e_reference/construction.json",
+      "construction_sha256": "b37df937a49c86cbb417a05376f801789f8df22f6d761145cbd4782987aa582e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_e_reference/fallback1-construction.json",
+          "construction_sha256": "e5fa4b76583048e2794e7c581222b33cb5dfca36f707eb135c99c3a456a7efb5",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_e_reference.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_e_reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.within_signed_zone": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.u_turn": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "dev.speed_limit_beacon": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native motion plus independent source review",
+          "evidence": [
+            "native-motion.jsonl",
+            "school-context.json"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_e",
+      "kind": "delivery",
+      "construction": "native/bundles/exception_e/construction.json",
+      "construction_sha256": "918d56bde225e9136c42af7112c86d8041b0f01aa41e3164244cc42ac828b5a7",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original driven turn may fail to track the narrow two-way road envelope"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/exception_e/fallback1-construction.json",
+          "construction_sha256": "3dda0d034044d42377c306348c5d7e5b91a39123d8040d5e916856ff2a91e185",
+          "trigger": {
+            "source": "original Native ego body and heading readback",
+            "metric": "U-turn tracking and roadway containment after complete source review",
+            "failure_condition": "primary fails to complete the requested path within the authored envelope"
+          },
+          "changed_knobs": [
+            "vehicle blueprint Tesla Model 3 to Mini Cooper S for turn-radius tracking"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-contract-exception_e.json",
+      "fixture_recipe": "work/training__C263073__NRS-484B-363-3__motor_vehicle_driver/diagnostic-recipe-exception_e.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },

@@ -10,7 +10,8 @@ SOURCES = ('road.xodr', 'lane-inventory.json', 'split-review.json',
            'actor-poses.jsonl', 'video_frames.jsonl', 'overview.mkv')
 CHANNELS = ('ru.subject', 'ru.motorcycle', 'ru.moped', 'st.lane_adjacency',
             'rel.occupies', 'drv.straddles_marking', 'rel.bearing',
-            'rel.longitudinal_overlap', 'ru.motor_vehicle', 'kin.velocity')
+            'rel.longitudinal_overlap', 'ru.motor_vehicle', 'kin.velocity',
+            'police_duty_context')
 
 
 def required(root, name):
@@ -110,7 +111,11 @@ def split_observation(root):
                   'rel.bearing': {'subject_y_m': midpoint(subject), 'other_y_m': [midpoint(box) for box in others]},
                   'rel.longitudinal_overlap': {'with_lower': overlap(subject, lo), 'with_upper': overlap(subject, hi)},
                   'ru.motor_vehicle': {'actor_ids': inventory['other_vehicle_ids'], 'footprints_m': others},
-                  'kin.velocity': {'other_vehicle_speeds_mps': speeds, 'subject_xyz_m': pose.get('subject_xyz_m')}}
+                  'kin.velocity': {'other_vehicle_speeds_mps': speeds, 'subject_xyz_m': pose.get('subject_xyz_m')},
+                  'police_duty_context': {'officer_identity_source': duty['officer_identity_source'],
+                      'performance_of_duty_source': duty['performance_of_duty_source'],
+                      'officer_source_claim': duty['subject_is_police_officer'],
+                      'duty_performance_source_claim': duty['subject_performing_police_duty']}}
         for name, value in values.items():
             channels[name].append({'time_s': index / 20, 'value': value})
     intervals = []

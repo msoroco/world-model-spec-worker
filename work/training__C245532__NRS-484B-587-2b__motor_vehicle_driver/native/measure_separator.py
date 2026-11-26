@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 FRAMES=600
-CAMERAS=('overview','separator_side','entrance_view','traffic_view')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -41,7 +41,7 @@ def measure(attempt):
     if not isinstance(sep,dict) or sep.get('form')!='solid' or sep.get('color')!='white' or type(sep.get('y_m')) not in (int,float):
         raise ValueError('Original solid-white separator missing')
     motion,frames=rows(motion_path),rows(frames_path)
-    previous=-1;straddle=[];traffic_centers=[];lane_ids=set();last_outer=None
+    previous=-1;straddle=[];traffic_centers=[];lane_ids=set();last_outer=None;obstruction_distances=[]
     for index,(row,frame) in enumerate(zip(motion,frames)):
         native=row.get('native_frame')
         if type(native) is not int or native<=previous or frame.get('native_frame')!=native:
@@ -61,6 +61,14 @@ def measure(attempt):
         if lane not in (-1,-2):raise ValueError('Original lane readback differs')
         lane_ids.add(lane)
         if lane==-2:last_outer=index
+        obstruction=row.get('obstruction')
+        if obstruction is not None:
+            other=obstruction.get('center_xy_m')
+            if not isinstance(other,list) or len(other)!=2 or any(type(v) not in (int,float) or not math.isfinite(v) for v in other):
+                raise ValueError('Original obstruction center missing')
+            obstruction_distances.append(math.hypot(other[0]-center[0],other[1]-center[1]))
+    if bool(obstruction_distances)!=context.get('emergency_obstacle_requested'):
+        raise ValueError('Original emergency obstruction source differs')
     for name in CAMERAS:
         if not (attempt/(name+'.mkv')).is_file():raise ValueError('Missing required source: '+name+'.mkv')
     return {'format':'c245532-solid-white-separator-raw-geometry-v1','frame_count':FRAMES,
@@ -73,6 +81,8 @@ def measure(attempt):
         'source_context_review':{key:context[key] for key in review_keys},
         'vehicle_driver_scope_reviewed':context.get('vehicle_driver_scope_reviewed') is True,
         'emergency_necessity_reviewed':context.get('emergency_necessity_reviewed') is True,
+        'emergency_obstruction_present':bool(obstruction_distances),
+        'minimum_obstruction_center_distance_m':min(obstruction_distances) if obstruction_distances else None,
         'subsection_3_conditions_reviewed':context.get('subsection_3_conditions_reviewed') is True,
         'shoulder_permission_treated_as_crossing_authorization':False,
         'statutory_crossing_cutoff_adopted':False,'crossing_verdict':'unresolved',

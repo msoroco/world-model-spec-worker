@@ -20,7 +20,8 @@ class IndependentSchoolSourceTests(unittest.TestCase):
                                'reason': 'Synthetic fixture does not resolve legal applicability'}
                         for name in EXCEPTIONS}
         return {'independent_review': {'format': 'c263073-source-review-v1',
-                                       'records': records, 'exception_dispositions': dispositions}}
+                                       'records': records, 'exception_dispositions': dispositions,
+                                       'case_context': 'source_shape_fixture'}}
 
     def test_binds_all_five_exception_sources(self):
         with tempfile.TemporaryDirectory() as scratch:

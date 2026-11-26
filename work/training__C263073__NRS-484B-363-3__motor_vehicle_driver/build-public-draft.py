@@ -24,7 +24,7 @@ def main():
         case_id = entry['case_id']
         suffix = case_id.rsplit('__', 1)[-1]
         construction = json.loads((ROOT / entry['construction']).read_text())
-        entry['measurement_contract'] = 'measurement-contract.json'
+        entry['measurement_contract'] = 'measurement-contract-' + suffix + '.json'
         entry['fixture_recipe'] = str((ROOT / ('diagnostic-recipe-' + suffix + '.json')).relative_to(REPO))
         entry['measurement_procedure'] = {'entrypoint': 'finalize.py'}
         entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',

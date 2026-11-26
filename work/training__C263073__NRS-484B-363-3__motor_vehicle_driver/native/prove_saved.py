@@ -8,11 +8,16 @@ from layout import ZONE,TURN,planned_pose
 from measure_turn import CAMERAS,measure
 from review_context import REQUIRED, EXCEPTIONS, EXCEPTION_TOPICS
 from finalize import run as finalize_run
+from branch_cases import CASES
 
 
-def fixture(path,turn,reviewed=True):
+def fixture(path,turn,reviewed=True,suffix=None):
     path.mkdir()
-    bundle=Path(__file__).resolve().parent/'bundles'/('controlled_2' if turn else 'controlled_1')/'construction.json'
+    suffix = suffix or ('controlled_2' if turn else 'controlled_1')
+    branch = CASES[suffix]
+    if branch['turn'] != turn:
+        raise ValueError('Selected fixture turn target differs')
+    bundle=Path(__file__).resolve().parent/'bundles'/suffix/'construction.json'
     construction=json.loads(bundle.read_text())
     config=json.loads(next(item['content'] for item in construction['files'] if item['path']=='config.json'))
     (path/'config.json').write_text(json.dumps(config)+'\n')
@@ -27,14 +32,17 @@ def fixture(path,turn,reviewed=True):
         (path/'review-sources').mkdir()
         for topic in REQUIRED:
             source=path/'review-sources'/(topic+'.json')
-            source.write_text(json.dumps({'topic':topic,'synthetic_fixture':True})+'\n')
+            source.write_text(json.dumps({'topic':topic,'synthetic_fixture':True,
+                'case_context':branch['context']})+'\n')
             records[topic]={'topic':topic,'path':str(source.relative_to(path)),
                 'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
-                'reviewer':'synthetic-test','observation':'Synthetic shape fixture only'}
+                'reviewer':'synthetic-test',
+                'observation':'Synthetic '+branch['context']+' source shape only'}
         context['independent_review']={'format':'c263073-source-review-v1','records':records,
-            'exception_dispositions':{name:{'status':'unresolved',
+            'case_context':branch['context'],
+            'exception_dispositions':{name:{'status':'applies' if name == branch['target_exception'] else 'does_not_apply',
                 'source_topics':sorted(EXCEPTION_TOPICS[name]),
-                'reason':'Synthetic fixture does not resolve legal applicability'} for name in EXCEPTIONS}}
+                'reason':'Synthetic branch source shape only; legal verdict unresolved'} for name in EXCEPTIONS}}
     (path/'school-context.json').write_text(json.dumps(context)+'\n')
     with (path/'native-motion.jsonl').open('w') as motion,(path/'video_frames.jsonl').open('w') as frames,(path/'trace.jsonl').open('w') as trace:
         for index in range(600):
@@ -42,7 +50,7 @@ def fixture(path,turn,reviewed=True):
             body=[[x-1,y-1],[x+1,y-1],[x+1,y+1],[x-1,y+1]]
             motion.write(json.dumps({'frame':native,'native_frame':native,'video_frame':index,'time_s':index/20,
                 'ego':{'center_xy_m':[x,y],'heading_deg':heading,'body_xy_m':body},
-                'other_person':{'center_xy_m':[4,7.5]},
+                'other_person':{'center_xy_m':[4,7.5]} if branch['child_actor'] else None,
                 'control':{'steer':0.0,'throttle':0.0,'brake':0.0},
                 'kinematic_path_only':False})+'\n')
             frames.write(json.dumps({'carla_frame':native,'native_frame':native,'video_frame':index,'time_s':index/20,

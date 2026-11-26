@@ -16,7 +16,7 @@ def compare(stay, cross):
         if item.get('legal_verdict_claimed') is not False or item.get('physical_acceptance_claimed') is not False:
             raise ValueError('Unsupported legal or physical claim')
         if set(item.get('camera_video_sha256', {})) != {
-            'overview', 'separator_side', 'entrance_view', 'traffic_view'
+            'overview', 'approach', 'reference_corner', 'driver_reference'
         }:
             raise ValueError('Original four-camera source incomplete')
         if not all(item.get('source_sha256', {}).get(name) for name in (

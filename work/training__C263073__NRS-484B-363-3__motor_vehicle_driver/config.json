@@ -1,0 +1,145 @@
+{
+  "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+  "selected_case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+  "supported_case_ids": [
+    "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+    "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+  ],
+  "case_suffix": "controlled_1",
+  "cell_id": "C263073",
+  "law_id": "NRS-484B-363-3",
+  "actor": "motor_vehicle_driver",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 85,
+      "pose_strategy": "fixed world view of original school-zone road and participants"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "fixed world view of original school-zone road and participants"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "fixed world view of original school-zone road and participants"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "ego-relative driver view"
+    }
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "vehicle_blueprint": "vehicle.tesla.model3",
+  "target": "defer U-turn and continue",
+  "case": {
+    "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "dev.zone_sign",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.within_signed_zone",
+          "unit": "boolean",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.u_turn",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "kin.heading",
+          "unit": "deg",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "ru.child",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "dev.speed_limit_beacon",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.condition_in_effect",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        },
+        {
+          "name": "env.civil_time",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native motion plus independent source review",
+          "time_window": "full 30-second attempt",
+          "reference_frame": "Native frame",
+          "uncertainty": "physical and legal interpretation pending"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Driven path remains physically unconfirmed until CARLA and original pixel review",
+        "Generic walker blueprint does not establish child identity or legal presence",
+        "Diagnostic zone outline is not official designation",
+        "No legal heading threshold or presence radius is adopted"
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "native-motion.jsonl",
+    "body_key": "ego.body_xy_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 20,
+    "engineering_tolerances_not_legal": true,
+    "context_sources": [
+      "school-context.json"
+    ]
+  }
+}
