@@ -28,14 +28,17 @@ def prepare(folder, condition):
                'highway_centerline_anchor_xy_m': [0, 0], 'traffic_direction_xy': [1, 0]}
     write(folder / 'reviewed-road-source.json', context)
     side_y = 4 if condition == 'a' else -4
-    with (folder / 'walking-source.jsonl').open('x') as source, (folder / 'video_frames.jsonl').open('x') as frames:
+    with (folder / 'walking-source.jsonl').open('x') as source, (folder / 'video_frames.jsonl').open('x') as frames, (folder / 'trace.jsonl').open('x') as original:
         for i in range(FRAMES):
+            position = [20 - i * .02, side_y, .5]
             source.write(json.dumps({'video_frame': i, 'native_frame': i + 100, 'time_s': i / HZ,
                                      'pedestrian_id': 'ped-1', 'vehicle_id': 'veh-1',
-                                     'pedestrian_xy_m': [20 - i * .02, side_y],
+                                     'pedestrian_xy_m': position[:2],
                                      'vehicle_xy_m': [-30 + i * .04, -1.75],
                                      'pedestrian_heading_xy': [-1, 0]}) + '\n')
             frames.write(json.dumps({'video_frame': i, 'native_frame': i + 100, 'time_s': i / HZ}) + '\n')
+            original.write(json.dumps({'frame': i + 100, 'time_s': i / HZ,
+                                       'position_m': position, 'speed_mps': .4}) + '\n')
 
 
 def prove():

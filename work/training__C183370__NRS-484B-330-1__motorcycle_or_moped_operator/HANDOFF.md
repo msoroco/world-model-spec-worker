@@ -1,5 +1,13 @@
 # NRS-484B-330-1 at C183370
 
+## 2026-11-26 saved source numeric and identity hardening
+
+The source-bound saved meter now rejects nonfinite original time, motorcycle position, body vertices and speed, and changed motorcycle or flagger actor IDs across joined frames. The synthetic structural proof passes two positive and sixteen negative checks, including resealed NaN time/speed and changed actor ID for both exact drafts (`native/saved-source-shape-proof.json` SHA-256 `46a7ca1b6ad182850a6362b7d939882be0b6057d014a78f6e6689c5874077095`). Eight focused construction tests and the assignment-scoped partial `--complete` check pass. The construction and original-source selection status remains partial.
+
+## 2026-11-26 encoder-error restoration hardening
+
+Native cleanup now catches encoder poll/kill/wait errors as well as PipelineCapture close errors, then attempts actor cleanup and world restoration before re-raising the first cleanup failure. An eighth fake-world test injects encoder kill failure and verifies restoration still runs. Eight focused construction tests pass (`native/request-tests.log` SHA-256 `ffb0e0ec488505373c7d96f825cd3299b95e42eb990d2137fe8b00abd195c74e`). Both changed-runner exact draft offline checks pass on pinned current runtime (manifest SHA-256 `c346180559c762618e8d15bdddb9ebe4d6045c84efd801e7e81a27effc3d459c`; offline proof SHA-256 `03dcc960a81e3d10d810659fec8d90c85a6ee13cf108bea6b0c89f60568a01f6`). This is a prospective lifecycle CPU proof, not an original Native capture or selected delivery.
+
 ## 2026-11-26 cleanup restoration CPU proof
 
 The prospective Native runner now attempts encoder/actor cleanup and world restoration even when PipelineCapture.close raises. A focused fake-world test asserts the cleanup order and preserved close failure; seven construction tests pass (`native/request-tests.log` SHA-256 `3d97aa8bb097259717ea457098efd4ebae6b49b53def1267f1e8ae8233fe9d65`). The changed runner was rebound into both exact draft constructions and both pinned current-runtime offline checks pass. Draft manifest SHA-256 `e12e997664bfbbfc9b6db564ff97c84388330e1888bcfbaacf96572eb6608214`; offline proof SHA-256 `07b74de5ebee166a6579826559f91cc65f7b85d5de7c9f8e8ec50bc60bac6e06`. Current-runtime verify, preflight and assignment-scoped partial `--complete` pass. No original Native capture or selected delivery is claimed.

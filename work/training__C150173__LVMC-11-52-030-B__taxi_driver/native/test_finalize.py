@@ -54,6 +54,7 @@ def fixture(folder):
                           'time_s': time_s, 'camera_native_frames': cameras})
         trace.append({'frame': frame, 'time_s': time_s})
         activity.append({'video_frame': index, 'native_frame': frame,
+                         'time_s': time_s,
                          'source_kind': 'synthetic_cpu_fixture',
                          'observed_door_open': False,
                          'observed_occupant_count': 1,

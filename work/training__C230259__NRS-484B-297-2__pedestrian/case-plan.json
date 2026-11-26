@@ -89,7 +89,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/a/construction.json",
-      "draft_native_construction_sha256": "13394fd17ccfcb1067a54dc63395d7e4fb6f0fc92a5f8fcdbaa9c0f5d5fb9624",
+      "draft_native_construction_sha256": "70e4c5b37b10cd00c8b469b722df3b5e9cb6d8f4d33c5dc4b31eb226edcd3867",
       "draft_native_offline_log": "native/draft-offline-a.log"
     },
     {
@@ -114,7 +114,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/b/construction.json",
-      "draft_native_construction_sha256": "ebce2fd092d68375f7126cab770bc08d51b173fac09a3f659512630012866a2a",
+      "draft_native_construction_sha256": "8a4bebcf0e3d42d9eeff21a0087581b8e339746ea6412ea374f95478d3be55b8",
       "draft_native_offline_log": "native/draft-offline-b.log"
     }
   ],
@@ -212,7 +212,8 @@
   "runtime_uncertainties": [
     "Original reviewed Native map packet is unavailable: authority, highway boundary, sidewalk inventory and subsection-6 context remain unverified.",
     "Physical pedestrian travel, source camera visibility and composed primary video remain untested.",
-    "Selected execution manifest, canonical semantic proposals, exact positive/negative runtime compatibility, saved-only runtime process and independent delivery/comparison audit remain CPU work."
+    "Current PipelineCapture/SGG source path assumes a vehicle ego control and light interface; a live pedestrian Core graph needs a package-local compatible acquisition path or runtime capability update before selection.",
+    "Selected execution manifest, exact positive/negative runtime compatibility, saved-only runtime process, physical preparation and independent delivery audit remain CPU work."
   ],
   "source_observation_mapping": {
     "ru.subject": {
@@ -301,5 +302,38 @@
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
   "readiness": "selected_requirement_measurement_draft",
   "physical_prerequisites": "Confirm absence of a sidewalk, pedestrian travel along highway, left-side occupancy and facing approaching traffic.",
-  "legal_interpretation_limit": "Subsection 6 obstruction bypass is an express exception and needs separate scope handling."
+  "legal_interpretation_limit": "Subsection 6 obstruction bypass is an express exception and needs separate scope handling.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "rate_hz": 20,
+    "frames": 600,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both highway sides, pedestrian path and approaching vehicle",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "opposite pedestrian heading and approach closing geometry",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "highway boundary and absence of sidewalk in reviewed survey",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle approach route and context behind subject",
+        "interval": "all 600 frames"
+      }
+    ],
+    "limits": [
+      "Original pixels and participant visibility require independent physical review.",
+      "Rendered black CPU diagnostic video establishes software decoding only."
+    ]
+  }
 }

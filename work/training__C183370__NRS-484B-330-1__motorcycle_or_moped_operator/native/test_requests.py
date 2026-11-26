@@ -134,6 +134,30 @@ class ConstructionTests(unittest.TestCase):
         self.assertEqual(events, [('close', False), 'kill', 'wait', 'stop',
                                   'destroy', ('restore', 'client', 'prior')])
 
+    def test_world_restoration_after_encoder_cleanup_error(self):
+        events = []
+
+        class Encoder:
+            def poll(self):
+                return None
+
+            def kill(self):
+                events.append('kill')
+                raise RuntimeError('forced encoder failure')
+
+        class Actor:
+            def destroy(self):
+                events.append('destroy')
+
+        def restore(client, prior):
+            events.append('restore')
+            return {'restored': True}
+
+        with self.assertRaisesRegex(RuntimeError, 'forced encoder failure'):
+            _cleanup_capture(None, {'overview': Encoder()}, [Actor()],
+                             'client', 'prior', True, False, restore)
+        self.assertEqual(events, ['kill', 'destroy', 'restore'])
+
 
 if __name__ == '__main__':
     unittest.main()

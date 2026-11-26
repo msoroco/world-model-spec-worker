@@ -75,13 +75,15 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
             purpose.get('observed_purpose') != config['requested_purpose']):
         raise ValueError('Observed taxi, curb, sign or passenger purpose differs')
     native = read_rows(attempt / 'yellow-zone-native.jsonl')
+    activity = read_rows(attempt / 'observed-passenger-activity.jsonl')
     frames = read_rows(attempt / 'video_frames.jsonl')
     trace = read_rows(attempt / 'trace.jsonl')
-    if not all(len(rows) == 600 for rows in (native, frames, trace)):
+    if not all(len(rows) == 600 for rows in (native, activity, frames, trace)):
         raise ValueError('Full 600-frame original source join required')
     start = datetime.fromisoformat(config['civil_start_local'])
-    active = stopped = body_in_yellow = 0
-    for i, (n, f, t) in enumerate(zip(native, frames, trace)):
+    active = stopped = body_in_yellow = door_open = 0
+    occupants = []
+    for i, (n, a, f, t) in enumerate(zip(native, activity, frames, trace)):
         frame = n.get('native_frame')
         expected_time = (i + 1) / 20
         if (n.get('video_frame') != i or f.get('video_frame') != i or
@@ -99,6 +101,16 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
                 not isinstance(n.get('taxi_actor_id'), int) or
                 not isinstance(n.get('passenger_proxy_id'), int)):
             raise ValueError('Original taxi/passenger identity missing')
+        if (a.get('video_frame') != i or a.get('native_frame') != frame or
+                a.get('source_kind') != expected_source_kind or
+                not math.isclose(a.get('time_s', -1), expected_time, abs_tol=1e-4) or
+                a.get('observed_purpose') != purpose['observed_purpose'] or
+                type(a.get('observed_door_open')) is not bool or
+                type(a.get('observed_occupant_count')) is not int or
+                a['observed_occupant_count'] < 0):
+            raise ValueError('Original passenger activity frame/source join differs')
+        door_open += a['observed_door_open']
+        occupants.append(a['observed_occupant_count'])
         civil = datetime.fromisoformat(n['civil_time_local'])
         if civil != start + timedelta(seconds=expected_time):
             raise ValueError('Original civil time join differs')
@@ -123,6 +135,10 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
             'yellow_zone_body_frames': body_in_yellow,
             'posted_active_stopped_frames': active,
             'observed_purpose': purpose['observed_purpose'],
+            'observed_door_open_frames': door_open,
+            'observed_occupant_count_first': occupants[0],
+            'observed_occupant_count_last': occupants[-1],
+            'observed_occupant_count_change': occupants[-1] - occupants[0],
             'taxicab_identity_reviewed': expected_source_kind == 'original_native',
             'sign_source_reviewed': expected_source_kind == 'original_native',
             'outside_hours_ordinary_rules_status': ordinary.get('review_status', 'unresolved'),

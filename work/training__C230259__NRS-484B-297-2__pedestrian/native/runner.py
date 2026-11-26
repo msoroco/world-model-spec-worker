@@ -30,7 +30,7 @@ def check(config):
     for camera in config['cameras']:
         if not all(camera.get(k) for k in ('width', 'height', 'fov_deg', 'pose_strategy', 'location_xyz_m', 'rotation_pyr_deg')) or camera.get('fps') != HZ:
             raise ValueError('Source camera geometry incomplete')
-    if config.get('source_packet_required') is not True or config.get('physical_completion') is not False or config.get('legal_verdict') is not None:
+    if config.get('source_packet_required') is not True or config.get('physical_completion') != {} or config.get('legal_verdict') is not None:
         raise ValueError('Source provenance and unknown outcome required')
     return {'case_id': config['case_id'], 'frames': FRAMES, 'rate_hz': HZ,
             'source_views': VIEWS, 'source_packet_required': True,
@@ -68,6 +68,7 @@ def execute(config, source_path, output_path, host, port):
     from worker_exchange.native_output import FrameMap, physical_result, write_result, seal_capture
     from worker_exchange.media import compose_four_views
     from pipeline_capture import PipelineCapture
+    from walker_capture_adapter import adapt
     import numpy as np
 
     def transform(data):
@@ -135,7 +136,8 @@ def execute(config, source_path, output_path, host, port):
         control = carla.WalkerControl(direction=carla.Vector3D(x=direction[0], y=direction[1], z=direction[2]),
                                       speed=packet['pedestrian_speed_mps'])
         (output / 'channels').mkdir()
-        capture = PipelineCapture(client, pedestrian, output, config['case_id'], required_observations=config.get('required_atoms', []))
+        capture_client, capture_ego = adapt(client, pedestrian)
+        capture = PipelineCapture(capture_client, capture_ego, output, config['case_id'], required_observations=config.get('required_atoms', []))
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
              (output / 'walking-source.jsonl').open('x', buffering=1) as walk_source, \
              (output / 'channels' / 'kin.position.jsonl').open('x', buffering=1) as position, \
@@ -162,8 +164,12 @@ def execute(config, source_path, output_path, host, port):
                 p_velocity = pedestrian.get_velocity()
                 v = vehicle.get_transform()
                 time_s = index / HZ
+                applied = pedestrian.get_control()
                 capture.capture(tick, time_s, extra={'video_frame': index, 'pedestrian_id': pedestrian.id,
-                                                     'vehicle_id': vehicle.id})
+                                                     'vehicle_id': vehicle.id,
+                                                     'walker_control': {'direction_xyz': [applied.direction.x, applied.direction.y, applied.direction.z],
+                                                                        'speed_mps': applied.speed, 'jump': applied.jump,
+                                                                        'vehicle_fields_applicable': False}})
                 frame_map.append(tick, time_s, native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds,
                                  source_rgb_sha256=pixel_hashes)
                 pose = [p.location.x, p.location.y, p.location.z]
@@ -198,7 +204,9 @@ def execute(config, source_path, output_path, host, port):
                   'recording_evidence': [{'name': 'kin.position', 'unit': 'm',
                                           'reference': 'channels/kin.position.jsonl'},
                                          {'name': 'kin.speed', 'unit': 'm/s',
-                                          'reference': 'channels/kin.speed.jsonl'}],
+                                          'reference': 'channels/kin.speed.jsonl'},
+                                         {'name': 'highway_boundary_source', 'unit': 'structured',
+                                          'reference': 'reviewed-road-source.json'}],
                   'realized_observables': {}}
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc), 'traceback': traceback.format_exc()}

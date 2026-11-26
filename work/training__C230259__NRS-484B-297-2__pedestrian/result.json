@@ -3,7 +3,7 @@
   "input_sha256": "a33c69092db333ca78af3708ea9b7cc8db9c54f18c954ff8c6266624dc14c0ff",
   "applied_update": 16,
   "status": "partial",
-  "reason": "Two side-only controlled drafts pass pinned offline; saved source finalizer, source packet checks and independent comparison audit pass CPU positive/negative fixtures. Selected semantic, runtime compatibility, saved processing and delivery audit remain CPU work; reviewed original map packet is absent.",
+  "reason": "Two corrected side-only drafts pass pinned offline; five semantic stages and both exact measurement contracts validate on the current runtime. Runner now streams and composes four original cameras, owns the pedestrian trace through PipelineCapture, and seals only after cleanup. The pinned PipelineCapture/SGG path still assumes a vehicle ego for control and lights, so original pedestrian Core capture cannot yet be represented honestly. Selected public compatibility, physical/saved/delivery receipts and a tested fallback remain CPU work.",
   "readiness_kind": "implementation_checkpoint",
   "counts": {
     "source_topics": 2,
@@ -42,16 +42,46 @@
       "proof_sha256": "ba65efcd32d151041e7ae367b24bb619803a0e18edbc6e550fd711851c114f4f"
     },
     {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a --output .runtime-work/c230259-297-2-seal-offline-a",
+      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a --output .runtime-work/c230259-297-2-offline-a-runner-v3",
       "exit_code": 0,
       "log": "native/draft-offline-a.log",
-      "log_sha256": "528aeeb27f576e0c4de381abe02f1852a7ecbf381b35d4814ce06b92cb8b8c3d"
+      "log_sha256": "4624b223d5871b303d4e9417bbb6a1e4eea63237d0adc2b7d6f2a41d28c76234"
     },
     {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b --output .runtime-work/c230259-297-2-seal-offline-b",
+      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b --output .runtime-work/c230259-297-2-offline-b-runner-v3",
       "exit_code": 0,
       "log": "native/draft-offline-b.log",
-      "log_sha256": "8da199a52ad2b5f8460bd2121afadff4d3302de5a0395b7b5ac974df79806fd8"
+      "log_sha256": "5d039e67fbdc5083343218c9d66eefa64592fe2358ed527a06028d5500aa6f7f"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B work/training__C230259__NRS-484B-297-2__pedestrian/native/validate_stage_contracts.py",
+      "exit_code": 0,
+      "log": "native/stage-contracts.log",
+      "sha256": "1a4c7d5ce2e93ecff5cf89ca211fa71e07dba38e34ab3ac5586eb3b25e27f310"
     }
-  ]
+  ],
+  "semantic_validation": {
+    "status": "passed_current_runtime",
+    "stage_count": 5,
+    "index_sha256": "f1c339a00604a114ba2148af90752e99a5c71805ff49263b0eef15929c0f7024"
+  },
+  "measurement_contract_validation": {
+    "status": "passed_current_runtime",
+    "case_ids": [
+      "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
+      "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b"
+    ],
+    "requirement_count_each": 3
+  },
+  "runner_repair": {
+    "source": "native/runner.py",
+    "sha256": "d741887c15f2a10d6e0e4dcf85cb2b31338f2e69a5924e72e41ccdc6e2a2e2a6",
+    "draft_construction_sha256": {
+      "a": "70e4c5b37b10cd00c8b469b722df3b5e9cb6d8f4d33c5dc4b31eb226edcd3867",
+      "b": "8a4bebcf0e3d42d9eeff21a0087581b8e339746ea6412ea374f95478d3be55b8"
+    },
+    "limits": [
+      "Pinned graph capture assumes a vehicle ego; walker live execution remains unproved."
+    ]
+  }
 }

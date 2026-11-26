@@ -39,6 +39,10 @@ def selected(source, desc):
     result['status'] = 'selected_cpu_proofs_pending'
     result['files'].append({'path': 'selected_finalize.py',
                             'content': (BASE / 'native/selected_finalize.py').read_text()})
+    config_file = next(item for item in result['files'] if item['path'] == 'config.json')
+    config = json.loads(config_file['content'])
+    config['case']['recording_description'] = desc
+    config_file['content'] = json.dumps(config, indent=2) + '\n'
     return result
 
 

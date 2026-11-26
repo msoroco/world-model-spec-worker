@@ -36,6 +36,7 @@ def main():
     runner = (source / 'runner.py').read_text()
     meter = (source / 'walking_side.py').read_text()
     finalizer = (source / 'saved_walking.py').read_text()
+    walker_adapter = (source / 'walker_capture_adapter.py').read_text()
     cases = []
     for condition in ('a', 'b'):
         case_id = CASE + condition
@@ -50,7 +51,7 @@ def main():
                             'time_window': 'entire 30-second source attempt',
                             'reference_frame': 'Native map coordinates',
                             'uncertainty': '50 ms sampling; physical motion review required'}],
-                       'context_inputs': [{'name': 'reviewed-road-source', 'unit': 'structured',
+                       'context_inputs': [{'name': 'highway_boundary_source', 'unit': 'structured',
                                            'method': 'Reviewed Native map boundary, sidewalk and subsection 6 packet'}],
                        'limitations': ['Highway authority, sidewalk inventory and obstruction context require external source review',
                                        'No fixture proves physical motion or legal compliance']}
@@ -63,13 +64,14 @@ def main():
                   'duration_s': 30, 'frames': 600, 'source_packet_required': True,
                   'source_packets': [], 'required_atoms': ['kin.position', 'kin.speed'],
                   'cameras': CAMERAS, 'recording_description': description,
-                  'physical_completion': False, 'legal_verdict': None}
+                  'physical_completion': {}, 'legal_verdict': None}
         test = '''import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check, _packet\n\nclass ExactDraft(unittest.TestCase):\n def setUp(self): self.config=json.loads(Path('config.json').read_text())\n def test_contract(self):\n  receipt=check(self.config)\n  self.assertEqual(receipt['frames'],600)\n  self.assertFalse(receipt['physical_completion'])\n  self.assertFalse(receipt['carla_contacted'])\n def test_negative(self):\n  for key,value in [('frames',599),('actor','driver'),('physical_completion',True),('source_packet_required',False)]:\n   bad=copy.deepcopy(self.config);bad[key]=value\n   with self.assertRaises(ValueError):check(bad)\n def test_no_unsourced_native(self):\n  with self.assertRaises(FileNotFoundError):_packet('missing-original-source.json',self.config)\n'''
         construction = {'case_id': case_id, 'cell_id': 'C230259', 'law_id': 'NRS-484B-297-2',
                         'actor': 'pedestrian', 'status': 'draft', 'entrypoint': 'runner.py',
                         'files': [{'path': 'runner.py', 'content': runner},
                                   {'path': 'walking_side.py', 'content': meter},
                                   {'path': 'saved_walking.py', 'content': finalizer},
+                                  {'path': 'walker_capture_adapter.py', 'content': walker_adapter},
                                   {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
                                   {'path': 'tests/test_offline.py', 'content': test}],
                         'recording_description': description,

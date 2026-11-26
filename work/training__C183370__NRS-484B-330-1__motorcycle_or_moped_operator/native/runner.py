@@ -69,16 +69,20 @@ def _read_review(path, library):
 def _cleanup_capture(pipeline, encoders, owned, client, prior, changed,
                      complete, restore_world):
     """Attempt world restoration even when capture finalization fails."""
-    close_error = None
+    cleanup_error = None
     if pipeline is not None:
         try:
             pipeline.close(confirmed=complete)
         except Exception as error:
-            close_error = error
+            cleanup_error = error
     for process in encoders.values():
-        if process.poll() is None:
-            process.kill()
-            process.wait()
+        try:
+            if process.poll() is None:
+                process.kill()
+                process.wait()
+        except Exception as error:
+            if cleanup_error is None:
+                cleanup_error = error
     for actor in reversed(owned):
         try:
             if hasattr(actor, 'stop'):
@@ -88,8 +92,8 @@ def _cleanup_capture(pipeline, encoders, owned, client, prior, changed,
             pass
     restoration = (restore_world(client, prior) if changed else
                    {'restored': True, 'world_unchanged': True})
-    if close_error is not None:
-        raise close_error
+    if cleanup_error is not None:
+        raise cleanup_error
     return restoration
 
 

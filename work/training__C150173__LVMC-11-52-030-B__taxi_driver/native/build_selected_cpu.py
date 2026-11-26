@@ -18,7 +18,7 @@ def write(path, data):
 
 
 def main():
-    draft = json.loads((BASE / 'native-draft-manifest.json').read_text())
+    draft = json.loads((BASE / 'selected-draft-manifest.json').read_text())
     case_plan = json.loads((BASE / 'case-plan.json').read_text())
     if len(draft['cases']) != 4 or len(case_plan['comparisons']) != 3:
         raise ValueError('Exact four-case taxi plan required')
@@ -59,8 +59,8 @@ def main():
         if not recipe_path.is_file():
             raise ValueError('Missing exact taxi CPU diagnostic recipe: ' + suffix)
         receipt_map = {}
-        for candidate, name in (('primary', 'primary'), ('fallback1', 'fallback')):
-            source = SCRATCH / f'offline-{suffix}-{name}-v10' / 'offline.log'
+        for candidate in ('primary', 'fallback1'):
+            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v13' / 'offline.log'
             if not source.exists() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact offline check: ' + suffix + ' ' + candidate)
             retained = BASE / 'native-selected' / suffix / (candidate + '-offline.log')

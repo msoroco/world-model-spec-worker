@@ -6,6 +6,7 @@ not decide whether an authorized, visible, governing flagger gave that signal.
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -55,13 +56,19 @@ def measure(attempt, case_id):
     stop_seen = release_seen = False
     stopped_frames_during_stop = 0
     body_crossed_during_stop = False
+    actor_ids = None
     for index, (row, mapping) in enumerate(zip(rows, frame_map)):
         frame = first_frame + index
+        identities = (row.get('motorcycle_actor_id'), row.get('flagger_actor_id'))
         if (row.get('source_kind') != 'original_native' or
                 row.get('video_frame') != index or
                 row.get('native_frame') != frame or
                 mapping.get('video_frame') != index or
                 mapping.get('native_frame') != frame or
+                not isinstance(row.get('time_s'), (int, float)) or
+                not math.isfinite(row['time_s']) or
+                not isinstance(mapping.get('time_s'), (int, float)) or
+                not math.isfinite(mapping['time_s']) or
                 abs(row.get('time_s', -1) - (index + 1) / 20) > .001 or
                 abs(mapping.get('time_s', -1) - row['time_s']) > .001 or
                 row.get('source_cameras') != {name: frame for name in CAMERAS} or
@@ -70,15 +77,22 @@ def measure(attempt, case_id):
                 not isinstance(row.get('motorcycle_actor_id'), int) or
                 not isinstance(row.get('flagger_actor_id'), int)):
             raise ValueError('Original motorcycle, flagger or camera frame join differs')
+        if actor_ids is None:
+            actor_ids = identities
+        elif identities != actor_ids:
+            raise ValueError('Original motorcycle or flagger actor identity changed')
         xyz = row.get('motorcycle_xyz_m')
         body = row.get('motorcycle_body_vertices_m')
         if (not isinstance(xyz, list) or len(xyz) != 3 or
-                any(not isinstance(v, (int, float)) for v in xyz) or
+                any(not isinstance(v, (int, float)) or not math.isfinite(v)
+                    for v in xyz) or
                 not isinstance(body, list) or len(body) != 8 or
                 any(not isinstance(vertex, list) or len(vertex) != 3 or
-                    any(not isinstance(v, (int, float)) for v in vertex)
+                    any(not isinstance(v, (int, float)) or not math.isfinite(v)
+                        for v in vertex)
                     for vertex in body) or
                 not isinstance(row.get('motorcycle_speed_mps'), (int, float)) or
+                not math.isfinite(row['motorcycle_speed_mps']) or
                 row['motorcycle_speed_mps'] < 0 or
                 abs(xyz[1] + 1.75) > 1.5):
             raise ValueError('Original supported motorcycle lane or motion missing')

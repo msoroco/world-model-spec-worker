@@ -1,5 +1,25 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 C183370 saved source hardening
+
+C183370's original-source meter now rejects resealed nonfinite time/speed and changed actor identity; two structural positives and sixteen negatives pass (proof SHA-256 `46a7ca1b6ad182850a6362b7d939882be0b6057d014a78f6e6689c5874077095`). Eight focused construction tests and scoped partial `--complete` pass. The pair remains unselected and partial pending source-reviewed flagger/zone/signal assets and selected CPU delivery chains.
+
+## 2026-11-26 C150142 long official compatibility interface
+
+C150142 retains 30 selected cases, 14 passing short public chains and 30 passing recorded-only saved chains. Its 16 long 36,120+ frame cases need a valid `capture/evidence.jsonl` of at least 6,912,820 bytes, exceeding the 2 MiB returned-file limit. The pinned materializer has no package-local pre-analysis expansion route for this source; analyzer-side expansion occurs after video preparation and Core consumption. The remaining 64 official long public positive/negative chains therefore lack receipts. Current runtime verify/preflight and scoped partial complete pass; exact strict rejects truthful partial. The owner recorded the source-sized interface prerequisite and moved to C229977. The C150142 status remains partial; no long public compatibility pass is claimed.
+
+## 2026-11-26 C183370 encoder-error restoration hardening
+
+The C183370 Native cleanup now also attempts world restoration after encoder cleanup errors. Eight focused CPU tests, including injected PipelineCapture and encoder failures, pass. Both exact changed-runner pinned offline checks pass (manifest SHA-256 `c346180559c762618e8d15bdddb9ebe4d6045c84efd801e7e81a27effc3d459c`; draft proof SHA-256 `03dcc960a81e3d10d810659fec8d90c85a6ee13cf108bea6b0c89f60568a01f6`). C183370 remains unselected and partial pending public/saved/semantic/delivery chains; no original Native or legal outcome is claimed.
+
+## 2026-11-26 C104538 turn-cell recheck
+
+The C104538 owner verified current runtime/preflight and scoped partial complete. Nine U-turn cases remain selected with unchanged current-runtime proofs. A source-bound audit of 1,243 frozen candidate cells found no actor-eligible supplemental binding for C102581 left-turn or C103714 right-turn branches; their staged cases therefore remain unselected. Electric class Native assets and original rider/device/sign pixels also remain source/physical review prerequisites. C104538 stays partial. The owner moved to C150142 to examine a package-local route for its long public fixture chains.
+
+## 2026-11-26 C227853 entry binding audit
+
+The C227853 owner retained 12 selected highway-start cases and completed a frozen-registry audit for the separate highway-entry branch. Of 1,243 candidate cells, three are `enter_road` and none is actor-eligible for `motor_vehicle_driver`; mutation negatives reject changed eligibility. Source-bound audit SHA-256 `d2a84014f5da8747222fe9f74f33006f3a6aca3459a98d8c13d95748f3d04d6b`. Current-runtime verify/preflight and assignment-scoped partial complete pass; the exact strict gate rejects truthful partial status. An authorized entry cell or source-hashed same-law reuse is required before those cases can be selected. C227853 stays partial, and the owner moved to C104538 U-turn work.
+
 ## 2026-11-26 CTO C109166 current-worktree strict recheck
 
 The lead reran `.venv-cpu/bin/python -B worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` on the present worktree. It exits 0 with `static_checks_passed: true`; the exact camera and duration plan remains present. This confirms the current worktree, not the older CTO clone. No C109166 package files were changed.

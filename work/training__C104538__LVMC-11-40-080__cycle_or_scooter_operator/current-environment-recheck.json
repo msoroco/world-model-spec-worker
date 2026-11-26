@@ -1,0 +1,26 @@
+[
+  {
+    "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
+    "exit_code": 0,
+    "stdout": "{\n  \"runtime_sources_verified\": true\n}",
+    "stderr": ""
+  },
+  {
+    "command": ".venv-cpu/bin/python runtime.py preflight",
+    "exit_code": 0,
+    "stdout": "{\n  \"python\": \"/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python\",\n  \"lake\": \"/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/elan/bin/lake\",\n  \"lean_toolchain\": \"leanprover/lean4:v4.28.0\",\n  \"cpu_preflight_passed\": true,\n  \"simulation_started\": false\n}",
+    "stderr": ""
+  },
+  {
+    "command": ".venv-cpu/bin/python worker_check.py --assignment training__C104538__LVMC-11-40-080__cycle_or_scooter_operator --complete",
+    "exit_code": 0,
+    "stdout": "{\n  \"batch_id\": \"full-train-delivery\",\n  \"reported\": [\n    \"training__C104538__LVMC-11-40-080__cycle_or_scooter_operator\"\n  ],\n  \"static_checks_passed\": true\n}",
+    "stderr": ""
+  },
+  {
+    "command": ".venv-cpu/bin/python worker_check.py --assignment training__C104538__LVMC-11-40-080__cycle_or_scooter_operator --complete --require-delivery-ready",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/worker_check.py\", line 30, in <module>\n    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/scenario_pipeline/worker_exchange/preparation.py\", line 267, in check\n    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')\n  File \"/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/scenario_pipeline/worker_exchange/preparation.py\", line 10, in require\n    raise ValueError(message)\nValueError: Preparation acceptance failed: partial/missing packages remain"
+  }
+]
