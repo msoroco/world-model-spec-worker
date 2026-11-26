@@ -14,7 +14,16 @@ REPO = HERE.parent.parent
 SOURCE_FILES = ("runner.py", "curb_entry.py", "reviewed_scene.py",
                 "native_adapter.py", "delivery_audit.py", "comparison_audit.py",
                 "process_recorded_only.py", "analysis.py")
-CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
+CAMERAS = [
+    {"name": "overview", "width": 1920, "height": 1080,
+     "pose_strategy": "source-reviewed curb, walker and vehicle envelope", "fov_deg": 90},
+    {"name": "approach", "width": 1280, "height": 720,
+     "pose_strategy": "source-reviewed approaching vehicle route", "fov_deg": 90},
+    {"name": "reference_corner", "width": 1280, "height": 720,
+     "pose_strategy": "source-reviewed curb and roadway boundary", "fov_deg": 90},
+    {"name": "driver_reference", "width": 1280, "height": 720,
+     "pose_strategy": "source-reviewed driver vehicle sight line", "fov_deg": 90},
+]
 TEST = '''import json
 import unittest
 from runner import check_config
@@ -125,7 +134,11 @@ def main():
           {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
            "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
            "diagnostic_only": True, "cases": entries})
-    print("Built five exact source-gated diagnostic constructions")
+    root_construction = json.loads((HERE / "construction.json").read_text())
+    root_config = next(item["content"] for item in root_construction["files"]
+                       if item["path"] == "config.json")
+    (HERE / "config.json").write_text(root_config, encoding="utf-8")
+    print(f"Built {len(entries)} exact source-gated diagnostic constructions")
 
 
 if __name__ == "__main__":

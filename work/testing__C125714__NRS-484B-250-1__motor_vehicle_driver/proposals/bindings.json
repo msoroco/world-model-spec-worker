@@ -3,27 +3,71 @@
   "actor": "motor_vehicle_driver",
   "status": "draft",
   "established_contexts": [
-    "median opening",
-    "two crossing approach routes",
-    "other vehicle candidate"
+    "Median-opening and crossing route geometry is engineered in the seven selected cases; public-highway, device and driver site sources are required at Native launch and remain unreviewed here."
   ],
-  "law_refs": [],
-  "context_refs": [
+  "law_refs": [
     {
       "template_id": "NRS-484B-250-1@motor_vehicle_driver",
-      "missing_guards": [
-        "source-reviewed public-highway and distinct-highway crossing identity",
-        "source-reviewed official traffic-control device inventory",
-        "source-reviewed human-driver scope"
+      "binding_kind": "direct"
+    }
+  ],
+  "context_refs": [],
+  "fixed_parameters": [
+    {
+      "name": "reviewed_crossing_site",
+      "value": "source_packet_pending",
+      "rationale": "Hold original site and official-device review fixed across comparisons."
+    }
+  ],
+  "variable_parameters": [
+    {
+      "name": "crossing_entry_order",
+      "kind": "world_setup",
+      "range_or_domain": "other_first or ego_first",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "ego_response_request",
+      "kind": "controller",
+      "range_or_domain": "yield or advance",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "approach_relation",
+      "kind": "world_setup",
+      "range_or_domain": "crossing or opposite",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "left_turn_intent",
+      "kind": "world_setup",
+      "range_or_domain": "true or false",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "left_turn_motion_request",
+      "kind": "controller",
+      "range_or_domain": "straight or left",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "roadway_intersection_identity",
+      "kind": "world_setup",
+      "range_or_domain": "first or second",
+      "used_by_laws": [
+        "NRS-484B-250-1"
       ]
     }
   ],
-  "fixed_parameters": [],
-  "variable_parameters": [],
-  "unbound_variable_candidates": [
-    "crossing_entry_order",
-    "ego_response_request",
-    "approach_and_left_turn_context",
-    "roadway_intersection_identity"
-  ]
+  "unbound_variable_candidates": []
 }

@@ -25,11 +25,13 @@ def main() -> None:
                  "applies_to": ["pedestrian"]}]}
     write("relevance", relevance)
     write("relevance-batch", relevance)
-    params = [{"kind": "world_setup", "name": name, "unit": "categorical",
-               "range_or_domain": domain} for name, domain in (
-                   ("action", "walk or run"),
-                   ("vehicle_gap", "close or far engineering probe; no legal threshold"),
-                   ("route_kind", "into vehicle path, roadway only, or remain curb"))]
+    params = [{"kind": kind, "name": name, "unit": unit,
+               "range_or_domain": domain} for name, kind, unit, domain in (
+                   ("action", "world_setup", "categorical", "walk or run"),
+                   ("vehicle_gap", "world_setup", "categorical", "close or far engineering probe; no legal threshold"),
+                   ("route_kind", "world_setup", "categorical", "into vehicle path, roadway only, or remain curb"),
+                   ("departure_hold_s", "controller", "s", "4 to 8 seconds physical sampling only"),
+                   ("vehicle_start_gap_m", "controller", "m", "10 to 30 meters physical sampling only"))]
     judgments = [
         {"phrase": "suddenly leave a curb or other place of safety",
          "note": "Original departure timing, curb and path authority require independent review; gait alone is no legal cutoff."},

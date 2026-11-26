@@ -86,10 +86,10 @@ class AuditTests(unittest.TestCase):
         return {"nb_read_frames": "900", "r_frame_rate": "20/1",
                 "width": 960, "height": 540}
 
-    def test_five_source_bound_deliveries_and_four_comparisons(self):
+    def test_source_bound_deliveries_and_four_comparisons(self):
         results = {case.name: deliver(self.root, self.attempt(case), self.video_probe)
                    for case in CASES}
-        self.assertEqual(len(results), 5)
+        self.assertEqual(len(results), len(CASES))
         self.assertTrue(all(value["legal_suddenness_or_impossibility"] == "unresolved"
                             for value in results.values()))
         for comparison_id, (left, right, _) in PAIRS.items():

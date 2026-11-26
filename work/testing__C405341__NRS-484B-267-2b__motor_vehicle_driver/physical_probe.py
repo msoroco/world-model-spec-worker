@@ -77,14 +77,19 @@ def probe(case_id, kind, output):
         sources[HISTORY] = sha(history)
         if len(rows) != 900 or [r["frame"] for r in rows] != list(range(900)):
             raise ValueError("complete original-frame diagnostic history required")
+    if kind == "incomplete_motion":
+        # Distinct synthetic fixture: hold the ego at its first recorded pose.
+        origin = rows[0]["ego_xy"]
+        rows = [{**row, "ego_xy": origin} for row in rows]
     if kind == "complete_motion":
         displacement = rows[-1]["ego_xy"][0] - rows[0]["ego_xy"][0]
         if abs(displacement) <= 0:
             raise ValueError("ego motion diagnostic absent")
         status = "met"
     elif kind == "incomplete_motion":
-        # The test fixture holds the ego position fixed across the same clock.
-        displacement = 0.0
+        displacement = rows[-1]["ego_xy"][0] - rows[0]["ego_xy"][0]
+        if displacement != 0:
+            raise ValueError("held-position negative fixture still moves")
         status = "not_met"
     else:
         displacement = None

@@ -23,7 +23,8 @@ def check_config(config: dict) -> bool:
         raise ValueError("unassigned selected curb-entry case")
     if (config.get("diagnostic_only") is not True or
             config.get("rate_hz") != 20 or config.get("duration_s") != 45 or
-            set(config.get("cameras", [])) != CAMERAS):
+            {item.get("name") for item in config.get("cameras", [])
+             if isinstance(item, dict)} != CAMERAS):
         raise ValueError("four-camera 900-frame capture contract differs")
     return True
 

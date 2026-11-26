@@ -559,3 +559,13 @@ Semantic activation also now requires the current pinned runtime manifest, exact
 ## 2026-11-26 absolute trace and body join
 
 `precedence_response_audit.py` now compares each original trace position directly with its original ego body polygon center. The earlier relative-motion check could accept a constant body offset. A focused negative test rejects that offset, and the full assignment suite passes 99 tests with one expected diagnostic skip in `cpu-nov26b-full-suite.log`. The seven current synthetic delivery audits and five comparisons pass in `cpu-nov26b-delivery-audit.log`. The pinned verify and preflight pass. Scoped static passes; exact scoped strict exits 1 solely at truthful partial acceptance in `cpu-nov26b-strict.log`. These are CPU software proofs, not original source, physical or legal findings. Frozen review context still lacks original reviewed public-access, device, driver and site-map bytes, and the linked trace/video/audit bytes are absent. Keep the selected manifest and result partial until independently reviewed source bytes can bind nondiagnostic constructions and receipts.
+
+## 2026-11-26 selected source-gated delivery preparation
+
+The seven exact cases now have selected primary and fallback constructions. All 14 offline and positive/negative compatibility checks passed on the pinned current runtime. Seven selected physical CPU fixture receipts and seven saved-only post-capture receipts are bound. Independent selected delivery proof covers seven four-camera decodes, seven original-source rejection checks, and five comparison audits. Synthetic CPU fixtures are explicitly diagnostic; no Native physical or legal acceptance is claimed. Original reviewed source-hashed site packets remain required at Native launch.
+
+- Canonical execution manifest SHA-256: `26a91543b24ca5709b12bb3659c089ee1b21b20f443e315098086f76d4b82894`.
+- GPU queue proposal: seven cases and five comparisons; SHA-256 `2126803aeba69bf645926231908269c22b8e4173a47cfe9c8e67f8ca9027760f`.
+- Selected independent delivery proof SHA-256: `72f91568ac0c264183b6d89b652bd4ca1ff53ccf426d44fb9fd0026f6b66c7b2`.
+- Assignment strict gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready` exited 0; retained log `cpu-source-gated-strict-final.log` SHA-256 `a3fafeb8ac368f9bc591b2c08b831a41fbd3b27e29ac7889b56b4d17963cd22d`.
+- The ready state denotes CPU delivery preparation. Native execution must supply `SCENARIO_C125714_REVIEWED_PACKET` and `SCENARIO_C125714_REVIEWED_PACKET_SHA256`, matching source-reviewed public access, device and driver context; local Native capture then verifies live map, source and physical outcome.

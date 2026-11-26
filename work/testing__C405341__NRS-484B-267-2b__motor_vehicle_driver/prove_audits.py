@@ -72,7 +72,7 @@ def main():
         if failed.returncode == 0 or expected not in negative_log.read_text():
             raise RuntimeError("missing-source delivery negative failed: " + name)
         entry["delivery_acceptance"] = {
-            "case_id": case_id, "sets": ["demo-test", "full-test"],
+            "case_id": case_id, "sets": ["full-test"],
             "checks": CHECKS, "script": "delivery_audit.py",
             "script_sha256": sha(HERE / "delivery_audit.py"),
             "command": " ".join(command), "test_exit_code": 0,

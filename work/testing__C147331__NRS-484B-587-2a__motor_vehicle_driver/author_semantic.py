@@ -148,6 +148,9 @@ def run() -> None:
                                             planned_channel=channel)
                                         for i, (requirement, channel) in enumerate(dispositions)]
     plan['source_observation_mapping'] = {}
+    plan['observations'] = [{'name':name,'unit':unit,'method':method,
+                             'source':'original Native frames and separately sealed reviewed source packet',
+                             'mandatory':True} for name,unit,method in CHANNELS]
     plan['camera_plan'] = {'profile': 'overview1080-capability', 'duration_s': 45,
                            'composition': 'synchronized_four_view_primary',
                            'coverage': [{'view': name, 'subject': 'original ego body, lanes, shoulder and signage',

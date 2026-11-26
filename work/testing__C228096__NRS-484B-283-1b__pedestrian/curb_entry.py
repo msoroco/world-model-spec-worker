@@ -10,6 +10,8 @@ class Case:
     action: str
     vehicle_gap: str
     route_kind: str
+    departure_hold_s: float | None = None
+    vehicle_start_gap_m: float | None = None
 
 
 CASES = (
@@ -18,6 +20,12 @@ CASES = (
     Case('far_walk_into_path', 'walk', 'far', 'path'),
     Case('close_walk_road_only', 'walk', 'close', 'road_only'),
     Case('close_walk_remain_curb', 'walk', 'close', 'curb'),
+    Case('sudden_departure-0000', 'walk', 'close', 'path', departure_hold_s=4.0),
+    Case('sudden_departure-0001', 'walk', 'close', 'path', departure_hold_s=8.0),
+    Case('sudden_departure-0002', 'walk', 'close', 'path', departure_hold_s=6.0),
+    Case('yield_impossibility-0000', 'walk', 'close', 'path', vehicle_start_gap_m=10.0),
+    Case('yield_impossibility-0001', 'walk', 'close', 'path', vehicle_start_gap_m=30.0),
+    Case('yield_impossibility-0002', 'walk', 'close', 'path', vehicle_start_gap_m=20.0),
 )
 
 
@@ -89,6 +97,12 @@ def validate_scene(scene: Mapping, case: Case):
     require(type(scene.get('departure_frame')) is int and
             0 < scene['departure_frame'] < 900,
             'source-reviewed departure frame missing')
+    if case.departure_hold_s is not None:
+        require(scene['departure_frame'] == round(case.departure_hold_s * 20),
+                'selected departure hold controller differs')
+    if case.vehicle_start_gap_m is not None:
+        require(scene['vehicle_route_xy'][0] == [-case.vehicle_start_gap_m, 0],
+                'selected vehicle station controller differs')
     require(scene.get('vehicle_id') and scene.get('driver_id'),
             'control vehicle/driver identity missing')
     return {'case_id':case.name,'suddenness_judgment':None,

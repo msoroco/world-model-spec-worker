@@ -17,10 +17,12 @@ def scene(case):
            action=case.action,vehicle_gap=case.vehicle_gap,
            route_kind=case.route_kind,road_rect_m=[-10,-2,10,2],
            vehicle_path_rect_m=[-10,-.5,10,.5],
-           curb_start_xy=[0,-3],departure_frame=100,
+           curb_start_xy=[0,-3],departure_frame=round(case.departure_hold_s*20)
+           if case.departure_hold_s is not None else 100,
            pedestrian_route_xy=[[0,-3],[1,-3] if case.route_kind=='curb' else
                                 [0,-1] if case.route_kind=='road_only' else [0,0]],
-           vehicle_route_xy=[[-10,0],[10,0]],
+           vehicle_route_xy=[[-case.vehicle_start_gap_m,0],[10,0]]
+           if case.vehicle_start_gap_m is not None else [[-10,0],[10,0]],
            vehicle_id='car',driver_id='driver')
     for field in ('pedestrian_identity','curb_safety','road_boundary',
                   'vehicle_path','vehicle_motion','driver_control',
@@ -31,14 +33,16 @@ def scene(case):
 
 def rows(case,s):
     out=[]
+    depart=s['departure_frame']
     for i in range(900):
-        y=-3 if i<100 else (-1 if case.route_kind=='road_only' else
+        y=-3 if i<depart else (-1 if case.route_kind=='road_only' else
                              -3 if case.route_kind=='curb' else
-                             -1 if i<200 else 0)
+                             -1 if i<depart+100 else 0)
         row=dict(original_frame=1000+i,time_s=i/20,
                  pedestrian_id='ped',vehicle_id='car',action=case.action,
                  pedestrian_xy=[0,y],
-                 vehicle_xy=[1 if case.vehicle_gap=='close' else 20,0],
+                 vehicle_xy=[case.vehicle_start_gap_m if case.vehicle_start_gap_m is not None
+                             else 1 if case.vehicle_gap=='close' else 20,0],
                  pedestrian_speed_mps=2 if case.action=='run' else 1,
                  vehicle_speed_mps=5,
                  vehicle_path_source_sha256=s['vehicle_path_source_sha256'])

@@ -1,30 +1,36 @@
-# testing__C147331__NRS-484B-587-2a__motor_vehicle_driver
+# C147331 NRS 484B.587(2)(a) delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU prepared for exact local Native delivery. The scoped strict gate passes. No original CARLA capture or legal acceptance is claimed.
 
-Exact law: NRS 484B.587(2)(a); with 484B.587(3), NRS 484B.210(4) — Except if required by an emergency or as otherwise authorized by subsection 3 [(3) appended below], a person shall not drive a vehicle on a controlled-access highway: Upon any portion of the highway that lies outside of a marked traffic lane or marked entrance or exit lane. A person driving a vehicle described in paragraphs (a) to (f), inclusive, of subsection 4 of NRS 484B.210 [list appended below] may drive that vehicle on a paved shoulder of a controlled-access highway where lawfully placed signage allows that vehicle to use the shoulder in that manner. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner.
-Assigned branch(es): Outside-lane travel beside one-way marked lanes.
-Cell: C147331 (one_way_multilane, travel, lane_marking); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Legal and case coverage
 
-## Next CPU actions
+The assigned prohibition concerns driving on a controlled-access highway outside a marked traffic lane or marked entrance/exit lane. The supplied text also requires an emergency necessity branch, subsection 3 authorization, and the qualifying vehicle plus lawful sign plus paved shoulder context. The 11 cases in the exact manifest cover:
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_marked`: Marked traffic lane baseline; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_outside`: Outside marked lanes and shoulder; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__south_marked`: Opposite approach marked baseline; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__south_outside`: Opposite approach outside marked lanes; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_shoulder_unsigned`: Paved shoulder without permissive sign; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_shoulder_signed_qualified`: Paved shoulder with sign and sourced 484B.210(4) class; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_shoulder_signed_ordinary`: Paved shoulder with sign and ordinary class; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_outside_emergency`: Emergency necessity context outside marked lanes; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_shoulder_authorized`: Subsection 3 vehicle and signed paved shoulder context; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_entrance`: Marked entrance lane control; retain source and original trajectory for human statutory review
+- `testing__C147331__NRS-484B-587-2a__motor_vehicle_driver__north_exit`: Marked exit lane control; retain source and original trajectory for human statutory review
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C147331__NRS-484B-587-2a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Nine controlled comparisons in `comparison-proposal.json` isolate approach, marked versus outside travel, signed paved shoulder, vehicle class, emergency, subsection 3, and marked entrance/exit controls. `comparison_audit.py` checks sealed 900-frame source histories and rejects stale hashes. There is no numeric statutory occupancy cutoff or exact-law judgment range in the supplied inventory.
 
-## Proven checks and dependency boundary
+## Construction and source boundary
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`reviewed_site.py` requires separately hashed legal authority, public highway boundary, markings, lane direction, paving, sign legend/placement, vehicle class, emergency, subsection 3, Native spawn, and camera plans. `outside_lane.py` builds source-gated route variants. `lane_native.py` captures 900 frames at 20 Hz using FrameMap, four synchronized cameras, original history and receipts, then restores world settings and releases ownership. `analysis.py` finalizes from saved original evidence only; `saved_audit.py` checks the sealed chronology. The primary route uses steering gain .025 and the source-bound fallback uses .02 only after the declared route-convergence or camera-coverage trigger.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## CPU proof map
 
-## 2026-11-23 executable checkpoint
+`execution-manifest.json` binds each of 11 primary and 11 fallback constructions, with exact offline logs and positive/negative compatibility receipts. `proof-saved-*.log` covers saved processing and missing-source rejection for each primary case. `physical-*-receipt.json` covers complete, incomplete and missing-evidence diagnostic outcomes plus capture-to-owner-release lifecycle ordering. `delivery-acceptance-*.json` covers independent delivery protocol positive and missing-view rejection for each case; `delivery_audit.py` requires original Native provenance, full frame joins, four-view decode and pixel review. `comparison-proposal.json` binds all nine comparison positive and stale-source negative proofs. `proposals/semantic-index.json` binds the canonical relevance, template, bindings and cases proposals. All fixtures are synthetic CPU protocol tests and carry that provenance.
 
-- Frozen evidence inventory has zero accepted recordings. The conditional witness at index 463 supports a one-way multilane outside-lane construction only if a legal controlled-access highway designation, public highway boundary, marked lanes, vehicle class and exception records are separately sourced. The exported law text combines the general outside-lane rule with emergency necessity, NRS 484B.210(4) signed paved shoulder and subsection 3 contexts. It does not supply a numeric legal occupancy threshold. The separate cited subsection and vehicle-class lists require original source review; the package does not assert an exemption.
-- `case-plan.json` now names 11 exact variants and nine controlled comparisons: north/south marked and outside travel, unsigned/signed qualifying shoulder, signed ordinary class, emergency necessity, subsection 3 authorization, and marked entrance/exit lane controls. Every case includes a physical route/camera risk. All are planned, none captured or accepted.
-- `outside_lane.py` implements source-gated one-way two-marked-lane and shoulder/entrance/exit/outside route checks, lazy adapter spawn/route/capture metadata, cleanup, original-frame measurements and fixed-versus-deliberate comparison audit. `saved_audit.py` independently seals a saved 900-frame JSONL history to its hash, case, map, fixed source identities, exception records and capture packets. Both leave legal judgment null.
-- `tests/` exercises all distinct route calls, missing legal designation and sign readbacks, cleanup, original-frame/source rejection, 900-frame comparison isolation, history hash tamper and packet/frame tamper. `cpu-tests.log`: six passing tests. `static-check.log`: assignment complete static check passed. `strict-check.log`: exact strict check exited 1 at partial-package acceptance, as recorded in `result.json` with hashes.
-- Next CPU work: source-review exact cross-referenced qualifying vehicle classes and subsection 3; build exact bundles/manifest, case-specific diagnostic recipes, each primary/fallback offline and positive/negative compatibility proof, canonical semantic proposals, saved-only processing and delivery audit, then rerun the exact strict gate. Actual CARLA route traversal and camera visibility are later physical checks, not claimed here.
+## Local execution
+
+The first exact job command is in `result.json.first_gpu_delivery_command`. Supply the reviewed C147331 source packet in `C147331_REVIEWED_SITE` and local CARLA variables, then inspect original authority, markings, route traversal, body occupancy, sign visibility, four-view pixels and physical completion before acceptance. The executor must run saved processing after Native ownership release.
+
+## Validation
+
+`cpu-tests.log`: nine passing unit tests. `strict-check.log`: `.venv-cpu/bin/python worker_check.py --assignment testing__C147331__NRS-484B-587-2a__motor_vehicle_driver --complete --require-delivery-ready` exit 0. The package is ready for physical verification only.
