@@ -44,7 +44,13 @@ def observe(case_id, context_path, trace_path, receipt_path):
     nearest_side = finite(context.get("school_lane_nearest_side_station_m"), "school lane nearest-side station")
     if context.get("vehicle_reference_point") not in {"front_body_extent", "center", "rear_body_extent"}:
         raise ValueError("original vehicle reference point required")
-    rows = [json.loads(line) for line in Path(trace_path).read_text(encoding="utf-8").splitlines() if line]
+    trace_text = Path(trace_path).read_text(encoding="utf-8")
+    try:
+        trace_object = json.loads(trace_text)
+    except json.JSONDecodeError:
+        trace_object = None
+    rows = trace_object["frames"] if isinstance(trace_object, dict) and isinstance(
+        trace_object.get("frames"), list) else [json.loads(line) for line in trace_text.splitlines() if line]
     if len(rows) < 2 or receipt.get("fps") != 20 or receipt.get("frame_count") != len(rows):
         raise ValueError("original 20 Hz frame count required")
     samples = []

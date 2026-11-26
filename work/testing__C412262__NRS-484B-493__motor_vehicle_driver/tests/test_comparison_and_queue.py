@@ -21,7 +21,7 @@ class ComparisonQueueTests(unittest.TestCase):
         context = {"case_id": case["case_id"], "one_way_status": "one_way",
                    "notice_state": case["notice_request"],
                    "permitted_direction_centerline_xy_m": [[0, 0], [20, 0]],
-                   "camera_plan_sha256": "a" * 64, "duration_frames": 2}
+                   "camera_plan_sha256": "a" * 64, "duration_frames": 900}
         for name in ("street_legal_status_source", "street_boundary_source",
                      "public_access_source", "city_limits_source", "one_way_order_source",
                      "permitted_direction_source", "centerline_source", "notice_erection_source",
@@ -38,13 +38,13 @@ class ComparisonQueueTests(unittest.TestCase):
                                               "vehicle_center_xy_m": [10, 3],
                                               "vehicle_body_polygon_xy_m": [[9, 2], [11, 2],
                                                                             [11, 4], [9, 4]]}) + "\n"
-                                 for i in range(2)))
+                                 for i in range(900)))
         receipt = root / "receipt.json"
         receipt.write_text(json.dumps({"assignment_id": ASSIGNMENT,
                                        "case_id": case["case_id"],
                                        "source_kind": "original_native_capture",
                                        "diagnostic_fixture": False, "fps": 20,
-                                       "frame_count": 2,
+                                       "frame_count": 900,
                                        "context_sha256": hashlib.sha256(context_path.read_bytes()).hexdigest(),
                                        "trace_sha256": hashlib.sha256(trace.read_bytes()).hexdigest()}) + "\n")
         return {"case_id": case["case_id"], "context": str(context_path),

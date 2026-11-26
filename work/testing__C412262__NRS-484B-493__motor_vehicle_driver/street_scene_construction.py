@@ -8,7 +8,7 @@ from pathlib import Path
 
 from one_way_side_observations import polyline
 
-ASSIGNMENT = Path(__file__).resolve().parent.name
+ASSIGNMENT = "testing__C412262__NRS-484B-493__motor_vehicle_driver"
 
 
 def _hash(value, name):
@@ -32,10 +32,25 @@ def validate_site(path: str | Path, case_id: str) -> dict:
             site.get("source_kind") != "original_reviewed_street_survey" or
             site.get("review_status") != "reviewed"):
         raise ValueError("original reviewed street site and assignment required")
-    for name in ("street_status_sha256", "one_way_order_sha256", "street_boundary_sha256",
+    for name in ("map_sha256", "street_status_sha256", "one_way_order_sha256", "street_boundary_sha256",
                  "permitted_direction_sha256", "device_erection_sha256",
                  "device_authority_sha256", "device_content_sha256", "device_extent_sha256"):
         _hash(site.get(name), name)
+        records = site.get("source_records")
+        record = records.get(name) if isinstance(records, dict) else None
+        if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+            raise ValueError("reviewed original source record required: " + name)
+        relative = Path(record["path"])
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError("reviewed original source path escapes site: " + name)
+        site_dir = Path(path).resolve().parent
+        unresolved = site_dir / relative
+        target = unresolved.resolve()
+        if (site_dir not in target.parents or unresolved.is_symlink() or
+                not target.is_file() or
+                hashlib.sha256(target.read_bytes()).hexdigest() != site[name] or
+                record.get("sha256") != site[name]):
+            raise ValueError("reviewed original source bytes changed: " + name)
     if site.get("street_direction_variant") != case["street_direction_request"]:
         raise ValueError("reviewed street-direction variant differs from case")
     if site.get("notice_variant") != case["notice_request"]:

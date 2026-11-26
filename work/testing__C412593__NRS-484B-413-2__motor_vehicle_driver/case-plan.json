@@ -1,50 +1,53 @@
 {
-  "assignment_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C412593",
-  "law_id": "NRS-484B-413-2",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-413-2",
-      "cell_id": "C412593",
-      "actor": "motor_vehicle_driver",
-      "branch": "Business-district right-turn signaling",
-      "worker_binding": {
-        "batch_id": "demo-test-full-branches-v7",
-        "package_sha256": "3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326"
+  "assignment_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through post-turn observation",
+        "subject": "source-reviewed highway right turn and district frontage",
+        "view": "overview"
+      },
+      {
+        "interval": "last 320 feet through turn onset",
+        "subject": "ego right signal and approach path",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through turn clearance",
+        "subject": "right-turn corner, freight zone and district frontage",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through final observation",
+        "subject": "ego path, signal readback context and turn course",
+        "view": "driver_reference"
       }
-    }
-  ],
-  "law_text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
-  "law_source": "NRS 484B.413(2)",
-  "topic_inventory": {
-    "exact-text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather."
+    ],
+    "duration_s": 45,
+    "limitations": "Camera plans are prospective; original pixels and legally relevant visibility require local review.",
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Actual signal-on arc length may be shorter than authored setting.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Actual signal-on arc length may be shorter than authored setting."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Actual signal-on arc length may be shorter than authored setting.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": "ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93",
       "prior_evidence_status": "metadata_only_unverified",
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 101.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Actual signal-on arc length may be shorter than authored setting."
-      },
       "recording_description": {
         "channels": [
           {
@@ -128,32 +131,32 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 101.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Short-signal comparison requires measured original path length.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Short-signal comparison requires measured original path length."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Short-signal comparison requires measured original path length.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": "2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c",
       "prior_evidence_status": "metadata_only_unverified",
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 99.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Short-signal comparison requires measured original path length."
-      },
       "recording_description": {
         "channels": [
           {
@@ -237,32 +240,32 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 99.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Exact boundary may be missed by frame sampling or route geometry.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Exact boundary may be missed by frame sampling or route geometry."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Exact boundary may be missed by frame sampling or route geometry.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": null,
       "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 100.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Exact boundary may be missed by frame sampling or route geometry."
-      },
       "recording_description": {
         "channels": [
           {
@@ -346,32 +349,32 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 100.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Other-area 300-foot signal may not fit available route.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Other-area 300-foot signal may not fit available route."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Other-area 300-foot signal may not fit available route.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": "2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9",
       "prior_evidence_status": "metadata_only_unverified",
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 301.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Other-area 300-foot signal may not fit available route."
-      },
       "recording_description": {
         "channels": [
           {
@@ -455,141 +458,141 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 301.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Other-area short signal must retain same route and course-change onset.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Other-area short signal must retain same route and course-change onset."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Other-area short signal must retain same route and course-change onset.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": "9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26",
       "prior_evidence_status": "metadata_only_unverified",
-      "target_law_id": "NRS-484B-413-2",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "freight_loading_zone",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Controller target is an engineering request, not observed signaling distance.",
+          "Original highway, district, freight-zone and driver facts require independent review."
+        ]
+      },
       "target": {
+        "signal_continuity_request": "continuous",
         "signal_start_distance_ft": 299.0,
-        "signal_continuity_request": "continuous",
         "weather_request": "clear"
       },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Other-area short signal must retain same route and course-change onset."
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "method": "original CARLA tick identity",
-            "name": "native_frame",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "frame"
-          },
-          {
-            "method": "original ego transform position readback",
-            "name": "ego_xy",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "m"
-          },
-          {
-            "method": "original vehicle light-state readback",
-            "name": "right_signal",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original ego heading against reviewed approach",
-            "name": "course_change",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original Native weather readback",
-            "name": "weather",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "categorical"
-          },
-          {
-            "method": "four synchronized original camera sources",
-            "name": "four_camera_frames",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "native pixels"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "SHA-bound local review packet",
-            "name": "highway",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "district_frontage_and_use",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "freight_loading_zone",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "driver_and_vehicle",
-            "unit": "source record"
-          }
-        ],
-        "limitations": [
-          "Controller target is an engineering request, not observed signaling distance.",
-          "Original highway, district, freight-zone and driver facts require independent review."
-        ]
-      }
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_probe": "turn_signal_probe.py",
+      "candidate_risk": {
+        "reason": "Exact boundary may be missed by frame sampling or route geometry.",
+        "status": "physical"
+      },
       "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Exact boundary may be missed by frame sampling or route geometry."
+      "construction_probe": "turn_signal_probe.py",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Exact boundary may be missed by frame sampling or route geometry.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": null,
       "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 300.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Exact boundary may be missed by frame sampling or route geometry."
-      },
       "recording_description": {
         "channels": [
           {
@@ -673,359 +676,250 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 300.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Weather visibility may obscure indicator in camera while telemetry remains bound.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Weather visibility may obscure indicator in camera while telemetry remains bound."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Weather visibility may obscure indicator in camera while telemetry remains bound.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": null,
       "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "freight_loading_zone",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Controller target is an engineering request, not observed signaling distance.",
+          "Original highway, district, freight-zone and driver facts require independent review."
+        ]
+      },
       "target": {
-        "signal_start_distance_ft": 101.0,
         "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 101.0,
         "weather_request": "rain"
       },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Weather visibility may obscure indicator in camera while telemetry remains bound."
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "method": "original CARLA tick identity",
-            "name": "native_frame",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "frame"
-          },
-          {
-            "method": "original ego transform position readback",
-            "name": "ego_xy",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "m"
-          },
-          {
-            "method": "original vehicle light-state readback",
-            "name": "right_signal",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original ego heading against reviewed approach",
-            "name": "course_change",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original Native weather readback",
-            "name": "weather",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "categorical"
-          },
-          {
-            "method": "four synchronized original camera sources",
-            "name": "four_camera_frames",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "native pixels"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "SHA-bound local review packet",
-            "name": "highway",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "district_frontage_and_use",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "freight_loading_zone",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "driver_and_vehicle",
-            "unit": "source record"
-          }
-        ],
-        "limitations": [
-          "Controller target is an engineering request, not observed signaling distance.",
-          "Original highway, district, freight-zone and driver facts require independent review."
-        ]
-      }
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_probe": "turn_signal_probe.py",
+      "candidate_risk": {
+        "reason": "Business district identification and short signal distance need source proof.",
+        "status": "physical"
+      },
       "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Business district identification and short signal distance need source proof."
+      "construction_probe": "turn_signal_probe.py",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Business district identification and short signal distance need source proof.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": null,
       "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "freight_loading_zone",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Controller target is an engineering request, not observed signaling distance.",
+          "Original highway, district, freight-zone and driver facts require independent review."
+        ]
+      },
       "target": {
+        "signal_continuity_request": "continuous",
         "signal_start_distance_ft": 99.0,
-        "signal_continuity_request": "continuous",
         "weather_request": "clear"
       },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Business district identification and short signal distance need source proof."
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "method": "original CARLA tick identity",
-            "name": "native_frame",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "frame"
-          },
-          {
-            "method": "original ego transform position readback",
-            "name": "ego_xy",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "m"
-          },
-          {
-            "method": "original vehicle light-state readback",
-            "name": "right_signal",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original ego heading against reviewed approach",
-            "name": "course_change",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original Native weather readback",
-            "name": "weather",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "categorical"
-          },
-          {
-            "method": "four synchronized original camera sources",
-            "name": "four_camera_frames",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "native pixels"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "SHA-bound local review packet",
-            "name": "highway",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "district_frontage_and_use",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "freight_loading_zone",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "driver_and_vehicle",
-            "unit": "source record"
-          }
-        ],
-        "limitations": [
-          "Controller target is an engineering request, not observed signaling distance.",
-          "Original highway, district, freight-zone and driver facts require independent review."
-        ]
-      }
+      "target_law_id": "NRS-484B-413-2"
     },
     {
-      "kind": "delivery",
       "branch": "Business-district right-turn signaling",
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_probe": "turn_signal_probe.py",
+      "candidate_risk": {
+        "reason": "Exact business-district boundary may be missed by frame sampling.",
+        "status": "physical"
+      },
       "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Exact business-district boundary may be missed by frame sampling."
-      },
-      "prior_accepted_recording_id": null,
-      "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 100.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Exact business-district boundary may be missed by frame sampling."
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "method": "original CARLA tick identity",
-            "name": "native_frame",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "frame"
-          },
-          {
-            "method": "original ego transform position readback",
-            "name": "ego_xy",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "m"
-          },
-          {
-            "method": "original vehicle light-state readback",
-            "name": "right_signal",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original ego heading against reviewed approach",
-            "name": "course_change",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "boolean"
-          },
-          {
-            "method": "original Native weather readback",
-            "name": "weather",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "categorical"
-          },
-          {
-            "method": "four synchronized original camera sources",
-            "name": "four_camera_frames",
-            "reference_frame": "original CARLA world and frame identity",
-            "sampling_rate_hz": 20,
-            "time_window": "full 900-frame, 45-second attempt",
-            "uncertainty": "one retained 20 Hz sample",
-            "unit": "native pixels"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "SHA-bound local review packet",
-            "name": "highway",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "district_frontage_and_use",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "freight_loading_zone",
-            "unit": "source record"
-          },
-          {
-            "method": "SHA-bound local review packet",
-            "name": "driver_and_vehicle",
-            "unit": "source record"
-          }
-        ],
-        "limitations": [
-          "Controller target is an engineering request, not observed signaling distance.",
-          "Original highway, district, freight-zone and driver facts require independent review."
-        ]
-      }
-    },
-    {
-      "kind": "delivery",
-      "branch": "Business-district right-turn signaling",
+      "construction_probe": "turn_signal_probe.py",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_probe": "turn_signal_probe.py",
-      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Business district right-turn route may not offer enough approach length."
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Exact business-district boundary may be missed by frame sampling.",
+        "status": "physical"
       },
       "prior_accepted_recording_id": null,
       "prior_evidence_status": null,
-      "target_law_id": "NRS-484B-413-2",
-      "target": {
-        "signal_start_distance_ft": 101.0,
-        "signal_continuity_request": "continuous",
-        "weather_request": "clear"
-      },
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Business district right-turn route may not offer enough approach length."
-      },
       "recording_description": {
         "channels": [
           {
@@ -1109,50 +1003,169 @@
           "Controller target is an engineering request, not observed signaling distance.",
           "Original highway, district, freight-zone and driver facts require independent review."
         ]
-      }
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 100.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
+    },
+    {
+      "branch": "Business-district right-turn signaling",
+      "candidate_risk": {
+        "reason": "Business district right-turn route may not offer enough approach length.",
+        "status": "physical"
+      },
+      "case_id": "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous",
+      "construction_probe": "turn_signal_probe.py",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "physical_risk": {
+        "reason": "Business district right-turn route may not offer enough approach length.",
+        "status": "physical"
+      },
+      "prior_accepted_recording_id": null,
+      "prior_evidence_status": null,
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "freight_loading_zone",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Controller target is an engineering request, not observed signaling distance.",
+          "Original highway, district, freight-zone and driver facts require independent review."
+        ]
+      },
+      "target": {
+        "signal_continuity_request": "continuous",
+        "signal_start_distance_ft": 101.0,
+        "weather_request": "clear"
+      },
+      "target_law_id": "NRS-484B-413-2"
     }
   ],
+  "cell_id": "C412593",
   "comparisons": [
     {
-      "comparison_id": "residence_right_turn_distance",
       "case_ids": [
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous"
+      ],
+      "comparison_id": "residence_right_turn_distance",
+      "deliberate_differences": [
+        "continuous right-signal path distance before turn"
       ],
       "fixed_conditions": [
         "residential district",
         "right-turn route and onset",
         "same vehicle",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "continuous right-signal path distance before turn"
       ]
     },
     {
-      "comparison_id": "other_area_right_turn_distance",
       "case_ids": [
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous"
+      ],
+      "comparison_id": "other_area_right_turn_distance",
+      "deliberate_differences": [
+        "continuous right-signal path distance before turn"
       ],
       "fixed_conditions": [
         "other-area district",
         "right-turn route and onset",
         "same vehicle",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "continuous right-signal path distance before turn"
       ]
     },
     {
-      "comparison_id": "business_right_turn_distance",
       "case_ids": [
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
+      ],
+      "comparison_id": "business_right_turn_distance",
+      "deliberate_differences": [
+        "continuous right-signal path distance before turn"
       ],
       "fixed_conditions": [
         "business district",
@@ -1160,80 +1173,255 @@
         "same vehicle",
         "same weather",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "continuous right-signal path distance before turn"
       ]
     },
     {
-      "comparison_id": "weather_invariance",
       "case_ids": [
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous",
         "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain"
+      ],
+      "comparison_id": "weather_invariance",
+      "deliberate_differences": [
+        "weather conditions only"
       ],
       "fixed_conditions": [
         "business district and 100-foot rule",
         "right-turn route and signal policy",
         "vehicle",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "weather conditions only"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous, and decoder_passed=None. Frozen review context describes the authored setting as: residence continuous",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93",
+        "sources": [
+          {
+            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93/metadata.json",
+            "sha256": "2dc5ce8acf9eabd683550c4cfdb3f54e452c4d4e8a047dfe70592401442380f5"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short, and decoder_passed=None. Frozen review context describes the authored setting as: residence short",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c",
+        "sources": [
+          {
+            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c/metadata.json",
+            "sha256": "9e1a1f619c09b48723f1cfd9cb2d00ca4afa422992f6f70c7fa1c6602399d395"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous, and decoder_passed=None. Frozen review context describes the authored setting as: other area continuous",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9",
+        "sources": [
+          {
+            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9/metadata.json",
+            "sha256": "7bd7bb099e423ff022d216a7dc656e2a1b5b23ee8cfe151df4e2d15c3bbc0cd9"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short, and decoder_passed=None. Frozen review context describes the authored setting as: other area short",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26",
+        "sources": [
+          {
+            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26/metadata.json",
+            "sha256": "05982a7baad87ae3f9e0b6ad746a074dfe1ef8280ce6d8d466aad91be2eb9e27"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Prepare and review evidence for these assigned branches: Business-district right-turn signaling. Verify any existing accepted evidence before selecting a new recording.",
+        "source": {
+          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+          "sha256": "6fa5aeea3db47244eed1630d17d931b2eac506cff6d0f8030bca958ad4cad3d3"
+        },
+        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [
+    "ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93",
+    "2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c",
+    "2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9",
+    "9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26"
+  ],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-413-2",
+  "law_source": "NRS 484B.413(2)",
+  "law_text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
   "observations": [
     {
+      "mandatory": true,
       "name": "native_frame",
-      "source": "original CARLA tick identity",
-      "mandatory": true
+      "source": "original CARLA tick identity"
     },
     {
+      "mandatory": true,
       "name": "ego_xy",
-      "source": "original ego transform position readback",
-      "mandatory": true
+      "source": "original ego transform position readback"
     },
     {
+      "mandatory": true,
       "name": "right_signal",
-      "source": "original vehicle light-state readback",
-      "mandatory": true
+      "source": "original vehicle light-state readback"
     },
     {
+      "mandatory": true,
       "name": "course_change",
-      "source": "original ego heading against reviewed approach",
-      "mandatory": true
+      "source": "original ego heading against reviewed approach"
     },
     {
+      "mandatory": true,
       "name": "weather",
-      "source": "original Native weather readback",
-      "mandatory": true
+      "source": "original Native weather readback"
     },
     {
+      "mandatory": true,
       "name": "four_camera_frames",
-      "source": "four synchronized original camera sources",
-      "mandatory": true
+      "source": "four synchronized original camera sources"
     },
     {
+      "mandatory": true,
       "name": "highway",
-      "source": "SHA-bound local review packet",
-      "mandatory": true
+      "source": "SHA-bound local review packet"
     },
     {
+      "mandatory": true,
       "name": "district_frontage_and_use",
-      "source": "SHA-bound local review packet",
-      "mandatory": true
+      "source": "SHA-bound local review packet"
     },
     {
+      "mandatory": true,
       "name": "freight_loading_zone",
-      "source": "SHA-bound local review packet",
-      "mandatory": true
+      "source": "SHA-bound local review packet"
     },
     {
+      "mandatory": true,
       "name": "driver_and_vehicle",
-      "source": "SHA-bound local review packet",
-      "mandatory": true
+      "source": "SHA-bound local review packet"
     }
   ],
+  "planning_status": "partial_cpu_signal_distance_probe",
+  "prior_review_context": {
+    "comparison_ids": [
+      "residence_right_turn_distance",
+      "other_area_right_turn_distance"
+    ],
+    "remaining_requirements_note": null
+  },
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
+      ],
+      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally.",
+      "requirement": "Source-reviewed highway, business district or area, and right-turn context",
+      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
+      ],
+      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes.",
+      "requirement": "Continuous right signal over not less than the last 100 feet traveled before course change in business district or area",
+      "source": "NRS 484B.413(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft"
+      ],
+      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally.",
+      "requirement": "Source-reviewed highway, residential district or area, and right-turn context",
+      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft"
+      ],
+      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes.",
+      "requirement": "Continuous right signal over not less than the last 100 feet traveled before course change in residential district or area",
+      "source": "NRS 484B.413(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft"
+      ],
+      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally.",
+      "requirement": "Source-reviewed highway, other district or area, and right-turn context",
+      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft"
+      ],
+      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes.",
+      "requirement": "Continuous right signal over not less than the last 300 feet traveled before course change in other district or area",
+      "source": "NRS 484B.413(2) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
+      ],
+      "evidence_or_gap": "Clear/rain pair holds signal request, route and vehicle fixed; original weather and signal histories require independent audit.",
+      "requirement": "The turn-signal rule is observed regardless of weather",
+      "source": "NRS 484B.413(2) exact text",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Four accepted metadata records are not source-bound proof of measured signal distance; do not duplicate them until original evidence review.",
+    "CPU probe does not construct CARLA vehicle, district geometry or indicator control.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual signal visibility and path motion require later CARLA/original recording verification."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Business-district right-turn signaling",
+      "cell_id": "C412593",
+      "law_id": "NRS-484B-413-2",
+      "worker_binding": {
+        "batch_id": "demo-test-full-branches-v7",
+        "package_sha256": "3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326"
+      }
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -1280,223 +1468,19 @@
       "sha256": "cf763a5839bf1f7974eaefaaac0fbd3f487d0e17967bb5e474bc3f6afaa9e5dd"
     }
   ],
-  "existing_evidence": [
-    "ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93",
-    "2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c",
-    "2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9",
-    "9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26"
-  ],
-  "runtime_uncertainties": [
-    "Four accepted metadata records are not source-bound proof of measured signal distance; do not duplicate them until original evidence review.",
-    "CPU probe does not construct CARLA vehicle, district geometry or indicator control.",
-    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
-    "Actual signal visibility and path motion require later CARLA/original recording verification."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
-    "facts": [
-      {
-        "recording_id": "ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous, and decoder_passed=None. Frozen review context describes the authored setting as: residence continuous",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/ad35037d765f3dfe7985407eabcc6ba9d84586f96864851a2bbc25df9dd06f93/metadata.json",
-            "sha256": "2dc5ce8acf9eabd683550c4cfdb3f54e452c4d4e8a047dfe70592401442380f5"
-          },
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "03730cd19f27c874174126161931717060a52c1765edad8fce69e2e1fa3a759d"
-          }
-        ]
-      },
-      {
-        "recording_id": "2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short, and decoder_passed=None. Frozen review context describes the authored setting as: residence short",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/2694890ff3baa9852934917b839c5105c3a354291d6c56ed0226e6d29737497c/metadata.json",
-            "sha256": "9e1a1f619c09b48723f1cfd9cb2d00ca4afa422992f6f70c7fa1c6602399d395"
-          },
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "03730cd19f27c874174126161931717060a52c1765edad8fce69e2e1fa3a759d"
-          }
-        ]
-      },
-      {
-        "recording_id": "2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous, and decoder_passed=None. Frozen review context describes the authored setting as: other area continuous",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/2aa41e40e6fd59de10e2c74a01dc7277337e4af7b6ed266789ef10f5742148a9/metadata.json",
-            "sha256": "7bd7bb099e423ff022d216a7dc656e2a1b5b23ee8cfe151df4e2d15c3bbc0cd9"
-          },
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "03730cd19f27c874174126161931717060a52c1765edad8fce69e2e1fa3a759d"
-          }
-        ]
-      },
-      {
-        "recording_id": "9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 1000 frames, case testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short, and decoder_passed=None. Frozen review context describes the authored setting as: other area short",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/accepted/9c9fdad78ec5748bd27fed0b339f4ef766fe29b95bd0e8a3a06a6c6fd627cb26/metadata.json",
-            "sha256": "05982a7baad87ae3f9e0b6ad746a074dfe1ef8280ce6d8d466aad91be2eb9e27"
-          },
-          {
-            "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "03730cd19f27c874174126161931717060a52c1765edad8fce69e2e1fa3a759d"
-          }
-        ]
-      }
-    ],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "Prepare and review evidence for these assigned branches: Business-district right-turn signaling. Verify any existing accepted evidence before selecting a new recording.",
-        "source": {
-          "path": "inputs/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
-          "sha256": "6fa5aeea3db47244eed1630d17d931b2eac506cff6d0f8030bca958ad4cad3d3"
-        },
-        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_signal_distance_probe",
   "witness_review": [
     {
+      "branch": "Business-district right-turn signaling",
+      "confidence": null,
+      "decision": null,
+      "reason": null,
+      "required_context": [],
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
       "source_index": null,
-      "source_sha256": "75d269b9f2f4bbb2a0fd3381679fb9cb7beb4de835619cf3e1df4f9dbdb218f0",
-      "branch": "Business-district right-turn signaling",
-      "decision": null,
-      "confidence": null,
-      "required_context": [],
-      "reason": null
-    }
-  ],
-  "prior_review_context": {
-    "comparison_ids": [
-      "residence_right_turn_distance",
-      "other_area_right_turn_distance"
-    ],
-    "remaining_requirements_note": null
-  },
-  "source_observation_mapping": {},
-  "camera_plan": {
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "interval": "startup through post-turn observation",
-        "subject": "source-reviewed highway right turn and district frontage",
-        "view": "overview"
-      },
-      {
-        "interval": "last 320 feet through turn onset",
-        "subject": "ego right signal and approach path",
-        "view": "approach"
-      },
-      {
-        "interval": "approach through turn clearance",
-        "subject": "right-turn corner, freight zone and district frontage",
-        "view": "reference_corner"
-      },
-      {
-        "interval": "startup through final observation",
-        "subject": "ego path, signal readback context and turn course",
-        "view": "driver_reference"
-      }
-    ],
-    "duration_s": 45,
-    "limitations": "Camera plans are prospective; original pixels and legally relevant visibility require local review.",
-    "profile": "overview1080-capability"
-  },
-  "requirement_dispositions": [
-    {
-      "status": "selected_required",
-      "requirement": "Source-reviewed highway, business district or area, and right-turn context",
-      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
-      ],
-      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Continuous right signal over not less than the last 100 feet traveled before course change in business district or area",
-      "source": "NRS 484B.413(2) exact text",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
-      ],
-      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Source-reviewed highway, residential district or area, and right-turn context",
-      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft"
-      ],
-      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Continuous right signal over not less than the last 100 feet traveled before course change in residential district or area",
-      "source": "NRS 484B.413(2) exact text",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft"
-      ],
-      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Source-reviewed highway, other district or area, and right-turn context",
-      "source": "NRS 484B.413(2) exact text; frozen C412593 right-turn cell",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft"
-      ],
-      "evidence_or_gap": "Original highway, district frontage/building use, freight-zone, route, vehicle and driver source packet is required locally."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "Continuous right signal over not less than the last 300 feet traveled before course change in other district or area",
-      "source": "NRS 484B.413(2) exact text",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft"
-      ],
-      "evidence_or_gap": "Actual 20 Hz Native light readback, path and course-change onset must be saved and measured; numeric requested targets are engineering probes."
-    },
-    {
-      "status": "selected_required",
-      "requirement": "The turn-signal rule is observed regardless of weather",
-      "source": "NRS 484B.413(2) exact text",
-      "case_ids": [
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
-        "testing__C412593__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
-      ],
-      "evidence_or_gap": "Clear/rain pair holds signal request, route and vehicle fixed; original weather and signal histories require independent audit."
+      "source_sha256": "75d269b9f2f4bbb2a0fd3381679fb9cb7beb4de835619cf3e1df4f9dbdb218f0"
     }
   ]
 }

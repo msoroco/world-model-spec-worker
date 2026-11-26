@@ -1,22 +1,26 @@
-# testing__C422976__LVMC-11-46-030__motor_vehicle_driver
+# C422976 LVMC 11.46.030 school pedestrian lane
 
-Status: partial exact-case measurement checkpoint, 2026-11-23. No original physical recording or legal conclusion is claimed.
+Status: partial CPU construction checkpoint, 2026-11-26. Original physical recording, legal classification, and delivery readiness remain unclaimed.
 
-LVMC 11.46.030 concerns a stop not less than fifty feet from the nearest side of a school pedestrian lane while a stationed person or device warns that children are about to cross or crossing, then waiting for a stated release alternative. The C422976 witness targets a human warning followed by an observed go signal, continued presence or departure. Frozen accepted evidence contains zero exact-assignment recordings and zero exact-law judgment-range entries.
+The frozen assignment has no accepted exact recording and no matching judgment range. The legal witness concerns the nearest side of a school pedestrian lane, a stationed child-crossing warning, a complete vehicle stop at least fifty feet away, and a release condition before proceeding. The engineering targets do not establish a legal measurement convention or verdict.
 
-## Constructed CPU work
+## Current construction
 
-`case-plan.json` defines nine unexecuted exact variants and eight controlled comparisons. It isolates 49, 50 and 51-foot construction targets; human go signal, continued warning, person departure and premature proceeding; a raised device signal; no warning; and person presence without child-crossing warning. It requests source-backed lane nearest-side geometry, jurisdiction, warning and release sources, actual children status, vehicle motion and four cameras. Construction targets do not decide legal boundary treatment.
+`case-plan.json` and `proposals/cases.json` now select 15 exact cases and 12 comparisons. Nine variants isolate 49, 50, and 51-foot stop requests, human and device warning, a human go signal, departure, continued warning, premature proceed, no warning, and presence without child warning. Six finite judgment sweep cases vary authored warning or departure onset time across three stations each, while original timing is measured separately. Both legal judgments stay unresolved. The pinned semantic stage validator passes.
 
-`school_lane_observations.py` consumes hash-sealed original Native context/receipt and 20 Hz ego speed/reference-station trace. It requires original school pedestrian-lane nearest-side and vehicle reference-point sources, stationed human warning, child status, go signal, locality/departure and device release annotations. It measures reference-to-nearest-side distance in feet and exact zero-speed samples. It leaves the legal measurement convention, locality boundary, fifty-foot stop determination and release/proceed judgment unresolved. Seven focused tests cover distance, cessation and rejection of diagnostic, changed or incomplete sources.
+`reviewed_site.py` rejects missing, changed, or escaping site/map/geometry/actor source packets. `school_lane_controls.py` maps every selected variant and sweep point to a distinct 900-frame, 20 Hz control request after source validation. `school_lane_observations.py` rejects stale or synthetic original receipts and measures source-bound 20 Hz vehicle reference distance and cessation without a legal conclusion. `runner.py` validates exact selection and capture configuration. `native_adapter.py` now acquires the reviewed map, actors and four cameras and records raw original frames and motion, but human/device warning and release actuation and readback still require a reviewed original source mechanism; the Native path has not been physically run.
 
-## Proofs
+`build_constructions.py` built 15 distinct inline constructions and a diagnostic execution manifest. Pinned `runtime.py offline` passed on every selected case; per-case logs and hashes are listed in `offline-proof-summary.json`. Offline success proves materialization, entrypoint checks, and bundled CPU tests only.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0; `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/tests -v`: exit 0; `cpu-school-tests.log` SHA256 `860214c0ff9bcd45272e3781fc51703111503c11f85b37f2cb21a31d77585f7a`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C422976__LVMC-11-46-030__motor_vehicle_driver --complete`: exit 0; `assignment-check.log` SHA256 `97cf1a1a4dd97d04c6ea75286322c507b1bffa57bb2691f90ec304336ed73fa5`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C422976__LVMC-11-46-030__motor_vehicle_driver --complete --require-delivery-ready`: exit 1 as truthful partial; `strict-gate.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. It fails the all-ready requirement.
+## Current CPU receipts
 
-## Remaining CPU and physical work
+- Runtime CPU preflight: exit 0, `cpu-preflight.log`.
+- Unit suite: 17 tests passed, `cpu-school-tests.log`.
+- Offline construction proof: all 15 selected cases exit 0, `offline-proof-summary.json` and per-case `offline.log` files.
+- Pinned semantic stage contracts: exit 0, 15 selected cases and 12 comparisons, `cpu-semantic.log`.
+- Assignment partial check: exit 0, `assignment-check.log`.
+- Exact strict check: exit 1 on truthful partial result, `strict-gate.log`.
 
-Build/prove the exact Native school-lane scene/controller, full original 20 Hz four-camera capture, source-bound finalizer and semantic proposal, saved compatibility/processing, and delivery/comparison audits. Resolve legal vehicle reference point, nearest-side measurement and locality boundary from supplied sources before classification. Actual CARLA human signals, children, lane geometry and cameras remain physical checks after CPU preparation. No missing-tool or dependency blocker is asserted.
+## Next worker-owned work
+
+Complete reviewed human/device warning and release actuation/readback in the Native adapter and verify original four-camera capture. Complete exact per-case constructions, diagnostic recipes, measurement finalizer, offline and compatibility proofs, and independent saved, physical, lifecycle, delivery, and comparison audits. Then bind current hashes in the execution manifest and canonical queue proposal, re-run all CPU proofs, and run the exact scoped strict gate. Actual CARLA realization and independent source review remain later physical checks.

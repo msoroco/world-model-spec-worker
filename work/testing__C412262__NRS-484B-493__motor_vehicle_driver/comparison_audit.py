@@ -42,8 +42,8 @@ def audit(comparison: str, left: dict, right: dict) -> dict:
         receipt = Path(packet["receipt"])
         observations.append(observe(case["case_id"], context, trace, receipt))
         contexts.append(json.loads(context.read_text()))
-    if len(observations[0]["samples"]) != len(observations[1]["samples"]):
-        raise ValueError("comparison frame count differs")
+    if len(observations[0]["samples"]) != 900 or len(observations[1]["samples"]) != 900:
+        raise ValueError("comparison requires two complete original 45 s traces")
     for name in ("camera_plan_sha256", "duration_frames") + FIXED_SOURCES:
         if contexts[0].get(name) is None or contexts[0].get(name) != contexts[1].get(name):
             raise ValueError("fixed source/protocol differs: " + name)

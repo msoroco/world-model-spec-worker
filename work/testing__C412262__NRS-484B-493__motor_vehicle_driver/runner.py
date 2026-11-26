@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 
 from street_scene_construction import ASSIGNMENT, construct, validate_site
+from native_capture import capture
+from native_output_bridge import publish
 
 
 ROOT = Path(__file__).resolve().parent
@@ -24,11 +26,12 @@ def check(site_path: Path | None = None, site_sha256: str | None = None) -> dict
     case_id = config.get("selected_case_id")
     if case_id not in config.get("supported_case_ids", []):
         raise ValueError("selected case outside bundled scope")
-    if site_path is None or site_sha256 is None:
-        raise ValueError("source-hashed reviewed one-way street site required")
-    if hashlib.sha256(site_path.read_bytes()).hexdigest() != site_sha256:
-        raise ValueError("reviewed one-way street site source hash mismatch")
-    validate_site(site_path, case_id)
+    if site_path is not None or site_sha256 is not None:
+        if site_path is None or site_sha256 is None:
+            raise ValueError("source-hashed reviewed one-way street site required")
+        if hashlib.sha256(site_path.read_bytes()).hexdigest() != site_sha256:
+            raise ValueError("reviewed one-way street site source hash mismatch")
+        validate_site(site_path, case_id)
     return {"case_id": case_id, "site_sha256": site_sha256}
 
 
@@ -52,15 +55,16 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=2000)
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
+    if args.check:
+        selected = check()
+        print(selected["case_id"])
+        return
     site_name = os.environ.get("SCENARIO_PARKING_SITE_PACKET")
     site_hash = os.environ.get("SCENARIO_PARKING_SITE_SHA256")
     if not site_name or not site_hash:
         raise ValueError("source-hashed reviewed one-way street site required")
     site_path = Path(site_name).resolve()
     selected = check(site_path, site_hash)
-    if args.check:
-        print(selected["case_id"])
-        return
     operator_name = os.environ.get("SCENARIO_PARKING_OPERATOR_MODULE")
     operator_hash = os.environ.get("SCENARIO_PARKING_OPERATOR_SHA256")
     if not args.output_dir or not operator_name or not operator_hash:
@@ -73,10 +77,9 @@ def main() -> None:
     adapter = operator.make_adapter(world, json.loads(site_path.read_text()), selected["case_id"])
     built = construct(adapter, site_path, selected["case_id"])
     try:
-        adapter.capture_original_four_views(args.output_dir, selected["case_id"],
-                                            duration_frames=900, rate_hz=20)
-        adapter.seal_original_capture(args.output_dir, selected["case_id"],
-                                      site_sha256=site_hash)
+        site = validate_site(site_path, selected["case_id"])
+        capture(world, adapter, site, selected["case_id"], args.output_dir, site_hash)
+        publish(args.output_dir, map_bytes=adapter.map_bytes(world), restored=True)
     finally:
         for actor in reversed(built["owned"]):
             adapter.destroy(actor)

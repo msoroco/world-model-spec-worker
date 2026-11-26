@@ -34,6 +34,7 @@ class ReviewedSiteTests(unittest.TestCase):
         site["opendrive"] = self.add("road.xodr", "<OpenDRIVE/>\n")
         site["nearest_side_geometry"] = self.add("geometry.json", {
             "nearest_side_station_m": 100.0, "approach_lane_id": -1,
+            "station_axis": "world_x_positive",
             "school_lane_polygon_xy": [[0, 0], [1, 0], [1, 3], [0, 3]]})
         for name in ("municipal_jurisdiction", "vehicle_reference_point",
                      "human_actor", "device_actor", "child_actor"):

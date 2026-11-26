@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 import sys
 import tempfile
@@ -6,7 +7,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from street_scene_construction import construct, load_case
+from street_scene_construction import construct, load_case, validate_site
 
 
 class Adapter:
@@ -66,7 +67,7 @@ class ConstructionTests(unittest.TestCase):
                                   "erecting_authority_id": "authority-fixture",
                                   "governing_extent_id": "extent-fixture"}}
         site.update({name: digest for name in (
-            "street_status_sha256", "one_way_order_sha256", "street_boundary_sha256",
+            "map_sha256", "street_status_sha256", "one_way_order_sha256", "street_boundary_sha256",
             "permitted_direction_sha256", "device_erection_sha256",
             "device_authority_sha256", "device_content_sha256", "device_extent_sha256")})
         return site
@@ -74,7 +75,18 @@ class ConstructionTests(unittest.TestCase):
     def run_case(self, case, adapter, site=None):
         with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as directory:
             path = Path(directory) / "site.json"
-            path.write_text(json.dumps(site if site is not None else self.site(case)))
+            value = site if site is not None else self.site(case)
+            value["source_records"] = {}
+            for name in ("map_sha256", "street_status_sha256", "one_way_order_sha256", "street_boundary_sha256",
+                         "permitted_direction_sha256", "device_erection_sha256",
+                         "device_authority_sha256", "device_content_sha256", "device_extent_sha256"):
+                if name not in value:
+                    continue
+                source = Path(directory) / (name + ".json")
+                source.write_text(json.dumps({"synthetic_unit_fixture": name}) + "\n")
+                value[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+                value["source_records"][name] = {"path": source.name, "sha256": value[name]}
+            path.write_text(json.dumps(value))
             return construct(adapter, path, case["case_id"])
 
     def test_all_nine_variants_issue_construction_calls(self):
@@ -102,6 +114,26 @@ class ConstructionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "notice erection"):
             self.run_case(case, adapter)
         self.assertEqual(adapter.destroyed, ["notice-fixture"])
+
+    def test_changed_original_source_bytes_rejected(self):
+        case = load_case("testing__C412262__NRS-484B-493__motor_vehicle_driver__park_left_notice")
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as directory:
+            site = self.site(case)
+            source = Path(directory) / "street.json"
+            source.write_text("original reviewed source fixture\n")
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            site["source_records"] = {name: {"path": source.name, "sha256": digest}
+                                      for name in ("map_sha256", "street_status_sha256", "one_way_order_sha256",
+                                                   "street_boundary_sha256", "permitted_direction_sha256",
+                                                   "device_erection_sha256", "device_authority_sha256",
+                                                   "device_content_sha256", "device_extent_sha256")}
+            for name in site["source_records"]:
+                site[name] = digest
+            path = Path(directory) / "site.json"
+            path.write_text(json.dumps(site))
+            source.write_text("changed source fixture\n")
+            with self.assertRaisesRegex(ValueError, "source bytes changed"):
+                validate_site(path, case["case_id"])
 
 
 if __name__ == "__main__":

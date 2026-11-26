@@ -5,7 +5,7 @@ import json
 import math
 from pathlib import Path
 
-from school_lane_controls import ASSIGNMENT, exact_variant, station_target_m
+from school_lane_controls import ASSIGNMENT, selected_schedule
 
 
 def sha(path: Path) -> str:
@@ -21,7 +21,7 @@ def within(root: Path, relative: str) -> Path:
 
 def plan(root: Path, site_ref: dict, case_id: str) -> dict:
     """Return source-sealed local paths and engineering controls; no legal verdict."""
-    variant = exact_variant(case_id)
+    selected_schedule(case_id, 0.0)
     if not isinstance(site_ref, dict) or not site_ref.get("path") or not site_ref.get("sha256"):
         raise ValueError("reviewed site reference with SHA-256 required")
     site_path = within(root, site_ref["path"])
@@ -45,9 +45,12 @@ def plan(root: Path, site_ref: dict, case_id: str) -> dict:
         raise ValueError("reviewed school-lane nearest-side station required")
     if geometry.get("approach_lane_id") is None or not geometry.get("school_lane_polygon_xy"):
         raise ValueError("reviewed approach lane and school-lane polygon required")
+    if geometry.get("station_axis") != "world_x_positive":
+        raise ValueError("reviewed positive-world-x station axis required")
     return {
-        "assignment_id": ASSIGNMENT, "case_id": case_id, "variant": variant.suffix,
-        "source_kind": "reviewed_original_site", "site_path": str(site_path),
+        "assignment_id": ASSIGNMENT, "case_id": case_id, "variant": case_id[len(ASSIGNMENT) + 2:],
+        "source_kind": "reviewed_original_site", "authority_root": str(root.resolve()),
+        "site_path": str(site_path),
         "site_sha256": site_ref["sha256"],
         "map_path": str(within(root, site["opendrive"]["path"])),
         "opendrive_sha256": site["opendrive"]["sha256"],
@@ -55,11 +58,12 @@ def plan(root: Path, site_ref: dict, case_id: str) -> dict:
         "nearest_side_station_m": float(station),
         "school_lane_polygon_xy": geometry["school_lane_polygon_xy"],
         "ego_approach_lane_id": geometry["approach_lane_id"],
+        "station_axis": geometry["station_axis"],
         "municipal_jurisdiction_source": site["municipal_jurisdiction"],
         "vehicle_reference_point_source": site["vehicle_reference_point"],
         "human_actor_source": site["human_actor"],
         "device_actor_source": site["device_actor"],
         "child_actor_source": site["child_actor"],
-        "stop_reference_station_target_m": station_target_m(station, variant),
+        "stop_reference_station_target_m": selected_schedule(case_id, station)["ego_stop_reference_station_target_m"],
         "legal_judgment": "unresolved",
     }

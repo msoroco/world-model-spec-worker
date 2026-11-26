@@ -5,7 +5,9 @@ nearest-side geometry decide the measured distance after capture.
 """
 
 from dataclasses import dataclass
+import json
 import math
+from pathlib import Path
 
 
 ASSIGNMENT = "testing__C422976__LVMC-11-46-030__motor_vehicle_driver"
@@ -72,6 +74,37 @@ def control_schedule(variant: Variant, nearest_side_m: float) -> dict:
     }
 
 
+def selected_schedule(case_id: str, nearest_side_m: float) -> dict:
+    """Resolve only a selected exact case and its frozen physical station."""
+    if "__child_warning_onset-" not in case_id and "__person_departure_onset-" not in case_id:
+        return control_schedule(exact_variant(case_id), nearest_side_m)
+    proposal = json.loads((Path(__file__).resolve().parent / "proposals/cases.json").read_text())
+    matches = [case for case in proposal["cases"] if case["case_id"] == case_id]
+    if len(matches) != 1 or matches[0].get("target_type") != "judgment_sweep":
+        raise ValueError("unselected judgment sampling case")
+    case = matches[0]
+    point = case["sweep_point"]
+    if set(point) == {"warning_onset_s"}:
+        variant = VARIANTS[0]
+        frame = round(point["warning_onset_s"] * 20)
+        key = "warning_on_from_frame"
+    elif set(point) == {"departure_onset_s"}:
+        variant = VARIANTS[4]
+        frame = round(point["departure_onset_s"] * 20)
+        key = "release_frame"
+    else:
+        raise ValueError("unsupported judgment sampling point")
+    if frame < 0 or frame >= 900:
+        raise ValueError("sampling station outside authored episode")
+    schedule = control_schedule(variant, nearest_side_m)
+    schedule["case_id"] = case_id
+    schedule[key] = frame
+    if key == "release_frame":
+        schedule["stop_hold_start_frame"] = 120
+    schedule["sweep_point"] = point
+    return schedule
+
+
 def apply_schedule(adapter, source: dict, case_id: str) -> dict:
     """Call the Native adapter with geometry and separate actor controls."""
     if source.get("source_kind") != "reviewed_original_site":
@@ -82,8 +115,9 @@ def apply_schedule(adapter, source: dict, case_id: str) -> dict:
                 "child_actor_source", "vehicle_reference_point_source"):
         if not source.get(key):
             raise ValueError("reviewed school-lane source missing: " + key)
-    variant = exact_variant(case_id)
-    schedule = control_schedule(variant, source["nearest_side_station_m"])
+    schedule = selected_schedule(case_id, source["nearest_side_station_m"])
+    variant = exact_variant(case_id) if "sweep_point" not in schedule else (
+        VARIANTS[0] if "warning_onset_s" in schedule["sweep_point"] else VARIANTS[4])
     adapter.load_reviewed_map(source)
     adapter.spawn_vehicle_in_lane(source["ego_approach_lane_id"], schedule)
     adapter.spawn_children(source["child_actor_source"], source["school_lane_polygon_xy"])

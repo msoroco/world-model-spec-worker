@@ -15,7 +15,7 @@ MANIFEST = ROOT / "execution-manifest.json"
 
 
 def main() -> None:
-    scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "c412593-offline"
+    scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "c412593-offline-reviewed"
     scratch.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:

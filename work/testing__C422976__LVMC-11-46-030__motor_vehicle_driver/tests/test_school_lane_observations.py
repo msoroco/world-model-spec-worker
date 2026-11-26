@@ -57,7 +57,7 @@ class SchoolLaneTests(unittest.TestCase):
 
     def test_plan_has_human_and_device_release_controls(self):
         plan = json.loads((PACKAGE / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual((len(plan["cases"]), len(plan["comparisons"])), (9, 8))
+        self.assertEqual((len(plan["cases"]), len(plan["comparisons"])), (15, 12))
 
     def test_fifty_one_foot_sample_and_release_remain_unjudged(self):
         out = self.observe()
