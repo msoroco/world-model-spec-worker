@@ -69,7 +69,7 @@ def build_one(case, scratch):
                                     'position_m': [0, 0, 0],
                                     'heading_deg': 0,
                                     'speed_mps': row['ego_speed_mps'],
-                                    'speed_mph': row['ego_speed_mps'] * 2.236936,
+                                    'speed_mph': row['ego_speed_mps'] / .44704,
                                     'velocity_mps': [row['ego_speed_mps'], 0, 0],
                                     'control': {'throttle': 0, 'steer': 0,
                                                 'brake': 0, 'hand_brake': False,

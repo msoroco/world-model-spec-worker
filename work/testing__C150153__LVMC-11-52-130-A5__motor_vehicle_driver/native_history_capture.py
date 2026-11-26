@@ -98,6 +98,14 @@ def capture_original_history(adapter, site: dict, case, output: Path,
                     value = row.get(name)
                     if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
                         raise ValueError('observed ' + name + ' missing or invalid')
+                position = row.get('ego_position_m')
+                if not isinstance(position, list) or len(position) != 3 or any(
+                        type(value) not in (int, float) or not math.isfinite(value)
+                        for value in position):
+                    raise ValueError('observed ego position missing or invalid')
+                heading = row.get('ego_heading_deg')
+                if type(heading) not in (int, float) or not math.isfinite(heading):
+                    raise ValueError('observed ego heading missing or invalid')
                 encoded = (json.dumps(row, sort_keys=True, allow_nan=False,
                                       separators=(',', ':')) + '\n').encode('utf-8')
                 if frame_hook is not None:

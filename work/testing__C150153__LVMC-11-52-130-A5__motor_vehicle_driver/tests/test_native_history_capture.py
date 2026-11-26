@@ -32,6 +32,8 @@ class Adapter:
             'body_footprint_source_sha256': 'native-body',
             'body_west_x_m': body_west, 'body_east_x_m': body_east,
             'body_curb_gap_m': 0.3, 'ego_speed_mps': 0.0,
+            'ego_position_m': [(body_west + body_east) / 2, s['curb_y_m'], 0.0],
+            'ego_heading_deg': 0.0,
             'fixture_physically_present': True, 'activity_observation': observed_activity,
             'exception_kind': self.case.exception,
             'exception_source_sha256': None,

@@ -1,6 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C135087__NRS-484B-510__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "0\u201345 s",
+        "subject": "zone sign, subject, passenger, entrant and access geometry",
+        "view": "overview"
+      },
+      {
+        "interval": "0\u201345 s",
+        "subject": "restricted-purpose entrant approach and waiting",
+        "view": "approach"
+      },
+      {
+        "interval": "0\u201345 s",
+        "subject": "zone sign, boundaries and passenger exchange",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "0\u201345 s",
+        "subject": "subject stop, passenger door and zone exit",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "testing__C135087__NRS-484B-510__motor_vehicle_driver__clear_before_entry",
@@ -138,12 +165,23 @@
   "law_source": "NRS 484B.510",
   "law_text": "A person shall not stop, stand or park a vehicle for any purpose or length of time in any restricted parking zone other than for the purpose to which parking in such zone is restricted, except that a driver of a passenger vehicle may stop temporarily in such zone for the purpose of and while actually engaged in loading or unloading of passengers when such stopping does not interfere with any vehicle which is waiting to enter or about to enter the zone for the purpose of parking in accordance with the purpose to which parking is restricted.",
   "observations": [
-    "Source-surveyed zone sign/marking, authority, purpose, boundaries and effective conditions; prohibited-stopping exclusions reviewed",
-    "Independent subject passenger-vehicle classification and driver identity; original passenger trajectory and boarding/alighting state transition",
-    "Original 20 Hz subject/entrant/passenger positions, speeds, tasks, waiting, access attempts and blockage through entire 45-second trace",
-    "Original four-camera frames and synchronized frame map; observed access geometry and physical interference remain for later review"
+    {
+      "mandatory": true,
+      "name": "subject_zone_dwell",
+      "source": "original 20 Hz position/speed and reviewed zone boundaries"
+    },
+    {
+      "mandatory": true,
+      "name": "passenger_exchange",
+      "source": "original boarding-state transition and camera pixels"
+    },
+    {
+      "mandatory": true,
+      "name": "entrant_access",
+      "source": "original parking task, approach, waiting and blockage"
+    }
   ],
-  "planning_status": "partial_executable_case_and_saved_audit",
+  "planning_status": "source_gated_cpu_proven",
   "requirement_dispositions": [
     {
       "case_ids": [
@@ -161,9 +199,9 @@
     }
   ],
   "runtime_uncertainties": [
-    "Original zone source and authority, subject passenger-vehicle classification, actual passenger exchange, Native motion and camera visibility remain unverified.",
-    "Legal meanings of temporarily, interfere and about to enter remain unresolved judgments; original measurements will not issue verdicts.",
-    "Exact delivery manifest, canonical proposals, case-specific compatibility receipts and independent media/comparison audit remain CPU work."
+    "Original zone authority, sign, boundaries, effective conditions, subject vehicle class, entrant parking purpose, driver identity, Native motion and four-camera visibility require site and original source review.",
+    "Legal meanings of temporarily, interfere and about to enter remain unresolved judgments; measurements report physical observations only.",
+    "Canonical qualitative sweep feasibility and fallback activation require reviewed site geometry and Native spawn/route readback."
   ],
   "selected_branches": [
     {
@@ -181,6 +219,7 @@
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C135087__NRS-484B-510__motor_vehicle_driver/assignment.json",

@@ -240,6 +240,8 @@ def build():
                      "command_consent": item["command_consent"],
                      "planned_hose_crossing": item["planned_hose_crossing"]},
         }
+        if item["case_id"] in semantic_cases:
+            config["case"]["recording_description"] = semantic_cases[item["case_id"]]["recording_description"]
         files = [{"path": "config.json", "content": json.dumps(config, indent=2, sort_keys=True) + "\n"},
                  {"path": "runner.py", "content": RUNNER},
                  {"path": "tests/test_bundle.py", "content": TEST}]

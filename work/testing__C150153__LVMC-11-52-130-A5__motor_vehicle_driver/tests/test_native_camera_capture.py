@@ -38,6 +38,10 @@ class CameraAdapter(CombinedAdapter):
     def abort_cameras(self):
         self.aborted = True
 
+    def restore_world(self):
+        self.restored = True
+        return True
+
     def original_comparison_context(self):
         return {'format': 'sidewalk-elevator-original-comparison-context',
                 'case_id': HERE.name + '__' + self.capture.case.id,
@@ -64,6 +68,9 @@ class NativeCameraCaptureTests(unittest.TestCase):
                 site = dict(source_packet['site'], site_sha256=sha(packet))
                 adapter = CameraAdapter(site, case)
                 attempt = Path(temp) / 'attempt'
+                attempt.mkdir()
+                for name in ('construction.json', 'runner.py', 'config.json'):
+                    (attempt / name).write_text('synthetic materialized source\n')
                 proof = capture(adapter, packet, sources, HERE.name + '__' + case.id,
                                 4.0, attempt)
                 self.assertEqual(proof['frame_count'], 900)
@@ -74,6 +81,9 @@ class NativeCameraCaptureTests(unittest.TestCase):
                 self.assertEqual(mapping[0]['original_frame'], 4000)
                 self.assertEqual(mapping[-1]['camera_frames']['overview'], 899)
                 self.assertFalse(adapter.aborted)
+                self.assertTrue(adapter.restored)
+                seal = json.loads((attempt / 'capture-seal.json').read_text())
+                self.assertEqual(seal['events'], ['capture_finished', 'encoders_closed', 'restoration_verified'])
                 with self.assertRaisesRegex(ValueError, 'overwrite'):
                     capture(adapter, packet, sources, HERE.name + '__' + case.id,
                             4.0, attempt)
@@ -90,9 +100,13 @@ class NativeCameraCaptureTests(unittest.TestCase):
                     values['overview'] += 1
                     return values
             adapter = WrongIndex(site, CASES[0])
+            attempt = Path(temp) / 'bad-attempt'
+            attempt.mkdir()
+            for name in ('construction.json', 'runner.py', 'config.json'):
+                (attempt / name).write_text('synthetic materialized source\n')
             with self.assertRaisesRegex(ValueError, 'frame index join differs'):
                 capture(adapter, packet, sources, HERE.name + '__' + CASES[0].id,
-                        4.0, Path(temp) / 'bad-attempt')
+                        4.0, attempt)
             self.assertTrue(adapter.aborted)
             self.assertFalse((Path(temp) / 'bad-attempt/history.jsonl').exists())
 

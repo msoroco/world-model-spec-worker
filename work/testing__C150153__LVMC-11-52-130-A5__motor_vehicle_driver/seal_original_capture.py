@@ -16,6 +16,8 @@ from reviewed_site import verify
 
 
 SOURCES = ("history.jsonl", "camera-frame-map.jsonl", "comparison-context.json",
+           "trace.jsonl", "video_frames.jsonl",
+           "reviewed-site/packet.json",
            *(name + ".mkv" for name in CAMERAS))
 
 
@@ -28,7 +30,7 @@ def seal(attempt: Path, site_packet: Path, source_root: Path,
     attempt = Path(attempt).resolve()
     site_packet = Path(site_packet).resolve()
     owner_receipt = Path(owner_receipt).resolve()
-    output = attempt / "capture-seal.json"
+    output = attempt / "delivery-seal.json"
     if output.exists():
         raise ValueError("refusing to overwrite original capture seal")
     if owner_receipt.is_relative_to(attempt):
@@ -36,32 +38,53 @@ def seal(attempt: Path, site_packet: Path, source_root: Path,
     if _sha(owner_receipt) != owner_receipt_sha256:
         raise ValueError("owner release receipt hash differs")
     reviewed = verify(site_packet, source_root)
+    acquisition = json.loads((attempt / 'capture-seal.json').read_text())
+    native_exit = json.loads((attempt / 'native-exit.json').read_text())
     receipt = json.loads(owner_receipt.read_text())
-    case_id = receipt.get("case_id", "")
+    case_id = acquisition.get('case_id', '')
     prefix = reviewed["assignment_id"] + "__"
     if not case_id.startswith(prefix) or case_id[len(prefix):] not in {c.id for c in CASES}:
         raise ValueError("owner release exact case differs")
-    if (receipt.get("format") != "sidewalk-elevator-native-owner-release" or
-            receipt.get("site_packet_sha256") != _sha(site_packet) or
-            receipt.get("provenance_kind") != "original_native" or
-            receipt.get("owner_released") is not True or
-            receipt.get("restoration_verified") is not True or
-            receipt.get("native_process_exit_code") != 0 or
-            any(receipt.get("encoder_exit_codes", {}).get(name) != 0 for name in CAMERAS)):
+    if (acquisition.get('format') != 'sidewalk-elevator-native-acquisition-seal' or
+            acquisition.get('site_packet_sha256') != _sha(site_packet) or
+            acquisition.get('provenance_kind') != 'native' or
+            acquisition.get('events') != ['capture_finished', 'encoders_closed', 'restoration_verified'] or
+            acquisition.get('frames') != 900 or acquisition.get('capture_rate_hz') != 20 or
+            acquisition.get('native_revision', {}).get('construction_sha256') != _sha(attempt / 'construction.json') or
+            acquisition.get('native_revision', {}).get('runner_sha256') != _sha(attempt / 'runner.py') or
+            native_exit.get('event') != 'native_exit' or
+            native_exit.get('capture_seal_sha256') != _sha(attempt / 'capture-seal.json') or
+            native_exit.get('native_revision') != acquisition['native_revision'] or
+            native_exit.get('capture_command_failed') is True or
+            native_exit.get('native_process_exit_code', 0) != 0 or
+            receipt.get('event') != 'owner_released' or
+            receipt.get('operator_attested') is not True or
+            receipt.get('native_construction_sha256') != _sha(attempt / 'construction.json') or
+            receipt.get('native_exit_sha256') != _sha(attempt / 'native-exit.json')):
         raise ValueError("original Native owner release incomplete")
+    sealed_sources = acquisition.get('sources')
+    if not isinstance(sealed_sources, dict) or not set(SOURCES) <= set(sealed_sources):
+        raise ValueError('original Native source inventory incomplete')
     hashes = {}
-    for name in SOURCES:
-        path = attempt / name
+    for name in sealed_sources:
+        relative = Path(name)
+        path = (attempt / relative).resolve()
+        if relative.is_absolute() or '..' in relative.parts or not path.is_relative_to(attempt):
+            raise ValueError('original Native source path escapes attempt')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError("original Native source missing: " + name)
         hashes[name] = _sha(path)
-    if receipt.get("source_hashes") != hashes:
+    if sealed_sources != hashes:
         raise ValueError("owner release original source hashes differ")
+    copied_packet = attempt / 'reviewed-site/packet.json'
+    if _sha(copied_packet) != _sha(site_packet):
+        raise ValueError('copied reviewed site packet differs')
+    verify(copied_packet, attempt / 'reviewed-site/sources')
     seal_record = {"format": "sidewalk-elevator-native-seal", "case_id": case_id,
                    "site_packet_sha256": _sha(site_packet), "frames": 900,
                    "capture_rate_hz": 20, "owner_released": True,
                    "restoration_verified": True, "native_process_exit_code": 0,
-                   "encoder_exit_codes": receipt["encoder_exit_codes"],
+                   "encoder_exit_codes": {name: 0 for name in CAMERAS},
                    "provenance_kind": "original_native", "sources": hashes,
                    "owner_receipt_sha256": owner_receipt_sha256}
     output.write_text(json.dumps(seal_record, indent=2, sort_keys=True) + "\n")

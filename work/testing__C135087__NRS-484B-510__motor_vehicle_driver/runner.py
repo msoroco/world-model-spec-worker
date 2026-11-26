@@ -9,6 +9,7 @@ from pathlib import Path
 from native_capture import VIEWS, capture
 from restricted_zone import ZonePlan
 from reviewed_site import validate
+from site_geometry import load as load_native_binding
 
 
 def plan_from_config(config, site_path):
@@ -20,6 +21,7 @@ def plan_from_config(config, site_path):
     p["restricted_source"] = "source-reviewed restricted zone"
     plan = ZonePlan(**p)
     validate(site_path, plan.case_id, plan)
+    load_native_binding(site_path, plan)
     return plan
 
 

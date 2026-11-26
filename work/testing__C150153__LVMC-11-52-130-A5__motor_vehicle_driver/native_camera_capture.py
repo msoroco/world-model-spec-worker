@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import shutil
 
 from independent_delivery_audit import CAMERAS
 from native_history_capture import capture_original_history
@@ -30,11 +31,24 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
     if case is None:
         raise ValueError('camera capture exact case missing')
     attempt = Path(attempt)
-    if attempt.exists():
+    if not attempt.is_dir() or not all((attempt / name).is_file()
+                                       for name in ('construction.json', 'runner.py', 'config.json')):
+        raise ValueError('materialized original Native attempt required')
+    if any((attempt / name).exists() for name in ('history.jsonl', 'camera-frame-map.jsonl',
+                                                  'comparison-context.json', 'capture-seal.json')):
         raise ValueError('refusing to overwrite original camera attempt')
     site = dict(packet['site'])
     site['site_sha256'] = _sha(Path(packet_path))
-    attempt.mkdir(parents=True)
+    reviewed_dir = attempt / 'reviewed-site'
+    reviewed_dir.mkdir()
+    shutil.copy2(packet_path, reviewed_dir / 'packet.json')
+    copied_sources = []
+    for item in packet['sources'].values():
+        relative = Path(item['path'])
+        destination = reviewed_dir / 'sources' / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(Path(source_root) / relative, destination)
+        copied_sources.append(str(destination.relative_to(attempt)))
     built = None
     started = False
     completed = False
@@ -43,6 +57,7 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
         adapter.start_cameras(attempt, site['camera_plan_sha256'], CAMERAS)
         started = True
         mapping = []
+        trace = []
 
         def record(row, index):
             camera_frames = adapter.record_camera_frame(row)
@@ -50,6 +65,16 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
                 raise ValueError('original camera frame index join differs')
             mapping.append({'original_frame': row['original_frame'],
                             'time_s': row['time_s'], 'camera_frames': camera_frames})
+            position = row['ego_position_m']
+            heading = row['ego_heading_deg']
+            speed = row['ego_speed_mps']
+            angle = math.radians(heading)
+            trace.append({'frame': row['original_frame'], 'time_s': row['time_s'],
+                          'position': dict(zip(('x', 'y', 'z'), position)),
+                          'position_m': position, 'heading_deg': heading,
+                          'speed_mps': speed, 'speed_mph': speed * 2.2369362921,
+                          'velocity_mps': [speed * math.cos(angle),
+                                           speed * math.sin(angle), 0.0]})
 
         history = capture_original_history(adapter, site, case,
                                            attempt / 'history.jsonl', frame_hook=record)
@@ -81,10 +106,17 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
         if type(curb) not in (int, float) or not math.isfinite(curb) or curb < 0:
             raise ValueError('original comparison curb target missing')
         (attempt / 'camera-frame-map.jsonl').write_text(
-            ''.join(json.dumps(item, sort_keys=True) + '\n' for item in mapping))
-        (attempt / 'comparison-context.json').write_text(json.dumps(context, sort_keys=True) + '\n')
+            ''.join(json.dumps(item, sort_keys=True, allow_nan=False) + '\n' for item in mapping))
+        (attempt / 'comparison-context.json').write_text(json.dumps(context, sort_keys=True, allow_nan=False) + '\n')
+        (attempt / 'trace.jsonl').write_text(
+            ''.join(json.dumps(item, sort_keys=True, allow_nan=False) + '\n' for item in trace))
+        (attempt / 'video_frames.jsonl').write_text(
+            ''.join(json.dumps({'video_frame': index, 'carla_frame': item['original_frame'],
+                                'native_frame': item['original_frame'], 'time_s': item['time_s']},
+                               sort_keys=True, allow_nan=False) + '\n'
+                    for index, item in enumerate(mapping)))
         completed = True
-        return {'case_id': case_id, 'site_packet_sha256': site['site_sha256'],
+        proof = {'case_id': case_id, 'site_packet_sha256': site['site_sha256'],
                 'history_sha256': history['sha256'],
                 'camera_frame_map_sha256': _sha(attempt / 'camera-frame-map.jsonl'),
                 'comparison_context_sha256': _sha(attempt / 'comparison-context.json'),
@@ -97,3 +129,20 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
         if built is not None:
             for actor in reversed(built['owned']):
                 adapter.destroy(actor)
+    if adapter.restore_world() is not True:
+        raise ValueError('original world restoration readback missing')
+    source_names = ('history.jsonl', 'camera-frame-map.jsonl', 'comparison-context.json',
+                    'trace.jsonl', 'video_frames.jsonl',
+                    *(name + '.mkv' for name in CAMERAS),
+                    'reviewed-site/packet.json', *copied_sources)
+    seal = {'format': 'sidewalk-elevator-native-acquisition-seal',
+            'case_id': case_id, 'site_packet_sha256': site['site_sha256'],
+            'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': 900,
+            'capture_rate_hz': 20,
+            'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+            'native_revision': {'construction_sha256': _sha(attempt / 'construction.json'),
+                                'runner_sha256': _sha(attempt / 'runner.py')},
+            'sources': {name: _sha(attempt / name) for name in source_names}}
+    (attempt / 'capture-seal.json').write_text(json.dumps(seal, indent=2, sort_keys=True) + '\n')
+    proof['capture_seal_sha256'] = _sha(attempt / 'capture-seal.json')
+    return proof

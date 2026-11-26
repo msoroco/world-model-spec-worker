@@ -37,7 +37,9 @@ def _sha(path: Path) -> str:
 def _record(attempt: Path, packet: dict, site_sha: str, saved: dict) -> dict:
     attempt = Path(attempt)
     context_path = attempt / 'comparison-context.json'
-    seal = json.loads((attempt / 'capture-seal.json').read_text())
+    seal_path = attempt / ('delivery-seal.json' if (attempt / 'delivery-seal.json').is_file()
+                           else 'capture-seal.json')
+    seal = json.loads(seal_path.read_text())
     context_sha = _sha(context_path)
     if (seal['sources'].get('comparison-context.json') != context_sha or
             saved['original_acquisition_hashes'].get('comparison-context.json') != context_sha):

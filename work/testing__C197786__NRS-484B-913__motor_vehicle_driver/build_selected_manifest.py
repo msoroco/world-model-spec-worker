@@ -60,7 +60,7 @@ def build():
             "offline": {
                 "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {cid} --output .runtime-work/hose-913-selected-{short}-v1",
                 "construction_sha256": selected["construction_sha256"],
-                "diagnostic_command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/diagnostic-execution-manifest.json --case {cid} --output .runtime-work/hose-913-offline-{short}-v13",
+                "diagnostic_command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/diagnostic-execution-manifest.json --case {cid} --output .runtime-work/hose-913-offline-{short}-v14",
                 "diagnostic_exit_code": 0,
                 "diagnostic_log": log.name,
                 "diagnostic_log_sha256": sha(log),

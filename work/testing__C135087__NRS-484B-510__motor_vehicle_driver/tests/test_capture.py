@@ -86,6 +86,16 @@ class Adapter:
             paths[name] = path
         return paths
 
+    def finalize_native_capture(self, output, rows, traces):
+        (output / "construction.json").write_text("diagnostic test construction\n")
+        (output / "runner.py").write_text("# diagnostic test runner\n")
+        capture_root = output / "capture"
+        capture_root.mkdir()
+        manifest = capture_root / "manifest.json"
+        manifest.write_text(json.dumps({"frames": len(rows),
+                                        "acquisition": "diagnostic_test_double"}) + "\n")
+        return manifest
+
     def close(self): return True
 
 
@@ -93,6 +103,11 @@ class OriginalShapeAdapter(Adapter):
     """Structural audit test double; never a real Native source."""
 
     def provenance(self): return "original_native"
+
+
+class MissingGraphAdapter(Adapter):
+    def finalize_native_capture(self, output, rows, traces):
+        return None
 
 
 class CaptureTests(unittest.TestCase):
@@ -129,6 +144,10 @@ class CaptureTests(unittest.TestCase):
             result = capture.capture(Adapter(plan.case_id), plan, packet, output,
                                      allow_diagnostic=True)
             self.assertEqual(result["frame_count"], 900)
+            closure = json.loads((output / "capture-seal.json").read_text())
+            self.assertEqual(closure["events"],
+                             ["capture_finished", "encoders_closed", "restoration_verified"])
+            self.assertIn("capture/manifest.json", closure["sources"])
             measured = audit.audit_original_frames(output / "original-attempt/history.jsonl",
                                                    output / "original-attempt/context.json",
                                                    output / "original-attempt/seal.json", plan.case_id)
@@ -145,6 +164,18 @@ class CaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "overwrite"):
                 capture.capture(Adapter(plan.case_id), plan, packet, output,
                                 allow_diagnostic=True)
+
+    def test_missing_native_graph_does_not_seal(self):
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:
+            root = Path(tmp)
+            plan = self.plan()
+            packet = self.packet(root, plan)
+            output = root / "attempt"
+            with self.assertRaisesRegex(ValueError, "graph capture incomplete"):
+                capture.capture(MissingGraphAdapter(plan.case_id), plan, packet, output,
+                                allow_diagnostic=True)
+            self.assertFalse((output / "capture-seal.json").exists())
+            self.assertTrue((output / "native-run-status.json").is_file())
 
     def test_saved_pixel_tamper_rejected(self):
         with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:

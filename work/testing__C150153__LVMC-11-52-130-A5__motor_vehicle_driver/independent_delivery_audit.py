@@ -53,7 +53,10 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
     attempt = Path(attempt)
     packet = verify(packet_path, source_root)
     site_sha = _sha(Path(packet_path))
-    seal = json.loads((attempt / "capture-seal.json").read_text())
+    seal_name = 'capture-seal.json' if diagnostic_fixture else 'delivery-seal.json'
+    if not (attempt / seal_name).is_file():
+        raise ValueError('original Native capture and owner-release delivery seal required')
+    seal = json.loads((attempt / seal_name).read_text())
     case_id = seal.get("case_id", "")
     prefix = packet["assignment_id"] + "__"
     if not case_id.startswith(prefix) or case_id[len(prefix):] not in {item.id for item in CASES}:
@@ -72,21 +75,39 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
         raise ValueError("original Native capture and full decoder required")
     hashes = seal.get("sources", {})
     required = ("history.jsonl", "camera-frame-map.jsonl", "comparison-context.json",
+                "trace.jsonl", "video_frames.jsonl",
                 *(name + ".mkv" for name in CAMERAS))
+    if not set(required) <= set(hashes):
+        raise ValueError('sealed original source inventory incomplete')
+    for name, checksum in hashes.items():
+        relative = Path(name)
+        path = (attempt / relative).resolve()
+        if relative.is_absolute() or '..' in relative.parts or not path.is_relative_to(attempt.resolve()):
+            raise ValueError('sealed original source path escapes attempt')
+        if not path.is_file() or checksum != _sha(path):
+            raise ValueError('sealed original source missing or changed: ' + name)
     for name in required:
-        path = attempt / name
-        if not path.is_file() or hashes.get(name) != _sha(path):
-            raise ValueError("sealed original source missing or changed: " + name)
+        if name not in hashes:
+            raise ValueError('sealed original source missing: ' + name)
     history = audit_original_history(attempt / "history.jsonl", hashes["history.jsonl"],
                                      case_id[len(prefix):], site_sha)
     mapping = [json.loads(line) for line in (attempt / "camera-frame-map.jsonl").read_text().splitlines()]
     rows = [json.loads(line) for line in (attempt / "history.jsonl").read_text().splitlines()]
-    if len(mapping) != 900 or len(rows) != 900:
+    trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
+    video_map = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
+    if any(len(items) != 900 for items in (mapping, rows, trace, video_map)):
         raise ValueError("original camera/history frame count differs")
-    for index, (frame, row) in enumerate(zip(mapping, rows)):
+    for index, (frame, row, motion, video) in enumerate(zip(mapping, rows, trace, video_map)):
         if (frame.get("original_frame") != row.get("original_frame") or
                 frame.get("time_s") != row.get("time_s") or
-                frame.get("camera_frames") != {name: index for name in CAMERAS}):
+                frame.get("camera_frames") != {name: index for name in CAMERAS} or
+                motion.get('frame') != row.get('original_frame') or
+                motion.get('time_s') != row.get('time_s') or
+                motion.get('position_m') != row.get('ego_position_m') or
+                video.get('video_frame') != index or
+                video.get('carla_frame') != row.get('original_frame') or
+                video.get('native_frame') != row.get('original_frame') or
+                video.get('time_s') != row.get('time_s')):
             raise ValueError("original camera frame/time join differs")
     for name in CAMERAS:
         count = decoder(attempt / (name + ".mkv"), name) if diagnostic_fixture and decoder else (

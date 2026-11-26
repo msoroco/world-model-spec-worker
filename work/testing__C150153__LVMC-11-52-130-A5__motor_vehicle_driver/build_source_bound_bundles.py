@@ -28,6 +28,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 from native_case_runner import run_case
 from native_camera_capture import capture as capture_with_cameras
@@ -70,16 +71,22 @@ def check():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--reviewed-packet', type=Path)
-    parser.add_argument('--source-root', type=Path)
-    parser.add_argument('--adapter-module', type=Path)
-    parser.add_argument('--output', type=Path)
+    parser.add_argument('--reviewed-packet', type=Path,
+                        default=os.environ.get('C150153_REVIEWED_SITE_PACKET'))
+    parser.add_argument('--source-root', type=Path,
+                        default=os.environ.get('C150153_ORIGINAL_SOURCE_ROOT'))
+    parser.add_argument('--adapter-module', type=Path,
+                        default=os.environ.get('C150153_NATIVE_ADAPTER_MODULE'))
+    parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port', type=int)
     args = parser.parse_args()
     check()
     if args.check:
         print('source-bound exact case preflight passed: ' + CASE_ID)
         return
-    if not all((args.reviewed_packet, args.source_root, args.adapter_module, args.output)):
+    if not all((args.reviewed_packet, args.source_root, args.adapter_module,
+                args.output_dir, args.host, args.port)):
         raise ValueError('original source and Native adapter arguments required')
     spec = importlib.util.spec_from_file_location('original_elevator_adapter', args.adapter_module)
     if spec is None or spec.loader is None:
@@ -88,9 +95,9 @@ def main():
     spec.loader.exec_module(module)
     if not hasattr(module, 'open_native_adapter'):
         raise ValueError('original Native adapter factory missing')
-    adapter = module.open_native_adapter()
+    adapter = module.open_native_adapter(args.host, args.port)
     try:
-        result = run_original_capture(adapter, args.reviewed_packet, args.source_root, args.output)
+        result = run_original_capture(adapter, args.reviewed_packet, args.source_root, args.output_dir)
         print(result)
     finally:
         adapter.close()
@@ -145,7 +152,15 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                   'supported_case_ids': [item['case_id'] for item in specs['cases']],
                   'rate_hz': 20, 'duration_s': 45,
                   'required_atoms': [], 'source_packets': [],
-                  'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference']}
+                  'cameras': [
+                      {'name': 'overview', 'width': 1920, 'height': 1080,
+                       'pose_strategy': 'source-reviewed frontage overview', 'fov_deg': 90},
+                      {'name': 'approach', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'source-reviewed one-way approach', 'fov_deg': 90},
+                      {'name': 'reference_corner', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'source-reviewed five-foot reference corner', 'fov_deg': 90},
+                      {'name': 'driver_reference', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'source-reviewed driver and direction view', 'fov_deg': 90}]}
         files = {'runner.py': runner, 'scene.json': json.dumps(scene, indent=2) + '\n',
                  'config.json': json.dumps(config, indent=2) + '\n',
                  'tests/test_bundle.py': TEST,

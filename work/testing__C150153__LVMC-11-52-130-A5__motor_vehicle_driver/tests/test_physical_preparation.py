@@ -12,6 +12,7 @@ from parking import CASES
 from physical_preparation import prepare
 from test_independent_delivery_audit import sha
 from test_physical_review import PhysicalReviewTests
+from test_physical_outcomes import with_observed_approach
 
 
 class PhysicalPreparationTests(unittest.TestCase):
@@ -22,6 +23,12 @@ class PhysicalPreparationTests(unittest.TestCase):
             with self.subTest(case=case.id), TemporaryDirectory(dir=scratch) as temp:
                 attempt, site, sources, claim, packet, delivery = PhysicalReviewTests().fixture(temp, case.id)
                 sealed = json.loads((attempt / 'capture-seal.json').read_text())
+                rows = [json.loads(line) for line in (attempt / 'history.jsonl').read_text().splitlines()]
+                rows = with_observed_approach(rows)
+                (attempt / 'history.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                sealed['sources']['history.jsonl'] = sha(attempt / 'history.jsonl')
+                (attempt / 'capture-seal.json').write_text(json.dumps(sealed) + '\n')
+                delivery['source_hashes'] = sealed['sources']
                 with patch('physical_preparation.review', return_value=delivery):
                     result = prepare(attempt, site, sources, claim, sha(claim),
                                      diagnostic_fixture=True)

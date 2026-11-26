@@ -23,7 +23,10 @@ def prepare(attempt: Path, site_packet: Path, source_root: Path,
     site_packet = Path(site_packet).resolve()
     packet = verify(site_packet, source_root)
     before = {path.name: _sha(path) for path in attempt.iterdir() if path.is_file()}
-    seal = json.loads((attempt / 'capture-seal.json').read_text())
+    seal_path = attempt / ('capture-seal.json' if diagnostic_fixture else 'delivery-seal.json')
+    if not seal_path.is_file():
+        raise ValueError('physical preparation original Native provenance and delivery seal required')
+    seal = json.loads(seal_path.read_text())
     if seal.get('provenance_kind') != ('synthetic_fixture' if diagnostic_fixture else 'original_native'):
         raise ValueError('physical preparation original Native provenance required')
     if seal.get('site_packet_sha256') != _sha(site_packet):

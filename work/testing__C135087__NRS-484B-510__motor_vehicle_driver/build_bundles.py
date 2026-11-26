@@ -37,6 +37,7 @@ def main():
             "case_ids": [case["case_id"] for case in cases]}]
         plan_path.write_text(_content(plan))
     code = ("runner.py", "analysis.py", "native_capture.py", "restricted_zone.py", "reviewed_site.py",
+            "site_geometry.py", "native_adapter.py", "semantic_feasibility.py",
             "zone_audit.py", "saved_audit.py", "delivery_audit.py", "comparison_audit.py")
     entries = []
     for case in cases:
@@ -111,6 +112,16 @@ def main():
                         "construction_sha256": _sha(construction_path),
                         "measurement_contract": str(contract_path.relative_to(ROOT)),
                         "measurement_procedure": {"entrypoint": "analysis.py"},
+                        "acquisition": {
+                            "subject_zone_dwell": {"entrypoint": "native_capture.py",
+                                "method": "original subject position and speed with reviewed zone boundaries",
+                                "evidence": ["original-attempt/history.jsonl", "original-attempt/context.json"]},
+                            "passenger_exchange": {"entrypoint": "native_capture.py",
+                                "method": "original passenger boarding-state transition and pixel citations",
+                                "evidence": ["original-attempt/history.jsonl", "original-attempt/overview.zip"]},
+                            "entrant_access": {"entrypoint": "native_capture.py",
+                                "method": "original entrant parking task, approach, waiting and access readback",
+                                "evidence": ["original-attempt/history.jsonl", "trace.jsonl", "video_frames.jsonl"]}},
                         "fixture_recipe": "work/" + ASSIGNMENT + "/diagnostic-" + suffix + "-recipe.json",
                         "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                            "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},

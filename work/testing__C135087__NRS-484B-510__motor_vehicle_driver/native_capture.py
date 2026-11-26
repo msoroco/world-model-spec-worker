@@ -56,6 +56,19 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
             raise ValueError("reviewed source changed during acquisition: " + role)
         copied[role] = {"path": "source-review/" + target.name, "sha256": item["sha256"]}
     sealed_packet = dict(packet, sources=copied)
+    if "native_binding" in packet:
+        binding = dict(packet["native_binding"])
+        geometry = binding["geometry_source"]
+        source = Path(geometry["path"])
+        if not source.is_absolute():
+            source = Path(site_path).resolve().parent / source
+        target = source_dir / ("native_geometry" + source.suffix)
+        shutil.copy2(source, target)
+        if _sha(target.read_bytes()) != geometry["sha256"]:
+            raise ValueError("reviewed Native geometry changed during acquisition")
+        binding["geometry_source"] = {"path": "source-review/" + target.name,
+                                      "sha256": geometry["sha256"]}
+        sealed_packet["native_binding"] = binding
     _json(original / "site-packet.json", sealed_packet)
     actors = None
     archives = {}
@@ -65,6 +78,7 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
     first_frame = None
     first_time = None
     restored = False
+    graph_manifest = None
     try:
         actors = construct(plan, adapter.world)
         cameras = adapter.attach_cameras(actors, VIEWS)
@@ -121,6 +135,15 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
                     not Path(media[name]).is_file() or Path(media[name]).stat().st_size == 0
                     for name in media):
             raise ValueError("original encoded media incomplete")
+        graph_manifest = adapter.finalize_native_capture(output, tuple(rows), tuple(traces))
+        capture_manifest = output / "capture/manifest.json"
+        if not capture_manifest.is_file() or graph_manifest != capture_manifest or \
+                json.loads(capture_manifest.read_text()).get("frames") != frame_count:
+            raise ValueError("original Native graph capture incomplete")
+    except Exception as error:
+        _json(output / "native-run-status.json", {"errors": [str(error)],
+              "capture_failed": True})
+        raise
     finally:
         for archive in archives.values():
             archive.close()
@@ -128,6 +151,9 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
             actors.close()
         restored = adapter.close() is True
     if len(rows) != frame_count or not restored:
+        _json(output / "native-run-status.json", {
+            "errors": ["original acquisition incomplete or world restoration unverified"],
+            "capture_failed": True})
         raise ValueError("original acquisition incomplete or world restoration unverified")
     history = original / "history.jsonl"
     history.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
@@ -156,5 +182,23 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
                                    for name in (*VIEWS, "raw")},
           "diagnostic_fixture": provenance != "original_native",
           "physical_acceptance_claimed": False})
+    construction = output / "construction.json"
+    runner = output / "runner.py"
+    if construction.is_file() and runner.is_file():
+        sources = {}
+        for path in (history, original / "context.json", original / "seal.json",
+                     original / "site-packet.json", output / "trace.jsonl",
+                     output / "video_frames.jsonl",
+                     *(output / (name + ".mkv") for name in (*VIEWS, "raw")),
+                     *(path for path in original.rglob("*") if path.is_file()),
+                     *(path for path in (output / "capture").rglob("*") if path.is_file())):
+            sources[path.relative_to(output).as_posix()] = _sha(path.read_bytes())
+        _json(output / "capture-seal.json", {
+            "events": ["capture_finished", "encoders_closed", "restoration_verified"],
+            "sources": sources,
+            "native_revision": {"construction_sha256": _sha(construction.read_bytes()),
+                                "runner_sha256": _sha(runner.read_bytes())}})
+    elif provenance == "original_native":
+        raise ValueError("materialized construction and runner required for Native closure")
     return {"case_id": plan.case_id, "frame_count": frame_count,
             "physical_acceptance_claimed": False}

@@ -55,7 +55,16 @@ class DeliveryAuditTests(unittest.TestCase):
                        'traffic_device_direction': 'traffic_device_source_sha256',
                    }.get(case.exception)) if case.exception != 'none' else None)}
         (attempt / 'comparison-context.json').write_text(json.dumps(context) + '\n')
+        (attempt / 'trace.jsonl').write_text(''.join(json.dumps({
+            'frame': row['original_frame'], 'time_s': row['time_s'],
+            'position_m': row['ego_position_m'], 'speed_mps': row['ego_speed_mps']}) + '\n'
+            for row in rows))
+        (attempt / 'video_frames.jsonl').write_text(''.join(json.dumps({
+            'video_frame': index, 'carla_frame': row['original_frame'],
+            'native_frame': row['original_frame'], 'time_s': row['time_s']}) + '\n'
+            for index, row in enumerate(rows)))
         names = ('history.jsonl', 'camera-frame-map.jsonl', 'comparison-context.json',
+                 'trace.jsonl', 'video_frames.jsonl',
                  *(name + '.mkv' for name in CAMERAS))
         seal = {'format': 'sidewalk-elevator-native-seal',
                 'case_id': HERE.name + '__' + case_name, 'site_packet_sha256': sha(packet_path),
@@ -95,6 +104,18 @@ class DeliveryAuditTests(unittest.TestCase):
             (attempt / 'camera-frame-map.jsonl').write_text(
                 ''.join(json.dumps(row) + '\n' for row in rows))
             seal['sources']['camera-frame-map.jsonl'] = sha(attempt / 'camera-frame-map.jsonl')
+            (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
+            with self.assertRaisesRegex(ValueError, 'frame/time join differs'):
+                audit(attempt, packet, sources, diagnostic_fixture=True,
+                      decoder=lambda path, name: 900)
+            rows[400]['camera_frames']['overview'] = 400
+            (attempt / 'camera-frame-map.jsonl').write_text(
+                ''.join(json.dumps(row) + '\n' for row in rows))
+            seal['sources']['camera-frame-map.jsonl'] = sha(attempt / 'camera-frame-map.jsonl')
+            trace = [json.loads(line) for line in (attempt / 'trace.jsonl').read_text().splitlines()]
+            trace[400]['frame'] += 1
+            (attempt / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
+            seal['sources']['trace.jsonl'] = sha(attempt / 'trace.jsonl')
             (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
             with self.assertRaisesRegex(ValueError, 'frame/time join differs'):
                 audit(attempt, packet, sources, diagnostic_fixture=True,
