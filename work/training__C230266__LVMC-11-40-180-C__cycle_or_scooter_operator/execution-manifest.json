@@ -1,0 +1,371 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+      "kind": "delivery",
+      "construction": "native-draft/probe_a/construction.json",
+      "construction_sha256": "40675c2d54e24797b63eb51ee0e2088ba2d561e47976ac352f122e3a4714be65",
+      "measurement_contract": "measurement-probe_a.json",
+      "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bicycle sidewalk motion, acoustic output/placement and pedestrian pass require original source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native-fallback/probe_a/construction.json",
+          "construction_sha256": "c79df60d57f98c25f350ab078f384881c4ae664b7573546a494545b95835ab36",
+          "trigger": {
+            "source": "original rider and pedestrian actor trajectories",
+            "metric": "first_full_ahead_frame",
+            "failure_condition": "no full pass by the final 600th source frame despite intended pass"
+          },
+          "changed_knobs": [
+            "rider nominal approach speed 1.4 to 1.7 m/s, with pause and signal request preserved"
+          ],
+          "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_a.json",
+          "status": "unselected_cpu_diagnostic",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/draft-fallback-execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --candidate fallback1 --output .runtime-work/c230266-fallback-offline-v2-probe_a",
+            "exit_code": 0,
+            "construction_sha256": "c79df60d57f98c25f350ab078f384881c4ae664b7573546a494545b95835ab36",
+            "log": "fallback-proof/probe_a-offline.log",
+            "log_sha256": "38057e5a1a66829005f0e3741b61e47c023d2d4e65828350969809bf394ba642"
+          },
+          "compatibility": {
+            "receipt": "fallback-proof/probe_a-compatibility.json",
+            "sha256": "9b7503f60affd61fdd4b6cb8e823e9bacf62df8963d3d3e2b122adf7c6791b2a",
+            "log": "fallback-proof/probe_a-analysis.log",
+            "negative_log": "fallback-proof/probe_a-negative.log"
+          },
+          "negative": {
+            "log": "fallback-proof/probe_a-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "fallback-proof/probe_a-processing.json",
+            "sha256": "35e03dafb9fa88a1fda887291825855ccf2a232d8387ea27f0674101c3f76dd7"
+          }
+        }
+      ],
+      "preparation_status": "incomplete",
+      "delivery_readiness": "incomplete",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/native-draft-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --output .runtime-work/c230266-offline-final-probe_a",
+        "exit_code": 0,
+        "construction_sha256": "40675c2d54e24797b63eb51ee0e2088ba2d561e47976ac352f122e3a4714be65",
+        "log": "native-draft/probe_a/offline.log",
+        "log_sha256": "f6e022b60161879585b2bf52533972677de17ad8729f71bc9a04e5360f13bb0c"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_a-primary.json",
+        "sha256": "9595941bbc0708e72f67cc83892021d4e938fd50be4bebd39b1ad9709626c96d",
+        "log": "compatibility/probe_a-primary-analysis.log",
+        "negative_log": "compatibility/probe_a-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_a-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "bicycle_pedestrian_source": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
+          "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "eef2e10d746976389ed98039aeb000bdafd44d799223db26b5f80921d2568f17"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --selftest positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-proof/probe_a-positive.log",
+        "test_log_sha256": "a3357595da008d7a4aac626355f6fc0cc38ec6ac6f94b98b2c5a5a31383b4e79",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --selftest negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native sidewalk result",
+        "negative_log": "delivery-proof/probe_a-negative.log",
+        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/probe_a-processing.json",
+        "test_log_sha256": "65078bd36fedfa7f6a86a259a2e511db123ac89ad940dd05235371e53d8e237e",
+        "processing_receipt": "saved/probe_a-processing.json",
+        "processing_receipt_sha256": "65078bd36fedfa7f6a86a259a2e511db123ac89ad940dd05235371e53d8e237e"
+      }
+    },
+    {
+      "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+      "kind": "delivery",
+      "construction": "native-draft/probe_b/construction.json",
+      "construction_sha256": "20e65b66a0d88854db115e3a4f9d74ac6304a5407f8eeabcd7200546b22d1726",
+      "measurement_contract": "measurement-probe_b.json",
+      "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bicycle sidewalk motion, acoustic output/placement and pedestrian pass require original source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native-fallback/probe_b/construction.json",
+          "construction_sha256": "aab37c15701453e455fd80496a72bd3b62f937254b651211aedfebd963dfc0ac",
+          "trigger": {
+            "source": "original rider and pedestrian actor trajectories",
+            "metric": "first_full_ahead_frame",
+            "failure_condition": "no full pass by the final 600th source frame despite intended pass"
+          },
+          "changed_knobs": [
+            "rider nominal approach speed 1.4 to 1.7 m/s, with pause and signal request preserved"
+          ],
+          "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_b.json",
+          "status": "unselected_cpu_diagnostic",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/draft-fallback-execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --candidate fallback1 --output .runtime-work/c230266-fallback-offline-v2-probe_b",
+            "exit_code": 0,
+            "construction_sha256": "aab37c15701453e455fd80496a72bd3b62f937254b651211aedfebd963dfc0ac",
+            "log": "fallback-proof/probe_b-offline.log",
+            "log_sha256": "f5019efa8d3d4323722bd942f272ac373446e09e992ee46d947e2003d5738368"
+          },
+          "compatibility": {
+            "receipt": "fallback-proof/probe_b-compatibility.json",
+            "sha256": "3704dea8ac17918f956b882ead9eed9b794acce2cb88d6d0930a260f0c661ce6",
+            "log": "fallback-proof/probe_b-analysis.log",
+            "negative_log": "fallback-proof/probe_b-negative.log"
+          },
+          "negative": {
+            "log": "fallback-proof/probe_b-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "fallback-proof/probe_b-processing.json",
+            "sha256": "3beef95fac2ec971f243f045be886b1555b8e8fe380848f5e081cebeb212cd64"
+          }
+        }
+      ],
+      "preparation_status": "incomplete",
+      "delivery_readiness": "incomplete",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/native-draft-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --output .runtime-work/c230266-offline-final-probe_b",
+        "exit_code": 0,
+        "construction_sha256": "20e65b66a0d88854db115e3a4f9d74ac6304a5407f8eeabcd7200546b22d1726",
+        "log": "native-draft/probe_b/offline.log",
+        "log_sha256": "20ce34b998264a7f150f41773658afdffd5265e6950c4fdd79c56035849071cb"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_b-primary.json",
+        "sha256": "45c8073ceef259d27d7fe2298a5369fa7e4d3e5c1c3bed182ffa1c93519de889",
+        "log": "compatibility/probe_b-primary-analysis.log",
+        "negative_log": "compatibility/probe_b-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_b-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "bicycle_pedestrian_source": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
+          "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "a788149e0c3739acd276d48de72eddba815df6c859ec8beaa73020dd6a3d0bc2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --selftest positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-proof/probe_b-positive.log",
+        "test_log_sha256": "f3ca1335b30990e2b2b4db6507cf586df5707c312dac6f6f6371dfa7b24bf68e",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --selftest negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native sidewalk result",
+        "negative_log": "delivery-proof/probe_b-negative.log",
+        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/probe_b-processing.json",
+        "test_log_sha256": "699288420bde493a07520bfffee25127084f4ad37568231fa01f821f27fc2e93",
+        "processing_receipt": "saved/probe_b-processing.json",
+        "processing_receipt_sha256": "699288420bde493a07520bfffee25127084f4ad37568231fa01f821f27fc2e93"
+      }
+    },
+    {
+      "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
+      "kind": "delivery",
+      "construction": "native-draft/probe_c/construction.json",
+      "construction_sha256": "155ae53ae1bc7a0d20b56d3880b80f2466503de659fc94df23c888d98a3a7ee1",
+      "measurement_contract": "measurement-probe_c.json",
+      "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_c.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bicycle sidewalk motion, acoustic output/placement and pedestrian pass require original source review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native-fallback/probe_c/construction.json",
+          "construction_sha256": "98bd79afa812cec435518aadc043c9d7c13bac07d850c5f20414ce27cf6d0931",
+          "trigger": {
+            "source": "original rider and pedestrian actor trajectories",
+            "metric": "first_full_ahead_frame",
+            "failure_condition": "no full pass by the final 600th source frame despite intended pass"
+          },
+          "changed_knobs": [
+            "rider nominal approach speed 1.4 to 1.7 m/s, with pause and signal request preserved"
+          ],
+          "fixture_recipe": "work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/diagnostic-recipe-probe_c.json",
+          "status": "unselected_cpu_diagnostic",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/draft-fallback-execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --candidate fallback1 --output .runtime-work/c230266-fallback-offline-v2-probe_c",
+            "exit_code": 0,
+            "construction_sha256": "98bd79afa812cec435518aadc043c9d7c13bac07d850c5f20414ce27cf6d0931",
+            "log": "fallback-proof/probe_c-offline.log",
+            "log_sha256": "3e42e1fcde73321733d696f9ea0bfb51afe2f49bb2817b94dd2e4dbb927ad946"
+          },
+          "compatibility": {
+            "receipt": "fallback-proof/probe_c-compatibility.json",
+            "sha256": "6b4ef34cdc161b67a9fdc77fb3b4b4a23d7426c6cc27cb071dddcef4ca8d8f2e",
+            "log": "fallback-proof/probe_c-analysis.log",
+            "negative_log": "fallback-proof/probe_c-negative.log"
+          },
+          "negative": {
+            "log": "fallback-proof/probe_c-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "fallback-proof/probe_c-processing.json",
+            "sha256": "bb4b915aa6974d41bacbf67e19a9ec6f9b5a37064d74c8a1e4d20ed395e955f1"
+          }
+        }
+      ],
+      "preparation_status": "incomplete",
+      "delivery_readiness": "incomplete",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/native-draft-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --output .runtime-work/c230266-offline-final-probe_c",
+        "exit_code": 0,
+        "construction_sha256": "155ae53ae1bc7a0d20b56d3880b80f2466503de659fc94df23c888d98a3a7ee1",
+        "log": "native-draft/probe_c/offline.log",
+        "log_sha256": "76516eb71fbb16c2e3c6380c935f9be3303c70b969f5e0d56fc299441ce0ff00"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_c-primary.json",
+        "sha256": "96ccd5fb92a7a10f9c719561e5ed923d93688677ad02c6c7983e3e5c53da4f99",
+        "log": "compatibility/probe_c-primary-analysis.log",
+        "negative_log": "compatibility/probe_c-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_c-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "bicycle_pedestrian_source": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
+          "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_c/proof.json",
+        "sha256": "3e2be154b80f88aba92f37b91ecc522e7c5e3cc9defff519288e9e53e471667c"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --selftest positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-proof/probe_c-positive.log",
+        "test_log_sha256": "2de9456438aec817f6306a14550dba734beda59b4db489b912d614c0df7e006b",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --selftest negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native sidewalk result",
+        "negative_log": "delivery-proof/probe_c-negative.log",
+        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/probe_c-processing.json",
+        "test_log_sha256": "ce5e33ffe78d69fb4e1e034b5d50213c213ee7216e1d130d68bd6f164a491718",
+        "processing_receipt": "saved/probe_c-processing.json",
+        "processing_receipt_sha256": "ce5e33ffe78d69fb4e1e034b5d50213c213ee7216e1d130d68bd6f164a491718"
+      }
+    }
+  ]
+}

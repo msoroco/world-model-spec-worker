@@ -131,5 +131,128 @@
     "sig.door_open",
     "ru.occupant_count",
     "kin.time"
-  ]
+  ],
+  "source_observation_mapping": {
+    "ru.taxicab": {
+      "evidence": "Native taxi actor blueprint and separate taxi-license review",
+      "channels": [
+        "native-rows.jsonl",
+        "authority-pending.json"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "st.curb_zone": {
+      "evidence": "Retained road parking-space geometry and source-reviewed designated stand",
+      "channels": [
+        "road.xodr",
+        "authority-pending.json"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Native roadside sign and source-reviewed designation authority",
+      "channels": [
+        "road.xodr",
+        "overview.mkv",
+        "authority-pending.json"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Frame-joined original taxi pose and velocity at curb",
+      "channels": [
+        "native-rows.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original taxi footprint against road parking space and non-stand curb segment",
+      "channels": [
+        "native-rows.jsonl",
+        "road.xodr"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Frame-joined original taxi velocity and brake state",
+      "channels": [
+        "native-rows.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "sig.door_open": {
+      "evidence": "Original camera pixels and separate door-open review, not the request flag",
+      "channels": [
+        "curb_reference.mkv",
+        "native-rows.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "ru.occupant_count": {
+      "evidence": "Original participant/occupancy review; CARLA walker proximity alone does not establish a passenger exchange",
+      "channels": [
+        "native-rows.jsonl",
+        "curb_reference.mkv",
+        "authority-pending.json"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Original 20 Hz frame map and Native timestamps",
+      "channels": [
+        "video_frames.jsonl",
+        "native-rows.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C394327__LVMC-11-60-040__taxi_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "taxi, street curb, stand sign and all loading participants",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "taxi identity and street/curb approach",
+        "interval": "before stop through loading"
+      },
+      {
+        "view": "curb_reference",
+        "subject": "taxi door, participant or merchandise and stand boundary",
+        "interval": "before, during and after loading"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "taxi interior/driver forward context and stop",
+        "interval": "all 600 original frames"
+      }
+    ]
+  },
+  "candidate_risk_review": {
+    "risk": "CARLA vehicle blueprint and a nearby walker do not establish a licensed taxicab, actual passenger exchange or designated stand. Original authority and pixels require independent review.",
+    "fallback": "Keep a separate source-reviewed licensed taxi asset and participant plan as a future selected fallback only after its exact CPU construction passes."
+  }
 }

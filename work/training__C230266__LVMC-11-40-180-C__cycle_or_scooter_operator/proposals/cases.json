@@ -4,12 +4,127 @@
   "law_id": "LVMC-11-40-180-C",
   "cell_id": "C230266",
   "actor": "cycle_or_scooter_operator",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c230266-1",
+      "target_law_id": "LVMC-11-40-180-C",
+      "judgment_refs": [
+        {
+          "phrase": "bicycle, electric bicycle, or electric scooter",
+          "note": "Device class must be established by original asset and independent source review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source and independent device/acoustic/legal range review remain unavailable.",
+      "missing_inputs": [
+        "Original source and physical range for bicycle, electric bicycle, or electric scooter"
+      ]
+    },
+    {
+      "sweep_id": "c230266-2",
+      "target_law_id": "LVMC-11-40-180-C",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to any pedestrian",
+          "note": "Original actor footprint trajectories and scene context support independent judgment; no numeric legal cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source and independent device/acoustic/legal range review remain unavailable.",
+      "missing_inputs": [
+        "Original source and physical range for yield the right-of-way to any pedestrian"
+      ]
+    },
+    {
+      "sweep_id": "c230266-3",
+      "target_law_id": "LVMC-11-40-180-C",
+      "judgment_refs": [
+        {
+          "phrase": "audible signal before overtaking and passing",
+          "note": "Pedestrian-location microphone PCM and frame map support temporal review; sound identity and audibility need independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source and independent device/acoustic/legal range review remain unavailable.",
+      "missing_inputs": [
+        "Original source and physical range for audible signal before overtaking and passing"
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected frozen sidewalk reference; no delivery recording.",
+      "variable_assignments": {
+        "signal_request": {
+          "kind": "controller",
+          "value": null
+        },
+        "pause_request": {
+          "kind": "controller",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "bicycle, electric bicycle, or electric scooter",
+        "yield the right-of-way to any pedestrian",
+        "audible signal before overtaking and passing"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_and_pedestrian_footprints",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "source": "original Native transforms and bounding boxes",
+            "method": "original Native transforms and bounding boxes",
+            "time_window": "600 original Native frames",
+            "reference_frame": "Native frame and pedestrian-position microphone clock",
+            "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+          },
+          {
+            "name": "pedestrian_location_audio",
+            "unit": "PCM s16le",
+            "sampling_rate_hz": 20,
+            "source": "8 kHz live microphone PCM summarized in 20 Hz windows at pedestrian position",
+            "method": "8 kHz live microphone PCM summarized in 20 Hz windows at pedestrian position",
+            "time_window": "600 original Native frames",
+            "reference_frame": "Native frame and pedestrian-position microphone clock",
+            "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+          },
+          {
+            "name": "sidewalk_map_context",
+            "unit": "Native map",
+            "sampling_rate_hz": 20,
+            "source": "OpenDRIVE and Native lane readback",
+            "method": "OpenDRIVE and Native lane readback",
+            "time_window": "600 original Native frames",
+            "reference_frame": "Native frame and pedestrian-position microphone clock",
+            "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "RGB frame",
+            "sampling_rate_hz": 20,
+            "source": "four synchronized original cameras",
+            "method": "four synchronized original cameras",
+            "time_window": "600 original Native frames",
+            "reference_frame": "Native frame and pedestrian-position microphone clock",
+            "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original microphone position, sound identity, device class and legal audibility need independent review"
+        ]
+      }
+    },
     {
       "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "compliant_attempt",
+      "target_type": "boundary_probe",
       "rationale": "rider pauses for pedestrian and requests pedestrian-location audible signal before measured overtaking",
       "variable_assignments": {
         "signal_request": {
@@ -73,12 +188,21 @@
         "limitations": [
           "Original microphone position, sound identity, device class and legal audibility need independent review"
         ]
+      },
+      "paired_probe_id": "sidewalk-signal",
+      "deliberate_differences": [
+        "signal_request"
+      ],
+      "probe": {
+        "primary_variable": "signal_request",
+        "comparison_or_standard": "source-joined pedestrian priority and pre-pass microphone order; no legal verdict",
+        "target_value_or_branch": "probe_a"
       }
     },
     {
       "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "violating_attempt",
+      "target_type": "boundary_probe",
       "rationale": "same rider/pedestrian path and pause, but no audible signal request before measured overtaking",
       "variable_assignments": {
         "signal_request": {
@@ -142,12 +266,21 @@
         "limitations": [
           "Original microphone position, sound identity, device class and legal audibility need independent review"
         ]
+      },
+      "paired_probe_id": "sidewalk-signal",
+      "deliberate_differences": [
+        "signal_request"
+      ],
+      "probe": {
+        "primary_variable": "signal_request",
+        "comparison_or_standard": "source-joined pedestrian priority and pre-pass microphone order; no legal verdict",
+        "target_value_or_branch": "probe_b"
       }
     },
     {
       "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "yield_contrast_attempt",
+      "target_type": "boundary_probe",
       "rationale": "same device/pedestrian path and early signal request, but no rider pause during encounter",
       "variable_assignments": {
         "signal_request": {
@@ -211,7 +344,17 @@
         "limitations": [
           "Original microphone position, sound identity, device class and legal audibility need independent review"
         ]
+      },
+      "paired_probe_id": "sidewalk-pause",
+      "deliberate_differences": [
+        "pause_request"
+      ],
+      "probe": {
+        "primary_variable": "pause_request",
+        "comparison_or_standard": "source-joined pedestrian priority and pre-pass microphone order; no legal verdict",
+        "target_value_or_branch": "probe_c"
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

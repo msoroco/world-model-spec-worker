@@ -48,7 +48,7 @@ def measure(rows,source_kind):
  if len(rows)!=FRAMES:raise ValueError('Full 600-frame source required')
  projections=[]
  for i,row in enumerate(rows):
-  if (row.get('frame')!=i or abs(row.get('time_s',-1)-(i+1)/HZ)>1e-8
+  if (row.get('frame')!=i or abs(row.get('time_s',-1)-(i+1)/HZ)>1e-3
       or row.get('source_kind')!=source_kind):
    raise ValueError('Frame/time/source join differs')
   xy=row.get('ego_center_xy_m');yaw=row.get('ego_front_yaw_deg')

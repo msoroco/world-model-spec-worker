@@ -58,22 +58,37 @@ def measure(rows, source_kind):
         if (row.get('frame') != i or abs(row.get('time_s', -1) - (i+1)/HZ) > 1e-8
                 or row.get('source_kind') != source_kind):
             raise ValueError('Frame/time/source join differs')
-        if row.get('requested_taxi_identity') is not True or row.get('requested_stand_location') != 'outside_designated_stand':
-            raise ValueError('Taxicab identity or outside-stand location missing')
-        if row.get('requested_speed_mps') != 0 or row.get('requested_door_open') not in (True, False):
+        if source_kind == 'original_native':
+            source = row.get('original_source')
+            if not isinstance(source, dict) or not all(
+                    isinstance(source.get(key), str) and source[key]
+                    for key in ('native_capture_path', 'native_capture_sha256',
+                                'participant_review_path', 'participant_review_sha256',
+                                'designation_review_path', 'designation_review_sha256',
+                                'other_regulations_review_path', 'other_regulations_review_sha256')):
+                raise ValueError('Original taxi, participant, designation and regulation sources missing')
+            if (row.get('observed_taxi_identity') is not True or
+                    row.get('observed_stand_location') != 'outside_designated_stand'):
+                raise ValueError('Observed taxi identity or outside-stand location missing')
+            speed = row.get('observed_speed_mps')
+            door = row.get('observed_door_open')
+            count = row.get('observed_occupant_count')
+            activity = row.get('observed_activity')
+        else:
+            if (row.get('requested_taxi_identity') is not True or
+                    row.get('requested_stand_location') != 'outside_designated_stand'):
+                raise ValueError('Taxicab identity or outside-stand request missing')
+            speed = row.get('requested_speed_mps')
+            door = row.get('requested_door_open')
+            count = row.get('requested_occupant_count')
+            activity = row.get('requested_activity')
+        if speed != 0 or door not in (True, False):
             raise ValueError('Stopped taxi or door source missing')
-        count = row.get('requested_occupant_count')
         if not isinstance(count, int) or isinstance(count, bool) or count < 1:
-            raise ValueError('Requested occupant count missing')
+            raise ValueError('Occupant count missing')
         counts.append(count)
-        activity = row.get('requested_activity')
         if activity not in ('passenger_loading', 'merchandise_loading', 'no_activity'):
             raise ValueError('Loading activity source missing')
-        if source_kind == 'original_native':
-            if not isinstance(row.get('taxi_identity_review'), dict) or not isinstance(row.get('participant_activity_review'), dict):
-                raise ValueError('Original taxicab and participant activity source missing')
-            if not isinstance(row.get('other_regulations_review'), dict):
-                raise ValueError('Other stopping and parking regulation review missing')
         activities.add(activity)
         if activity != 'no_activity':
             exchange_frames += 1

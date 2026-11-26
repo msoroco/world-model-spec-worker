@@ -1,0 +1,238 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_prepared",
+  "cases": [
+    {
+      "case_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/condition_a-primary-construction.json",
+      "construction_sha256": "1ae59c7af34e24aa365f7ef4f82eb08af467cca53401b176f43ff2884d8ebca8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native parked body containment and at-rest speed require measurement"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_a-fallback1-construction.json",
+          "construction_sha256": "2fe2b9ad61c47f9109da4ab10888efb0187c43c45533d230350d564267b94912",
+          "trigger": {
+            "metric": "maximum_original_parking_speed_mps",
+            "failure_condition": "observed at-rest speed exceeds engineering 0.1 m/s diagnostic",
+            "source": "original Native native_samples.jsonl ego_speed_mps"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c385967-offline3-a-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "2fe2b9ad61c47f9109da4ab10888efb0187c43c45533d230350d564267b94912",
+            "log": "native/selected-a-fallback1-offline.log",
+            "log_sha256": "d0c4c035c83676b52fc61f9d38652e5f069b8ec997d9ba5110f12c758affeb4f"
+          },
+          "compatibility": {}
+        }
+      ],
+      "measurement_contract": "native/selected-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-a-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-a-receipt.json",
+        "sha256": "7826aa0f461f1d8055d3955fa9d537bb9920e1a9388384f70d98284d03f39264",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c385967-offline3-a-primary",
+        "exit_code": 0,
+        "construction_sha256": "1ae59c7af34e24aa365f7ef4f82eb08af467cca53401b176f43ff2884d8ebca8",
+        "log": "native/selected-a-primary-offline.log",
+        "log_sha256": "d0c4c035c83676b52fc61f9d38652e5f069b8ec997d9ba5110f12c758affeb4f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.lane_direction.jsonl"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.lane_marking.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-a-primary-negative.log"
+      },
+      "compatibility": {},
+      "delivery_acceptance": {},
+      "post_capture": {}
+    },
+    {
+      "case_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/condition_b-primary-construction.json",
+      "construction_sha256": "4c6186792ab130af3db423a1b7eb07ffbb07a113e2ee45ca12fd9991a15f4e1a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native parked body containment and at-rest speed require measurement"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_b-fallback1-construction.json",
+          "construction_sha256": "85a68f4e3e3ab04070df2ff1158d0e4997a110e9e5a36a33dd8ac334986fb6e3",
+          "trigger": {
+            "metric": "maximum_original_parking_speed_mps",
+            "failure_condition": "observed at-rest speed exceeds engineering 0.1 m/s diagnostic",
+            "source": "original Native native_samples.jsonl ego_speed_mps"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c385967-offline3-b-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "85a68f4e3e3ab04070df2ff1158d0e4997a110e9e5a36a33dd8ac334986fb6e3",
+            "log": "native/selected-b-fallback1-offline.log",
+            "log_sha256": "5ed961be12d900224da66e2e5237d92f7093fd9c1cf61da993b35cb032ac9f7e"
+          },
+          "compatibility": {}
+        }
+      ],
+      "measurement_contract": "native/selected-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-b-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-b-receipt.json",
+        "sha256": "b0a8971e0ddac121d7972a8755cd18b6af2bfc2daa059355f1863d9cf9d1d386",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c385967-offline3-b-primary",
+        "exit_code": 0,
+        "construction_sha256": "4c6186792ab130af3db423a1b7eb07ffbb07a113e2ee45ca12fd9991a15f4e1a",
+        "log": "native/selected-b-primary-offline.log",
+        "log_sha256": "5ed961be12d900224da66e2e5237d92f7093fd9c1cf61da993b35cb032ac9f7e"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.lane_direction.jsonl"
+        },
+        "st.lane_marking": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.lane_marking.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, context or saved diagnostic",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-b-primary-negative.log"
+      },
+      "compatibility": {},
+      "delivery_acceptance": {},
+      "post_capture": {}
+    }
+  ]
+}
