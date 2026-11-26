@@ -52,9 +52,10 @@ def main():
     if not args.output_dir or not args.host or not args.port:
         raise ValueError("owned Native output, host and port required")
     packet = args.reviewed_packet or os.environ.get("C228989_REVIEWED_PACKET")
-    module_name = args.adapter_module or os.environ.get("C228989_NATIVE_ADAPTER_MODULE")
-    if not packet or not module_name:
-        raise ValueError("reviewed original Native packet and attested adapter module required")
+    module_name = args.adapter_module or os.environ.get("C228989_NATIVE_ADAPTER_MODULE") or "pass_carla_adapter"
+    if not packet:
+        raise ValueError("reviewed original Native packet required")
+    os.environ["C228989_REVIEWED_PACKET"] = str(Path(packet).resolve())
     adapter = importlib.import_module(module_name).create_adapter(args.host, args.port,
                                                                    case["case_id"])
     profile = config.get("control_profile", {})

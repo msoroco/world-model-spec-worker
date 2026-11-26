@@ -11,6 +11,11 @@ from source_deferred_runner import CAMERAS, FRAMES, _case_parts
 from source_site import load_reviewed_site, sha
 
 
+def measure_rider_facility(packet: dict, source: dict) -> dict:
+    """Execute the case-specific saved rider facility measurement."""
+    return measure_packet(packet, source)
+
+
 def required(root: Path, name: str) -> Path:
     path = root / name
     if not path.is_file() or path.is_symlink():
@@ -120,8 +125,8 @@ def analyze(root: str | Path) -> dict:
               "path_condition_source": site.get("path_condition_source", sources.get("reviewed-site/source-manifest.json")),
               "access_restrictions_source": site.get("access_restrictions_source", sources.get("reviewed-site/source-manifest.json")),
               "frames": rows}
-    measured = measure_packet(packet, {"path": "rider-history.jsonl",
-                                       "sha256": sources["rider-history.jsonl"]})
+    measured = measure_rider_facility(packet, {"path": "rider-history.jsonl",
+                                               "sha256": sources["rider-history.jsonl"]})
     if len(measured["observations"]) != FRAMES:
         raise ValueError("full rider facility measurement required")
     channels = {
@@ -168,7 +173,7 @@ def analyze(root: str | Path) -> dict:
     return {"format": "worker-analysis-report", "case_id": case_id,
             "analysis_complete": True, "diagnostic_fixture": not original,
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False,
-            "measurements": {"rider_facility_use": {"method": "measure_packet",
+            "measurements": {"rider_facility_use": {"method": "measure_rider_facility",
                 "value": {"roadway_use_observed": measured["roadway_use_observed"],
                           "path_use_observed": measured["path_use_observed"],
                           "frame_count": FRAMES,

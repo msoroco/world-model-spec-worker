@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCES = ("original_runner.py", "analysis.py", "pass_native_capture.py", "pass_scene.py",
            "pass_controller.py", "pass_measurements.py", "package_spec.py",
-           "pass_capture_audit.py")
+           "pass_capture_audit.py", "pass_carla_adapter.py")
 
 
 def write(path, value):

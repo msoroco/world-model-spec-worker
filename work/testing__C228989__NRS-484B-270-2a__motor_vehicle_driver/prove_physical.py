@@ -10,7 +10,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "physical-fixtures-v2"
+SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "physical-fixtures-v4"
 PROOFS = HERE / "proofs" / "physical"
 
 

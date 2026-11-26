@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 
@@ -202,9 +203,9 @@ def capture_original(adapter, manifest_path, site_path, adapter_module_path,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--reviewed-manifest")
-    parser.add_argument("--reviewed-site")
-    parser.add_argument("--adapter-module")
+    parser.add_argument("--reviewed-manifest", default=os.environ.get("C233829_REVIEWED_MANIFEST"))
+    parser.add_argument("--reviewed-site", default=os.environ.get("C233829_REVIEWED_SITE"))
+    parser.add_argument("--adapter-module", default=os.environ.get("C233829_NATIVE_ADAPTER_MODULE"))
     parser.add_argument("--output-dir")
     parser.add_argument("--host")
     parser.add_argument("--port", type=int)

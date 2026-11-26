@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver",
   "input_sha256": "04ff3868e2efcd17c538843cceca1655d68b98c759d949e6eb6022ae65019564",
-  "status": "partial",
-  "readiness_kind": "original_capture_controller_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -15,7 +15,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C228989__NRS-484B-270-2a__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-pass-tests.log",
-      "sha256": "3d36b4578e73b8c621e1ace4ec437829cd936842ce0224bbae92a656da2cb9f6"
+      "sha256": "06fcfdd380c3d7da8b59d8003b2d1c2cb3db89de0e51ac3b692da69779822f16"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C228989__NRS-484B-270-2a__motor_vehicle_driver --complete",
@@ -25,7 +25,10 @@
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original CARLA motion and 900-frame synchronized four-view capture",
+    "Independent source/pixel and physical completion review",
+    "Human due-care, lane availability and reasonable-safety judgment"
   ],
-  "reason": "Fourteen exact cases and eight comparisons remain planned. Original source-gated scene construction, four-camera 900-frame capture code, saved source measurement and an independent capture integrity/decode audit exist. The repaired controller handles sampled left-lane entry and signed relative gap after a pass while first-frame source conditions remain strict. Twenty-four focused CPU tests pass, including full 900-frame synthetic capture, four-video audit invocation and changed-source rejection. Selected case bundles, exact offline/compatibility/saved proofs, physical and independent delivery/comparison audits remain worker-owned. Original CARLA motion, camera visibility and legal judgments remain unverified."
+  "reason": "Fourteen selected exact cases and eight controlled comparisons have current-hash offline, compatibility, saved-only, physical-preparation, independent delivery and comparison CPU proofs. Actual Native CARLA motion, four-view visibility, reasonable safety and due care remain for GPU capture and human review.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C228989__NRS-484B-270-2a__motor_vehicle_driver --case testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_move_left --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

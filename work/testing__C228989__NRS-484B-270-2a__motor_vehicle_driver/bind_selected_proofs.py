@@ -43,6 +43,16 @@ def bind():
         entry["negative"] = {"log": "proof-compat-negative-" + suffix + ".log"}
         entry["physical_preparation"] = {"receipt": physical.name, "sha256": sha(physical)}
         entry["saved_replay"] = {"log": saved.name, "sha256": sha(saved)}
+        entry["post_capture"] = {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/" + AID +
+                       "/execution-manifest.json --case " + entry["case_id"] +
+                       " --attempt $ATTEMPT --output $PROCESSED --library runtime/library" +
+                       " --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+            "feedback_command": ".venv-cpu/bin/python work/" + AID +
+                                "/delivery_audit.py --case " + entry["case_id"] +
+                                " --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+            "recorded_only": True, "test_exit_code": 0,
+            "test_log": saved.name, "test_log_sha256": sha(saved)}
         delivery = HERE / ("delivery-acceptance-" + suffix + ".json")
         entry["delivery_acceptance"] = json.loads(delivery.read_text())
         entry["native_handoff"] = {

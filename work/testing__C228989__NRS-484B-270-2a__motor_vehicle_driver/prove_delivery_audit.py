@@ -12,7 +12,7 @@ from package_spec import AID, CAMERA_NAMES
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "delivery-diagnostic-v1"
+SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "delivery-diagnostic-v3"
 SCRIPT = HERE / "delivery_audit.py"
 
 

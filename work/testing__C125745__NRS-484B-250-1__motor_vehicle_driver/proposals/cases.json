@@ -1,0 +1,284 @@
+{
+  "cell_id": "C125745",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c125745-2501-judgment-1",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "entered the intersection",
+          "note": "Original two-body footprint transitions and crossing geometry determine entry order; no center-only proxy."
+        }
+      ],
+      "rationale": "Original site and physical outcome are unreviewed; no qualitative cutoff or verdict is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device/highway source and accepted original histories"
+      ]
+    },
+    {
+      "sweep_id": "c125745-2501-judgment-2",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "different highway",
+          "note": "Review original OpenDRIVE and highway records for two statutory highways and the same crossing."
+        }
+      ],
+      "rationale": "Original site and physical outcome are unreviewed; no qualitative cutoff or verdict is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device/highway source and accepted original histories"
+      ]
+    },
+    {
+      "sweep_id": "c125745-2501-judgment-3",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "intersections controlled by official traffic-control devices",
+          "note": "A fixed stop sign is present; original device governance and subsection 4 remain source questions."
+        }
+      ],
+      "rationale": "Original site and physical outcome are unreviewed; no qualitative cutoff or verdict is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device/highway source and accepted original histories"
+      ]
+    },
+    {
+      "sweep_id": "c125745-2501-judgment-4",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "approaching each other from opposite directions",
+          "note": "Original approach lanes, headings and any turning intent determine this exception."
+        }
+      ],
+      "rationale": "Original site and physical outcome are unreviewed; no qualitative cutoff or verdict is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device/highway source and accepted original histories"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical ego response contrast under the same other-first entry request; no legal label.",
+      "variable_assignments": {
+        "ego_release_delay_s": {
+          "kind": "controller",
+          "value": 6.0
+        }
+      },
+      "paired_probe_id": "official_stop_precedence",
+      "deliberate_differences": [
+        "ego_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_delay_s",
+        "comparison_or_standard": "measured other-clearance-before-ego-entry contrast",
+        "target_value_or_branch": "precedence"
+      },
+      "unresolved_judgment_calls": [
+        "entered the intersection",
+        "different highway",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "other_entry_and_clearance_brackets",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "first original other footprint entry and exit transitions",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "joined original Native world clock",
+            "uncertainty": "one 20 Hz frame on each transition"
+          },
+          {
+            "name": "original_body_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "both original actor boxes projected to XY convex footprints",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "reviewed OpenDRIVE world frame",
+            "uncertainty": "one 20 Hz frame brackets each entry and exit"
+          },
+          {
+            "name": "original_four_camera_pixels",
+            "unit": "pixel",
+            "sampling_rate_hz": 20,
+            "method": "four synchronized original RGB camera images and frame map",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "same original Native world clock",
+            "uncertainty": "actual visibility needs independent pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, stop sign, highway and subsection-4 review"
+          },
+          {
+            "name": "reviewed_original_context",
+            "unit": "source",
+            "method": "source-hashed original device/highway and approach-direction review"
+          }
+        ],
+        "limitations": [
+          "No original accepted trace/video/site sources are present in this worker export.",
+          "A stop sign is fixed by the catalog cell; subsection-1 official-device applicability remains unresolved."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "Physical ego response contrast under the same other-first entry request; no legal label.",
+      "variable_assignments": {
+        "ego_release_delay_s": {
+          "kind": "controller",
+          "value": 3.0
+        }
+      },
+      "paired_probe_id": "official_stop_precedence",
+      "deliberate_differences": [
+        "ego_release_delay_s"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_delay_s",
+        "comparison_or_standard": "measured other-clearance-before-ego-entry contrast",
+        "target_value_or_branch": "advance"
+      },
+      "unresolved_judgment_calls": [
+        "entered the intersection",
+        "different highway",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "other_entry_and_clearance_brackets",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "first original other footprint entry and exit transitions",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "joined original Native world clock",
+            "uncertainty": "one 20 Hz frame on each transition"
+          },
+          {
+            "name": "original_body_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "both original actor boxes projected to XY convex footprints",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "reviewed OpenDRIVE world frame",
+            "uncertainty": "one 20 Hz frame brackets each entry and exit"
+          },
+          {
+            "name": "original_four_camera_pixels",
+            "unit": "pixel",
+            "sampling_rate_hz": 20,
+            "method": "four synchronized original RGB camera images and frame map",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "same original Native world clock",
+            "uncertainty": "actual visibility needs independent pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, stop sign, highway and subsection-4 review"
+          },
+          {
+            "name": "reviewed_original_context",
+            "unit": "source",
+            "method": "source-hashed original device/highway and approach-direction review"
+          }
+        ],
+        "limitations": [
+          "No original accepted trace/video/site sources are present in this worker export.",
+          "A stop sign is fixed by the catalog cell; subsection-1 official-device applicability remains unresolved."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "semantic reference only; no extra recording",
+      "variable_assignments": {
+        "ego_release_delay_s": {
+          "kind": "controller",
+          "value": 6.0
+        }
+      },
+      "deliberate_differences": [],
+      "unresolved_judgment_calls": [
+        "entered the intersection",
+        "different highway",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "other_entry_and_clearance_brackets",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "first original other footprint entry and exit transitions",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "joined original Native world clock",
+            "uncertainty": "one 20 Hz frame on each transition"
+          },
+          {
+            "name": "original_body_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "both original actor boxes projected to XY convex footprints",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "reviewed OpenDRIVE world frame",
+            "uncertainty": "one 20 Hz frame brackets each entry and exit"
+          },
+          {
+            "name": "original_four_camera_pixels",
+            "unit": "pixel",
+            "sampling_rate_hz": 20,
+            "method": "four synchronized original RGB camera images and frame map",
+            "time_window": "entire 900-frame episode",
+            "reference_frame": "same original Native world clock",
+            "uncertainty": "actual visibility needs independent pixel review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, stop sign, highway and subsection-4 review"
+          },
+          {
+            "name": "reviewed_original_context",
+            "unit": "source",
+            "method": "source-hashed original device/highway and approach-direction review"
+          }
+        ],
+        "limitations": [
+          "No original accepted trace/video/site sources are present in this worker export.",
+          "A stop sign is fixed by the catalog cell; subsection-1 official-device applicability remains unresolved."
+        ]
+      }
+    }
+  ]
+}

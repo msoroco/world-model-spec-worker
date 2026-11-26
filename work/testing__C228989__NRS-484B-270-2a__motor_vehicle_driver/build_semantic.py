@@ -57,6 +57,19 @@ def build():
             "synthetic CPU fixture establishes only software behavior.")
     plan["requirement_dispositions"] = dispositions
     plan["source_observation_mapping"] = {}
+    plan["camera_plan"] = {
+        "profile": "overview1080-capability", "duration_s": 45,
+        "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "ego, qualifying control and immediate-left lane",
+             "interval": "startup through final original frame"},
+            {"view": "approach", "subject": "ego approach and control rider body",
+             "interval": "startup through observed pass or follow"},
+            {"view": "reference_corner", "subject": "immediate-left traffic and lane transition",
+             "interval": "startup through observed pass or follow"},
+            {"view": "driver_reference", "subject": "driver-relative control rider and lane",
+             "interval": "startup through final original frame"}],
+        "limitation": "Native visibility and physical completion require later original review"}
     names = {"qualifying same-direction pass": "ego_control_body",
              "multiple same-direction lanes and immediate-left lane": "lane_topology",
              "left-lane availability and reasonable safety": "left_lane_traffic",
@@ -106,13 +119,15 @@ def build():
         judgment_refs.append(put("judgment-" + slug + ".json", {
             "template_id": template_id, "phrase": phrase, "note": note, "status": "draft",
             "observable_requirements": {
-                "observables": [{"name": channel, "unit": "source observation",
+                "observables": [{"name": channel,
+                                 "unit": next(row["unit"] for row in RECORDING["channels"] if row["name"] == channel),
                                  "description": "Original source-joined " + channel.replace("_", " ")}
                                 for channel in channels],
                 "context_inputs": [{"name": "reviewed_native_lane_packet", "unit": "source record",
                                     "description": "Source-hashed original map, lane and participant inventory"}],
                 "sweep_dimensions": [], "landmarks": [],
-                "recording_needs": [{"name": channel, "unit": "source observation",
+                "recording_needs": [{"name": channel,
+                                     "unit": next(row["unit"] for row in RECORDING["channels"] if row["name"] == channel),
                                      "description": "Original 20 Hz " + channel.replace("_", " ")}
                                     for channel in channels],
                 "limitations": ["Qualitative legal judgments require independent original review."]}}))
@@ -144,8 +159,14 @@ def build():
             "probe": {"primary_variable": "ego_maneuver_request",
                       "comparison_or_standard": "Compare original body pass, lane topology, traffic and motion; no legal conclusion from requested controls.",
                       "target_value_or_branch": case["case_id"]}})
+    sweep = {"sweep_id": "qualitative-pass-review", "target_law_id": law,
+             "judgment_refs": [{"phrase": phrase, "note": note}
+                               for _, phrase, note, _ in judgments],
+             "status": "incomplete",
+             "rationale": "Qualitative due care, lane availability and reasonable safety need reviewed physical ranges before a fixed judgment sweep can be frozen; the fourteen exact branch cases remain selected independently.",
+             "missing_inputs": ["source-reviewed physical sweep ranges and feasible controller observables for each qualitative judgment"]}
     cases_ref = put("cases.json", {"cell_id": plan["cell_id"], "actor": actor,
-        "status": "draft", "sweep_specs": [], "sweeps_expanded": True, "cases": selected})
+        "status": "draft", "sweep_specs": [sweep], "sweeps_expanded": True, "cases": selected})
     put("semantic-index.json", {"format": "worker-semantic-delivery", "assignment_id": aid,
         "stages": {"relevance_batch": relevance_ref, "relevance": relevance_ref,
                    "template": template_ref, "judgment_observables": judgment_refs,

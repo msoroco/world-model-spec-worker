@@ -11,7 +11,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.selected-draft.json"
-SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "fallback-offline-v1"
+SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "fallback-offline-v3"
 
 
 def sha(path):

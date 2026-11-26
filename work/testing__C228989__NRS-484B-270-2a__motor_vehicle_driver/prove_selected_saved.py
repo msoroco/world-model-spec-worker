@@ -18,8 +18,8 @@ def run():
     entries = json.loads(MANIFEST.read_text(encoding="utf-8"))["cases"]
     for entry in entries:
         suffix = entry["case_id"].removeprefix(HERE.name + "__")
-        attempt = SCRATCH / "selected-compat-v3" / suffix
-        destination = SCRATCH / "selected-saved-v3" / suffix
+        attempt = SCRATCH / "selected-compat-v5" / suffix
+        destination = SCRATCH / "selected-saved-v5" / suffix
         if destination.exists():
             raise ValueError("retain prior saved processing proof")
         command = [sys.executable, str(ROOT / "runtime.py"), "process-saved",

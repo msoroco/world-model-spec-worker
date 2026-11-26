@@ -11,7 +11,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.selected-draft.json"
-SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "fallback-compat-v1"
+SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "fallback-compat-v3"
 VALIDATOR = ROOT / ".runtime-work" / "c110969-decoder" / ".lake" / "build" / "bin" / "adapterCheck"
 
 
