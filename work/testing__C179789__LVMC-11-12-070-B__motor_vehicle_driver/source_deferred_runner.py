@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import shutil
 
-from original_runner import load_reviewed_site
+from original_runner import REQUIRED, load_reviewed_site
 from through_highway import ASSIGNMENT, CASES, ENGINEERING, construct, control_tick, measure, sample_native_frame
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -57,6 +57,14 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
     reviewed.mkdir()
     shutil.copy2(manifest_path, reviewed / 'source-manifest.json')
     shutil.copy2(site_path, reviewed / 'site-context.json')
+    source_manifest = json.loads(Path(manifest_path).read_text())
+    for source_name in REQUIRED:
+        item = source_manifest['sources'][source_name]
+        relative = Path(item['path'])
+        source = Path(manifest_path).parent / relative
+        target = reviewed / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
     world = adapter.world()
     built = pipeline = None
     started = finished = False
@@ -151,11 +159,15 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
     names = ['history.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
              'two-actor-measurement.json', 'acquisition-provenance.json',
              'reviewed-site/source-manifest.json', 'reviewed-site/site-context.json',
+             *['reviewed-site/' + source_manifest['sources'][source_name]['path'] for source_name in REQUIRED],
              *[camera + '.mkv' for camera in CAMERAS], *native_sources]
     seal = {'format': 'through-highway-original-native-capture-seal', 'case_id': case_id,
             'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': FRAMES,
             'capture_rate_hz': 20, 'reviewed_manifest_sha256': sha(manifest_path),
             'reviewed_site_sha256': sha(site_path),
+            'restoration': {'restored': True}, 'encoder_exit_codes': {},
+            'native_revision': {'construction_sha256': sha(output / 'construction.json'),
+                                'runner_sha256': sha(output / 'runner.py')},
             'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
             'sources': {name: sha(output / name) for name in names}}
     (output / 'capture-seal.json').write_text(json.dumps(seal, indent=2, sort_keys=True) + '\n')

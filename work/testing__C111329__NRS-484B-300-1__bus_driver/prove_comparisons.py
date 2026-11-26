@@ -14,6 +14,13 @@ def main():
                                     item['physical_acceptance'] is not False
                                     for item in comparisons):
         raise ValueError('three source-gated comparison probes incomplete')
+    try:
+        audit_comparisons(reports)
+    except ValueError as error:
+        if 'nonoriginal' not in str(error):
+            raise
+    else:
+        raise ValueError('mock-only comparison accepted for production')
     corrupt = {key: dict(value) for key, value in reports.items()}
     first = case_id(CASES[0][0])
     corrupt[first]['source_kind'] = 'synthetic_diagnostic_fixture'

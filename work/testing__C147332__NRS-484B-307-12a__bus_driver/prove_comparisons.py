@@ -38,7 +38,9 @@ for kind, left, right in PAIRS:
     try:
         audit(BASE / left / 'negative', second, kind, diagnostic=True)
     except ValueError as error:
-        if 'Missing required source: lane-signal-history.jsonl' not in str(error):
+        if not any(message in str(error) for message in (
+                'Missing required source: lane-signal-history.jsonl',
+                'acquisition original source missing or changed: lane-signal-history.jsonl')):
             raise
     else:
         raise AssertionError('missing original lane signal was accepted')

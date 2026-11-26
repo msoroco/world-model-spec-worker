@@ -15,6 +15,7 @@ def main():
     manifest = json.loads(path.read_text())
     script = HERE / 'prove_original_delivery.py'
     python = ROOT / '.venv-cpu/bin/python'
+    decoder = ROOT / '.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
     for entry in manifest['cases']:
         cid = entry['case_id']
         name = cid.removeprefix(HERE.name + '__')
@@ -36,6 +37,16 @@ def main():
             'negative_exit_code': 2,
             'negative_expected_error': 'original reviewed bus site packet missing',
             'negative_log': negative.name, 'negative_log_sha256': sha(negative)}
+        for candidate, holder in (('', entry), ('-fallback1', entry['candidates'][0])):
+            tag = name + candidate
+            scratch = ROOT / '.runtime-work/c111329/proof-v3'
+            if not (scratch / ('saved-' + tag) / 'v0001/analysis/result.json').is_file():
+                raise ValueError('selected saved-only output missing: ' + tag)
+            holder['saved_diagnostic']['command'] = ' '.join((
+                str(python), 'runtime.py', 'process-saved', '--manifest', str(path),
+                '--case', cid, '--attempt', str(scratch / ('compat-' + tag)),
+                '--output', str(scratch / ('saved-' + tag)),
+                '--library', 'runtime/library', '--validator', str(decoder)))
     path.write_text(json.dumps(manifest, indent=2) + '\n')
     print('bound independent mock-only delivery receipts:', len(manifest['cases']))
 

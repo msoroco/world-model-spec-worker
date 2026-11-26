@@ -25,6 +25,7 @@ def load_reviewed_site(manifest_path, site_path, case_id):
             not manifest.get('reviewer') or not manifest.get('citation') or
             manifest.get('source_kind') != 'reviewed_original_site' or
             site.get('source_kind') != 'reviewed_original_site' or
+            site.get('case_id') != case_id or
             site.get('accepted_original_source') is not True or
             not case_id.startswith(ASSIGNMENT + '__')):
         raise ValueError('reviewed original site identity/provenance missing')
@@ -33,7 +34,10 @@ def load_reviewed_site(manifest_path, site_path, case_id):
         raise ValueError('reviewed original site source list incomplete')
     for name in REQUIRED:
         item = sources[name]
-        path = manifest_path.parent / item.get('path', '')
+        relative = Path(item.get('path', ''))
+        if relative.is_absolute() or '..' in relative.parts or not str(relative) or str(relative) == '.':
+            raise ValueError('unsafe reviewed original source path: ' + name)
+        path = manifest_path.parent / relative
         if (not path.is_file() or path.is_symlink() or path.stat().st_size == 0 or
                 sha(path) != item.get('sha256')):
             raise ValueError('reviewed original source seal changed: ' + name)

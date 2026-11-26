@@ -11,6 +11,7 @@ REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from promote_reviewed_manifest import REQUIRED, SUFFIXES, assemble
 from opendrive_route_preflight import preflight as route_preflight
+from inline_review_sources import SOURCE_KEYS
 
 
 def write(path, data):
@@ -26,7 +27,13 @@ class PromotionTests(unittest.TestCase):
             case_id = ROOT.name + "__" + suffix
             folder = base / suffix
             construction = folder / "construction.json"
-            packet = '{"reviewed":true}\n'
+            source_texts = {key: "Reviewed source fixture for " + key + "\n" for key in SOURCE_KEYS}
+            source_hashes = {key: hashlib.sha256(value.encode()).hexdigest()
+                             for key, value in source_texts.items()}
+            packet = json.dumps({"law_context": {key: {
+                "source_path": key + ".txt", "source_sha256": source_hashes[key],
+                "reviewer": "synthetic fixture reviewer", "source_citation": "synthetic source"
+            } for key in SOURCE_KEYS}}, sort_keys=True) + "\n"
             map_text = (ROOT / "connected-median-candidate.xodr").read_text()
             packet_sha = hashlib.sha256(packet.encode()).hexdigest()
             map_sha = hashlib.sha256(map_text.encode()).hexdigest()
@@ -40,6 +47,8 @@ class PromotionTests(unittest.TestCase):
             files = [{"path": "scene.json", "content": json.dumps(scene)},
                      {"path": "packet.json", "content": packet},
                      {"path": "reviewed-map.xodr", "content": map_text}]
+            files.extend({"path": key + ".txt", "content": source_texts[key]}
+                         for key in SOURCE_KEYS)
             digest = write(construction, {"case_id": case_id, "diagnostic_only": False, "files": files})
             alternate = folder / "fallback1-construction.json"
             alternate_digest = write(alternate, {"case_id": case_id, "diagnostic_only": False,
@@ -48,6 +57,7 @@ class PromotionTests(unittest.TestCase):
             write(folder / "preflight.json", {"format": "worker-reviewed-packet-cpu-preflight",
                                            "case_id": case_id, "passed": True, "native_started": False,
                                            "source_packet_sha256": packet_sha, "map_sha256": map_sha,
+                                           "retained_source_hashes": source_hashes,
                                            "route_preflight_map_sha256": map_sha,
                                            "route_binding": route["cases"][case_id],
                                            "physical_acceptance_claimed": False,
@@ -175,6 +185,38 @@ class PromotionTests(unittest.TestCase):
             index["cases"][case_id]["delivery_acceptance"]["sha256"] = write(stage_path, detail)
             write(receipts, index)
             with self.assertRaisesRegex(ValueError, "failed or mislabelled delivery_acceptance"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_changed_inline_statutory_source(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            case_id = ROOT.name + "__advance"
+            construction = base / "advance/construction.json"
+            document = json.loads(construction.read_text())
+            next(item for item in document["files"]
+                 if item["path"] == "public_access_source.txt")["content"] = "changed source\n"
+            digest = write(construction, document)
+            index = json.loads((base / "candidate-index.json").read_text())
+            next(item for item in index["cases"] if item["case_id"] == case_id)["construction_sha256"] = digest
+            write(base / "candidate-index.json", index)
+            with self.assertRaisesRegex(ValueError, "inline reviewed source differs from preflight"):
+                assemble(base, receipts, allow_scratch=True)
+
+    def test_refuses_fallback_with_changed_statutory_source(self):
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as temp:
+            base = Path(temp)
+            receipts = self.fixture(base)
+            case_id = ROOT.name + "__advance"
+            alternate = base / "advance/fallback1-construction.json"
+            document = json.loads(alternate.read_text())
+            next(item for item in document["files"]
+                 if item["path"] == "driver_scope_source.txt")["content"] = "changed source\n"
+            digest = write(alternate, document)
+            index = json.loads((base / "candidate-index.json").read_text())
+            next(item for item in index["cases"] if item["case_id"] == case_id)["candidates"][0]["construction_sha256"] = digest
+            write(base / "candidate-index.json", index)
+            with self.assertRaisesRegex(ValueError, "inline reviewed source differs from preflight"):
                 assemble(base, receipts, allow_scratch=True)
 
 

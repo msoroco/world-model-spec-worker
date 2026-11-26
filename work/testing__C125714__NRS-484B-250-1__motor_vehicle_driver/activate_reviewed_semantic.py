@@ -14,6 +14,7 @@ from tempfile import TemporaryDirectory
 
 from reviewed_delivery_author import ROOT, REPO, SUFFIXES
 from opendrive_route_preflight import preflight as route_preflight
+from inline_review_sources import files_by_path, verify as verify_inline_sources
 
 
 def sha(path: Path) -> str:
@@ -28,8 +29,12 @@ def activate(candidate_root: Path, assignment: dict) -> dict:
         raise ValueError("candidate root must stay in assignment or scratch")
     manifest = json.loads((candidate_root / "candidate-index.json").read_text())
     expected = {ROOT.name + "__" + suffix for suffix in SUFFIXES}
-    if manifest.get("assignment_id") != ROOT.name or {row.get("case_id") for row in manifest.get("cases", [])} != expected:
+    if (manifest.get("assignment_id") != ROOT.name or
+            len(manifest.get("cases", [])) != len(expected) or
+            {row.get("case_id") for row in manifest.get("cases", [])} != expected):
         raise ValueError("seven reviewed candidate IDs required")
+    if manifest.get("runtime_manifest_sha256") != sha(REPO / "runtime/SOURCE-MANIFEST.json"):
+        raise ValueError("reviewed candidate runtime binding changed")
     for row in manifest["cases"]:
         if row.get("kind") != "delivery":
             raise ValueError("diagnostic candidate cannot activate semantic binding")
@@ -46,12 +51,14 @@ def activate(candidate_root: Path, assignment: dict) -> dict:
         if receipt.is_symlink() or not receipt.resolve().is_relative_to(REPO):
             raise ValueError("candidate source preflight path escapes repository")
         proof = json.loads(receipt.read_text())
-        files = {item["path"]: item["content"] for item in document["files"]}
+        files = files_by_path(document)
         scene = json.loads(files["scene.json"])
         packet_text = files[scene["reviewed_context_source"]]
         packet_sha = hashlib.sha256(packet_text.encode("utf-8")).hexdigest()
         map_sha = hashlib.sha256(files["reviewed-map.xodr"].encode("utf-8")).hexdigest()
-        if (proof.get("passed") is not True or proof.get("case_id") != row["case_id"]
+        if (proof.get("format") != "worker-reviewed-packet-cpu-preflight" or
+                proof.get("native_started") is not False or
+                proof.get("passed") is not True or proof.get("case_id") != row["case_id"]
                 or proof.get("source_packet_sha256") != packet_sha
                 or proof.get("map_sha256") != map_sha
                 or scene.get("reviewed_context_sha256") != packet_sha
@@ -59,6 +66,7 @@ def activate(candidate_root: Path, assignment: dict) -> dict:
                 or proof.get("physical_acceptance_claimed") is not False
                 or proof.get("legal_acceptance_claimed") is not False):
             raise ValueError("candidate source preflight does not bind original packet and map")
+        verify_inline_sources(files, scene, proof)
         with TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c125714-semantic-route-") as temporary:
             source_dir = Path(temporary)
             scene_path = source_dir / "scene.json"

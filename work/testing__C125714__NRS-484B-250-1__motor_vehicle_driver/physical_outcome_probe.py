@@ -68,7 +68,16 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     receipts = []
     for kind in CASES:
-        origin = source / kind / "positive"
+        origin = source / kind
+        if (origin / "positive").is_dir():
+            origin = origin / "positive"
+        if not (origin / "compatibility.json").is_file():
+            raise ValueError("exact current compatibility attempt required: " + kind)
+        compatibility = json.loads((origin / "compatibility.json").read_text())
+        if (compatibility.get("passed") is not True or
+                compatibility.get("case_id") != ROOT.name + "__" + kind or
+                compatibility.get("construction_sha256") != sha(origin / "construction.json")):
+            raise ValueError("physical source differs from current construction: " + kind)
         original_result = json.loads((origin / "result.json").read_text())
         case_root = output / kind
         case_root.mkdir()

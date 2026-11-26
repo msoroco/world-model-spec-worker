@@ -12,7 +12,7 @@ from package_spec import CASES, HERE, ROOT, case_id
 PYTHON = ROOT / '.venv-cpu/bin/python'
 DECODER = ROOT / '.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
 MANIFEST = HERE / 'execution-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c111329/proof-v2'
+SCRATCH = ROOT / '.runtime-work/c111329/proof-v3'
 
 
 def sha(path):
@@ -46,9 +46,10 @@ def prove(pair):
         select + ['--output', str(compat), '--library', 'runtime/library',
                   '--validator', str(DECODER)], compat_log)
     saved_log = HERE / ('cpu-saved-' + tag + '.log')
-    run(args + ['process-saved', '--manifest', str(MANIFEST), '--case', cid,
-                '--attempt', str(compat), '--output', str(saved),
-                '--library', 'runtime/library', '--validator', str(DECODER)], saved_log)
+    saved_command = run(args + ['process-saved', '--manifest', str(MANIFEST), '--case', cid,
+                                '--attempt', str(compat), '--output', str(saved),
+                                '--library', 'runtime/library', '--validator', str(DECODER)],
+                        saved_log)
     proof = HERE / 'proofs' / tag
     proof.mkdir(parents=True, exist_ok=True)
     for source, target in (('compatibility.json', 'receipt.json'),
@@ -64,7 +65,7 @@ def prove(pair):
                                    'sha256': sha(proof / 'receipt.json'),
                                    'log': str((proof / 'analysis.log').relative_to(HERE)),
                                    'negative_log': str((proof / 'negative.log').relative_to(HERE))},
-                 'saved': {'command': ' '.join((str(PYTHON), 'runtime.py', 'process-saved')),
+                 'saved': {'command': saved_command,
                            'exit_code': 0, 'log': saved_log.name,
                            'log_sha256': sha(saved_log)}}
 
@@ -81,6 +82,7 @@ def main():
         primary, fallback = proofs[name], proofs[name + '-fallback1']
         entry['offline'] = primary['offline']
         entry['compatibility'] = primary['compatibility']
+        entry['negative'] = {'log': primary['compatibility']['negative_log']}
         entry['saved_diagnostic'] = primary['saved']
         entry['candidates'][0]['offline'] = fallback['offline']
         entry['candidates'][0]['compatibility'] = fallback['compatibility']

@@ -1,4 +1,4 @@
-"""Prepare canonical local delivery commands for selected bus loading cases."""
+"""Prepare canonical local delivery commands for selected bus/device cases."""
 import json
 from pathlib import Path
 

@@ -236,7 +236,7 @@ class ThroughHighwayTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "designation source seal"):
                 audit.audit_saved(bad, measured)
             bad = copy.deepcopy(source)
-            bad["cameras"].pop("left")
+            bad["cameras"].pop("approach")
             with self.assertRaisesRegex(ValueError, "four camera"):
                 audit.audit_saved(bad, measured)
             bad = copy.deepcopy(source)

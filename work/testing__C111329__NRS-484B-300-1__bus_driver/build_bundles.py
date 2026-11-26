@@ -35,11 +35,12 @@ def construction(name, aspect, policy, direction, enter, candidate):
                'proceed_throttle_scale': 1.2 if candidate == 'fallback1' and enter else 1.0}
     config = {'law_id': LAW, 'cell_id': CELL, 'actor': ACTOR,
               'selected_case_id': cid, 'candidate_id': candidate,
+              'control_profile': profile,
               'rate_hz': 20, 'duration_s': 45, 'required_atoms': [], 'source_packets': [],
               'cameras': CAMERAS, 'supported_case_ids': [case_id(row[0]) for row in CASES],
               'case': {'case_id': cid, 'kind': name, 'device_aspect': aspect,
                        'bus_control_policy': policy, 'police_direction': direction,
-                       'line_entry_request': enter, 'control_profile': profile,
+                       'line_entry_request': enter,
                        'recording_description': RECORDING}}
     sources = ('runner.py', 'package_spec.py', 'device_scene.py', 'device_control.py',
                'native_capture.py', 'reviewed_source.py', 'analysis.py',
@@ -173,7 +174,8 @@ def build():
                                            'host_env_var': 'CARLA_HOST',
                                            'port_env_var': 'CARLA_PORT'},
                         'source_gate': 'reviewed original official device, bus route, officer and 307 context required',
-                        'candidate_risk': 'red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window',
+                        'candidate_risk': {'status': 'physical',
+                                           'reason': 'red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window'},
                         'candidates': [{'id': 'fallback1',
                                         'construction': str(fallback_path.relative_to(HERE)),
                                         'construction_sha256': sha(fallback_path),

@@ -43,7 +43,7 @@ def main():
     adapter = module.open_adapter()
     case_name = config['selected_case_id'].removeprefix(AID + '__')
     result = capture(adapter, Path(site), case_name, args.output_dir,
-                     config['candidate_id'], config['case']['control_profile'])
+                     config['candidate_id'], config['control_profile'])
     print(json.dumps(result, sort_keys=True))
 
 

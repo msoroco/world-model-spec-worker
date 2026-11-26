@@ -14,6 +14,7 @@ from tempfile import TemporaryDirectory
 
 from opendrive_route_preflight import preflight as route_preflight
 from reviewed_delivery_author import SUFFIXES
+from inline_review_sources import files_by_path, verify as verify_inline_sources
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -70,8 +71,7 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
         source_check = json.loads(preflight.read_text())
         if source_check.get("passed") is not True or source_check.get("case_id") != case_id or source_check.get("native_started") is not False:
             raise ValueError("reviewed source preflight is incomplete: " + case_id)
-        files = {item.get("path"): item.get("content") for item in document.get("files", [])
-                 if isinstance(item, dict)}
+        files = files_by_path(document)
         scene_text = files.get("scene.json")
         if not isinstance(scene_text, str):
             raise ValueError("reviewed construction lacks inline scene: " + case_id)
@@ -91,6 +91,7 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
                 or source_check.get("physical_acceptance_claimed") is not False
                 or source_check.get("legal_acceptance_claimed") is not False):
             raise ValueError("reviewed source preflight does not bind inline sources: " + case_id)
+        verify_inline_sources(files, scene, source_check)
         with TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c125714-route-check-") as temporary:
             source_dir = Path(temporary)
             inline_scene = source_dir / "scene.json"
@@ -125,6 +126,18 @@ def assemble(candidate_root: Path, receipt_index: Path, *, allow_scratch: bool =
             alternate_path = bound(candidate_root, alternate.get("construction"))
             if sha(alternate_path) != alternate.get("construction_sha256"):
                 raise ValueError("reviewed fallback construction hash changed: " + case_id)
+            fallback = json.loads(alternate_path.read_text())
+            fallback_files = files_by_path(fallback)
+            fallback_scene = json.loads(fallback_files["scene.json"])
+            if (fallback_scene.get("case_id") != case_id or
+                    fallback.get("diagnostic_only") is not False or
+                    fallback_scene.get("reviewed_context_source") != packet_name or
+                    fallback_scene.get("reviewed_context_sha256") != packet_sha or
+                    fallback_scene.get("crossing", {}).get("map_source_sha256") != map_sha or
+                    fallback_files.get(packet_name) != packet_text or
+                    fallback_files.get("reviewed-map.xodr") != map_text):
+                raise ValueError("reviewed fallback source bytes differ: " + case_id)
+            verify_inline_sources(fallback_files, fallback_scene, source_check)
             alternate["construction"] = str(alternate_path.relative_to(returned_root))
         result["cases"].append(promoted)
     return result
