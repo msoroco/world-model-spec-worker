@@ -2,8 +2,147 @@
   "actor": "motorcycle_or_moped_operator",
   "cases": [
     {
+      "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__baseline",
+      "rationale": "Shared road, sidewalk, source geometry and camera setup; no selected law outcome",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original 20 Hz actor velocity and transform readback",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "original 20 Hz actor light-state readback plus optical camera footage",
+            "name": "independent_lamp_states",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed front/rear photometry source, retained beside original footage",
+            "name": "calibrated_lamp_capability",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "source-hashed local date, sunrise/sunset and atmospheric discernibility protocol",
+            "name": "astronomy_atmosphere",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "four synchronized original RGB camera streams",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed original source hash",
+            "name": "vehicle_coverage",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "road_sidewalk_geometry",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "astronomical_times",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "light_atmosphere",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "discernibility_protocol",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "headlamp_photometry",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "tail_lamp_photometry",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Simulator lamp bits do not prove emitted color or calibrated range.",
+          "Original pixels, calibration and external statutory coverage review remain required."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "plainly visible",
+        "clearly discernible"
+      ],
+      "variable_assignments": {
+        "calibrated_lamp_request": {
+          "kind": "world_setup",
+          "value": "white_300_red_500"
+        },
+        "coverage_request": {
+          "kind": "world_setup",
+          "value": "covered_motorcycle"
+        },
+        "discernibility_request_ft": {
+          "kind": "world_setup",
+          "value": 450
+        },
+        "illumination_request": {
+          "kind": "world_setup",
+          "value": "night"
+        },
+        "lit_state_request": {
+          "kind": "controller",
+          "value": "both_lit"
+        },
+        "motion_request": {
+          "kind": "controller",
+          "value": "moving"
+        },
+        "timing_request": {
+          "kind": "world_setup",
+          "value": "night"
+        }
+      }
+    },
+    {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_01",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "both_lit"
+      },
+      "rationale": "Source-bound exact selected branch; headlamp burning; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -95,9 +234,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -134,7 +272,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_01",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "head_off"
+      },
+      "rationale": "Source-bound exact selected branch; headlamp burning; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -226,9 +373,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -265,7 +411,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_02",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "tail_off"
+      },
+      "rationale": "Source-bound exact selected branch; tail lamp burning; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -357,9 +512,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -396,7 +550,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_21",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "both_off"
+      },
+      "rationale": "Source-bound exact selected branch; lamp burning with vehicle stopped; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -488,9 +651,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -527,7 +689,18 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "illumination_request",
+        "discernibility_request_ft",
+        "illumination_request"
+      ],
+      "paired_probe_id": "c230286_cmp_13",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "illumination_request",
+        "target_value_or_branch": "day_clear"
+      },
+      "rationale": "Source-bound exact selected branch; insufficient light trigger; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -619,9 +792,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -658,7 +830,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_04",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "both_lit"
+      },
+      "rationale": "Source-bound exact selected branch; low-light burning; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -750,9 +931,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -789,7 +969,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_04",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "head_off"
+      },
+      "rationale": "Source-bound exact selected branch; low-light burning; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -881,9 +1070,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -920,7 +1108,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_22",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "tail_off"
+      },
+      "rationale": "Source-bound exact selected branch; tail burning in unfavorable atmosphere; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1012,9 +1209,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1051,7 +1247,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_05",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "white_299_red_500"
+      },
+      "rationale": "Source-bound exact selected branch; headlamp 300-foot capability; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1143,9 +1348,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1182,7 +1386,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_06",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "white_301_red_500"
+      },
+      "rationale": "Source-bound exact selected branch; headlamp above-bound capability; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1274,9 +1487,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1313,7 +1525,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_07",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "white_300_red_499"
+      },
+      "rationale": "Source-bound exact selected branch; tail lamp 500-foot capability; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1405,9 +1626,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1444,7 +1664,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_08",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "white_300_red_501"
+      },
+      "rationale": "Source-bound exact selected branch; tail lamp above-bound capability; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1536,9 +1765,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1575,7 +1803,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_09",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "nonwhite_300_red_500"
+      },
+      "rationale": "Source-bound exact selected branch; headlamp white color; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1667,9 +1904,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1706,7 +1942,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "calibrated_lamp_request"
+      ],
+      "paired_probe_id": "c230286_cmp_10",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "calibrated_lamp_request",
+        "target_value_or_branch": "white_300_nonred_500"
+      },
+      "rationale": "Source-bound exact selected branch; tail lamp red color; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1798,9 +2043,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1837,7 +2081,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "coverage_request",
+        "coverage_request"
+      ],
+      "paired_probe_id": "c230286_cmp_11",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "coverage_request",
+        "target_value_or_branch": "trail_ride_exclusion_probe"
+      },
+      "rationale": "Source-bound exact selected branch; trail-ride coverage exclusion; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -1929,9 +2183,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -1954,7 +2207,7 @@
         },
         "lit_state_request": {
           "kind": "controller",
-          "value": "both_off"
+          "value": "both_lit"
         },
         "motion_request": {
           "kind": "controller",
@@ -1968,7 +2221,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "coverage_request",
+        "coverage_request"
+      ],
+      "paired_probe_id": "c230286_cmp_12",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "coverage_request",
+        "target_value_or_branch": "enclosed_three_wheel_exclusion_probe"
+      },
+      "rationale": "Source-bound exact selected branch; enclosed-three-wheel coverage exclusion; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2060,9 +2323,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2085,7 +2347,7 @@
         },
         "lit_state_request": {
           "kind": "controller",
-          "value": "both_off"
+          "value": "both_lit"
         },
         "motion_request": {
           "kind": "controller",
@@ -2099,7 +2361,18 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "illumination_request",
+        "discernibility_request_ft",
+        "illumination_request"
+      ],
+      "paired_probe_id": "c230286_cmp_13",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "illumination_request",
+        "target_value_or_branch": "day_lowlight"
+      },
+      "rationale": "Source-bound exact selected branch; insufficient light trigger; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2191,9 +2464,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2230,7 +2502,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "discernibility_request_ft",
+        "illumination_request"
+      ],
+      "paired_probe_id": "c230286_cmp_15",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "discernibility_request_ft",
+        "target_value_or_branch": 500
+      },
+      "rationale": "Source-bound exact selected branch; 500-foot discernibility boundary; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2322,9 +2604,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2361,7 +2642,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "discernibility_request_ft",
+        "illumination_request"
+      ],
+      "paired_probe_id": "c230286_cmp_16",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "discernibility_request_ft",
+        "target_value_or_branch": 501
+      },
+      "rationale": "Source-bound exact selected branch; above-500-foot discernibility control; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2453,9 +2744,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2492,7 +2782,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_17",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunset_plus_29min"
+      },
+      "rationale": "Source-bound exact selected branch; half-hour after sunset onset; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2584,9 +2884,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2623,7 +2922,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_20",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunrise_minus_29min"
+      },
+      "rationale": "Source-bound exact selected branch; before-sunrise post-cessation control; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2715,9 +3024,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2754,7 +3062,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_17",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunset_plus_30min"
+      },
+      "rationale": "Source-bound exact selected branch; half-hour after sunset onset; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2846,9 +3164,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -2885,7 +3202,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_19",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunrise_minus_30min"
+      },
+      "rationale": "Source-bound exact selected branch; half-hour before sunrise cessation; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -2977,9 +3304,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -3016,7 +3342,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_18",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunset_plus_31min"
+      },
+      "rationale": "Source-bound exact selected branch; after-onset sunset control; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -3108,9 +3444,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -3147,7 +3482,17 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "timing_request",
+        "timing_request"
+      ],
+      "paired_probe_id": "c230286_cmp_19",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "timing_request",
+        "target_value_or_branch": "sunrise_minus_31min"
+      },
+      "rationale": "Source-bound exact selected branch; half-hour before sunrise cessation; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -3239,9 +3584,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -3278,7 +3622,16 @@
     },
     {
       "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit",
-      "rationale": "Exact source-bound equipment, timing, motion or atmosphere comparison; no legal outcome inferred",
+      "deliberate_differences": [
+        "motion_request"
+      ],
+      "paired_probe_id": "c230286_cmp_03",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "motion_request",
+        "target_value_or_branch": "stopped"
+      },
+      "rationale": "Source-bound exact selected branch; motion trigger; physical and legal results unresolved",
       "recording_description": {
         "channels": [
           {
@@ -3370,9 +3723,8 @@
         ]
       },
       "target_law_id": "LVMC-11-38-120-B",
-      "target_type": "probe",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "covered vehicle under Section 11.38.080",
         "plainly visible",
         "clearly discernible"
       ],
@@ -3406,10 +3758,179 @@
           "value": "night"
         }
       }
+    },
+    {
+      "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_both_lit",
+      "deliberate_differences": [
+        "lit_state_request"
+      ],
+      "paired_probe_id": "c230286_cmp_22",
+      "probe": {
+        "comparison_or_standard": "controlled requested source branch",
+        "primary_variable": "lit_state_request",
+        "target_value_or_branch": "both_lit"
+      },
+      "rationale": "Source-bound exact selected branch; tail burning in unfavorable atmosphere; physical and legal results unresolved",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original 20 Hz actor velocity and transform readback",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "original 20 Hz actor light-state readback plus optical camera footage",
+            "name": "independent_lamp_states",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed front/rear photometry source, retained beside original footage",
+            "name": "calibrated_lamp_capability",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "source-hashed local date, sunrise/sunset and atmospheric discernibility protocol",
+            "name": "astronomy_atmosphere",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "four synchronized original RGB camera streams",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230286 map and local clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all original 600 frames",
+            "uncertainty": "physical realization and legal meaning unverified",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed original source hash",
+            "name": "vehicle_coverage",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "road_sidewalk_geometry",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "astronomical_times",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "light_atmosphere",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "discernibility_protocol",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "headlamp_photometry",
+            "unit": "source"
+          },
+          {
+            "method": "independently reviewed original source hash",
+            "name": "tail_lamp_photometry",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Simulator lamp bits do not prove emitted color or calibrated range.",
+          "Original pixels, calibration and external statutory coverage review remain required."
+        ]
+      },
+      "target_law_id": "LVMC-11-38-120-B",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "plainly visible",
+        "clearly discernible"
+      ],
+      "variable_assignments": {
+        "calibrated_lamp_request": {
+          "kind": "world_setup",
+          "value": "white_300_red_500"
+        },
+        "coverage_request": {
+          "kind": "world_setup",
+          "value": "covered_motorcycle"
+        },
+        "discernibility_request_ft": {
+          "kind": "world_setup",
+          "value": 499
+        },
+        "illumination_request": {
+          "kind": "world_setup",
+          "value": "day_atmosphere"
+        },
+        "lit_state_request": {
+          "kind": "controller",
+          "value": "both_lit"
+        },
+        "motion_request": {
+          "kind": "controller",
+          "value": "moving"
+        },
+        "timing_request": {
+          "kind": "world_setup",
+          "value": "day"
+        }
+      }
     }
   ],
   "cell_id": "C230286",
   "status": "draft",
-  "sweep_specs": [],
-  "sweeps_expanded": true
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Qualitative original-source observation remains unresolved",
+          "phrase": "plainly visible"
+        }
+      ],
+      "missing_inputs": [
+        "Native original physical lamp photometry and independent observer visibility geometry for the selected map"
+      ],
+      "rationale": "Selected discrete physical probes preserve original observations; a judgment-wide physical sweep awaits calibrated original lamp/atmosphere feasibility",
+      "status": "incomplete",
+      "sweep_id": "c230286_0_judgment",
+      "target_law_id": "LVMC-11-38-120-B"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Qualitative original-source observation remains unresolved",
+          "phrase": "clearly discernible"
+        }
+      ],
+      "missing_inputs": [
+        "Native original physical lamp photometry and independent observer visibility geometry for the selected map"
+      ],
+      "rationale": "Selected discrete physical probes preserve original observations; a judgment-wide physical sweep awaits calibrated original lamp/atmosphere feasibility",
+      "status": "incomplete",
+      "sweep_id": "c230286_1_judgment",
+      "target_law_id": "LVMC-11-38-120-B"
+    }
+  ]
 }

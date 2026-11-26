@@ -25,10 +25,7 @@ def _point(value, name):
     return value
 
 
-def measure(path: str | Path) -> dict:
-    path = Path(path)
-    raw = path.read_bytes()
-    packet = json.loads(raw)
+def measure_packet(packet: dict, source: dict) -> dict:
     if packet.get("assignment_id") != ASSIGNMENT or not packet.get("original_trace_id"):
         raise ValueError("original assignment and trace identity required")
     a = _point(packet.get("curb_segment_start_m"), "curb start")
@@ -67,8 +64,15 @@ def measure(path: str | Path) -> dict:
                              "maximum_street_projection_m": max(distances)})
     maximum = max(p["maximum_street_projection_m"] for p in observations)
     return {"assignment_id": ASSIGNMENT, "original_trace_id": packet["original_trace_id"],
-            "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
+            "source": source,
             "method": "maximum_signed_perpendicular_vertex_distance_from_original_curb_line",
             "parts": observations, "maximum_street_projection_m": maximum,
             "fifteen_feet_m": LIMIT_M, "exceeds_fifteen_feet": maximum > LIMIT_M,
             "qualification": "Requires reviewed curb geometry, street-side reference and complete physical outlines from original source."}
+
+
+def measure(path: str | Path) -> dict:
+    path = Path(path)
+    raw = path.read_bytes()
+    return measure_packet(json.loads(raw), {"path": str(path),
+                                            "sha256": hashlib.sha256(raw).hexdigest()})
