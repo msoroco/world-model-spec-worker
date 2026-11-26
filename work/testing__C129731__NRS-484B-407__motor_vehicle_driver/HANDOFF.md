@@ -472,3 +472,9 @@ The full assignment-scoped `worker_check.py --assignment testing__C129731__NRS-4
 ## 2026-11-23 unbound proof preservation
 
 Seven historical proof files without current JSON path references were preserved byte for byte in `work/_shared/c129731-unbound-proof-files-20261123.json` (SHA256 `3fd7e4e3375bdeaf6c37306484d71b124540a49258b3d90cbc3d5472b5dc0692`). Each entry records its original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C129731 remains ready.
+
+## 2026-11-26 current runtime renewal
+
+The canonical `execution-manifest.json` now binds current runtime SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. `prior-runtime-20261125/execution-manifest.json` preserves the prior manifest. All 24 exact cases and 96 primary/fallback candidate combinations have new current-runtime offline and compatibility receipts under `current-runtime-proof/`; previously returned source-bound proofs remain preserved.
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready` exited 0 in the renewal helper with `static_checks_passed=true`. Status remains `ready` / `delivery_prepared`. Physical Native evidence and legal acceptance remain for the local operator as documented above.
