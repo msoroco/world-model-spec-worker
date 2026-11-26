@@ -1,9 +1,144 @@
 {
+  "cell_id": "C247014",
   "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
+      "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared roadway, rider, camera and measurement context without a selected outcome.",
+      "variable_assignments": {
+        "requested_lane_move": {
+          "kind": "controller",
+          "value": "hold_right",
+          "unit": "structured",
+          "source": "Native controller plan; observed motion separate"
+        },
+        "left_lane_occupant_plan": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "structured",
+          "source": "Native scene plan; observed occupancy separate"
+        },
+        "measured_lane_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native lane readback"
+        },
+        "measured_pass": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native participant poses"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "ego_pose",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "cyclist_pose",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "left_lane_occupancy",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "drv.overtaking",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "drv.lane_change",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor/frame/lane readback",
+            "name": "rel.occupies",
+            "reference_frame": "Native road",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame pass",
+            "uncertainty": "50 ms sampling; physical and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "original occupancy and independent review",
+            "name": "left_lane_availability",
+            "unit": "source context"
+          }
+        ],
+        "limitations": [
+          "Reasonable safety and due care are not judged by CPU fixtures"
+        ]
+      }
+    },
+    {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_1",
-      "rationale": "driver changes to available immediate left lane before cyclist pass",
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound physical comparison target; legal judgment and original realization remain unaccepted.",
+      "variable_assignments": {
+        "requested_lane_move": {
+          "kind": "controller",
+          "value": "left_before_pass",
+          "unit": "structured",
+          "source": "Native controller plan; observed motion separate"
+        },
+        "left_lane_occupant_plan": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "structured",
+          "source": "Native scene plan; observed occupancy separate"
+        },
+        "measured_lane_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native lane readback"
+        },
+        "measured_pass": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native participant poses"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care",
+        "reasonably safe"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -72,19 +207,51 @@
           "Reasonable safety and due care are not judged by CPU fixtures"
         ]
       },
-      "target_law_id": "NRS-484B-270-2a",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      "paired_probe_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "requested_lane_move"
       ],
-      "variable_assignments": {
-        "case_suffix": "witness_1",
-        "comparison_variable": "immediate_left_lane_for_cycle_pass"
+      "probe": {
+        "primary_variable": "requested_lane_move",
+        "comparison_or_standard": "Paired authored physical variation; no legal bound",
+        "target_value_or_branch": "left_before_pass"
       }
     },
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_2",
-      "rationale": "driver passes cyclist without moving into available immediate left lane",
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound physical comparison target; legal judgment and original realization remain unaccepted.",
+      "variable_assignments": {
+        "requested_lane_move": {
+          "kind": "controller",
+          "value": "hold_right",
+          "unit": "structured",
+          "source": "Native controller plan; observed motion separate"
+        },
+        "left_lane_occupant_plan": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "structured",
+          "source": "Native scene plan; observed occupancy separate"
+        },
+        "measured_lane_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native lane readback"
+        },
+        "measured_pass": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native participant poses"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care",
+        "reasonably safe"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -153,19 +320,51 @@
           "Reasonable safety and due care are not judged by CPU fixtures"
         ]
       },
-      "target_law_id": "NRS-484B-270-2a",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      "paired_probe_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "requested_lane_move"
       ],
-      "variable_assignments": {
-        "case_suffix": "witness_2",
-        "comparison_variable": "immediate_left_lane_for_cycle_pass"
+      "probe": {
+        "primary_variable": "requested_lane_move",
+        "comparison_or_standard": "Paired authored physical variation; no legal bound",
+        "target_value_or_branch": "hold_right"
       }
     },
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
-      "rationale": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe absent",
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound physical comparison target; legal judgment and original realization remain unaccepted.",
+      "variable_assignments": {
+        "requested_lane_move": {
+          "kind": "controller",
+          "value": "hold_right",
+          "unit": "structured",
+          "source": "Native controller plan; observed motion separate"
+        },
+        "left_lane_occupant_plan": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "structured",
+          "source": "Native scene plan; observed occupancy separate"
+        },
+        "measured_lane_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native lane readback"
+        },
+        "measured_pass": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native participant poses"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care",
+        "reasonably safe"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -234,19 +433,51 @@
           "Reasonable safety and due care are not judged by CPU fixtures"
         ]
       },
-      "target_law_id": "NRS-484B-270-2a",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      "paired_probe_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_comparison",
+      "deliberate_differences": [
+        "left_lane_occupant_plan"
       ],
-      "variable_assignments": {
-        "case_suffix": "exception_1_1",
-        "comparison_variable": "exception_1_applicability"
+      "probe": {
+        "primary_variable": "left_lane_occupant_plan",
+        "comparison_or_standard": "Paired authored physical variation; no legal bound",
+        "target_value_or_branch": "absent"
       }
     },
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2",
-      "rationale": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe present",
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound physical comparison target; legal judgment and original realization remain unaccepted.",
+      "variable_assignments": {
+        "requested_lane_move": {
+          "kind": "controller",
+          "value": "hold_right",
+          "unit": "structured",
+          "source": "Native controller plan; observed motion separate"
+        },
+        "left_lane_occupant_plan": {
+          "kind": "world_setup",
+          "value": "present",
+          "unit": "structured",
+          "source": "Native scene plan; observed occupancy separate"
+        },
+        "measured_lane_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native lane readback"
+        },
+        "measured_pass": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured",
+          "source": "Original Native participant poses"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care",
+        "reasonably safe"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -315,20 +546,38 @@
           "Reasonable safety and due care are not judged by CPU fixtures"
         ]
       },
-      "target_law_id": "NRS-484B-270-2a",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [
-        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      "paired_probe_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_comparison",
+      "deliberate_differences": [
+        "left_lane_occupant_plan"
       ],
-      "variable_assignments": {
-        "case_suffix": "exception_1_2",
-        "comparison_variable": "exception_1_applicability"
+      "probe": {
+        "primary_variable": "left_lane_occupant_plan",
+        "comparison_or_standard": "Paired authored physical variation; no legal bound",
+        "target_value_or_branch": "present"
       }
     }
   ],
-  "cell_id": "C247014",
-  "format": "worker-cases-proposal",
-  "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__judgment_coverage",
+      "target_law_id": "NRS-484B-270-2a",
+      "judgment_refs": [
+        {
+          "phrase": "due care",
+          "note": "No legal threshold inferred from a motion trace."
+        },
+        {
+          "phrase": "reasonably safe",
+          "note": "Original traffic context and independent review required."
+        }
+      ],
+      "rationale": "Physical coverage plan requires source-grounded ranges and feasible original motion.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native lane-change feasibility",
+        "Source-grounded physical ranges for due-care and reasonable-safety observables"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

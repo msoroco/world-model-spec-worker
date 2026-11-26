@@ -1,0 +1,61 @@
+{
+  "template_id": "NRS-484B-270-2a@motor_vehicle_driver",
+  "law_id": "NRS-484B-270-2a",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is more than one lane for traffic proceeding in the same direction, move the vehicle to the lane to the immediate left, if the lane is available and moving into the lane is reasonably safe.",
+  "structure": {
+    "law_id": "NRS-484B-270-2a",
+    "activation": {
+      "condition": "Driver overtakes or passes a covered rider going the same direction on a roadway with more than one same-direction lane.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Exercise due care and, when the immediate-left lane is available and movement reasonably safe, move into that lane for the pass.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "if the lane is available and moving into the lane is reasonably safe",
+        "description": "The left-lane movement duty is conditional on both source conditions."
+      }
+    ],
+    "timing": {
+      "description": "Move into the immediate-left lane before the overtaking pass and retain it through the passing interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "due care",
+        "note": "No legal threshold inferred from a motion trace."
+      },
+      {
+        "phrase": "reasonably safe",
+        "note": "Original traffic context and independent review required."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_lane_move",
+      "kind": "controller",
+      "range_or_domain": "move to immediate left before pass or remain in right lane"
+    },
+    {
+      "name": "left_lane_occupant_plan",
+      "kind": "world_setup",
+      "range_or_domain": "occupied or empty in authored scene"
+    },
+    {
+      "name": "measured_lane_position",
+      "kind": "subject_behavior",
+      "range_or_domain": "original per-frame lane readback"
+    },
+    {
+      "name": "measured_pass",
+      "kind": "subject_behavior",
+      "range_or_domain": "original per-frame body-overlap pass"
+    }
+  ]
+}

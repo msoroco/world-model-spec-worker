@@ -61,3 +61,9 @@ Next: promote the selected construction into root `construction.json`, `runner.p
 ## 2026-11-26 physical-outcome CPU fixtures
 
 `native/physical_outcome.py` measures the 600-frame pedestrian body-footprint/highway crossing request against the original-frame map without inferring signal authority. `native/prove_physical.py` generated complete, incomplete and missing-source synthetic outcomes for each of the three exact cases (nine fixtures) and a lifecycle ordering receipt. Current `physical_preparation.validate` passed all three `physical-<suffix>-preparation.json` receipts. These are synthetic CPU checks only; original Native motion and camera visibility remain local physical checks.
+
+## 2026-11-26 scoped strict delivery preparation
+
+The selected exact cases are `__probe_1` (wait), `__probe_2` (entry without another device), and `__permission_before_entry` (the same entry trajectory after another device permits). All three have current pinned offline, public/Core compatibility, recorded-only saved positive and missing-review negative, semantic, comparison, delivery-audit, and physical-preparation CPU diagnostics. The canonical execution manifest binds the current runtime and all three selected constructions. The root runner, four-view camera profile with exact poses/FOV, source observation mapping, and CPU unittest are materialized.
+
+The exact command `.venv-cpu/bin/python worker_check.py --assignment training__C111334__NRS-484B-307-4b__pedestrian --complete --require-delivery-ready` passed with exit 0 after all proofs and manifest validation. `result.json` is ready with `readiness_kind: delivery_prepared`. This prepares CARLA delivery; it does not assert original arrow pixels, NRS 484B.283 device authority, walker highway entry, or physical acceptance. The first GPU command and remaining review checks are in `result.json`.

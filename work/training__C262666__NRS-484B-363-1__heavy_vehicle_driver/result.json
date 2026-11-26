@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver",
   "input_sha256": "c9b39fab20bcfc53040d1767a611a995752b10079d3082ab68a411c9a59ed471",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "All eight exact cases are now selected in current-runtime execution manifest with finalizer, measurement contracts and per-case diagnostic recipes; each primary passes pinned offline. Probe_03 public/Core and canonical saved proofs pass. Seven public/Core, saved, semantic and delivery proofs remain.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "planned_case_count": 8,
   "candidate_count": 1,
   "selected_delivery_case_count": 8,
@@ -11,48 +11,6 @@
   "source_law_review": "Reviewed exact NRS 484B.363(1) with definition in (9): 15 mph in designated school zone for a motor vehicle, subject to no-school-day, half-hour window, operational-beacon nonflashing during class, and nonbeacon sign-off exceptions. Calendar, designation and civil-time evidence cannot be inferred from crosswalk pixels.",
   "applied_update": 16,
   "tests": [
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01 --output .runtime-work/c262666-test/offline-r10-probe_01",
-      "exit_code": 0,
-      "log": "native/cases/probe_01/offline.log",
-      "sha256": "dee1076f1877e6daebb5102903161620cb21aba4192d6197bad44763379917fb"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02 --output .runtime-work/c262666-test/offline-r10-probe_02",
-      "exit_code": 0,
-      "log": "native/cases/probe_02/offline.log",
-      "sha256": "be60402b1970fe641f79a120b7b8452cec786b26cee1aec7b934878b04899a55"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04 --output .runtime-work/c262666-test/offline-r10-probe_04",
-      "exit_code": 0,
-      "log": "native/cases/probe_04/offline.log",
-      "sha256": "2aba14c28678ff4defc10b4ccfb523ff6af765e9b3c3aee7f696636f17ae723d"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_05 --output .runtime-work/c262666-test/offline-r10-probe_05",
-      "exit_code": 0,
-      "log": "native/cases/probe_05/offline.log",
-      "sha256": "71abe2998ea237869225355bef9502deb108a0de40e0af28e1b1bdceb0ea97f9"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_06 --output .runtime-work/c262666-test/offline-r10-probe_06",
-      "exit_code": 0,
-      "log": "native/cases/probe_06/offline.log",
-      "sha256": "59d9b0ca1bb1ca208ba8150c1db4c48b34652a292152767fd9d8d693433caa74"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_07 --output .runtime-work/c262666-test/offline-r10-probe_07",
-      "exit_code": 0,
-      "log": "native/cases/probe_07/offline.log",
-      "sha256": "0843cbcfb5d6ab283b1ea711606c0236c91971ac615a4425d6e4b21099151544"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_08 --output .runtime-work/c262666-test/offline-r10-probe_08",
-      "exit_code": 0,
-      "log": "native/cases/probe_08/offline.log",
-      "sha256": "3b92ddaced425ab9d354819174fd30a3a189755988676e93ff3a3107608301ff"
-    },
     {
       "command": "TMPDIR=$PWD/.runtime-work/c262666-test .venv-cpu/bin/python -B work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/prove_school_zone.py",
       "exit_code": 0,
@@ -118,9 +76,22 @@
       "exit_code": 0,
       "log": "native/cases/probe_08/offline.log",
       "sha256": "1a0d0ceff114c7c084dd06e3578978a1111697286bdd2939ecc86ace903a2da5"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/bind_remaining_saved.py",
+      "exit_code": 0,
+      "log": "native/saved/bind-receipts.log",
+      "sha256": "836f47922845219b951ed3cdd1d9c46ecbe7d51a8df36ed1b37d1391403b71ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "root-dispatch-tests.log",
+      "sha256": "4cfb6a8ce3a5d323ec10b986c0cfaf916653f5a3b2866620c0be1e9fdd160655"
     }
   ],
   "remaining_gpu_checks": [
     "Original CARLA heavy-vehicle route motion, sign and beacon pixels, camera visibility, zone entry and exit, and independent school authority review"
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C262666__NRS-484B-363-1__heavy_vehicle_driver --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

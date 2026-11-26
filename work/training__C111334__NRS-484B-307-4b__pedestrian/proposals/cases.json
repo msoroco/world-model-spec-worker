@@ -1,21 +1,87 @@
 {
+  "format": "worker-case-proposals",
   "cell_id": "C111334",
   "actor": "pedestrian",
-  "status": "partial_source_bound_draft",
+  "status": "draft",
   "sweep_specs": [],
-  "sweeps_expanded": true,
   "cases": [
+    {
+      "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__baseline",
+      "target_law_id": "NRS-484B-307-4b",
+      "target_type": "baseline",
+      "rationale": "Shared authored crossing and device context; no additional recording",
+      "fixed_context": "Same highway boundary, facing arrow request, four cameras and duration",
+      "variable_assignments": {
+        "green_turn_arrow_alone_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored arrow-only request"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "bool",
+          "value": false
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_entry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian footprint, two device readbacks and four-camera frame join",
+            "time_window": "entire 30-second attempt",
+            "reference_frame": "Native map and original camera frame map",
+            "uncertainty": "Turn-arrow pixels, facing and other-device authority require independent saved review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested device program is not evidence of physical arrow or permission",
+          "Original pixels and Native motion require review"
+        ]
+      }
+    },
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
-      "target_type": "below",
-      "physical_target": "pedestrian waits for permitting device",
-      "comparison_variable": "pedestrian_highway_entry_before_permission",
-      "source_branch": "Travel route containing highway entry",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111334__NRS-484B-307-4b__pedestrian__comparison",
+      "deliberate_differences": [
+        "pedestrian_highway_entry"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_highway_entry",
+        "comparison_or_standard": "training__C111334__NRS-484B-307-4b__pedestrian__comparison",
+        "target_value_or_branch": "probe_1"
+      },
+      "rationale": "Controlled arrow-only pedestrian entry and other-device permission comparison",
+      "fixed_context": "Hold road, arrow request, cameras and duration fixed within each comparison",
+      "variable_assignments": {
+        "green_turn_arrow_alone_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored arrow-only request"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "bool",
+          "value": false
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Original arrow display, facing, device authority and physical entry need local review"
       ],
       "recording_description": {
         "channels": [
@@ -34,34 +100,42 @@
           "Requested device program is not evidence of physical arrow or permission",
           "Original pixels and Native motion require review"
         ]
-      },
-      "rationale": "Exact NRS 484B.307(4)(b) controlled pedestrian entry and permission comparison; no physical finding.",
-      "variable_assignments": {
-        "pedestrian_entry_request": {
-          "kind": "controller",
-          "value": false
-        },
-        "other_device_permission_request": {
-          "kind": "controller",
-          "value": false
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Original green turn arrow alone and facing",
-        "Other device permission under NRS 484B.283"
-      ]
+      }
     },
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_2",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "pedestrian enters highway facing green turn arrow alone without other permission",
-      "comparison_variable": "pedestrian_highway_entry_before_permission",
-      "source_branch": "Travel route containing highway entry",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "violating_attempt",
+      "paired_probe_id": "training__C111334__NRS-484B-307-4b__pedestrian__comparison",
+      "deliberate_differences": [
+        "pedestrian_highway_entry"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_highway_entry",
+        "comparison_or_standard": "training__C111334__NRS-484B-307-4b__pedestrian__comparison",
+        "target_value_or_branch": "probe_2"
+      },
+      "rationale": "Controlled arrow-only pedestrian entry and other-device permission comparison",
+      "fixed_context": "Hold road, arrow request, cameras and duration fixed within each comparison",
+      "variable_assignments": {
+        "green_turn_arrow_alone_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored arrow-only request"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "bool",
+          "value": false
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Original arrow display, facing, device authority and physical entry need local review"
       ],
       "recording_description": {
         "channels": [
@@ -80,34 +154,42 @@
           "Requested device program is not evidence of physical arrow or permission",
           "Original pixels and Native motion require review"
         ]
-      },
-      "rationale": "Exact NRS 484B.307(4)(b) controlled pedestrian entry and permission comparison; no physical finding.",
-      "variable_assignments": {
-        "pedestrian_entry_request": {
-          "kind": "controller",
-          "value": true
-        },
-        "other_device_permission_request": {
-          "kind": "controller",
-          "value": false
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Original green turn arrow alone and facing",
-        "Other device permission under NRS 484B.283"
-      ]
+      }
     },
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__permission_before_entry",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
-      "target_type": "controlled_permission",
-      "physical_target": "pedestrian enters the same highway while the green turn arrow alone faces them after another device permits proceeding",
-      "comparison_variable": "other_device_permission_before_highway_entry",
-      "source_branch": "other-device permission under 484B.283",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111334__NRS-484B-307-4b__pedestrian__permission_comparison",
+      "deliberate_differences": [
+        "other_device_permission"
+      ],
+      "probe": {
+        "primary_variable": "other_device_permission",
+        "comparison_or_standard": "training__C111334__NRS-484B-307-4b__pedestrian__permission_comparison",
+        "target_value_or_branch": "permission_before_entry"
+      },
+      "rationale": "Controlled arrow-only pedestrian entry and other-device permission comparison",
+      "fixed_context": "Hold road, arrow request, cameras and duration fixed within each comparison",
+      "variable_assignments": {
+        "green_turn_arrow_alone_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored arrow-only request"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "bool",
+          "value": true
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Original arrow display, facing, device authority and physical entry need local review"
       ],
       "recording_description": {
         "channels": [
@@ -126,22 +208,7 @@
           "Requested device program is not evidence of physical arrow or permission",
           "Original pixels and Native motion require review"
         ]
-      },
-      "rationale": "Exact NRS 484B.307(4)(b) controlled pedestrian entry and permission comparison; no physical finding.",
-      "variable_assignments": {
-        "pedestrian_entry_request": {
-          "kind": "controller",
-          "value": true
-        },
-        "other_device_permission_request": {
-          "kind": "controller",
-          "value": true
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Original green turn arrow alone and facing",
-        "Other device permission under NRS 484B.283"
-      ]
+      }
     }
   ]
 }

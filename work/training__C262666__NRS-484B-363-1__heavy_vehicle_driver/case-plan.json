@@ -186,7 +186,7 @@
       ],
       "status": "planned_unproven",
       "audit_implementation": "native/compare_school_zone.py",
-      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture"
+      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture; original comparison pending"
     },
     {
       "comparison_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__no_school_day",
@@ -206,7 +206,7 @@
       ],
       "status": "planned_unproven",
       "audit_implementation": "native/compare_school_zone.py",
-      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture"
+      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture; original comparison pending"
     },
     {
       "comparison_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__half_hour_window",
@@ -226,7 +226,7 @@
       ],
       "status": "planned_unproven",
       "audit_implementation": "native/compare_school_zone.py",
-      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture"
+      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture; original comparison pending"
     },
     {
       "comparison_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__beacon_flash",
@@ -246,7 +246,7 @@
       ],
       "status": "planned_unproven",
       "audit_implementation": "native/compare_school_zone.py",
-      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture"
+      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture; original comparison pending"
     },
     {
       "comparison_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__nonbeacon_sign",
@@ -266,7 +266,7 @@
       ],
       "status": "planned_unproven",
       "audit_implementation": "native/compare_school_zone.py",
-      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture"
+      "audit_implementation_status": "source_bound_cpu_test_passed_on_synthetic_fixture; original comparison pending"
     }
   ],
   "mandatory_observation_targets": [
@@ -396,107 +396,81 @@
         "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_07",
         "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_08"
       ],
-      "evidence_or_gap": "Eight exact primary bundles pass pinned offline; selected probe_03 public/Core and canonical saved proofs pass. Remaining seven full compatibility and delivery audits remain."
+      "evidence_or_gap": "Eight exact primary cases are selected and CPU-proven for construction, compatibility, canonical saved-only processing, semantic proposals, independent delivery and source-bound comparison audits. Original school designation, calendar, civil clock, sign/beacon state, heavy-vehicle motion and source visibility require local review."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.zone_sign",
-      "measurement": "reviewed school-zone sign and posted condition source",
-      "evidence": [
-        "school_zone_context.json:zone_sign_source"
-      ],
+  "source_observation_mapping": {
+    "dev.speed_limit_beacon": {
+      "evidence": "Review operational status and alternating yellow-light phase from governing beacon source, original approach camera and school_zone_context.json; missing review remains unknown.",
       "channels": [
-        "approach.mkv",
-        "reference_corner.mkv"
+        "dev.speed_limit_beacon"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "drv.within_signed_zone",
-      "measurement": "sampled ego station between reviewed zone bounds on governing road/direction",
-      "evidence": [
-        "native_motion.jsonl:ego_x_m,ego_y_m,road_id,travel_direction_id",
-        "school_zone_context.json:zone_station_bounds_m,road_axis_xy"
-      ],
+    "dev.zone_sign": {
+      "evidence": "Review the installed school-zone sign and its governing schedule from the original survey, authority record and approach camera; school_zone_context.json records source IDs and review, never infers designation from pixels alone.",
       "channels": [
-        "overview.mkv"
+        "dev.zone_sign"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "kin.speed",
-      "measurement": "norm of three original Native velocity components, converted m/s to mph for every zone frame",
-      "evidence": [
-        "native_motion.jsonl:velocity_x_mps,velocity_y_mps,velocity_z_mps"
-      ],
+    "drv.condition_in_effect": {
+      "evidence": "Join reviewed school session day, school hours, half-hour exception, beacon phase and nonbeacon sign schedule to the exact original frame civil time; withhold a legal verdict.",
       "channels": [
-        "overview.mkv"
+        "drv.condition_in_effect"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "dev.speed_limit_beacon",
-      "measurement": "independently reviewed operational status, flashing state and sign accompaniment",
-      "evidence": [
-        "school_zone_context.json:beacon_source,beacon_phase_source,beacon_operational,beacon_flashing"
-      ],
+    "drv.within_signed_zone": {
+      "evidence": "Join original Native frame, ego actor, road and travel direction to reviewed zone station bounds and measured vehicle position in native_motion.jsonl.",
       "channels": [
-        "approach.mkv"
+        "drv.within_signed_zone"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "drv.condition_in_effect",
-      "measurement": "reported activation and each exception from reviewed school calendar, half-hour window and beacon/sign context; no legal verdict",
-      "evidence": [
-        "school_zone_context.json:school_session_day,half_hour_window_exception,pupils_in_class,nonbeacon_sign_in_effect,condition_stable_30s"
-      ],
+    "env.civil_time": {
+      "evidence": "Derive frame civil timestamps from reviewed timezone-aware civil_start_iso and original video_frames.jsonl time_s, joined to the school calendar source.",
       "channels": [
-        "approach.mkv"
+        "env.civil_time"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "env.civil_time",
-      "measurement": "timezone-aware civil start and 20 Hz original frame interval",
-      "evidence": [
-        "school_zone_context.json:civil_start_iso,civil_time_source",
-        "video_frames.jsonl:time_s"
-      ],
+    "kin.speed": {
+      "evidence": "Compute mph from original Native velocity components in native_motion.jsonl on frames within the reviewed zone; the requested target speed is excluded as evidence.",
       "channels": [
-        "video_frames.jsonl"
+        "kin.speed"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     },
-    {
-      "term": "ru.motor_vehicle",
-      "measurement": "reviewed heavy motor vehicle class joined to original actor ID",
-      "evidence": [
-        "school_zone_context.json:vehicle_class_source,ego_actor_id,ego_is_motor_vehicle",
-        "native_motion.jsonl:ego_actor_id"
-      ],
+    "ru.motor_vehicle": {
+      "evidence": "Bind original heavy-vehicle blueprint and actor ID to reviewed vehicle class source and source camera frames; cannot be established by fixture color video.",
       "channels": [
-        "overview.mkv",
-        "driver_reference.mkv"
+        "ru.motor_vehicle"
       ],
       "source_refs": [
-        "NRS 484B.363(1), (9); inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json"
+        "inputs/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/assignment.json",
+        "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/measure_school_zone.py"
       ]
     }
-  ],
+  },
   "camera_plan": {
     "profile": "overview1080-capability",
     "duration_s": 30,
