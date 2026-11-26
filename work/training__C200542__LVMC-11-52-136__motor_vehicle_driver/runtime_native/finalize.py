@@ -54,6 +54,8 @@ def measured(root):
         raise ValueError('Reviewed access-aisle bounds differ from original context')
     if designation.get('adjacent_accessible_bay') != context.get('adjacent_accessible_bay'):
         raise ValueError('Reviewed adjacent accessible space differs')
+    if designation.get('accessible_route_diagnostic_extent') != context.get('accessible_route_diagnostic_extent'):
+        raise ValueError('Reviewed route geometry differs')
     if not designation.get('contrasting_marking_or_paving'):
         raise ValueError('Contrasting aisle marking or paving source absent')
     if designation.get('vehicle_ingress_egress') is not True or designation.get('accessible_route_connectivity') is not True:

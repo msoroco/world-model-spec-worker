@@ -42,6 +42,8 @@ def measure(root, case_id, source_kind='synthetic_cpu'):
     context = json.loads(context_file.read_text())
     if context.get('case_id') != case_id:
         raise ValueError('Crosswalk source case mismatch')
+    if source_kind == 'original_native' and context.get('source_kind') != 'original_native':
+        raise ValueError('Original Native crosswalk provenance missing')
     crosswalk = polygon(context['crosswalk_polygon_xy_m'])
     if context.get('crosswalk_source_kind') not in ('map_geometry', 'measured_marking'):
         raise ValueError('Crosswalk geometry source missing')
@@ -57,12 +59,16 @@ def measure(root, case_id, source_kind='synthetic_cpu'):
             item = lookup.get((frame, name))
             if item is None or len(item.get('rgb_sha256', '')) != 64:
                 raise ValueError('Missing source camera RGB hash')
+            if source_kind == 'original_native' and item.get('source_kind') != 'original_native':
+                raise ValueError('Original Native camera provenance missing')
     occupied = []
     at_rest = []
     overlaps = []
     for frame, row in enumerate(actors):
         if row.get('case_id') != case_id or abs(float(row.get('time_s', -1)) - frame / RATE_HZ) > 1e-5:
             raise ValueError('Actor source identity/time mismatch')
+        if source_kind == 'original_native' and row.get('source_kind') != 'original_native':
+            raise ValueError('Original Native actor provenance missing')
         speed = float(row['ego_speed_mps'])
         if not math.isfinite(speed) or speed < 0:
             raise ValueError('Invalid original speed')

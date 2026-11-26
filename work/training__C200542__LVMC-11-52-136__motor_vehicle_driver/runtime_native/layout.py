@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 AISLE = {'x_min_m': 0.0, 'x_max_m': 7.0, 'y_min_m': -8.0, 'y_max_m': -4.0}
 BAY = {'x_min_m': 0.0, 'x_max_m': 7.0, 'y_min_m': -4.0, 'y_max_m': 0.0}
+ROUTE = {'x_min_m': 7.0, 'x_max_m': 12.0, 'y_min_m': -8.0, 'y_max_m': -4.0}
 
 
 def open_drive():
@@ -31,6 +32,9 @@ def check():
         raise ValueError('Premises aisle/bay geometry differs')
     if AISLE['x_min_m'] != BAY['x_min_m'] or AISLE['x_max_m'] != BAY['x_max_m']:
         raise ValueError('Aisle and accessible bay are no longer paired')
+    if ROUTE['x_min_m'] != AISLE['x_max_m'] or ROUTE['y_min_m'] != AISLE['y_min_m'] or ROUTE['y_max_m'] != AISLE['y_max_m']:
+        raise ValueError('Aisle and diagnostic accessible route are not contiguous')
     return {'passed': True, 'road_width_m': width, 'access_aisle': AISLE,
-            'adjacent_bay': BAY, 'official_designation_proven': False,
+            'adjacent_bay': BAY, 'accessible_route_diagnostic_extent': ROUTE,
+            'official_designation_proven': False,
             'native_markings_observed': False}

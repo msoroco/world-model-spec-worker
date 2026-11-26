@@ -29,7 +29,7 @@ for suffix, y in (('controlled_1', -2.0), ('controlled_2', -6.0)):
          'capture/evidence.jsonl', 'capture/native/frames.jsonl', 'capture/manifest.json')}
     from sys import path
     path.insert(0, str(HERE / 'runtime_native'))
-    from layout import AISLE, BAY, open_drive
+    from layout import AISLE, BAY, ROUTE, open_drive
     spec['files']['road.xodr'] = open_drive()
     trace = rows(spec['files']['trace.jsonl'])
     mapping = rows(spec['files']['video_frames.jsonl'])
@@ -68,6 +68,7 @@ for suffix, y in (('controlled_1', -2.0), ('controlled_2', -6.0)):
     spec['files']['native-vehicle.jsonl'] = lines(motions)
     spec['files']['aisle-context.json'] = json.dumps({'source_kind': 'original_native',
         'cell_id': 'C200542', 'access_aisle': AISLE, 'adjacent_accessible_bay': BAY,
+        'accessible_route_diagnostic_extent': ROUTE,
         'premises_public_access_reviewed': False, 'access_aisle_designation_reviewed': False,
         'parked_classification_reviewed': False}) + '\n'
     road_hash = sha(spec['files']['road.xodr'])
@@ -79,6 +80,7 @@ for suffix, y in (('controlled_1', -2.0), ('controlled_2', -6.0)):
         'reviewer': 'synthetic fixture generator', 'source': 'synthetic aisle designation record',
         'road_sha256': road_hash, 'official_access_aisle': True,
         'access_aisle': AISLE, 'adjacent_accessible_bay': BAY,
+        'accessible_route_diagnostic_extent': ROUTE,
         'contrasting_marking_or_paving': 'synthetic diagonal stripes',
         'vehicle_ingress_egress': True, 'accessible_route_connectivity': True,
         'designation_route': 'direct_marking_and_accessible_bay',

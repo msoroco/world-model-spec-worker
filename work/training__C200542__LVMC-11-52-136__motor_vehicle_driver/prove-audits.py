@@ -28,8 +28,8 @@ def main():
         case = entry["case_id"]
         suffix = case.split("__")[-1]
         proof = HERE / "proofs" / suffix
-        attempt = ROOT / ".runtime-work" / ("c200542-v3-compat-" + suffix + "-primary")
-        processing = ROOT / ".runtime-work" / ("c200542-v3-saved-" + suffix) / "v0001/processing.json"
+        attempt = ROOT / ".runtime-work" / ("c200542-v4-compat-" + suffix + "-primary")
+        processing = ROOT / ".runtime-work" / ("c200542-v4-saved-" + suffix) / "v0001/processing.json"
         base = [PYTHON, str(script), "--case", case, "--candidate", "primary",
                 "--attempt", str(attempt), "--processing", str(processing),
                 "--output", str(ROOT / ".runtime-work" / ("c200542-delivery-audit-" + suffix + "-positive.json")),
@@ -59,7 +59,7 @@ def main():
         command = [PYTHON, str(comparison_script), "--comparison", ident]
         for case in comparison["case_ids"]:
             suffix = case.split("__")[-1]
-            processing = ROOT / ".runtime-work" / ("c200542-v3-saved-" + suffix) / "v0001/processing.json"
+            processing = ROOT / ".runtime-work" / ("c200542-v4-saved-" + suffix) / "v0001/processing.json"
             command += ["--processing", case + "=" + str(processing)]
         command += ["--output", str(ROOT / ".runtime-work" / ("c200542-comparison-" + token + ".json"))]
         positive = HERE / "proofs" / ("comparison-" + token + "-positive.log")

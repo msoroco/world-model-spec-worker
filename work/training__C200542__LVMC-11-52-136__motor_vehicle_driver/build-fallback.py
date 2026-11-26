@@ -16,8 +16,8 @@ def main():
     for entry in manifest['cases']:
         fallback = json.loads((HERE / entry['construction']).read_text())
         runner = next(row for row in fallback['files'] if row['path'] == 'runner.py')
-        assert runner['content'].count('x=-20,y=target_y') == 1
-        runner['content'] = runner['content'].replace('x=-20,y=target_y', 'x=-18,y=target_y')
+        assert runner['content'].count('x=-20, y=target_y') == 1
+        runner['content'] = runner['content'].replace('x=-20, y=target_y', 'x=-18, y=target_y')
         config = next(row for row in fallback['files'] if row['path'] == 'config.json')
         value = json.loads(config['content'])
         value['candidate_id'] = 'fallback1'

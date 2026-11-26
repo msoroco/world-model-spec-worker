@@ -3,6 +3,7 @@ import ast
 import hashlib
 import importlib.util
 import json
+import math
 from pathlib import Path
 import shutil
 
@@ -47,8 +48,15 @@ def source_bundle(state, selected):
         row = dict(draft[min(i, 479)])
         row['native_frame'] = rider[i]['native_frame']
         row['time_s'] = rider[i]['time_s']
+        if state == 'probe_c_alley_entry':
+            x = row['native_center_xy_m'][0]
+            y = -1.5 - 4.0 * min(1.0, max(0.0, (x + 7.0) / 4.0)) if x <= 3 else -5.5 + 4.0 * min(1.0, (x - 3.0) / 4.0)
+            old_y = row['native_center_xy_m'][1]
+            row['native_center_xy_m'] = [x, round(y, 6)]
+            row['native_body_xy_m'] = [[point[0], round(point[1] + y - old_y, 6)]
+                                        for point in row['native_body_xy_m']]
         body, center = row['native_body_xy_m'], row['native_center_xy_m']
-        speed = 0.0 if last_center is None else round((center[0] - last_center[0]) * 20, 5)
+        speed = 0.0 if last_center is None else round(math.dist(center, last_center) * 20, 5)
         last_center = center
         rider[i]['ego_body_xy'] = body
         rider[i]['ego_speed_mps'] = speed
@@ -139,6 +147,8 @@ def constructions(state, selected):
                 content = content.replace('480', '600').replace('24.0', '30.0').replace('!= 24', '!= 30')
                 content = content.replace('from finalize import verify_original_joins, video_frames, sha',
                                           'from finalize import verify_original_joins, video_frames, rows, sha')
+                if name == 'finalize_no_entry.py':
+                    content = content.replace("'method':'moving_body_facility_entry'", "'method':'entry_observation'")
                 rider_finalizer = (ROOT/'native/finalize_rider.py').read_text()
                 derive = rider_finalizer[rider_finalizer.index('def derive_channels('):rider_finalizer.index('def finalize(')]
                 content = content.replace('def finalize(attempt, output):', derive + 'def finalize(attempt, output):')

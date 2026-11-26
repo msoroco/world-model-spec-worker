@@ -1,0 +1,300 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_premises_designation_and_parking_review",
+  "cases": [
+    {
+      "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "construction": "draft-exact/controlled_1/primary/construction.json",
+      "construction_sha256": "c105f60f0f36da84fb7b093babf34e1d704d19e9de43bd77df96f08959ce2e46",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The Native vehicle may stop short of the requested bay or aisle footprint; original body corners and speed must verify a parked position"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/controlled_1/fallback1/construction.json",
+          "construction_sha256": "95add92a019c8abcfcfd3ee2dd1e5f7be1acaad155f7ef0ae8da941b38d5f83c",
+          "trigger": {
+            "source": "original Native native-vehicle.jsonl and result.json",
+            "metric": "stationary original body frames centered in the requested bay or aisle",
+            "failure_condition": "fewer than 450 of 600 original frames with speed zero and body centered in the requested region, after checking no source loss"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for both linked cases"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "95add92a019c8abcfcfd3ee2dd1e5f7be1acaad155f7ef0ae8da941b38d5f83c",
+            "command": "runtime.py offline --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1 --candidate fallback1",
+            "log": "proofs/controlled_1/fallback1-offline.log",
+            "log_sha256": "b765d24cf7aa3fc36f71d38b873a95c0a38495bc5c66dd288e7c1803dd361386"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_1/fallback1-compatibility.json",
+            "sha256": "74769e8597faf053686112aadedc9b629909094735cf18189090a50659ac9d3c",
+            "log": "proofs/controlled_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/controlled_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/controlled_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/diagnostic-controlled_1-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "c105f60f0f36da84fb7b093babf34e1d704d19e9de43bd77df96f08959ce2e46",
+        "command": "runtime.py offline --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1 --candidate primary",
+        "log": "proofs/controlled_1/primary-offline.log",
+        "log_sha256": "b765d24cf7aa3fc36f71d38b873a95c0a38495bc5c66dd288e7c1803dd361386"
+      },
+      "compatibility": {
+        "receipt": "proofs/controlled_1/primary-compatibility.json",
+        "sha256": "22c9667d524f292e20cf2a1297e47f7d7d0093d79e859556eaab9b4efaf11d26",
+        "log": "proofs/controlled_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/controlled_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/controlled_1/primary-negative-analysis.log",
+        "log_sha256": "6ebecb913ad49f196b058bc1ccf6b6882ceb546c9dabed99c1b4024f0b8cb596"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/controlled_1/physical-preparation.json",
+        "sha256": "465cdf5b6c9717162f8fec9b5a1fa36d9a7468575bfeea20a8611957bee3a393"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.parking_space": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent official aisle designation with adjacent accessible bay",
+          "evidence": [
+            "road.xodr",
+            "aisle-designation-review.json"
+          ]
+        },
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "original reference RGB plus independently reviewed contrasting marking or paving",
+          "evidence": [
+            "reference_corner.mkv",
+            "aisle-designation-review.json"
+          ]
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "original speed and separate parked activity classification",
+          "evidence": [
+            "native-vehicle.jsonl",
+            "parking-review.json"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original body against reviewed aisle and premises jurisdiction",
+          "evidence": [
+            "native-vehicle.jsonl",
+            "aisle-designation-review.json",
+            "premises-review.json"
+          ]
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "original full-body corners every frame",
+          "evidence": [
+            "native-vehicle.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+        "test_log": "proofs/controlled_1/saved.log",
+        "test_log_sha256": "b4d84dd2d89e0e1a4f30e08455a48bdd5fee1bdb120597ed29f4582cf47f9d5b",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_premises_designation_and_parking_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7753ccc864b15e3068600317ac4e2f62d704f01e92dbc65145e5c5eebbd091f2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/delivery_audit.py --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-compat-controlled_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-saved-controlled_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-delivery-audit-controlled_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_1/delivery-positive.log",
+        "test_log_sha256": "a1b14877c9e1a40dc1967475f01221248430300d6bbd312d943401d61316bb75",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/delivery_audit.py --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-compat-controlled_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-saved-controlled_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-delivery-audit-controlled_1-positive.json --diagnostic --omit-source aisle-designation-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: aisle-designation-review.json",
+        "negative_log": "proofs/controlled_1/delivery-negative.log",
+        "negative_log_sha256": "c0c9b453274bfadd3cbd75983165a8b3e620bec826d26cded19614235b91684f"
+      }
+    },
+    {
+      "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "construction": "draft-exact/controlled_2/primary/construction.json",
+      "construction_sha256": "556a681f680a202075cb2feee845e2c4a8744b10629c51505328bf0ace67bfee",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The Native vehicle may stop short of the requested bay or aisle footprint; original body corners and speed must verify a parked position"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/controlled_2/fallback1/construction.json",
+          "construction_sha256": "bbc6e827cb624500c5179d86b684dd4592091c45eb9c965c251bc820fe5fbc6c",
+          "trigger": {
+            "source": "original Native native-vehicle.jsonl and result.json",
+            "metric": "stationary original body frames centered in the requested bay or aisle",
+            "failure_condition": "fewer than 450 of 600 original frames with speed zero and body centered in the requested region, after checking no source loss"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for both linked cases"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "bbc6e827cb624500c5179d86b684dd4592091c45eb9c965c251bc820fe5fbc6c",
+            "command": "runtime.py offline --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2 --candidate fallback1",
+            "log": "proofs/controlled_2/fallback1-offline.log",
+            "log_sha256": "2dd0546691886cb96ad54ae0545699619674fa1d7dbb42245922aa46989578a4"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_2/fallback1-compatibility.json",
+            "sha256": "f3096021f0bf7ad908a6c45804d513fa5e0b7d683579cd9eab199e85c8d504c0",
+            "log": "proofs/controlled_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/controlled_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/controlled_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/diagnostic-controlled_2-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "556a681f680a202075cb2feee845e2c4a8744b10629c51505328bf0ace67bfee",
+        "command": "runtime.py offline --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2 --candidate primary",
+        "log": "proofs/controlled_2/primary-offline.log",
+        "log_sha256": "2dd0546691886cb96ad54ae0545699619674fa1d7dbb42245922aa46989578a4"
+      },
+      "compatibility": {
+        "receipt": "proofs/controlled_2/primary-compatibility.json",
+        "sha256": "2f50ef446a8a311b24f332688d0142d2dde10639db699e7451d6a5b18cd85621",
+        "log": "proofs/controlled_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/controlled_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/controlled_2/primary-negative-analysis.log",
+        "log_sha256": "38eee466f21c91fd129d2ca16112066593fb89f269e6a3bf4d43c764ee1a5f08"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/controlled_2/physical-preparation.json",
+        "sha256": "ea1ab3c62ca55c351e68e8dff79913368843c1d695eb345ae302fe83fad061fe"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.parking_space": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent official aisle designation with adjacent accessible bay",
+          "evidence": [
+            "road.xodr",
+            "aisle-designation-review.json"
+          ]
+        },
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "original reference RGB plus independently reviewed contrasting marking or paving",
+          "evidence": [
+            "reference_corner.mkv",
+            "aisle-designation-review.json"
+          ]
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "original speed and separate parked activity classification",
+          "evidence": [
+            "native-vehicle.jsonl",
+            "parking-review.json"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original body against reviewed aisle and premises jurisdiction",
+          "evidence": [
+            "native-vehicle.jsonl",
+            "aisle-designation-review.json",
+            "premises-review.json"
+          ]
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "original full-body corners every frame",
+          "evidence": [
+            "native-vehicle.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
+        "test_log": "proofs/controlled_2/saved.log",
+        "test_log_sha256": "353bc9fb13080ec36676fec66e689fb1a1f114b33d413ac8590c9ae0c6292805",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_premises_designation_and_parking_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7753ccc864b15e3068600317ac4e2f62d704f01e92dbc65145e5c5eebbd091f2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/delivery_audit.py --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-compat-controlled_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-saved-controlled_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-delivery-audit-controlled_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_2/delivery-positive.log",
+        "test_log_sha256": "6d39861bd469a7aaad886076b95b96a426c2e5775ff3737c8c5f001413f63c74",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C200542__LVMC-11-52-136__motor_vehicle_driver/delivery_audit.py --case training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-compat-controlled_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-v4-saved-controlled_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c200542-delivery-audit-controlled_2-positive.json --diagnostic --omit-source aisle-designation-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: aisle-designation-review.json",
+        "negative_log": "proofs/controlled_2/delivery-negative.log",
+        "negative_log_sha256": "c0c9b453274bfadd3cbd75983165a8b3e620bec826d26cded19614235b91684f"
+      }
+    }
+  ]
+}

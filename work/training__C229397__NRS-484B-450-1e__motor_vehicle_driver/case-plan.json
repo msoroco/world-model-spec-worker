@@ -26,7 +26,7 @@
     {
       "requirement": "NRS-484B-450-1e",
       "source": "NRS 484B.450(1)(e)",
-      "branch": "Parking on a crosswalk",
+      "branch": "park on a crosswalk",
       "status": "selected_required",
       "case_ids": [
         "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_1",
@@ -59,13 +59,46 @@
     {
       "requirement": "NRS-484B-450-1e",
       "source": "NRS 484B.450(1)(e)",
-      "branch": "in compliance with the directions of a police officer or an official traffic-control device",
+      "branch": "in compliance with directions of a police officer",
       "status": "exception_pending",
       "case_ids": [
         "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_3_1",
         "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_3_2"
       ],
       "evidence_or_gap": "Exact cited-law scope, actor eligibility, construction and observed evidence of this exception remain unverified; these are planning targets only."
+    },
+    {
+      "requirement": "NRS-484B-450-1e",
+      "source": "NRS 484B.450(1)(e)",
+      "branch": "stop on a crosswalk",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_2"
+      ],
+      "evidence_or_gap": "Exact activity is a requested capture target; original Native activity and legal scope are unverified."
+    },
+    {
+      "requirement": "NRS-484B-450-1e",
+      "source": "NRS 484B.450(1)(e)",
+      "branch": "stand on a crosswalk",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_2"
+      ],
+      "evidence_or_gap": "Exact activity is a requested capture target; original Native activity and legal scope are unverified."
+    },
+    {
+      "requirement": "NRS-484B-450-1e",
+      "source": "NRS 484B.450(1)(e)",
+      "branch": "in compliance with directions of an official traffic-control device",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_2"
+      ],
+      "evidence_or_gap": "Cited device identity, direction, actor response and legal applicability remain unverified."
     }
   ],
   "activation_conditions": [
@@ -80,6 +113,10 @@
     {
       "kind": "duration",
       "requirement": "the standing/parked duration parameter separates a stop from a momentary halt in a queue"
+    },
+    {
+      "kind": "activity_split",
+      "requirement": "Source says stop, stand or park; no legal duration cutoff is invented by the CPU measurement."
     }
   ],
   "unresolved_judgment_calls": [],
@@ -95,7 +132,7 @@
       "target_type": "controlled_attempt",
       "physical_target": "driver parks clear of crosswalk footprint",
       "comparison_variable": "crosswalk_parking_occupancy",
-      "source_branch": "Parking on a crosswalk",
+      "source_branch": "park on a crosswalk",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -128,7 +165,7 @@
       "target_type": "controlled_attempt",
       "physical_target": "driver parks with footprint occupying crosswalk",
       "comparison_variable": "crosswalk_parking_occupancy",
-      "source_branch": "Parking on a crosswalk",
+      "source_branch": "park on a crosswalk",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -291,9 +328,9 @@
       "target_law_id": "NRS-484B-450-1e",
       "kind": "planned_only",
       "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with in compliance with the directions of a police officer or an official traffic-control device absent",
-      "comparison_variable": "exception_3_applicability",
-      "source_branch": "in compliance with the directions of a police officer or an official traffic-control device",
+      "physical_target": "hold selected activation with in compliance with directions of a police officer absent",
+      "comparison_variable": "police_direction_source",
+      "source_branch": "in compliance with directions of a police officer",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -310,7 +347,7 @@
         ]
       },
       "controller": {
-        "requested_behavior": "hold selected activation with in compliance with the directions of a police officer or an official traffic-control device absent"
+        "requested_behavior": "hold selected activation with in compliance with directions of a police officer absent"
       },
       "subject_behavior": {
         "value": null,
@@ -324,9 +361,9 @@
       "target_law_id": "NRS-484B-450-1e",
       "kind": "planned_only",
       "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with in compliance with the directions of a police officer or an official traffic-control device present",
-      "comparison_variable": "exception_3_applicability",
-      "source_branch": "in compliance with the directions of a police officer or an official traffic-control device",
+      "physical_target": "hold selected activation with in compliance with directions of a police officer present",
+      "comparison_variable": "police_direction_source",
+      "source_branch": "in compliance with directions of a police officer",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -343,7 +380,205 @@
         ]
       },
       "controller": {
-        "requested_behavior": "hold selected activation with in compliance with the directions of a police officer or an official traffic-control device present"
+        "requested_behavior": "hold selected activation with in compliance with directions of a police officer present"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_1",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver stops clear of crosswalk footprint",
+      "comparison_variable": "stop_crosswalk_occupancy",
+      "source_branch": "stop on a crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver stops clear of crosswalk footprint"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_2",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver stops with footprint occupying crosswalk",
+      "comparison_variable": "stop_crosswalk_occupancy",
+      "source_branch": "stop on a crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver stops with footprint occupying crosswalk"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_1",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver stands clear of crosswalk footprint",
+      "comparison_variable": "stand_crosswalk_occupancy",
+      "source_branch": "stand on a crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver stands clear of crosswalk footprint"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_2",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver stands with footprint occupying crosswalk",
+      "comparison_variable": "stand_crosswalk_occupancy",
+      "source_branch": "stand on a crosswalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "driver stands with footprint occupying crosswalk"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_1",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with in compliance with directions of an official traffic-control device absent",
+      "comparison_variable": "official_device_direction_source",
+      "source_branch": "in compliance with directions of an official traffic-control device",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with in compliance with directions of an official traffic-control device absent"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_2",
+      "target_law_id": "NRS-484B-450-1e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "hold selected activation with in compliance with directions of an official traffic-control device present",
+      "comparison_variable": "official_device_direction_source",
+      "source_branch": "in compliance with directions of an official traffic-control device",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "road",
+          "maneuver": "park",
+          "control": "crosswalk"
+        },
+        "activation_conditions_to_verify": [
+          "the subject stops, stands or parks",
+          "the footprint is on a crosswalk"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold selected activation with in compliance with directions of an official traffic-control device present"
       },
       "subject_behavior": {
         "value": null,
@@ -406,12 +641,54 @@
         "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_3_2"
       ],
       "deliberate_differences": [
-        "exception_3_applicability"
+        "police_direction_source"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
         "same map geometry except named comparison variable",
         "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_comparison",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_2"
+      ],
+      "deliberate_differences": [
+        "stop_crosswalk_occupancy"
+      ],
+      "fixed_conditions": [
+        "same frozen cell, actor, crosswalk geometry, cameras and observation window",
+        "only requested footprint relation differs; actual relation remains unobserved"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_comparison",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_2"
+      ],
+      "deliberate_differences": [
+        "stand_crosswalk_occupancy"
+      ],
+      "fixed_conditions": [
+        "same frozen cell, actor, crosswalk geometry, cameras and observation window",
+        "only requested footprint relation differs; actual relation remains unobserved"
+      ]
+    },
+    {
+      "comparison_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_comparison",
+      "case_ids": [
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_1",
+        "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_2"
+      ],
+      "deliberate_differences": [
+        "official_device_direction_source"
+      ],
+      "fixed_conditions": [
+        "same frozen cell, actor, crosswalk geometry, cameras and observation window",
+        "only cited official-device direction source changes; applicability remains unverified"
       ]
     }
   ],

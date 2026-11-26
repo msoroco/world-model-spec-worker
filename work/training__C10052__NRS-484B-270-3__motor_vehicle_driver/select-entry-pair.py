@@ -53,12 +53,13 @@ def main():
         entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON', 'host_env_var': 'CARLA_HOST', 'port_env_var': 'CARLA_PORT'}
         entry['acquisition'] = base['acquisition']
         output_key = 'alley_transition_observation' if response == 'probe_c_alley_entry' else 'moving_body_facility_entry'
+        method = 'alley_transition_observation' if response == 'probe_c_alley_entry' else 'entry_observation'
         source_manifest = 'alley-transition-sources.json' if response == 'probe_c_alley_entry' else 'entry-sources.json'
         write(selected / 'measurement-contract.json', {
             'format': 'worker-measurement-contract', 'case_id': case,
             'requirements': [{'disposition_index': 0, 'requirement': 'NRS-484B-270-3',
                               'source': 'NRS 484B.270(3)', 'output_key': output_key,
-                              'method': 'finalize', 'value_type': 'object', 'kind': 'measured',
+                              'method': method, 'value_type': 'object', 'kind': 'measured',
                               'inputs': ['native_samples.jsonl', 'road_geometry.json', source_manifest]}],
             'negative': {'remove': ['native_samples.jsonl'],
                          'error_contains': 'Missing required source: native_samples.jsonl'}})

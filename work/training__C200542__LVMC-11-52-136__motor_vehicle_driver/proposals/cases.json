@@ -2,24 +2,135 @@
   "cell_id": "C200542",
   "actor": "motor_vehicle_driver",
   "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "official-aisle-parking-review",
+      "target_law_id": "LVMC-11-52-136",
+      "judgment_refs": [
+        {
+          "phrase": "access aisle",
+          "note": "Official aisle designation, contrasting marking or paving, adjacent designated accessible space, ingress/egress and route connectivity require independent sources; conditional 11.52.135(A) sign route requires sign details."
+        },
+        {
+          "phrase": "park a vehicle",
+          "note": "Vehicle, responsible person, occupancy, loading purpose and actual activity require independent review; no invented duration cutoff."
+        },
+        {
+          "phrase": "No person shall",
+          "note": "Public-access jurisdiction and premises context require independent original review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Synthetic diagnostics preserve source joins while official designation, public-access jurisdiction and parked classification remain open.",
+      "missing_inputs": [
+        "Independent original premises, designation and parking sources."
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
+      "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Observe premises context without targeting parking activity.",
+      "variable_assignments": {
+        "parking_footprint": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "target_footprint_inside_aisle": {
+          "kind": "controller",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "access aisle",
+        "park a vehicle",
+        "No person shall"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native full-body trace and independent premise, aisle and parking review",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and reviewed aisle coordinates",
+            "uncertainty": "50 ms sampling; legal designation and parking require independent source review",
+            "source": "channels/st.parking_space.jsonl"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native full-body trace and independent premise, aisle and parking review",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and reviewed aisle coordinates",
+            "uncertainty": "50 ms sampling; legal designation and parking require independent source review",
+            "source": "channels/st.lane_marking.jsonl"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native full-body trace and independent premise, aisle and parking review",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and reviewed aisle coordinates",
+            "uncertainty": "50 ms sampling; legal designation and parking require independent source review",
+            "source": "channels/drv.standing_or_parked.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native full-body trace and independent premise, aisle and parking review",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and reviewed aisle coordinates",
+            "uncertainty": "50 ms sampling; legal designation and parking require independent source review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native full-body trace and independent premise, aisle and parking review",
+            "time_window": "600 original frames",
+            "reference_frame": "original Native frame and reviewed aisle coordinates",
+            "uncertainty": "50 ms sampling; legal designation and parking require independent source review",
+            "source": "channels/kin.extent.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Public access, official access-aisle designation and parking classification require separate original source reviews"
+        ]
+      }
+    },
+    {
       "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_1",
       "target_law_id": "LVMC-11-52-136",
-      "target_type": "controlled_attempt",
-      "rationale": "Observe original stationary full-body footprint relative to separately reviewed official access aisle",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "access_aisle_footprint",
+      "rationale": "Request outside aisle parking and measure original stationary full-body overlap without a legal label.",
+      "deliberate_differences": [
+        "target_footprint_inside_aisle"
+      ],
       "variable_assignments": {
+        "parking_footprint": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "target_footprint_inside_aisle": {
           "kind": "controller",
           "value": false
         }
       },
       "unresolved_judgment_calls": [
-        "public-access premises",
-        "official access-aisle designation",
-        "parked classification",
-        "legal outcome"
+        "access aisle",
+        "park a vehicle",
+        "No person shall"
       ],
       "recording_description": {
         "channels": [
@@ -80,27 +191,34 @@
         ]
       },
       "probe": {
-        "primary_variable": "stationary_overlap_samples",
-        "comparison_or_standard": "separately reviewed access-aisle bounds",
+        "primary_variable": "parking_footprint",
+        "comparison_or_standard": "source-reviewed qualifying access-aisle extent",
         "target_value_or_branch": "outside"
       }
     },
     {
       "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
       "target_law_id": "LVMC-11-52-136",
-      "target_type": "controlled_attempt",
-      "rationale": "Observe original stationary full-body footprint relative to separately reviewed official access aisle",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "access_aisle_footprint",
+      "rationale": "Request inside aisle parking and measure original stationary full-body overlap without a legal label.",
+      "deliberate_differences": [
+        "target_footprint_inside_aisle"
+      ],
       "variable_assignments": {
+        "parking_footprint": {
+          "kind": "subject_behavior",
+          "value": null
+        },
         "target_footprint_inside_aisle": {
           "kind": "controller",
           "value": true
         }
       },
       "unresolved_judgment_calls": [
-        "public-access premises",
-        "official access-aisle designation",
-        "parked classification",
-        "legal outcome"
+        "access aisle",
+        "park a vehicle",
+        "No person shall"
       ],
       "recording_description": {
         "channels": [
@@ -161,8 +279,8 @@
         ]
       },
       "probe": {
-        "primary_variable": "stationary_overlap_samples",
-        "comparison_or_standard": "separately reviewed access-aisle bounds",
+        "primary_variable": "parking_footprint",
+        "comparison_or_standard": "source-reviewed qualifying access-aisle extent",
         "target_value_or_branch": "inside"
       }
     }
