@@ -1,4 +1,4 @@
-"""Bind current diagnostic CPU receipts to five source-gated delivery intents."""
+"""Bind current diagnostic CPU receipts to four source-gated delivery intents."""
 from __future__ import annotations
 
 import hashlib
@@ -56,7 +56,7 @@ def main() -> None:
             if not output.is_file() or not log.is_file():
                 raise ValueError("missing physical outcome fixture")
             fixtures.append({"kind": kind,
-                             "command": f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_physical.py --case {case_id} --kind {kind} --attempt .runtime-work/c227824-owner/{compat.name} --output work/{ASSIGNMENT}/cases/{suffix}/{stem}.json",
+                             "command": f"PYTHONPATH=runtime .venv-cpu/bin/python work/{ASSIGNMENT}/prove_physical.py --case {case_id} --kind {kind} --attempt .runtime-work/c227824-owner/{compat.name} --output work/{ASSIGNMENT}/cases/{suffix}/{stem}.json",
                              "exit_code": 0, "log": f"cases/{suffix}/{log.name}",
                              "log_sha256": sha(log), "result": f"cases/{suffix}/{output.name}",
                              "result_sha256": sha(output)})
@@ -74,7 +74,7 @@ def main() -> None:
         negative = folder / "delivery-delivery-negative.log"
         entry = dict(source)
         entry.update(kind="delivery", status="source_gated_cpu_preparation",
-                     candidate_risk={"status": "none", "reason": "No original primary failure or reviewed alternate curb/roadway station is available; inspect the first original attempt before choosing a fallback."},
+                     candidate_risk={"status": "none", "reason": "No original primary failure or reviewed alternate pedestrian entry station is available; inspect the first original attempt before choosing a fallback."},
                      candidates=[],
                      offline={"command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --output .runtime-work/c227824-owner/{offline.name}",
                               "exit_code": 0, "log": f"cases/{suffix}/offline.log",
@@ -86,9 +86,9 @@ def main() -> None:
                                     "log": f"cases/{suffix}/cpu-compat-analysis.log"},
                      negative={"log": f"cases/{suffix}/negative-analysis.log"},
                      native_handoff={"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
-                     pending_original_sources=["reviewed original curb/path site and OpenDRIVE",
-                                               "reviewed physical ranges for both judgment sweeps",
-                                               "released Native four-camera original attempts"],
+                     pending_original_sources=["reviewed original signalized highway site and OpenDRIVE",
+                                               "reviewed source for NRS 484B.283 permission judgment sweep",
+                                               "released Native four-camera original attempts with signal and other-device readback"],
                      delivery_acceptance={"case_id": case_id, "sets": ["full-test"],
                                           "checks": ["native_source", "all_participants", "time_join", "full_video_decode", "actual_pixels", "physical_completion"],
                                           "scope": "synthetic protocol CPU proof; original delivery pending",
@@ -113,7 +113,7 @@ def main() -> None:
                                              "runtime_manifest_sha256": diagnostic["runtime_manifest_sha256"],
                                              "status": "source_gated_cpu_preparation", "original_delivery_claimed": False,
                                              "cases": entries})
-    print("Bound five exact source-gated selected cases to current CPU proofs")
+    print("Bound four exact source-gated selected cases to current CPU proofs")
 
 
 if __name__ == "__main__":

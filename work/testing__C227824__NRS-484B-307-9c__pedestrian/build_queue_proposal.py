@@ -39,11 +39,11 @@ def main() -> None:
     value = {"format": "worker-assignment-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
              "status": "source_gated_not_dispatchable", "cases": rows,
              "comparison_audit_commands": comparisons,
-             "preconditions": ["complete two source-supported judgment sweep plans",
-                               "obtain reviewed original curb/path site and source packet",
+             "preconditions": ["complete the source-supported NRS 484B.283 permission judgment sweep",
+                               "obtain reviewed original signalized highway site and source packet",
                                "pass exact strict worker gate before local queue adoption"]}
     (ROOT / "gpu-queue-proposal.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print("Drafted five exact case rows and four comparison audit commands")
+    print("Drafted four exact case rows and three comparison audit commands")
 
 
 if __name__ == "__main__":

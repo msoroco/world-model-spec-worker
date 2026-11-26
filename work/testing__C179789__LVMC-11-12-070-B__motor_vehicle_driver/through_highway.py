@@ -16,6 +16,20 @@ CASES = {
     "cross_continue": ("cross", "continue_request"),
     "enter_yield": ("enter", "yield_request"),
     "enter_continue": ("enter", "continue_request"),
+    "antecedent_pause-0000": ("cross", "yield_request"),
+    "antecedent_pause-0001": ("cross", "yield_request"),
+    "antecedent_pause-0002": ("cross", "yield_request"),
+    "precedence_speed-0000": ("cross", "continue_request"),
+    "precedence_speed-0001": ("cross", "continue_request"),
+    "precedence_speed-0002": ("cross", "continue_request"),
+}
+ENGINEERING = {
+    "antecedent_pause-0000": {"antecedent_pause_s": 0.0},
+    "antecedent_pause-0001": {"antecedent_pause_s": 4.0},
+    "antecedent_pause-0002": {"antecedent_pause_s": 2.0},
+    "precedence_speed-0000": {"through_approach_speed_mps": 4.0},
+    "precedence_speed-0001": {"through_approach_speed_mps": 12.0},
+    "precedence_speed-0002": {"through_approach_speed_mps": 8.0},
 }
 CAMERAS = ("front", "rear", "left", "right")
 
@@ -219,12 +233,18 @@ def measure(site, case_key, map_sha256, frames):
     require(first_inside["entering"] > 0 and first_inside["through"] > 0, "pre-entry history missing")
     pre = samples[:first_inside["entering"]]
     entering_min = min(x["entering"]["speed_mps"] for x in pre)
+    entering_pause_frames = 0
+    for row in pre:
+        if row["entering"]["speed_mps"] > 0.1:
+            break
+        entering_pause_frames += 1
     near = samples[max(0, first_inside["entering"] - 40):first_inside["entering"]]
     through_min = min(x["through"]["speed_mps"] for x in near)
     return {"case_id": f"{ASSIGNMENT}__{case_key}", "law_id": LAW,
             "map_sha256": map_sha256, "intersection_id": site["intersection_id"],
             "entering_maneuver": CASES[case_key][0], "through_request": CASES[case_key][1],
             "first_conflict_frame": first_inside, "entering_preentry_min_speed_mps": entering_min,
+            "entering_preentry_pause_s": entering_pause_frames / 20,
             "through_preentry_min_speed_mps": through_min, "original_frame_count": len(frames),
             "original_samples": samples, "antecedent_legal_review": "unresolved",
             "right_of_way_legal_review": "unresolved"}
