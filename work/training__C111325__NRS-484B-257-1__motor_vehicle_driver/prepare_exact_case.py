@@ -42,8 +42,14 @@ def prepare(slug):
     contract["case_id"] = case
     contract["requirements"] = [r for r in contract["requirements"] if case in
                                 plan["requirement_dispositions"][r["disposition_index"]]["case_ids"]]
-    needs_reference_negative = not any("governing_sign.json" in r["inputs"]
-                                       for r in contract["requirements"])
+    inputs = {source for requirement in contract["requirements"]
+              for source in requirement["inputs"]}
+    negative_source = ("governing_sign.json" if "governing_sign.json" in inputs else
+                       "stopping_reference.json" if "stopping_reference.json" in inputs else
+                       "through_road.json")
+    finalizer_name = {"governing_sign.json": "finalize.py",
+                      "stopping_reference.json": "finalize_yield.py",
+                      "through_road.json": "finalize_through.py"}[negative_source]
     constructions = []
     for candidate, original in (("primary", "construction.json"),
                                 ("fallback1", "construction-fallback1.json")):
@@ -56,17 +62,17 @@ def prepare(slug):
             if item["path"] == "tests/test_native_capture.py":
                 item["content"] = test
                 item["source"] = str(test_path.relative_to(REPO))
-            if item["path"] == "finalize.py" and needs_reference_negative:
-                finalizer = HERE / "finalize_yield.py"
+            if item["path"] == "finalize.py" and finalizer_name != "finalize.py":
+                finalizer = HERE / finalizer_name
                 item["content"] = finalizer.read_text()
                 item["source"] = str(finalizer.relative_to(REPO))
         name = "construction-" + slug + ("" if candidate == "primary" else "-fallback1") + ".json"
         output = HERE / name
         save(output, value)
         constructions.append((name, sha(output)))
-    if needs_reference_negative:
-        contract["negative"] = {"remove": ["stopping_reference.json"],
-                                "error_contains": "Missing required source: stopping_reference.json"}
+    if negative_source != "governing_sign.json":
+        contract["negative"] = {"remove": [negative_source],
+                                "error_contains": "Missing required source: " + negative_source}
     contract_name = "measurement-" + slug + ".json"
     save(HERE / contract_name, contract)
     recipe = json.loads((HERE / "selected-recipe-complete_stop_then_yield.json").read_text())

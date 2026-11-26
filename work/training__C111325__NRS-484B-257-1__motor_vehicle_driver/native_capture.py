@@ -102,6 +102,48 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def original_viewpoint_rays(world, carla, native, time_s):
+    """Retain a physical ray survey; choosing the legally nearest view is separate."""
+    if not callable(getattr(world, "cast_ray", None)):
+        raise ValueError("Original CARLA world lacks cast_ray for nearest-viewpoint evidence")
+    samples = []
+    for subject_front_x in (-15.0, -12.0, -9.0, -6.0, -4.1, -3.8):
+        start = carla.Location(x=subject_front_x, y=-1.75, z=1.5)
+        for through_y in (-20.0, -40.0, -80.0):
+            end = carla.Location(x=1.75, y=through_y, z=1.5)
+            hits = world.cast_ray(start, end)
+            samples.append({"candidate_front_x_m": subject_front_x,
+                            "through_target_y_m": through_y,
+                            "start_xyz_m": xyz(start), "end_xyz_m": xyz(end),
+                            "hits": [{"location_xyz_m": xyz(hit.location),
+                                      "label": str(hit.label)} for hit in hits]})
+    return {"native_frame": native, "time_s": time_s, "rays": samples,
+            "nearest_legal_viewpoint_unassessed": True}
+
+
+def original_control_state(actors, scene, native, time_s):
+    """Read actual control actors each frame without treating a request as law."""
+    officer = actors.get("officer")
+    signal = actors.get("signal")
+    data = {"native_frame": native, "time_s": time_s,
+            "officer_direction_legally_unassessed": True,
+            "signal_controls_approach_legally_unassessed": True}
+    if scene["police_controlling"]:
+        if officer is None or not officer.is_alive:
+            raise ValueError("Original officer actor unavailable for control readback")
+        pose = officer.get_transform()
+        data["officer"] = {"actor_id": officer.id, "location_xyz_m": xyz(pose.location),
+                           "rotation_yaw_deg": pose.rotation.yaw,
+                           "requested_direction_xy": scene["police_actor_request"]["direction_xy"]}
+    if scene["signal_controlling"]:
+        if signal is None or not signal.is_alive or not callable(getattr(signal, "get_state", None)):
+            raise ValueError("Original governing signal actor/state unavailable")
+        pose = signal.get_transform()
+        data["signal"] = {"actor_id": signal.id, "location_xyz_m": xyz(pose.location),
+                          "state": str(signal.get_state())}
+    return data
+
+
 def capture(slug, output, host, port):
     import carla
     from pipeline_capture import PipelineCapture
@@ -110,10 +152,6 @@ def capture(slug, output, host, port):
 
     scene = request(slug)
     validate(scene)
-    if scene["police_controlling"] or scene["signal_controlling"]:
-        raise ValueError("Control exception needs original per-frame direction/state implementation")
-    if scene["stopping_reference"] == "nearest_viewpoint":
-        raise ValueError("Nearest-viewpoint branch needs original through-highway sight rays")
     output = Path(output).resolve()
     if output.exists() and any((output / name).exists() for name in
                                ("video_frames.jsonl", "stop_yield_motion.jsonl", "trace.jsonl", "capture")):
@@ -153,6 +191,8 @@ def capture(slug, output, host, port):
             ego_path = output / "ego_body.jsonl"
             through_path = output / "through_body.jsonl"
             interaction_path = output / "interaction_history.jsonl"
+            sight_path = output / "viewpoint_sight_rays.jsonl" if scene["stopping_reference"] == "nearest_viewpoint" else None
+            control_path = output / "control_state_frames.jsonl" if (scene["police_controlling"] or scene["signal_controlling"]) else None
             with (output / "video_frames.jsonl").open("x") as frames, motion_path.open("x") as motion, \
                     ego_path.open("x") as ego_bodies, through_path.open("x") as through_bodies, \
                     interaction_path.open("x") as interactions:
@@ -202,6 +242,14 @@ def capture(slug, output, host, port):
                         "ego": {"actor_id": ego.id, "body_vertices_m": ego_body},
                         "through": {"actor_id": through.id, "body_vertices_m": other_body}},
                         allow_nan=False) + "\n")
+                    if sight_path is not None:
+                        with sight_path.open("a") as sight_stream:
+                            sight_stream.write(json.dumps(original_viewpoint_rays(world, carla, native, time_s),
+                                                          allow_nan=False) + "\n")
+                    if control_path is not None:
+                        with control_path.open("a") as control_stream:
+                            control_stream.write(json.dumps(original_control_state(actors, scene, native, time_s),
+                                                            allow_nan=False) + "\n")
             for process in encoders.values():
                 process.stdin.close()
                 if process.wait(timeout=120) != 0:
@@ -226,7 +274,10 @@ def capture(slug, output, host, port):
                     "crosswalk_marking": scene["crosswalk_marking"],
                     "map_readback_sha256": sha(output / "road.xodr")}),
                 "controls": source_file(output, "governing_controls.json", {
-                    "police_controlling": False, "signal_controlling": False,
+                    "police_controlling_requested": scene["police_controlling"],
+                    "signal_controlling_requested": scene["signal_controlling"],
+                    "per_frame_readback": control_path.name if control_path else None,
+                    "independent_direction_review_required": control_path is not None,
                     "governing_sign_id": scene["governing_sign"],
                     "map_readback_sha256": sha(output / "road.xodr")}),
                 "through_road": source_file(output, "through_road.json", {
@@ -250,9 +301,14 @@ def capture(slug, output, host, port):
                 **{name + "_sha256": sha(path) for name, path in source_paths.items()},
                 "sign_kind": "yield" if slug.startswith("yield_sign_") else "stop",
                 "reference_kind": reference, "marked_line_present": reference == "stop_line",
-                "crosswalk_present": reference == "crosswalk", "sight_ray_source": None,
-                "police_controlling": False, "signal_controlling": False,
-                "controlling_direction_source": None,
+                "crosswalk_present": reference == "crosswalk",
+                "sight_ray_source": sight_path.name if sight_path else None,
+                "sight_ray_sha256": sha(sight_path) if sight_path else None,
+                "police_controlling": scene["police_controlling"],
+                "signal_controlling": scene["signal_controlling"],
+                "controlling_direction_source": control_path.name if control_path else None,
+                "controlling_direction_sha256": sha(control_path) if control_path else None,
+                "independent_control_review_required": control_path is not None,
                 "reference_x_m": scene["stop_line_x_m"] if reference == "stop_line" else
                                    scene["crosswalk_marking"]["near_edge_x_m"] if reference == "crosswalk" else
                                    scene["nearest_viewpoint_candidate"]["front_x_m"],
@@ -262,7 +318,8 @@ def capture(slug, output, host, port):
                 "physical_acceptance_claimed": False, "legal_verdict": None})
         restoration = world_restore(client, prior_world)
         source_file(output, "acquisition-provenance.json", {"provenance_kind": "native",
-                    "diagnostic_fixture": False, "physical_acceptance_claimed": False})
+                    "diagnostic_fixture": False, "native_executed": True,
+                    "physical_acceptance_claimed": False})
         seal_capture(output, frames=COUNT, restoration=restoration,
                      errors=[], encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
                      context={"case_id": case_id(slug), "original_native_readback": True,

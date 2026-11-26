@@ -30,6 +30,17 @@ def inspect(attempt, expected_case):
         actual = hashlib.sha256(source.read_bytes()).hexdigest()
         if actual != context.get(name + "_sha256"):
             raise ValueError("Saved source SHA-256 differs: " + name)
+    if context.get("source_kind") == "original_native_readback":
+        for source_key, hash_key in (("sight_ray_source", "sight_ray_sha256"),
+                                     ("controlling_direction_source", "controlling_direction_sha256")):
+            relative = context.get(source_key)
+            if relative:
+                source = inside(root, relative)
+                if hashlib.sha256(source.read_bytes()).hexdigest() != context.get(hash_key):
+                    raise ValueError("Original per-frame source SHA-256 differs: " + relative)
+                frames = [json.loads(line) for line in source.read_text().splitlines()]
+                if len(frames) != 600 or any(row.get("native_frame") is None for row in frames):
+                    raise ValueError("Original per-frame source incomplete: " + relative)
     rows = [json.loads(line) for line in trace_path.read_text().splitlines() if line.strip()]
     result = measure(context, rows, expected_case)
     result["packet_sources"] = {

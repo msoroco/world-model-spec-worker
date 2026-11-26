@@ -1,0 +1,90 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening",
+  "status": "selected_cpu_draft",
+  "negative": {
+    "remove": [
+      "median-context.json"
+    ],
+    "error_contains": "Missing required source: median-context.json"
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "continuous_right_hand_roadway",
+      "source": "NRS 484B.227(1): Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway",
+      "kind": "measured",
+      "method": "measure_reference",
+      "output_key": "roadway_duty",
+      "value_type": "object",
+      "inputs": [
+        "median-context.json",
+        "native-median.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "no_divider_crossing",
+      "source": "NRS 484B.227(1): must not be driven over, across or within any dividing space, barrier or section",
+      "kind": "measured",
+      "method": "measure_reference",
+      "output_key": "divider_prohibition",
+      "value_type": "object",
+      "inputs": [
+        "median-context.json",
+        "native-median.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "left_turn_event",
+      "source": "NRS 484B.227(1): or make any left turn, semicircular turn or U-turn",
+      "kind": "measured",
+      "method": "measure_reference",
+      "output_key": "turn_event",
+      "value_type": "object",
+      "inputs": [
+        "median-context.json",
+        "native-median.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "physical_opening_exception",
+      "source": "NRS 484B.227(1): except through an opening in the barrier or dividing section or space",
+      "kind": "measured",
+      "method": "measure_reference",
+      "output_key": "opening_exception",
+      "value_type": "object",
+      "inputs": [
+        "median-context.json",
+        "native-median.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "public_authority_alternative",
+      "source": "NRS 484B.227(1): or at a crossover or intersection established by a public authority",
+      "kind": "measured",
+      "method": "measure_reference",
+      "output_key": "authority_context",
+      "value_type": "object",
+      "inputs": [
+        "median-context.json",
+        "native-median.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "source_cameras": [
+    "overview",
+    "approach",
+    "reference_corner",
+    "driver_reference"
+  ],
+  "legal_compliance": "unassessed"
+}

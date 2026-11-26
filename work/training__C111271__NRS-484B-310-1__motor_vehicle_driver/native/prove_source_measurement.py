@@ -46,14 +46,14 @@ def make_sources(directory, case_suffix, halt, reference):
             waiting = halt and 176 <= i < 216
             speed = 0.0 if waiting else 5.0
             x += speed / RATE
-            source = {"source_kind": "synthetic_native_sample", "native_frame": 1000 + i,
-                      "time_s": (i + 1) / RATE, "front_x_m": round(x, 6), "speed_mps": speed,
+            source = {"source_kind": "synthetic_native_sample", "native_frame": 2000 + i,
+                      "time_s": i / RATE, "front_x_m": round(x, 6), "speed_mps": speed,
                       "signal_head_id": "fixture_head_1",
                       "signal_lamp_state": "red" if (i // 10) % 2 == 0 else "off",
                       "signal_faces_ego_observed": True,
                       "conflict_occupied": 170 <= i < 190}
-            frame = {"video_frame": i, "native_frame": 1000 + i,
-                     "time_s": (i + 1) / RATE}
+            frame = {"video_frame": i, "native_frame": 2000 + i,
+                     "time_s": i / RATE}
             nout.write(json.dumps(source, sort_keys=True) + "\n")
             fout.write(json.dumps(frame, sort_keys=True) + "\n")
     return [config_path, native_path, frame_path, geometry_path]

@@ -41,8 +41,8 @@ def main():
             changed[last]["observation"]["source_hashes"]["reference"] = "0" * 64
             expected = "Stopping reference changed"
         elif short in {"stopping_reference", "yield_reference"}:
-            changed[last]["observation"]["source_hashes"]["sign"] = "0" * 64
-            expected = "Governing sign source changed"
+            changed[last]["static_facts"]["sign_kind"] = "wrong-sign"
+            expected = "Fixed source changed: sign_kind"
         elif short == "through_vehicle_phase":
             changed[last]["ego_motion_sha256"] = "0" * 64
             expected = "Through-vehicle phase isolation"

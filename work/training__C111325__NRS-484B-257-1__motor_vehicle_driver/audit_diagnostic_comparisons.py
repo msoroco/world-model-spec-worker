@@ -2,11 +2,30 @@
 
 import hashlib
 import json
+from pathlib import Path
+import xml.etree.ElementTree as ET
 
 from measure_statutory import measure
 
 BASE = "training__C111325__NRS-484B-257-1__motor_vehicle_driver__"
-FIXED_SOURCES = ("map", "through_road", "ego_body", "through_body")
+
+def static_facts(context, source_root=None):
+    if source_root is None:
+        return {"sign_kind": context["sign_kind"],
+                "through_road": context["through_road_sha256"],
+                "road_geometry": context["map_sha256"]}
+    root = Path(source_root)
+    sources = context["source_files"]
+    sign = json.loads((root / sources["sign"]).read_text())
+    road = json.loads((root / sources["through_road"]).read_text())
+    map_root = ET.fromstring((root / sources["map"]).read_text())
+    for road_element in map_root.findall("road"):
+        for child in list(road_element):
+            if child.tag in {"signals", "objects"}:
+                road_element.remove(child)
+    geometry = hashlib.sha256(ET.tostring(map_root, encoding="utf-8")).hexdigest()
+    return {"sign_kind": sign["id"], "through_road": road["road_id"],
+            "road_geometry": geometry}
 
 
 def motion_hash(rows, fields):
@@ -14,13 +33,16 @@ def motion_hash(rows, fields):
     return hashlib.sha256(json.dumps(serial, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
 
 
-def record(context, rows, case_id):
+def record(context, rows, case_id, source_root=None):
     observation = measure(context, rows, case_id)
     return {
         "context": context,
         "observation": observation,
         "ego_motion_sha256": motion_hash(rows, ("ego_x_m", "ego_speed_mps")),
         "through_motion_sha256": motion_hash(rows, ("through_y_m", "through_speed_mps")),
+        "ego_body_size_sha256": motion_hash(rows, ("ego_length_m",)),
+        "through_body_size_sha256": motion_hash(rows, ("through_length_m",)),
+        "static_facts": static_facts(context, source_root),
     }
 
 
@@ -40,11 +62,12 @@ def audit(comparison, records, require_original=True):
             raise ValueError("Comparison observation case identity differs")
         if value["observation"].get("legal_verdict") is not None or value["observation"].get("sample_count") != 600:
             raise ValueError("Comparison source history or legal separation differs")
-    for name in FIXED_SOURCES:
-        if len({value["observation"]["source_hashes"][name] for value in values}) != 1:
+    for name in ("sign_kind", "through_road", "road_geometry"):
+        if len({value["static_facts"][name] for value in values}) != 1:
             raise ValueError("Fixed source changed: " + name)
-    if len({value["observation"]["source_hashes"]["sign"] for value in values}) != 1:
-        raise ValueError("Governing sign source changed")
+    for name in ("ego_body_size_sha256", "through_body_size_sha256"):
+        if len({value[name] for value in values}) != 1:
+            raise ValueError("Participant body geometry changed: " + name)
     if short not in {"stopping_reference", "yield_reference"} and len({value["observation"]["source_hashes"]["reference"] for value in values}) != 1:
         raise ValueError("Stopping reference changed outside hierarchy comparison")
     control_sources = {value["observation"]["source_hashes"]["controls"] for value in values}

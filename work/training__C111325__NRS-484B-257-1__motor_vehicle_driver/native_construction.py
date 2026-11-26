@@ -86,6 +86,14 @@ def constructed_scene(client, carla, scene):
             if officer is None:
                 raise RuntimeError("CARLA officer actor spawn failed")
             owned.append(officer)
+        signal = None
+        if scene["signal_controlling"]:
+            candidates = [actor for actor in world.get_actors().filter("traffic.traffic_light*")
+                          if actor.is_alive and abs(actor.get_location().x + 5.0) < 10.0
+                          and abs(actor.get_location().y + 3.7) < 10.0]
+            if len(candidates) != 1:
+                raise ValueError("Exactly one original governing traffic-light actor required")
+            signal = candidates[0]
         cameras = {}
         for spec in scene["cameras"]:
             camera = library.find("sensor.camera.rgb")
@@ -101,6 +109,7 @@ def constructed_scene(client, carla, scene):
         if set(cameras) != {"overview", "approach", "reference_corner", "driver_reference"}:
             raise ValueError("Four source cameras not constructed")
         yield {"world": world, "ego": ego, "through": through, "officer": officer,
+               "signal": signal,
                "cameras": cameras, "map_opendrive": original_map_check(world, scene),
                "prior_synchronous_mode": old_sync, "prior_fixed_delta_seconds": old_delta}
     finally:

@@ -1,0 +1,148 @@
+{
+  "assignment_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-257-1",
+  "cell_id": "C111325",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__signal_directed_control",
+  "case": {
+    "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__signal_directed_control",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose",
+          "unit": "m,deg",
+          "sampling_rate_hz": 20,
+          "method": "original Native subject actor transform and body extent joined to frame map",
+          "time_window": "all 600 frames including reference approach and intersection exit",
+          "reference_frame": "original CARLA world XY and native frame",
+          "uncertainty": "50 ms sampling and physical camera coverage require independent review"
+        },
+        {
+          "name": "ego_stop_and_yield_sequence",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native ego/through-vehicle motion, bodies, governing sign, reference and control state joined to four source camera identities",
+          "time_window": "all 600 frames, including while moving across or within intersection",
+          "reference_frame": "original Native frame, surveyed road and reference geometry",
+          "uncertainty": "immediate hazard, yielding and legal applicability require human review of original sources"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "governing_control",
+          "unit": "structured",
+          "method": "original sign, officer or traffic-signal object and per-frame controlling state readback"
+        },
+        {
+          "name": "stopping_reference_hierarchy",
+          "unit": "structured",
+          "method": "source-hashed marked line, near-side crosswalk or sight-ray/viewpoint geometry"
+        },
+        {
+          "name": "through_highway",
+          "unit": "structured",
+          "method": "source-hashed road geometry and through-vehicle actor identity"
+        }
+      ],
+      "limitations": [
+        "Requested stopping policy and fixture trajectory are not observed motion or a legal verdict.",
+        "Source video pixels, official control state, physical completion and legal immediate hazard remain for local independent review."
+      ]
+    }
+  },
+  "supported_case_ids": [
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_slow_then_yield",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_no_slow_conflict",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__stop_before_crosswalk_no_line",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__stop_at_viewpoint_no_line_crosswalk",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__approaching_through_hazard",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__through_occupancy_during_crossing",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__police_directed_control",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__signal_directed_control",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_crosswalk_no_line",
+    "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_viewpoint_no_line_crosswalk"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 80,
+      "pose_strategy": "surveyed fixed world transform showing both roads, sign and full crossing"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "surveyed fixed world transform showing governed approach and reference"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "surveyed fixed world transform showing line/crosswalk/viewpoint and through road"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "attached subject driver reference with through-highway view"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "m,deg",
+        "sampling_rate_hz": 20,
+        "method": "original Native subject actor transform and body extent joined to frame map",
+        "time_window": "all 600 frames including reference approach and intersection exit",
+        "reference_frame": "original CARLA world XY and native frame",
+        "uncertainty": "50 ms sampling and physical camera coverage require independent review"
+      },
+      {
+        "name": "ego_stop_and_yield_sequence",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native ego/through-vehicle motion, bodies, governing sign, reference and control state joined to four source camera identities",
+        "time_window": "all 600 frames, including while moving across or within intersection",
+        "reference_frame": "original Native frame, surveyed road and reference geometry",
+        "uncertainty": "immediate hazard, yielding and legal applicability require human review of original sources"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "governing_control",
+        "unit": "structured",
+        "method": "original sign, officer or traffic-signal object and per-frame controlling state readback"
+      },
+      {
+        "name": "stopping_reference_hierarchy",
+        "unit": "structured",
+        "method": "source-hashed marked line, near-side crosswalk or sight-ray/viewpoint geometry"
+      },
+      {
+        "name": "through_highway",
+        "unit": "structured",
+        "method": "source-hashed road geometry and through-vehicle actor identity"
+      }
+    ],
+    "limitations": [
+      "Requested stopping policy and fixture trajectory are not observed motion or a legal verdict.",
+      "Source video pixels, official control state, physical completion and legal immediate hazard remain for local independent review."
+    ]
+  },
+  "physical_acceptance_claimed": false,
+  "legal_verdict": null,
+  "implementation_stage": "partial_capture_design_not_selected"
+}

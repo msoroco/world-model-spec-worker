@@ -46,7 +46,7 @@ def measure(config_path, native_path, frame_path, geometry_path):
         raise ValueError("Official facing signal source missing")
     for i, (sample, frame) in enumerate(zip(native, frames)):
         nframe = sample.get("native_frame")
-        t = (i + 1) / RATE
+        t = i / RATE
         if type(nframe) is not int or (prior_frame is not None and nframe != prior_frame + 1):
             raise ValueError("Native sequence differs")
         prior_frame = nframe

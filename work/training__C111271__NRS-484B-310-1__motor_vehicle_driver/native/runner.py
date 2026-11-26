@@ -20,8 +20,21 @@ def check():
         raise ValueError("Four source cameras required")
     if len(config.get("supported_case_ids", [])) != 6:
         raise ValueError("Six exact reference/stop cases required")
-    if not 0 < config["limit_line_x_m"] < config["crosswalk_near_x_m"] < \
-            config["intersection_near_x_m"] < 100:
+    selected = config.get('selected_case_id')
+    if selected not in config['supported_case_ids'] or config.get('case_id') != selected:
+        raise ValueError('Exact selected case identity differs')
+    suffix = selected.rsplit('__', 1)[-1]
+    reference = ('limit_line' if suffix in ('probe_a', 'probe_b') else
+                 'crosswalk' if suffix.startswith('crosswalk_') else 'intersection')
+    if config.get('reference_kind') != reference or \
+            config.get('requested_halt') != (suffix in ('probe_a', 'crosswalk_stop', 'intersection_stop')):
+        raise ValueError('Exact stopping-reference branch or controlled halt differs')
+    line, walk, edge = (config[key] for key in
+                        ('limit_line_x_m', 'crosswalk_near_x_m', 'intersection_near_x_m'))
+    geometry_ok = (0 < line < walk < edge < 100 if reference == 'limit_line' else
+                   line is None and 0 < walk < edge < 100 if reference == 'crosswalk' else
+                   line is None and walk is None and 0 < edge < 100)
+    if not geometry_ok:
         raise ValueError("Authored stopping-reference geometry differs")
     for stopping, nonstop_case, reference in (("probe_a", "probe_b", 48.0),
                                               ("crosswalk_stop", "crosswalk_no_stop", 50.0),
@@ -47,10 +60,20 @@ def check():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--context-survey", type=Path)
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
-    if not args.check:
-        raise ValueError("Original Native capture remains to be implemented")
-    print(json.dumps(check(), sort_keys=True))
+    checked = check()
+    if args.check:
+        print(json.dumps(checked, sort_keys=True))
+        return
+    if args.output_dir is None:
+        raise ValueError("Fresh materialized Native output directory required")
+    from capture import execute
+    config = json.loads((HERE / "config.json").read_text())
+    execute(config, args.output_dir, args.host, args.port, args.context_survey)
 
 
 if __name__ == "__main__":
