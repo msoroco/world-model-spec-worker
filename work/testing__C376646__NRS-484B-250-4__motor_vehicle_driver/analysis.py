@@ -97,6 +97,12 @@ def analyze(attempt, output):
                   "other_vehicle_priority": {"method": "measure", "value": {
                       "vehicle_id": site["other_vehicle_id"],
                       "priority_observed": measured["priority_vehicle_observed"]},
+                      "sources": hashes},
+                  "cautious_proceeding_context": {"method": "measure", "value": {
+                      "through_highway_id": site["through_highway_id"],
+                      "sightline_source_sha256": site["sightline_survey_source_sha256"],
+                      "original_ego_speed_samples": [row["speed_mps"] for row in ego],
+                      "legal_judgment": None},
                       "sources": hashes}},
               "diagnostic_fixture": diagnostic,
               "legal_verdict_claimed": False,

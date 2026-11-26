@@ -142,7 +142,7 @@ def build():
         contract_path = HERE / "cases" / case.name / "measurement-contract.json"
         inputs = ["site.json", "ego-history.json", "other-history.json", "frame-map.json"]
         output_keys = ("signal_at_entry", "stop_reference_and_cessation",
-                       "other_vehicle_priority")
+                       "other_vehicle_priority", "cautious_proceeding_context")
         write(contract_path, {
             "format": "worker-measurement-contract", "case_id": full_id,
             "requirements": [{"disposition_index": index,
@@ -150,7 +150,7 @@ def build():
                               "source": plan["requirement_dispositions"][index]["source"],
                               "inputs": inputs, "kind": "measured", "method": "measure",
                               "output_key": output_keys[index], "value_type": "object"}
-                             for index in range(3)],
+                             for index in range(4)],
             "negative": {"remove": ["other-history.json"],
                          "error_contains": "Missing required source: other-history.json"}})
         entries[-1]["measurement_contract"] = str(contract_path.relative_to(HERE))

@@ -53,6 +53,9 @@ def frame(index, case, case_id):
             'route_vertex_s_m': [lead_start + j for j in range(8)],
             'overall_width_m': case.lead_width_target_m, 'mesh_width_verified': True}
     bodies = [subject, lead]
+    if case.circumstance == 'constrained':
+        bodies.append({'identity': 'surrounding-car', 'vehicle_class': 'car',
+                       'route_vertex_s_m': [250 + j for j in range(8)]})
     if case.entering_vehicle and index == 480:
         bodies.append({'identity': 'passing-car', 'vehicle_class': 'car',
                        'route_vertex_s_m': [20 + j for j in range(8)]})

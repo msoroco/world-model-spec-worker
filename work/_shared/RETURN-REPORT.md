@@ -1,3 +1,13 @@
+## 2026-11-26 14:41 UTC C376646 current-runtime ready and queued
+
+- Assignment: `testing__C376646__NRS-484B-250-4__motor_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` passed. Six exact cases and three comparison audits, including 51 syntax-checked queue commands, were reviewed.
+- Manifest SHA-256: `4377646c536729bdce43065e27e00ac53c15463d48f812f38365e748aacbfaa4`; proposal SHA-256: `63915f65ff4650afc4a2acb727aa3c34228c3473a2853086190e6f817a4f3307`. Shared queue: 127 assignments, 724 cases, 469 comparison commands; SHA-256 `bfbaea005a67762a30a6098c9e1f1b5663d27776dea45fd9c33b8b25309b9a4f`. Actual CARLA capture and local integration remain later checks.
+
+## 2026-11-26 14:39 UTC C149237 current-runtime ready and queued
+
+- Assignment: `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C149237__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready` passed. Nine exact cases and seven comparison audits, including 71 syntax-checked queue commands, were reviewed.
+- Manifest SHA-256: `8af6554b6020adda6a4fa09b7d1a9b34f73fef3547850b9d5bd1809397b47b99`; proposal SHA-256: `5d9fb29d2294df0a6b255d64fba7e8770ab73fc6769256dcd8a6c5a645a28b2d`. Shared queue: 126 assignments, 718 cases, 466 comparison commands; SHA-256 `511a2fe42e317825a2553489fb3b51e9f442e32843fd73fd653d801cc563a041`. Actual CARLA capture and local integration remain later checks.
+
 ## 2026-11-26 14:24 UTC C229628 current-runtime ready and queued
 
 - Assignment: `testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver --complete --require-delivery-ready` passed. Four exact cases and three comparison audits, including 31 syntax-checked queue commands, were reviewed.

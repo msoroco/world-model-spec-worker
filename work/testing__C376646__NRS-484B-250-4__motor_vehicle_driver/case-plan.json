@@ -2,15 +2,31 @@
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C376646__NRS-484B-250-4__motor_vehicle_driver",
   "camera_plan": {
-    "capture": "source-gated Native RGB originals",
-    "fps": 20,
-    "frames": 900,
-    "views": [
-      "overview",
-      "approach",
-      "reference_corner",
-      "driver_reference"
-    ]
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s",
+        "subject": "blind intersection, signal and both vehicles",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through entry",
+        "subject": "ego front, stop reference and cessation",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through crossing",
+        "subject": "marked line, near-side crosswalk or surveyed nearest-view point",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach through clearance",
+        "subject": "uncovered vehicular heads, sightline and other-vehicle priority",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
@@ -286,7 +302,7 @@
       "measurement": "original vehicle trajectory and blind sightline; no invented speed cutoff",
       "requirement": "proceed cautiously",
       "source": "NRS 484B.250(4)",
-      "status": "legal_review_pending"
+      "status": "selected_required"
     }
   ],
   "runtime_uncertainties": [
@@ -294,6 +310,7 @@
     "The source-gated probe does not itself establish that a Native capture succeeds on the reviewed map.",
     "Cautious proceeding and legal sufficiency of yielding remain unresolved without source review; no speed or stop-duration cutoff is invented."
   ],
+  "selected_branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
   "selected_branches": [
     {
       "actor": "motor_vehicle_driver",
@@ -306,44 +323,7 @@
       }
     }
   ],
-  "source_observation_mapping": {
-    "blind_sightline_and_through_highway": {
-      "sources": [
-        "sightline_survey"
-      ],
-      "status": "requires_reviewed_original_source"
-    },
-    "ego_front_and_cessation": {
-      "sources": [
-        "ego_route"
-      ],
-      "status": "requires_reviewed_original_source"
-    },
-    "governing_signal_at_entry": {
-      "sources": [
-        "signal_operation"
-      ],
-      "status": "requires_reviewed_original_source"
-    },
-    "original_four_camera_pixels": {
-      "sources": [
-        "map_geometry"
-      ],
-      "status": "requires_reviewed_original_source"
-    },
-    "other_vehicle_priority": {
-      "sources": [
-        "other_vehicle_route"
-      ],
-      "status": "requires_reviewed_original_source"
-    },
-    "stop_reference_hierarchy": {
-      "sources": [
-        "stop_reference"
-      ],
-      "status": "requires_reviewed_original_source"
-    }
-  },
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment.json",

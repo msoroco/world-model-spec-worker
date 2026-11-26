@@ -36,7 +36,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Small emergency-unit displacement may be missed from driver viewpoint."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "kind": "delivery",
@@ -49,7 +51,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Ego response may not be distinguishable in captured control packets."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "kind": "delivery",
@@ -62,7 +66,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Constructed occlusion may hide the cue in some cameras."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "kind": "delivery",
@@ -75,7 +81,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer direction may not be visible or source-bound."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "kind": "delivery",
@@ -88,7 +96,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Regulatory official-vehicle authorization and equipment may be hard to establish."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "kind": "delivery",
@@ -101,7 +111,9 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Hand signal visibility from driver viewpoint may be hard to realize; separate subsection (4) alternative."
-      }
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     }
   ],
   "comparisons": [
@@ -172,11 +184,38 @@
     }
   ],
   "observations": [
-    "Authorized emergency or regulatory official vehicle identity and qualifying flashing-light use under DEF-NRS-484A-480-3",
-    "Original-frame actual emergency-unit displacement and driver-view visibility of that movement cue",
-    "Ego approach distance and response controls after visible cue",
-    "Source-bound officer direction if any",
-    "Prepared-to-stop judgment remains unresolved; actual stop not required by this clause; brake lamps alone are not a movement indication"
+    {
+      "name": "sealed_native_original_frames",
+      "mandatory": true
+    },
+    {
+      "name": "unit_motion",
+      "mandatory": true
+    },
+    {
+      "name": "qualifying_flashing_lights",
+      "mandatory": true
+    },
+    {
+      "name": "driver_view_movement_cue",
+      "mandatory": true
+    },
+    {
+      "name": "ego_approach",
+      "mandatory": true
+    },
+    {
+      "name": "ego_response",
+      "mandatory": true
+    },
+    {
+      "name": "officer_direction",
+      "mandatory": true
+    },
+    {
+      "name": "video_four_views",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -243,5 +282,51 @@
       ],
       "reason": "A paved road can support approach to an emergency vehicle displaying an actual visible vehicle-movement preparation indication."
     }
-  ]
+  ],
+  "selected_branch": "Preparing to move through a visible vehicle-movement indication.",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-267-2c",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_no_brake",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__movement_occluded",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__officer_direction",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__regulatory_official_vehicle",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__hand_signal_alternative"
+      ],
+      "evidence_or_gap": "Frozen evidence inventory has no accepted recordings.",
+      "reason": "Original emergency-unit movement, visible cue, qualifying lights and response needed."
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego approach and emergency unit",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "unit flashing lights and movement",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "occluder, officer and unit route",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-view movement and hand-signal cues",
+        "interval": "all original 900 frames"
+      }
+    ]
+  }
 }

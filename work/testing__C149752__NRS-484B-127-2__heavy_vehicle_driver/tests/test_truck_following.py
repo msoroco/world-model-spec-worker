@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import os
 from pathlib import Path
 
 
@@ -59,12 +60,16 @@ class TruckFollowingTest(unittest.TestCase):
             def spawn_entrant(self, blueprint, time_s):
                 self.calls.append(("entrant", blueprint, time_s))
                 return "entrant"
+            def spawn_surrounding(self, blueprint):
+                self.calls.append(("surrounding", blueprint))
+                return "surrounding"
         lane = {"source_kind": "native_map_readback", "highway_public": True,
                 "available_same_direction_lanes": 1, "straight_connected_route": True, "opposing_pass_lane": True,
                 "driving_lanes": [{"lane_id": "one", "available": True, "connected": True, "direction_dot": 1.0}]}
         blue = {"source_kind": "native_blueprint_readback", "subject_overall_width_m": 2.1,
                 "lead_overall_width_m": 2.1, "subject_vehicle_class": "truck", "lead_vehicle_class": "truck",
-                "subject_blueprint_id": "subject-truck", "lead_blueprint_id": "lead-truck", "entrant_blueprint_id": "car"}
+                "subject_blueprint_id": "subject-truck", "lead_blueprint_id": "lead-truck",
+                "entrant_blueprint_id": "car", "surrounding_blueprint_id": "car"}
         adapter = Adapter()
         result = module.execute_case(adapter, module.CASES[3], lane, blue)
         self.assertEqual(result["capture_frames"], 900)
@@ -73,6 +78,10 @@ class TruckFollowingTest(unittest.TestCase):
         result = module.execute_case(adapter, module.CASES[4], lane, blue)
         self.assertEqual(result["entrant"], "entrant")
         self.assertEqual([c[0] for c in adapter.calls], ["spawn", "spawn", "follow", "entrant"])
+        adapter = Adapter()
+        result = module.execute_case(adapter, module.CASES[8], lane, blue)
+        self.assertEqual(result["surrounding"], "surrounding")
+        self.assertEqual([c[0] for c in adapter.calls], ["spawn", "spawn", "follow", "surrounding"])
 
     def test_owned_trucks_are_destroyed_when_pass_controller_fails(self):
         class Adapter:
@@ -166,7 +175,7 @@ class TruckFollowingTest(unittest.TestCase):
 
     def test_byte_seal_and_case_binding(self):
         packet = {"source_kind": "sealed_native_original_frames", "case_id": "case-a", "frames": [frame(i) for i in range(900)]}
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as tmp:
             path = Path(tmp) / "original.json"
             raw = json.dumps(packet).encode()
             path.write_bytes(raw)
@@ -176,6 +185,36 @@ class TruckFollowingTest(unittest.TestCase):
                 module.audit_sealed_capture(path, dict(seal, source_sha256="0" * 64), "case-a")
             with self.assertRaisesRegex(module.EvidenceError, "seal case mismatch"):
                 module.audit_sealed_capture(path, dict(seal, case_id="other"), "case-a")
+
+    def test_pass_realization_requires_observed_lane_and_body_geometry(self):
+        case = module.CASES[3]
+        case_id = 'case-pass'
+        packet = {'source_kind': 'sealed_native_original_frames', 'case_id': case_id,
+                  'frames': [frame(i, gap_m=145.0) for i in range(900)]}
+        for i in range(500, 600):
+            packet['frames'][i]['pass_phase'] = 'opposing'
+            packet['frames'][i]['subject_lane_relation'] = 'opposing_lane'
+        for i in range(600, 700):
+            row = packet['frames'][i]
+            row['pass_phase'] = 'ahead'
+            row['subject_lane_relation'] = 'opposing_lane'
+            row['bodies'][0]['route_vertex_s_m'] = [300 + j for j in range(8)]
+        for i in range(700, 900):
+            row = packet['frames'][i]
+            row['pass_phase'] = 'returned'
+            row['subject_lane_relation'] = 'follow_lane'
+            row['bodies'][0]['route_vertex_s_m'] = [300 + j for j in range(8)]
+        measured = module.audit_original_frames(packet, case_id=case_id)
+        self.assertTrue(measured['subject_pass_geometry_verified'])
+        measured['original_source_sha256'] = 'a' * 64
+        self.assertTrue(module.audit_case_realization(case, measured, case_id=case_id)['construction_realized'])
+        packet['frames'][700]['subject_lane_relation'] = 'opposing_lane'
+        for row in packet['frames'][701:]:
+            row['subject_lane_relation'] = 'opposing_lane'
+        missing_return = module.audit_original_frames(packet, case_id=case_id)
+        missing_return['original_source_sha256'] = 'a' * 64
+        with self.assertRaisesRegex(module.EvidenceError, 'geometry did not complete'):
+            module.audit_case_realization(case, missing_return, case_id=case_id)
 
 
 if __name__ == "__main__":

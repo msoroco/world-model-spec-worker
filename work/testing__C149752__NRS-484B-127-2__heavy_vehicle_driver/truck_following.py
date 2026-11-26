@@ -36,7 +36,7 @@ CASES = (
     Case("gap_at_500ft", STATUTORY_SPACE_M, 2.10, 2.10, 1),
     Case("gap_above_500ft", 160.0, 2.10, 2.10, 1),
     Case("passing_completion", 145.0, 2.10, 2.10, 1, passing=True),
-    Case("entering_vehicle", 155.0, 2.10, 2.10, 1, entering_vehicle=True),
+    Case("entering_vehicle", 160.0, 2.10, 2.10, 1, entering_vehicle=True),
     Case("two_available_lanes", 145.0, 2.10, 2.10, 2),
     Case("lead_below_80in", 145.0, 1.98, 2.10, 1),
     Case("subject_below_80in", 145.0, 2.10, 1.98, 1),
@@ -86,6 +86,10 @@ def planned_construction(case: Case, lane_source: dict, blueprint_source: dict) 
         require(blueprint_source.get(f"{identity}_vehicle_class") in ("truck", "combination"), f"{identity} truck class required")
         require(isinstance(blueprint_source.get(f"{identity}_blueprint_id"), str) and
                 blueprint_source[f"{identity}_blueprint_id"], f"{identity} Native blueprint ID required")
+    if case.circumstance == "constrained":
+        require(isinstance(blueprint_source.get("surrounding_blueprint_id"), str) and
+                blueprint_source["surrounding_blueprint_id"],
+                "surrounding vehicle Native blueprint required")
     require(case.gap_target_m > 0, "positive gap required")
     return {
         "subject": {"identity": "subject", "vehicle_class": blueprint_source["subject_vehicle_class"], "spawn_s_m": 0.0},
@@ -127,7 +131,14 @@ def execute_case(adapter, case: Case, lane_source: dict, blueprint_source: dict)
             owned.append(entrant)
         else:
             entrant = None
+        if case.circumstance == "constrained":
+            surrounding = adapter.spawn_surrounding(blueprint_source["surrounding_blueprint_id"])
+            require(surrounding is not None, "surrounding vehicle spawn failed")
+            owned.append(surrounding)
+        else:
+            surrounding = None
         return {"subject": subject, "lead": lead, "entrant": entrant,
+                "surrounding": surrounding,
                 "owned": tuple(owned), "capture_frames": plan["recording"]["frames"]}
     except BaseException:
         for actor in reversed(owned):
@@ -157,6 +168,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
     widths = []
     lanes = []
     entries: set[str] = set()
+    surrounding_count_max = 0
     pass_phases = []
     pass_geometry = []
     previous_t = None
@@ -176,6 +188,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         require(isinstance(bodies, list), "complete Native body inventory required")
         by_id = {b.get("identity"): b for b in bodies}
         require(len(by_id) == len(bodies) and "subject" in by_id and "lead" in by_id, "subject/lead body inventory required")
+        surrounding_count_max = max(surrounding_count_max, len(by_id) - 2)
         subject_min, subject_max = _body_interval(by_id["subject"], "subject")
         lead_min, lead_max = _body_interval(by_id["lead"], "lead")
         require(lead_min >= subject_max or frame.get("pass_phase") in ("opposing", "ahead", "returned"), "lead must be ahead while following")
@@ -248,6 +261,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
             "same_direction_available_lane_count_min": min(lanes),
             "same_direction_available_lane_count_max": max(lanes),
             "entered_gap_distinct_vehicle_count": len(entries),
+            "surrounding_vehicle_count_max": surrounding_count_max,
             "subject_pass_completed": completed_pass,
             "subject_pass_geometry_verified": geometrically_completed_pass,
             "legal_judgment": "unresolved"}
@@ -313,6 +327,11 @@ def audit_case_realization(case: Case, measured: dict, *, case_id: str) -> dict:
         require(measured.get("entered_gap_distinct_vehicle_count", 0) >= 1, "gap entrant not observed")
     elif measured.get("entered_gap_distinct_vehicle_count") != 0:
         raise EvidenceError("unplanned entrant changed comparison")
+    if case.circumstance == "constrained":
+        require(measured.get("surrounding_vehicle_count_max", 0) >= 1,
+                "constraining surrounding vehicle not observed")
+    elif measured.get("surrounding_vehicle_count_max") != 0:
+        raise EvidenceError("unplanned surrounding vehicle changed comparison")
     return {"case_id": case_id, "observed_gap_m": gap,
             "subject_qualifying_width_observed": subject_width >= MIN_QUALIFYING_WIDTH_M,
             "lead_qualifying_width_observed": lead_width >= MIN_QUALIFYING_WIDTH_M,

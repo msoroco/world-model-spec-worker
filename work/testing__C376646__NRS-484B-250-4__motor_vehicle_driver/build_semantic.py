@@ -15,6 +15,7 @@ CELL = "C376646"
 ACTOR = "motor_vehicle_driver"
 TEMPLATE = LAW + "@" + ACTOR
 PHRASE = "proceed cautiously"
+NOTE = "Cautiousness has no statutory numeric cutoff in this text; retain original movement and blind sightline for review."
 
 
 def write(name, value):
@@ -51,8 +52,7 @@ def build():
                             "effect": "Use nearest-view point", "replacement_obligation": "Stop at source-surveyed nearest-view point"}],
             "timing": {"description": "Measure signal at actual entry, prior stop, other vehicle stop/occupancy and subsequent movement on original frames.",
                        "numeric_conditions": []},
-            "judgment_calls_needed": [{"phrase": PHRASE,
-                "note": "Cautiousness has no statutory numeric cutoff in this text; retain original movement and blind sightline for review."}]},
+            "judgment_calls_needed": [{"phrase": PHRASE, "note": NOTE}]},
         "parameter_refs": [{"name": "stop_reference_kind", "kind": "world_setup",
                              "range_or_domain": "marked stop line, near-side crosswalk, nearest-view point"},
                             {"name": "other_vehicle_state", "kind": "world_setup",
@@ -61,7 +61,7 @@ def build():
                              "range_or_domain": "at statutory reference or late"}]}
     tref = write("template.json", template)
     judgment = {"template_id": TEMPLATE, "phrase": PHRASE,
-        "note": "Original trajectory and sightline support later review without a speed cutoff.",
+        "note": NOTE,
         "status": "draft", "observable_requirements": {
             "observables": [{"name": "ego_front_and_cessation", "unit": "structured",
                              "description": "Original 20 Hz post-stop front, speed and movement history."}],
@@ -123,8 +123,7 @@ def build():
     proposed = {"cell_id": CELL, "actor": ACTOR, "status": "draft",
         "cases": cases, "sweep_specs": [{
             "sweep_id": "cautious_proceeding_unresolved", "target_law_id": LAW,
-            "judgment_refs": [{"phrase": PHRASE,
-                               "note": "No legal numeric cautiousness threshold supplied."}],
+            "judgment_refs": [{"phrase": PHRASE, "note": NOTE}],
             "status": "incomplete",
             "rationale": "Original trajectory and sightline can be captured, but no source-backed cautiousness sweep range is available.",
             "missing_inputs": ["Reviewed source-grounded cautiousness judgment range and feasibility landmarks."]}],

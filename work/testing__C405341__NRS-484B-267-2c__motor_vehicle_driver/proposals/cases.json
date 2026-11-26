@@ -1,0 +1,1060 @@
+{
+  "cell_id": "C405341",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "preparedness_review",
+      "target_law_id": "NRS-484B-267-2c",
+      "judgment_refs": [
+        {
+          "phrase": "Be prepared to stop",
+          "note": "Record ego approach, speed, brake and available stopping context; do not infer a legal cutoff or require an actual stop."
+        },
+        {
+          "phrase": "any indication that is visible to an approaching driver",
+          "note": "Review actual driver-view original pixels and movement or hand signal timing."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Movement and response alternatives are prepared; preparedness requires source review.",
+      "missing_inputs": [
+        "original unit motion and driver-view camera histories",
+        "independent legal judgment of preparedness"
+      ],
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared emergency approach context without a legal finding.",
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "visible_movement_brake_response"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_no_brake",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "visible_movement_no_brake"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__movement_occluded",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "movement_occluded"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__officer_direction",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "officer_direction"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__regulatory_official_vehicle",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "regulatory_official_vehicle"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "regulatory_official",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "movement",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__hand_signal_alternative",
+      "target_law_id": "NRS-484B-267-2c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_movement_and_response",
+      "deliberate_differences": [
+        "unit_class",
+        "cue_kind",
+        "cue_visibility_requested",
+        "brake_after_cue_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "cue_visibility_requested",
+        "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+        "target_value_or_branch": "hand_signal_alternative"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "cue_kind": {
+          "kind": "world_setup",
+          "value": "hand_signal",
+          "unit": "kind"
+        },
+        "cue_visibility_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "brake_after_cue_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Be prepared to stop",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible/occluded",
+            "method": "reviewed driver-view original pixels and pose",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and preparedness judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Prepared to stop is a judgment phrase with no invented numeric threshold.",
+          "An actual stop is not independently required by this clause.",
+          "Brake lamps alone do not establish preparation-to-move indication."
+        ]
+      }
+    }
+  ]
+}

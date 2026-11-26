@@ -1,20 +1,25 @@
-# C376646 NRS 484B.250(4) motor vehicle checkpoint
+# C376646 NRS 484B.250(4) motor vehicle handoff
 
-Status: partial CPU construction. Frozen assignment SHA256 `ff3f105b368edcf1abc866389aaa5aa9cd0c3a1604175df93d6308f94f49ff3a`. Frozen evidence has no accepted recording for this assignment.
+Status: delivery prepared. The exact scoped strict CPU gate passed with exit 0; Native physical and legal acceptance remain pending.
 
-## Constructed and tested
+## Exact construction
 
-`inoperative_signal_probe.py` selects the statutory stop reference hierarchy: marked stop line, then near-side crosswalk, then surveyed nearest-view point. It binds original-frame ego motion and signal status, requires an installed uncovered inoperative signal at intersection entry, observes complete cessation at or before the selected reference, and identifies distinct vehicles with a prior completed stop or within-intersection occupancy. It rejects missing source bindings and wrong signal governance. It leaves cautious proceeding unresolved rather than inventing a speed threshold.
+Six source-gated cases exercise an installed, uncovered, fully inoperative governing signal at intersection entry; the marked stop line, no-line near-side crosswalk and neither-present nearest-view hierarchy; prior-stopped, within-intersection and no-priority other vehicles; and a late stop. Three controlled comparisons test priority, stop-reference hierarchy and stop position. `native_signal.py` requires reviewed source hashes, connected routes and Native readback. `runner.py` defers CARLA import until source checks pass. `native_capture.py` captures 900 synchronized 20 Hz ego/other histories and four original RGB streams, then restores world settings. `native_output_bridge.py` seals the original packets for the pinned runtime. `analysis.py` measures saved originals and leaves cautious proceeding unresolved without a fabricated threshold.
 
-`case-plan.json` now has six exact planned cases and three controlled comparisons for priority interactions, stop-reference alternatives and late-stop position. Each case has a physical risk assessment. Plans are not capture or delivery claims.
+## CPU proof results
 
-## Proofs
+- Runtime verify and preflight passed.
+- Nine focused assignment tests passed; `cpu-tests.log` SHA256 `a44ef86e09fd23a3307483a24012e068395c877abccac8297baa982b5b181729`.
+- Six primary and six fallback exact-case offline checks passed.
+- Six primary and six fallback positive/negative compatibility runs passed, including selected measurement contracts and full diagnostic video decode.
+- Six selected saved-only positive and missing-source probes passed.
+- Each case passed synthetic complete, incomplete and missing-evidence physical outcomes plus Native lifecycle ordering. These are diagnostic protocol proofs, not physical acceptance.
+- Six independent positive/negative delivery audits and three controlled comparison audits passed on diagnostic packets.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready`: exit 0; `strict.log` SHA256 `61f61d4613193e63b7817d3e4fd26b167d06c4bf64fc9d1ac5e74864db32f2fe`.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `466389424fae7c3bade185ea36bc8352b0d49bc1736a1e4bb8fd62b11ce633a1`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C376646__NRS-484B-250-4__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `7505fab72d2800fdebcdc8d17b4584b2894935f93ebcc8c8070022c443c614e7`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver`: exit 0, `static.log` SHA256 `61f61d4613193e63b7817d3e4fd26b167d06c4bf64fc9d1ac5e74864db32f2fe`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects the truthful partial result.
+## Stable handoff
 
-## Next CPU work
-
-Construct the installed but uncovered fully inoperative signal at the actual entry frame, each surveyed stop reference, physical blind sight line, through-highway context and other-vehicle stop/occupancy controllers in CARLA. Bind original packet capture and exact saved finalizer for each case. Add exact offline and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery and comparison audits, manifest and queue entries. Review cautious proceeding against source context without a fabricated cutoff. Recheck full law and contracts. Actual motion, signal state, occlusion and pixel coverage require later CARLA verification.
+- Execution manifest SHA256 `4377646c536729bdce43065e27e00ac53c15463d48f812f38365e748aacbfaa4`.
+- Queue proposal SHA256 `63915f65ff4650afc4a2acb727aa3c34228c3473a2853086190e6f817a4f3307`. Parent integrates the shared queue.
+- Returned work tree has 282 UTF-8 files, all at or below 2 MiB, with clean whitespace and EOF.
+- Frozen evidence inventory has zero accepted recordings. Local delivery still needs a source-reviewed official signal/site/operator packet, original CARLA motion and pixels, independent physical completion and legal review of cautious proceeding.
