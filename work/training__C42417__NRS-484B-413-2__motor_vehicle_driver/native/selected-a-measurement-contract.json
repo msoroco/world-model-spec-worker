@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.413(2)",
+      "output_key": "business_signal_distance_m",
+      "method": "measure_business_signal_distance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "body_history.jsonl",
+        "road_geometry.json",
+        "control_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.413(2)",
+      "output_key": "weather_without_exception",
+      "method": "measure_weather_without_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "control_context.json"
+    ],
+    "error_contains": "Missing required source: control_context.json"
+  },
+  "scope": "source-shaped synthetic CPU diagnostic; original district and lamp pixels require independent review"
+}

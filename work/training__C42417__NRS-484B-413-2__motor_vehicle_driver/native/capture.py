@@ -33,6 +33,8 @@ def check(config: dict) -> dict:
     expected = 40 if case.endswith('_a') else 20
     if config.get('signal_distance_m') != expected:
         raise ValueError('Exact signal distance request differs')
+    if config.get('controller_lookahead_base_m') not in (4.0, 2.5):
+        raise ValueError('Undeclared controller lookahead candidate')
     return {'case_id': case, 'frames': 600, 'geometry': check_geometry(),
             'cameras': check_cameras(), 'signal_start_x_m': -expected,
             'simulation_started': False, 'selected_for_delivery': False,
@@ -142,11 +144,13 @@ def capture(config: dict, output_dir: Path, host: str, port: int) -> dict:
         wheelbase = (max(w.position.x for w in wheels) - min(w.position.x for w in wheels)) / 100
         max_steer = max(w.max_steer_angle for w in wheels)
         controller = PathController([[x, -y] for x, y in route()], wheelbase, max_steer,
-                                    EngineeringKnobs(target_speed_mps=10.0))
+                                    EngineeringKnobs(target_speed_mps=10.0,
+                                        lookahead_base_m=config['controller_lookahead_base_m']))
         _new(output / 'native-construction-context.json', {'case_id': config['case_id'],
             'wheelbase_m': wheelbase, 'max_steer_deg': max_steer,
             'signal_start_x_m': -config['signal_distance_m'],
             'requested_signal_distance_m': config['signal_distance_m'],
+            'controller_lookahead_base_m': config['controller_lookahead_base_m'],
             'physical_success_claimed': False})
         for spec in camera_plan():
             bp = world.get_blueprint_library().find('sensor.camera.rgb')

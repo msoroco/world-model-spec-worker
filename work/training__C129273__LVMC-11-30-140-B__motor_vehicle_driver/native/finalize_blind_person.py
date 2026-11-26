@@ -162,10 +162,12 @@ def finalize(attempt, output):
         'video_references': [name + '.mkv' for name in CAMERAS],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
-        'recording_evidence': [{'name': 'vehicle_person_pose', 'unit': 'structured',
-                                'reference': 'vehicle-person-poses.jsonl'},
-                               {'name': 'blind_person_source_context', 'unit': 'structured',
-                                'reference': 'blind-person-context.json'}],
+        'recording_evidence': [
+            {'name': channel['name'], 'unit': channel['unit'],
+             'reference': 'vehicle-person-poses.jsonl'}
+            for channel in config['recording_description']['channels']
+        ] + [{'name': 'blind_person_source_context', 'unit': 'structured',
+              'reference': 'blind-person-context.json'}],
         'realized_observables': {'minimum_surface_gap_m': {
             'value': observed['minimum_surface_gap_m'], 'unit': 'm',
             'method': 'source-joined Native actor position and ego bbox',

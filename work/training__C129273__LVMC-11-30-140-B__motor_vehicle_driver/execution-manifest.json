@@ -8,7 +8,7 @@
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_1",
       "kind": "delivery",
       "construction": "draft-exact/probe_1/primary/construction.json",
-      "construction_sha256": "091954142114da02f9fad456c70ad6c5bf2650f5b09c65ba556e069811090a16",
+      "construction_sha256": "7babe441d939fde38f8441316e4ae39df06bbce262209b608cb515910d4f1630",
       "measurement_contract": "measurement-probe_1.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-probe_1.json",
       "candidate_risk": {
@@ -19,7 +19,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/probe_1/fallback1/construction.json",
-          "construction_sha256": "d462af777e0318755a522b54b315954cfa393678f00d27b2396bd0d1af086f00",
+          "construction_sha256": "9322f2aae5082b59dc247c6a606569024c3c0122964209ce9f3fbd4c0e0f0983",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -35,15 +35,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_1 --output .runtime-work/c129273-offline-probe_1-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_1 --output .runtime-work/c129273-offline-probe_1-v7",
         "exit_code": 0,
-        "construction_sha256": "091954142114da02f9fad456c70ad6c5bf2650f5b09c65ba556e069811090a16",
+        "construction_sha256": "7babe441d939fde38f8441316e4ae39df06bbce262209b608cb515910d4f1630",
         "log": "offline/probe_1-primary.log",
-        "log_sha256": "872add6d57117c97250dcb6029ee99a4952eb1b9b0623f8117e75abdfbe52c06"
+        "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/probe_1-primary.json",
-        "sha256": "5dc4d31c2244da18934600483ba13a772063d1022cb35896af2e35110bc0455c",
+        "sha256": "54927af4a448a8c71e6c3564d63e624178acf43e7f7d5f33ba1062b43b3cf8db",
         "log": "compatibility/probe_1-primary-analysis.log",
         "negative_log": "compatibility/probe_1-primary-negative.log"
       },
@@ -66,6 +66,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -95,24 +140,14 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/probe_1/proof.json",
-        "sha256": "d96d87f388edbfb56143c884152b5e1ec45c2f0dd3aae47d5a851881bc7388f0"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/probe_1-processing.log",
-        "test_log_sha256": "1ad5c438bc33f58c7a5583a660a93ff409e53fc7369abb9663e7204a197e72c0",
-        "processing_receipt": "saved/probe_1-processing.json",
-        "processing_receipt_sha256": "1ad5c438bc33f58c7a5583a660a93ff409e53fc7369abb9663e7204a197e72c0"
+        "sha256": "df11f9cf40898320340063a3c8aed2d7e38e5c8a9ce1ea51970d9b22ae041baa"
       }
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2",
       "kind": "delivery",
       "construction": "draft-exact/probe_2/primary/construction.json",
-      "construction_sha256": "cd2f590d12f9aeefc0d79fe5d61bbd617954f346d763e1ca4489b2a997f9e793",
+      "construction_sha256": "5b404ae258589ac9baf2b09eb97060ec3072b12d8add51cbdf268898de55557a",
       "measurement_contract": "measurement-probe_2.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-probe_2.json",
       "candidate_risk": {
@@ -123,7 +158,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/probe_2/fallback1/construction.json",
-          "construction_sha256": "585be4b595521aba41a1986a882428d40f4e13f57acc4a31c7ba96a14c5e94be",
+          "construction_sha256": "42b52afedd7e11952db303eee1f4f1dafbeb92e7262b08b9841d1a95e6c7e21d",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -139,15 +174,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2 --output .runtime-work/c129273-offline-probe_2-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2 --output .runtime-work/c129273-offline-probe_2-v7",
         "exit_code": 0,
-        "construction_sha256": "cd2f590d12f9aeefc0d79fe5d61bbd617954f346d763e1ca4489b2a997f9e793",
+        "construction_sha256": "5b404ae258589ac9baf2b09eb97060ec3072b12d8add51cbdf268898de55557a",
         "log": "offline/probe_2-primary.log",
         "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/probe_2-primary.json",
-        "sha256": "bbc41a7736d522a36ce50a2b4a7523e33b260b451aff5288b835aae058f60012",
+        "sha256": "04e615dd62953862f8291a1a8b7170b54b2db63f87e5f796b497c07c7fa9ecdd",
         "log": "compatibility/probe_2-primary-analysis.log",
         "negative_log": "compatibility/probe_2-primary-negative.log"
       },
@@ -170,6 +205,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -199,24 +279,14 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/probe_2/proof.json",
-        "sha256": "5f7340a5545a8be0cbd78ab40221bc29118ae1734949ca34b77b997fa553f0cb"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__probe_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/probe_2-processing.log",
-        "test_log_sha256": "9e4ddfad99bf2e7a428eb703b57f1f4c97e51e38a7d8db0a04af395f41edaa42",
-        "processing_receipt": "saved/probe_2-processing.json",
-        "processing_receipt_sha256": "9e4ddfad99bf2e7a428eb703b57f1f4c97e51e38a7d8db0a04af395f41edaa42"
+        "sha256": "5f491174c248c2df3e0222ec941ed42e52a4ca18a2e0546fa0e4f9bc6bacd887"
       }
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly",
       "kind": "delivery",
       "construction": "draft-exact/white_wholly/primary/construction.json",
-      "construction_sha256": "34d7c70154d35006a22e988cd1b63986a9c7a46302be5bc1cb67b6b1944114ad",
+      "construction_sha256": "bf3a6b399963650091df8a6d6aefeb0d14dad272d0a0036bb91bd5be2cfab640",
       "measurement_contract": "measurement-white_wholly.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-white_wholly.json",
       "candidate_risk": {
@@ -227,7 +297,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/white_wholly/fallback1/construction.json",
-          "construction_sha256": "4e310b51bcb74170c4fe54d4c4fb1443726092436e599e0f5ca5f3b263fa85f8",
+          "construction_sha256": "895bc77e8e026847072bcabf7439fd0ccaf91f1c62456a57f6a1fa9c466c0afc",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -243,15 +313,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly --output .runtime-work/c129273-offline-white_wholly-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly --output .runtime-work/c129273-offline-white_wholly-v7",
         "exit_code": 0,
-        "construction_sha256": "34d7c70154d35006a22e988cd1b63986a9c7a46302be5bc1cb67b6b1944114ad",
+        "construction_sha256": "bf3a6b399963650091df8a6d6aefeb0d14dad272d0a0036bb91bd5be2cfab640",
         "log": "offline/white_wholly-primary.log",
         "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/white_wholly-primary.json",
-        "sha256": "c5b220a47cd3d7e3a090b5b3acbb891e82233cf04eede4ec11b747c3a41fce6b",
+        "sha256": "babf3244b6d8e9976a60c8a69e6fb5ff76a7f1701634b6829c766459cd588e87",
         "log": "compatibility/white_wholly-primary-analysis.log",
         "negative_log": "compatibility/white_wholly-primary-negative.log"
       },
@@ -274,6 +344,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -303,24 +418,14 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/white_wholly/proof.json",
-        "sha256": "388f50f99ca24584ad7f1fc8803d7eabf6ac57319112ae6d97f9b725d600e36b"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/white_wholly-processing.log",
-        "test_log_sha256": "379d593aebc0ef0e5ada355271e4de96d6f8b3f436b610aedc1c671276627887",
-        "processing_receipt": "saved/white_wholly-processing.json",
-        "processing_receipt_sha256": "379d593aebc0ef0e5ada355271e4de96d6f8b3f436b610aedc1c671276627887"
+        "sha256": "5a5e19671bfe65a607950562cddd8ad3a0f87f34c621365b3ed98f1dec2ae49e"
       }
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_partial",
       "kind": "delivery",
       "construction": "draft-exact/white_partial/primary/construction.json",
-      "construction_sha256": "ddab0aa344249251ac946be4b627a88f41746854d9228af45e5899002f12a742",
+      "construction_sha256": "d733620baa31d85e483d2cfe0ce122469defdcf25ba301328c11213050d25ef5",
       "measurement_contract": "measurement-white_partial.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-white_partial.json",
       "candidate_risk": {
@@ -331,7 +436,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/white_partial/fallback1/construction.json",
-          "construction_sha256": "4beaceef366d227e7c6791385cc77b657e72c035ee1c32d284195d8b18cc4df8",
+          "construction_sha256": "ba757597722a764fc1a13f0d46173a68cd2dd7e81685cc05128f4cb6ac733164",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -347,15 +452,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_partial --output .runtime-work/c129273-offline-white_partial-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_partial --output .runtime-work/c129273-offline-white_partial-v7",
         "exit_code": 0,
-        "construction_sha256": "ddab0aa344249251ac946be4b627a88f41746854d9228af45e5899002f12a742",
+        "construction_sha256": "d733620baa31d85e483d2cfe0ce122469defdcf25ba301328c11213050d25ef5",
         "log": "offline/white_partial-primary.log",
         "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/white_partial-primary.json",
-        "sha256": "7bfe6fc5c0e1250689564563210c01558f1cfdfcfcb0cd1a158624608bf4588b",
+        "sha256": "d24fe9e3e144194b47319322f01aaa085bcb89257f52f8e697bec1b608d188bc",
         "log": "compatibility/white_partial-primary-analysis.log",
         "negative_log": "compatibility/white_partial-primary-negative.log"
       },
@@ -378,6 +483,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -407,24 +557,14 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/white_partial/proof.json",
-        "sha256": "f6dc239d0c1100ac65debd200080c92b232f82da3d24db1c9e7bf75ae0493235"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_partial --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_partial --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/white_partial-processing.log",
-        "test_log_sha256": "cfe0138db4e57f203966104e3fd5bc1a54db553ca8faad2c5fd2accf493a9de1",
-        "processing_receipt": "saved/white_partial-processing.json",
-        "processing_receipt_sha256": "cfe0138db4e57f203966104e3fd5bc1a54db553ca8faad2c5fd2accf493a9de1"
+        "sha256": "fad55a2a43492c8bd73c4b26a829b3b85026eef9ccdbc9ac5542da36701be30a"
       }
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted",
       "kind": "delivery",
       "construction": "draft-exact/assisted/primary/construction.json",
-      "construction_sha256": "cfac7802dfa435720c45e9680376b3da55fa64f1cdad65ec2fe260fb6f8bdcd9",
+      "construction_sha256": "c475229596dc7ee103817b4725864fc718313009dfed8e661f0f112f4f482b86",
       "measurement_contract": "measurement-assisted.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-assisted.json",
       "candidate_risk": {
@@ -435,7 +575,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/assisted/fallback1/construction.json",
-          "construction_sha256": "8dc2f47b2bae593c2c0595a3fdb23ef9427bb834a30c63a4e983e1b65b3588a8",
+          "construction_sha256": "c41be24ee222fd6bd4cdb6dd2b840151e1400cfde7aecb3656086a48cd5c5356",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -451,15 +591,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted --output .runtime-work/c129273-offline-assisted-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted --output .runtime-work/c129273-offline-assisted-v7",
         "exit_code": 0,
-        "construction_sha256": "cfac7802dfa435720c45e9680376b3da55fa64f1cdad65ec2fe260fb6f8bdcd9",
+        "construction_sha256": "c475229596dc7ee103817b4725864fc718313009dfed8e661f0f112f4f482b86",
         "log": "offline/assisted-primary.log",
         "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/assisted-primary.json",
-        "sha256": "773ead36fa62644585b6174f61a6ce285b689889a70dc293c8ca5eb19e0fdcac",
+        "sha256": "f4824a695a336ff60e20f12b8d0c69dbee0ba2dd112de060765924fccdf2b805",
         "log": "compatibility/assisted-primary-analysis.log",
         "negative_log": "compatibility/assisted-primary-negative.log"
       },
@@ -482,6 +622,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -511,24 +696,14 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/assisted/proof.json",
-        "sha256": "a1443f47e70ad1226c04a22045ac36e97eb4429560744592ff316fa2340e250d"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/assisted-processing.log",
-        "test_log_sha256": "70a56752e678dedb5bf08054830a04cb94fb8a784ad1863f6a379ed8ea631efa",
-        "processing_receipt": "saved/assisted-processing.json",
-        "processing_receipt_sha256": "70a56752e678dedb5bf08054830a04cb94fb8a784ad1863f6a379ed8ea631efa"
+        "sha256": "768c78a6482f930894ecca5143c3a6cefa7e9dbcb61e4c821b966bc4dcdf9300"
       }
     },
     {
       "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__early_release",
       "kind": "delivery",
       "construction": "draft-exact/early_release/primary/construction.json",
-      "construction_sha256": "90303b48e2ab37e97dbbd42e72d843a47554846922895871135bd9831b6e7509",
+      "construction_sha256": "8bb2cea8ea6dadc881baad4b4e3bd1c0c67f5f37ce706418568beff90381e616",
       "measurement_contract": "measurement-early_release.json",
       "fixture_recipe": "work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-recipe-early_release.json",
       "candidate_risk": {
@@ -539,7 +714,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/early_release/fallback1/construction.json",
-          "construction_sha256": "40b854aa0f6c8e4be364a6ffc62fa1c9defb6740d17751414cb3f19e6a53af03",
+          "construction_sha256": "bc1864f62642fd5e7d561436ccd6fe74f3952da426140b860b1b718bb00a0461",
           "trigger": {
             "source": "original Native four-camera frames and blind-person context",
             "metric": "cane marker stroke visibility in crossing interval",
@@ -555,15 +730,15 @@
       },
       "preparation_status": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__early_release --output .runtime-work/c129273-offline-early_release-v4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/draft-execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__early_release --output .runtime-work/c129273-offline-early_release-v7",
         "exit_code": 0,
-        "construction_sha256": "90303b48e2ab37e97dbbd42e72d843a47554846922895871135bd9831b6e7509",
+        "construction_sha256": "8bb2cea8ea6dadc881baad4b4e3bd1c0c67f5f37ce706418568beff90381e616",
         "log": "offline/early_release-primary.log",
         "log_sha256": "aec14f570fd5e0f7d9092d8944724ac64f046f70e3b9790ae145fe0ab16dac73"
       },
       "compatibility": {
         "receipt": "compatibility/early_release-primary.json",
-        "sha256": "85e12d491dd3155573aafd157dc14cc289142b8c678c1a298e24e4616582dfc7",
+        "sha256": "e90e6ee71e421f0b2b3811f3db397756b2622484bad5473e49a8b26315c0a45a",
         "log": "compatibility/early_release-primary-analysis.log",
         "negative_log": "compatibility/early_release-primary-negative.log"
       },
@@ -586,6 +761,51 @@
           "entrypoint": "runner.py",
           "method": "retained marker, blindness, assistant and driver requests with original source review flags",
           "evidence": "blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.pedestrian_with_white_cane_or_guide_animal": {
+          "entrypoint": "runner.py",
+          "method": "retained original person identity and cane/assistant source context with independent pixel review; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose, speed and longitudinal closure; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego/person pose and body geometry; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original ego velocity and stop interval; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "finite difference of original ego velocity at 20 Hz; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original relative pose and velocity with stated diagnostic assumptions; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original actor IDs, roles and driver viewpoint source; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original body geometry and any original contact event, separately reviewed; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original ego/person body geometry and lateral/longitudinal clearance; original source and pixel review required",
+          "evidence": "vehicle-person-poses.jsonl, blind-person-context.json, road-survey.json, four original camera videos"
         }
       },
       "delivery_acceptance": {
@@ -615,17 +835,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-proof/early_release/proof.json",
-        "sha256": "0daab71d7254e3731d04780e06093b9ed1a7e0a2cc837526e8289a16e4b5d80e"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__early_release --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C129273__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__early_release --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "saved/early_release-processing.log",
-        "test_log_sha256": "8a5961d5484e75e6f53fe5175b8f7efd087b30e051f0fff64deb86fba23ce10a",
-        "processing_receipt": "saved/early_release-processing.json",
-        "processing_receipt_sha256": "8a5961d5484e75e6f53fe5175b8f7efd087b30e051f0fff64deb86fba23ce10a"
+        "sha256": "7aaa6eaf8cb759d41e933c58042fbf78cc72f72d35796425a4b5b90e26d949a9"
       }
     }
   ]

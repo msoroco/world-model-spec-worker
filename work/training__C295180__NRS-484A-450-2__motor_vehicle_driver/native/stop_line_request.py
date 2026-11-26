@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 
-ASSIGNMENT = Path(__file__).resolve().parent.parent.name
+ASSIGNMENT = 'training__C295180__NRS-484A-450-2__motor_vehicle_driver'
 CASES = {"full_stop": ASSIGNMENT + "__selected_ef239a06__condition_a",
          "rolling": ASSIGNMENT + "__selected_ef239a06__condition_b"}
 FRAMES = 600

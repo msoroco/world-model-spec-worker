@@ -28,8 +28,8 @@ def main():
         case = ASSIGNMENT + '__' + suffix
         if entry['case_id'] != case:
             raise ValueError('Exact case order changed')
-        proof = ROOT / '.runtime-work' / ('c129273-compat-' + suffix + '-v6')
-        offline = ROOT / '.runtime-work' / ('c129273-offline-' + suffix + '-v6')
+        proof = ROOT / '.runtime-work' / ('c129273-compat-' + suffix + '-v7')
+        offline = ROOT / '.runtime-work' / ('c129273-offline-' + suffix + '-v7')
         receipt = json.loads((proof / 'compatibility.json').read_text())
         if (receipt['passed'] is not True or receipt['case_id'] != case or
                 receipt['construction_sha256'] != entry['construction_sha256']):
@@ -50,7 +50,7 @@ def main():
         entry['offline'] = {
             'command': '.venv-cpu/bin/python -B runtime.py offline --manifest work/' +
                        ASSIGNMENT + '/draft-execution-manifest.json --case ' + case +
-                       ' --output .runtime-work/c129273-offline-' + suffix + '-v6',
+                       ' --output .runtime-work/c129273-offline-' + suffix + '-v7',
             'exit_code': 0, 'construction_sha256': entry['construction_sha256'],
             'log': str(offline_target.relative_to(HERE)),
             'log_sha256': sha(offline_target)}

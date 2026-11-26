@@ -20,6 +20,7 @@ def check(c):
     if any(x.get("fps")!=20 or x.get("width",0)<16 or x.get("height",0)<16 for x in c["cameras"]):raise ValueError("Camera cadence/dimensions differ")
     if c.get("layout")!="business_district" or c.get("maneuver")!="right_turn" or c.get("precipitation")!="rain":raise ValueError("Fixed scene differs")
     if c.get("turn_onset_frame")!=300 or c.get("speed_mps")!=10 or c.get("signal_distance_m")!=expected[case]:raise ValueError("Signal-distance comparison differs")
+    if c.get("controller_lookahead_base_m") not in (4.0,2.5):raise ValueError("Unknown controller candidate")
     if c.get("observed_indicator_required") is not True or c.get("physical_verified") is not False or c.get("legal_verdict") is not None:raise ValueError("Source or legal claim differs")
     return capture_check(c)
 if __name__=="__main__":
@@ -75,6 +76,7 @@ def build():
                ('overview',1920,1080),('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720))],
            'layout':'business_district','maneuver':'right_turn','precipitation':'rain',
            'turn_onset_frame':300,'speed_mps':10,'signal_distance_m':distance,
+           'controller_lookahead_base_m':4.0,
            'observed_indicator_required':True,'physical_verified':False,'legal_verdict':None,
            'required_atoms':['sig.turn_indicator','kin.heading','kin.speed'],
            'source_packets':[], 'recording_description':description(),
@@ -88,7 +90,16 @@ def build():
                       'recording_description':description(),
                       'status':'exact_unselected_offline_draft'}
         p=HERE/('condition_'+suffix+'-construction.json');p.write_text(json.dumps(construction,indent=2)+'\n')
-        entries.append({'case_id':case,'construction':p.name,'construction_sha256':sha(p)})
+        fallback=json.loads(json.dumps(construction))
+        fallback_config=json.loads(fallback['files'][0]['content'])
+        fallback_config['controller_lookahead_base_m']=2.5
+        fallback['files'][0]['content']=json.dumps(fallback_config,indent=2)+'\n'
+        fallback['status']='exact_unselected_offline_fallback_draft'
+        alternate=HERE/('condition_'+suffix+'-fallback1-construction.json')
+        alternate.write_text(json.dumps(fallback,indent=2)+'\n')
+        entries.append({'case_id':case,'construction':p.name,'construction_sha256':sha(p),
+            'candidates':[{'id':'fallback1','construction':alternate.name,
+                'construction_sha256':sha(alternate)}]})
     m={'format':'draft-execution-manifest','cases':entries}
     (HERE/'draft-manifest.json').write_text(json.dumps(m,indent=2)+'\n')
     return m

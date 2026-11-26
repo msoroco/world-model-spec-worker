@@ -27,6 +27,87 @@
     "recording_description": {
       "channels": [
         {
+          "name": "ru.pedestrian_with_white_cane_or_guide_animal",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "retained original person identity and cane/assistant source context with independent pixel review",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "drv.approaching",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-tick original ego/person pose, speed and longitudinal closure",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "rel.centre_distance",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-tick original ego/person pose and body geometry",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "drv.stopped",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-tick original ego velocity and stop interval",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "kin.accel_longitudinal",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "finite difference of original ego velocity at 20 Hz",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "drv.time_to_conflict",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original relative pose and velocity with stated diagnostic assumptions",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "ru.subject",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original actor IDs, roles and driver viewpoint source",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "rel.contact",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original body geometry and any original contact event, separately reviewed",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
+          "name": "rel.surface_gap",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original ego/person body geometry and lateral/longitudinal clearance",
+          "time_window": "600 original frames",
+          "reference_frame": "surveyed mountain road and original Native frame",
+          "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+        },
+        {
           "name": "vehicle_person_pose",
           "unit": "structured",
           "sampling_rate_hz": 20,
@@ -52,26 +133,115 @@
     {
       "name": "overview",
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "pose_strategy": "full mountain-road encounter and both actors",
+      "fov_deg": 85
     },
     {
       "name": "approach",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "ego approach and pedestrian contact region",
+      "fov_deg": 85
     },
     {
       "name": "reference_corner",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "cane marker or assistant and clearance",
+      "fov_deg": 85
     },
     {
       "name": "driver_reference",
       "width": 1280,
-      "height": 720
+      "height": 720,
+      "pose_strategy": "driver view of person and stopping region",
+      "fov_deg": 85
     }
   ],
   "recording_description": {
     "channels": [
+      {
+        "name": "ru.pedestrian_with_white_cane_or_guide_animal",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained original person identity and cane/assistant source context with independent pixel review",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "drv.approaching",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "same-tick original ego/person pose, speed and longitudinal closure",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "rel.centre_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "same-tick original ego/person pose and body geometry",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "drv.stopped",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "same-tick original ego velocity and stop interval",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "kin.accel_longitudinal",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "finite difference of original ego velocity at 20 Hz",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "drv.time_to_conflict",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original relative pose and velocity with stated diagnostic assumptions",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "ru.subject",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original actor IDs, roles and driver viewpoint source",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "rel.contact",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original body geometry and any original contact event, separately reviewed",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
+      {
+        "name": "rel.surface_gap",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original ego/person body geometry and lateral/longitudinal clearance",
+        "time_window": "600 original frames",
+        "reference_frame": "surveyed mountain road and original Native frame",
+        "uncertainty": "50 ms sampling; marker appearance and blindness unverified"
+      },
       {
         "name": "vehicle_person_pose",
         "unit": "structured",

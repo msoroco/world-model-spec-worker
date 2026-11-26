@@ -15,7 +15,8 @@ class BusinessRightTurnGeometry(unittest.TestCase):
                   'cell_id': 'C42417', 'actor': 'motor_vehicle_driver',
                   'rate_hz': 20, 'duration_s': 30,
                   'layout': 'business_district', 'maneuver': 'right_turn',
-                  'precipitation': 'rain', 'signal_distance_m': 40}
+                  'precipitation': 'rain', 'signal_distance_m': 40,
+                  'controller_lookahead_base_m': 4.0}
         self.assertEqual(capture_check(config)['signal_start_x_m'], -40)
         config['case_id'] = CASE_PREFIX + 'b'
         config['signal_distance_m'] = 20

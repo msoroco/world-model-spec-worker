@@ -17,7 +17,7 @@ def sha(path):
 for entry in manifest['cases']:
     suffix = entry['case_id'].removeprefix(AID + '__')
     assert suffix in SUFFIXES
-    source = REPO / '.runtime-work' / f'c129273-saved-{suffix if suffix != "probe_1" else "probe1"}-v5' / 'v0001' / 'processing.json'
+    source = REPO / '.runtime-work' / f'c129273-saved-{suffix}-v8' / 'v0001' / 'processing.json'
     target = saved / f'{suffix}-processing.json'
     target.write_bytes(source.read_bytes())
     log = saved / f'{suffix}-processing.log'
