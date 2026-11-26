@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import zipfile
 
 from reviewed_source import FIELDS, construct_reviewed, verify
 
@@ -18,11 +19,12 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> dict:
+def capture(adapter, packet_path: Path, case_name: str, destination: Path,
+            candidate_id: str = 'primary') -> dict:
     """Record 900 joined 20 Hz frames; remove the attempt after any failure."""
     if getattr(adapter, 'native_attested', False) is not True:
         raise ValueError('attested original Native adapter required')
-    reviewed = verify(packet_path, case_name)
+    reviewed = verify(packet_path, case_name, candidate_id)
     destination = Path(destination)
     if destination.exists():
         raise ValueError('original destination already exists')
@@ -46,12 +48,15 @@ def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> di
         packet['source_bindings'] = bindings
         sealed = stage / 'reviewed-site.json'
         sealed.write_text(json.dumps(packet, sort_keys=True) + '\n', encoding='utf-8')
-        sealed_review = verify(sealed, case_name)
-        actors = construct_reviewed(adapter, sealed, case_name)
+        sealed_review = verify(sealed, case_name, candidate_id)
+        actors = construct_reviewed(adapter, sealed, case_name, candidate_id)
         camera_dirs = {name: stage / ('frames-' + name) for name in CAMERAS}
         for folder in camera_dirs.values():
             folder.mkdir()
+        archives = {name: zipfile.ZipFile(stage / (name + '.zip'), 'w', zipfile.ZIP_STORED)
+                    for name in CAMERAS}
         rows = []
+        frame_map = []
         previous = None
         for index in range(900):
             snapshot = adapter.tick(actors)
@@ -75,6 +80,7 @@ def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> di
             cameras = adapter.read_cameras(frame, actors)
             if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
                 raise ValueError('four original cameras missing')
+            camera_hashes = {}
             for name in CAMERAS:
                 camera = cameras[name]
                 raw = camera.get('png')
@@ -82,7 +88,13 @@ def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> di
                         not isinstance(raw, bytes) or not raw.startswith(b'\x89PNG\r\n\x1a\n'):
                     raise ValueError('original camera pixel/frame join missing: ' + name)
                 (camera_dirs[name] / f'{index:04d}.png').write_bytes(raw)
+                archives[name].writestr(f'{index:04d}-{frame}.png', raw)
+                camera_hashes[name] = hashlib.sha256(raw).hexdigest()
             rows.append(row)
+            frame_map.append({'original_frame': frame, 'time_s': time_s,
+                              'camera_png_sha256': camera_hashes})
+        for archive in archives.values():
+            archive.close()
         rows_path = stage / 'original-bus-frames.jsonl'
         rows_path.write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows),
                              encoding='utf-8')
@@ -96,9 +108,17 @@ def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> di
                            stderr=subprocess.PIPE)
             cameras[name] = {'path': video.name, 'sha256': sha(video), 'frame_count': 900}
             shutil.rmtree(folder)
+        map_path = stage / 'camera-frame-map.jsonl'
+        map_path.write_text(''.join(json.dumps(item, sort_keys=True) + '\n'
+                                    for item in frame_map), encoding='utf-8')
         identity = {'case_id': sealed_review['scene']['case_id'],
+                    'candidate_id': candidate_id,
                     'source_kind': 'original_native_capture', 'diagnostic_fixture': False,
                     'reviewed_site_sha256': sha(sealed), 'frames_sha256': sha(rows_path),
+                    'camera_frame_map_sha256': sha(map_path),
+                    'camera_archives': {name: {'path': name + '.zip',
+                                               'sha256': sha(stage / (name + '.zip'))}
+                                        for name in CAMERAS},
                     'cameras': cameras, 'legal_status': 'unresolved',
                     'physical_acceptance': False}
         (stage / 'capture-identity.json').write_text(json.dumps(identity, sort_keys=True) + '\n',
@@ -106,6 +126,8 @@ def capture(adapter, packet_path: Path, case_name: str, destination: Path) -> di
         os.replace(stage, destination)
         return identity
     except BaseException:
+        for archive in locals().get('archives', {}).values():
+            archive.close()
         shutil.rmtree(stage, ignore_errors=True)
         raise
     finally:

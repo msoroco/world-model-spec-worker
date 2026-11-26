@@ -56,6 +56,7 @@ def build():
             scene[source + '_source_sha256'] = sha(note)
         config = {'law_id': 'LVMC-11-60-030-A4', 'cell_id': 'C149470',
                   'actor': 'bus_driver', 'selected_case_id': case_id,
+                  'candidate_id': 'primary',
                   'rate_hz': 20, 'duration_s': 45, 'required_atoms': [],
                   'source_packets': [],
                   'cameras': ['overview', 'approach', 'curb_wheel', 'traffic'],

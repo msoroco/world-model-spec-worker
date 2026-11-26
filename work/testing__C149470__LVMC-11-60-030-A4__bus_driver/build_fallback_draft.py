@@ -2,7 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
-from math import radians, tan
+from math import hypot
 
 HERE = Path(__file__).resolve().parent
 
@@ -22,10 +22,19 @@ def main():
         if scene['source_kind'] != 'synthetic_diagnostic_fixture':
             raise ValueError('fallback builder requires diagnostic source')
         original_start = scene['bus_route_xy'][0]
-        angle = scene.get('heading_request_deg', 0.0)
-        scene['bus_route_xy'][0] = [original_start[0] - 2.0,
-                                    original_start[1] + 2.0 * tan(radians(angle))]
+        original_end = scene['bus_route_xy'][-1]
+        dx, dy = original_end[0] - original_start[0], original_end[1] - original_start[1]
+        length = hypot(dx, dy)
+        if length <= 0:
+            raise ValueError('primary approach route degenerate')
+        scene['primary_bus_route_xy'] = json.loads(json.dumps(scene['bus_route_xy']))
+        scene['bus_route_xy'][0] = [original_start[0] - 2.0 * dx / length,
+                                    original_start[1] - 2.0 * dy / length]
         scene_file['content'] = json.dumps(scene, indent=2) + '\n'
+        config_file = next(item for item in construction['files'] if item['path'] == 'config.json')
+        config = json.loads(config_file['content'])
+        config['candidate_id'] = 'fallback1'
+        config_file['content'] = json.dumps(config, indent=2) + '\n'
         target = HERE / ('construction-fallback1-' + name + '.json')
         target.write_text(json.dumps(construction, indent=2) + '\n')
         candidate = {'id': 'fallback1', 'construction': target.name,

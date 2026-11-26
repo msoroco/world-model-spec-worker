@@ -69,6 +69,20 @@ class Adapter:
 
 
 class BusTests(unittest.TestCase):
+    def test_engineering_requests_require_route_geometry(self):
+        heading = next(case for case in probe.CASES
+                       if case.name == 'parallel_source_review-0002')
+        angled = scene(heading)
+        angled['bus_route_xy'][0][1] = heading.target_distance_m
+        with self.assertRaisesRegex(ValueError, 'heading request'):
+            probe.validate_scene(angled, heading)
+        traffic = next(case for case in probe.CASES
+                       if case.name == 'traffic_impediment_source_review-0002')
+        offset = scene(traffic)
+        offset['traffic_route_xy'][0][1] = 3.0
+        with self.assertRaisesRegex(ValueError, 'lateral request'):
+            probe.validate_scene(offset, traffic)
+
     def test_all_cases_construct_and_measure(self):
         for case in probe.CASES:
             with self.subTest(case=case.name):

@@ -34,7 +34,10 @@ def main():
     frame_map = [json.loads(line) for line in base['files']['video_frames.jsonl'].splitlines()]
     if len(trace) < 8 or len(trace) > 20:
         raise ValueError('synthetic scaffold frame count unsupported')
-    for case in plan['cases']:
+    speed = json.loads((ROOT / 'speed-sweep-extension.json').read_text())
+    speed_cases = [{**row['draft_variables'], 'case_id': row['case_id']}
+                   for row in speed['cases']]
+    for case in plan['cases'] + speed_cases:
         suffix = case['case_id'].removeprefix(ROOT.name + '__')
         files = dict(base['files'])
         sources = {}

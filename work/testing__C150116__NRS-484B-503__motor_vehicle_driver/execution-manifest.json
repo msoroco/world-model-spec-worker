@@ -8,7 +8,7 @@
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
       "kind": "delivery",
       "construction": "construction-compatibility-stop_no_passenger.json",
-      "construction_sha256": "517695adf9392bb251b9e4c6391b4a8ac376875704e737cc96f9f03f0ffc7fda",
+      "construction_sha256": "140209da240c1aa02af70923add633dfdac9ef7e1242d324d19f8380328dd4b1",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/stop_no_passenger-recipe.json",
       "measurement_contract": "diagnostics/stop_no_passenger-measurement-contract.json",
       "measurement_procedure": {
@@ -36,6 +36,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -49,18 +64,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-stop_no_passenger/receipt.json",
-        "sha256": "6ee8f200b213ee6e965c6b33db87d272498eed266e677c36c9e4032cbe16a5ca",
+        "sha256": "4412ecd75c31037caf6a3b8dd45d25edbc5486180fcd295cf7bb5742d1673789",
         "log": "proofs/selected-stop_no_passenger/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-stop_no_passenger/negative.log"
       },
       "offline": {
-        "construction_sha256": "517695adf9392bb251b9e4c6391b4a8ac376875704e737cc96f9f03f0ffc7fda",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output .runtime-work/c150116/selected-offline-stop_no_passenger",
+        "construction_sha256": "140209da240c1aa02af70923add633dfdac9ef7e1242d324d19f8380328dd4b1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output .runtime-work/c150116-new/selected-offline-stop_no_passenger",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-stop_no_passenger.log",
-        "log_sha256": "0618ab13aff7de2ad57d524ab792366b4fe447e0a3fb02591b51e33661dc78df"
+        "log_sha256": "c740ef8c36062381f0960f6202c5bce574c581cf9edced26ceddd7f77a803444"
       },
       "candidate_risk": {
         "status": "physical",
@@ -70,7 +85,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-stop_no_passenger.json",
-          "construction_sha256": "a446a80e748ecfaeb6304a8884a7d5c52b39f7f3f2dee986e291a936ed198a0f",
+          "construction_sha256": "98e37a6e86dc28376fa456fe41c7894f6b3006d68ed7f641d7688c32ab958b25",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -79,41 +94,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --candidate fallback1 --output .runtime-work/c150116/fallback-offline-stop_no_passenger",
-            "exit_code": 0,
-            "construction_sha256": "a446a80e748ecfaeb6304a8884a7d5c52b39f7f3f2dee986e291a936ed198a0f",
-            "log": "cpu-nov25-fallback-offline-stop_no_passenger.log",
-            "log_sha256": "3a5d6cc3d10fcedbc8e0f8b3ef9647f9c918d37ef1ffb047a8dc5217a600fd6a"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-stop_no_passenger/receipt.json",
-            "sha256": "9d17d50653e5ab8d1dfe7008f6859f4d3b57cfeeec1860a953f3faa65f1f12ea",
-            "log": "proofs/fallback1-stop_no_passenger/analysis.log",
-            "negative_log": "proofs/fallback1-stop_no_passenger/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-stop_no_passenger.log",
-        "test_log_sha256": "760cbbd291c17a6ba9d663892ab47dc9ddbd953b5cc9008eb605c1d8cb6559fb",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-stop_no_passenger-receipt.json",
-        "sha256": "f6ba4759ba5954a054851c39b705db42fafbcb1412a7057864aa49ffcdd655c8"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger",
       "kind": "delivery",
       "construction": "construction-compatibility-stand_no_passenger.json",
-      "construction_sha256": "4bf3911e9eca2e55b45f6027f68cce754448e811b20573a38d6c1f1f6d46a529",
+      "construction_sha256": "5c9eece93e58e98b0b0f6213e4eff3bd6b51023b014d5b0ffa8427663609a359",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/stand_no_passenger-recipe.json",
       "measurement_contract": "diagnostics/stand_no_passenger-measurement-contract.json",
       "measurement_procedure": {
@@ -141,6 +131,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -154,18 +159,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-stand_no_passenger/receipt.json",
-        "sha256": "b3f778c05bf06b89381af519e47d35fdb3a05ffef1f02fcf33a81733ef3366f3",
+        "sha256": "4ad30010ae4175d46cf182290e0bf2045bb48eed9e2f9ba3533b9389535a77f5",
         "log": "proofs/selected-stand_no_passenger/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-stand_no_passenger/negative.log"
       },
       "offline": {
-        "construction_sha256": "4bf3911e9eca2e55b45f6027f68cce754448e811b20573a38d6c1f1f6d46a529",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output .runtime-work/c150116/selected-offline-stand_no_passenger",
+        "construction_sha256": "5c9eece93e58e98b0b0f6213e4eff3bd6b51023b014d5b0ffa8427663609a359",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output .runtime-work/c150116-new/selected-offline-stand_no_passenger",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-stand_no_passenger.log",
-        "log_sha256": "8af124173af35fd8f2c601cbeb2eda3f659592218670e805168263d522773b0c"
+        "log_sha256": "45efc4bd013d590493b6bf99f0e4cf215b828cd0fca3051f59b1386fa4039938"
       },
       "candidate_risk": {
         "status": "physical",
@@ -175,7 +180,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-stand_no_passenger.json",
-          "construction_sha256": "c35b5e1bb46313e5a847fbbb4c41a85e77db2df1a4cdee64a51742382bd2e2a6",
+          "construction_sha256": "1a98107fcd3cb0174dc21d80c41344c9b6a7470979662e1883eb9c75eeacec94",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -184,41 +189,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --candidate fallback1 --output .runtime-work/c150116/fallback-offline-stand_no_passenger",
-            "exit_code": 0,
-            "construction_sha256": "c35b5e1bb46313e5a847fbbb4c41a85e77db2df1a4cdee64a51742382bd2e2a6",
-            "log": "cpu-nov25-fallback-offline-stand_no_passenger.log",
-            "log_sha256": "c58ff0d913616624fcd2bfd5f9a43b60b412abf1e8924a65b93b6e0ff838c027"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-stand_no_passenger/receipt.json",
-            "sha256": "3eeafd6815eaba74bb7e888f4eac16f8033e1340fceeb6d76b1aaad5aec2bed7",
-            "log": "proofs/fallback1-stand_no_passenger/analysis.log",
-            "negative_log": "proofs/fallback1-stand_no_passenger/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-stand_no_passenger.log",
-        "test_log_sha256": "9fdfd5083ee5fb3fcada32fa1461702a7bb5e4cb991083215386e32a5d1b25dd",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-stand_no_passenger-receipt.json",
-        "sha256": "4e97edb3fb1c19d2468a861e8b7b5b823dc5dc32c7d0c808e4bde9f4e0c4e6b2"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger",
       "kind": "delivery",
       "construction": "construction-compatibility-park_no_passenger.json",
-      "construction_sha256": "1d745cef38207ae4587b44a71d7a62019ae2c57c2b21c253b53ec6702e084ac7",
+      "construction_sha256": "0feb5a8fd1debbec81a4e22503e18a0022aca67e9a00231bd7f7e427654435d9",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/park_no_passenger-recipe.json",
       "measurement_contract": "diagnostics/park_no_passenger-measurement-contract.json",
       "measurement_procedure": {
@@ -246,6 +226,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -259,18 +254,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-park_no_passenger/receipt.json",
-        "sha256": "91e3ab3c847609beef0104cebebf15c881628ea0ed83b38a2659f66763ff48a8",
+        "sha256": "bb910ba8840ad62df87cd1950111cd5af82fc4f6d5df438b31ed8a4bef319825",
         "log": "proofs/selected-park_no_passenger/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-park_no_passenger/negative.log"
       },
       "offline": {
-        "construction_sha256": "1d745cef38207ae4587b44a71d7a62019ae2c57c2b21c253b53ec6702e084ac7",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output .runtime-work/c150116/selected-offline-park_no_passenger",
+        "construction_sha256": "0feb5a8fd1debbec81a4e22503e18a0022aca67e9a00231bd7f7e427654435d9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output .runtime-work/c150116-new/selected-offline-park_no_passenger",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-park_no_passenger.log",
-        "log_sha256": "7e5a50245343ddfb2e8ddbb26115a3d2380e36a0cd93cf72559571529a5b2232"
+        "log_sha256": "ede110e002a6604fa3b2b34d9d39a062b366b45b5087cda4337a29b89ed34620"
       },
       "candidate_risk": {
         "status": "physical",
@@ -280,7 +275,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-park_no_passenger.json",
-          "construction_sha256": "fce27df36428be2a5cda7452cd1725ff26864a84cebd9d1ae7ee2d08b21edd59",
+          "construction_sha256": "7ec15343ab011fc032522117b9d5e109e0946f20c0e7e0baf1ea95715bd5b9b3",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -289,41 +284,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --candidate fallback1 --output .runtime-work/c150116/fallback-offline-park_no_passenger",
-            "exit_code": 0,
-            "construction_sha256": "fce27df36428be2a5cda7452cd1725ff26864a84cebd9d1ae7ee2d08b21edd59",
-            "log": "cpu-nov25-fallback-offline-park_no_passenger.log",
-            "log_sha256": "d4e80e4d4cb4e8f7c3b2b2d87e87a6970bb50cb7fdb0fb1c71b3a7da92af33bb"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-park_no_passenger/receipt.json",
-            "sha256": "9f0057f73efdecfc8ffab51e1705682a28bf8af58230f8b954429db1b830a75e",
-            "log": "proofs/fallback1-park_no_passenger/analysis.log",
-            "negative_log": "proofs/fallback1-park_no_passenger/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-park_no_passenger.log",
-        "test_log_sha256": "2af68f1843fe08dc23d71dac31f2d7b2a7e459cff81bfc475142d7f68a51b825",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-park_no_passenger-receipt.json",
-        "sha256": "ed2e01aab414be8c1222d1432d7276934d7457c4a845cf2dc1ce0ff4e2a7a7c7"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt",
       "kind": "delivery",
       "construction": "construction-compatibility-load_prompt.json",
-      "construction_sha256": "8f99a37b0df1a65015cc6f5da903cfadeb3ce018a8401e1039831e3b5483b881",
+      "construction_sha256": "c3dd208808ba3367b439949bc982e8b76e0f6037d72532be56fb942072a3083b",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/load_prompt-recipe.json",
       "measurement_contract": "diagnostics/load_prompt-measurement-contract.json",
       "measurement_procedure": {
@@ -351,6 +321,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -364,18 +349,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-load_prompt/receipt.json",
-        "sha256": "8ecd6323fd955021f3da946724d83845d9f4dd7abec1e45b3af7bd1db48ddea9",
+        "sha256": "44e4d33c20e45eb15cb8cb22618e71cb1a81d6c6cee20526f53ce2dc56361b66",
         "log": "proofs/selected-load_prompt/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-load_prompt/negative.log"
       },
       "offline": {
-        "construction_sha256": "8f99a37b0df1a65015cc6f5da903cfadeb3ce018a8401e1039831e3b5483b881",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output .runtime-work/c150116/selected-offline-load_prompt",
+        "construction_sha256": "c3dd208808ba3367b439949bc982e8b76e0f6037d72532be56fb942072a3083b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output .runtime-work/c150116-new/selected-offline-load_prompt",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-load_prompt.log",
-        "log_sha256": "11f17d4979997c6f77d74b2ce427ee16224318b866fe43544a813802e033bf11"
+        "log_sha256": "6fb1791fc51148c298ef826a608fb6590de7441282317fb083a02a149b10564a"
       },
       "candidate_risk": {
         "status": "physical",
@@ -385,7 +370,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-load_prompt.json",
-          "construction_sha256": "190fda324bd42ada3bb471db542e35a66ed8277cc772bd28a0aa4a07f794cd78",
+          "construction_sha256": "c9a98fb3b695911baf2c7542bde26322f6e061f9f9092bbfd50363950f97c5ee",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -394,41 +379,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --candidate fallback1 --output .runtime-work/c150116/fallback-offline-load_prompt",
-            "exit_code": 0,
-            "construction_sha256": "190fda324bd42ada3bb471db542e35a66ed8277cc772bd28a0aa4a07f794cd78",
-            "log": "cpu-nov25-fallback-offline-load_prompt.log",
-            "log_sha256": "5f693a732988190ea11453642987a6c14370f574cf7d43960284337c9e04f61e"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-load_prompt/receipt.json",
-            "sha256": "c6efcd0db59cb6d232a8378f1a60259dd274dce2371e7b968c5272c635b466ef",
-            "log": "proofs/fallback1-load_prompt/analysis.log",
-            "negative_log": "proofs/fallback1-load_prompt/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-load_prompt.log",
-        "test_log_sha256": "bd227e26535183bfeaea2cc916e9710fa6606456235aaa928bae54b02082ed07",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-load_prompt-receipt.json",
-        "sha256": "7597a33dd646dbbff651ec14710c7e12f9bbcbddc7cc13a9425fc4a3cd242fbe"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt",
       "kind": "delivery",
       "construction": "construction-compatibility-unload_prompt.json",
-      "construction_sha256": "3b83ba088364668b6e7fc36d9fb51db7863faeeb34bf9709e93697efbcaa569b",
+      "construction_sha256": "1d17b07c63f0b8e6cc08039a4d34a54c509f5e497d2d17c0702c6c215b025512",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/unload_prompt-recipe.json",
       "measurement_contract": "diagnostics/unload_prompt-measurement-contract.json",
       "measurement_procedure": {
@@ -456,6 +416,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -469,18 +444,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-unload_prompt/receipt.json",
-        "sha256": "181efaa4bbe8d159b4d6c82ce23c1cb33966aafffb0c58931b5952438774d41c",
+        "sha256": "1c2d3079ff6cac8d818eddc03261d49c89a87e1f187e75359baa638953d7b393",
         "log": "proofs/selected-unload_prompt/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-unload_prompt/negative.log"
       },
       "offline": {
-        "construction_sha256": "3b83ba088364668b6e7fc36d9fb51db7863faeeb34bf9709e93697efbcaa569b",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output .runtime-work/c150116/selected-offline-unload_prompt",
+        "construction_sha256": "1d17b07c63f0b8e6cc08039a4d34a54c509f5e497d2d17c0702c6c215b025512",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output .runtime-work/c150116-new/selected-offline-unload_prompt",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-unload_prompt.log",
-        "log_sha256": "b685abb87c4d50779de79043e8669cc403c69aaca964b7696476869cc92a7408"
+        "log_sha256": "fc25d1bf5ead58575f1424d17a51442eef926fe70113431c258ab3d63302d3a2"
       },
       "candidate_risk": {
         "status": "physical",
@@ -490,7 +465,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-unload_prompt.json",
-          "construction_sha256": "c46a46267a93f00b96ba6f7cbba72aae2c372bdad2f0a4373f8e6c69c0ce2ace",
+          "construction_sha256": "d08a4d9d1a6d8ba0d9a8b3dca7ad38d25cf6fff9926281a1687fa4c776618f30",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -499,41 +474,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --candidate fallback1 --output .runtime-work/c150116/fallback-offline-unload_prompt",
-            "exit_code": 0,
-            "construction_sha256": "c46a46267a93f00b96ba6f7cbba72aae2c372bdad2f0a4373f8e6c69c0ce2ace",
-            "log": "cpu-nov25-fallback-offline-unload_prompt.log",
-            "log_sha256": "d68a01a6aec18d53cf197b84e5b9bf21f4ed0057c5af0572d35c5edc1c244342"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-unload_prompt/receipt.json",
-            "sha256": "00f2084fee8aa275c422f7df2edbbc90184a5482878f0f9e6fd5a447543b3bdd",
-            "log": "proofs/fallback1-unload_prompt/analysis.log",
-            "negative_log": "proofs/fallback1-unload_prompt/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-unload_prompt.log",
-        "test_log_sha256": "a09d139aba1b1f948488b0fb468fba365debaead6dccc9846dd4137fb2cc3eed",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-unload_prompt-receipt.json",
-        "sha256": "aa0c92f7044040e0db7beb7d1ea57cadfb6a66f0fe97bd52b27febe75f2a8a9e"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed",
       "kind": "delivery",
       "construction": "construction-compatibility-load_delayed.json",
-      "construction_sha256": "fc1b0aeac4c620a5cda6a0f2556ac4322d269f3f9222237631703dcff0179cfe",
+      "construction_sha256": "7e75080d9abb70fff01384b4649a5fc6d60f2563352c8292e218fa1f8f83744c",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/load_delayed-recipe.json",
       "measurement_contract": "diagnostics/load_delayed-measurement-contract.json",
       "measurement_procedure": {
@@ -561,6 +511,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -574,18 +539,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-load_delayed/receipt.json",
-        "sha256": "0459430f6fdf4b2604ad68c03f116a43602094401289bbbb8b2d9555905612e8",
+        "sha256": "e7e9adf57b3305a985348f8fedf8b6192809fdd3751a68adf50accda0ff0671b",
         "log": "proofs/selected-load_delayed/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-load_delayed/negative.log"
       },
       "offline": {
-        "construction_sha256": "fc1b0aeac4c620a5cda6a0f2556ac4322d269f3f9222237631703dcff0179cfe",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output .runtime-work/c150116/selected-offline-load_delayed",
+        "construction_sha256": "7e75080d9abb70fff01384b4649a5fc6d60f2563352c8292e218fa1f8f83744c",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output .runtime-work/c150116-new/selected-offline-load_delayed",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-load_delayed.log",
-        "log_sha256": "0190e3218e3764af5d0bd755b08520c25fa583f353fdea7ed5597345a5466283"
+        "log_sha256": "c4c5f7a0c06e44744d3bc3f254a4efab08860c1ba39345718a9ecdf692f2b3d9"
       },
       "candidate_risk": {
         "status": "physical",
@@ -595,7 +560,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-load_delayed.json",
-          "construction_sha256": "ead434d49bd3f714364e7f24f7094191b7107d82ff148113d627992b82f310a7",
+          "construction_sha256": "bcadb5b57ff31f1eda88ddf52ff6f3d2a9a7b74edd38ee9920c290f502d66a96",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -604,41 +569,16 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --candidate fallback1 --output .runtime-work/c150116/fallback-offline-load_delayed",
-            "exit_code": 0,
-            "construction_sha256": "ead434d49bd3f714364e7f24f7094191b7107d82ff148113d627992b82f310a7",
-            "log": "cpu-nov25-fallback-offline-load_delayed.log",
-            "log_sha256": "c0a8cd248fe9cda392b4d22b91358fde1747f620c5a609a6e5724947465d1ac0"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-load_delayed/receipt.json",
-            "sha256": "bca11ab011e139b2cd2a21b79727e406094e6c28e5becd105e82863e396213c3",
-            "log": "proofs/fallback1-load_delayed/analysis.log",
-            "negative_log": "proofs/fallback1-load_delayed/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-load_delayed.log",
-        "test_log_sha256": "c45ff7d828b18b385b592c4d4291ed11a6ef3249ab4a4747e081ee2dffdbfc72",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
-      },
-      "physical_preparation": {
-        "receipt": "physical-load_delayed-receipt.json",
-        "sha256": "3df2ca9eca649f4e9654130febd876777d83be6cac14b2e3d1c003207c0ca5f9"
-      },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output $AUDIT_OUTPUT"
+      ]
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours",
       "kind": "delivery",
       "construction": "construction-compatibility-park_outside_hours.json",
-      "construction_sha256": "90d7f980ca8e72b6e49200c5a4adf7f32a7354eb07e92ffb608a9f7c9778fdbb",
+      "construction_sha256": "a40c484df524adc72a32e84b6cb792fdf5c435aa9363188bb011076345e5bb18",
       "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/park_outside_hours-recipe.json",
       "measurement_contract": "diagnostics/park_outside_hours-measurement-contract.json",
       "measurement_procedure": {
@@ -666,6 +606,21 @@
           "method": "original passenger boarding or alighting event source",
           "evidence": "channel-passenger_activity.jsonl"
         },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized original camera streams",
@@ -679,18 +634,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-park_outside_hours/receipt.json",
-        "sha256": "b2f489ded376181cc006574d45a0307ee6a7f8921a1e5e5e2b03a1b2070bcf07",
+        "sha256": "d20046a6661652607630a36ea4d245865570bc8baa3a1aa00fc4bb9ba48383f4",
         "log": "proofs/selected-park_outside_hours/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-park_outside_hours/negative.log"
       },
       "offline": {
-        "construction_sha256": "90d7f980ca8e72b6e49200c5a4adf7f32a7354eb07e92ffb608a9f7c9778fdbb",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output .runtime-work/c150116/selected-offline-park_outside_hours",
+        "construction_sha256": "a40c484df524adc72a32e84b6cb792fdf5c435aa9363188bb011076345e5bb18",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output .runtime-work/c150116-new/selected-offline-park_outside_hours",
         "exit_code": 0,
         "log": "cpu-nov25-selected-offline-park_outside_hours.log",
-        "log_sha256": "32d57fb84f1fba48a1d5abfc2887dccc331543208c338e41202518c3187f22a3"
+        "log_sha256": "11162773d65b4662139439d0c7fb082ab3cbbec41294f79f5b221c0f948b21c6"
       },
       "candidate_risk": {
         "status": "physical",
@@ -700,7 +655,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-park_outside_hours.json",
-          "construction_sha256": "226dd6b9eb1a9653bad322c72e21d586680ebfd5d1e3ea1c495fa379187ddbfd",
+          "construction_sha256": "050f5ed14792a0f7f081f33dc87ee60cfd484329ef76540e4423b8e2eefaa11c",
           "trigger": {
             "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
             "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
@@ -709,65 +664,865 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --candidate fallback1 --output .runtime-work/c150116/fallback-offline-park_outside_hours",
-            "exit_code": 0,
-            "construction_sha256": "226dd6b9eb1a9653bad322c72e21d586680ebfd5d1e3ea1c495fa379187ddbfd",
-            "log": "cpu-nov25-fallback-offline-park_outside_hours.log",
-            "log_sha256": "08dc8b94a0e0789f27c0fb21297a277325f8e4676b8de47fbc3a59bf9c95ceb1"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-park_outside_hours/receipt.json",
-            "sha256": "47106653c586a81d2a4fb7fe7c2de7483adfee02528ea1b61b9a33105cb0b0c0",
-            "log": "proofs/fallback1-park_outside_hours/analysis.log",
-            "negative_log": "proofs/fallback1-park_outside_hours/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
-      ],
-      "post_capture": {
-        "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-nov25-saved-park_outside_hours.log",
-        "test_log_sha256": "09426bf3fe04061a2c91c2e7b0d866b9a24f1068e493bc0ac88787baa4ed0997",
-        "test_exit_code": 0,
-        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000",
+      "kind": "delivery",
+      "construction": "construction-compatibility-zone_marking-0000.json",
+      "construction_sha256": "3d77d9fe91058b3e6d2a4c09ea9e87ee2e3fb62c39caed07334899cbc7931f5d",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/zone_marking-0000-recipe.json",
+      "measurement_contract": "diagnostics/zone_marking-0000-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
       },
-      "physical_preparation": {
-        "receipt": "physical-park_outside_hours-receipt.json",
-        "sha256": "f4cb91fd971bf6a766da5de22edbcc1e05da7c8101a6eba03df0937ab436fc32"
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
       },
-      "original_delivery_audit_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output $AUDIT_OUTPUT"
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-zone_marking-0000/receipt.json",
+        "sha256": "da839167d005b4d07b6b3c3f869c56e5309543c429027cd72afa1df3b4976244",
+        "log": "proofs/selected-zone_marking-0000/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-zone_marking-0000/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "3d77d9fe91058b3e6d2a4c09ea9e87ee2e3fb62c39caed07334899cbc7931f5d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --output .runtime-work/c150116-new/selected-offline-zone_marking-0000",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-zone_marking-0000.log",
+        "log_sha256": "7e95269c6decede800dd31afb63b6fb99a06b321c6a3ffb763a444952757481d"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-zone_marking-0000.json",
+          "construction_sha256": "b14899fd0035a67bcff79923c8aec69c400d2a7eebdac211a38c85d0ccca020b",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001",
+      "kind": "delivery",
+      "construction": "construction-compatibility-zone_marking-0001.json",
+      "construction_sha256": "c88a9553b11890cff358ad46ab8c078c53b8ce14bad24b2cda08f138fe8e6f08",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/zone_marking-0001-recipe.json",
+      "measurement_contract": "diagnostics/zone_marking-0001-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-zone_marking-0001/receipt.json",
+        "sha256": "04e33b85bdfa396e4f88c0d4da3ec82a1de9a018c44b32119a16a4b013c33bb3",
+        "log": "proofs/selected-zone_marking-0001/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-zone_marking-0001/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "c88a9553b11890cff358ad46ab8c078c53b8ce14bad24b2cda08f138fe8e6f08",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --output .runtime-work/c150116-new/selected-offline-zone_marking-0001",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-zone_marking-0001.log",
+        "log_sha256": "bb0c24268295d9b2d7b185526208595522e8ec70afe1b10712d54b6e88500d72"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-zone_marking-0001.json",
+          "construction_sha256": "524f2c54b3119d3df47745114683677f6533bac962a4627b1dbe470a69a7ac99",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002",
+      "kind": "delivery",
+      "construction": "construction-compatibility-zone_marking-0002.json",
+      "construction_sha256": "fa5f9389c3df781cfd446978f67d49f7d89e79bd4d991af1d3741fbe43d18e40",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/zone_marking-0002-recipe.json",
+      "measurement_contract": "diagnostics/zone_marking-0002-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-zone_marking-0002/receipt.json",
+        "sha256": "9404e7919d12fd97acaf1b6d0f01961f8a11de710cf89cc05225bc22364303cf",
+        "log": "proofs/selected-zone_marking-0002/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-zone_marking-0002/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "fa5f9389c3df781cfd446978f67d49f7d89e79bd4d991af1d3741fbe43d18e40",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --output .runtime-work/c150116-new/selected-offline-zone_marking-0002",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-zone_marking-0002.log",
+        "log_sha256": "1f26fbf1e047cd6359816a0aac96b2509da78a0e77d763a8cd7908e755d0f0fb"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-zone_marking-0002.json",
+          "construction_sha256": "97cd19c38ea82d7ed0038dba29e84bccd6272a47a6dca1fb8e4c650175745a1c",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000",
+      "kind": "delivery",
+      "construction": "construction-compatibility-regulation_hours-0000.json",
+      "construction_sha256": "97fe6300b605945f9ebdf107b51ae822e81b3eb9d26a2a1c80034d33679fe3d3",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/regulation_hours-0000-recipe.json",
+      "measurement_contract": "diagnostics/regulation_hours-0000-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-regulation_hours-0000/receipt.json",
+        "sha256": "83ae05a5d6f7460f81a1b0fdaced60b1c0abbc354f8228853786b4159c3387f6",
+        "log": "proofs/selected-regulation_hours-0000/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-regulation_hours-0000/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "97fe6300b605945f9ebdf107b51ae822e81b3eb9d26a2a1c80034d33679fe3d3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0000",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-regulation_hours-0000.log",
+        "log_sha256": "cf68088b7d840798a18476769da543a9e6eb099d44d658322f8d915a5405281d"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-regulation_hours-0000.json",
+          "construction_sha256": "52aa74857d7e31c83cd5c0bde4f627b8ea66512d97a1d02c422c5c1257884498",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001",
+      "kind": "delivery",
+      "construction": "construction-compatibility-regulation_hours-0001.json",
+      "construction_sha256": "a890c8090768530991bfd60b3cb3d5db4964b005fd09fa2660d62f50730de5ec",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/regulation_hours-0001-recipe.json",
+      "measurement_contract": "diagnostics/regulation_hours-0001-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-regulation_hours-0001/receipt.json",
+        "sha256": "94f5516bd5f03869d2eae4ed4b4d8cea46b0689c96d0ee72786a61f1e58dab5b",
+        "log": "proofs/selected-regulation_hours-0001/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-regulation_hours-0001/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "a890c8090768530991bfd60b3cb3d5db4964b005fd09fa2660d62f50730de5ec",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0001",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-regulation_hours-0001.log",
+        "log_sha256": "23864bc719ea3d4c4fc642f6abc754781a0a2deb09635090e8c253daa18fc6b1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-regulation_hours-0001.json",
+          "construction_sha256": "b0081a8a8e637d7b7222c185fd470c76eca9cab8f07bd827966f585164717f5f",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002",
+      "kind": "delivery",
+      "construction": "construction-compatibility-regulation_hours-0002.json",
+      "construction_sha256": "026c56b42b4e2fb33253119cb02b6092472fc0c91ad09dbe8da92074f3b86a74",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/regulation_hours-0002-recipe.json",
+      "measurement_contract": "diagnostics/regulation_hours-0002-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-regulation_hours-0002/receipt.json",
+        "sha256": "58d23c1324af4f589fbc3c28f912a0bbe5a67aa24ac7340a7970003f25ad10f0",
+        "log": "proofs/selected-regulation_hours-0002/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-regulation_hours-0002/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "026c56b42b4e2fb33253119cb02b6092472fc0c91ad09dbe8da92074f3b86a74",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0002",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-regulation_hours-0002.log",
+        "log_sha256": "f8a750da90460214018df61c9100ae222707f800a9ea1383c8e33b53e1882e9c"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-regulation_hours-0002.json",
+          "construction_sha256": "40a762bef16136d59436db660c1b04f6ca59ca7f7310fd920231a79d914ba129",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000",
+      "kind": "delivery",
+      "construction": "construction-compatibility-expeditious-0000.json",
+      "construction_sha256": "7f47b91d936eb775ae25b8a23c8ecbb0df127e64c3c445c71cfaf0cb98d86c1c",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/expeditious-0000-recipe.json",
+      "measurement_contract": "diagnostics/expeditious-0000-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-expeditious-0000/receipt.json",
+        "sha256": "483eb539bbe8f65ae6c7aaa091cb1cded54fc5d7271fcc354722587052a0991e",
+        "log": "proofs/selected-expeditious-0000/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-expeditious-0000/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "7f47b91d936eb775ae25b8a23c8ecbb0df127e64c3c445c71cfaf0cb98d86c1c",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --output .runtime-work/c150116-new/selected-offline-expeditious-0000",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-expeditious-0000.log",
+        "log_sha256": "7f5a36d5990e453769e530d2f8c0a82f4237cfcad9dfe8dba9c7ee61e81ae5bd"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-expeditious-0000.json",
+          "construction_sha256": "f87efaae9cda79a287cabba8ada1109ebc4f9942b6176a8fa184ab4f9b9326fc",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001",
+      "kind": "delivery",
+      "construction": "construction-compatibility-expeditious-0001.json",
+      "construction_sha256": "4469892bcb1bb18c84e8deff681b9ad6d0efa7536263cd16768850f50d660655",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/expeditious-0001-recipe.json",
+      "measurement_contract": "diagnostics/expeditious-0001-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-expeditious-0001/receipt.json",
+        "sha256": "e8f6666ef5cdd515847faf434833d6a49a942d63046b39421da9349e0d549624",
+        "log": "proofs/selected-expeditious-0001/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-expeditious-0001/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "4469892bcb1bb18c84e8deff681b9ad6d0efa7536263cd16768850f50d660655",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --output .runtime-work/c150116-new/selected-offline-expeditious-0001",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-expeditious-0001.log",
+        "log_sha256": "bfcfb7c207145454cd046f57882e524b1b37c99ca547d2ac6f9ac22f02600907"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-expeditious-0001.json",
+          "construction_sha256": "bf7eec98c207a0d365b9499085f8b54dd6b635760d48801f6ffa3bcf7d65390d",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002",
+      "kind": "delivery",
+      "construction": "construction-compatibility-expeditious-0002.json",
+      "construction_sha256": "026e58cb2a2cde6c1891f3780b5c7153fface7aece6086a86074c9f3063e7bcd",
+      "fixture_recipe": "work/testing__C150116__NRS-484B-503__motor_vehicle_driver/diagnostics/expeditious-0002-recipe.json",
+      "measurement_contract": "diagnostics/expeditious-0002-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original zone marking, applicable regulation, civil clock, passenger event and expeditious judgment sweeps absent",
+      "acquisition": {
+        "zone_marking": {
+          "entrypoint": "analysis.py",
+          "method": "original marked curb, designation and polygon",
+          "evidence": "channel-zone_marking.jsonl"
+        },
+        "regulation_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "evidence": "channel-regulation_hours.jsonl"
+        },
+        "vehicle_halt_in_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "evidence": "channel-vehicle_halt_in_zone.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original passenger boarding or alighting event source",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "zone_boundary_signed_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "evidence": "channel-zone_boundary_signed_distance_m.jsonl"
+        },
+        "civil_boundary_offset_min": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "evidence": "channel-civil_boundary_offset_min.jsonl"
+        },
+        "passenger_event_delay_s": {
+          "entrypoint": "analysis.py",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "evidence": "channel-passenger_event_delay_s.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-expeditious-0002/receipt.json",
+        "sha256": "5b8ceb9e257b95833c61b5dcf779bde23bafc0fa2743259861954edca90d11b4",
+        "log": "proofs/selected-expeditious-0002/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-expeditious-0002/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "026e58cb2a2cde6c1891f3780b5c7153fface7aece6086a86074c9f3063e7bcd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --output .runtime-work/c150116-new/selected-offline-expeditious-0002",
+        "exit_code": 0,
+        "log": "cpu-nov25-selected-offline-expeditious-0002.log",
+        "log_sha256": "a033f6749b75fe8e08e6e428220550659f2e703492e9ddd922069715abbf461a"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Curb zone marking, parked ego and passenger event may not remain visible together in original camera views; original curb geometry and sightlines need physical review before selecting a fallback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-expeditious-0002.json",
+          "construction_sha256": "34280957f6f76832320e47dcb0ec509e613a10ffd2f4971ce22283ec9f564ea6",
+          "trigger": {
+            "source": "original four-view camera frames, marked curb polygon and passenger actor tracks",
+            "metric": "simultaneous visibility of curb marking, stopped ego and passenger interaction",
+            "failure_condition": "primary camera frames do not show the marked zone and relevant passenger interaction together through the original event window"
+          },
+          "changed_knobs": [
+            "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
     }
-  ],
-  "diagnostic_selected_audit": {
-    "format": "c150116-selected-diagnostic-binding-v1",
-    "report": "selected-audit.json",
-    "report_sha256": "83c7f7703f624874edf82afa20488703567a4614ccff6f6173a0c4e8cea1882f",
-    "script": "selected_audit.py",
-    "script_sha256": "45174fd240379498bdd607ce3eb08211f444a6b6045daa66d9f73cd07ef6c975",
-    "test_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150116__NRS-484B-503__motor_vehicle_driver/tests -v",
-    "test_exit_code": 0,
-    "test_log": "cpu-selected-audit-tests.log",
-    "test_log_sha256": "c703f12dae012c104071fb09422ab92029885d71a245f3e6333f9247d72d3fc3",
-    "scope": "diagnostic selected proof integrity; original source and physical acceptance unverified"
-  },
-  "original_delivery_audit_plan": {
-    "script": "delivery_audit.py",
-    "script_sha256": "53b4b36b93d9e7cc440841df4c3f45d25f1bd92abe3015f4bd246c53e5d0516f",
-    "negative_test_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt .runtime-work/c150116/not-an-original-attempt --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output .runtime-work/c150116/invalid-original-audit.json",
-    "negative_exit_code": 1,
-    "negative_log": "cpu-original-audit-negative.log",
-    "negative_log_sha256": "b742df8538c966b89f25e08cbe089a9f65d6f83c3c65cd9e9915d4cf9894baad",
-    "positive_test_status": "awaits closed original Native source manifest and four camera streams"
-  },
-  "original_comparison_audit_plan": {
-    "path": "comparison-audit-plan.json",
-    "sha256": "18a7b3b8ce3b24b01d60f14c7e7ae3dc0789256f64aeb121401ced2cfa637da4",
-    "negative_test_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py comparisons --attempts .runtime-work/c150116-missing-original-attempts.json --comparison conduct_without_passenger --output .runtime-work/c150116/invalid-original-comparisons.json",
-    "negative_exit_code": 1,
-    "negative_log": "cpu-original-comparison-negative.log",
-    "negative_log_sha256": "d2fe60fe43b1a5c5ed94ba7f3400121dc2b7a1d6408df075a6d6fd53b1993a04",
-    "scope": "four original comparison audits await seven closed original attempts"
-  }
+  ]
 }

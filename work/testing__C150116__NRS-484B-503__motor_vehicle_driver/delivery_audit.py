@@ -124,7 +124,7 @@ def audit_attempt(attempt, case_id):
 
 def audit_comparisons(reports):
     plan = read(HERE / 'case-plan.json')
-    need(set(reports) == {item['case_id'] for item in plan['cases']}, 'seven exact original reports required')
+    need(set(reports) == {item['case_id'] for item in plan['cases']}, 'all exact original reports required')
     differences = {'conduct_without_passenger': 'conduct',
                    'passenger_exception_activity': 'passenger_action',
                    'activity_timing': 'release_delay_s',
@@ -184,7 +184,7 @@ def main():
         attempt_index = read(args.attempts)
         need(isinstance(attempt_index, dict), 'exact original attempt index required')
         expected = {item['case_id'] for item in read(HERE / 'case-plan.json')['cases']}
-        need(set(attempt_index) == expected, 'seven exact original attempts required')
+        need(set(attempt_index) == expected, 'all exact original attempts required')
         report_index = {cid: audit_attempt(attempt_index[cid], cid) for cid in sorted(expected)}
         matched = [item for item in audit_comparisons(report_index)
                    if item['comparison_id'] == args.comparison]

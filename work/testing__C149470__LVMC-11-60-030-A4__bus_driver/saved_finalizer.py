@@ -16,6 +16,8 @@ def finalize(attempt: Path, site: Path, case: str) -> dict:
             'reviewed_site_sha256': result['reviewed_site_sha256'],
             'frames_sha256': result['frames_sha256'],
             'camera_hashes': result['camera_hashes'],
+            'camera_frame_map_sha256': result['camera_frame_map_sha256'],
+            'camera_archive_hashes': result['camera_archive_hashes'],
             'measurement': result['measurement'],
             'legal_status': 'unresolved',
             'physical_acceptance': False}

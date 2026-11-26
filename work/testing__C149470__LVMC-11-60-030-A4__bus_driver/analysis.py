@@ -98,6 +98,7 @@ def analyze(attempt):
               'diagnostic_fixture': True, 'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False}
     result = physical_result(attempt, result)
+    result['realized_observables'].update(summaries)
     write_result(attempt, result)
     return {'format': 'worker-analysis-report',
             'case_id': config['selected_case_id'],

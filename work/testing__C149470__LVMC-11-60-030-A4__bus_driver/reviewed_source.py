@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from math import hypot
 from pathlib import Path
 
 from bus_curb import CASES, construct, measure_original, validate_scene
@@ -18,7 +19,7 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def verify(packet_path: Path, case_name: str) -> dict:
+def verify(packet_path: Path, case_name: str, candidate_id: str | None = None) -> dict:
     packet_path = Path(packet_path)
     if packet_path.is_symlink() or not packet_path.is_file():
         raise ValueError("original reviewed bus site packet missing")
@@ -40,6 +41,24 @@ def verify(packet_path: Path, case_name: str) -> dict:
             or scene.get("diagnostic_fixture") is True):
         raise ValueError("reviewed bus scene identity or provenance missing")
     validate_scene(scene, matches[0])
+    selected_candidate = packet.get('candidate_id', 'primary')
+    if selected_candidate not in ('primary', 'fallback1') or \
+            (candidate_id is not None and selected_candidate != candidate_id):
+        raise ValueError('reviewed site candidate identity differs from construction')
+    if selected_candidate == 'fallback1':
+        primary = scene.get('primary_bus_route_xy')
+        route = scene['bus_route_xy']
+        if not isinstance(primary, list) or len(primary) < 2 or \
+                any(not isinstance(point, list) or len(point) != 2 for point in primary):
+            raise ValueError('reviewed primary approach route missing for fallback')
+        dx = primary[-1][0] - primary[0][0]
+        dy = primary[-1][1] - primary[0][1]
+        length = hypot(dx, dy)
+        if length <= 0 or hypot(route[-1][0] - primary[-1][0],
+                                route[-1][1] - primary[-1][1]) > .05 or \
+                hypot(route[0][0] - (primary[0][0] - 2 * dx / length),
+                      route[0][1] - (primary[0][1] - 2 * dy / length)) > .05:
+            raise ValueError('reviewed fallback does not preserve terminal halt and upstream approach')
     bindings = packet.get("source_bindings")
     if not isinstance(bindings, dict) or set(bindings) != set(FIELDS):
         raise ValueError("original bus source inventory incomplete")
@@ -60,8 +79,9 @@ def verify(packet_path: Path, case_name: str) -> dict:
             "scene": scene, "legal_judgment": "unresolved"}
 
 
-def construct_reviewed(adapter, packet_path: Path, case_name: str) -> dict:
-    reviewed = verify(packet_path, case_name)
+def construct_reviewed(adapter, packet_path: Path, case_name: str,
+                       candidate_id: str | None = None) -> dict:
+    reviewed = verify(packet_path, case_name, candidate_id)
     case = next(case for case in CASES if case.name == case_name)
     result = construct(adapter, reviewed["scene"], case)
     result["site_sha256"] = reviewed["site_sha256"]

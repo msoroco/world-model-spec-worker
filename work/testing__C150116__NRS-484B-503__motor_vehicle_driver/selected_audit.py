@@ -54,7 +54,8 @@ def audit_case(entry):
          ['overview', 'approach', 'reference_corner', 'driver_reference'],
          'selected capture profile changed')
     case = config['case']
-    for key in ('conduct', 'passenger_action', 'release_delay_s', 'hours'):
+    for key in ('conduct', 'passenger_action', 'release_delay_s', 'hours',
+                'zone_boundary_offset_m', 'civil_clock_offset_min'):
         need(case.get(key) == getattr(expected, key), 'selected comparison variable changed: ' + key)
     scene = json.loads(next(item['content'] for item in construction['files']
                             if item['path'] == 'scene.json'))
@@ -96,6 +97,8 @@ def audit_case(entry):
             'physical_receipt_sha256': entry['physical_preparation']['sha256'],
             'conduct': expected.conduct, 'passenger_action': expected.passenger_action,
             'release_delay_s': expected.release_delay_s, 'hours': expected.hours,
+            'zone_boundary_offset_m': expected.zone_boundary_offset_m,
+            'civil_clock_offset_min': expected.civil_clock_offset_min,
             'diagnostic_scene': scene,
             'source_kind': 'synthetic_diagnostic_fixture', 'physical_acceptance': False,
             'legal_status': 'unresolved'}
@@ -147,9 +150,25 @@ def audit_selected(manifest=None, plan=None):
                  'fixed diagnostic regulation or clock source changed')
         comparisons.append({'comparison_id': item['comparison_id'], 'case_ids': ids,
                             'declared_difference': variable, 'original_source_verified': False})
+    sweep_audits = []
+    for family, variable, expected_values in (
+        ('zone_marking', 'zone_boundary_offset_m', [-0.5, 0.5, 0.0]),
+        ('regulation_hours', 'civil_clock_offset_min', [-30.0, 30.0, 0.0]),
+        ('expeditious', 'release_delay_s', [1.0, 12.0, 6.5]),
+    ):
+        ids = [PREFIX + family + '-' + f'{index:04d}' for index in range(3)]
+        need([reports[cid][variable] for cid in ids] == expected_values,
+             'selected sweep points differ from source-gated engineering grid: ' + family)
+        sweep_audits.append({'family': family, 'case_ids': ids,
+                             'engineering_values': expected_values,
+                             'unit': {'zone_marking': 'm', 'regulation_hours': 'min',
+                                      'expeditious': 's'}[family],
+                             'original_source_verified': False,
+                             'legal_cutoff_or_verdict': None})
     return {'format': 'c150116-selected-diagnostic-audit-v1', 'assignment_id': HERE.name,
             'source_kind': 'synthetic_diagnostic_fixture', 'cases': list(reports.values()),
-            'comparisons': comparisons, 'original_source_verified': False,
+            'comparisons': comparisons, 'sweep_audits': sweep_audits,
+            'original_source_verified': False,
             'physical_acceptance': False, 'legal_status': 'unresolved'}
 
 

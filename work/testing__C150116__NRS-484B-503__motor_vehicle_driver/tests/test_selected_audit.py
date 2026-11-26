@@ -15,10 +15,11 @@ def inputs():
 
 
 class SelectedAuditTests(unittest.TestCase):
-    def test_seven_selected_receipts_and_four_comparisons(self):
+    def test_sixteen_selected_receipts_four_comparisons_and_three_sweeps(self):
         result = audit_selected()
-        self.assertEqual(len(result['cases']), 7)
+        self.assertEqual(len(result['cases']), 16)
         self.assertEqual(len(result['comparisons']), 4)
+        self.assertEqual(len(result['sweep_audits']), 3)
         self.assertFalse(result['original_source_verified'])
         self.assertFalse(result['physical_acceptance'])
 
@@ -43,7 +44,7 @@ class SelectedAuditTests(unittest.TestCase):
     def test_missing_case_rejected(self):
         manifest, plan = inputs()
         manifest['cases'].pop()
-        with self.assertRaisesRegex(ValueError, 'seven selected cases'):
+        with self.assertRaisesRegex(ValueError, 'all selected cases'):
             audit_selected(manifest, plan)
 
     def test_missing_comparison_rejected(self):

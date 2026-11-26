@@ -9,7 +9,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import capture
-from reviewed_source import FIELDS
+from reviewed_source import FIELDS, verify
 
 
 def sha(path):
@@ -109,6 +109,9 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertEqual(receipt['source_kind'], 'original_native_capture')
             self.assertEqual(len((destination / 'original-bus-frames.jsonl').read_text().splitlines()), 900)
             self.assertEqual(set(receipt['cameras']), {'overview', 'approach', 'curb_wheel', 'traffic'})
+            self.assertEqual(len((destination / 'camera-frame-map.jsonl').read_text().splitlines()), 900)
+            self.assertEqual(set(receipt['camera_archives']),
+                             {'overview', 'approach', 'curb_wheel', 'traffic'})
             self.assertEqual(adapter.destroyed, ['traffic', 'bus'])
             self.assertTrue(adapter.restored)
             reject = Adapter(adapter.source_hashes)
@@ -116,3 +119,17 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'attested original'):
                 capture(reject, packet, 'bus_stop_below', base / 'rejected')
             self.assertFalse((base / 'rejected').exists())
+            fallback = json.loads(packet.read_text())
+            fallback['candidate_id'] = 'fallback1'
+            fallback['scene']['primary_bus_route_xy'] = json.loads(json.dumps(scene['bus_route_xy']))
+            fallback['scene']['bus_route_xy'][0][0] -= 2.0
+            fallback_path = base / 'fallback-site.json'
+            fallback_path.write_text(json.dumps(fallback) + '\n')
+            self.assertEqual(verify(fallback_path, 'bus_stop_below', 'fallback1')['case_name'],
+                             'bus_stop_below')
+            with self.assertRaisesRegex(ValueError, 'candidate identity'):
+                verify(fallback_path, 'bus_stop_below', 'primary')
+            fallback['scene']['bus_route_xy'][0][0] += 1.0
+            fallback_path.write_text(json.dumps(fallback) + '\n')
+            with self.assertRaisesRegex(ValueError, 'fallback does not preserve'):
+                verify(fallback_path, 'bus_stop_below', 'fallback1')

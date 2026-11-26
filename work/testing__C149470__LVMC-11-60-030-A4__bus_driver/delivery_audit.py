@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import zipfile
 
 from reviewed_source import FIELDS, measure_reviewed, verify
 
@@ -52,12 +53,49 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
             identity.get('diagnostic_fixture') is True or
             identity.get('reviewed_site_sha256') != reviewed['site_sha256']):
         raise ValueError('original capture identity or reviewed site binding missing')
+    if Path(packet_path).is_file() and identity.get('candidate_id', 'primary') != \
+            load_json(packet_path).get('candidate_id', 'primary'):
+        raise ValueError('original candidate identity differs from reviewed site')
     rows_path = attempt / 'original-bus-frames.jsonl'
     if rows_path.is_symlink() or not rows_path.is_file():
         raise ValueError('retained original bus frames missing')
     rows = [json.loads(line) for line in rows_path.read_text().splitlines()]
     if len(rows) != 900 or identity.get('frames_sha256') != sha(rows_path):
         raise ValueError('original frame count/hash invalid')
+    frame_map_path = attempt / 'camera-frame-map.jsonl'
+    if frame_map_path.is_symlink() or not frame_map_path.is_file() or \
+            identity.get('camera_frame_map_sha256') != sha(frame_map_path):
+        raise ValueError('original camera frame map missing or changed')
+    frame_map = [json.loads(line) for line in frame_map_path.read_text().splitlines()]
+    if len(frame_map) != len(rows):
+        raise ValueError('camera/original frame count differs')
+    archives = identity.get('camera_archives')
+    if not isinstance(archives, dict) or set(archives) != {'overview', 'approach', 'curb_wheel', 'traffic'}:
+        raise ValueError('four original pixel archives missing')
+    for index, (row, item) in enumerate(zip(rows, frame_map)):
+        if item.get('original_frame') != row.get('original_frame') or \
+                item.get('time_s') != row.get('time_s') or \
+                set(item.get('camera_png_sha256', {})) != set(archives):
+            raise ValueError('original camera and bus frame/time join invalid')
+    archive_hashes = {}
+    for name, item in archives.items():
+        relative = item.get('path')
+        if not isinstance(relative, str) or Path(relative).name != relative:
+            raise ValueError('original pixel archive path invalid')
+        archive_path = attempt / relative
+        if archive_path.is_symlink() or not archive_path.is_file() or sha(archive_path) != item.get('sha256'):
+            raise ValueError('original pixel archive missing or changed')
+        with zipfile.ZipFile(archive_path) as archive:
+            expected = [f'{index:04d}-{row["original_frame"]}.png'
+                        for index, row in enumerate(rows)]
+            if archive.namelist() != expected:
+                raise ValueError('original pixel archive frame identities differ')
+            for index, entry in enumerate(expected):
+                raw = archive.read(entry)
+                if not raw.startswith(b'\x89PNG\r\n\x1a\n') or \
+                        hashlib.sha256(raw).hexdigest() != frame_map[index]['camera_png_sha256'][name]:
+                    raise ValueError('original pixel/frame hash differs')
+        archive_hashes[name] = item['sha256']
     camera = identity.get('cameras')
     if not isinstance(camera, dict) or set(camera) != {'overview', 'approach', 'curb_wheel', 'traffic'}:
         raise ValueError('four original camera streams missing')
@@ -82,6 +120,8 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
             'reviewed_site_sha256': reviewed['site_sha256'],
             'source_hashes': reviewed['source_hashes'],
             'frames_sha256': sha(rows_path), 'camera_hashes': camera_hashes,
+            'camera_frame_map_sha256': sha(frame_map_path),
+            'camera_archive_hashes': archive_hashes,
             'camera_decodes': camera_decodes,
             'measurement': measurement,
             'legal_status': 'unresolved', 'physical_acceptance': False}

@@ -1,6 +1,6 @@
 """Source-gated non-tour-bus loading and front-wheel/curb probes."""
 from dataclasses import dataclass
-from math import hypot, isfinite
+from math import atan2, degrees, hypot, isfinite
 from typing import Mapping
 
 
@@ -89,6 +89,21 @@ def validate_scene(scene: Mapping, case: Case):
         route = scene.get(field)
         require(isinstance(route, list) and len(route) >= 2 and
                 all(point(x) for x in route), field + ' missing')
+    curb_dx = curb[1][0] - curb[0][0]
+    curb_dy = curb[1][1] - curb[0][1]
+    curb_length = hypot(curb_dx, curb_dy)
+    bus_start, bus_end = scene['bus_route_xy'][0], scene['bus_route_xy'][-1]
+    bus_dx, bus_dy = bus_end[0] - bus_start[0], bus_end[1] - bus_start[1]
+    require(hypot(bus_dx, bus_dy) > 0, 'bus approach route degenerate')
+    approach_angle = abs(degrees(atan2(curb_dx * bus_dy - curb_dy * bus_dx,
+                                       curb_dx * bus_dx + curb_dy * bus_dy)))
+    require(abs(approach_angle - case.heading_request_deg) <= .25,
+            'bus route does not realize heading request')
+    for point_xy in (scene['traffic_route_xy'][0], scene['traffic_route_xy'][-1]):
+        traffic_offset = abs((curb_dx * (point_xy[1] - curb[0][1]) -
+                              curb_dy * (point_xy[0] - curb[0][0])) / curb_length)
+        require(abs(traffic_offset - case.traffic_lateral_request_m) <= .05,
+                'traffic route does not realize lateral request')
     require(scene.get('loading_actor_ids'), 'actual passenger/baggage actor missing')
     return {'case_id': case.name, 'parallel_judgment': None,
             'unduly_impede_judgment': None}

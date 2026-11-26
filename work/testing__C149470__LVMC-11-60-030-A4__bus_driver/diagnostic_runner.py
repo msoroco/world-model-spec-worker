@@ -44,7 +44,8 @@ def main():
     adapter = importlib.import_module(module_name).create_adapter(scene['case_id'])
     from native_capture import capture
     print(json.dumps(capture(adapter, Path(site), config['case']['kind'],
-                             Path(args.output_dir)), sort_keys=True))
+                             Path(args.output_dir),
+                             config.get('candidate_id', 'primary')), sort_keys=True))
 
 
 if __name__ == '__main__':

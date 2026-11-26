@@ -25,14 +25,31 @@
       "sha256",
       "citation",
       "reviewer"
+    ],
+    "candidate_identity": [
+      "primary",
+      "fallback1"
+    ],
+    "fallback1_requirements": [
+      "candidate_id fallback1",
+      "primary_bus_route_xy with reviewed source",
+      "bus_route_xy starts 2 m upstream along the primary approach vector",
+      "same terminal halt, requested heading, curb distance, loading activity and separate traffic route"
+    ],
+    "engineering_geometry_checks": [
+      "bus route approach angle agrees with heading_request_deg within 0.25 degrees",
+      "separate traffic route lateral offset agrees with traffic_lateral_request_m within 0.05 m",
+      "these are engineering request consistency tolerances, not legal thresholds"
     ]
   },
   "original_attempt": {
     "frames": 900,
     "rate_hz": 20,
     "required_files": [
+      "reviewed-site.json",
       "capture-identity.json",
-      "original-bus-frames.jsonl"
+      "original-bus-frames.jsonl",
+      "camera-frame-map.jsonl"
     ],
     "camera_streams": [
       "overview",
@@ -50,7 +67,14 @@
       "loading_activity"
     ],
     "minimum_consecutive_stopped_loading_frames": 20,
-    "position_uncertainty_required": true
+    "position_uncertainty_required": true,
+    "camera_archives": [
+      "overview.zip",
+      "approach.zip",
+      "curb_wheel.zip",
+      "traffic.zip"
+    ],
+    "camera_audit": "Independent full video decode and source-sealed 900-entry PNG archive/frame/time/hash join; no synthetic source accepted"
   },
   "unresolved_judgments": [
     "approximately parallel",
