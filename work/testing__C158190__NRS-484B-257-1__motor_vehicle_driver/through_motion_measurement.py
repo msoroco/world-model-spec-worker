@@ -6,6 +6,7 @@ particular through vehicle posed an immediate hazard under NRS 484B.257(1).
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
@@ -98,3 +99,25 @@ def compare_original(left: str | Path, right: str | Path, variable: str) -> dict
             "case_source_sha256": [result["source"]["sha256"] for result in results],
             "measured": results,
             "review_limit": "Engineering isolation and measurements do not establish a legal outcome."}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--original", type=Path)
+    parser.add_argument("--left", type=Path)
+    parser.add_argument("--right", type=Path)
+    parser.add_argument("--variable", choices=("ego_response", "through_traffic_phase"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if args.original and not any((args.left, args.right, args.variable)):
+        result = inspect_original(args.original)
+    elif not args.original and all((args.left, args.right, args.variable)):
+        result = compare_original(args.left, args.right, args.variable)
+    else:
+        parser.error("choose one original or a left/right comparison with variable")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

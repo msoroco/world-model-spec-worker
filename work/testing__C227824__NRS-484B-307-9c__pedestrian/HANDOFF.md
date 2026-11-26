@@ -1,6 +1,6 @@
 # C227824 pedestrian signal entry handoff
 
-Status: **CPU delivery prepared; original source review and Native capture remain local checks.** The scoped strict gate is running after the seven-case CPU proof passed. This package makes no original physical capture or legal permission claim.
+Status: **CPU delivery prepared; original source review and Native capture remain local checks.** The exact scoped strict gate exits 0 after the seven-case CPU proof passed. This package makes no original physical capture or legal permission claim.
 
 ## Exact selected scope
 

@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from math import isfinite
 from typing import Mapping
 
+from school_timing import derive as derive_timing
+
 
 @dataclass(frozen=True)
 class Case:
@@ -68,8 +70,21 @@ def validate_scene(scene: Mapping, case: Case):
                  'beacon_operational', 'beacon_flashing', 'sign_limit_active'):
         require(scene.get(name) is getattr(case, name),
                 'case condition changed: ' + name)
+    timing = scene.get('timing_packet')
+    facts = derive_timing(timing)
+    require(timing['local_datetime'] == scene.get('local_datetime'),
+            'local clock and timing source differ')
+    for name in ('school_session', 'operation_window', 'beacon_operational',
+                 'beacon_flashing', 'sign_limit_active'):
+        require(facts[name] is getattr(case, name),
+                'independent timing/device readback differs: ' + name)
+    if case.name == 'beacon_class_no_flash':
+        require(facts['during_class'] is True,
+                'beacon exception requires independent class hours')
     for name in SOURCES:
-        require(scene.get(name + '_source_sha256'),
+        digest = scene.get(name + '_source_sha256')
+        require(isinstance(digest, str) and len(digest) == 64 and
+                all(c in '0123456789abcdef' for c in digest),
                 'independent source missing: ' + name)
     require(rect(scene.get('crossing_zone_rect_m')) and
             rect(scene.get('school_property_rect_m')) and
@@ -116,6 +131,11 @@ def construct(adapter, scene: Mapping, case: Case):
                                    scene['turn_end_frame'])
         adapter.set_beacon(case.beacon_operational,
                            case.beacon_flashing)
+        device = adapter.read_beacon()
+        require(isinstance(device, dict) and
+                device.get('operational') is case.beacon_operational and
+                device.get('flashing') is case.beacon_flashing,
+                'Native beacon readback differs from reviewed case')
         return {'owned': tuple(owned), **context}
     except Exception:
         for actor in reversed(owned):
@@ -163,7 +183,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                        for p in children.values())
         require(observed is case.children_present,
                 'physical children-location case changed')
-        if scene['turn_start_frame'] <= frame <= scene['turn_end_frame']:
+        if scene['turn_start_frame'] <= i <= scene['turn_end_frame']:
             require(inside(row['vehicle_xy'], scene['crossing_zone_rect_m']),
                     'turn left crossing zone')
             headings.append(row['vehicle_heading_deg'])

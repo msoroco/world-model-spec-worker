@@ -35,10 +35,35 @@ The branch requires a proper yield sign, no stop line, no near crosswalk, neares
 | `yield_view_measurement.py` | `e477dc13f95802d12cbe77fdd0fab11047ac999d6715dab343f7b30491bb770f` |
 | `tests/test_yield_view_measurement.py` | `8fd15d82de3b93cc3de68feb74b03df3155da14c0bc8e646388734c905f77841` |
 | `preflight.log` | `2f34644ce84bfcd860e001ee488461f6e0672be17b3c0465047933b0d06f3501` |
-| `unittest.log` | `35c1f77820b6f9a051d3f88aeec84842b62594158b560f85868e5cc6c1123e4b` |
+| `unittest.log` | `db33e38e8db62f798393f8f96dda5a665f84cb53111ec7e4073a15dd5cd50861` |
 | `static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
-| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
+| `strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
 
 Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
 
 Next CPU work: construct and read back actual yield sign and no-line/no-crosswalk site; save original view-ray stations and through-vehicle motion during crossing; implement finalizer and immediate-hazard review packet, exact positive/negative compatibility and independent delivery/comparison audits. CARLA motion and visibility follow CPU readiness.
+
+## 2026-11-26 source-gated CPU construction checkpoint
+
+The three planned variants now have `yield_scene_construction.py`, which requires a reviewed original site survey and an explicit approved yield-control variant for the frozen stop-sign cell. Its adapter calls read the existing control, spawn and read back a yield sign, survey absent line/crosswalk and view stations, and spawn the surveyed through vehicle. It refuses an active stop sign and contradictory marking readback. These are CPU-tested interface calls, not proof of an actual C158190 Native site or a complete runner.
+
+`through_motion_measurement.py` requires source-hashed original sign, marking, through-highway and view packets, contiguous 20 Hz crossing history, and through-vehicle identity/motion at every crossing frame. It compares the slow/stop and through-traffic-phase interventions while holding map, route, camera, duration and site sources fixed. It reports distances and speeds without defining a legal immediate-hazard threshold. Sixteen synthetic tests pass. `gpu-queue-proposal.json` lists the three exact cases and two comparisons with pinned prepare/execute/accept command order; it is explicitly unbound and must not be dispatched.
+
+`source_audit.py --repo "$PWD" found two accepted metadata files but zero original trace, video or surveyed site packets in this assignment's immutable export. The frozen cell says `stop_sign`; the selected branch requires yield-sign governance. A reviewed source must affirm a permitted yield-control variant or the lead must resolve compatible cell binding. The required source classes are the governed yield sign, line/crosswalk/sidewalk survey, nearest-view-ray survey, and through-highway route/motion. The accepted metadata and authored review context cannot supply these. Consequently no current-hash selected manifest, semantic proposal, saved processing proof or delivery audit is claimed; result remains partial. The exact scoped strict gate exits 1 with `Preparation acceptance failed: partial/missing packages remain`.
+
+Resume with an immutable reviewed Native site and source hashes, or an authorized compatible yield-sign cell binding. Bind the adapter to the pinned Native runner, construct the three exact cases, record original packets, then complete the selected manifest, semantic proposals, offline/compatibility/saved/delivery/comparison receipts and rerun scoped strict. Physical CARLA outcomes remain later local checks.
+
+| Current file | SHA256 |
+| --- | --- |
+| `yield_scene_construction.py` | `e848804a923cd56f58aea0d52b67f522bebe68274e0b87413bc36e58a3d9c0af` |
+| `through_motion_measurement.py` | `3ef97c0ba9eab661ab23060cff43dcda0df8650224caee752f676b62eda0411c` |
+| `source_audit.py` | `941088c9dc074ca711e8cff7d6f0a7e265c25a99958e43053b9622a6b7bed437` |
+| `build_queue_proposal.py` | `3b0501f6cd24d88dddb48172c923b9d051e1a93a3dfee9a382c554638c68dbd6` |
+| `gpu-queue-proposal.json` | `d3bb19692c2e3f943a44cf52ab6d09eb3653c58d6ccc9fb3911ca52de322a695` |
+| `case-plan.json` | `c5078a0e2faac3d358b259ed406de28b45ab6905af07a4411088962dfe9608d5` |
+| `unittest.log` | `db33e38e8db62f798393f8f96dda5a665f84cb53111ec7e4073a15dd5cd50861` |
+| `runtime-verify.log` | `e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d` |
+| `preflight.log` | `6f6d1ccec2c30c39017594067e5d7c163d140ba51300d20629373cdbab307101` |
+| `source-audit.log` | `18836004feb77cc2f97361cf1c802c02030ef43d2f620d58a27313e61ff8718d` |
+| `static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
+| `strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |

@@ -1,8 +1,10 @@
 import importlib.util
+import hashlib
 from pathlib import Path
 import sys
 import unittest
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 spec = importlib.util.spec_from_file_location(
     'school_uturn', Path(__file__).resolve().parents[1] / 'school_uturn.py')
@@ -12,6 +14,28 @@ spec.loader.exec_module(mod)
 
 
 def scene(case):
+    inactive = case.name in ('school_not_in_session', 'outside_operation_half_hour')
+    clock = ('2026-11-23T16:00:00-08:00' if case.name == 'outside_operation_half_hour'
+             else '2026-11-23T08:15:00-08:00')
+    last_end = ('2026-11-23T15:00:00-08:00' if case.name == 'outside_operation_half_hour'
+                else '2026-11-22T15:00:00-08:00')
+    next_start = ('2026-11-24T08:00:00-08:00' if inactive
+                  else '2026-11-23T08:00:00-08:00')
+    digest = 'a' * 64
+    timing = {'source_kind': 'original_school_schedule_and_device_readback',
+              'local_datetime': clock, 'last_operation_end': last_end,
+              'next_operation_start': next_start,
+              'class_start': '2026-11-23T08:00:00-08:00',
+              'class_end': '2026-11-23T14:00:00-08:00',
+              'school_in_session': case.school_session,
+              'beacon_operational': case.beacon_operational,
+              'beacon_flashing': case.beacon_flashing,
+              'sign_limit_active': case.sign_limit_active,
+              'beacon_yellow_light_count': 2,
+              'beacon_alternating_flash_capable': True}
+    timing.update({name + '_source_sha256': digest for name in (
+        'calendar', 'operation_schedule', 'class_schedule', 'local_clock',
+        'beacon_configuration', 'beacon_state', 'sign_instruction')})
     s = {'cell_id': 'C255863', 'actor': 'motor_vehicle_driver',
          'qualifying_vehicle': True, 'highway': True,
          'driver_id': 'd1', 'vehicle_id': 'v1',
@@ -26,12 +50,14 @@ def scene(case):
          'nonadjacent_street': True, 'pupil_route_designated': True,
          'reversal_route_xy': [[5., 5.], [10., 10.], [5., 15.]],
          'turn_start_frame': 100, 'turn_end_frame': 200,
-         'local_datetime': '2026-11-23T08:15:00-08:00',
+         'local_datetime': clock,
          'school_calendar_ref': 'district calendar',
          'operation_schedule_ref': 'school schedule',
+         'timing_packet': timing,
          'children': [{'id': 'c1', 'xy': [10., 10.] if case.children_present
                        else [40., 40.]}]}
-    s.update({f + '_source_sha256': f + '-hash' for f in mod.SOURCES})
+    s.update({f + '_source_sha256': hashlib.sha256(f.encode()).hexdigest()
+              for f in mod.SOURCES})
     return s
 
 
@@ -71,7 +97,10 @@ class Adapter:
             raise RuntimeError('route failed')
 
     def set_beacon(self, operational, flashing):
-        pass
+        self.beacon = {'operational': operational, 'flashing': flashing}
+
+    def read_beacon(self):
+        return self.beacon
 
     def destroy(self, actor):
         self.destroyed.append(actor)
@@ -125,6 +154,43 @@ class SchoolUTurnTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             mod.construct(a, scene(case), case)
         self.assertEqual(a.destroyed, ['c1', 'vehicle'])
+
+    def test_beacon_readback_mismatch_cleans_actors(self):
+        class WrongBeacon(Adapter):
+            def read_beacon(self):
+                return {'operational': True, 'flashing': False}
+        case = mod.CASES[0]
+        a = WrongBeacon()
+        with self.assertRaisesRegex(ValueError, 'beacon readback'):
+            mod.construct(a, scene(case), case)
+        self.assertEqual(a.destroyed, ['c1', 'vehicle'])
+
+    def test_independent_timing_source_and_beacon_definition(self):
+        case = mod.CASES[0]
+        s = scene(case)
+        del s['timing_packet']['calendar_source_sha256']
+        with self.assertRaisesRegex(ValueError, 'calendar_source_sha256'):
+            mod.validate_scene(s, case)
+        s = scene(case)
+        s['timing_packet']['beacon_yellow_light_count'] = 1
+        with self.assertRaisesRegex(ValueError, 'beacon definition'):
+            mod.validate_scene(s, case)
+
+    def test_half_hour_boundary_and_class_hours_are_measured(self):
+        case = next(c for c in mod.CASES if c.name == 'outside_operation_half_hour')
+        s = scene(case)
+        s['local_datetime'] = '2026-11-23T15:29:59-08:00'
+        s['timing_packet']['local_datetime'] = s['local_datetime']
+        with self.assertRaisesRegex(ValueError, 'operation_window'):
+            mod.validate_scene(s, case)
+        s['local_datetime'] = '2026-11-23T15:30:00-08:00'
+        s['timing_packet']['local_datetime'] = s['local_datetime']
+        mod.validate_scene(s, case)
+        case = next(c for c in mod.CASES if c.name == 'beacon_class_no_flash')
+        s = scene(case)
+        s['timing_packet']['class_end'] = '2026-11-23T08:05:00-08:00'
+        with self.assertRaisesRegex(ValueError, 'class hours'):
+            mod.validate_scene(s, case)
 
 
 if __name__ == '__main__':

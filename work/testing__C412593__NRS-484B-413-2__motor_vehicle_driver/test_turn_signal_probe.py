@@ -47,6 +47,16 @@ class TurnSignalProbeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exact course-change"):
             measure(self.context(), frames)
 
+    def test_reject_missing_original_frame_or_time_join(self):
+        frames = self.frames()
+        frames[3]["original_frame"] = 4
+        with self.assertRaisesRegex(ValueError, "20 Hz frame/time join"):
+            measure(self.context(), frames)
+        frames = self.frames()
+        frames[3]["time_s"] += 0.02
+        with self.assertRaisesRegex(ValueError, "20 Hz frame/time join"):
+            measure(self.context(), frames)
+
 
 if __name__ == "__main__":
     unittest.main()

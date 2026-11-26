@@ -28,10 +28,10 @@ def measure(context, frames):
         raise ValueError("missing original motion or signal history")
     if any(f["vehicle_id"] != context["vehicle_id"] for f in frames):
         raise ValueError("vehicle source mismatch")
-    if any(frames[i]["original_frame"] >= frames[i + 1]["original_frame"] or
-           frames[i]["time_s"] >= frames[i + 1]["time_s"]
+    if any(frames[i + 1]["original_frame"] != frames[i]["original_frame"] + 1 or
+           abs((frames[i + 1]["time_s"] - frames[i]["time_s"]) - 0.05) > 0.001
            for i in range(len(frames) - 1)):
-        raise ValueError("nonmonotone original frames")
+        raise ValueError("original 20 Hz frame/time join missing or nonconsecutive")
     if any(len(f["xy"]) != 2 or not all(isfinite(v) for v in f["xy"]) for f in frames):
         raise ValueError("invalid route coordinate")
     turns = [i for i, f in enumerate(frames) if f["course_changed"]]

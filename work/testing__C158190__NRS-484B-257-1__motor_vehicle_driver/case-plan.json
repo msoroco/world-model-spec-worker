@@ -69,7 +69,7 @@
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_native_adapter_calls_cpu_tested",
       "requested_yield_action": "slow",
       "requested_close_through_vehicle": true,
       "required_original_packets": [
@@ -81,7 +81,10 @@
         "four_camera_video"
       ],
       "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff."
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "construction_implementation": "yield_scene_construction.py",
+      "source_preflight": "source_audit.py",
+      "motion_and_comparison_audit": "through_motion_measurement.py"
     },
     {
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
@@ -91,7 +94,7 @@
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_native_adapter_calls_cpu_tested",
       "requested_yield_action": "stop",
       "requested_close_through_vehicle": true,
       "required_original_packets": [
@@ -103,7 +106,10 @@
         "four_camera_video"
       ],
       "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff."
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "construction_implementation": "yield_scene_construction.py",
+      "source_preflight": "source_audit.py",
+      "motion_and_comparison_audit": "through_motion_measurement.py"
     },
     {
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
@@ -113,7 +119,7 @@
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_native_adapter_calls_cpu_tested",
       "requested_yield_action": "slow",
       "requested_close_through_vehicle": false,
       "required_original_packets": [
@@ -125,7 +131,10 @@
         "four_camera_video"
       ],
       "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff."
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "construction_implementation": "yield_scene_construction.py",
+      "source_preflight": "source_audit.py",
+      "motion_and_comparison_audit": "through_motion_measurement.py"
     }
   ],
   "comparisons": [
@@ -142,7 +151,8 @@
         "same proper yield sign, no stop line/crosswalk and same nearest view point",
         "same intersection, ego path, actor identities and capture except named variable"
       ],
-      "status": "planned_unbuilt"
+      "status": "source_gated_cpu_audit_tested",
+      "audit_implementation": "through_motion_measurement.py"
     },
     {
       "comparison_id": "through_hazard",
@@ -157,7 +167,8 @@
         "same proper yield sign, no stop line/crosswalk and same nearest view point",
         "same intersection, ego path, actor identities and capture except named variable"
       ],
-      "status": "planned_unbuilt"
+      "status": "source_gated_cpu_audit_tested",
+      "audit_implementation": "through_motion_measurement.py"
     }
   ],
   "observations": [],
@@ -204,8 +215,9 @@
     "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6"
   ],
   "runtime_uncertainties": [
-    "Source cell is annotated stop_sign; actual proper yield sign and no stop line/crosswalk require construction and readback.",
-    "Original view-ray station measurements and through-vehicle motion need saved source packets."
+    "Frozen C158190 cell control is stop_sign while selected branch requires yield_sign. Source-reviewed approval for a yield-control variant is absent.",
+    "Only two accepted metadata files are exported. No original trace, video, sign/marking survey, view-ray survey, or through-highway route/motion packet is exported.",
+    "The source-gated construction adapter and through-motion comparison audit pass synthetic CPU tests, but selected manifest, saved finalizer, canonical semantic proposals and delivery proofs require an actual reviewed site source and current Native integration."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",

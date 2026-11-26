@@ -1,0 +1,3061 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__baseline",
+      "rationale": "Shared source and capture definition; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+      "deliberate_differences": [
+        "human_warning_stop_51ft_go"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "human_warning_stop_51ft_go"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_50ft_go",
+      "deliberate_differences": [
+        "human_warning_stop_50ft_go"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "stop_distance_target_ft",
+        "target_value_or_branch": "human_warning_stop_50ft_go"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 50
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_49ft_go",
+      "deliberate_differences": [
+        "human_warning_stop_49ft_go"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "stop_distance_target_ft",
+        "target_value_or_branch": "human_warning_stop_49ft_go"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 49
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_wait",
+      "deliberate_differences": [
+        "human_warning_stop_51ft_wait"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "human_warning_stop_51ft_wait"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "wait"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "continued"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_depart",
+      "deliberate_differences": [
+        "human_warning_stop_51ft_depart"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "human_warning_stop_51ft_depart"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "depart"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_proceed_before_go",
+      "deliberate_differences": [
+        "human_warning_proceed_before_go"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "human_warning_proceed_before_go"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "premature"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "continued"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__device_warning_stop_51ft_raised",
+      "deliberate_differences": [
+        "device_warning_stop_51ft_raised"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "device_warning_stop_51ft_raised"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "raised"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "device"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__no_warning_travel",
+      "deliberate_differences": [
+        "no_warning_travel"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "no_warning_travel"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "travel"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": null
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_present_no_child_warning",
+      "deliberate_differences": [
+        "human_present_no_child_warning"
+      ],
+      "paired_probe_id": "school_lane_stop_warning_release",
+      "probe": {
+        "comparison_or_standard": "original source observations; legal verdict unresolved",
+        "primary_variable": "release_kind",
+        "target_value_or_branch": "human_present_no_child_warning"
+      },
+      "rationale": "Source-gated exact school-lane warning, stop and release comparison.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        },
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "wait"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "continued"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human_present"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0000",
+      "deliberate_differences": [
+        "warning_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "warning_onset_s",
+        "target_value_or_branch": {
+          "warning_onset_s": 4.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 0,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_warning_onset_s",
+          "unit": "s",
+          "variable": "warning_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "warning_onset_s": 4.0
+      },
+      "sweep_spec_version": "acd12dd170bbcee4e4a4345c00a6a4600ab8dbcbf007795382e15d09a5b6ae21",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 4.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0001",
+      "deliberate_differences": [
+        "warning_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "warning_onset_s",
+        "target_value_or_branch": {
+          "warning_onset_s": 8.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 1,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_warning_onset_s",
+          "unit": "s",
+          "variable": "warning_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "warning_onset_s": 8.0
+      },
+      "sweep_spec_version": "acd12dd170bbcee4e4a4345c00a6a4600ab8dbcbf007795382e15d09a5b6ae21",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 8.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0002",
+      "deliberate_differences": [
+        "warning_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "warning_onset_s",
+        "target_value_or_branch": {
+          "warning_onset_s": 6.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 2,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_warning_onset_s",
+          "unit": "s",
+          "variable": "warning_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "warning_onset_s": 6.0
+      },
+      "sweep_spec_version": "acd12dd170bbcee4e4a4345c00a6a4600ab8dbcbf007795382e15d09a5b6ae21",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0000",
+      "deliberate_differences": [
+        "departure_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "departure_onset_s",
+        "target_value_or_branch": {
+          "departure_onset_s": 10.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 0,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_departure_onset_s",
+          "unit": "s",
+          "variable": "departure_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "departure_onset_s": 10.0
+      },
+      "sweep_spec_version": "acdeb04063d32dc4fb4fdb4d63c8fbb655b1ba338371dfbf33b4662794676328",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 10.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0001",
+      "deliberate_differences": [
+        "departure_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "departure_onset_s",
+        "target_value_or_branch": {
+          "departure_onset_s": 14.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 1,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_departure_onset_s",
+          "unit": "s",
+          "variable": "departure_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "departure_onset_s": 14.0
+      },
+      "sweep_spec_version": "acdeb04063d32dc4fb4fdb4d63c8fbb655b1ba338371dfbf33b4662794676328",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 14.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "case_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0002",
+      "deliberate_differences": [
+        "departure_onset_s"
+      ],
+      "judgment_refs": [
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "paired_probe_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "departure_onset_s",
+        "target_value_or_branch": {
+          "departure_onset_s": 12.0
+        }
+      },
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_rank": 2,
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "observable": "original_departure_onset_s",
+          "unit": "s",
+          "variable": "departure_onset_s"
+        }
+      ],
+      "sweep_point": {
+        "departure_onset_s": 12.0
+      },
+      "sweep_spec_version": "acdeb04063d32dc4fb4fdb4d63c8fbb655b1ba338371dfbf33b4662794676328",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "children are about to cross or are crossing the street",
+        "has left the locality"
+      ],
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    }
+  ],
+  "cell_id": "C422976",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_50ft_go"
+      ],
+      "comparison_id": "stop_51_vs_50",
+      "deliberate_differences": [
+        "exact fifty-foot reference target"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_49ft_go"
+      ],
+      "comparison_id": "stop_51_vs_49",
+      "deliberate_differences": [
+        "inside fifty-foot reference target"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_wait"
+      ],
+      "comparison_id": "go_vs_wait",
+      "deliberate_differences": [
+        "continued stationed warning with no release"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_depart"
+      ],
+      "comparison_id": "go_vs_departure",
+      "deliberate_differences": [
+        "person departure release alternative"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_proceed_before_go"
+      ],
+      "comparison_id": "go_vs_premature",
+      "deliberate_differences": [
+        "proceed before observed release"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__device_warning_stop_51ft_raised"
+      ],
+      "comparison_id": "human_vs_device",
+      "deliberate_differences": [
+        "signal-device raised release alternative"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__no_warning_travel"
+      ],
+      "comparison_id": "warning_vs_no_warning",
+      "deliberate_differences": [
+        "no warning trigger"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_present_no_child_warning"
+      ],
+      "comparison_id": "child_warning_vs_presence",
+      "deliberate_differences": [
+        "person present without child-crossing warning"
+      ],
+      "fixed_conditions": [
+        "same municipal jurisdiction, two-lane two-way approach and school pedestrian lane except deliberate difference",
+        "same driver/vehicle and original 20 Hz four-camera protocol"
+      ]
+    }
+  ],
+  "source_assignment": "inputs/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/assignment.json",
+  "source_law_text": "It shall be unlawful for any person driving or operating, propelling or causing to be propelled, any vehicle, to fail to stop not less than fifty feet from the nearest side of a school pedestrian lane where any signal device, flagman or other person is stationed, giving warning that children are about to cross or are crossing the street; and it is further declared unlawful to proceed until such signal has stopped, raised, or been removed, or the flagman or person stationed at such pedestrian lane has given a signal to go, or has left the locality.",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "axes": [
+        {
+          "feasibility_evidence": "Source-gated schedule controller and CPU tests; Native realization requires original review.",
+          "max": 8.0,
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "min": 4.0,
+          "observable": "original_warning_onset_s",
+          "range_rationale": "Bounded timing coverage within the 45-second episode; stations are not legal thresholds.",
+          "spacing": 2.0,
+          "spacing_rationale": "Three distinguishable controller stations; actual timing requires original capture.",
+          "unit": "s",
+          "variable": "warning_onset_s"
+        }
+      ],
+      "judgment_refs": [
+        {
+          "note": "Child-crossing warning and actual child status require distinct original evidence.",
+          "phrase": "children are about to cross or are crossing the street"
+        }
+      ],
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "planned_case_count": 3,
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_order": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0000",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0001",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset-0002"
+      ],
+      "spec_version": "acd12dd170bbcee4e4a4345c00a6a4600ab8dbcbf007795382e15d09a5b6ae21",
+      "status": "complete",
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__child_warning_onset",
+      "target_law_id": "LVMC-11-46-030",
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    },
+    {
+      "axes": [
+        {
+          "feasibility_evidence": "Source-gated schedule controller and CPU tests; Native realization requires original review.",
+          "max": 14.0,
+          "measurement": {
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "statistic": "first",
+            "time_window": "all 900 original ticks"
+          },
+          "min": 10.0,
+          "observable": "original_departure_onset_s",
+          "range_rationale": "Bounded timing coverage within the 45-second episode; stations are not legal thresholds.",
+          "spacing": 2.0,
+          "spacing_rationale": "Three distinguishable controller stations; actual timing requires original capture.",
+          "unit": "s",
+          "variable": "departure_onset_s"
+        }
+      ],
+      "judgment_refs": [
+        {
+          "note": "The locality boundary is source and legal review dependent; motion alone does not decide it.",
+          "phrase": "has left the locality"
+        }
+      ],
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "planned_case_count": 3,
+      "rationale": "Three source-gated actor timing stations sample physical coverage; legal phrase remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "SHA-sealed reviewed lane side and station in original world frame",
+            "name": "school_lane_nearest_side_geometry",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m"
+          },
+          {
+            "method": "original Native body reference station and velocity at every world tick",
+            "name": "ego_reference_station_and_speed",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original human identity, child presence, warning, gesture and departure readback",
+            "name": "human_warning_children_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "original device identity, warning and raised/stopped/removed state",
+            "name": "device_warning_and_release",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "source observation"
+          },
+          {
+            "method": "four Native RGB frames joined to each original world tick",
+            "name": "four_synchronized_camera_views",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "original frames"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound child-crossing warning",
+            "name": "original_warning_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          },
+          {
+            "method": "first original 20 Hz frame with source-bound person departure",
+            "name": "original_departure_onset_s",
+            "reference_frame": "reviewed original school-lane approach and Native world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original ticks",
+            "uncertainty": "physical visibility, reference convention and legal interpretation pending",
+            "unit": "s"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map, geometry and actor packet",
+            "name": "municipal jurisdiction and reviewed school-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering station targets do not establish statutory fifty-foot compliance.",
+          "Original human go gesture, departure locality and device release require independent review."
+        ]
+      },
+      "selection_order": [
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0000",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0001",
+        "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset-0002"
+      ],
+      "spec_version": "acdeb04063d32dc4fb4fdb4d63c8fbb655b1ba338371dfbf33b4662794676328",
+      "status": "complete",
+      "sweep_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver__person_departure_onset",
+      "target_law_id": "LVMC-11-46-030",
+      "variable_assignments": {
+        "departure_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 12.0
+        },
+        "ego_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "proceed"
+        },
+        "original_departure_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "original_release_readback": {
+          "kind": "subject_behavior",
+          "unit": "source observation",
+          "value": null
+        },
+        "original_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "unit": "ft",
+          "value": null
+        },
+        "original_warning_onset_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "release_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "go"
+        },
+        "stop_distance_target_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 51
+        },
+        "warning_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "human"
+        },
+        "warning_onset_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 6.0
+        }
+      }
+    }
+  ],
+  "sweeps_expanded": true
+}

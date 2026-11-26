@@ -2,30 +2,42 @@
   "assignment_id": "testing__C255863__NRS-484B-363-3__motor_vehicle_driver",
   "input_sha256": "3fa05e17095f022a180eaeb0e2558c91f814355ff3ce19bd0279b2985d905605",
   "status": "partial",
-  "readiness_kind": "partial_cpu_case_probe",
+  "readiness_kind": "source_gated_school_timing_and_comparison",
   "applied_update": 0,
   "tests": [
     {
-      "log": "cpu-tests.log",
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C255863__NRS-484B-363-3__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
       "exit_code": 0,
-      "sha256": "cfd86281651cbba0dd80a8fd1e2aedd60de0c739bb17e0dbc6aeabd402f95f9a"
+      "log": "cpu-verify.log",
+      "sha256": "e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d"
     },
     {
-      "log": "cpu-preflight.log",
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+      "log": "cpu-preflight.log",
+      "sha256": "524dd3b8eca52867d7eaa871e6fb377146df4a6d5765d42d915cf0dc0a428925"
     },
     {
-      "log": "cpu-static-check.log",
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C255863__NRS-484B-363-3__motor_vehicle_driver",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C255863__NRS-484B-363-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "ea3f028fd13eca08c7a8b0fa82fe028e09ed14bdfb79d80ea3df8d098e8fc5d9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C255863__NRS-484B-363-3__motor_vehicle_driver/source_audit.py --repo \"$PWD\"",
+      "exit_code": 0,
+      "log": "cpu-source-audit.log",
+      "sha256": "52f45b65e2f42850f832c9511938f0088c59b07e5f776b76a416f960ca991176"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C255863__NRS-484B-363-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
       "sha256": "6f2bebff75b45f3e09e157fd3e86a3385ba639e52d52d0e141c19e48c8e0ee91"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "After source-bound CPU manifest and strict gate: actual CARLA U-turn, child presence, beacon, four-camera visibility and capture quality."
   ],
-  "reason": "Selected U-turn case and five exception controls, source-gated construction and original 900-frame reversal measurement implemented and focused-tested. No original recording or canonical offline/compatibility/delivery proofs yet; strict gate remains partial."
+  "reason": "Six exact U-turn cases and five controls now have source-bound timing/beacon derivation, construction beacon readback, 900-frame reversal measurement, independent fixed-geometry comparison audit and canonical-order queue proposal. Eleven synthetic CPU tests, current runtime verify/preflight and scoped partial checker pass. Immutable export has no accepted recording, reviewed crossing-zone site, school calendar/operation/class schedule, local clock, beacon/sign survey or original Native trace; selected manifest and source-bound proofs cannot truthfully be bound. Scoped strict remains partial."
 }
