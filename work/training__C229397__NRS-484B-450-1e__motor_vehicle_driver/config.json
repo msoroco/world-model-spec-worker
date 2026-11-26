@@ -1,0 +1,161 @@
+{
+  "assignment_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver",
+  "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_1",
+  "law_id": "NRS-484B-450-1e",
+  "cell_id": "C229397",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "park",
+    "control": "crosswalk"
+  },
+  "branch": "witness",
+  "target_variant": "clear",
+  "rate_hz": 20,
+  "frames": 600,
+  "duration_s": 30,
+  "source_cameras": [
+    "overview",
+    "approach",
+    "reference_corner",
+    "driver_reference"
+  ],
+  "crosswalk_geometry_required": true,
+  "original_vehicle_footprint_required": true,
+  "exception_context_source_required": false,
+  "authored_target_xy_m": [
+    1.75,
+    -18.0
+  ],
+  "native_execution_implemented": true,
+  "selected_case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_1",
+  "case": {
+    "case_id": "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_1"
+  },
+  "required_atoms": [],
+  "source_packets": [],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "crosswalk_observation",
+        "unit": "mixed",
+        "sampling_rate_hz": 20,
+        "method": "original footprint and crosswalk polygon readback",
+        "time_window": "600 frames",
+        "reference_frame": "Native world XY",
+        "uncertainty": "50 ms source interval; activity and legal exceptions require review"
+      },
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "same-tick speed and rest interval",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      },
+      {
+        "name": "st.crosswalk",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "source-reviewed crosswalk polygon",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "vehicle footprint versus crosswalk polygon",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      },
+      {
+        "name": "drv.forced_halt",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original traffic-conflict context and pixel review",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      },
+      {
+        "name": "dev.human_direction",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original police-direction context and pixel review",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      },
+      {
+        "name": "dev.traffic_signal",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original official-device direction and pixel review",
+        "time_window": "600 original frames",
+        "reference_frame": "Native world and reviewed source context",
+        "uncertainty": "Original source and authority review required"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "exception_authority",
+        "unit": "structured",
+        "method": "reviewed hash-bound source packet; legal applicability unverified"
+      }
+    ],
+    "limitations": [
+      "Original Native geometry and pixels require local execution",
+      "No legal verdict is derived from overlap or rest duration"
+    ]
+  },
+  "supported_case_ids": [
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__witness_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_1_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_1_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_2_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_2_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_3_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_3_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stop_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__stand_2",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_1",
+    "training__C229397__NRS-484B-450-1e__motor_vehicle_driver__exception_4_2"
+  ],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "crosswalk overhead with full approach",
+      "fov_deg": 70
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "along roadway toward crosswalk",
+      "fov_deg": 70
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "crosswalk corner and marking",
+      "fov_deg": 70
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject and driver perspective",
+      "fov_deg": 70
+    }
+  ]
+}

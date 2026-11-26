@@ -1,0 +1,664 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230231__NRS-484B-913__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_way_hose_protection_and_command_review",
+  "cases": [
+    {
+      "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_1/primary/construction.json",
+      "construction_sha256": "985cbf66679a0738e2b12b11481aef8440b81aaef73998791e85ed51c6739447",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may miss hose centerline or drawn diagnostic line may fail to represent a physical department hose; measured body and independent asset review must verify."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_1/fallback1/construction.json",
+          "construction_sha256": "000debd79bbd200dd0d9852747dff772a2fd8d0dee69ce1843ec19e6c0580eed",
+          "trigger": {
+            "source": "original Native actor-sources.jsonl and result.json",
+            "metric": "original center travel and passage inspection window",
+            "failure_condition": "less than 20 m original center travel over 600 complete frames, or requested crossing lacks original driven hose overlap, after checking source completeness"
+          },
+          "physical_risk": "Vehicle may stall before the hose or miss the authored path; altered start does not establish department hose identity, protection or consent.",
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for the same exact case"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "000debd79bbd200dd0d9852747dff772a2fd8d0dee69ce1843ec19e6c0580eed",
+            "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1 --candidate fallback1",
+            "log": "proofs/witness_1/fallback1-offline.log",
+            "log_sha256": "afdb1127a1c77a887a4056ccd7d753e4f4389b3b62373083bc2df05477785cdd"
+          },
+          "compatibility": {
+            "receipt": "proofs/witness_1/fallback1-compatibility.json",
+            "sha256": "94ee14ae098d5976fadf59dc90ac2a35a5f623d04f1d67a79e6e84deec630b3a",
+            "log": "proofs/witness_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/witness_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C230231__NRS-484B-913__motor_vehicle_driver/diagnostic-witness_1-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "985cbf66679a0738e2b12b11481aef8440b81aaef73998791e85ed51c6739447",
+        "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1 --candidate primary",
+        "log": "proofs/witness_1/primary-offline.log",
+        "log_sha256": "afdb1127a1c77a887a4056ccd7d753e4f4389b3b62373083bc2df05477785cdd"
+      },
+      "compatibility": {
+        "receipt": "proofs/witness_1/primary-compatibility.json",
+        "sha256": "adcc9bac35ce6af5e3bf73a30f8f1549f0d36649e1b26b8f4523613ead13803e",
+        "log": "proofs/witness_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/witness_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/witness_1/primary-negative-analysis.log",
+        "log_sha256": "b67f31fb4d5a02e5aed5bdb2182789b859c7a946299d79791e56c0b11100524b"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/witness_1/physical-preparation.json",
+        "sha256": "db5a9899c806c071bcd5d96157bb806b8b1f80a696b67e95c55ae97ac34e03d0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "original hose placement and independent asset/protection inventory",
+          "evidence": [
+            "hose-source.json",
+            "hose-review.json",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original full-body footprint against reviewed hose geometry",
+          "evidence": [
+            "actor-sources.jsonl",
+            "hose-source.json"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original per-frame vehicle center trajectory",
+          "evidence": [
+            "actor-sources.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent dedication/access review",
+          "evidence": [
+            "road.xodr",
+            "way-review.json"
+          ]
+        },
+        "ru.fire_apparatus": {
+          "entrypoint": "runner.py",
+          "method": "original apparatus/command-role actor and department affiliation and specified use purpose independently reviewed",
+          "evidence": [
+            "department-presence.json",
+            "hose-source.json",
+            "hose-review.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "authored explicit communication setup and independent command identity/status, consent or no-communication review",
+          "evidence": [
+            "communication-setup.json",
+            "command-review.json"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original actor speed and driver identity",
+          "evidence": [
+            "actor-sources.jsonl",
+            "command-review.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230231__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1",
+        "test_log": "proofs/witness_1/saved.log",
+        "test_log_sha256": "68db2d85f59acdbd4584e7bfcacec936273f81f69e937bb64187715c8b756a15",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_way_hose_and_command_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f2f0e778630c42c1f125a1c74cfbdd97bcd1472818965ad5da13698ffc7dc5a2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-witness_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-witness_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-witness_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/witness_1/delivery-positive.log",
+        "test_log_sha256": "631c170ce83828bfa1d1372b0f13db628af3325d02b88020e391dfaf30a16e57",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-witness_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-witness_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-witness_1-positive.json --diagnostic --omit-source hose-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: hose-review.json",
+        "negative_log": "proofs/witness_1/delivery-negative.log",
+        "negative_log_sha256": "5696961b88eb2231e4ad6a13f450cc713d84ba0ba12902bb31c41114c5af7662"
+      }
+    },
+    {
+      "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_2/primary/construction.json",
+      "construction_sha256": "e43ee53486d7b5966c3f02f00e8818557dede925707cb0eb8328ba67f1c9f0e1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may miss hose centerline or drawn diagnostic line may fail to represent a physical department hose; measured body and independent asset review must verify."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_2/fallback1/construction.json",
+          "construction_sha256": "8ebb7e5494122b09e1c3714d3a37ffe2e016314b7fd8e644c53429dc909aed33",
+          "trigger": {
+            "source": "original Native actor-sources.jsonl and result.json",
+            "metric": "original center travel and passage inspection window",
+            "failure_condition": "less than 20 m original center travel over 600 complete frames, or requested crossing lacks original driven hose overlap, after checking source completeness"
+          },
+          "physical_risk": "Vehicle may stall before the hose or miss the authored path; altered start does not establish department hose identity, protection or consent.",
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for the same exact case"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8ebb7e5494122b09e1c3714d3a37ffe2e016314b7fd8e644c53429dc909aed33",
+            "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2 --candidate fallback1",
+            "log": "proofs/witness_2/fallback1-offline.log",
+            "log_sha256": "a298c2da89a34695996b108b87bacc46eb8769b6318261bc816a27802b96b194"
+          },
+          "compatibility": {
+            "receipt": "proofs/witness_2/fallback1-compatibility.json",
+            "sha256": "fa9b6def68a53aa8341d4858213f374f89d461ca39c00dae3626668dac9e0324",
+            "log": "proofs/witness_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/witness_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C230231__NRS-484B-913__motor_vehicle_driver/diagnostic-witness_2-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "e43ee53486d7b5966c3f02f00e8818557dede925707cb0eb8328ba67f1c9f0e1",
+        "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2 --candidate primary",
+        "log": "proofs/witness_2/primary-offline.log",
+        "log_sha256": "a298c2da89a34695996b108b87bacc46eb8769b6318261bc816a27802b96b194"
+      },
+      "compatibility": {
+        "receipt": "proofs/witness_2/primary-compatibility.json",
+        "sha256": "c0010d78d8610dddf22ec4ffcea78997f264da20dbb6ec1df78e8661931fd139",
+        "log": "proofs/witness_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/witness_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/witness_2/primary-negative-analysis.log",
+        "log_sha256": "26725cc27a4fc050dd07436020242d3eb3453c554658ca9b99a9514bd1cf6842"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/witness_2/physical-preparation.json",
+        "sha256": "364b80f5cea204653b6e0815756742e0651ab688b8202a108c8ee306a43d83a7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "original hose placement and independent asset/protection inventory",
+          "evidence": [
+            "hose-source.json",
+            "hose-review.json",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original full-body footprint against reviewed hose geometry",
+          "evidence": [
+            "actor-sources.jsonl",
+            "hose-source.json"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original per-frame vehicle center trajectory",
+          "evidence": [
+            "actor-sources.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent dedication/access review",
+          "evidence": [
+            "road.xodr",
+            "way-review.json"
+          ]
+        },
+        "ru.fire_apparatus": {
+          "entrypoint": "runner.py",
+          "method": "original apparatus/command-role actor and department affiliation and specified use purpose independently reviewed",
+          "evidence": [
+            "department-presence.json",
+            "hose-source.json",
+            "hose-review.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "authored explicit communication setup and independent command identity/status, consent or no-communication review",
+          "evidence": [
+            "communication-setup.json",
+            "command-review.json"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original actor speed and driver identity",
+          "evidence": [
+            "actor-sources.jsonl",
+            "command-review.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230231__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2",
+        "test_log": "proofs/witness_2/saved.log",
+        "test_log_sha256": "584568f3ed0a7210b82a12ac1eeb843e4de3d666229814685ae7bbc9305eb5f4",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_way_hose_and_command_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f2f0e778630c42c1f125a1c74cfbdd97bcd1472818965ad5da13698ffc7dc5a2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-witness_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-witness_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/witness_2/delivery-positive.log",
+        "test_log_sha256": "71b27d075a70d39802dd2dea37092590bfd7378f3693d67fb1a41da303db9a2d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__witness_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-witness_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-witness_2-positive.json --diagnostic --omit-source hose-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: hose-review.json",
+        "negative_log": "proofs/witness_2/delivery-negative.log",
+        "negative_log_sha256": "5696961b88eb2231e4ad6a13f450cc713d84ba0ba12902bb31c41114c5af7662"
+      }
+    },
+    {
+      "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1",
+      "kind": "delivery",
+      "construction": "draft-exact/exception_1_1/primary/construction.json",
+      "construction_sha256": "e3e78d34e6d22bb1c16fcaab3ffbf02da3bfd37ccecd28bd8f53bf2e372df374",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may miss hose centerline or drawn diagnostic line may fail to represent a physical department hose; measured body and independent asset review must verify."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/exception_1_1/fallback1/construction.json",
+          "construction_sha256": "4bc60286e915d1967b9ae099d95d2ba43a0ecfef72ad964255ac9b10c99ae660",
+          "trigger": {
+            "source": "original Native actor-sources.jsonl and result.json",
+            "metric": "original center travel and passage inspection window",
+            "failure_condition": "less than 20 m original center travel over 600 complete frames, or requested crossing lacks original driven hose overlap, after checking source completeness"
+          },
+          "physical_risk": "Vehicle may stall before the hose or miss the authored path; altered start does not establish department hose identity, protection or consent.",
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for the same exact case"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "4bc60286e915d1967b9ae099d95d2ba43a0ecfef72ad964255ac9b10c99ae660",
+            "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1 --candidate fallback1",
+            "log": "proofs/exception_1_1/fallback1-offline.log",
+            "log_sha256": "8e9cc3691c015bad5a4e27e429b814fe89d1d26827834b279a15a5447fcedc24"
+          },
+          "compatibility": {
+            "receipt": "proofs/exception_1_1/fallback1-compatibility.json",
+            "sha256": "ef2a0b06ccef72fcd4b11288889364688626870157a4f13076a9283db427de37",
+            "log": "proofs/exception_1_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/exception_1_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/exception_1_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C230231__NRS-484B-913__motor_vehicle_driver/diagnostic-exception_1_1-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "e3e78d34e6d22bb1c16fcaab3ffbf02da3bfd37ccecd28bd8f53bf2e372df374",
+        "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1 --candidate primary",
+        "log": "proofs/exception_1_1/primary-offline.log",
+        "log_sha256": "8e9cc3691c015bad5a4e27e429b814fe89d1d26827834b279a15a5447fcedc24"
+      },
+      "compatibility": {
+        "receipt": "proofs/exception_1_1/primary-compatibility.json",
+        "sha256": "9ac449bdba3329d2d26313050323a7a2e8e082fdcd1d78683726f68a996caa31",
+        "log": "proofs/exception_1_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/exception_1_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/exception_1_1/primary-negative-analysis.log",
+        "log_sha256": "1741a11b34cb082d03fd006868a6b3e8a92283b44b3fae77eed581480b770c4b"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/exception_1_1/physical-preparation.json",
+        "sha256": "905d96035cb7a61c6f2600d47c51a23469d0b381dea827e131fc84be69947eab"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "original hose placement and independent asset/protection inventory",
+          "evidence": [
+            "hose-source.json",
+            "hose-review.json",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original full-body footprint against reviewed hose geometry",
+          "evidence": [
+            "actor-sources.jsonl",
+            "hose-source.json"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original per-frame vehicle center trajectory",
+          "evidence": [
+            "actor-sources.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent dedication/access review",
+          "evidence": [
+            "road.xodr",
+            "way-review.json"
+          ]
+        },
+        "ru.fire_apparatus": {
+          "entrypoint": "runner.py",
+          "method": "original apparatus/command-role actor and department affiliation and specified use purpose independently reviewed",
+          "evidence": [
+            "department-presence.json",
+            "hose-source.json",
+            "hose-review.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "authored explicit communication setup and independent command identity/status, consent or no-communication review",
+          "evidence": [
+            "communication-setup.json",
+            "command-review.json"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original actor speed and driver identity",
+          "evidence": [
+            "actor-sources.jsonl",
+            "command-review.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230231__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1",
+        "test_log": "proofs/exception_1_1/saved.log",
+        "test_log_sha256": "d772badd823192605ce841b127b786482052c5727e7dac442c4f2866f8a5e0a3",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_way_hose_and_command_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f2f0e778630c42c1f125a1c74cfbdd97bcd1472818965ad5da13698ffc7dc5a2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-exception_1_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-exception_1_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-exception_1_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/exception_1_1/delivery-positive.log",
+        "test_log_sha256": "c53eed8d8bef5212efc40f535a9eb3cb6c5543ddbd9d376e487753e874a964d1",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-exception_1_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-exception_1_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-exception_1_1-positive.json --diagnostic --omit-source hose-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: hose-review.json",
+        "negative_log": "proofs/exception_1_1/delivery-negative.log",
+        "negative_log_sha256": "5696961b88eb2231e4ad6a13f450cc713d84ba0ba12902bb31c41114c5af7662"
+      }
+    },
+    {
+      "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2",
+      "kind": "delivery",
+      "construction": "draft-exact/exception_1_2/primary/construction.json",
+      "construction_sha256": "f3253ada533a59553efc0b809726c2d6bad814075d0de96fad56602ee20da8d5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may miss hose centerline or drawn diagnostic line may fail to represent a physical department hose; measured body and independent asset review must verify."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/exception_1_2/fallback1/construction.json",
+          "construction_sha256": "f3a1f85c58711506ede0af23dba6d54bd4b3da3ebbf2b505c575f83844270986",
+          "trigger": {
+            "source": "original Native actor-sources.jsonl and result.json",
+            "metric": "original center travel and passage inspection window",
+            "failure_condition": "less than 20 m original center travel over 600 complete frames, or requested crossing lacks original driven hose overlap, after checking source completeness"
+          },
+          "physical_risk": "Vehicle may stall before the hose or miss the authored path; altered start does not establish department hose identity, protection or consent.",
+          "changed_knobs": [
+            "initial vehicle spawn x from -20 m to -18 m for the same exact case"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f3a1f85c58711506ede0af23dba6d54bd4b3da3ebbf2b505c575f83844270986",
+            "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2 --candidate fallback1",
+            "log": "proofs/exception_1_2/fallback1-offline.log",
+            "log_sha256": "0111a57eb2842d1f688b5c0eb897e4a388eebeca44a342aeac9aef49991712c1"
+          },
+          "compatibility": {
+            "receipt": "proofs/exception_1_2/fallback1-compatibility.json",
+            "sha256": "d55b8a8d6933634ed8eb16d45c91de41f55d456e07cd71982b8b4f7d80b68cc2",
+            "log": "proofs/exception_1_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/exception_1_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/exception_1_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C230231__NRS-484B-913__motor_vehicle_driver/diagnostic-exception_1_2-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "f3253ada533a59553efc0b809726c2d6bad814075d0de96fad56602ee20da8d5",
+        "command": "runtime.py offline --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2 --candidate primary",
+        "log": "proofs/exception_1_2/primary-offline.log",
+        "log_sha256": "0111a57eb2842d1f688b5c0eb897e4a388eebeca44a342aeac9aef49991712c1"
+      },
+      "compatibility": {
+        "receipt": "proofs/exception_1_2/primary-compatibility.json",
+        "sha256": "206d1df11951020964e77ab0f1fb0aed87ad76df6af61099b198f8594de14753",
+        "log": "proofs/exception_1_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/exception_1_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/exception_1_2/primary-negative-analysis.log",
+        "log_sha256": "70f47b0a5dfc05ad748c81a8bb0b55948c169e90b11f3dfba39fca977f6306b4"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/exception_1_2/physical-preparation.json",
+        "sha256": "d32f77ff3d164d66d632667c6db75f670342d579ab907261c944d0334f796d51"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "original hose placement and independent asset/protection inventory",
+          "evidence": [
+            "hose-source.json",
+            "hose-review.json",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original full-body footprint against reviewed hose geometry",
+          "evidence": [
+            "actor-sources.jsonl",
+            "hose-source.json"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original per-frame vehicle center trajectory",
+          "evidence": [
+            "actor-sources.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "method": "original road and independent dedication/access review",
+          "evidence": [
+            "road.xodr",
+            "way-review.json"
+          ]
+        },
+        "ru.fire_apparatus": {
+          "entrypoint": "runner.py",
+          "method": "original apparatus/command-role actor and department affiliation and specified use purpose independently reviewed",
+          "evidence": [
+            "department-presence.json",
+            "hose-source.json",
+            "hose-review.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "authored explicit communication setup and independent command identity/status, consent or no-communication review",
+          "evidence": [
+            "communication-setup.json",
+            "command-review.json"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original actor speed and driver identity",
+          "evidence": [
+            "actor-sources.jsonl",
+            "command-review.json"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C230231__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2",
+        "test_log": "proofs/exception_1_2/saved.log",
+        "test_log_sha256": "bda11e71d0e99727664d6a53880884f6366817cca2abc75c095f1b4e4a94a24f",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_way_hose_and_command_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f2f0e778630c42c1f125a1c74cfbdd97bcd1472818965ad5da13698ffc7dc5a2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-exception_1_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-exception_1_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-exception_1_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/exception_1_2/delivery-positive.log",
+        "test_log_sha256": "0c6b2e9c23f103e68d8e6bc935bf2123c9b1cb8034f3c7c28b69354cc7513643",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C230231__NRS-484B-913__motor_vehicle_driver/delivery_audit.py --case training__C230231__NRS-484B-913__motor_vehicle_driver__exception_1_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-compat-exception_1_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-v5-saved-exception_1_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c230231-delivery-audit-exception_1_2-positive.json --diagnostic --omit-source hose-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: hose-review.json",
+        "negative_log": "proofs/exception_1_2/delivery-negative.log",
+        "negative_log_sha256": "5696961b88eb2231e4ad6a13f450cc713d84ba0ba12902bb31c41114c5af7662"
+      }
+    }
+  ]
+}

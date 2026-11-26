@@ -2,7 +2,7 @@
   "format": "worker-package-compatibility",
   "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__pedestrian_conflict",
   "candidate_id": "fallback2",
-  "construction_sha256": "54235231055f80da3e31f65c8e6e389f5ac2807a98025aa5bfea0df440288da1",
+  "construction_sha256": "515a4f4c384924e8d6e771d0b9e7804e1dfddb9ce836e8e7dc8cb13d85631b8b",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "fixture_sha256": "a036a014a1ffde3681f7048b284ba35a84995b718245d5a40db704c40761ea6c",
   "passed": true,
@@ -20,7 +20,7 @@
     "negative_case_source"
   ],
   "scope": "diagnostic software compatibility only",
-  "analysis_sha256": "3aee6a59ee223634900dd452bf43205666ccbcfba5ab6ce0eb3105536725ec9e",
+  "analysis_sha256": "2a8c8e7df75e697a30f0e7932992b37c0838dc4b52392e46ee55e0da8065915b",
   "fixture_manifest": {
     "approach.mkv": "507e88478bb9893113af48b3f3fa50de63be4d9dfe35a963b453dc713a0d2417",
     "body_history.jsonl": "2a437b2ef51b2033e15eccc53593a2e57cf2e7c90046edb5a271e783eccc2620",
@@ -646,13 +646,15 @@
     "trace.jsonl": "1a8dab2d4ee194d7209f987b7d640367df1b628510b507348a5c9849ade19eab",
     "video_frames.jsonl": "70d40f1cbc0f3bec013b337fb197747180fc891d5176d67272d3ab5b74a15ad9"
   },
-  "log_sha256": "76795f306d3560470c40e2dfaabe11a079d13d3162e07bee78db8d1aa01d2571",
+  "log_sha256": "61570f91b99335f671f178ad98becc4e68d03088d4b1b18b2da9a27e422d95ee",
   "fixture_generator_sha256": "0857d9ac6c0a08c5bc25f4b58fef81c93cf1fe31d6845e904ce6a10c4f6eab53",
   "fixture_recipe_sha256": "11b148bef17b1ed303f3bb80002d07444b96be5b4d953d1f5ea7a377dcb50d97",
-  "measurement_contract_sha256": "74e67fd0c91c82905ef4ff0688cf7fca74ec5accea70e483a7f4f086a7bba48d",
-  "analysis_report_sha256": "a46986456fbe0de7f76b42ca413215a861a7b691d1b92de6cbf9d9cfe6fe673a",
+  "measurement_contract_sha256": "613bf20406eab0c708e9aefaa9dbba1cb9e15724ffe4baa9c8e323e9f6f5c5b7",
+  "analysis_report_sha256": "b3dfa5019c74774b2aaf51fa9e8fa113ea60040eba479b2369411421fa7adc90",
   "measurement_keys": [
-    "pedestrian_conflict_observation"
+    "pedestrian_conflict_observation",
+    "statutory_disposition_04_context",
+    "statutory_disposition_16_context"
   ],
   "measurement_examples": {
     "pedestrian_conflict_observation": {
@@ -679,9 +681,50 @@
         "pedestrian_geometry.json": "a38fc761afac3e0d1da9ab4bd07a2227ea733aad57172040e5b91833c55f435c",
         "pedestrian-source-manifest.json": "36d213b29e2a657663380545ecebdb88804749428cf651414c1bd112ad1aa5b8"
       }
+    },
+    "statutory_disposition_04_context": {
+      "method": "statutory_disposition_context",
+      "value": {
+        "disposition_index": 4,
+        "source_topic": "NRS 484B.270(3), yield sentence; NRS 484B.297(6)",
+        "diagnostic_observation": {
+          "first_pedestrian_conflict_frame": 187,
+          "last_pedestrian_conflict_frame": 213,
+          "first_ego_conflict_frame": 187,
+          "simultaneous_conflict_frames": 20
+        },
+        "original_native_review_required": true,
+        "legal_verdict_claimed": false
+      },
+      "sources": {
+        "pedestrian_native_samples.jsonl": "bc670cde3572c5bfa48f5170d4f6918305dcfc54df092bd351b2c15701b93887",
+        "pedestrian_geometry.json": "a38fc761afac3e0d1da9ab4bd07a2227ea733aad57172040e5b91833c55f435c",
+        "pedestrian-source-manifest.json": "36d213b29e2a657663380545ecebdb88804749428cf651414c1bd112ad1aa5b8"
+      }
+    },
+    "statutory_disposition_16_context": {
+      "method": "statutory_disposition_context",
+      "value": {
+        "disposition_index": 16,
+        "source_topic": "NRS 484B.297(6), cross-reference in NRS 484B.270(3)",
+        "diagnostic_observation": {
+          "sidewalk_obstructed": true,
+          "buffer_impassable": true,
+          "bounded_monotonic_path": true,
+          "first_sidewalk_return_frame": 260,
+          "return_gap_after_obstacle_frames": 30
+        },
+        "original_native_review_required": true,
+        "legal_verdict_claimed": false
+      },
+      "sources": {
+        "pedestrian_native_samples.jsonl": "bc670cde3572c5bfa48f5170d4f6918305dcfc54df092bd351b2c15701b93887",
+        "pedestrian_geometry.json": "a38fc761afac3e0d1da9ab4bd07a2227ea733aad57172040e5b91833c55f435c",
+        "pedestrian-source-manifest.json": "36d213b29e2a657663380545ecebdb88804749428cf651414c1bd112ad1aa5b8"
+      }
     }
   },
   "negative_removed": "pedestrian-source-manifest.json",
   "negative_error_contains": "Missing required source: pedestrian-source-manifest.json",
-  "negative_log_sha256": "00c653b0edc2d430348dcfce4d48f0849d5a262fda5d3966ae9d99928358b0e9"
+  "negative_log_sha256": "3d2b33972d0045a69ed3be5a856ccb6d5b5b893be0c078fa4c8016af03515997"
 }

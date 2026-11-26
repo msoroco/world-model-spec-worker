@@ -21,7 +21,7 @@ def open_drive():
     ET.SubElement(center, 'lane', id='0', type='none', level='false')
     right = ET.SubElement(section, 'right')
     lane = ET.SubElement(right, 'lane', id='-1', type='driving', level='false')
-    ET.SubElement(lane, 'width', sOffset='0', a='7', b='0', c='0', d='0')
+    ET.SubElement(lane, 'width', sOffset='0', a='10', b='0', c='0', d='0')
     ET.SubElement(road, 'objects')
     ET.SubElement(road, 'signals')
     return ET.tostring(root, encoding='unicode')
@@ -30,7 +30,9 @@ def open_drive():
 def check():
     tree = ET.fromstring(open_drive())
     width = float(tree.find('road/lanes/laneSection/right/lane/width').get('a'))
-    if width != 7 or HOSE_LINE[0][0] != HOSE_LINE[1][0] or HOSE_LINE[0][1] <= HOSE_LINE[1][1]:
+    if width != 10 or HOSE_LINE[0][0] != HOSE_LINE[1][0] or HOSE_LINE[0][1] <= HOSE_LINE[1][1]:
         raise ValueError('Diagnostic hose/way geometry differs')
+    if not (-width < -8.5 - 1 < -8.5 + 1 < 0):
+        raise ValueError('Route-around vehicle footprint leaves diagnostic way')
     return {'passed': True, 'way_width_m': width, 'hose_line_xy_m': HOSE_LINE,
             'hose_radius_m': HOSE_RADIUS_M, 'official_way_or_hose_status_proven': False}

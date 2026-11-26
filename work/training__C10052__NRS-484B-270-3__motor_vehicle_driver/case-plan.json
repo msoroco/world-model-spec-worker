@@ -5,6 +5,33 @@
   ],
   "actor": "motor_vehicle_driver",
   "assignment_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "entire original 24-second attempt",
+        "subject": "ego body, bicycle facility, approach users and exception context for the selected case",
+        "view": "overview"
+      },
+      {
+        "interval": "entire original 24-second attempt",
+        "subject": "ego body, bicycle facility, approach users and exception context for the selected case",
+        "view": "approach"
+      },
+      {
+        "interval": "entire original 24-second attempt",
+        "subject": "ego body, bicycle facility, approach users and exception context for the selected case",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "entire original 24-second attempt",
+        "subject": "ego body, bicycle facility, approach users and exception context for the selected case",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 24,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "candidate_plans": [
@@ -1008,19 +1035,19 @@
       "reason": "the subject's footprint in it"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.bicycle",
-      "reason": "a rider on the pathway"
+      "reason": "a rider on the pathway; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.electric_bicycle",
-      "reason": "or an electric bicycle"
+      "reason": "or an electric bicycle; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.electric_scooter",
-      "reason": "or an electric scooter"
+      "reason": "or an electric scooter; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
       "mandatory": true,
@@ -1028,9 +1055,9 @@
       "reason": "a pedestrian on the pathway, per the cited rule"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "drv.yields_to",
-      "reason": "the yield owed to them"
+      "reason": "the yield owed to them; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
       "mandatory": true,
@@ -1043,24 +1070,24 @@
       "reason": "exception (a): entering or exiting an alley or driveway"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "sig.hazard",
-      "reason": "exception (b): a disabled vehicle"
+      "reason": "exception (b): a disabled vehicle; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "drv.time_to_conflict",
-      "reason": "exception (c): avoiding conflict with other traffic"
+      "reason": "exception (c): avoiding conflict with other traffic; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "dev.human_direction",
-      "reason": "exception (e): a police officer's directions"
+      "reason": "exception (e): a police officer's directions; selected case source packet is mapped separately from the universal root capture stream."
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "drv.responding_emergency",
-      "reason": "exception (d),(f): official duties, an emergency"
+      "reason": "exception (d),(f): official duties, an emergency; selected case source packet is mapped separately from the universal root capture stream."
     }
   ],
   "physical_capability_to_check": [
@@ -1301,6 +1328,109 @@
   "selected_branch": "Stopping or standing within a designated facility, with alley exception context",
   "source_law_citation": "NRS 484B.270(3)",
   "source_law_text": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane. The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except: (a) When entering or exiting an alley or driveway; (b) When operating or parking a disabled vehicle; (c) To avoid conflict with other traffic; (d) In the performance of official duties; (e) In compliance with the directions of a police officer; or (f) In an emergency.",
+  "source_observation_mapping": {
+    "dev.human_direction": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for exception (e): a police officer's directions; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-exception-e-directed/source/exception_e_native_samples.jsonl"
+      ]
+    },
+    "drv.responding_emergency": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for exception (d),(f): official duties, an emergency; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-exception-f-emergency/source/exception_f_native_samples.jsonl"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "evidence": "Exact selected synthetic source packet for 'stop, stand, park' in the lane; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-park-probe_park_held/source/native_samples.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for exception (c): avoiding conflict with other traffic; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-exception-c-avoid/source/exception_c_native_samples.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for the yield owed to them; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "rider-30s-primary/source/rider_native_samples.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies"
+      ],
+      "evidence": "Exact selected synthetic source packet for the subject's footprint in it; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "rider-30s-primary/source/body_history.jsonl"
+      ]
+    },
+    "ru.bicycle": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for a rider on the pathway; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "rider-30s-primary/source/rider_native_samples.jsonl"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for or an electric bicycle; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-rider-electric-bicycle-clear/source/rider_native_samples.jsonl"
+      ]
+    },
+    "ru.electric_scooter": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for or an electric scooter; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-rider-electric-scooter-clear/source/rider_native_samples.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "channels": [
+        "ru.pedestrian"
+      ],
+      "evidence": "Exact selected synthetic source packet for a pedestrian on the pathway, per the cited rule; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-pedestrian-clear/source/pedestrian_native_samples.jsonl"
+      ]
+    },
+    "sig.hazard": {
+      "channels": [],
+      "evidence": "Exact selected synthetic source packet for exception (b): a disabled vehicle; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-exception-b-faulted/source/exception_b_native_samples.jsonl"
+      ]
+    },
+    "st.bicycle_lane_or_path": {
+      "channels": [
+        "st.bicycle_lane_or_path"
+      ],
+      "evidence": "Exact selected synthetic source packet for the pathway or lane provided for bicycles and the devices grouped with them; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "rider-30s-primary/source/road_geometry.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "channels": [
+        "st.driveway_or_alley_entrance"
+      ],
+      "evidence": "Exact selected synthetic source packet for exception (a): entering or exiting an alley or driveway; original Native observation and legal qualification require independent review.",
+      "source_refs": [
+        "selected-entry-probe_c_alley_entry/source/road_geometry.json"
+      ]
+    }
+  },
   "sources": [
     {
       "path": "inputs/training__C10052__NRS-484B-270-3__motor_vehicle_driver/assignment.json",

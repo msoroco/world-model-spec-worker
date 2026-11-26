@@ -89,7 +89,7 @@ def main():
             'note': item['note'], 'status': 'draft',
             'observable_requirements': {
                 'observables': [
-                    {'name': 'kin.position', 'unit': 'structured',
+                    {'name': 'kin.position', 'unit': 'm',
                      'description': 'Original frame-indexed motor-vehicle pose for the specific statutory topic.'},
                     {'name': 'rel.occupies', 'unit': 'structured',
                      'description': 'Original body-to-facility occupancy relation for the specific statutory topic.'},
@@ -100,7 +100,7 @@ def main():
                 ],
                 'sweep_dimensions': [], 'landmarks': [],
                 'recording_needs': [
-                    {'name': 'kin.position', 'unit': 'structured',
+                    {'name': 'kin.position', 'unit': 'm',
                      'description': 'Retain the original same-tick body pose.'},
                     {'name': 'rel.occupies', 'unit': 'structured',
                      'description': 'Retain original facility occupancy and map reference.'},
@@ -128,7 +128,7 @@ def main():
     }
     cases_path = PROPOSALS / 'cases.json'
     cases = json.loads(cases_path.read_text())
-    current = {c['case_id']: c for c in cases['cases']}
+    current = {c['case_id']: c for c in cases['cases'] if c['case_id'] != ROOT.name + '__baseline'}
     assert set(current) == {c['case_id'] for c in PLAN['cases']}
     pair_by_case = {cid: comparison for comparison in PLAN['comparisons']
                     for cid in comparison['case_ids']}
@@ -144,7 +144,7 @@ def main():
         'recording_description': current[next(iter(current))]['recording_description'],
     }
     enriched = [baseline]
-    for case in cases['cases']:
+    for case in current.values():
         cid = case['case_id']
         suffix = cid.rsplit('__', 1)[-1]
         comparison = pair_by_case[cid]

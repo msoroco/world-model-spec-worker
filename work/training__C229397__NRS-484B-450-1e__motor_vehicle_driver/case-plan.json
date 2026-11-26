@@ -777,5 +777,82 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject, roadway and full crosswalk",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "subject approach and stop/stand/park activity",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crosswalk boundary and exception context",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject and driver reference",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.standing_or_parked": {
+      "evidence": "same-tick speed and rest interval",
+      "channels": [
+        "crosswalk_observation"
+      ],
+      "source_refs": [
+        "original actor-sources.jsonl joined to crosswalk-source.json and video_frames.jsonl"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "source-hashed crosswalk polygon and four camera views",
+      "channels": [
+        "crosswalk_observation"
+      ],
+      "source_refs": [
+        "original actor-sources.jsonl joined to crosswalk-source.json and video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "same-tick vehicle footprint versus polygon",
+      "channels": [
+        "crosswalk_observation"
+      ],
+      "source_refs": [
+        "original actor-sources.jsonl joined to crosswalk-source.json and video_frames.jsonl"
+      ]
+    },
+    "drv.forced_halt": {
+      "evidence": "reviewed traffic-conflict source packet",
+      "channels": [],
+      "source_refs": [
+        "exception-context.json and reviewed original pixels"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "reviewed officer direction source packet",
+      "channels": [],
+      "source_refs": [
+        "exception-context.json and reviewed original pixels"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "reviewed official-device direction source packet",
+      "channels": [],
+      "source_refs": [
+        "exception-context.json and reviewed original pixels"
+      ]
+    }
+  }
 }
