@@ -78,6 +78,7 @@ def capture(site, case, host, port, output):
     world = client.get_world()
     original_settings = world.get_settings()
     owned = []
+    pipeline = None
     try:
         native_map = world.get_map()
         if native_map.name != site['map_name'] or hashlib.sha256(native_map.to_opendrive().encode()).hexdigest() != site['map_sha256']:
@@ -109,6 +110,8 @@ def capture(site, case, host, port, output):
             owned.append(sensor)
             cameras[name] = q
             (stage / ('frames-' + name)).mkdir()
+        from pipeline_capture import PipelineCapture
+        pipeline = PipelineCapture(client, ego, output, case)
         rows, frame_map = [], []
         path_index = 0
         prior = None
@@ -127,6 +130,7 @@ def capture(site, case, host, port, output):
                                                    brake=1 if stop else max(0, min(.7, (speed - 8) * .2)),
                                                    steer=max(-.7, min(.7, delta * float(site.get('control_profile', {}).get('steer_gain', .025))))))
             frame = world.tick()
+            pipeline.capture(frame, i / 20)
             stamp = world.get_snapshot().timestamp.elapsed_seconds
             if prior is not None and (frame != prior[0] + 1 or abs(stamp - prior[1] - .05) > .002):
                 raise ValueError('Native frame/time discontinuity')
@@ -136,7 +140,7 @@ def capture(site, case, host, port, output):
             if wp is None:
                 raise ValueError('original lane waypoint absent')
             station = (loc.x - site['station_origin_xy'][0]) * site['station_axis_xy'][0] + (loc.y - site['station_origin_xy'][1]) * site['station_axis_xy'][1]
-            row = {'frame': frame, 'native_frame': frame, 'time_s': i / 20, 'lane_id': str(wp.lane_id),
+            row = {'frame': i, 'native_frame': frame, 'time_s': i / 20, 'lane_id': str(wp.lane_id),
                    'ego_station_m': station, 'speed_mps': speed, 'connected_route': site['route_request'] if site['route_request'] != 'stop_before' else 'none',
                    'position_xyz_m': [loc.x, loc.y, loc.z], 'position_m': [loc.x, loc.y], 'road_id': wp.road_id,
                    'junction_id': wp.get_junction().id if wp.is_junction else None}
@@ -151,6 +155,7 @@ def capture(site, case, host, port, output):
                 rgba.convert('RGB').save(frame_path)
                 hashes[name] = sha(frame_path)
             frame_map.append({'video_frame': i, 'carla_frame': frame, 'native_frame': frame, 'time_s': i / 20, 'camera_png_sha256': hashes})
+        pipeline.close()
         context = dict(site['source_context'])
         context.update({'case_id': case, 'map_sha256': site['map_sha256'], 'lane_design': site['lane_design'],
                         'intersection_type': site['intersection_type'], 'independent_route_intent': site['route_request'],
@@ -159,7 +164,6 @@ def capture(site, case, host, port, output):
                         'intersection_exit_station_m': site['intersection_exit_station_m']})
         (stage / 'context.json').write_text(json.dumps(context, sort_keys=True) + '\n')
         (stage / 'original-trace.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
-        (stage / 'trace.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
         (stage / 'video_frames.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in frame_map))
         videos = {}
         for name in CAMERAS:
@@ -190,6 +194,8 @@ def capture(site, case, host, port, output):
         shutil.rmtree(stage, ignore_errors=True)
         raise
     finally:
+        if pipeline is not None:
+            pipeline.close(confirmed=False)
         if owned:
             try:
                 owned[0].apply_control(carla.VehicleControl(brake=1))

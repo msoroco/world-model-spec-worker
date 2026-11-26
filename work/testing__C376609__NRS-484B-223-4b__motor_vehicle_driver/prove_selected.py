@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SCRATCH = ROOT / '.runtime-work/c376609-owner-nov26'
 VALIDATOR = ROOT / '.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
-VERSION = 'v6'
+VERSION = 'v7'
 
 
 def sha(path):
@@ -82,7 +82,8 @@ def run():
             cr['negative_log_sha256'] = sha(HERE / ('proof-compat-negative-' + label + '.log'))
             receipt_path.write_text(json.dumps(cr, indent=2) + '\n')
             cp = {'receipt': receipt_path.name, 'sha256': sha(receipt_path),
-                  'log': 'proof-compat-analysis-' + label + '.log'}
+                  'log': 'proof-compat-analysis-' + label + '.log',
+                  'negative_log': 'proof-compat-negative-' + label + '.log'}
             np = {'log': 'proof-compat-negative-' + label + '.log'}
             if candidate == 'primary':
                 entry['compatibility'], entry['negative'] = cp, np

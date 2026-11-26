@@ -1,22 +1,31 @@
 # testing__C376609__NRS-484B-223-4b__motor_vehicle_driver
 
-Status: partial exact-case measurement checkpoint, 2026-11-23. No physical recording or delivered case is claimed.
+Status: ready for CPU-prepared, source-gated delivery. The exact scoped strict assignment gate passed on 2026-11-26. No original Native capture, physical acceptance, or legal verdict is claimed.
 
-Exact law: NRS 484B.223(4)(b): on a highway designed with a single right lane used only for turning, a vehicle driven in that lane must not travel through an intersection. Assigned cell is C376609, blind-intersection straight traversal, motor-vehicle driver. Frozen evidence inventory has zero accepted recordings and zero judgment-range entries for this exact law and actor.
+## Exact branch and construction
 
-## Constructed CPU work
+NRS 484B.223(4)(b) is the single exclusive right-turn-lane prohibition on traveling through an intersection. Nine selected cases and eight controlled comparisons isolate route, stop, adjacent lane, lane design, right-turn-lane count, sightline, alley status, and change before entry. The selected Native runner requires reviewed public-highway, single exclusive lane, intersection, route, actor and sightline source hashes and a matching Native map. It captures 900 frames at 20 Hz, four synchronized FFV1 camera views, pinned SGG/recorder evidence through PipelineCapture, separate law-specific lane/junction trace, canonical video frame map, and capture seal after actor cleanup and world restoration. The saved finalizer reads source-bound original observations and leaves statutory interpretation unresolved.
 
-`case-plan.json` defines nine unexecuted exact cases and eight controlled comparisons. It isolates straight-through travel from a right turn, stop before the junction, adjacent through lane, lane change before entry, nonexclusive or multiple right-turn-lane designs, alley status, and an unobstructed sightline control. Each case has an independent route intent and a capture/source request; the variants do not imply legal outcomes.
+## CPU proof results
 
-`turn_lane_observations.py` consumes a hash-sealed original Native source receipt, map context, and 20 Hz actor trace. It requires public-highway and roadway-boundary sources; lane design and exclusive control; intersection type and entry/exit bounds; straight/right routes; sightline obstruction; driver, motor vehicle and independent intent sources. It checks exact case identity, frame cadence/count, lane identities and interval bounds, then reports first frame within and beyond the intersection station interval and lane occupancy. It leaves travel-through and exclusive-lane legal judgments unresolved and physical acceptance unverified. Seven focused tests cover positive extraction, diagnostic and changed-source rejection, missing lane, malformed bounds and bad approach start.
+- 18 of 18 selected primary/fallback offline checks passed without simulation.
+- 18 of 18 selected positive/negative compatibility receipts passed pinned analysis, Lean decoder, video decode and acquisition-preservation checks.
+- 18 of 18 recorded-only saved replays passed and preserved originals.
+- Nine source-shaped physical tests distinguish complete, incomplete and missing motion; nine synthetic ownership lifecycle tests cover sealed capture, Native exit, owner release and saved processing order. These are diagnostic protocol tests and claim no original physical outcome.
+- Nine delivery protocol positive/negative checks and eight exact comparison diagnostic/rejection checks passed. Original pixels and physical comparison findings remain execution-time requirements.
+- Pinned semantic validator passed five stages for all nine selected cases. The assignment-local GPU queue proposal contains nine exact case commands and eight comparison commands; 80 shell commands passed bash syntax and exact-ID checks.
+- `runtime.py preflight`, package unit tests and exact scoped strict `worker_check.py --assignment testing__C376609__NRS-484B-223-4b__motor_vehicle_driver --complete --require-delivery-ready` exited 0.
 
-## Proofs
+## Source gates at execution
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0; `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C376609__NRS-484B-223-4b__motor_vehicle_driver/tests -v`: exit 0; `cpu-turn-tests.log` SHA256 `05e54a3a0ab723bdf1240f72d2d9a2b8caf048e494b7f45e282ea1ea2ee0f7d5`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C376609__NRS-484B-223-4b__motor_vehicle_driver --complete`: exit 0; `assignment-check.log` SHA256 `df567e83768db4c22728cbf435e5969dfb549d35a5d5658d0fe1a82987aedb89`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C376609__NRS-484B-223-4b__motor_vehicle_driver --complete --require-delivery-ready`: exit 1 as truthful partial; `strict-gate.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. It fails the all-ready requirement.
+An independent reviewer must supply the original public-highway and exclusive single-right-lane design, lane/route/intersection and map sources. The GPU owner must capture the original 900-frame four-view run, confirm actual lane/route behavior and physical completion, inspect original pixels, and separately review the eight comparisons. No synthetic CPU fixture may be substituted for those sources.
 
-## Remaining CPU and physical work
+## Stable files and SHA256
 
-Build and prove the exact scene and traffic controller, source-bound original Native capture and finalizer, case-specific semantic proposal, saved compatibility and processing, and delivery/comparison audits for all variants. Then run the exact scoped strict gate. Actual CARLA motion, four-camera visibility and capture quality remain physical checks after CPU preparation. Earlier dependency/tool diagnoses are no longer blockers.
+- `case-plan.json`: `95728bdda156f9e8adef3a821bd70453e06141f54371e3820f08b05d259c9d92`
+- `construction.json`: `527175c742da41419b396a01fd4f2cdb410dd82e8a27ee7e3adc45c89446ad2e`
+- `execution-manifest.json`: `298668da475b4a2d4bb932f04233f12343c18dab38e328fcdcf44150dde05f3d`
+- `gpu-queue-proposal.json`: `dc99351063df1eafa79f3dc2d87aa3f1ac46bfd9fd0d4a1987603af6b058e5ca`
+- `result.json`: `062b19e2a0de6fb7c62d8a2839c9a84dc55c384d0b7ab84825ba36136f63928a`
+- `strict-gate-current.log`: `df567e83768db4c22728cbf435e5969dfb549d35a5d5658d0fe1a82987aedb89`
+- `proof-queue-syntax.log`: `3a6349b3846b1fcacc64250556e76c220a55e314a35fc4a1854f7c5bf144e235`

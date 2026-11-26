@@ -37,9 +37,9 @@ def build():
                            "obligation":{"description":"Use the right lane to turn right.","type":"must","numeric_conditions":[]},
                            "exceptions":[],"timing":{"description":"Measure circulating lane through the connected right-turn exit.","numeric_conditions":[]},
                            "judgment_calls_needed":[{"phrase":phrase,"note":note} for phrase,note in JUDGMENTS]},
-              "parameter_refs":[{"name":"operator_intent_request","kind":"participant_behavior","range_or_domain":"independent right or through exit request"},
+              "parameter_refs":[{"name":"operator_intent_request","kind":"controller","range_or_domain":"independent right or through exit request"},
                                 {"name":"roundabout_lane_request","kind":"world_setup","range_or_domain":"source-mapped right, left or lane transition"},
-                                {"name":"actual_exit_request","kind":"participant_behavior","range_or_domain":"source-mapped right, through or no exit"}]}
+                                {"name":"actual_exit_request","kind":"controller","range_or_domain":"source-mapped right, through or no exit"}]}
     temp=write("template.json",template)
     jobs=[]
     for index,(phrase,note) in enumerate(JUDGMENTS,1):
@@ -59,16 +59,16 @@ def build():
               "fixed_parameters":[{"name":"reviewed_roundabout_site","value":"source_packet_pending",
                                    "rationale":"Bind the same original map, vehicle, entry and four camera rig within each comparison."}],
               "variable_parameters":[{"name":name,"kind":kind,"range_or_domain":domain,"used_by_laws":[LAW]}
-                  for name,kind,domain in (("operator_intent_request","participant_behavior","right_exit or through"),
+                  for name,kind,domain in (("operator_intent_request","controller","right_exit or through"),
                        ("roundabout_lane_request","world_setup","right, left, left_then_right, right_then_left or single_right"),
-                       ("actual_exit_request","participant_behavior","right_exit, through_exit or no_exit"))]}
+                       ("actual_exit_request","controller","right_exit, through_exit or no_exit"))]}
     binding=write("bindings.json",bindings)
     desc=json.loads((HERE/manifest["cases"][0]["construction"]).read_text())["recording_description"]
     baseline={"case_id":AID+"__baseline","paired_probe_id":"roundabout_right_lane_controls",
               "rationale":"Shared source map and operator reference for the exact selected controls.",
               "recording_description":desc,"target_law_id":LAW,"target_type":"baseline",
               "unresolved_judgment_calls":[x[0] for x in JUDGMENTS],
-              "variable_assignments":{},"deliberate_differences":[],
+              "variable_assignments":{"operator_intent_request":{"kind":"controller","value":"right_exit"},"roundabout_lane_request":{"kind":"world_setup","value":"right"},"actual_exit_request":{"kind":"controller","value":"right_exit"}},"deliberate_differences":[],
               "probe":{"primary_variable":"roundabout_lane_request",
                        "comparison_or_standard":"reviewed allocated right lane and actual exit connector",
                        "target_value_or_branch":"right"}}
@@ -79,8 +79,8 @@ def build():
           "recording_description":desc,"target_law_id":LAW,"target_type":"boundary_probe",
           "unresolved_judgment_calls":[x[0] for x in JUDGMENTS],
           "variable_assignments":{name:{"kind":kind,"value":row[name]} for name,kind in
-              (("operator_intent_request","participant_behavior"),("roundabout_lane_request","world_setup"),
-               ("actual_exit_request","participant_behavior"))},
+              (("operator_intent_request","controller"),("roundabout_lane_request","world_setup"),
+               ("actual_exit_request","controller"))},
           "deliberate_differences":["operator_intent_request","roundabout_lane_request","actual_exit_request"],
           "probe":{"primary_variable":"roundabout_lane_request",
                    "comparison_or_standard":"source-bound intended, requested and observed roundabout operation",

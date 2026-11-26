@@ -33,7 +33,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
@@ -43,7 +45,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
@@ -53,7 +57,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
@@ -63,7 +69,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
@@ -73,7 +81,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
@@ -83,7 +93,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources."
+      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     },
     {
       "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops",
@@ -93,7 +105,9 @@
       "fps": 20,
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
-      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources."
+      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources.",
+      "planning_status": "selected_required",
+      "recording_description": "Original reviewed flagger/zone source records, 900 synchronized 20 Hz vehicle and signal observations, four camera streams"
     }
   ],
   "comparisons": [
@@ -144,8 +158,21 @@
     }
   ],
   "observations": [
-    "Original 900-frame driver/vehicle/flagger identities, zone designation and boundaries, signal content/orientation/visibility/recipient, release time, and physical vehicle speed/position are separately source-bound.",
-    "Clearly marked highway construction or maintenance is a separate statutory alternative; construction/maintenance activity and visible marking require distinct reviewed sources from zone designation."
+    {
+      "name": "original_vehicle_motion",
+      "mandatory": true,
+      "source": "original Native"
+    },
+    {
+      "name": "flagger_signal",
+      "mandatory": true,
+      "source": "original Native"
+    },
+    {
+      "name": "camera_pixels",
+      "mandatory": true,
+      "source": "original Native"
+    }
   ],
   "sources": [
     {
@@ -171,7 +198,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Original reviewed site, map, construction/maintenance and marking evidence, flagger authorization, signal and 900-frame capture remain absent; synthetic CPU proofs are diagnostic only."
+    "Original reviewed site and authority files are supplied only at local execution; source gate rejects absent/changed files. Physical stop or continue response, signal visibility, four-view quality and legal failure/refusal remain unverified."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -200,5 +227,125 @@
       ],
       "reason": "Road travel can encounter an applicable flagger signal in a designated temporary traffic control zone."
     }
-  ]
+  ],
+  "selected_branch": "Designated temporary traffic control zone",
+  "requirement_dispositions": [
+    {
+      "requirement": "driver of a qualifying vehicle and relevant highway area",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    },
+    {
+      "requirement": "authorized flagger serving in traffic-control capacity",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    },
+    {
+      "requirement": "clearly marked highway construction or maintenance alternative",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    },
+    {
+      "requirement": "designated temporary traffic control zone alternative",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    },
+    {
+      "requirement": "governing signal content, orientation, visibility and intended recipient",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    },
+    {
+      "requirement": "driver physical response while signal active and release event",
+      "source": "NRS 484B.330(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "measurement": "analysis.py:saved original flagger/zone/response evidence",
+      "evidence_or_gap": "No accepted recording; reviewed original scene and 900-frame motion are required at physical execution."
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "highway area, flagger, stop line and vehicle",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "approach",
+        "subject": "driver vehicle body, signal recipient and approach",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "zone boundary or construction marking and signal",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "flagger signal visibility and vehicle response",
+        "interval": "full 45 seconds"
+      }
+    ]
+  }
 }

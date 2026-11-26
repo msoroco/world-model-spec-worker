@@ -1,36 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C229398__NRS-484B-473-2__motor_vehicle_driver",
-  "camera_plan": [
-    {
-      "fps": 20,
-      "height": 1080,
-      "purpose": "original vehicle, highway setting, lamp body and beam context",
-      "view": "overview",
-      "width": 1920
-    },
-    {
-      "fps": 20,
-      "height": 720,
-      "purpose": "original vehicle, highway setting, lamp body and beam context",
-      "view": "approach",
-      "width": 1280
-    },
-    {
-      "fps": 20,
-      "height": 720,
-      "purpose": "original vehicle, highway setting, lamp body and beam context",
-      "view": "reference_corner",
-      "width": 1280
-    },
-    {
-      "fps": 20,
-      "height": 720,
-      "purpose": "original vehicle, highway setting, lamp body and beam context",
-      "view": "driver_reference",
-      "width": 1280
-    }
-  ],
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s",
+        "subject": "parked vehicle, highway setting and lamps",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through final parked frame",
+        "subject": "vehicle parking route and stationary interval",
+        "view": "approach"
+      },
+      {
+        "interval": "parking approach through final lamp observation",
+        "subject": "curb geometry and displayed cowl or parking lamps",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full parked interval",
+        "subject": "original lamp visibility and beam aim context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "capture_frames": 900,
@@ -159,7 +156,21 @@
   "law_source": "NRS 484B.473(2)",
   "law_text": "Whenever lights are displayed upon a vehicle lawfully parked at nighttime upon any highway, such lights shall be depressed or dimmed, in the event cowl or parking lamps are not used.",
   "observations": [
-    "Original 900-frame vehicle identity, frame/time, speed, nighttime, parking lawfulness, displayed lamp mode, auxiliary lamps and beam aim are measured only with source hashes."
+    {
+      "mandatory": true,
+      "name": "original_vehicle_motion",
+      "source": "source-hashed 20 Hz vehicle identity, body and speed"
+    },
+    {
+      "mandatory": true,
+      "name": "lamp_state",
+      "source": "source-hashed displayed, cowl and parking lamp readback"
+    },
+    {
+      "mandatory": true,
+      "name": "camera_pixels",
+      "source": "four synchronized original RGB camera streams"
+    }
   ],
   "planning_status": "partial_cpu_probe_implemented",
   "requirement_dispositions": [

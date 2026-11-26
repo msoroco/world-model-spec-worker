@@ -30,8 +30,9 @@ def measure(attempt):
     if case is None or construction['case_id'] != case_id:
         raise ValueError('exact parked-light construction differs')
     required(root, 'parking_lawfulness.txt')
-    packet_path = required(root, 'source-packet.json')
     diagnostic = (root / 'fixture-provenance.json').is_file()
+    packet_path = required(root, 'reviewed-packet.json' if diagnostic else
+                           'source-packet.json')
     checked = verify(packet_path, diagnostic_fixture=diagnostic)
     if checked['case_id'] != case_id:
         raise ValueError('saved packet selects another parked-light case')
@@ -78,7 +79,8 @@ def analyze(attempt, output):
     root = Path(attempt)
     case_id, case, scene, ticks, trace, checked, diagnostic = measure(root)
     construction = json.loads(required(root, 'construction.json').read_text())
-    inputs = ('source-packet.json', 'parking_lawfulness.txt', 'nighttime.txt',
+    packet_name = 'reviewed-packet.json' if diagnostic else 'source-packet.json'
+    inputs = (packet_name, 'parking_lawfulness.txt', 'nighttime.txt',
               'displayed_lights.txt', 'beam_aim.txt', 'cowl_lamp.txt',
               'parking_lamp.txt', 'vehicle_motion.txt', 'original-ticks.jsonl')
     hashes = {name: sha(required(root, name)) for name in inputs}
@@ -124,6 +126,16 @@ def analyze(attempt, output):
                                               'value': observed[name]}) + '\n'
                                   for row in trace))
         evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': str(target.relative_to(root))})
+    for context in construction['recording_description']['context_inputs']:
+        name = context['name']
+        if name not in checked['source_hashes']:
+            raise ValueError('unexpected parked-light context: ' + name)
+        target = channels / ('context_' + name + '.jsonl')
+        target.write_text(json.dumps({name: {
+            'source_sha256': checked['source_hashes'][name],
+            'review_status': 'synthetic' if diagnostic else 'reviewed'}}) + '\n')
+        evidence.append({'name': name, 'unit': context['unit'],
                          'reference': str(target.relative_to(root))})
     result = {'case_id': case_id, 'measured_values': values,
               'target_checks': [{'target': 'source-bound parked-light state and 20 Hz stationary interval',

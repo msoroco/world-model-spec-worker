@@ -38,13 +38,27 @@ def build():
          'evidence_or_gap': 'Reviewed original site, lawful-parking, night and actual lamp sources are required.'}
         for name, _ in REQUIREMENTS]
     plan['source_observation_mapping'] = {}
-    plan['camera_plan'] = [
-        {'view': name, 'width': width, 'height': height, 'fps': 20,
-         'purpose': 'original vehicle, highway setting, lamp body and beam context'}
-        for name, width, height in [('overview', 1920, 1080),
-                                    ('approach', 1280, 720),
-                                    ('reference_corner', 1280, 720),
-                                    ('driver_reference', 1280, 720)]]
+    plan['observations'] = [
+        {'name': 'original_vehicle_motion', 'mandatory': True,
+         'source': 'source-hashed 20 Hz vehicle identity, body and speed'},
+        {'name': 'lamp_state', 'mandatory': True,
+         'source': 'source-hashed displayed, cowl and parking lamp readback'},
+        {'name': 'camera_pixels', 'mandatory': True,
+         'source': 'four synchronized original RGB camera streams'}]
+    plan['camera_plan'] = {
+        'profile': 'overview1080-capability', 'duration_s': 45,
+        'composition': 'synchronized_four_view_primary',
+        'coverage': [
+            {'view': 'overview', 'subject': 'parked vehicle, highway setting and lamps',
+             'interval': 'full 45 s'},
+            {'view': 'approach', 'subject': 'vehicle parking route and stationary interval',
+             'interval': 'approach through final parked frame'},
+            {'view': 'reference_corner',
+             'subject': 'curb geometry and displayed cowl or parking lamps',
+             'interval': 'parking approach through final lamp observation'},
+            {'view': 'driver_reference',
+             'subject': 'original lamp visibility and beam aim context',
+             'interval': 'full parked interval'}]}
     write(plan_path, plan)
     fixture = json.loads((ROOT / 'runtime/fixtures/example.json').read_text())
     traces = [json.loads(line) for line in fixture['files']['trace.jsonl'].splitlines()]
@@ -73,7 +87,7 @@ def build():
         packet = {'assignment_id': ASSIGNMENT, 'case_id': case_id,
                   'source_kind': 'synthetic_fixture', 'review_status': 'synthetic',
                   'scene': scene, 'source_refs': refs}
-        write(source_root / 'source-packet.json', packet)
+        write(source_root / 'reviewed-packet.json', packet)
         rows = []
         for trace in traces:
             row = {'original_frame': trace['frame'], 'time_s': trace['time_s'],
@@ -87,7 +101,7 @@ def build():
             rows.append(row)
         (source_root / 'original-ticks.jsonl').write_text(
             ''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
-        common_inputs = ['source-packet.json', 'parking_lawfulness.txt',
+        common_inputs = ['reviewed-packet.json', 'parking_lawfulness.txt',
                          'nighttime.txt', 'displayed_lights.txt', 'beam_aim.txt',
                          'cowl_lamp.txt', 'parking_lamp.txt', 'vehicle_motion.txt',
                          'original-ticks.jsonl']
@@ -101,7 +115,7 @@ def build():
                          'inputs': common_inputs}
                         for index, (name, key) in enumerate(REQUIREMENTS)]}
         write(HERE / 'cases' / case.name / 'measurement-contract.json', contract)
-        source_names = ['source-packet.json', 'original-ticks.jsonl'] + [
+        source_names = ['reviewed-packet.json', 'original-ticks.jsonl'] + [
             name + '.txt' for name in (*SCENE_SOURCES, 'map_opendrive')]
         recipe = {'format': 'worker-fixture-recipe',
                   'generator': {'source': 'runtime/fixtures/example.json',
