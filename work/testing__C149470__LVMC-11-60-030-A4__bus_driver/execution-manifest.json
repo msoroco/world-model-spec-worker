@@ -8,13 +8,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
       "kind": "delivery",
       "construction": "construction-compatibility-bus_stop_below.json",
-      "construction_sha256": "d59ca5580a257fa6675c8499473236999c4e539ddf00c93a8c5c1967d7743309",
+      "construction_sha256": "6f7bb7c92a2e6938979f5463f75a147563cce1bc53a4750eb9dfdc9c25b629bf",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/bus_stop_below-recipe.json",
       "measurement_contract": "diagnostics/bus_stop_below-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -30,6 +30,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -44,48 +54,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-bus_stop_below/receipt.json",
-        "sha256": "396dd60c793142c2ec983612be0be7dfbb56a13deca99a9938986acd26ccb426",
+        "sha256": "6e9653edabd2c2b6f3aeb0c99228f57450474f70469ceb61adb9463b1f297273",
         "log": "proofs/selected-bus_stop_below/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-bus_stop_below/negative.log"
       },
       "offline": {
-        "construction_sha256": "d59ca5580a257fa6675c8499473236999c4e539ddf00c93a8c5c1967d7743309",
+        "construction_sha256": "6f7bb7c92a2e6938979f5463f75a147563cce1bc53a4750eb9dfdc9c25b629bf",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below --output .runtime-work/c149470/selected-offline-bus_stop_below",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-bus_stop_below.log",
-        "log_sha256": "2e3f1b4167e0da98f430c00651f993c6095c638c44f22991fdfc2c534f994685"
-      },
-      "physical_preparation": {
-        "receipt": "physical-bus_stop_below-receipt.json",
-        "sha256": "3340289ff6cdf7dca25325092d98aceb96b9365d87192d750166bc928be439cc"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-bus_stop_below.log",
-        "test_log_sha256": "83b9974e2c1ad749896195b8e6153cc2e577ef5bbf85667473bd4c39a0e8adcd",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-bus_stop_below.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -95,7 +75,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-bus_stop_below.json",
-          "construction_sha256": "9cd570a888b76b2fee4484e8b355dabc7099248f48583f92423c9c36b7802520",
+          "construction_sha256": "520dc6ca50b8ed317e132f7a588c5922386b049c02de1b86b6857768642b3ba6",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -104,19 +84,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-bus_stop_below --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "9cd570a888b76b2fee4484e8b355dabc7099248f48583f92423c9c36b7802520",
-            "log": "cpu-nov25-fallback-offline-bus_stop_below.log",
-            "log_sha256": "d6cd2341aae974eec68e1470ff0b47946a778f9958d3dac7f04510909b6f4ca4"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-bus_stop_below/receipt.json",
-            "sha256": "41877280ab428816ca438242e2f2f1ff5421084fe3cd4226fa7114577e3c0325",
-            "log": "proofs/fallback1-bus_stop_below/analysis.log",
-            "negative_log": "proofs/fallback1-bus_stop_below/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -124,13 +93,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at",
       "kind": "delivery",
       "construction": "construction-compatibility-bus_stop_at.json",
-      "construction_sha256": "25302339d446b74c6aeca9f94d525e1c3042703fd8479bafa894ce9435bab03e",
+      "construction_sha256": "d9d5c29dab06624f2dd01ab85066bd9e994e9998e3317f1c7861c17032864a01",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/bus_stop_at-recipe.json",
       "measurement_contract": "diagnostics/bus_stop_at-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -146,6 +115,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -160,48 +139,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-bus_stop_at/receipt.json",
-        "sha256": "0d3cfd53a6a7863628a749b3a31ef4f6660207ac02a25cac1762ae588f8fc534",
+        "sha256": "3087e03b653db42d78ba47de3fa45553e159ab2e0a04e4c43ce66cc8c718a276",
         "log": "proofs/selected-bus_stop_at/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-bus_stop_at/negative.log"
       },
       "offline": {
-        "construction_sha256": "25302339d446b74c6aeca9f94d525e1c3042703fd8479bafa894ce9435bab03e",
+        "construction_sha256": "d9d5c29dab06624f2dd01ab85066bd9e994e9998e3317f1c7861c17032864a01",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at --output .runtime-work/c149470/selected-offline-bus_stop_at",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-bus_stop_at.log",
-        "log_sha256": "6922e7bbd86ee808cd8a4c3540c905c58ad75a9b8f49b5a7cbe9dcf1c9c8ece9"
-      },
-      "physical_preparation": {
-        "receipt": "physical-bus_stop_at-receipt.json",
-        "sha256": "cf622eb11f544055e102e0efac16722a31dd44236a2af2b555bf5c859f179e87"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-bus_stop_at.log",
-        "test_log_sha256": "73684f9c77acd1bbbeeb8a5543849e4fbffbaf0b2a05908548c50e68e2f62712",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-bus_stop_at.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -211,7 +160,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-bus_stop_at.json",
-          "construction_sha256": "a2de3bfc61a681fa03f0b9e543c21aace46d4a20d87e81451f7aeceff3e2a8ad",
+          "construction_sha256": "efbd70a01fa07c153f520d2b7fadab4a502632bc05c07ade34b0e3d945087351",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -220,19 +169,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-bus_stop_at --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "a2de3bfc61a681fa03f0b9e543c21aace46d4a20d87e81451f7aeceff3e2a8ad",
-            "log": "cpu-nov25-fallback-offline-bus_stop_at.log",
-            "log_sha256": "2e06fcfc6a238b10ca5ac555b8deb652a582c1fdb7e55ee76cee37c4211e4da7"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-bus_stop_at/receipt.json",
-            "sha256": "d0a24d89dae9e07331bba02a8c6a271b4ff201e4d3a078082e122544aff9cf61",
-            "log": "proofs/fallback1-bus_stop_at/analysis.log",
-            "negative_log": "proofs/fallback1-bus_stop_at/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -240,13 +178,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above",
       "kind": "delivery",
       "construction": "construction-compatibility-bus_stop_above.json",
-      "construction_sha256": "05b0f675805fbbacca3a1e511057774162239a2f11b7745896b2c095f5786028",
+      "construction_sha256": "a3a4fb69a602abd4db6dde76f9b615eca81bf777da8123f3202c7e30ed948402",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/bus_stop_above-recipe.json",
       "measurement_contract": "diagnostics/bus_stop_above-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -262,6 +200,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -276,48 +224,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-bus_stop_above/receipt.json",
-        "sha256": "b565af9c5e1fd80bb8ca37adf291eb611de7bd685fc33ccd89ca714f4c4724da",
+        "sha256": "096506baee9ca508ed0d6a52c25c35c5ab57243327839c61a06aeed584f8395e",
         "log": "proofs/selected-bus_stop_above/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-bus_stop_above/negative.log"
       },
       "offline": {
-        "construction_sha256": "05b0f675805fbbacca3a1e511057774162239a2f11b7745896b2c095f5786028",
+        "construction_sha256": "a3a4fb69a602abd4db6dde76f9b615eca81bf777da8123f3202c7e30ed948402",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above --output .runtime-work/c149470/selected-offline-bus_stop_above",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-bus_stop_above.log",
-        "log_sha256": "c3a7331c10de92931ba175b21878c89c6e1c2924146393a0916efb30bb4f6ee8"
-      },
-      "physical_preparation": {
-        "receipt": "physical-bus_stop_above-receipt.json",
-        "sha256": "dedea8733ad48e16c398fc73298f1efd1b678e18600c3108f169945b22678d83"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-bus_stop_above.log",
-        "test_log_sha256": "427bad39ecea78035fc686b3ca4860d8ad94a9cdcbe9135d48bc0d4a67be7161",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-bus_stop_above.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -327,7 +245,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-bus_stop_above.json",
-          "construction_sha256": "d0968aef17a1c7e9d027a536f9f7e5fd5924163c0e39d9adb3836145c35e35a4",
+          "construction_sha256": "d28d27714db666c441921f8bd95a09c2a0260b05f32427f1494e016eb1548c0c",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -336,19 +254,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-bus_stop_above --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "d0968aef17a1c7e9d027a536f9f7e5fd5924163c0e39d9adb3836145c35e35a4",
-            "log": "cpu-nov25-fallback-offline-bus_stop_above.log",
-            "log_sha256": "4aeb480573d19f2c739be82dc0e409aa50a4d252808fd917bed2b6a9c9673e15"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-bus_stop_above/receipt.json",
-            "sha256": "02d2189a70ed2d08d5e68343cd3b780a862f0aba19ee699411afb5711a3f2924",
-            "log": "proofs/fallback1-bus_stop_above/analysis.log",
-            "negative_log": "proofs/fallback1-bus_stop_above/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -356,13 +263,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage",
       "kind": "delivery",
       "construction": "construction-compatibility-bus_stand_baggage.json",
-      "construction_sha256": "32390f2dd2974b8ff71dce189017eb884fed4c60860de06efa286151e4d94289",
+      "construction_sha256": "e06d530ec1fec065e4354089c2d0ea333046fbcbb02374eed0351f7cc67bb1a5",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/bus_stand_baggage-recipe.json",
       "measurement_contract": "diagnostics/bus_stand_baggage-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -378,6 +285,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -392,48 +309,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-bus_stand_baggage/receipt.json",
-        "sha256": "66da1b7786e6d53b423f91b3d60cc316507efc4c43dee9a0a6e6474b927a5661",
+        "sha256": "eea52347366f5f4600bf2099d718e244515eccee283e914fbab1fdd9ab67add9",
         "log": "proofs/selected-bus_stand_baggage/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-bus_stand_baggage/negative.log"
       },
       "offline": {
-        "construction_sha256": "32390f2dd2974b8ff71dce189017eb884fed4c60860de06efa286151e4d94289",
+        "construction_sha256": "e06d530ec1fec065e4354089c2d0ea333046fbcbb02374eed0351f7cc67bb1a5",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage --output .runtime-work/c149470/selected-offline-bus_stand_baggage",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-bus_stand_baggage.log",
-        "log_sha256": "f5d499ae7773aec4eafae41db4bc83c08adc45a4bdde38328ca78c1e48ddc35b"
-      },
-      "physical_preparation": {
-        "receipt": "physical-bus_stand_baggage-receipt.json",
-        "sha256": "d0f61d74f99cdb0f34c698a6504637fd2240aef20d6b333a66f8995769827053"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-bus_stand_baggage.log",
-        "test_log_sha256": "e67bed98255f79fb98426fc4c64806f6e44ee7e44dd2bdf31fe445943b1786ff",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-bus_stand_baggage.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -443,7 +330,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-bus_stand_baggage.json",
-          "construction_sha256": "011f4f33cf9e0879cc59bc2d1895c71db51a2826ab3bf7e94554e3a5880233be",
+          "construction_sha256": "8197e53b70cf6819ec16c55154ff0ab132b2c6fa44e21fa1f13a81d6024ffd34",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -452,19 +339,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-bus_stand_baggage --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "011f4f33cf9e0879cc59bc2d1895c71db51a2826ab3bf7e94554e3a5880233be",
-            "log": "cpu-nov25-fallback-offline-bus_stand_baggage.log",
-            "log_sha256": "894f4877fc42772d2177ebc26ad19496fb4148fcd80b5a56135e4f5f35d52fb1"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-bus_stand_baggage/receipt.json",
-            "sha256": "106ba90f2a31853de8050dcc90523acd929c71c1e4aeff31860b762acebd3a60",
-            "log": "proofs/fallback1-bus_stand_baggage/analysis.log",
-            "negative_log": "proofs/fallback1-bus_stand_baggage/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -472,13 +348,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload",
       "kind": "delivery",
       "construction": "construction-compatibility-passenger_zone_unload.json",
-      "construction_sha256": "5c8ce4c1d2cea53d8d47c84c90cb3588f447b431abbbd9f2c58c5ab40e915203",
+      "construction_sha256": "3a37e408450b9a7d8665731bf0870a29728a32db419c2daf80eabcc454755a7b",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/passenger_zone_unload-recipe.json",
       "measurement_contract": "diagnostics/passenger_zone_unload-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -494,6 +370,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -508,48 +394,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-passenger_zone_unload/receipt.json",
-        "sha256": "9eef4506c96676e3eea925514b01440fd73310c678ca3a22b99af7bc18129257",
+        "sha256": "807a185163e14e1b5b814b8810e405e5f0611802c107a7da2152fe650831ee5b",
         "log": "proofs/selected-passenger_zone_unload/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-passenger_zone_unload/negative.log"
       },
       "offline": {
-        "construction_sha256": "5c8ce4c1d2cea53d8d47c84c90cb3588f447b431abbbd9f2c58c5ab40e915203",
+        "construction_sha256": "3a37e408450b9a7d8665731bf0870a29728a32db419c2daf80eabcc454755a7b",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload --output .runtime-work/c149470/selected-offline-passenger_zone_unload",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-passenger_zone_unload.log",
-        "log_sha256": "7a05f2667bd050072684067b3ef9307e6b65cc73fd6850e730536478d91444ad"
-      },
-      "physical_preparation": {
-        "receipt": "physical-passenger_zone_unload-receipt.json",
-        "sha256": "a03f24f4768bfe9667029fc00b3095c57f28b10ebabc214290cfa3e50511650f"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-passenger_zone_unload.log",
-        "test_log_sha256": "7047632d85bcc85de3e734b5a3d87bdfac5d39f40df255f420d47b5c1e7db317",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-passenger_zone_unload.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -559,7 +415,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-passenger_zone_unload.json",
-          "construction_sha256": "1d6e92a9094852491ea4ead607d135c535f2999b56851074e7236894e690a90e",
+          "construction_sha256": "54cace41df2d1388e48476b4134c4ce2a767db1285223ae1cf17bca534783f30",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -568,19 +424,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-passenger_zone_unload --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "1d6e92a9094852491ea4ead607d135c535f2999b56851074e7236894e690a90e",
-            "log": "cpu-nov25-fallback-offline-passenger_zone_unload.log",
-            "log_sha256": "d027e453946fe37bafa5eebba05fb10db85d07fee7be9c8cc20b5e72c62f491e"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-passenger_zone_unload/receipt.json",
-            "sha256": "3690e6f10bf7ffd840d80e68cae527354c7ed70b9557d0d8863f9db560095228",
-            "log": "proofs/fallback1-passenger_zone_unload/analysis.log",
-            "negative_log": "proofs/fallback1-passenger_zone_unload/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -588,13 +433,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load",
       "kind": "delivery",
       "construction": "construction-compatibility-origin_point_load.json",
-      "construction_sha256": "0fde842d55b482a3d8c628fff17fe1bb2e69c0bc70b7eeac0bea5bb9f489f89e",
+      "construction_sha256": "aae81d093ce9174cda48924846112275e2a2432c2777b02f27a22ac5d8357667",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/origin_point_load-recipe.json",
       "measurement_contract": "diagnostics/origin_point_load-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -610,6 +455,16 @@
           "entrypoint": "analysis.py",
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
         },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
@@ -624,48 +479,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-origin_point_load/receipt.json",
-        "sha256": "388d77c599227f34c1d3a3022afa95153be16ec2835d6cd0d11d4c52268c5583",
+        "sha256": "5fcc6bb018ce6e64a36c7f35cc9a1fb59330ceb441c6e2d7309d0cc2b2660d40",
         "log": "proofs/selected-origin_point_load/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-origin_point_load/negative.log"
       },
       "offline": {
-        "construction_sha256": "0fde842d55b482a3d8c628fff17fe1bb2e69c0bc70b7eeac0bea5bb9f489f89e",
+        "construction_sha256": "aae81d093ce9174cda48924846112275e2a2432c2777b02f27a22ac5d8357667",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load --output .runtime-work/c149470/selected-offline-origin_point_load",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-origin_point_load.log",
-        "log_sha256": "bebb914e6d6358c073e520677143544465d607414ba7216862c971176d602db5"
-      },
-      "physical_preparation": {
-        "receipt": "physical-origin_point_load-receipt.json",
-        "sha256": "6bf5f589f308dd7f2f47ec5c789c9347e6d74d25d50aebf2fc970a4c5174997f"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-origin_point_load.log",
-        "test_log_sha256": "82c5b0632e0a0f51e0f0dcd180d5b1371bcf40099f8c53a83a0d99af322faf74",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-origin_point_load.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -675,7 +500,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-origin_point_load.json",
-          "construction_sha256": "40a84e58b2ed710330dc9cd7dedb3c975cd53f1151973e3bbcebc9da5d20ac17",
+          "construction_sha256": "978baf605dbc00127816905b6ae59e922b43ff0d2c0929ea2f530cef8eaf9cd7",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -684,19 +509,8 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-origin_point_load --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "40a84e58b2ed710330dc9cd7dedb3c975cd53f1151973e3bbcebc9da5d20ac17",
-            "log": "cpu-nov25-fallback-offline-origin_point_load.log",
-            "log_sha256": "961f2439ea5733865689f4a35300c3613547fc873ac08dace47213a5b707534c"
-          },
-          "compatibility": {
-            "receipt": "proofs/fallback1-origin_point_load/receipt.json",
-            "sha256": "39440a074d3533f66cc753e1bbd5c3f67b4ca7abb1aebc987a64b7d2195a878f",
-            "log": "proofs/fallback1-origin_point_load/analysis.log",
-            "negative_log": "proofs/fallback1-origin_point_load/negative.log"
-          }
+          "offline": {},
+          "compatibility": {}
         }
       ]
     },
@@ -704,13 +518,13 @@
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload",
       "kind": "delivery",
       "construction": "construction-compatibility-destination_point_unload.json",
-      "construction_sha256": "3acaaf9e6c8a13080a93c66fcc2d4eb189e855fb698b677760b800cd57fedcba",
+      "construction_sha256": "2fd30781992335d00d56ca2cf3f6d98418f4cdc0219de89c0049c90409061f51",
       "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/destination_point_unload-recipe.json",
       "measurement_contract": "diagnostics/destination_point_unload-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "source_gate": "reviewed original site and judgment sweep absent",
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
       "acquisition": {
         "right_front_wheel_curb": {
           "entrypoint": "analysis.py",
@@ -727,6 +541,16 @@
           "method": "separate vehicular traffic speed, 20 Hz",
           "evidence": "channel-other_traffic.jsonl"
         },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
         "camera_frame_identity": {
           "entrypoint": "analysis.py",
           "method": "four synchronized cameras, 20 Hz",
@@ -740,48 +564,18 @@
       },
       "compatibility": {
         "receipt": "proofs/selected-destination_point_unload/receipt.json",
-        "sha256": "f2e260c16c8479000b4f130d9e02cdfdb5c4abc1c536627f2744a5026111c12b",
+        "sha256": "7a49bc1cf50a36002a740043498c1913ab65cdb764f5eb105b0ab4d9edf56039",
         "log": "proofs/selected-destination_point_unload/analysis.log"
       },
       "negative": {
         "log": "proofs/selected-destination_point_unload/negative.log"
       },
       "offline": {
-        "construction_sha256": "3acaaf9e6c8a13080a93c66fcc2d4eb189e855fb698b677760b800cd57fedcba",
+        "construction_sha256": "2fd30781992335d00d56ca2cf3f6d98418f4cdc0219de89c0049c90409061f51",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload --output .runtime-work/c149470/selected-offline-destination_point_unload",
-        "exit_code": 0,
+        "exit_code": null,
         "log": "cpu-nov25-selected-offline-destination_point_unload.log",
-        "log_sha256": "17aece6bad771e3b7277be846ab3d17e4ca5adf840a8ab300945f504efbaac9f"
-      },
-      "physical_preparation": {
-        "receipt": "physical-destination_point_unload-receipt.json",
-        "sha256": "5c4e5d49f9f947f6f9f59fc0b0a7ff29d62a0a73ac56b7e3ff7e2f2af204b0fe"
-      },
-      "delivery_acceptance": {
-        "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload",
-        "sets": [
-          "full-test"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "cpu_proof_kind": "mock_only_contract_wiring",
-        "script": "prove_original_delivery.py",
-        "script_sha256": "4743f85a290493c83c678895d7d819fcdd5ec0585c5ffc221f5e52c4370d0fd8",
-        "command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload",
-        "test_exit_code": 0,
-        "test_log": "cpu-nov25-delivery-positive-destination_point_unload.log",
-        "test_log_sha256": "28e826577fee23fa75d9cbb41a9470f3c447fda88a08596360c59f0942d82b63",
-        "negative_command": ".venv-cpu/bin/python work/testing__C149470__LVMC-11-60-030-A4__bus_driver/prove_original_delivery.py --case testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload --negative-missing-review",
-        "negative_exit_code": 2,
-        "negative_expected_error": "original reviewed bus site packet missing",
-        "negative_log": "cpu-nov25-delivery-negative-destination_point_unload.log",
-        "negative_log_sha256": "98fd41c2d383ecc795cea16bb289a65bdfff6b4000b19d3392a665ad31802af6"
+        "log_sha256": null
       },
       "candidate_risk": {
         "status": "physical",
@@ -791,7 +585,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-destination_point_unload.json",
-          "construction_sha256": "3aba82702c4b58777cad42fd7e55b8bb07a7307c3b9dca36059af6f2a704c33e",
+          "construction_sha256": "39ea379fc0ce33a2e852cdbda9971e2d3b5f60965d2f7826121e0ff4f2646c37",
           "trigger": {
             "source": "original 900-frame bus speed and front-wheel trace",
             "metric": "stopped-loading stabilization and wheel-curb interval",
@@ -800,19 +594,518 @@
           "changed_knobs": [
             "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
           ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload --candidate fallback1 --output .runtime-work/c149470/fallback-offline-v2-destination_point_unload --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-            "exit_code": 0,
-            "construction_sha256": "3aba82702c4b58777cad42fd7e55b8bb07a7307c3b9dca36059af6f2a704c33e",
-            "log": "cpu-nov25-fallback-offline-destination_point_unload.log",
-            "log_sha256": "fb98672675df12ab0a3996d8e4121819da5634760d14981c4ef061c8681058d8"
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0000",
+      "kind": "delivery",
+      "construction": "construction-compatibility-parallel_source_review-0000.json",
+      "construction_sha256": "76016feb64ba0e0496a05d2e316f348623f7c28b93ebda1dcaea638d2cb5bb40",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/parallel_source_review-0000-recipe.json",
+      "measurement_contract": "diagnostics/parallel_source_review-0000-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-parallel_source_review-0000/receipt.json",
+        "sha256": "d95c8f0274c683a292510fa65fd77577a36ee2dcb9d6b432ca1745cff3693de5",
+        "log": "proofs/selected-parallel_source_review-0000/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-parallel_source_review-0000/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "76016feb64ba0e0496a05d2e316f348623f7c28b93ebda1dcaea638d2cb5bb40",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0000 --output .runtime-work/c149470/selected-offline-parallel_source_review-0000",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-parallel_source_review-0000.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-parallel_source_review-0000.json",
+          "construction_sha256": "19379c7d8092a7670404f0260b3091511563f5449dc6120b9179345dd41d7470",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
           },
-          "compatibility": {
-            "receipt": "proofs/fallback1-destination_point_unload/receipt.json",
-            "sha256": "c37a3a69edb80d19e109722c7151033d9b28fe415ac5186c2ea01af470e979fe",
-            "log": "proofs/fallback1-destination_point_unload/analysis.log",
-            "negative_log": "proofs/fallback1-destination_point_unload/negative.log"
-          }
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
+      "kind": "delivery",
+      "construction": "construction-compatibility-parallel_source_review-0001.json",
+      "construction_sha256": "ae41531b7bdd563e6fc99e3ba3182dde55bc2ab603cfb968bd63356176275867",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/parallel_source_review-0001-recipe.json",
+      "measurement_contract": "diagnostics/parallel_source_review-0001-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-parallel_source_review-0001/receipt.json",
+        "sha256": "5d4b1ab304c67b928f3a1fc4e139212fcb19b345635df5584464e5c9009a75f5",
+        "log": "proofs/selected-parallel_source_review-0001/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-parallel_source_review-0001/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "ae41531b7bdd563e6fc99e3ba3182dde55bc2ab603cfb968bd63356176275867",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001 --output .runtime-work/c149470/selected-offline-parallel_source_review-0001",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-parallel_source_review-0001.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-parallel_source_review-0001.json",
+          "construction_sha256": "03665aaeb92067548b3ff9bc10514268626d8cba48fd38412f61f4458794cd75",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
+          },
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0002",
+      "kind": "delivery",
+      "construction": "construction-compatibility-parallel_source_review-0002.json",
+      "construction_sha256": "b4b857a544c1a31135d3bbd747e269c1f764a3e3869fd18c3785c71897a1a032",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/parallel_source_review-0002-recipe.json",
+      "measurement_contract": "diagnostics/parallel_source_review-0002-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-parallel_source_review-0002/receipt.json",
+        "sha256": "fe977f31411eadf73a2f5a42a140062057e2f90aa5be90a6c580b30ccafd05ed",
+        "log": "proofs/selected-parallel_source_review-0002/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-parallel_source_review-0002/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "b4b857a544c1a31135d3bbd747e269c1f764a3e3869fd18c3785c71897a1a032",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0002 --output .runtime-work/c149470/selected-offline-parallel_source_review-0002",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-parallel_source_review-0002.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-parallel_source_review-0002.json",
+          "construction_sha256": "16d94a0ddd6d7f41fb7c163fc60101f8979db669a1bea55210400c3395cfcd3b",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
+          },
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0000",
+      "kind": "delivery",
+      "construction": "construction-compatibility-traffic_impediment_source_review-0000.json",
+      "construction_sha256": "b2d4188b5bb5cc1e9e26d3c7cfecef17f5eeb2d7db8c6844aa238696193dd6c8",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/traffic_impediment_source_review-0000-recipe.json",
+      "measurement_contract": "diagnostics/traffic_impediment_source_review-0000-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-traffic_impediment_source_review-0000/receipt.json",
+        "sha256": "ec92ae83a10f63ff739c3b237f1d393521551813174cf6b571bdc5880bd2f0b0",
+        "log": "proofs/selected-traffic_impediment_source_review-0000/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-traffic_impediment_source_review-0000/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "b2d4188b5bb5cc1e9e26d3c7cfecef17f5eeb2d7db8c6844aa238696193dd6c8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0000 --output .runtime-work/c149470/selected-offline-traffic_impediment_source_review-0000",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-traffic_impediment_source_review-0000.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-traffic_impediment_source_review-0000.json",
+          "construction_sha256": "5674bae60dbf5ce0b6087781e80731ce95c2a7896eb25b89d561ab4e8c9c684d",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
+          },
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0001",
+      "kind": "delivery",
+      "construction": "construction-compatibility-traffic_impediment_source_review-0001.json",
+      "construction_sha256": "d448af04753ae28bb2096dbf2ba6a4617ceb62f6c96c2d88844de23348bca9f3",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/traffic_impediment_source_review-0001-recipe.json",
+      "measurement_contract": "diagnostics/traffic_impediment_source_review-0001-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-traffic_impediment_source_review-0001/receipt.json",
+        "sha256": "51f1a1b2a96b4ecb2c67c82e99b4640e4cb0ef60e7c99ccb0a5e2077aa41af8b",
+        "log": "proofs/selected-traffic_impediment_source_review-0001/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-traffic_impediment_source_review-0001/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "d448af04753ae28bb2096dbf2ba6a4617ceb62f6c96c2d88844de23348bca9f3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0001 --output .runtime-work/c149470/selected-offline-traffic_impediment_source_review-0001",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-traffic_impediment_source_review-0001.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-traffic_impediment_source_review-0001.json",
+          "construction_sha256": "8bf1af8495328a777a3714e06ab003772949894c0763173b6961e867957e12d7",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
+          },
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0002",
+      "kind": "delivery",
+      "construction": "construction-compatibility-traffic_impediment_source_review-0002.json",
+      "construction_sha256": "b56ab3310f5bd1be6d35ca0aa1824fb15599cecbd82dfc15488042c07d1fe85e",
+      "fixture_recipe": "work/testing__C149470__LVMC-11-60-030-A4__bus_driver/diagnostics/traffic_impediment_source_review-0002-recipe.json",
+      "measurement_contract": "diagnostics/traffic_impediment_source_review-0002-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original bus site, stopped loading and separate traffic motion required",
+      "acquisition": {
+        "right_front_wheel_curb": {
+          "entrypoint": "analysis.py",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "evidence": "channel-right_front_wheel_curb.jsonl"
+        },
+        "stopped_loading": {
+          "entrypoint": "analysis.py",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "evidence": "channel-stopped_loading.jsonl"
+        },
+        "other_traffic": {
+          "entrypoint": "analysis.py",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "evidence": "channel-other_traffic.jsonl"
+        },
+        "traffic_speed_mps": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "evidence": "channel-traffic_speed_mps.jsonl"
+        },
+        "bus_curb_angle_deg": {
+          "entrypoint": "analysis.py",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "evidence": "channel-bus_curb_angle_deg.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized cameras, 20 Hz",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-traffic_impediment_source_review-0002/receipt.json",
+        "sha256": "8723bd0aee934d7f9de7759e510f8d62cb4e651b783198405f4f2f7964565f4a",
+        "log": "proofs/selected-traffic_impediment_source_review-0002/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-traffic_impediment_source_review-0002/negative.log"
+      },
+      "offline": {
+        "construction_sha256": "b56ab3310f5bd1be6d35ca0aa1824fb15599cecbd82dfc15488042c07d1fe85e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149470__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0002 --output .runtime-work/c149470/selected-offline-traffic_impediment_source_review-0002",
+        "exit_code": null,
+        "log": "cpu-nov25-selected-offline-traffic_impediment_source_review-0002.log",
+        "log_sha256": null
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The bus may overshoot the narrow curb target or fail to stabilize for 20 consecutive stopped-loading frames; an upstream approach gives more settling distance. Original capture must decide whether the measurable trigger occurred."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-traffic_impediment_source_review-0002.json",
+          "construction_sha256": "d51d36dc97a1087153adaefd469dc5aee1b91db0dd01f1906858007dceff35df",
+          "trigger": {
+            "source": "original 900-frame bus speed and front-wheel trace",
+            "metric": "stopped-loading stabilization and wheel-curb interval",
+            "failure_condition": "primary approach misses a sustained stopped-loading interval or observed wheel-curb interval is indeterminate"
+          },
+          "changed_knobs": [
+            "bus approach spawn shifted 2 m upstream; terminal curb distance, loading activity and separate traffic route unchanged"
+          ],
+          "offline": {},
+          "compatibility": {}
         }
       ]
     }

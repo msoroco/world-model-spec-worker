@@ -10,11 +10,13 @@ HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 from source_deferred_runner import CAMERAS, capture_original
+from finalize_original_delivery import finalize
 
 
 class Adapter:
-    def __init__(self, case):
+    def __init__(self, case, site=None):
         self.case = case
+        self.site = site
         self.calls = []
         self.actors = []
         self.attempt = None
@@ -56,9 +58,10 @@ class Adapter:
         self.calls.append('tick')
         return {'case_id': self.case, 'original_frame': 1000 + index, 'elapsed_s': index / 20,
                 'ego_id': 'ego', 'passenger_id': 'passenger', 'map_sha256': 'a',
-                'zone_source_sha256': 'b', 'regulations_source_sha256': 'c',
+                'zone_source_sha256': self.site['zone']['boundary_source_sha256'] if self.site else 'b',
+                'regulations_source_sha256': self.site['regulations']['source_sha256'] if self.site else 'c',
                 'clock_source_sha256': 'd', 'source_sha256': 'e',
-                'control_source_sha256': 'f', 'ego_center_xy': [2, 0],
+                'camera_plan_sha256': 'fake-camera-plan', 'control_source_sha256': 'f', 'ego_center_xy': [2, 0],
                 'ego_speed_mps': 0.0, 'passenger_event': None}
 
     def record_camera_frame(self, row):
@@ -73,8 +76,7 @@ class Adapter:
 
     def finish_native_capture(self, attempt, rows):
         self.calls.append('finish_native_capture')
-        (attempt / 'trace.jsonl').write_text('{}\n')
-        return ['trace.jsonl']
+        return []
 
     def abort_cameras(self):
         self.calls.append('abort_cameras')
@@ -133,7 +135,7 @@ class SourceDeferredRunnerTests(unittest.TestCase):
                     'citation': 'synthetic fake-adapter protocol test only'},
                 'case_id': case_id, 'files': {'site-context.json': {
                     'sha256': hashlib.sha256(site_path.read_bytes()).hexdigest()}}}) + '\n')
-            adapter = Adapter('load_prompt')
+            adapter = Adapter('load_prompt', site)
             class FakePipeline:
                 def __init__(self, client, ego, output, case_id, **kwargs):
                     self.closed = False
@@ -150,6 +152,11 @@ class SourceDeferredRunnerTests(unittest.TestCase):
                     self.client.calls.append('pipeline_close')
                     self.closed = True
                     (self.output / 'trace.jsonl').write_text('{}\n')
+                    (self.output / 'road.xodr').write_text('<OpenDRIVE/>\n')
+                    (self.output / 'carla_recorder.log').write_text('fake recorder\n')
+                    capture = self.output / 'capture'
+                    capture.mkdir()
+                    (capture / 'manifest.json').write_text('{}\n')
             result = capture_original(adapter, manifest_path, site_path, attempt,
                                       root, pipeline_factory=FakePipeline)
             self.assertEqual(result['frame_count'], 900)
@@ -162,6 +169,47 @@ class SourceDeferredRunnerTests(unittest.TestCase):
             self.assertEqual(set(seal['sources']) & {name + '.mkv' for name in CAMERAS},
                              {name + '.mkv' for name in CAMERAS})
             self.assertFalse(seal['diagnostic_fixture'])
+            finalized = finalize(attempt, case_id)
+            self.assertEqual(finalized['case_id'], case_id)
+            self.assertTrue((attempt / 'source-manifest.json').is_file())
+            broken_attempt = root / 'broken-attempt'
+            broken_attempt.mkdir()
+            for name in ('construction.json', 'runner.py', 'config.json'):
+                (broken_attempt / name).write_text('{}\n')
+            class BrokenAdapter(Adapter):
+                def record_camera_frame(self, row):
+                    self.calls.append('camera')
+                    return {'overview': row['original_frame']}
+            broken = BrokenAdapter('load_prompt')
+            with self.assertRaisesRegex(ValueError, 'four original camera frames not joined'):
+                capture_original(broken, manifest_path, site_path, broken_attempt,
+                                 root, pipeline_factory=FakePipeline)
+            self.assertEqual(broken.actors, [])
+            self.assertIn('abort_cameras', broken.calls)
+            self.assertIn('restore_world', broken.calls)
+            self.assertFalse((broken_attempt / 'capture-seal.json').exists())
+
+    def test_original_source_provenance_rejected_before_adapter(self):
+        fixture = json.loads((HERE / 'construction-diagnostic-load_prompt.json').read_text())
+        files = {item['path']: item['content'] for item in fixture['files']}
+        scratch = ROOT / '.runtime-work/c150116-new/tmp'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            root = Path(directory)
+            (root / 'config.json').write_text(files['config.json'])
+            (root / 'scene.json').write_text(files['scene.json'])
+            site = root / 'site-context.json'
+            site.write_text('{}\n')
+            manifest = root / 'source-manifest.json'
+            manifest.write_text(json.dumps({'source_kind': 'reviewed_original_site',
+                'diagnostic_fixture': False, 'reviewer': 'fake',
+                'case_id': HERE.name + '__load_prompt',
+                'files': {'site-context.json': {'sha256': hashlib.sha256(site.read_bytes()).hexdigest()}}}) + '\n')
+            class Untouched:
+                def __getattr__(self, _):
+                    raise AssertionError('adapter touched before source provenance check')
+            with self.assertRaisesRegex(ValueError, 'original reviewed site provenance missing'):
+                capture_original(Untouched(), manifest, site, root / 'attempt', root)
 
 
 if __name__ == '__main__':

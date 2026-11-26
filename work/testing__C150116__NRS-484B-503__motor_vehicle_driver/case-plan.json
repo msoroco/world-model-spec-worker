@@ -384,39 +384,44 @@
   ],
   "observations": [
     {
-      "name": "marked_passenger_curb_loading_zone",
+      "name": "zone_marking",
       "mandatory": true,
       "source": "source-hashed designation, marking, polygon and curb adjacency plus original four-camera review"
     },
     {
-      "name": "applicable_effective_hours",
+      "name": "regulation_hours",
       "mandatory": true,
       "source": "source-hashed applicable regulation, jurisdiction, civil time and timezone readback"
     },
     {
-      "name": "person_and_vehicle",
-      "mandatory": true,
-      "source": "original ego and driver binding, blueprint and vehicle track"
-    },
-    {
-      "name": "stop_stand_park_history",
+      "name": "vehicle_halt_in_zone",
       "mandatory": true,
       "source": "original 20Hz ego position, speed, control and halt history"
     },
     {
-      "name": "passenger_loading_unloading",
+      "name": "passenger_activity",
       "mandatory": true,
       "source": "original passenger identity, occupancy and boarding/alighting event source plus video"
     },
     {
-      "name": "expeditious_activity",
+      "name": "zone_boundary_signed_distance_m",
+      "mandatory": true,
+      "source": "first original halted ego center signed distance to reviewed marked-zone polygon"
+    },
+    {
+      "name": "civil_boundary_offset_min",
+      "mandatory": true,
+      "source": "original civil clock and effective-hours boundary source"
+    },
+    {
+      "name": "passenger_event_delay_s",
       "mandatory": true,
       "source": "original halt and event times; no invented legal duration cutoff"
     },
     {
-      "name": "directions_and_conflicts",
+      "name": "camera_frame_identity",
       "mandatory": true,
-      "source": "original applicable official directions and traffic context, if present"
+      "source": "original four-camera same-tick frame identity"
     }
   ],
   "sources": [
@@ -532,5 +537,33 @@
       "evidence_or_gap": "Synthetic CPU protocol only; original marked passenger zone, civil-time regulation and Native capture absent.",
       "reason": "All selected conduct, passenger activity, timing and hours cases need original measurements; expeditious has no numeric legal cutoff."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "one-way passenger curb zone, ego and passenger",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and marked curb boundary",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "passenger interaction, marking and vehicle halt",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver conduct and passenger event",
+        "interval": "all 900 original ticks"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

@@ -1,0 +1,152 @@
+{
+  "law_id": "NRS-484B-503",
+  "cell_id": "C150116",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "one-way passenger curb zone, ego and passenger"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "ego approach and marked curb boundary"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "passenger interaction, marking and vehicle halt"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "driver conduct and passenger event"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
+    "name": "stop_no_passenger",
+    "conduct": "stop",
+    "passenger_action": "none",
+    "release_delay_s": 0,
+    "hours": "effective",
+    "zone_boundary_offset_m": null,
+    "civil_clock_offset_min": null,
+    "recording_description": {
+      "channels": [
+        {
+          "name": "zone_marking",
+          "unit": "source context",
+          "method": "original marked curb, designation and polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original map and frame",
+          "uncertainty": "synthetic zone is not original designation"
+        },
+        {
+          "name": "regulation_hours",
+          "unit": "civil time",
+          "method": "original applicable jurisdiction regulation and synchronized civil clock",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original civil clock",
+          "uncertainty": "synthetic time is not legal effective-hours proof"
+        },
+        {
+          "name": "vehicle_halt_in_zone",
+          "unit": "frames and m/s",
+          "method": "original ego pose and speed joined to marked zone polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original map and frame",
+          "uncertainty": "no realized halt from synthetic fixture"
+        },
+        {
+          "name": "passenger_activity",
+          "unit": "events",
+          "method": "original passenger boarding or alighting event source",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original frame",
+          "uncertainty": "requested action is not observed activity"
+        },
+        {
+          "name": "zone_boundary_signed_distance_m",
+          "unit": "m",
+          "method": "first original halted ego center signed distance to surveyed marked-zone polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "first original halt",
+          "reference_frame": "original surveyed zone boundary",
+          "uncertainty": "source-backed physical pose required"
+        },
+        {
+          "name": "civil_boundary_offset_min",
+          "unit": "min",
+          "method": "source-sealed civil clock minus applicable regulation boundary",
+          "sampling_rate_hz": 20,
+          "time_window": "first original halt",
+          "reference_frame": "original civil timezone and regulation",
+          "uncertainty": "effective-hours judgment requires original authority"
+        },
+        {
+          "name": "passenger_event_delay_s",
+          "unit": "s",
+          "method": "first source-backed passenger event minus first original halted frame",
+          "sampling_rate_hz": 20,
+          "time_window": "first original halt through first passenger event",
+          "reference_frame": "original Native frame clock",
+          "uncertainty": "expeditiousness remains legal judgment"
+        },
+        {
+          "name": "camera_frame_identity",
+          "unit": "frame ID",
+          "method": "four synchronized original camera streams",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original frame",
+          "uncertainty": "synthetic pixels are not original evidence"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Original zone/regulation sources absent.",
+        "Expeditious loading or unloading remains an unresolved judgment."
+      ]
+    }
+  },
+  "assignment_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver",
+  "frame_count": 900,
+  "supported_case_ids": [
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001",
+    "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002"
+  ],
+  "plan_sha256": "0757aaa278bf64c20338d27aa1f1d5c5027cc82b63baaf3156b7573288ef4db5"
+}

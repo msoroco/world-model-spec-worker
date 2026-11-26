@@ -27,7 +27,7 @@ def main():
             'candidate_commands': {item['id']: prepare + ' --candidate ' + item['id']
                                    for item in entry.get('candidates', [])},
             'execute_command': execute, 'capture_command': execute,
-            'owner_release_command': ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python '
+            'owner_release_command': ('CASE_ID=' + cid + ' PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python '
                 'runtime.py owner-released --attempt "$ATTEMPT" '
                 '--receipt "$OWNER_RELEASE_RECEIPT" --acknowledge-owner-released'),
             'postprocessing_command': ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python '

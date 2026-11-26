@@ -20,7 +20,7 @@ def main():
         candidate = entry['candidates'][0]
         if candidate['id'] != 'fallback1':
             raise ValueError(name + ': unexpected candidate')
-        source = SCRATCH / ('fallback-compat-' + name)
+        source = SCRATCH / ('fallback-compat-' + name + '-v8')
         receipt = json.loads((source / 'compatibility.json').read_text())
         if not receipt.get('passed') or receipt['construction_sha256'] != candidate['construction_sha256']:
             raise ValueError(name + ': compatibility not passed')

@@ -18,7 +18,7 @@ def main():
     entries = []
     for original in diagnostic['cases']:
         name = original['case_id'].removeprefix(AID + '__')
-        source = ROOT / '.runtime-work' / 'c150116-new' / ('compat-' + name + '-v5')
+        source = ROOT / '.runtime-work' / 'c150116-new' / ('compat-' + name + '-v8')
         target = HERE / 'proofs' / ('selected-' + name)
         target.mkdir(parents=True, exist_ok=True)
         for src, dst in [('compatibility.json', 'receipt.json'),

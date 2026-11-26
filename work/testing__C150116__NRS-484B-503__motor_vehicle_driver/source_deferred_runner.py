@@ -7,6 +7,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 
 from original_runner import load_reviewed_site
 from passenger_zone import CASES, build_case, measure_history, validate_site
@@ -91,6 +92,12 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
         raise ValueError('materialized original Native attempt required')
     if any((output / name).exists() for name in ('history.jsonl', 'camera-frame-map.jsonl', 'capture-seal.json')):
         raise ValueError('refusing to overwrite original capture')
+    reviewed_dir = output / 'reviewed-site'
+    if reviewed_dir.exists():
+        raise ValueError('reviewed source already materialized')
+    reviewed_dir.mkdir()
+    shutil.copy2(manifest_path, reviewed_dir / 'source-manifest.json')
+    shutil.copy2(site_path, reviewed_dir / 'site-context.json')
     built = None
     pipeline = None
     started = False
@@ -141,8 +148,11 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
                 raise ValueError('original camera file missing: ' + name)
         pipeline.close(confirmed=True)
         native_sources = adapter.finish_native_capture(output, rows)
-        if not isinstance(native_sources, list) or not native_sources:
+        if not isinstance(native_sources, list):
             raise ValueError('original Native source list missing')
+        native_sources = ['road.xodr', 'trace.jsonl', 'carla_recorder.log',
+                          *[str(path.relative_to(output)) for path in sorted((output / 'capture').rglob('*')) if path.is_file()],
+                          *native_sources]
         for item in native_sources:
             path = output / item
             if Path(item).is_absolute() or not path.is_file() or not path.stat().st_size:
@@ -159,18 +169,25 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
         write('acquisition-provenance.json', json.dumps(provenance, sort_keys=True) + '\n')
         finished = True
     finally:
-        if pipeline is not None and not pipeline.closed:
-            pipeline.close(confirmed=False)
-        if started and not finished:
-            adapter.abort_cameras()
-        if built is not None:
-            for actor in reversed(built['owned']):
-                adapter.destroy(actor)
-        restored = adapter.restore_world()
+        try:
+            if pipeline is not None and not pipeline.closed:
+                pipeline.close(confirmed=False)
+        finally:
+            try:
+                if started and not finished:
+                    adapter.abort_cameras()
+            finally:
+                try:
+                    if built is not None:
+                        for actor in reversed(built['owned']):
+                            adapter.destroy(actor)
+                finally:
+                    restored = adapter.restore_world()
     if restored is not True:
         raise ValueError('original world restoration readback missing')
     names = ['history.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
              'passenger-zone-measurement.json', 'acquisition-provenance.json',
+             'reviewed-site/source-manifest.json', 'reviewed-site/site-context.json',
              *[name + '.mkv' for name in CAMERAS], *native_sources]
     seal = {'format': 'passenger-zone-original-native-capture-seal', 'case_id': case_id,
             'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': FRAMES,
@@ -201,7 +218,12 @@ def main():
                 args.output_dir, args.host, args.port)):
         raise ValueError('reviewed original source and Native adapter arguments required')
     load_reviewed_site(args.reviewed_manifest, args.reviewed_site, case_id)
-    spec = importlib.util.spec_from_file_location('passenger_zone_native_adapter', args.adapter_module)
+    source_manifest = json.loads(Path(args.reviewed_manifest).read_text())
+    module_path = Path(args.adapter_module)
+    if (not module_path.is_file() or module_path.is_symlink() or
+            source_manifest.get('native_adapter_sha256') != sha(module_path)):
+        raise ValueError('reviewed original Native adapter source hash missing or changed')
+    spec = importlib.util.spec_from_file_location('passenger_zone_native_adapter', module_path)
     if spec is None or spec.loader is None:
         raise ValueError('original Native adapter module missing')
     module = importlib.util.module_from_spec(spec)

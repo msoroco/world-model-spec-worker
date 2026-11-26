@@ -37,7 +37,7 @@ def load_reviewed_site(manifest_path, site_path, exact_case_id):
 
 
 def construct(adapter, manifest_path, site_path, exact_case_id):
-    prefix = Path(__file__).resolve().parent.name + '__'
+    prefix = 'testing__C150116__NRS-484B-503__motor_vehicle_driver__'
     if not exact_case_id.startswith(prefix):
         raise ValueError('wrong exact case')
     name = exact_case_id.removeprefix(prefix)
