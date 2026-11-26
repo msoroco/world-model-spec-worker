@@ -21,6 +21,8 @@ ROLES = {
     'vehicle_class': 'vehicle_class_source_sha256',
     'emergency_necessity': 'emergency_record_source_sha256',
     'subsection3_authorization': 'subsection3_authorization_source_sha256',
+    'native_spawn': 'native_spawn_source_sha256',
+    'camera_plan': 'camera_plan_sha256',
 }
 
 
@@ -44,5 +46,17 @@ def load(path: Path) -> dict:
         digest = sha256(source.read_bytes()).hexdigest()
         if digest != ref.get('sha256') or digest != site.get(field):
             raise ValueError('reviewed source hash changed: ' + role)
+    if site.get('assignment_id') != 'testing__C147331__NRS-484B-587-2a__motor_vehicle_driver':
+        raise ValueError('reviewed source assignment identity differs')
+    if not isinstance(site.get('native_spawn'), dict) or not site['native_spawn'].get('blueprint_id'):
+        raise ValueError('reviewed Native spawn missing')
+    if len(site['native_spawn'].get('pose_xyz_ypr', ())) != 6:
+        raise ValueError('reviewed Native spawn pose missing')
+    if not all(type(site.get(name)) in (int,float) for name in (
+            'left_marking_lateral_m','right_marking_lateral_m','shoulder_outer_lateral_m')):
+        raise ValueError('reviewed lane boundary coordinates missing')
+    for name, lane in site.get('lanes', {}).items():
+        if lane.get('source_sha256') not in (site['map_sha256'], site['lane_marking_source_sha256']):
+            raise ValueError('reviewed lane source not bound: ' + name)
     site['reviewed_site_sha256'] = sha256(path.read_bytes()).hexdigest()
     return site

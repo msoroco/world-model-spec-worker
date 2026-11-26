@@ -100,13 +100,26 @@ def plan(case: Case, map_source: dict, actor_source: dict, authority: dict) -> d
     }
 
 
-def execute(adapter, case: Case, map_source: dict, actor_source: dict, authority: dict) -> dict:
+def execute(adapter, case: Case, map_source: dict, actor_source: dict,
+            authority: dict, engineering: dict | None = None) -> dict:
     """Exercise Native actor operations; caller owns snapshot and restoration."""
     specification = plan(case, map_source, actor_source, authority)
+    engineering = engineering or {}
+    route_id = map_source["unit_route_id"]
+    if engineering.get("alternate_unit_route"):
+        route_id = map_source.get("alternate_unit_route_id")
+        require(map_source.get("alternate_unit_route_connected") is True and
+                isinstance(route_id, str) and route_id,
+                "reviewed connected alternate unit route required")
+    movement_start = engineering.get("movement_start_s", specification["movement"]["start_s"])
+    require(type(movement_start) in (int, float) and isfinite(movement_start) and
+            0 <= movement_start < specification["movement"]["end_s"],
+            "reviewed movement start outside capture")
+    specification["movement"]["start_s"] = movement_start
     ego = adapter.spawn_vehicle(specification["ego"])
     unit = adapter.spawn_vehicle(specification["unit"])
     adapter.configure_route(ego, map_source["ego_route_id"])
-    adapter.configure_route(unit, map_source["unit_route_id"])
+    adapter.configure_route(unit, route_id)
     adapter.configure_flashing_lights(unit, specification["lights"])
     adapter.configure_unit_movement(unit, specification["movement"])
     if specification["hand_signal"]["enabled"]:

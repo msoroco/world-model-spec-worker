@@ -9,7 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from delivery_audit import ORIGINALS, sha
-from precedence_response_audit import audit_response_pair
+from precedence_response_audit import audit_response_pair, check_trace_body_join
 from test_delivery_audit import native_shaped_fixture
 
 
@@ -33,6 +33,18 @@ def reseal(folder):
 
 
 class PrecedenceResponseAuditTest(unittest.TestCase):
+    def test_rejects_constant_body_offset_from_original_trace(self):
+        with TemporaryDirectory() as attempt:
+            native_shaped_fixture(attempt)
+            folder = Path(attempt)
+            bodies = [json.loads(line) for line in
+                      (folder / "ego-body-history.jsonl").read_text().splitlines()]
+            for body in bodies:
+                for vertex in body["body_vertices_xy_m"]:
+                    vertex[0] += 1.0
+            with self.assertRaisesRegex(ValueError, "trace/body motion differs"):
+                check_trace_body_join(folder, bodies)
+
     def test_requires_realized_body_response_after_request_difference(self):
         with TemporaryDirectory() as left, TemporaryDirectory() as right:
             native_shaped_fixture(left)

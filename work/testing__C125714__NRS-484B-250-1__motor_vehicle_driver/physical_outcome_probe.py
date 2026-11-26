@@ -55,6 +55,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--selected", action="store_true",
+                        help="bind source-gated selected constructions without replacing diagnostic proofs")
     args = parser.parse_args()
     output_root = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).resolve()
     source, output = Path(args.source).resolve(), Path(args.output).resolve()
@@ -104,6 +106,8 @@ def main():
             destination = ROOT / "cases" / kind / f"physical-{label}.json"
             if kind == "precedence":
                 destination = ROOT / f"physical-{label}.json"
+            if args.selected:
+                destination = ROOT / "cases" / kind / "selected" / f"physical-{label}.json"
             write(destination, result)
             recorded.append({"kind": label, "result": str(destination.relative_to(ROOT)),
                              "result_sha256": sha(destination), "status": actual})
@@ -128,8 +132,10 @@ def main():
                          ["native_exit", "owner_released", "saved_processing_started"],
                          "diagnostic_fixture": True,
                          "physical_acceptance_claimed": False})
-    write(ROOT / "physical-outcome-diagnostic-proof.json", {
-        "format": "c125714-physical-outcome-diagnostic-proof", "cases": receipts,
+    proof_name = "physical-outcome-selected-proof.json" if args.selected else "physical-outcome-diagnostic-proof.json"
+    write(ROOT / proof_name, {
+        "format": "c125714-physical-outcome-selected-proof" if args.selected else
+                  "c125714-physical-outcome-diagnostic-proof", "cases": receipts,
         "source_root": str(source.relative_to(REPO)),
         "scope": "Original-shaped synthetic source and lifecycle protocol; no Native or legal acceptance"})
 

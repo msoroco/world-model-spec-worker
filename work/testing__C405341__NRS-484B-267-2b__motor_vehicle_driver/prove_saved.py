@@ -36,29 +36,26 @@ def run(command):
 
 def one(case):
     name, case_id = case.suffix, AID + "__" + case.suffix
-    attempt = SCRATCH / ("compat-" + name + "-v4")
+    attempt = SCRATCH / ("compat-" + name + "-v5")
     selection = attempt / "candidate-selection.json"
     if selection.exists():
         selection.unlink()
-    output = SCRATCH / ("saved-" + name + "-v2")
+    output = SCRATCH / ("saved-" + name + "-v3")
     command = [sys.executable, str(ROOT / "runtime.py"), "process-saved",
                "--manifest", str(MANIFEST), "--case", case_id,
                "--attempt", str(attempt), "--output", str(output),
                "--library", str(ROOT / "runtime/library"), "--validator", str(VALIDATOR)]
-    if name == "visible_movement_preparation" and (SCRATCH / "saved-visible_movement_preparation-cli.log").is_file():
-        positive = json.loads((SCRATCH / "saved-visible_movement_preparation-cli.log").read_text())
-    else:
-        positive = run(command)
+    positive = run(command)
     if not (positive.get("passed") and positive.get("originals_preserved") and
             positive.get("timestamp_joins", {}).get("passed") and not positive.get("missing_evidence")):
         raise ValueError("saved-only positive proof incomplete: " + name)
     log = HERE / ("cpu-saved-" + name + ".log")
     log.write_text(json.dumps(positive, sort_keys=True) + "\n", encoding="utf-8")
-    missing = SCRATCH / ("saved-missing-attempt-" + name)
+    missing = SCRATCH / ("saved-missing-attempt-" + name + "-v3")
     if not missing.exists():
         shutil.copytree(attempt, missing, copy_function=os.link)
         (missing / HISTORY).unlink()
-    negative_output = SCRATCH / ("saved-missing-" + name + "-v2")
+    negative_output = SCRATCH / ("saved-missing-" + name + "-v3")
     negative_command = command.copy()
     negative_command[negative_command.index("--attempt") + 1] = str(missing)
     negative_command[negative_command.index("--output") + 1] = str(negative_output)

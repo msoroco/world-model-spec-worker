@@ -26,6 +26,11 @@ class Tests(unittest.TestCase):
                 refs.append({'role': role, 'path': path.name, 'sha256': digest})
                 site[field] = digest
             site['source_refs'] = refs
+            site['assignment_id'] = 'testing__C147331__NRS-484B-587-2a__motor_vehicle_driver'
+            site['native_spawn'] = {'blueprint_id': 'vehicle.test', 'pose_xyz_ypr': [0, 0, 0, 0, 0, 0]}
+            site['left_marking_lateral_m'] = 0.0
+            site['right_marking_lateral_m'] = 3.5
+            site['shoulder_outer_lateral_m'] = 7.0
             path = root / 'site.json'
             path.write_text(json.dumps(site) + '\n')
             self.assertEqual(reviewed.load(path)['map_sha256'], site['map_sha256'])

@@ -35,14 +35,11 @@ def check_trace_body_join(path, bodies):
         if not all(math.isfinite(value) for value in xy):
             raise ValueError("original ego trace position must be finite")
         return xy
-    first_trace, first_body = position(trace[0]), center(bodies[0])
     for sample, body in zip(trace, bodies):
         if (sample["frame"] != body["frame"] or
                 abs(sample["time_s"] - body["time_s"]) > 1e-4):
             raise ValueError("original ego trace/body frame join differs")
-        trace_delta = tuple(position(sample)[axis] - first_trace[axis] for axis in (0, 1))
-        body_delta = tuple(center(body)[axis] - first_body[axis] for axis in (0, 1))
-        if math.dist(trace_delta, body_delta) > .1:
+        if math.dist(position(sample), center(body)) > .1:
             raise ValueError("original ego trace/body motion differs")
 
 

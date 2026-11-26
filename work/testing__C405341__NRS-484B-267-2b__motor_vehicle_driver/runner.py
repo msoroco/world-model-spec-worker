@@ -60,7 +60,9 @@ def main():
     snapshot = adapter.snapshot_world()
     try:
         case = next(case for case in CASES if case_id.endswith("__" + case.suffix))
-        execute(adapter, case, packet["map_source"], packet["actor_source"], packet["authority"])
+        config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+        execute(adapter, case, packet["map_source"], packet["actor_source"],
+                packet["authority"], config.get("engineering", {}))
         args.output_dir.mkdir(parents=True, exist_ok=True)
         adapter.capture_original(case_id, 900, packet["cameras"], args.output_dir)
     finally:

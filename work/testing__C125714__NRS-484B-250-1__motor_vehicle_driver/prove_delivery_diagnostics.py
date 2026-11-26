@@ -133,6 +133,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--compat-root", required=True)
     parser.add_argument("--output-root", required=True)
+    parser.add_argument("--selected", action="store_true",
+                        help="retain source-gated selected proof separately from diagnostic proof")
     args = parser.parse_args()
     base = (REPO / ".runtime-work").resolve()
     runtime_output = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).resolve()
@@ -218,8 +220,10 @@ def main():
                 raise
         else:
             raise AssertionError("changed original device source passed delivery audit")
-    write(ROOT / "delivery-diagnostic-audit-proof.json", {
-        "format": "c125714-delivery-diagnostic-audit", "cases": results,
+    proof_name = "delivery-selected-audit-proof.json" if args.selected else "delivery-diagnostic-audit-proof.json"
+    write(ROOT / proof_name, {
+        "format": "c125714-delivery-selected-audit" if args.selected else
+                  "c125714-delivery-diagnostic-audit", "cases": results,
         "comparisons": comparisons,
         "diagnostic_only": True, "physical_acceptance_claimed": False})
 

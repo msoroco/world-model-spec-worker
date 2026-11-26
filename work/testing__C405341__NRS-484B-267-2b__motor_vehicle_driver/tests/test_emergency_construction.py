@@ -84,6 +84,23 @@ class ConstructionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "occluder cannot block"):
             plan(case, road, actors, authority)
 
+    def test_fallback_requires_distinct_connected_reviewed_route(self):
+        case = CASES[0]
+        road, actors, authority = sources(case)
+        adapter = Adapter()
+        engineering = {"alternate_unit_route": True, "movement_start_s": 16.5}
+        with self.assertRaisesRegex(ValueError, "alternate unit route"):
+            execute(adapter, case, road, actors, authority, engineering)
+        self.assertEqual(adapter.calls, [])
+        road["alternate_unit_route_id"] = "road-3-reviewed"
+        road["alternate_unit_route_connected"] = True
+        execute(adapter, case, road, actors, authority, engineering)
+        routes = [args[1] for name, args in adapter.calls if name == "configure_route"]
+        self.assertEqual(routes, ["road-1", "road-3-reviewed"])
+        movement = next(args[1] for name, args in adapter.calls
+                        if name == "configure_unit_movement")
+        self.assertEqual(movement["start_s"], 16.5)
+
 
 if __name__ == "__main__":
     unittest.main()

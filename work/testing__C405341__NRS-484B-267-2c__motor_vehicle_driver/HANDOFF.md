@@ -1,20 +1,28 @@
-# C405341 NRS 484B.267(2)(c) motor vehicle checkpoint
+# C405341 NRS 484B.267(2)(c) delivery handoff
 
-Status: partial CPU construction. Frozen assignment SHA256 `6064afd7880b0185db0de8a665f52d6441c3239908b6aa7449d19842b977c432`. Frozen evidence has no accepted recording for this assignment.
+Status: ready, delivery prepared. Frozen assignment SHA256: `6064afd7880b0185db0de8a665f52d6441c3239908b6aa7449d19842b977c432`. The exact scoped strict gate passed on this package. Original CARLA capture and legal or physical judgment remain for the delivery run; no synthetic packet is represented as original evidence.
 
-## Constructed and tested
+## Legal scope and cases
 
-`emergency_motion_probe.py` requires sourced emergency/regulatory authorization, qualifying flashing-light and route context. It binds original frames for actual emergency-unit displacement, driver-view cue visibility, ego approach, flashing lights, ego braking response and officer direction. It rejects nonvisible movement, visibility flags without movement, missing source bindings and unqualified vehicle class. It leaves preparedness unresolved and does not require an actual stop under this clause.
+The rule concerns a driver approaching an authorized emergency or regulatory official vehicle that is moving or preparing to move with qualifying flashing lights. The driver must be prepared to stop unless directed otherwise by a law enforcement officer. Visible unit movement or a driver hand signal can evidence preparation to move. Actual stopping is not independently required by this clause, and no numeric preparedness cutoff is asserted. Brake lamps alone do not establish unit movement. Qualifying flashing lights remain source gated under DEF-NRS-484A-480-3.
 
-`case-plan.json` now plans six exact cases and four controlled comparisons for movement visibility, ego response, officer direction and qualifying vehicle/cue alternatives. Each case has a physical risk assessment. These plans do not claim capture or delivery readiness.
+The six exact cases are `visible_movement_brake_response`, `visible_movement_no_brake`, `movement_occluded`, `officer_direction`, `regulatory_official_vehicle`, and `hand_signal_alternative`. The four controlled comparisons are `movement_visibility`, `driver_response`, `officer_direction_exception`, and `vehicle_and_cue_alternatives`. The fixed branches, evidence channels, sources, dispositions, and physical risks are in `case-plan.json` and `execution-manifest.json`.
 
-## Proofs
+## Construction and capture
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `10de44f5c7aebb8744b58de72158afb142c3c69b0c5116e46e456c5dc407c81d`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C405341__NRS-484B-267-2c__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `eaa477f65f122575cce3c82819dc057edcbf20b8ec22a727a5585aea8626f4fe`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver`: exit 0, `static.log` SHA256 `7c575d4f9820be6300e0b723fbf247a5b4f7820feb27e9393ec6d8f58a225d20`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
+`emergency_construction.py` builds and checks source-gated ego route, authorized unit, qualifying lights, movement/hand cue, officer cue, occluder, and response. `runner.py` is the Native execution bundle entrypoint. `native_packet.py` gates reviewed original source and camera provenance. `analysis.py` joins 900 saved frames and emits a nonclaim physical result. Delivery and comparison auditors require original driver-view pixels, source bindings, matched scene controls, and independently reviewed cue annotations. Synthetic diagnostics have explicit synthetic provenance and are rejected as original delivery evidence.
 
-## Next CPU work
+Four declared physical risks have actual fallback candidates: visible movement/brake response uses a movement-speed adjustment; the occluded case raises occluder height; officer direction and hand signal cases extend cue hold duration. The remaining two cases have no additional candidate-specific physical risk after source gating. Every fallback is bound to its own construction hash and proof receipts.
 
-Construct authorized emergency and regulatory official vehicle actors, qualifying flashing equipment, actual visible movement and separate hand-signal cue, officer direction and ego approach/response controllers in CARLA. Bind driver-view visibility and original motion/control packets; implement exact saved finalizers. Add exact offline construction and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery/comparison audits, manifest and queue entries. Read DEF-NRS-484A-480-3 and preserve officer-direction exception. Actual movement and visual cue visibility require later CARLA verification.
+## CPU proof results
+
+- Pinned runtime preflight: pass.
+- Unit tests: 13 pass.
+- Current-hash offline construction: 10/10 pass, covering six primary and four fallback candidates.
+- Current-hash positive and missing-source negative compatibility: 10/10 pass.
+- Recorded-only saved processing: 6/6 pass on synthetic diagnostics, with explicit provenance.
+- Physical and lifecycle preparation checks: 6/6 pass.
+- Missing-original negative delivery audits: 6/6 rejected as intended.
+- Exact scoped strict gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`.
+
+The canonical stage proposals and hash-bound receipts are in this assignment tree. `gpu-queue-proposal.json` supplies six exact Native capture commands and four comparison audit commands. Each original capture requires reviewed authority, light equipment, movement or hand cue, ego approach and driver-view visibility; the independent audits preserve the officer-direction exception and legal uncertainty. The first command is also in `result.json`.
