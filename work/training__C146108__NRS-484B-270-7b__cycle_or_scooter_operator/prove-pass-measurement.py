@@ -21,7 +21,12 @@ def make(folder, mode):
         'rider_class': 'electric_bicycle', 'passed_class': 'motor_vehicle',
         'rider_dimensions_m': [1.2, .8], 'motor_dimensions_m': [4, 2],
         'motor_occupant_count': 2, 'source_kind': 'generated_software_diagnostic',
-        'original_native_classification_verified': False}) + '\n')
+        'original_native_classification_verified': False,
+        'rider_qualification': {'wheels': 2, 'operable_pedals': True,
+            'saddle': True, 'motor_rated_watts': 500,
+            'assist_only_while_pedaling': True, 'assist_cutoff_mph': 20,
+            'moped': False, 'electric_scooter': False,
+            'source': 'authored generated diagnostic controller'}}) + '\n')
     with (folder / 'participant-poses.jsonl').open('w') as out:
         for frame in range(600):
             motor_x = frame * .04
@@ -29,6 +34,10 @@ def make(folder, mode):
             rider_y = 4 if mode == 'wide' else 1.6
             out.write(json.dumps({'native_frame': frame, 'time_s': frame / 20,
                 'rider_xy_m': [rider_x, rider_y], 'motor_xy_m': [motor_x, 0],
+                'drivetrain_command': {'pedaling': True, 'pedal_cadence_rpm': 70,
+                    'assist_power_watts': 500, 'speed_mps': 3.2,
+                    'assist_cutoff_mps': 20 * .44704,
+                    'power_source': 'authored generated diagnostic controller'},
                 'synthetic_diagnostic': True}) + '\n')
 
 
@@ -81,7 +90,22 @@ def main():
         lines[200] = json.dumps(row); path.write_text('\n'.join(lines) + '\n')
         failed = run(broken, broken / 'measurement.json')
         assert failed.returncode and 'Original Native frame/time join differs' in failed.stderr
-    print(json.dumps({'passed': True, 'positive_count': 2, 'negative_count': 3,
+        absent = scratch / 'missing_drive'
+        make(absent, 'wide')
+        lines = (absent / 'participant-poses.jsonl').read_text().splitlines()
+        row = json.loads(lines[20]); del row['drivetrain_command']; lines[20] = json.dumps(row)
+        (absent / 'participant-poses.jsonl').write_text('\n'.join(lines) + '\n')
+        failed = run(absent, absent / 'measurement.json')
+        assert failed.returncode and 'original drivetrain command absent' in failed.stderr
+        illegal = scratch / 'illegal_assist'
+        make(illegal, 'wide')
+        lines = (illegal / 'participant-poses.jsonl').read_text().splitlines()
+        row = json.loads(lines[20]); row['drivetrain_command']['pedaling'] = False
+        lines[20] = json.dumps(row)
+        (illegal / 'participant-poses.jsonl').write_text('\n'.join(lines) + '\n')
+        failed = run(illegal, illegal / 'measurement.json')
+        assert failed.returncode and 'Class 1 assist limit violated' in failed.stderr
+    print(json.dumps({'passed': True, 'positive_count': 2, 'negative_count': 5,
         'records': values, 'physical_acceptance_claimed': False}, sort_keys=True))
 
 

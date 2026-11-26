@@ -58,6 +58,29 @@ def check_review(review, case, paths):
         raise ValueError('Review cannot prelabel legal outcome')
 
 
+def check_source_rows(actors, cameras, frames, audio_frames):
+    if (len(actors), len(cameras), len(frames), len(audio_frames)) != (600, 2400, 600, 600):
+        raise ValueError('Original sidewalk source frame count differs')
+    views = {'overview', 'approach', 'reference_corner', 'driver_reference'}
+    for index in range(600):
+        actor, frame, audio = actors[index], frames[index], audio_frames[index]
+        native_frame = actor.get('native_frame')
+        if (actor.get('video_frame') != index or frame.get('video_frame') != index or
+                audio.get('video_frame') != index or native_frame is None or
+                frame.get('native_frame') != native_frame or
+                audio.get('native_frame') != native_frame or
+                actor.get('rider_id') is None or actor.get('pedestrian_id') is None or
+                actor['rider_id'] == actor['pedestrian_id'] or
+                audio.get('pedestrian_id') != actor['pedestrian_id']):
+            raise ValueError('Original sidewalk participant/frame join differs at ' + str(index))
+        camera_rows = cameras[4 * index:4 * index + 4]
+        if ({row.get('camera') for row in camera_rows} != views or
+                any(row.get('video_frame') != index or
+                    row.get('native_frame') != native_frame or
+                    not row.get('rgb_sha256') for row in camera_rows)):
+            raise ValueError('Original sidewalk camera/frame join differs at ' + str(index))
+
+
 def audit(args):
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime' /
@@ -82,12 +105,7 @@ def audit(args):
     cameras = [json.loads(line) for line in paths['cameras'].read_text().splitlines()]
     frames = [json.loads(line) for line in paths['video_frames'].read_text().splitlines()]
     audio_frames = [json.loads(line) for line in paths['microphone_frames'].read_text().splitlines()]
-    if (len(actors), len(cameras), len(frames), len(audio_frames)) != (600, 2400, 600, 600):
-        raise ValueError('Original sidewalk source frame count differs')
-    if any(actors[i]['native_frame'] != frames[i]['native_frame'] or
-           actors[i]['video_frame'] != i or frames[i]['video_frame'] != i
-           for i in range(600)):
-        raise ValueError('Original sidewalk/video frame join differs')
+    check_source_rows(actors, cameras, frames, audio_frames)
     for row in result['recording_evidence']:
         source(attempt, row['reference'])
     trace, video = source(attempt, args.trace), source(attempt, args.video)
@@ -133,6 +151,35 @@ def selftest(case, negative):
             pass
         else:
             raise AssertionError('Missing original source accepted: ' + key)
+    actors = [{'video_frame': i, 'native_frame': i + 1, 'rider_id': 17,
+               'pedestrian_id': 19} for i in range(600)]
+    frames = [{'video_frame': i, 'native_frame': i + 1} for i in range(600)]
+    audio = [{'video_frame': i, 'native_frame': i + 1,
+              'pedestrian_id': 19} for i in range(600)]
+    cameras = [{'video_frame': i, 'native_frame': i + 1, 'camera': view,
+                'rgb_sha256': 'source-hash'} for i in range(600)
+               for view in ('overview', 'approach', 'reference_corner', 'driver_reference')]
+    check_source_rows(actors, cameras, frames, audio)
+    for modified, expected in (({**cameras[-1], 'native_frame': 0},
+                                'Original sidewalk camera/frame join differs'),
+                               ({**cameras[-1], 'camera': 'overview'},
+                                'Original sidewalk camera/frame join differs')):
+        changed = [*cameras[:-1], modified]
+        try:
+            check_source_rows(actors, changed, frames, audio)
+        except ValueError as error:
+            if expected not in str(error):
+                raise
+        else:
+            raise AssertionError('Changed original camera source accepted')
+    changed_audio = [*audio[:-1], {**audio[-1], 'pedestrian_id': 17}]
+    try:
+        check_source_rows(actors, cameras, frames, changed_audio)
+    except ValueError as error:
+        if 'Original sidewalk participant/frame join differs' not in str(error):
+            raise
+    else:
+        raise AssertionError('Changed pedestrian microphone identity accepted')
     print(json.dumps({'case_id': case, 'selftest': 'passed'}))
 
 

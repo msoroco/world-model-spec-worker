@@ -14,7 +14,7 @@ from geometry import SIGN_NAME
 from measure import measure
 
 
-def fixture(label, posture, y=-5):
+def fixture(label, posture, y=-5, behavior='mounted_sidewalk'):
     folder = SCRATCH / label
     folder.mkdir(exist_ok=True)
     poses = folder / 'bicycle-poses.jsonl'
@@ -27,6 +27,10 @@ def fixture(label, posture, y=-5):
         'sidewalk_xy_m': [[-60, -6.5], [60, -6.5], [60, -3.5], [-60, -3.5]],
         'street_name': 'Fremont Street', 'west_boundary': 'Main Street',
         'east_boundary': 'Seventh Street', 'geographic_identity_verified': False,
+        'controlled_behavior': behavior,
+        'operator_actor_id': 120 if behavior == 'walk_cycle' else None,
+        'operator_blueprint_id': 'walker.pedestrian.0001' if behavior == 'walk_cycle' else None,
+        'dismounted_association_max_separation_m': 1.5 if behavior == 'walk_cycle' else None,
         'physical_sign_pixels_verified': False, 'fixture_only': True}) + '\n')
     with poses.open('w') as p, frames.open('w') as f:
         for i in range(600):
@@ -36,6 +40,10 @@ def fixture(label, posture, y=-5):
                    'rider_xy_m': [-65 + i * .115, y], 'velocity_xy_mps': [2.3, 0],
                    'rider_blueprint_id': 'vehicle.bh.crossbike',
                    'machine_class': 'human_propelled_bicycle', 'mounted_posture': posture,
+                   'operator_actor_id': 120 if behavior == 'walk_cycle' else None,
+                   'operator_blueprint_id': 'walker.pedestrian.0001' if behavior == 'walk_cycle' else None,
+                   'operator_xy_m': [-65 + i * .115, y + .8] if behavior == 'walk_cycle' else None,
+                   'operator_velocity_xy_mps': [2.3, 0] if behavior == 'walk_cycle' else None,
                    'provenance': 'synthetic_native_sample'}
             frame = {'video_frame': i, 'native_frame': native, 'time_s': t,
                      'camera_native_frames': {name: native for name in
@@ -56,7 +64,7 @@ def reject(paths, expected):
 
 def main():
     mounted_paths = fixture('mounted', 'mounted')
-    dismounted_paths = fixture('dismounted', 'dismounted')
+    dismounted_paths = fixture('dismounted', 'dismounted', behavior='walk_cycle')
     uncertain_paths = fixture('unverified', 'unverified')
     mounted = measure(*mounted_paths)
     dismounted = measure(*dismounted_paths)
@@ -64,6 +72,7 @@ def main():
     assert mounted['mounted_moving_sidewalk_frames'] > 500
     assert dismounted['mounted_moving_sidewalk_frames'] == 0
     assert dismounted['dismounted_moving_sidewalk_frames'] > 500
+    assert dismounted['operator_cycle_association_within_plan'] is True
     assert uncertain['posture_unverified_frames'] == 600
     assert uncertain['mounted_moving_sidewalk_frames'] == 0
     assert mounted['riding_prohibition_conditional_on_sign'] is False
@@ -92,6 +101,11 @@ def main():
     bad_map = SCRATCH / 'missing-camera.jsonl'
     bad_map.write_text('\n'.join(lines) + '\n')
     missing_camera = reject((mounted_paths[0], mounted_paths[1], bad_map), 'four source camera frame join failed')
+    context = json.loads(dismounted_paths[1].read_text())
+    context.pop('operator_actor_id')
+    bad_context = SCRATCH / 'missing-operator.json'
+    bad_context.write_text(json.dumps(context) + '\n')
+    missing_operator = reject((dismounted_paths[0], bad_context, dismounted_paths[2]), 'dismounted operator source missing')
     print(json.dumps({'passed': True, 'fixture_kind': 'synthetic_native_sample',
                       'mounted': mounted, 'dismounted': dismounted, 'unverified': uncertain,
                       'negative_missing_frame': missing_frame,
@@ -99,6 +113,7 @@ def main():
                       'negative_wrong_street': wrong_street,
                       'negative_wrong_class': wrong_class,
                       'negative_missing_camera': missing_camera,
+                      'negative_missing_operator': missing_operator,
                       'measure_sha256': hashlib.sha256((HERE/'native/measure.py').read_bytes()).hexdigest()}, sort_keys=True))
 
 

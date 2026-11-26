@@ -149,8 +149,10 @@ def main():
                                    'construction_sha256': item['construction_sha256'],
                                    'log': str(log_path.relative_to(BASE)),
                                    'log_sha256': sha(log_path)}
+    runtime_hash = sha(Path.cwd() / 'runtime' / 'SOURCE-MANIFEST.json')
     write(BASE / 'selected-draft-manifest.json', {
         'format': 'worker-execution-manifest', 'assignment_id': PREFIX,
+        'runtime_manifest_sha256': runtime_hash,
         'status': 'selected_cpu_proofs_pending', 'delivery_ready': False,
         'original_native_observed': False, 'cases': entries})
 

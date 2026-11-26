@@ -167,11 +167,16 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 rows.write(json.dumps(row) + '\n')
                 trace.write(json.dumps({
                     'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': vehicle_pose.location.x,
+                                 'y': vehicle_pose.location.y,
+                                 'z': vehicle_pose.location.z},
                     'position_m': row['taxi_xyz_m'],
                     'heading_deg': vehicle_pose.rotation.yaw,
                     'velocity_mps': row['taxi_velocity_xyz_mps'],
                     'speed_mps': sum(value * value for value in
                                      row['taxi_velocity_xyz_mps']) ** .5,
+                    'speed_mph': (sum(value * value for value in
+                                     row['taxi_velocity_xyz_mps']) ** .5) / .44704,
                     'control': {'brake': 1, 'hand_brake': True},
                     'source_kind': 'original_native',
                     'taxi_actor_id': taxi.id}) + '\n')

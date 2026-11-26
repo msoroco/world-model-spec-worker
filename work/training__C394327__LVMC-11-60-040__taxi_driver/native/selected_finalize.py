@@ -84,7 +84,7 @@ def taxi_loading_measurement(attempt):
     result['source_kind'] = 'synthetic_cpu_fixture' if any(
         json.loads((attempt / name).read_text()).get('synthetic_cpu_fixture') is True
         for name in MEASUREMENT_INPUTS[1:]) else 'reviewed_saved_sources'
-    result['legal_verdict'] = None
+    result.pop('legal_verdict', None)
     return result
 
 
@@ -109,6 +109,10 @@ def finalize(attempt, output):
         raise ValueError('Observed activity differs from selected taxi case')
     sources = {name: sha(attempt / name) for name in MEASUREMENT_INPUTS}
     description = construction['recording_description']
+    designation = json.loads((attempt / 'stand-designation-review.json').read_text())
+    sign_observation = designation.get('observed_sign_content')
+    if not sign_observation:
+        raise ValueError('Original stand sign observation missing')
     evidence = []
     channel_dir = attempt / 'channels'
     channel_dir.mkdir(exist_ok=False)
@@ -123,8 +127,27 @@ def finalize(attempt, output):
                     else row.get('observed_speed_mps') if name in ('drv.stopped', 'drv.standing_or_parked')
                     else row['time_s'] if name == 'kin.time'
                     else row.get('observed_stand_location') if name in ('st.curb_zone', 'rel.occupies')
+                    else sign_observation if name == 'dev.regulatory_sign'
                     else row.get('observed_taxi_identity')}, allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': reference})
+    context_dir = attempt / 'context'
+    context_dir.mkdir(exist_ok=False)
+    context_sources = {
+        'taxi_license_review': 'taxi-license-review.json',
+        'stand_designation_review': 'stand-designation-review.json',
+        'other_regulations_review': 'other-regulations-review.json'}
+    for context in description['context_inputs']:
+        name = context['name']
+        source = json.loads((attempt / context_sources[name]).read_text())
+        reference = 'context/' + name + '.json'
+        (attempt / reference).write_text(json.dumps({
+            name: {'source_basis': source['source_basis'],
+                   'source_sha256': sha(attempt / context_sources[name]),
+                   'review_status': source.get('review_status')},
+            'source_kind': 'synthetic_cpu_fixture' if source.get('synthetic_cpu_fixture')
+            else 'reviewed_original_source'}, allow_nan=False) + '\n')
+        evidence.append({'name': name, 'unit': context['unit'],
+                         'reference': reference})
     report = {'format': 'worker-analysis-report', 'case_id': case,
               'measurements': {'taxi_loading_measurement': {
                   'method': 'taxi_loading_measurement', 'value': measurement,

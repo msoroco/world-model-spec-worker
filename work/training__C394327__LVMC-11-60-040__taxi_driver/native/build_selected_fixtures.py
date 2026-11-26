@@ -54,7 +54,8 @@ def build(suffix, loading):
                         'camera_native_frames': camera_frames})
         trace.append({'frame': frame, 'time_s': time_s,
                       'taxi_actor_id': 42, 'position_m': [5.25, 10, .5],
-                      'heading_deg': 0, 'speed_mps': 0,
+                      'position': {'x': 5.25, 'y': 10, 'z': .5},
+                      'heading_deg': 0, 'speed_mps': 0, 'speed_mph': 0,
                       'velocity_mps': [0, 0, 0],
                       'control': {'brake': 1, 'hand_brake': True},
                       'source_kind': 'synthetic_cpu_fixture'})
@@ -107,17 +108,22 @@ def build(suffix, loading):
                          ('capture/evidence.jsonl', evidence),
                          ('observed-activity.jsonl', activity)):
         write(sources / name, lines(values))
+    write(sources / 'road.xodr', (HERE / 'taxi-road.xodr').read_text())
     for name in ('taxi-license-review.json', 'participant-activity-review.json',
                  'stand-designation-review.json', 'other-regulations-review.json'):
-        write(sources / name, {
+        review = {
             'source_kind': 'synthetic_cpu_fixture', 'synthetic_cpu_fixture': True,
             'review_status': 'diagnostic_only',
             'source_basis': 'Source-shaped synthetic taxi diagnostic, no original authority',
-            'legal_verdict': None})
+            'legal_verdict': None}
+        if name == 'stand-designation-review.json':
+            review['observed_sign_content'] = 'synthetic diagnostic stand sign'
+        write(sources / name, review)
     write(sources / 'capture/manifest.json', {
         'extraction_confirmed': True, 'frames': 600,
         'synthetic_diagnostic': True,
-        'sources': {'native-rows.jsonl': sha(sources / 'native-rows.jsonl'),
+        'sources': {'road.xodr': sha(sources / 'road.xodr'),
+                    'native-rows.jsonl': sha(sources / 'native-rows.jsonl'),
                     'trace.jsonl': sha(sources / 'trace.jsonl')}})
     spec = {'files': {
         'capture/native/frames.jsonl': lines(frames),

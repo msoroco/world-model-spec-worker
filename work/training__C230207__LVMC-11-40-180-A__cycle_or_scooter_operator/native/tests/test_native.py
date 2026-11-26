@@ -1,6 +1,6 @@
 import unittest
 from geometry import SIGN_NAME, check as geometry_check, open_drive
-from runner import check as runner_check, survey
+from runner import behavior_plan, check as runner_check, survey
 
 
 class FakeCarla:
@@ -53,3 +53,14 @@ class NativeDraft(unittest.TestCase):
             survey(FakeWorld(wrong_sign=True), FakeCarla)
         with self.assertRaisesRegex(RuntimeError, 'governed roadway'):
             survey(FakeWorld(wrong_lane=True), FakeCarla)
+
+    def test_controlled_dismount_plan(self):
+        walk = behavior_plan('walk_cycle')
+        ride = behavior_plan('mounted_sidewalk')
+        self.assertEqual(walk['cycle_start_xy_m'], ride['cycle_start_xy_m'])
+        self.assertEqual(walk['target_speed_mps'], ride['target_speed_mps'])
+        self.assertEqual(walk['operator_start_xy_m'], [-65, -4.2])
+        self.assertEqual(walk['operator_cycle_max_separation_m'], 1.5)
+        self.assertIsNone(ride['operator_start_xy_m'])
+        with self.assertRaisesRegex(ValueError, 'unknown controlled behavior'):
+            behavior_plan('wrong')

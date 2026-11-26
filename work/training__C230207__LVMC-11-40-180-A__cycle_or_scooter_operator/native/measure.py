@@ -42,6 +42,13 @@ def measure(poses_path, context_path, frame_map_path):
         raise ValueError('posted three-class sign source missing')
     if context.get('rider_class') not in COVERED or not context.get('blueprint_id'):
         raise ValueError('covered machine class source missing')
+    behavior = context.get('controlled_behavior', 'mounted_sidewalk')
+    if behavior not in {'mounted_sidewalk', 'walk_cycle'}:
+        raise ValueError('controlled behavior source missing')
+    if behavior == 'walk_cycle' and (not context.get('operator_actor_id') or
+                                     not context.get('operator_blueprint_id')):
+        raise ValueError('dismounted operator source missing')
+    operator_distances = []
     for row in rows:
         if row.get('rider_blueprint_id') != context['blueprint_id'] or row.get('machine_class') != context['rider_class']:
             raise ValueError('machine class source join failed')
@@ -51,6 +58,15 @@ def measure(poses_path, context_path, frame_map_path):
             raise ValueError('original pose or velocity source missing')
         if row.get('mounted_posture') not in {'mounted', 'dismounted', 'unverified'}:
             raise ValueError('operator posture source missing')
+        if behavior == 'walk_cycle':
+            op = row.get('operator_xy_m')
+            op_velocity = row.get('operator_velocity_xy_mps')
+            if (row.get('operator_actor_id') != context['operator_actor_id'] or
+                    row.get('operator_blueprint_id') != context['operator_blueprint_id'] or
+                    not op or not op_velocity or len(op) != 2 or len(op_velocity) != 2 or
+                    not all(math.isfinite(v) for v in op + op_velocity)):
+                raise ValueError('original dismounted operator pose source missing')
+            operator_distances.append(math.dist(point, op))
     positions = [r['rider_xy_m'] for r in rows]
     occupied = [inside(p, context['sidewalk_xy_m']) for p in positions]
     moving = [math.hypot(*r['velocity_xy_mps']) > .25 for r in rows]
@@ -62,6 +78,12 @@ def measure(poses_path, context_path, frame_map_path):
             'mounted_moving_sidewalk_frames': sum(a and b and c for a, b, c in zip(occupied, moving, mounted)),
             'dismounted_moving_sidewalk_frames': sum(a and b and c for a, b, c in zip(occupied, moving, dismounted)),
             'posture_unverified_frames': uncertainty,
+            'controlled_behavior': behavior,
+            'operator_cycle_separation_max_m': max(operator_distances) if operator_distances else None,
+            'operator_cycle_association_source_complete': len(operator_distances) == 600 if behavior == 'walk_cycle' else None,
+            'operator_cycle_association_within_plan':
+                max(operator_distances) <= context['dismounted_association_max_separation_m']
+                if operator_distances and context.get('dismounted_association_max_separation_m') else None,
             'path_length_m': sum(math.dist(a, b) for a, b in zip(positions, positions[1:])),
             'geographic_identity_verified': bool(context.get('geographic_identity_verified')),
             'sign_posting_observed_in_native_map': True,

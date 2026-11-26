@@ -1,0 +1,115 @@
+{
+  "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+  "selected_case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+  "cell_id": "C230266",
+  "law_id": "LVMC-11-40-180-C",
+  "actor": "cycle_or_scooter_operator",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "device_blueprint_filter": "vehicle.diamondback.century",
+  "pedestrian_blueprint_filter": "walker.pedestrian.*",
+  "signal_frame": 80,
+  "pause_window_frames": [
+    80,
+    110
+  ],
+  "pedestrian_microphone": {
+    "location": "pedestrian_actor",
+    "sampling": "synchronized_original_audio_required",
+    "alsa_device_env": "C230266_MIC_ALSA_DEVICE"
+  },
+  "rider_speaker_alsa_device_env": "C230266_SPEAKER_ALSA_DEVICE",
+  "target_request": {
+    "pause_requested": true,
+    "signal_requested": true
+  },
+  "supported_case_ids": [
+    "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+    "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+    "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "rider_and_pedestrian_footprints",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "source": "original Native transforms and bounding boxes",
+        "method": "original Native transforms and bounding boxes",
+        "time_window": "600 original Native frames",
+        "reference_frame": "Native frame and pedestrian-position microphone clock",
+        "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+      },
+      {
+        "name": "pedestrian_location_audio",
+        "unit": "PCM s16le",
+        "sampling_rate_hz": 20,
+        "source": "8 kHz live microphone PCM summarized in 20 Hz windows at pedestrian position",
+        "method": "8 kHz live microphone PCM summarized in 20 Hz windows at pedestrian position",
+        "time_window": "600 original Native frames",
+        "reference_frame": "Native frame and pedestrian-position microphone clock",
+        "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+      },
+      {
+        "name": "sidewalk_map_context",
+        "unit": "Native map",
+        "sampling_rate_hz": 20,
+        "source": "OpenDRIVE and Native lane readback",
+        "method": "OpenDRIVE and Native lane readback",
+        "time_window": "600 original Native frames",
+        "reference_frame": "Native frame and pedestrian-position microphone clock",
+        "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+      },
+      {
+        "name": "four_source_views",
+        "unit": "RGB frame",
+        "sampling_rate_hz": 20,
+        "source": "four synchronized original cameras",
+        "method": "four synchronized original cameras",
+        "time_window": "600 original Native frames",
+        "reference_frame": "Native frame and pedestrian-position microphone clock",
+        "uncertainty": "50 ms Native sampling; audio onset and device placement require review"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Original microphone position, sound identity, device class and legal audibility need independent review"
+    ]
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed_sidewalk_wide",
+      "fov_deg": 75
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed_sidewalk_detail",
+      "fov_deg": 75
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed_sidewalk_detail",
+      "fov_deg": 75
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed_sidewalk_detail",
+      "fov_deg": 75
+    }
+  ],
+  "required_atoms": [
+    "ru.pedestrian",
+    "kin.position",
+    "kin.speed"
+  ],
+  "source_packets": []
+}

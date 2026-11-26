@@ -18,6 +18,15 @@ CAMERAS = (
 )
 
 
+def behavior_plan(behavior):
+    if behavior not in {'mounted_sidewalk', 'walk_cycle'}:
+        raise ValueError('unknown controlled behavior')
+    return {'behavior': behavior, 'cycle_start_xy_m': [-65, -5],
+            'operator_start_xy_m': [-65, -4.2] if behavior == 'walk_cycle' else None,
+            'target_speed_mps': 2.3, 'operator_cycle_max_separation_m':
+                1.5 if behavior == 'walk_cycle' else None}
+
+
 def check():
     g = geometry_check()
     if FRAMES / RATE != 30 or len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4:
@@ -48,11 +57,12 @@ def survey(world, carla):
             'sign_pixels_confirmed': False, 'geographic_identity_confirmed': False}
 
 
-def execute(output_dir, host, port):
+def execute(output_dir, host, port, behavior):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     check()
+    plan = behavior_plan(behavior)
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -85,8 +95,17 @@ def execute(output_dir, host, port):
         bicycle_bp = blueprints.find('vehicle.bh.crossbike')
         bicycle_bp.set_attribute('role_name', 'c230207_human_bicycle_subject')
         bicycle = world.spawn_actor(bicycle_bp, carla.Transform(
-            carla.Location(x=-65, y=-5, z=1), carla.Rotation(yaw=0)))
+            carla.Location(x=plan['cycle_start_xy_m'][0], y=plan['cycle_start_xy_m'][1], z=1),
+            carla.Rotation(yaw=0)))
         owned.append(bicycle)
+        operator = None
+        if behavior == 'walk_cycle':
+            walker_bp = blueprints.find('walker.pedestrian.0001')
+            walker_bp.set_attribute('role_name', 'c230207_dismounted_operator')
+            operator = world.spawn_actor(walker_bp, carla.Transform(
+                carla.Location(x=plan['operator_start_xy_m'][0], y=plan['operator_start_xy_m'][1], z=1),
+                carla.Rotation(yaw=0)))
+            owned.append(operator)
         (output / 'restriction-context.json').write_text(json.dumps({
             'rider_class': 'human_propelled_bicycle', 'blueprint_id': bicycle.type_id,
             'wheel_characteristics_reviewed': False,
@@ -97,6 +116,10 @@ def execute(output_dir, host, port):
             'street_name': 'Fremont Street', 'west_boundary': 'Main Street',
             'east_boundary': 'Seventh Street', 'geographic_identity_verified': False,
             'posture_visual_review_required': True,
+            'controlled_behavior': behavior,
+            'operator_actor_id': operator.id if operator is not None else None,
+            'operator_blueprint_id': operator.type_id if operator is not None else None,
+            'dismounted_association_max_separation_m': plan['operator_cycle_max_separation_m'],
             'physical_sign_pixels_verified': False}, indent=2) + '\n')
         for name, width, height, x, y, z, pitch in CAMERAS:
             bp = blueprints.find('sensor.camera.rgb')
@@ -119,7 +142,10 @@ def execute(output_dir, host, port):
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'bicycle-poses.jsonl').open('x') as poses:
             first_elapsed = None
             for index in range(FRAMES):
-                bicycle.set_target_velocity(carla.Vector3D(x=2.3, y=0, z=0))
+                bicycle.set_target_velocity(carla.Vector3D(x=plan['target_speed_mps'], y=0, z=0))
+                if operator is not None:
+                    operator.apply_control(carla.WalkerControl(direction=carla.Vector3D(x=1, y=0, z=0),
+                                                              speed=plan['target_speed_mps'], jump=False))
                 native_frame = world.tick()
                 native_snapshot = world.get_snapshot()
                 if native_snapshot.frame != native_frame:
@@ -130,6 +156,8 @@ def execute(output_dir, host, port):
                 relative_time = absolute_time - first_elapsed
                 transform = bicycle.get_transform()
                 velocity = bicycle.get_velocity()
+                operator_transform = operator.get_transform() if operator is not None else None
+                operator_velocity = operator.get_velocity() if operator is not None else None
                 mapped = {}
                 for name in queues:
                     image = queues[name].get(timeout=30)
@@ -146,7 +174,14 @@ def execute(output_dir, host, port):
                     'rider_z_m': transform.location.z,
                     'velocity_xy_mps': [velocity.x, velocity.y],
                     'rider_actor_id': bicycle.id, 'rider_blueprint_id': bicycle.type_id,
-                    'mounted_posture': 'unverified', 'machine_class': 'human_propelled_bicycle'}) + '\n')
+                    'mounted_posture': 'unverified', 'machine_class': 'human_propelled_bicycle',
+                    'controlled_behavior': behavior,
+                    'operator_actor_id': operator.id if operator is not None else None,
+                    'operator_blueprint_id': operator.type_id if operator is not None else None,
+                    'operator_xy_m': [operator_transform.location.x, operator_transform.location.y]
+                    if operator_transform is not None else None,
+                    'operator_velocity_xy_mps': [operator_velocity.x, operator_velocity.y]
+                    if operator_velocity is not None else None}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
@@ -177,9 +212,10 @@ if __name__ == '__main__':
     p.add_argument('--output-dir')
     p.add_argument('--host', default='127.0.0.1')
     p.add_argument('--port', type=int, default=2000)
+    p.add_argument('--behavior', choices=('mounted_sidewalk', 'walk_cycle'), default='mounted_sidewalk')
     a = p.parse_args()
     if a.check == a.execute:
         raise SystemExit('choose --check or --execute')
     if a.execute and not a.output_dir:
         raise SystemExit('--output-dir required for Native execution')
-    print(json.dumps(check() if a.check else execute(a.output_dir, a.host, a.port)))
+    print(json.dumps(check() if a.check else execute(a.output_dir, a.host, a.port, a.behavior)))

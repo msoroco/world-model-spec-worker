@@ -20,9 +20,12 @@ class SavedTaxiMeasurement(unittest.TestCase):
         reviews = ('taxi-license-review.json', 'participant-activity-review.json',
                    'stand-designation-review.json', 'other-regulations-review.json')
         for name in reviews:
-            (self.root / name).write_text(json.dumps({
+            review = {
                 'source_basis': 'synthetic source-shaped diagnostic',
-                'synthetic_cpu_fixture': True, 'legal_verdict': None}) + '\n')
+                'synthetic_cpu_fixture': True, 'legal_verdict': None}
+            if name == 'stand-designation-review.json':
+                review['observed_sign_content'] = 'synthetic diagnostic stand sign'
+            (self.root / name).write_text(json.dumps(review) + '\n')
         native, mapping, trace, capture, activity = [], [], [], [], []
         for i in range(600):
             frame, time_s = i + 100, (i + 1) / 20
@@ -54,7 +57,7 @@ class SavedTaxiMeasurement(unittest.TestCase):
         self.assertEqual(measurement['requested_activity'], 'passenger_loading')
         self.assertEqual(measurement['active_frames'], 240)
         self.assertEqual(measurement['source_kind'], 'synthetic_cpu_fixture')
-        self.assertIsNone(measurement['legal_verdict'])
+        self.assertNotIn('legal_verdict', measurement)
 
     def test_missing_activity_source_rejected(self):
         (self.root / 'observed-activity.jsonl').unlink()
@@ -78,8 +81,13 @@ class SavedTaxiMeasurement(unittest.TestCase):
             'ru.taxicab', 'st.curb_zone', 'dev.regulatory_sign',
             'drv.standing_or_parked', 'rel.occupies', 'drv.stopped',
             'sig.door_open', 'ru.occupant_count', 'kin.time')]
+        contexts = [{'name': name, 'unit': 'source review'} for name in (
+            'taxi_license_review', 'stand_designation_review',
+            'other_regulations_review')]
         (self.root / 'construction.json').write_text(json.dumps({
-            'case_id': case, 'recording_description': {'channels': channels}}) + '\n')
+            'case_id': case,
+            'recording_description': {'channels': channels,
+                                      'context_inputs': contexts}}) + '\n')
         for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             (self.root / (name + '.mkv')).write_bytes(b'synthetic video placeholder')
         report = finalize(self.root, self.root / 'analysis-report.json')
@@ -88,6 +96,8 @@ class SavedTaxiMeasurement(unittest.TestCase):
             'requested_activity'], 'passenger_loading')
         self.assertEqual(result['provenance_kind'], 'synthetic_local_diagnostic')
         self.assertFalse(result['accepted'])
+        sign = json.loads((self.root / 'channels/dev.regulatory_sign.jsonl').read_text().splitlines()[0])
+        self.assertEqual(sign['value'], 'synthetic diagnostic stand sign')
         self.assertEqual(len(result['recording_evidence']), 9)
         with self.assertRaisesRegex(ValueError, 'fresh saved attempt'):
             finalize(self.root, self.root / 'analysis-report.json')

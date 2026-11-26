@@ -83,6 +83,41 @@
           "entrypoint": "runner.py",
           "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
           "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        },
+        "four_source_views": {
+          "entrypoint": "runner.py",
+          "method": "four CARLA RGB camera listeners join each source frame to the Native tick and encode all 600 frames",
+          "evidence": "camera-frames.jsonl, video_frames.jsonl, overview.mkv, approach.mkv, reference_corner.mkv, driver_reference.mkv"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_transform and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_xyz_m and pedestrian_xyz_m, capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_velocity and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_velocity_xyz_mps and pedestrian_velocity_xyz_mps, capture/evidence.jsonl"
+        },
+        "pedestrian_location_audio": {
+          "entrypoint": "audio_source.py",
+          "method": "live ALSA 8 kHz microphone continuously records at pedestrian location with per-frame marks",
+          "evidence": "pedestrian-microphone.pcm, pedestrian-microphone.json and microphone frame map"
+        },
+        "rider_and_pedestrian_footprints": {
+          "entrypoint": "runner.py",
+          "method": "post-tick separate actor transforms and bounding-box extents",
+          "evidence": "sidewalk-actors.jsonl rider_bbox_extent_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "spawn walker blueprint and record distinct pedestrian actor identity, transform and footprint each tick",
+          "evidence": "sidewalk-actors.jsonl pedestrian_id, pedestrian_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "method": "read original CARLA sidewalk waypoint lane type and lane ID after loading authored OpenDRIVE",
+          "evidence": "road.xodr and sidewalk-map-readback.json"
         }
       },
       "physical_preparation": {
@@ -103,7 +138,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "script_sha256": "4a545932d32eabb9ea9446675c0b656b3f49fda4cd62a70055d7f7e27516057b",
         "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --selftest positive",
         "test_exit_code": 0,
         "test_log": "delivery-proof/probe_a-positive.log",
@@ -112,7 +147,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact Native sidewalk result",
         "negative_log": "delivery-proof/probe_a-negative.log",
-        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+        "negative_log_sha256": "cecb9ff3a4e9c3db3d7ed1a883dc5a593ca78afd7510432072e3aaed245390ab"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
@@ -204,6 +239,41 @@
           "entrypoint": "runner.py",
           "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
           "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        },
+        "four_source_views": {
+          "entrypoint": "runner.py",
+          "method": "four CARLA RGB camera listeners join each source frame to the Native tick and encode all 600 frames",
+          "evidence": "camera-frames.jsonl, video_frames.jsonl, overview.mkv, approach.mkv, reference_corner.mkv, driver_reference.mkv"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_transform and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_xyz_m and pedestrian_xyz_m, capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_velocity and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_velocity_xyz_mps and pedestrian_velocity_xyz_mps, capture/evidence.jsonl"
+        },
+        "pedestrian_location_audio": {
+          "entrypoint": "audio_source.py",
+          "method": "live ALSA 8 kHz microphone continuously records at pedestrian location with per-frame marks",
+          "evidence": "pedestrian-microphone.pcm, pedestrian-microphone.json and microphone frame map"
+        },
+        "rider_and_pedestrian_footprints": {
+          "entrypoint": "runner.py",
+          "method": "post-tick separate actor transforms and bounding-box extents",
+          "evidence": "sidewalk-actors.jsonl rider_bbox_extent_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "spawn walker blueprint and record distinct pedestrian actor identity, transform and footprint each tick",
+          "evidence": "sidewalk-actors.jsonl pedestrian_id, pedestrian_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "method": "read original CARLA sidewalk waypoint lane type and lane ID after loading authored OpenDRIVE",
+          "evidence": "road.xodr and sidewalk-map-readback.json"
         }
       },
       "physical_preparation": {
@@ -224,7 +294,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "script_sha256": "4a545932d32eabb9ea9446675c0b656b3f49fda4cd62a70055d7f7e27516057b",
         "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --selftest positive",
         "test_exit_code": 0,
         "test_log": "delivery-proof/probe_b-positive.log",
@@ -233,7 +303,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact Native sidewalk result",
         "negative_log": "delivery-proof/probe_b-negative.log",
-        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+        "negative_log_sha256": "cecb9ff3a4e9c3db3d7ed1a883dc5a593ca78afd7510432072e3aaed245390ab"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
@@ -325,6 +395,41 @@
           "entrypoint": "runner.py",
           "method": "original Native actor, four-camera, sidewalk map and pedestrian-location microphone frame join",
           "evidence": "sidewalk-actors.jsonl, camera-frames.jsonl, video_frames.jsonl, pedestrian-microphone.json and microphone frame map"
+        },
+        "four_source_views": {
+          "entrypoint": "runner.py",
+          "method": "four CARLA RGB camera listeners join each source frame to the Native tick and encode all 600 frames",
+          "evidence": "camera-frames.jsonl, video_frames.jsonl, overview.mkv, approach.mkv, reference_corner.mkv, driver_reference.mkv"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_transform and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_xyz_m and pedestrian_xyz_m, capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "post-tick rider and pedestrian get_velocity and PipelineCapture at each Native frame",
+          "evidence": "sidewalk-actors.jsonl rider_velocity_xyz_mps and pedestrian_velocity_xyz_mps, capture/evidence.jsonl"
+        },
+        "pedestrian_location_audio": {
+          "entrypoint": "audio_source.py",
+          "method": "live ALSA 8 kHz microphone continuously records at pedestrian location with per-frame marks",
+          "evidence": "pedestrian-microphone.pcm, pedestrian-microphone.json and microphone frame map"
+        },
+        "rider_and_pedestrian_footprints": {
+          "entrypoint": "runner.py",
+          "method": "post-tick separate actor transforms and bounding-box extents",
+          "evidence": "sidewalk-actors.jsonl rider_bbox_extent_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "spawn walker blueprint and record distinct pedestrian actor identity, transform and footprint each tick",
+          "evidence": "sidewalk-actors.jsonl pedestrian_id, pedestrian_xyz_m and pedestrian_bbox_extent_xyz_m"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "method": "read original CARLA sidewalk waypoint lane type and lane ID after loading authored OpenDRIVE",
+          "evidence": "road.xodr and sidewalk-map-readback.json"
         }
       },
       "physical_preparation": {
@@ -345,7 +450,7 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "5e144253f180af3c1017fe2955248afd80a959fdcd8b71c7b7656d23c1512851",
+        "script_sha256": "4a545932d32eabb9ea9446675c0b656b3f49fda4cd62a70055d7f7e27516057b",
         "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/delivery_audit.py --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --selftest positive",
         "test_exit_code": 0,
         "test_log": "delivery-proof/probe_c-positive.log",
@@ -354,7 +459,7 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact Native sidewalk result",
         "negative_log": "delivery-proof/probe_c-negative.log",
-        "negative_log_sha256": "f03ce6dd4038b2e780ca866f8746273102c1ac5c940790b0d0710c6bd7ae5973"
+        "negative_log_sha256": "cecb9ff3a4e9c3db3d7ed1a883dc5a593ca78afd7510432072e3aaed245390ab"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
@@ -366,6 +471,50 @@
         "processing_receipt": "saved/probe_c-processing.json",
         "processing_receipt_sha256": "ce5e33ffe78d69fb4e1e034b5d50213c213ee7216e1d130d68bd6f164a491718"
       }
+    }
+  ],
+  "original_comparison_audits": [
+    {
+      "comparison_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__comparison",
+      "case_ids": [
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b"
+      ],
+      "script": "original_comparison_audit.py",
+      "script_sha256": "357b727a50a33a36a255d5e4e7a6e6521fa543669cd2add74b78853df4346725",
+      "positive_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair signal --selftest positive",
+      "positive_exit_code": 0,
+      "positive_log": "original-comparison-proof/signal-positive.log",
+      "positive_log_sha256": "4732d71e9e513d97c5f5935fa9403b6e3d99ba0614c4acde6e759b3a3f15558e",
+      "negative_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair signal --selftest negative",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Comparison changed fixed sidewalk context",
+      "negative_log": "original-comparison-proof/signal-negative.log",
+      "negative_log_sha256": "3e470a6bc29edf62682a869c0c60b70c9edd5d55a944d6e0757326ac9d7d9be3",
+      "production_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair signal --attempt-a \"$ATTEMPT_A\" --attempt-b \"$ATTEMPT_B\" --review-a independent-sidewalk-review.json --review-b independent-sidewalk-review.json --receipt-a \"$DELIVERY_AUDIT_A\" --receipt-b \"$DELIVERY_AUDIT_B\" --output \"$COMPARISON_OUT\"",
+      "original_attempts_required": true,
+      "legal_verdict_claimed": false
+    },
+    {
+      "comparison_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__yield_comparison",
+      "case_ids": [
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
+      ],
+      "script": "original_comparison_audit.py",
+      "script_sha256": "357b727a50a33a36a255d5e4e7a6e6521fa543669cd2add74b78853df4346725",
+      "positive_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair yield --selftest positive",
+      "positive_exit_code": 0,
+      "positive_log": "original-comparison-proof/yield-positive.log",
+      "positive_log_sha256": "cfebec30a6f568ff64c8355034c5f10241bd93826fc0048a2842647165b1f3a1",
+      "negative_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair yield --selftest negative",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Comparison changed fixed sidewalk context",
+      "negative_log": "original-comparison-proof/yield-negative.log",
+      "negative_log_sha256": "3e470a6bc29edf62682a869c0c60b70c9edd5d55a944d6e0757326ac9d7d9be3",
+      "production_command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair yield --attempt-a \"$ATTEMPT_A\" --attempt-b \"$ATTEMPT_B\" --review-a independent-sidewalk-review.json --review-b independent-sidewalk-review.json --receipt-a \"$DELIVERY_AUDIT_A\" --receipt-b \"$DELIVERY_AUDIT_B\" --output \"$COMPARISON_OUT\"",
+      "original_attempts_required": true,
+      "legal_verdict_claimed": false
     }
   ]
 }

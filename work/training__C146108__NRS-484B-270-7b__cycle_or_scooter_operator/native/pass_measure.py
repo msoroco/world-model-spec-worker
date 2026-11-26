@@ -36,6 +36,21 @@ def measure(folder):
     context = json.loads(context_path.read_text())
     if context['rider_class'] not in ('bicycle', 'electric_bicycle', 'electric_scooter'):
         raise ValueError('Rider class is outside exact statutory subjects')
+    electric = context['rider_class'] == 'electric_bicycle'
+    if electric:
+        qualification = context.get('rider_qualification')
+        if not isinstance(qualification, dict) or (
+            qualification.get('wheels') not in (2, 3) or
+            qualification.get('operable_pedals') is not True or
+            qualification.get('saddle') is not True or
+            qualification.get('assist_only_while_pedaling') is not True or
+            qualification.get('assist_cutoff_mph') != 20 or
+            qualification.get('moped') is not False or
+            qualification.get('electric_scooter') is not False or
+            type(qualification.get('motor_rated_watts')) not in (int, float) or
+            not 0 < qualification['motor_rated_watts'] <= 750 or
+            not qualification.get('source')):
+            raise ValueError('Electric-bicycle qualifying source incomplete')
     if context['passed_class'] != 'motor_vehicle':
         raise ValueError('Passed actor is not sourced as a motor vehicle')
     dimensions = {name: context[name + '_dimensions_m'] for name in ('rider', 'motor')}
@@ -59,6 +74,20 @@ def measure(folder):
     previous_native_frame = -1
     side = None
     for index, row in enumerate(rows):
+        if electric:
+            drive = row.get('drivetrain_command')
+            if not isinstance(drive, dict) or not all(k in drive for k in
+                    ('pedaling', 'pedal_cadence_rpm', 'assist_power_watts',
+                     'speed_mps', 'assist_cutoff_mps', 'power_source')):
+                raise ValueError('Electric-bicycle original drivetrain command absent')
+            watts = drive['assist_power_watts']
+            if (type(watts) not in (int, float) or not math.isfinite(watts) or
+                watts < 0 or watts > qualification['motor_rated_watts'] or
+                (watts > 0 and (drive['pedaling'] is not True or
+                                drive['pedal_cadence_rpm'] <= 0)) or
+                (watts > 0 and drive['speed_mps'] >= drive['assist_cutoff_mps']) or
+                abs(drive['assist_cutoff_mps'] - 20 * .44704) > 1e-6):
+                raise ValueError('Electric-bicycle Class 1 assist limit violated')
         native_frame = row.get('native_frame')
         if (type(native_frame) is not int or native_frame <= previous_native_frame or
                 row.get('video_frame', index) != index or
@@ -103,6 +132,7 @@ def measure(folder):
             'initial_longitudinal_closing_speed_mps': initial_closing_speed,
             'initial_time_to_rear_overlap_s': initial_ttc,
             'motor_occupant_count_sourced': occupants,
+            'electric_bicycle_controller_source_checked': electric,
             'endangerment_judgment': 'unreviewed', 'legal_verdict_claimed': False,
             'physical_acceptance_claimed': False,
             'limitations': ['Safety and endangerment have no source-backed numeric threshold',
