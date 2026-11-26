@@ -189,3 +189,9 @@ The fresh current-manifest recorded-only replay passed all 16 selected primary a
 The package is one of 43 batch assignments. The complete strict batch gate and shared branch/queue/integration artifacts are separate outstanding work. No frozen inputs, runtime, batch JSON or Git command was changed.
 
 The post-readiness complete strict batch gate exits 1 at `preparation.py:97`, rejecting frozen `runtime/runs/scenario_pipeline/inputs/shared/manifest.json` as an unapproved output. The C158196 scoped strict gate passed. The batch remains 6 ready / 37 partial, with 8,600 returned files at the cap; C158196 remains correctly labeled CPU delivery prepared.
+
+## 2026-11-26 current-runtime renewal
+
+Renewed the execution manifest against `runtime/SOURCE-MANIFEST.json` SHA256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. The previous binding and returned receipts are preserved under `prior-runtime-20261125/`. For the four exact cases, all 16 selected primary and fallback offline and compatibility proofs passed with the current runtime. The current receipts and logs are under `current-runtime-proof/`; the proof selection manifest is `execution-manifest-current-runtime-proof.json`. No Native capture or physical acceptance is claimed.
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C158196__NRS-484B-307-6a__motor_vehicle_driver --complete --require-delivery-ready` exits 0; the retained strict log is `.runtime-work/current-runtime-refresh/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/strict-gate.log`. `result.json` remains `ready` and `delivery_prepared`. The exact first GPU delivery command and remaining physical checks are in the earlier handoff and result. The current-runtime proof files are UTF-8 text, each below 2 MiB, with no trailing whitespace or blank ending lines.

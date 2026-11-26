@@ -50,3 +50,7 @@ All five selected cases have primary plus fallback1 (longer same-lane approach),
 ## 2026-11-22 scoped strict ready result
 
 The exact assignment strict gate passed after current construction replay and plan normalization: `.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready`. All five primaries and fifteen fallbacks have current offline, compatibility and recorded-only saved receipts. All five physical/lifecycle fixture sets and independent delivery audits passed; both source comparisons passed. This is CPU delivery preparation, with actual Native, physical and legal acceptance pending capture.
+
+## 2026-11-26 current-runtime renewal
+
+All five selected cases and 20 candidate paths have freshly generated current-runtime offline and positive/negative compatibility proofs. The prior execution manifest is preserved in `prior-runtime-20261125/`; the canonical execution manifest now binds runtime SHA `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. `.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`.

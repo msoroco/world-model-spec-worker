@@ -174,3 +174,7 @@ Status is now **ready** / `delivery_prepared`. All eight exact selected cases an
 2026-11-21 verification: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. This is assignment-scoped CPU delivery readiness, not a batch or Native acceptance claim.
 
 2026-11-21: Historical CPU-test and scoped-check logs were preserved byte-for-byte in `command-log-archive.json`; `result.json` binds both original member hashes and the current archive hash. No readiness status changed.
+
+## 2026-11-26 current-runtime renewal
+
+All eight selected cases and 32 candidate paths have freshly generated current-runtime offline and positive/negative compatibility proofs. The prior execution manifest is preserved in `prior-runtime-20261125/`; the canonical execution manifest now binds runtime SHA `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. `.venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`.

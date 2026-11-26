@@ -218,3 +218,21 @@ Four more C177008 case offline logs were preserved byte-exact in its existing ar
 ## 2026-11-23 byte-exact offline log consolidation
 
 Preserved all four residential-right-at-100ft and all four business-lane-change-above-100ft original offline stdout files as exact SHA-256-verified members of `command-log-archive.json`, refreshed all manifest/result references, and removed only those eight plain returned log copies after backup under ignored `.runtime-work/`. Archive SHA-256 is `9a9ae806c8f30cb62f3f1dd8670c7a10426411df602838c8748bafd7f7260249`. The assignment-scoped strict delivery gate passed after each archival batch; the ready proof remains valid.
+
+## 2026-11-26 current-runtime renewal
+
+The ten selected exact cases are:
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_below_100ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_interrupted`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft`
+- `testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft`
+
+All ten cases and their thirty justified fallback candidates passed fresh `runtime.py offline` and positive/missing-source `runtime.py compatibility` CPU proofs against current runtime SOURCE-MANIFEST SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. Current receipts and logs are bound under `current-runtime-proof/`; the previous runtime manifest and receipts are retained under `prior-runtime-20261125/`. The construction source bindings and diagnostic recipes required no change.
+
+Scoped strict proof: `.venv-cpu/bin/python worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. CPU preparation does not establish actual Native motion, source camera visibility, physical completion or legal acceptance.
