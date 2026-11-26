@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from native.observation_channels import channels
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -21,10 +22,12 @@ def build():
         'rate_hz': 20, 'duration_s': 30, 'required_atoms': ['ru.bicycle', 'ru.motor_vehicle',
             'kin.position', 'kin.heading', 'kin.speed', 'rel.occupies'],
         'source_packets': [], 'case': {'case_id': CASE},
-        'cameras': [{'name': name, 'width': width, 'height': height}
+        'cameras': [{'name': name, 'width': width, 'height': height,
+                     'pose_strategy': 'survey-gated fixed view along complete pass corridor',
+                     'fov_deg': 85}
                     for name, width, height, *_ in (
             ('overview', 1920, 1080, 0), ('approach', 1280, 720, 0),
-            ('passing_side', 1280, 720, 0), ('clear_ahead', 1280, 720, 0))],
+            ('reference_corner', 1280, 720, 0), ('driver_reference', 1280, 720, 0))],
         'recording_description': {'channels': [
             {'name': 'rider_pose', 'unit': 'structured', 'sampling_rate_hz': 20,
              'method': 'original Native actor transform and body corners',
@@ -39,13 +42,14 @@ def build():
             'limitations': ['Electric-bicycle witness branch remains unconstructed',
                             'Generated CPU pass fixtures do not establish safety']},
         'status': 'selected_bicycle_cpu_draft_not_delivery_prepared'}
+    config['recording_description']['channels'].extend(channels())
     files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
-             for name in ('runner.py', 'geometry.py', 'pass_measure.py', 'tests/test_native.py')]
+             for name in ('runner.py', 'geometry.py', 'pass_measure.py', 'finalize.py', 'tests/test_native.py')]
     files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
     proposal = {'case_id': CASE, 'law_id': 'NRS-484B-270-7b', 'cell_id': 'C146108',
         'actor': 'cycle_or_scooter_operator', 'entrypoint': 'runner.py', 'files': files,
         'recording_description': config['recording_description'],
-        'measurement_plan': {'entrypoint': 'pass_measure.py',
+        'measurement_plan': {'entrypoint': 'finalize.py',
                              'required_sources': ['participant-poses.jsonl', 'pass-context.json'],
                              'status': 'source_bound_cpu_draft'},
         'static_checks': ['authored one-way two-lane OpenDRIVE', 'four original camera plans',
@@ -67,7 +71,7 @@ def build():
                    'construction_sha256': sha(path),
                    'candidate_risk': {'status': 'physical',
                                       'reason': 'Pass clearance and camera visibility may fail on original Native motion'},
-                   'candidates': [], 'measurement_procedure': {'entrypoint': 'pass_measure.py'},
+                   'candidates': [], 'measurement_procedure': {'entrypoint': 'finalize.py'},
                    'delivery_readiness': 'incomplete'}]}
     (HERE / 'draft-bicycle-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(path),

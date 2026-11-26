@@ -32,7 +32,7 @@ def measure(poses_path, context_path, frame_map_path):
         if row['native_frame'] != frame.get('native_frame') or abs(row['time_s'] - frame.get('time_s', -999)) > .005:
             raise ValueError('pose/frame map source join failed')
         cameras = frame.get('camera_native_frames', {})
-        if set(cameras) != {'overview', 'sign_approach', 'sign_face', 'sidewalk_use'} or any(v != row['native_frame'] for v in cameras.values()):
+        if set(cameras) != {'overview', 'approach', 'reference_corner', 'driver_reference'} or any(v != row['native_frame'] for v in cameras.values()):
             raise ValueError('four source camera frame join failed')
     if context.get('street_name') != 'Fremont Street' or context.get('west_boundary') != 'Main Street' or context.get('east_boundary') != 'Seventh Street':
         raise ValueError('named segment source missing')

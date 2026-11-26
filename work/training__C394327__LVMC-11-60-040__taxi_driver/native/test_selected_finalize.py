@@ -98,7 +98,7 @@ class SavedTaxiMeasurement(unittest.TestCase):
         self.assertFalse(result['accepted'])
         sign = json.loads((self.root / 'channels/dev.regulatory_sign.jsonl').read_text().splitlines()[0])
         self.assertEqual(sign['value'], 'synthetic diagnostic stand sign')
-        self.assertEqual(len(result['recording_evidence']), 9)
+        self.assertEqual(len(result['recording_evidence']), 12)
         with self.assertRaisesRegex(ValueError, 'fresh saved attempt'):
             finalize(self.root, self.root / 'analysis-report.json')
 

@@ -4,7 +4,11 @@
 
 The previously flagged CTO C109166 exact camera and duration plan now passes the lead's current-runtime scoped strict command (`worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready`, exit 0, `static_checks_passed: true`). Its ready status is retained.
 
-C229977 has six selected cases, including an officer-direction pair with public and saved source-bound diagnostic proofs. It remains partial for unresolved governing-law and official-device branches and an ineligible cycle/scooter actor branch. C230266 now has a separate owner continuing the cycle and scooter sidewalk assignment. C394327 taxi remains partial while selected public and canonical saved chains are constructed. None is counted ready.
+C229977 has six selected cases, including an officer-direction pair with public and saved source-bound diagnostic proofs. It remains partial for unresolved governing-law and official-device branches and an ineligible cycle/scooter actor branch. C230266 now has a separate owner continuing the cycle and scooter sidewalk assignment. C394327 taxi remains partial after four selected public and recorded-only saved chains passed; semantic and independent acceptance audits remain CPU work. None is counted ready.
+
+## 2026-11-26 C394327 taxi selected public/saved proof
+
+`training__C394327__LVMC-11-60-040__taxi_driver` remains partial. Both selected exact taxi requests and their fixed-camera fallbacks pass pinned offline, public Native/Core/Lean/video compatibility and missing-activity-source negatives. All four also pass recorded-only saved processing with original source hashes unchanged. Public and saved compact receipts are bound in `selected-draft-manifest.json` (SHA-256 `9b45a1eb1b1f3f6aec0e61bdd00e286b14966726aa27b246cfdff2aa7761ea33`); 15 focused CPU tests pass (log SHA-256 `555172f1e1812e6713beb8a7f2c5eb26c13c6f8025364f22197c56f188d90298`). The scoped partial `--complete` check passes. Remaining CPU work is semantic, physical/lifecycle and independent delivery/comparison acceptance, followed by the exact scoped strict gate. Original taxi status, stand authority, observed activity, pixels and legal judgment remain local review. The full strict batch gate has not passed.
 
 ## 2026-11-26 C276263 and C190631 exact ready integration
 

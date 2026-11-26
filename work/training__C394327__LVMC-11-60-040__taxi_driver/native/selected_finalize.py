@@ -131,7 +131,7 @@ def finalize(attempt, output):
                     else row.get('observed_taxi_identity')}, allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': reference})
     context_dir = attempt / 'context'
-    context_dir.mkdir(exist_ok=False)
+    context_dir.mkdir(exist_ok=True)
     context_sources = {
         'taxi_license_review': 'taxi-license-review.json',
         'stand_designation_review': 'stand-designation-review.json',
@@ -140,12 +140,18 @@ def finalize(attempt, output):
         name = context['name']
         source = json.loads((attempt / context_sources[name]).read_text())
         reference = 'context/' + name + '.json'
-        (attempt / reference).write_text(json.dumps({
+        expected_context = json.dumps({
             name: {'source_basis': source['source_basis'],
                    'source_sha256': sha(attempt / context_sources[name]),
                    'review_status': source.get('review_status')},
             'source_kind': 'synthetic_cpu_fixture' if source.get('synthetic_cpu_fixture')
-            else 'reviewed_original_source'}, allow_nan=False) + '\n')
+            else 'reviewed_original_source'}, allow_nan=False) + '\n'
+        context_path = attempt / reference
+        if context_path.is_file():
+            if context_path.read_text() != expected_context:
+                raise ValueError('Existing context observation differs from original review')
+        else:
+            context_path.write_text(expected_context)
         evidence.append({'name': name, 'unit': context['unit'],
                          'reference': reference})
     report = {'format': 'worker-analysis-report', 'case_id': case,

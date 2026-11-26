@@ -156,6 +156,9 @@ def execute(output, host, port, rider_y=-1.75, case_id=None):
                     'drivetrain_command': drivetrain}) + '\n')
                 trace_stream.write(json.dumps({'frame': native_frame, 'time_s': elapsed,
                     'position_m': [*original_bicycle['center_xy_m'], bicycle.get_transform().location.z],
+                    'position': {'x': original_bicycle['center_xy_m'][0],
+                                 'y': original_bicycle['center_xy_m'][1],
+                                 'z': bicycle.get_transform().location.z},
                     'heading_deg': bicycle.get_transform().rotation.yaw,
                     'speed_mps': original_bicycle['speed_mps'],
                     'control': drivetrain}) + '\n')

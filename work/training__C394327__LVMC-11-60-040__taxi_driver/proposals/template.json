@@ -1,0 +1,66 @@
+{
+  "template_id": "LVMC-11-60-040@taxi_driver",
+  "law_id": "LVMC-11-60-040",
+  "actor": "taxi_driver",
+  "quote": "The operator of a taxicab shall not stand or park such vehicle upon any street at any place other than in a taxicab stand so designated as provided herein. This provision shall not prevent the operator of a taxicab from temporarily stopping in accordance with other stopping or parking regulations at any place for the purpose of and while actually engaged in the expeditious loading or unloading of passengers.",
+  "status": "draft",
+  "structure": {
+    "law_id": "LVMC-11-60-040",
+    "activation": {
+      "condition": "operator of a taxicab stands or parks on a street at a place other than a designated taxicab stand",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "taxicab operator must not stand or park on a street outside a designated stand",
+      "source_clause": "The operator of a taxicab shall not stand or park such vehicle upon any street at any place other than in a taxicab stand so designated as provided herein.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "temporarily stopping in accordance with other stopping or parking regulations while actually engaged in expeditious passenger loading or unloading",
+        "effect": "the outside-stand prohibition does not prevent that stop",
+        "replacement_obligation": "comply with other stopping and parking regulations and limit the stop to actual expeditious passenger loading or unloading",
+        "source_clause": "shall not prevent the operator of a taxicab from temporarily stopping in accordance with other stopping or parking regulations at any place for the purpose of and while actually engaged in the expeditious loading or unloading of passengers."
+      }
+    ],
+    "timing": {
+      "description": "stand or park, or temporary stop during actual expeditious loading or unloading",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "taxicab stand so designated",
+        "note": "Original stand designation and street position require authority review."
+      },
+      {
+        "phrase": "temporarily stopping in accordance with other regulations",
+        "note": "Original stop duration and other parking-rule authority require review."
+      },
+      {
+        "phrase": "actually engaged in expeditious loading or unloading of passengers",
+        "note": "Original participant activity and continuous loading interval require review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "curb_and_stand_context",
+      "kind": "world_setup",
+      "range_or_domain": "original street geometry and source-reviewed taxi-stand designation"
+    },
+    {
+      "name": "taxi_and_participant",
+      "kind": "world_setup",
+      "range_or_domain": "original taxi and loading participant identities"
+    },
+    {
+      "name": "loading_subject_and_occupant_transition",
+      "kind": "controller",
+      "range_or_domain": [
+        "passenger_loading",
+        "merchandise_loading"
+      ]
+    }
+  ]
+}

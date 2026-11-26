@@ -47,7 +47,7 @@ def fixture(label, posture, y=-5, behavior='mounted_sidewalk'):
                    'provenance': 'synthetic_native_sample'}
             frame = {'video_frame': i, 'native_frame': native, 'time_s': t,
                      'camera_native_frames': {name: native for name in
-                        ('overview', 'sign_approach', 'sign_face', 'sidewalk_use')}}
+                        ('overview', 'approach', 'reference_corner', 'driver_reference')}}
             p.write(json.dumps(row) + '\n')
             f.write(json.dumps(frame) + '\n')
     return poses, context, frames
@@ -96,7 +96,7 @@ def main():
     wrong_class = reject((mounted_paths[0], bad_context, mounted_paths[2]), 'covered machine class source missing')
     lines = mounted_paths[2].read_text().splitlines()
     frame = json.loads(lines[8])
-    frame['camera_native_frames'].pop('sign_face')
+    frame['camera_native_frames'].pop('reference_corner')
     lines[8] = json.dumps(frame)
     bad_map = SCRATCH / 'missing-camera.jsonl'
     bad_map.write_text('\n'.join(lines) + '\n')

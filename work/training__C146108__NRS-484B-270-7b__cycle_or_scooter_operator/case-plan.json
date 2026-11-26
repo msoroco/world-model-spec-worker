@@ -38,28 +38,6 @@
   },
   "cases": [
     {
-      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
-      "target_law_id": "NRS-484B-270-7b",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "electric bicycle passes with measured clearance and stable other vehicle",
-      "comparison_variable": "endangerment during pass",
-      "selection_status": "not_selected",
-      "expected_label": null,
-      "construction_status": "unproven"
-    },
-    {
-      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02",
-      "target_law_id": "NRS-484B-270-7b",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "same pass geometry with reduced clearance or forced evasive response",
-      "comparison_variable": "endangerment during pass",
-      "selection_status": "not_selected",
-      "expected_label": null,
-      "construction_status": "unproven"
-    },
-    {
       "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
       "target_law_id": "NRS-484B-270-7b",
       "kind": "delivery",
@@ -101,31 +79,24 @@
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__planned_comparison",
-      "case_ids": [
-        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
-        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02"
-      ],
-      "deliberate_differences": [
-        "endangerment during pass"
-      ],
-      "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
-      ]
-    },
-    {
       "comparison_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_clearance_comparison",
       "case_ids": [
         "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide",
         "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow"
       ],
-      "deliberate_differences": ["rider lateral center and measured full-body surface gap"],
-      "fixed_conditions": ["frozen cell and actor", "authored Class 1 drivetrain", "motor-vehicle trajectory", "one-way two-lane road", "camera policy", "20 Hz and 30 seconds", "longitudinal rider trajectory", "occupant context"],
+      "deliberate_differences": [
+        "rider lateral center and measured full-body surface gap"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "authored Class 1 drivetrain",
+        "motor-vehicle trajectory",
+        "one-way two-lane road",
+        "camera policy",
+        "20 Hz and 30 seconds",
+        "longitudinal rider trajectory",
+        "occupant context"
+      ],
       "cpu_proof": "ebike-comparison-proof.log",
       "physical_review": "pending Native execution and independent source audit"
     }
@@ -252,45 +223,97 @@
         "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow"
       ],
       "evidence_or_gap": "Electric-bicycle Class 1 surrogate and original-frame Native proposal pass current-runtime offline and source-bound CPU measurements; physical identity, saved delivery, candidate fallback and comparison remain unproved."
+    },
+    {
+      "requirement": "NRS-484B-270-7b",
+      "source": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/assignment.json",
+      "branch": "Bicycle statutory alternative overtakes a motor vehicle",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide"
+      ],
+      "evidence_or_gap": "Bicycle geometry and original-frame Native proposal pass current-runtime offline and saved-source CPU diagnostics; physical pass, final delivery and fallback remain unproved."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "drv.overtaking",
-      "method": "Original rider and motor positions demonstrate behind, alongside and clear-ahead event order",
-      "source": "participant-poses.jsonl"
+  "source_observation_mapping": {
+    "drv.overtaking": {
+      "evidence": "Original rider and motor positions demonstrate behind, alongside and clear-ahead event order",
+      "channels": [
+        "drv.overtaking"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "video_frames.jsonl"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "ru.motor_vehicle",
-      "method": "Sourced motor-vehicle classification needs original Native identity review",
-      "source": "pass-context.json"
+    "ru.motor_vehicle": {
+      "evidence": "Sourced motor-vehicle classification needs original Native identity review",
+      "channels": [
+        "ru.motor_vehicle"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "pass-context.json"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "rel.surface_gap",
-      "method": "Minimum separation of full axis-aligned body rectangles across the entire measured pass",
-      "source": "participant-poses.jsonl and pass-context.json"
+    "rel.surface_gap": {
+      "evidence": "Minimum separation of full axis-aligned body rectangles across the entire measured pass",
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "video_frames.jsonl"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "drv.time_to_conflict",
-      "method": "Initial longitudinal gap divided by pose-derived closing speed estimates time to rear overlap; no safety cutoff is implied",
-      "source": "participant-poses.jsonl and pass-context.json"
+    "drv.time_to_conflict": {
+      "evidence": "Initial longitudinal gap divided by pose-derived closing speed estimates time to rear overlap; no safety cutoff is implied",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "video_frames.jsonl"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "drv.passing_side",
-      "method": "Rider side at first along-vehicle frame relative to motor position",
-      "source": "participant-poses.jsonl"
+    "drv.passing_side": {
+      "evidence": "Rider side at first along-vehicle frame relative to motor position",
+      "channels": [
+        "drv.passing_side"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "video_frames.jsonl"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "kin.speed",
-      "method": "Longitudinal closing speed calculated from adjacent original poses and 20 Hz frame times",
-      "source": "participant-poses.jsonl"
+    "kin.speed": {
+      "evidence": "Longitudinal closing speed calculated from adjacent original poses and 20 Hz frame times",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "video_frames.jsonl"
+      ],
+      "physical_review": "pending original Native motion and identity"
     },
-    {
-      "term": "ru.occupant_count",
-      "method": "Explicit sourced motor occupant count, subject to original-vehicle review",
-      "source": "pass-context.json"
+    "ru.occupant_count": {
+      "evidence": "Explicit sourced motor occupant count, subject to original-vehicle review",
+      "channels": [
+        "ru.occupant_count"
+      ],
+      "source_refs": [
+        "participant-poses.jsonl",
+        "pass-context.json"
+      ],
+      "physical_review": "pending original Native motion and identity"
     }
-  ],
+  },
   "cpu_measurement_contract": "pass-measurement-contract.json",
   "statutory_alternative_review": {
     "law_text_subjects": [
@@ -306,5 +329,49 @@
     "witness_branch_status": "selected_cpu_draft_physical_and_delivery_pending",
     "source": "inputs/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/assignment.json",
     "accepted_membership_count": 0
-  }
+  },
+  "unselected_planning_probes": [
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
+      "target_law_id": "NRS-484B-270-7b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "electric bicycle passes with measured clearance and stable other vehicle",
+      "comparison_variable": "endangerment during pass",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02",
+      "target_law_id": "NRS-484B-270-7b",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "same pass geometry with reduced clearance or forced evasive response",
+      "comparison_variable": "endangerment during pass",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    }
+  ],
+  "unselected_planning_comparisons": [
+    {
+      "comparison_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__planned_comparison",
+      "case_ids": [
+        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_01",
+        "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__probe_02"
+      ],
+      "deliberate_differences": [
+        "endangerment during pass"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "physical route topology",
+        "participant identities",
+        "camera policy",
+        "recording rate and duration",
+        "nonvariable context"
+      ]
+    }
+  ]
 }

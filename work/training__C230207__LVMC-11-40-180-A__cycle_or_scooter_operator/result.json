@@ -2,14 +2,50 @@
   "assignment_id": "training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator",
   "input_sha256": "0058dfbe0b6dfc86648ad663cc6665252825632ff5b18cdf46ebee4fc54e3d7e",
   "status": "partial",
-  "reason": "Controlled_2 now has a source-bound Native CPU draft: authored 160 m Fremont road with sidewalk lane and three-class access sign, original bicycle pose/velocity and synchronized four-camera FrameMap capture, survey gate, and a measurement procedure. Pinned preflight, scoped complete check, selected-case offline, and synthetic source-shaped positive/negative measurement tests pass. Controlled_1 dismount/push construction, classification and rider-posture physical source, geographic identity, exact selected manifest, saved processing, compatibility, fallbacks, independent audits and comparison remain unfinished.",
+  "reason": "Controlled_1 walking and controlled_2 riding bicycle Native CPU drafts now pass individual pinned offline checks. A source-bound measurement records separate walking-operator and bicycle pose association, and a comparison pre-audit rejects altered signs, behavior and missing operator poses. Native tests and synthetic measurement/comparison tests pass. Both machine postures remain unverified until actual video review. Electric bicycle and electric scooter alternatives lack a verified pinned Native asset path. Selected delivery manifest, semantic proposals, source-bound compatibility, saved-only processing and independent delivery acceptance remain unfinished; exact strict rejects partial status.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 2,
-  "candidate_count": 1,
-  "source_law_review": "Exact LVMC 11.40.180(A) and frozen witness reviewed: riding a bicycle, electric bicycle or electric scooter on Fremont Street sidewalks between Main and Seventh is the rider prohibition; posting all three classes is a separate obligation and not an express prerequisite. Classification definitions and missing-sign consequence remain for source review. The authored named road and sign do not independently establish real geography or physical sign pixels.",
+  "candidate_count": 2,
+  "source_law_review": "Exact law independently reviewed: the rider prohibition covers bicycle, electric bicycle and electric scooter on Fremont Street sidewalks between Main and Seventh; the three-class sign posting sentence is separate and is not an express riding prerequisite. Ordinary bicycle CPU drafts do not cover the electric alternatives. Named geography and actual sign pixels require local physical/source verification.",
   "accepted_membership_count": 0,
   "reuse_count": 0,
   "unresolved_branch_count": 1,
   "applied_update": 16,
-  "selected_delivery_case_count": 0
+  "selected_delivery_case_count": 0,
+  "tests": [
+    {
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1",
+      "exit_code": 0,
+      "log": "controlled-1-offline.log",
+      "sha256": "c131f9b94ae07fcba6691ac83056c621f1c6796d4cd6e2e456a49114f0d57271"
+    },
+    {
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2",
+      "exit_code": 0,
+      "log": "controlled-2-offline.log",
+      "sha256": "c131f9b94ae07fcba6691ac83056c621f1c6796d4cd6e2e456a49114f0d57271"
+    },
+    {
+      "command": "python -m unittest discover -s native/tests -v",
+      "exit_code": 0,
+      "log": "controlled-native-tests.log",
+      "sha256": "a77e3bbfbdfb395189ba96c9df6bcad0592357611b30b987d4a739690738b192"
+    },
+    {
+      "command": "python prove-measure.py",
+      "exit_code": 0,
+      "log": "controlled-measure-proof.log",
+      "sha256": "a2777de5aa7b4c39bfd49511f5028bffa3146364f193f02a313453b4acdb50d6"
+    },
+    {
+      "command": "python prove-comparison.py",
+      "exit_code": 0,
+      "log": "controlled-comparison-proof.log",
+      "sha256": "8b57f76ef642ddb6cffbb966bfde93983fb28b248913adf94393f650edeee299"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Actual bicycle and operator motion, rider posture and absence of an integral bicycle-model rider",
+    "Sidewalk occupancy, sign face pixels, geographic identity and camera coverage"
+  ]
 }

@@ -2,7 +2,7 @@
   "assignment_id": "training__C143691__LVMC-11-27-010-A__motor_vehicle_driver",
   "input_sha256": "b814c7a3cd90a0818d0cfcf235aad38c1ac18e47722e785edaa07e535f4d1848",
   "status": "partial",
-  "reason": "Seven selected primary current-v2 offline and public source-bound compatibility proofs, seven recorded-only saved chains, seven physical/lifecycle CPU proofs, seven independent delivery acceptance positive/negative self-tests, six diagnostic controlled comparison specs, and semantic proposal validation are complete. Original Native behavior, official trail administrative records, sign authority, exception eligibility and legal outcome remain unverified. Subsection B(3) mobility-device exception remains alternative_pending because the frozen motor_vehicle_driver actor/asset has no evidenced eligible device and impaired user binding.",
+  "reason": "Seven selected primary current-runtime CPU chains are prepared. A new source-bound B(3) eligibility audit and original paired comparison audit pass 11 CPU tests, but B(3) remains unselected: no original eligible mobility-device asset, device design, impaired-user use, or operator binding is supplied, and the frozen motor_vehicle_driver eligibility is unresolved. Original physical and legal acceptance remain unverified.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 7,
   "candidate_count": 0,
@@ -41,11 +41,40 @@
     "log_sha256": "d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba",
     "failure": "Preparation acceptance failed: partial/missing packages remain",
     "status_remains": "partial",
-    "source_gap": "B(3) mobility-device exception lacks frozen eligible actor/asset and impaired-user binding"
+    "source_gap": "B(3) mobility-device exception lacks original eligible actor/asset, device-design, impaired-user-use and operator-binding records; seven selected CPU chains remain valid"
   },
   "scoped_partial_static_check": {
     "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C143691__LVMC-11-27-010-A__motor_vehicle_driver --complete",
     "exit_code": 0,
     "static_checks_passed": true
+  },
+  "mobility_eligibility_checkpoint": {
+    "audit": "native/mobility_eligibility.py",
+    "audit_sha256": "d7f13c2dc6a72370c58c2353a034ce4ff58aa72b28a5d7af422014db9cf476e8",
+    "tests": "mobility-eligibility-tests.log",
+    "tests_sha256": "36168714e0d99bb30a6d6554913f66da3de433756eb7e74a8fee39e0a6a4a2c0",
+    "test_exit_code": 0,
+    "negative_categories": 5,
+    "native_asset_inventory_available": false,
+    "original_eligible_device_bound": false,
+    "actor_eligibility_reviewed": false
+  },
+  "tests": [
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c143691-temp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143691-output PYTHONPATH=$PWD/work/training__C143691__LVMC-11-27-010-A__motor_vehicle_driver/native PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B -m unittest discover -s native/tests -v (cwd=work/training__C143691__LVMC-11-27-010-A__motor_vehicle_driver)",
+      "exit_code": 0,
+      "log": "native-cpu-tests.log",
+      "sha256": "4c430e9cf7511ccd153805e605c1c4ba40a5d0574c84112e3fc8078b7edcdd6b"
+    }
+  ],
+  "comparison_audit_checkpoint": {
+    "audit": "native/original_comparison_audit.py",
+    "audit_sha256": "0a5d40fd6a307fc59238e232a7fc8428d445ecf2a3ffd67673791074d9eb6245",
+    "test_log": "native-cpu-tests.log",
+    "test_log_sha256": "4c430e9cf7511ccd153805e605c1c4ba40a5d0574c84112e3fc8078b7edcdd6b",
+    "test_exit_code": 0,
+    "pair_count": 6,
+    "original_delivery_receipts_required": true,
+    "physical_comparisons_accepted": false
   }
 }

@@ -1,6 +1,7 @@
 """Survey-gated original Native bicycle capture for Fremont sidewalk restriction."""
 import argparse
 import json
+import math
 from pathlib import Path
 import queue
 import subprocess
@@ -11,10 +12,10 @@ from geometry import check as geometry_check, open_drive, SIGN_NAME
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -18, 16, -40),
-    ('sign_approach', 1280, 720, -65, -9, 7, -18),
-    ('sign_face', 1280, 720, -55, -8, 5, -10),
-    ('sidewalk_use', 1280, 720, 20, -12, 10, -30),
+    ('overview', 1920, 1080, 0, -18, 16, -40),
+    ('approach', 1280, 720, -65, -9, 7, -18),
+    ('reference_corner', 1280, 720, -55, -8, 5, -10),
+    ('driver_reference', 1280, 720, 20, -12, 10, -30),
 )
 
 
@@ -139,7 +140,9 @@ def execute(output_dir, host, port, behavior):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'bicycle-poses.jsonl').open('x') as poses:
+        with FrameMap(output / 'video_frames.jsonl') as frame_map, \
+                (output / 'bicycle-poses.jsonl').open('x') as poses, \
+                (output / 'trace.jsonl').open('x') as trace:
             first_elapsed = None
             for index in range(FRAMES):
                 bicycle.set_target_velocity(carla.Vector3D(x=plan['target_speed_mps'], y=0, z=0))
@@ -182,6 +185,16 @@ def execute(output_dir, host, port, behavior):
                     if operator_transform is not None else None,
                     'operator_velocity_xy_mps': [operator_velocity.x, operator_velocity.y]
                     if operator_velocity is not None else None}) + '\n')
+                trace.write(json.dumps({'frame': native_frame, 'time_s': relative_time,
+                    'position': {'x': transform.location.x, 'y': transform.location.y,
+                                 'z': transform.location.z},
+                    'position_m': [transform.location.x, transform.location.y, transform.location.z],
+                    'heading_deg': transform.rotation.yaw,
+                    'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                    'speed_mps': math.hypot(velocity.x, velocity.y),
+                    'speed_mph': math.hypot(velocity.x, velocity.y) * 2.2369362921,
+                    'control': {'throttle': 0, 'brake': 0, 'hand_brake': False},
+                    'cycle_actor_id': bicycle.id, 'source': 'original_native_actor'}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
