@@ -9,6 +9,7 @@ import json
 import math
 from pathlib import Path
 
+from road_source import inspect as inspect_road
 from stop_line_request import CASES, FRAMES, RATE_HZ
 
 
@@ -27,20 +28,28 @@ def measure(source_dir, case_id):
     seal = json.loads((source_dir / "source-seal.json").read_text())
     if seal.get("format") != "c295180-saved-source-seal-v1" or seal.get("case_id") != case_id:
         raise ValueError("Saved source seal identity differs")
-    required = ("native_samples.jsonl", "video_frames.jsonl", "stop_reference.json")
+    required = ("native_samples.jsonl", "video_frames.jsonl", "stop_reference.json",
+                "road.xodr")
     if set(seal.get("source_sha256", {})) != set(required):
         raise ValueError("Required source inventory differs")
     for name in required:
+        if not (source_dir / name).is_file():
+            raise ValueError("Missing required source: " + name)
         if digest(source_dir / name) != seal["source_sha256"][name]:
             raise ValueError("Saved source hash differs: " + name)
     reference = json.loads((source_dir / "stop_reference.json").read_text())
+    road = inspect_road(source_dir / 'road.xodr')
+    if (reference.get('authored_road_sha256') != digest(source_dir / 'road.xodr') or
+            road['stop_line_world_y_m'] != -11 or
+            road['intersection_near_boundary_world_y_m'] != -7):
+        raise ValueError('Stop reference is not bound to the saved road source')
     if (reference.get("stop_sign_present") is not True or
             reference.get("governs_ego_lane") is not True or
             reference.get("near_crosswalk_present") is not False or
             reference.get("marked_stop_line_x_m") != 0 or
             reference.get("intersection_near_boundary_x_m", -1) <= 0 or
             reference.get("source_kind") not in
-            ("original_native_readback", "synthetic_cpu_fixture")):
+            ("authored_road_original_motion_unreviewed", "synthetic_cpu_fixture")):
         raise ValueError("Applicable sign, crosswalk, line or intersection source differs")
     native = read_rows(source_dir / "native_samples.jsonl")
     mapping = read_rows(source_dir / "video_frames.jsonl")
@@ -64,8 +73,15 @@ def measure(source_dir, case_id):
         values = (ego.get("center_x_m"), ego.get("front_x_m"), ego.get("speed_mps"))
         if any(not isinstance(v, (int, float)) or not math.isfinite(v) for v in values):
             raise ValueError("Original ego body or speed source missing")
-        if ego["speed_mps"] < 0 or ego["front_x_m"] < ego["center_x_m"]:
+        if ego["speed_mps"] < 0 or not .5 <= ego["front_x_m"] - ego["center_x_m"] <= 5:
             raise ValueError("Original ego body or speed source invalid")
+        if index:
+            previous = native[index-1]['ego']
+            delta = abs(ego['center_x_m'] - previous['center_x_m'])
+            allowance = max(ego['speed_mps'], previous['speed_mps']) / RATE_HZ + .3
+            if delta > allowance or abs((ego['front_x_m'] - ego['center_x_m']) -
+                                      (previous['front_x_m'] - previous['center_x_m'])) > .5:
+                raise ValueError('Original ego trajectory and speed source differ')
     crossing = next((i for i, r in enumerate(native) if r["ego"]["front_x_m"] >= 0), None)
     if crossing is None:
         raise ValueError("No front-body stop-line crossing observed")

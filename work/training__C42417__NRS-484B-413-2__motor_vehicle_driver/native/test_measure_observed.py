@@ -52,6 +52,15 @@ class ObservedSignalMeter(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Observed indicator source missing'):
             measure(self.path, self.case, allow_fixture=True)
 
+    def test_first_frame_lamp_is_censored(self):
+        for row in self.rows:
+            row['right_lamp_commanded'] = True
+            row['right_lamp_observed'] = True
+        self.write()
+        result = measure(self.path, self.case, allow_fixture=True)
+        self.assertIsNone(result['signal_onset_frame'])
+        self.assertFalse(result['business_100ft_distance_observed'])
+
     def test_lamp_gap_restarts_continuous_distance(self):
         self.rows[250]['right_lamp_observed'] = False
         self.write()
@@ -97,10 +106,13 @@ class ObservedSignalMeter(unittest.TestCase):
             'area_classification': 'business_district',
             'area_classification_review_required': True,
             'native_map_sha256': 'a' * 64, 'provenance': 'synthetic_cpu_fixture'}) + '\n')
+        (root / 'control_context.json').write_text(json.dumps({
+            'control': 'speed_limit_sign', 'native_blueprint': 'traffic.speed_limit.30',
+            'native_actor_id': 23}) + '\n')
         config = {'case_id': self.case, 'signal_distance_m': 40}
         result = process(root, config, allow_fixture=True)
         self.assertEqual(result['measured_signal_distance_m'], 40)
-        self.assertEqual(len(result['source_hashes']), 4)
+        self.assertEqual(len(result['source_hashes']), 5)
         self.assertFalse(result['physical_completion_claimed'])
         mapping[100]['native_frame'] = 200
         (root / 'video_frames.jsonl').write_text(''.join(json.dumps(v) + '\n' for v in mapping))

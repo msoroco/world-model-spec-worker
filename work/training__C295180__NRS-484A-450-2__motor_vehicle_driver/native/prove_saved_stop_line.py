@@ -4,6 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
+from live_capture import ROAD
 from saved_stop_line import measure
 from stop_line_request import CASES, FRAMES, request_row
 
@@ -33,11 +34,13 @@ def build(directory, condition):
     for name, rows in paths.items():
         (directory / name).write_text(''.join(json.dumps(row, sort_keys=True) + '\n'
                                               for row in rows))
+    (directory / 'road.xodr').write_bytes(ROAD.read_bytes())
     write_json(directory / 'stop_reference.json',
                {'stop_sign_present': True, 'governs_ego_lane': True,
                 'near_crosswalk_present': False, 'marked_stop_line_x_m': 0,
                 'intersection_near_boundary_x_m': 5,
-                'source_kind': 'synthetic_cpu_fixture'})
+                'source_kind': 'synthetic_cpu_fixture',
+                'authored_road_sha256': sha(directory / 'road.xodr')})
     seal(directory, case)
     return case
 
@@ -47,7 +50,7 @@ def seal(directory, case):
                {'format': 'c295180-saved-source-seal-v1', 'case_id': case,
                 'source_sha256': {name: sha(directory / name) for name in
                                   ('native_samples.jsonl', 'video_frames.jsonl',
-                                   'stop_reference.json')}})
+                                   'stop_reference.json', 'road.xodr')}})
 
 
 def rejected(directory, case, expected):
@@ -100,6 +103,30 @@ def prove():
             handle.write('{}\n')
         negatives['stale_source_hash'] = rejected(
             directory, case, 'Saved source hash differs: native_samples.jsonl')
+        road_dir = root / 'bad_road'
+        road_dir.mkdir()
+        bad_case = build(road_dir, 'full_stop')
+        road_path = road_dir / 'road.xodr'
+        road_path.write_text(road_path.read_text().replace(
+            'clearly-marked-stop-line', 'absent-line'))
+        reference = json.loads((road_dir / 'stop_reference.json').read_text())
+        reference['authored_road_sha256'] = sha(road_path)
+        write_json(road_dir / 'stop_reference.json', reference)
+        seal(road_dir, bad_case)
+        negatives['missing_road_line'] = rejected(
+            road_dir, bad_case, 'Clearly marked transverse stop-line object absent')
+        motion_dir = root / 'bad_motion'
+        motion_dir.mkdir()
+        motion_case = build(motion_dir, 'full_stop')
+        motion = [json.loads(line) for line in
+                  (motion_dir / 'native_samples.jsonl').read_text().splitlines()]
+        for row in motion[:20]:
+            row['ego']['speed_mps'] = 0
+        (motion_dir / 'native_samples.jsonl').write_text(''.join(
+            json.dumps(row, sort_keys=True) + '\n' for row in motion))
+        seal(motion_dir, motion_case)
+        negatives['inconsistent_motion'] = rejected(
+            motion_dir, motion_case, 'Original ego trajectory and speed source differ')
         return {'format': 'c295180-saved-meter-cpu-proof-v1',
                 'positive': results, 'negative_rejections': negatives,
                 'physical_completion_claimed': False, 'legal_verdict_claimed': False}

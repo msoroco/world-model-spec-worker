@@ -46,7 +46,7 @@ def control(carla, ego, target_speed):
     return carla.VehicleControl(throttle=throttle, brake=brake, steer=steer)
 
 
-def capture(case_id, output, host='127.0.0.1', port=2000):
+def capture(case_id, output, host='127.0.0.1', port=2000, spawn_y_m=-61):
     if case_id not in CASES.values():
         raise ValueError('Exact selected case differs')
     road_info = inspect_road(ROAD)
@@ -97,14 +97,14 @@ def capture(case_id, output, host='127.0.0.1', port=2000):
         settings.max_substeps = 10
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
-        waypoint = world.get_map().get_waypoint(carla.Location(x=1.75, y=-61, z=1),
+        waypoint = world.get_map().get_waypoint(carla.Location(x=1.75, y=spawn_y_m, z=1),
             project_to_road=False, lane_type=carla.LaneType.Driving)
         if waypoint is None or waypoint.road_id != 1 or waypoint.lane_id != -1:
             raise RuntimeError('Subject signed approach lane readback differs')
         blueprint = world.get_blueprint_library().find('vehicle.tesla.model3')
         blueprint.set_attribute('role_name', 'c295180_ego')
         ego = world.spawn_actor(blueprint, carla.Transform(
-            carla.Location(x=1.75, y=-61, z=2), carla.Rotation(yaw=90)))
+            carla.Location(x=1.75, y=spawn_y_m, z=2), carla.Rotation(yaw=90)))
         owned.append(ego)
         for _ in range(30):
             world.tick()
@@ -136,6 +136,7 @@ def capture(case_id, output, host='127.0.0.1', port=2000):
             visibility=False, required_observations=())
         start_time = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'native_samples.jsonl').open('x') as rows, \
+                (output / 'stop_history.jsonl').open('x') as history, \
                 FrameMap(output / 'video_frames.jsonl') as mapping:
             for index in range(FRAMES):
                 ego.apply_control(control(carla, ego, requested_speed(index, case_id)))
@@ -145,13 +146,19 @@ def capture(case_id, output, host='127.0.0.1', port=2000):
                 body = ego.bounding_box.get_world_vertices(pose)
                 speed_vector = ego.get_velocity()
                 speed = math.sqrt(speed_vector.x**2 + speed_vector.y**2 + speed_vector.z**2)
-                row = {'case_id': case_id, 'frame': index, 'native_frame': frame,
-                       'time_s': elapsed, 'ego': {
+                row = {'case_id': case_id, 'frame': index, 'video_frame': index,
+                       'native_frame': frame, 'time_s': elapsed,
+                       'road_id': 1, 'lane_id': -1,
+                       'body_vertices_m': [[vertex.x, vertex.y, vertex.z] for vertex in body],
+                       'speed_mps': speed, 'ego': {
                            'center_x_m': pose.location.y + 11,
                            'front_x_m': max(vertex.y for vertex in body) + 11,
                            'speed_mps': speed},
                        'source_kind': 'original_native_readback'}
                 rows.write(json.dumps(row, allow_nan=False) + '\n')
+                history.write(json.dumps({'frame': frame, 'time_s': elapsed,
+                                          'body_vertices_m': row['body_vertices_m']},
+                                         allow_nan=False) + '\n')
                 pipeline.capture(frame, elapsed, extra={'c295180_stop_line': row})
                 for name, width, height in CAMERAS:
                     image = cameras[name].get(timeout=30)
@@ -202,9 +209,15 @@ def capture(case_id, output, host='127.0.0.1', port=2000):
         'stop_sign_present': True, 'governs_ego_lane': True,
         'near_crosswalk_present': False, 'marked_stop_line_x_m': 0,
         'intersection_near_boundary_x_m': 4,
-        'source_kind': 'original_native_readback',
+        'source_kind': 'authored_road_original_motion_unreviewed',
         'authored_road_sha256': sha(ROAD), 'road_review': road_info}, indent=2) + '\n')
-    names = ('native_samples.jsonl', 'video_frames.jsonl', 'stop_reference.json')
+    (output / 'crosswalk_geometry.json').write_text(json.dumps({
+        'near_side_crosswalk_present': False, 'marked_stop_line_y_m': -11,
+        'intersection_entry_y_m': -7, 'road_sha256': sha(ROAD),
+        'source': 'authored OpenDRIVE stop-line object; physical rendering unverified'},
+        indent=2) + '\n')
+    names = ('native_samples.jsonl', 'video_frames.jsonl',
+             'stop_reference.json', 'road.xodr')
     (output / 'source-seal.json').write_text(json.dumps({
         'format': 'c295180-saved-source-seal-v1', 'case_id': case_id,
         'source_sha256': {name: sha(output / name) for name in names}}, indent=2) + '\n')

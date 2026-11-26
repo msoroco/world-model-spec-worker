@@ -88,7 +88,9 @@ def measure(path: Path, case_id: str, *, allow_fixture: bool = False) -> dict:
     # Use the observed state of the right lamp, not the commanded signal.
     last_off = max((i for i in range(onset) if not rows[i]['right_lamp_observed']), default=-1)
     signal_onset = last_off + 1
-    continuous = signal_onset < onset and all(row['right_lamp_observed'] for row in rows[signal_onset:onset + 1])
+    # An indicator already on at the first retained frame has no observed onset.
+    # Its prior continuous distance is censored and cannot prove this threshold.
+    continuous = 0 < signal_onset < onset and all(row['right_lamp_observed'] for row in rows[signal_onset:onset + 1])
     distance = distances[onset] - distances[signal_onset] if continuous else 0.0
     return {
         'format': 'c42417-observed-signal-distance-v1',

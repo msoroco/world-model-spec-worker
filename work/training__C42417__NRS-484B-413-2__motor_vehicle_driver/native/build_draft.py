@@ -53,6 +53,18 @@ class DraftContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Fixed scene"):check(c)
 '''
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def description():
+    names=('sig.turn_indicator','sig.hand_signal','drv.distance_while',
+           'kin.path_length','drv.turning','drv.lane_change','env.precipitation',
+           'kin.speed','native_body_pose_control','camera_frame_join')
+    return {'channels':[{'name':name,'unit':'structured','sampling_rate_hz':20,
+        'method':'Retain original Native source and synchronized frame for saved verification',
+        'time_window':'entire 30 s / 600-frame attempt',
+        'reference_frame':'original Native frame and time',
+        'uncertainty':'50 ms sampled state; district and lamp pixels require review'}
+        for name in names],
+        'limitations':['No legal conclusion from offline or synthetic data',
+                       'Original district, body, lamp pixels and four cameras require review']}
 def build():
     entries=[]
     for suffix,distance in (('a',40),('b',20)):
@@ -63,17 +75,17 @@ def build():
                ('overview',1920,1080),('approach',1280,720),('reference_corner',1280,720),('driver_reference',1280,720))],
            'layout':'business_district','maneuver':'right_turn','precipitation':'rain',
            'turn_onset_frame':300,'speed_mps':10,'signal_distance_m':distance,
-           'observed_indicator_required':True,'physical_verified':False,'legal_verdict':None}
+           'observed_indicator_required':True,'physical_verified':False,'legal_verdict':None,
+           'required_atoms':['sig.turn_indicator','kin.heading','kin.speed'],
+           'source_packets':[], 'recording_description':description(),
+           'supported_case_ids':[BASE+'a',BASE+'b'],
+           'case':{'case_id':case}}
         construction={'format':'worker-inline-construction','case_id':case,'cell_id':'C42417','actor':'motor_vehicle_driver',
                       'entrypoint':'runner.py','files':[{'path':'config.json','content':json.dumps(c,indent=2)+'\n'},
                                                     {'path':'runner.py','content':RUNNER},{'path':'tests/test_offline.py','content':TESTS}]
                       + [{'path':name,'content':(HERE/name).read_text()} for name in
-                         ('capture.py','geometry.py','controller.py','cameras.py','measure_observed.py','saved_measure.py')],
-                      'recording_description':{'channels':[{'name':n,'method':m,'sampling_rate_hz':20,'time_window':'600 frames'} for n,m in (
-                          ('raw_ego_path_and_heading','original ego transform/heading'),
-                          ('observed_turn_indicator','original lamp-state or image readback'),
-                          ('four_camera_video','four named original camera streams'))],
-                          'limitations':['Native turn motion and actual indicator pixels unverified']},
+                         ('capture.py','geometry.py','controller.py','cameras.py','measure_observed.py','saved_measure.py','physical_preparation.py','finalize.py')],
+                      'recording_description':description(),
                       'status':'exact_unselected_offline_draft'}
         p=HERE/('condition_'+suffix+'-construction.json');p.write_text(json.dumps(construction,indent=2)+'\n')
         entries.append({'case_id':case,'construction':p.name,'construction_sha256':sha(p)})

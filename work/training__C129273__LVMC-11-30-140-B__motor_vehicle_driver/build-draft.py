@@ -34,17 +34,35 @@ def main():
         case_id = ASSIGNMENT + '__' + suffix
         plan = json.loads((HERE / 'case-plan.json').read_text())
         planned = next(c for c in plan['cases'] if c['case_id'] == case_id)
-        cameras = [{'name': name, 'width': width, 'height': height}
-                   for name, width, height in (('overview', 1920, 1080),
-                                               ('approach', 1280, 720),
-                                               ('reference_corner', 1280, 720),
-                                               ('driver_reference', 1280, 720))]
-        description = {'channels': [
-            {'name': 'vehicle_person_pose', 'unit': 'structured', 'sampling_rate_hz': 20,
-             'method': 'original Native vehicle and pedestrian actor pose and speed',
-             'time_window': '600 original frames',
-             'reference_frame': 'surveyed mountain road and original Native frame',
-             'uncertainty': '50 ms sampling; marker appearance and blindness unverified'}],
+        cameras = [{'name': name, 'width': width, 'height': height,
+                    'pose_strategy': purpose, 'fov_deg': 85}
+                   for name, width, height, purpose in (
+                       ('overview', 1920, 1080, 'full mountain-road encounter and both actors'),
+                       ('approach', 1280, 720, 'ego approach and pedestrian contact region'),
+                       ('reference_corner', 1280, 720, 'cane marker or assistant and clearance'),
+                       ('driver_reference', 1280, 720, 'driver view of person and stopping region'))]
+        source_method = {
+            'ru.pedestrian_with_white_cane_or_guide_animal': 'retained original person identity and cane/assistant source context with independent pixel review',
+            'drv.approaching': 'same-tick original ego/person pose, speed and longitudinal closure',
+            'rel.centre_distance': 'same-tick original ego/person pose and body geometry',
+            'drv.stopped': 'same-tick original ego velocity and stop interval',
+            'kin.accel_longitudinal': 'finite difference of original ego velocity at 20 Hz',
+            'drv.time_to_conflict': 'original relative pose and velocity with stated diagnostic assumptions',
+            'ru.subject': 'original actor IDs, roles and driver viewpoint source',
+            'rel.contact': 'original body geometry and any original contact event, separately reviewed',
+            'rel.surface_gap': 'original ego/person body geometry and lateral/longitudinal clearance',
+        }
+        channels = [{'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                     'method': method, 'time_window': '600 original frames',
+                     'reference_frame': 'surveyed mountain road and original Native frame',
+                     'uncertainty': '50 ms sampling; marker appearance and blindness unverified'}
+                    for name, method in source_method.items()]
+        channels.append({'name': 'vehicle_person_pose', 'unit': 'structured', 'sampling_rate_hz': 20,
+                         'method': 'original Native vehicle and pedestrian actor pose and speed',
+                         'time_window': '600 original frames',
+                         'reference_frame': 'surveyed mountain road and original Native frame',
+                         'uncertainty': '50 ms sampling; marker appearance and blindness unverified'})
+        description = {'channels': channels,
             'context_inputs': [{'name': 'blind_person_source_context', 'unit': 'structured',
                                 'method': 'retained source request with independent review flags'}],
             'limitations': ['White or red-tipped cane and blindness require independent source and pixel review']}

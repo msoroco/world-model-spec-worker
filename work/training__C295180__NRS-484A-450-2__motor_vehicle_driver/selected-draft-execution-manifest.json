@@ -1,0 +1,80 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_draft",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a",
+      "kind": "delivery",
+      "construction": "selected-condition-a-primary-construction.json",
+      "construction_sha256": "0a0c7c632351f35d4a8297940736ad4d8e7feb1aff90ec66de3488c8e7f9a61b",
+      "fixture_recipe": "work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-condition-a-fixture-recipe.json",
+      "measurement_contract": "selected-condition-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Subject can cross the line before intended stop window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-condition-a-fallback1-construction.json",
+          "construction_sha256": "605fc6a788bd106f992208a91ebebe64b7ceff4c56c420b134d798fde37494c4",
+          "changed_knobs": [
+            "move subject spawn 5 m farther from marked line"
+          ],
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "first_front_stop_line_crossing_frame",
+            "failure_condition": "front body crosses line before requested stop window"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b",
+      "kind": "delivery",
+      "construction": "selected-condition-b-primary-construction.json",
+      "construction_sha256": "2f83becd87ab79a9600cbe55fefa2f8869cb87c30c417c999b65fa9325af62bc",
+      "fixture_recipe": "work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-condition-b-fixture-recipe.json",
+      "measurement_contract": "selected-condition-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Subject can cross the line before intended stop window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-condition-b-fallback1-construction.json",
+          "construction_sha256": "bde005d5891ae04e758d9aa7eda84eb55f7e5f1ff1f546240e1680553b034e43",
+          "changed_knobs": [
+            "move subject spawn 5 m farther from marked line"
+          ],
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "first_front_stop_line_crossing_frame",
+            "failure_condition": "front body crosses line before requested stop window"
+          }
+        }
+      ]
+    }
+  ]
+}

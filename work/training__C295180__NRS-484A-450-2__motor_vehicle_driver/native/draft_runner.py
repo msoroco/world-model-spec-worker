@@ -30,6 +30,8 @@ def check(config):
         raise ValueError("Governing stop sign absent")
     if config.get("physical_verified") is not False or config.get("legal_verdict") is not None:
         raise ValueError("Physical or legal result claimed")
+    if config.get('spawn_y_m', -61) not in (-61, -66):
+        raise ValueError('Selected spawn candidate differs')
     from road_source import inspect
     inspect(Path(__file__).resolve().parent / 'authored-road.xodr')
     return {"case_id": case, "frames": 600, "simulation_started": False,
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     elif args.output_dir:
         from live_capture import capture
         print(json.dumps(capture(config['case_id'], args.output_dir,
-                                 args.host, args.port), sort_keys=True))
+                                 args.host, args.port,
+                                 config.get('spawn_y_m', -61)), sort_keys=True))
     else:
         parser.error('Supply --check or --output-dir')

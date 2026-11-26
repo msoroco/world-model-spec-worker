@@ -22,7 +22,7 @@ def _rows(path: Path) -> list[dict]:
 def process(attempt: Path, config: dict, *, allow_fixture: bool = False) -> dict:
     attempt = Path(attempt)
     source_names = ('native_samples.jsonl', 'video_frames.jsonl',
-                    'body_history.jsonl', 'road_geometry.json')
+                    'body_history.jsonl', 'road_geometry.json', 'control_context.json')
     paths = {name: attempt / name for name in source_names}
     for name, path in paths.items():
         if not path.is_file():
@@ -53,6 +53,11 @@ def process(attempt: Path, config: dict, *, allow_fixture: bool = False) -> dict
         raise ValueError('Original Native district/map source provenance missing')
     if geometry.get('provenance') not in ('synthetic_cpu_fixture', 'original_native_capture'):
         raise ValueError('Original Native district/map source provenance missing')
+    control = json.loads(paths['control_context.json'].read_text())
+    if control.get('control') != 'speed_limit_sign' or \
+            control.get('native_blueprint') != 'traffic.speed_limit.30' or \
+            type(control.get('native_actor_id')) is not int:
+        raise ValueError('Original Native speed-limit sign source context missing')
     measured = measure(paths['native_samples.jsonl'], config['case_id'],
                        allow_fixture=allow_fixture)
     if measured['source_kind'] != geometry['provenance']:

@@ -12,7 +12,7 @@ import traceback
 
 from cameras import check as check_cameras, plan as camera_plan
 from controller import EngineeringKnobs, PathController
-from geometry import APPROACH_M, check as check_geometry, open_drive, route
+from geometry import APPROACH_M, RADIUS_M, check as check_geometry, open_drive, route
 from measure_observed import CASE_PREFIX
 
 HERE = Path(__file__).resolve().parent
@@ -108,9 +108,16 @@ def capture(config: dict, output_dir: Path, host: str, port: int) -> dict:
             project_to_road=False, lane_type=carla.LaneType.Driving)
         if waypoint is None:
             raise RuntimeError('Native approach lane survey failed')
+        destination_waypoint = mapping.get_waypoint(
+            carla.Location(x=RADIUS_M - 1.75, y=RADIUS_M, z=1),
+            project_to_road=False, lane_type=carla.LaneType.Driving)
+        if destination_waypoint is None or destination_waypoint.road_id == waypoint.road_id:
+            raise RuntimeError('Native right-turn destination lane survey failed')
         _new(output / 'road_geometry.json', {'authored_map_sha256': hashlib.sha256(map_text.encode()).hexdigest(),
             'native_map_sha256': hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             'approach_road_id': waypoint.road_id, 'approach_lane_id': waypoint.lane_id,
+            'destination_road_id': destination_waypoint.road_id,
+            'destination_lane_id': destination_waypoint.lane_id,
             'area_classification': 'business_district',
             'area_classification_review_required': True, 'right_turn_destination_review_required': True,
             'provenance': 'original_native_capture'})
@@ -178,12 +185,16 @@ def capture(config: dict, output_dir: Path, host: str, port: int) -> dict:
                 native_frame = world.tick()
                 elapsed = world.get_snapshot().timestamp.elapsed_seconds - start
                 pose = ego.get_transform()
+                road_waypoint = mapping.get_waypoint(pose.location,
+                    project_to_road=False, lane_type=carla.LaneType.Driving)
                 light_bits = int(ego.get_light_state())
                 right_bit = int(carla.VehicleLightState.RightBlinker)
                 row = {'provenance': 'original_native_capture', 'case_id': config['case_id'],
                     'sample_index': index, 'native_frame': native_frame, 'time_s': elapsed,
                     'ego_center_xy_m': [pose.location.x, pose.location.y],
                     'ego_heading_deg': pose.rotation.yaw, 'ego_speed_mps': _speed(ego),
+                    'road_id': None if road_waypoint is None else road_waypoint.road_id,
+                    'lane_id': None if road_waypoint is None else road_waypoint.lane_id,
                     'right_lamp_commanded': requested,
                     'right_lamp_observed': bool(light_bits & right_bit),
                     'course_change_observed': abs((pose.rotation.yaw - initial_heading + 180) % 360 - 180) >= 1.0,
@@ -195,6 +206,8 @@ def capture(config: dict, output_dir: Path, host: str, port: int) -> dict:
                 samples.write(json.dumps(row, allow_nan=False) + '\n')
                 vertices = ego.bounding_box.get_world_vertices(pose)
                 bodies.write(json.dumps({'frame': native_frame, 'time_s': elapsed,
+                    'road_id': None if road_waypoint is None else road_waypoint.road_id,
+                    'lane_id': None if road_waypoint is None else road_waypoint.lane_id,
                     'body_vertices_m': [[v.x, v.y, v.z] for v in vertices]},
                     allow_nan=False) + '\n')
                 for spec in camera_plan():
