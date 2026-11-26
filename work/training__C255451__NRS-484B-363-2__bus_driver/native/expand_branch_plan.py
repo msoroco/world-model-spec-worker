@@ -75,7 +75,7 @@ def main():
     for disp in plan["requirement_dispositions"]:
         topic = disp["requirement"]
         disp["case_ids"] = [PREFIX + name for name in TOPIC_CASES[topic]]
-        disp["status"] = "planned_required"
+        disp["status"] = "selected_required"
         disp["evidence_or_gap"] = (
             "Finite source-backed delivery plan; original acquisition and independent CPU proofs remain pending.")
     plan["evidence_review"] = {

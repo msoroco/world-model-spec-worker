@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__no_school_day",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.363(2); with 484B.363(9)",
+      "output_key": "source_topic_0",
+      "method": "school_zone_observation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "school_zone_context.json",
+        "native_motion.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.363(2); with 484B.363(9)",
+      "output_key": "source_topic_1",
+      "method": "school_day_observation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "school_zone_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "source_topic_6",
+      "method": "motor_bus_scope_observation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "school_zone_context.json",
+        "children_context.jsonl",
+        "native_motion.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "school_zone_context.json"
+    ],
+    "error_contains": "Missing required source: school_zone_context.json"
+  }
+}

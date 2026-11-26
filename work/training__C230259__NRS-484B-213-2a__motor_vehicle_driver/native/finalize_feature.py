@@ -18,6 +18,10 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def measure_feature(trace_path, road_path):
+    return measure(trace_path, road_path)
+
+
 def value(name, row, road):
     if name == 'st.grade':
         return {'feature_kind': road['feature_kind'], 'grade_profile_source': road.get('grade_profile_source')}
@@ -50,14 +54,14 @@ def finalize(attempt, output):
         raise ValueError('Retain prior analysis; use a fresh attempt')
     for name in (*SOURCES, *VIDEOS, 'config.json', 'construction.json'):
         if not (attempt / name).is_file():
-            raise ValueError('Missing required original source: ' + name)
+            raise ValueError('Missing required source: ' + name)
     config = json.loads((attempt / 'config.json').read_text())
     construction = json.loads((attempt / 'construction.json').read_text())
     case = config['case_id']
     if case != construction['case_id'] or config.get('supported_case_ids') != [case]:
         raise ValueError('Exact selected case differs')
     road = json.loads((attempt / 'road-context.json').read_text())
-    metric = measure(attempt / 'native-feature-source.jsonl', attempt / 'road-context.json')
+    metric = measure_feature(attempt / 'native-feature-source.jsonl', attempt / 'road-context.json')
     rows = read_rows(attempt / 'native-feature-source.jsonl')
     frame_map = read_rows(attempt / 'video_frames.jsonl')
     trace = read_rows(attempt / 'trace.jsonl')

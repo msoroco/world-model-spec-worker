@@ -172,6 +172,8 @@ def execute(bundle, output, host, port, checked):
             'feature_start_s_m': 300.0 if 'curve' in config['case_id'] else 450.0,
             'feature_end_s_m': 600.0,
             'road_geometry_sha256': hashlib.sha256(map_text.encode()).hexdigest(),
+            'road_geometry_source': {'kind': 'original Native map readback',
+                                     'sha256': hashlib.sha256(map_text.encode()).hexdigest()},
             'directionality': config['road_directionality'],
             'directionality_claim_source': 'authored OpenDRIVE plus Native lane readback; public authority pending',
             'centerline_source': 'original Native lane waypoint at each ego frame',

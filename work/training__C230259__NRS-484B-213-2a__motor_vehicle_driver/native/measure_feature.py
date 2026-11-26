@@ -52,7 +52,7 @@ def measure(trace_path, road_path):
             inside.append(index)
         if float(row['ego_body_min_signed_m']) < 0:
             left.append(index)
-        if row['sight_censored'] or float(row['sight_clear_m']) < float(row.get('available_forward_road_m', 1e9)):
+        if not row['sight_censored'] and float(row['sight_clear_m']) < float(row.get('available_forward_road_m', 1e9)):
             obscured.append(index)
         if row.get('other_vehicle_id') is not None:
             if row.get('other_vehicle_route_direction') not in ('opposing', 'same') or row.get('other_vehicle_s_m') is None:
@@ -77,4 +77,4 @@ def measure(trace_path, road_path):
             'sight_clear_min_m': min(sight), 'sight_clear_max_m': max(sight),
             'opposing_vehicle_observed_frames': len(opposing),
             'hazard_distance_legal_judgment': None,
-            'physical_completion': None, 'legal_verdict': None}
+            'physical_completion': None}

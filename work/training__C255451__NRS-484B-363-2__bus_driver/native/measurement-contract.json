@@ -5,7 +5,13 @@
   "actor": "bus_driver",
   "case_ids": [
     "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_a",
-    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_b"
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_b",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__at_limit",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__no_school_day",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__half_hour_window",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__beacon_not_flashing",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active",
+    "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_inactive"
   ],
   "comparison_variable": "measured_bus_speed_inside_same_signed_zone",
   "rate_hz": 20,
@@ -19,8 +25,34 @@
     "env.civil_time": "original attempt civil timestamp and source-hashed school schedule",
     "ru.motor_vehicle": "original bus actor blueprint and registration class"
   },
-  "required_camera_streams": ["overview", "approach", "reference_corner", "driver_reference"],
+  "required_camera_streams": [
+    "overview",
+    "approach",
+    "reference_corner",
+    "driver_reference"
+  ],
   "statutory_speed_limit_mph": 25,
   "legal_limit_note": "The speed limit is express in the law; applicability still depends on the distinct school-session, operating-hours, beacon and sign exceptions.",
-  "status": "draft_cpu_meter_tested_native_capture_and_saved_processing_pending"
+  "status": "eight_branch_draft_cpu_meter_tested_native_capture_and_saved_processing_pending",
+  "exception_source_requirements": {
+    "no_school_day": [
+      "official school calendar",
+      "timezone-aware civil clock"
+    ],
+    "half_hour_window": [
+      "original school operation hours",
+      "timezone-aware civil clock"
+    ],
+    "beacon_not_flashing": [
+      "original operational beacon designation",
+      "sign",
+      "two or more alternating yellow light pixels",
+      "pupils-in-class schedule"
+    ],
+    "nonbeacon_sign_inactive": [
+      "original absence of operational beacon",
+      "installed sign effective-hours indication",
+      "timezone-aware civil clock"
+    ]
+  }
 }
