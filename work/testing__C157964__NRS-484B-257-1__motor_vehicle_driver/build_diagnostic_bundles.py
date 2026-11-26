@@ -13,6 +13,29 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("yield_view.py", "reviewed_site.py", "native_capture.py",
            "saved_audit.py", "saved_finalizer.py", "comparison_audit.py",
            "delivery_audit.py", "judgment_sweep.py")
+CHANNELS = (
+    ("yield_sign", "reviewed original sign designation and Native readback", "source record"),
+    ("nearest_view_reference", "reviewed absence hierarchy and source-sealed station", "m"),
+    ("ego_speed", "original Native ego velocity magnitude", "m/s"),
+    ("ego_body_position", "original leading body station and vertices", "m"),
+    ("through_body_position", "original center and minimum body-vertex station", "m"),
+    ("through_phase", "original through-vehicle occupancy and approach history", "source record"),
+    ("sight_observation", "original nearest-view sightline observation", "source record"),
+    ("governing_control", "original officer and signal readback", "source record"),
+    ("across_or_within", "original ego crossing interval", "source record"),
+)
+RECORDING = {
+    "channels": [{"name": name, "method": method, "unit": unit,
+                  "reference_frame": "source-sealed original Native frame map",
+                  "sampling_rate_hz": 20, "time_window": "full 45-second episode",
+                  "uncertainty": "physical realization and legal judgment remain unresolved"}
+                 for name, method, unit in CHANNELS],
+    "context_inputs": [{"name": "reviewed_nearest_view_site_packet",
+                        "method": "source-hashed jurisdiction, sign, line/crosswalk absence, route and controls",
+                        "unit": "source record"}],
+    "limitations": ["The frozen export has no reviewed C157964 original site packet.",
+                    "Requested through phase and approach policy are not measured outcomes."],
+}
 
 RUNNER = '''"""Exact yield-sign Native entrypoint; a reviewed site and adapter are required."""
 import argparse
@@ -123,6 +146,7 @@ def build():
             "case_id": case_id, "cell_id": "C157964", "actor": "motor_vehicle_driver",
             "law_id": "NRS-484B-257-1", "entrypoint": "runner.py",
             "files": files, "diagnostic_only": True,
+            "recording_description": RECORDING,
             "physical_acceptance_claimed": False, "legal_judgment": None,
         }
         path = ROOT / "cases" / case.case_id / "construction.json"

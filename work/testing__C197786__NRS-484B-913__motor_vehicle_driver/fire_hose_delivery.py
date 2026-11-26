@@ -181,7 +181,13 @@ def compare_saved_hose(a: Mapping[str, Any], b: Mapping[str, Any], variable: str
         return {key: value for key, value in source.items() if key not in ("source_path", "sha256")}
 
     for key in ("road", "vehicle", "command_official"):
-        if payload(a.get(key, {})) != payload(b.get(key, {})):
+        left, right = payload(a.get(key, {})), payload(b.get(key, {}))
+        if key == "road" and variable == "passage":
+            if left.get("ego_route_xy") == right.get("ego_route_xy"):
+                raise ValueError("passage route contrast absent")
+            left.pop("ego_route_xy", None)
+            right.pop("ego_route_xy", None)
+        if left != right:
             raise ValueError(f"fixed {key} context changed")
     for key in ("hose", "incident", "consent"):
         if key != differing and payload(a.get(key, {})) != payload(b.get(key, {})):

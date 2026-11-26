@@ -71,7 +71,8 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
     elif seal.get("provenance_kind") != "original_native" or decoder is not None:
         raise ValueError("original Native capture and full decoder required")
     hashes = seal.get("sources", {})
-    required = ("history.jsonl", "camera-frame-map.jsonl", *(name + ".mkv" for name in CAMERAS))
+    required = ("history.jsonl", "camera-frame-map.jsonl", "comparison-context.json",
+                *(name + ".mkv" for name in CAMERAS))
     for name in required:
         path = attempt / name
         if not path.is_file() or hashes.get(name) != _sha(path):

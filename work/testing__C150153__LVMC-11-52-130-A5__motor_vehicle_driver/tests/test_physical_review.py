@@ -21,7 +21,7 @@ class PhysicalReviewTests(unittest.TestCase):
             "case_id": seal["case_id"], "site_packet_sha256": sha(site),
             "source_hashes": seal["sources"],
             "observations": {name: {
-                "observed": True, "camera": "overview", "original_frame": 100,
+                "observed": True, "camera": "overview", "original_frame": 4100,
                 "camera_sha256": seal["sources"]["overview.mkv"],
                 "note": "synthetic structural test only", "reviewer": "independent reviewer",
             } for name in OBSERVATIONS},
@@ -39,22 +39,29 @@ class PhysicalReviewTests(unittest.TestCase):
         scratch.mkdir(parents=True, exist_ok=True)
         with TemporaryDirectory(dir=scratch) as temp:
             attempt, site, sources, claim, packet, delivery = self.fixture(temp)
+            with self.assertRaisesRegex(ValueError, 'outside worker repository'):
+                review(attempt, site, sources, claim, sha(claim))
             with patch('physical_review.audit', return_value=delivery):
-                result = review(attempt, site, sources, claim, sha(claim))
+                result = review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
                 self.assertEqual(result['frame_count'], 900)
                 self.assertTrue(result['all_required_observations'])
                 self.assertIsNone(result['legal_judgment'])
                 with self.assertRaisesRegex(ValueError, 'hash differs'):
-                    review(attempt, site, sources, claim, '0' * 64)
+                    review(attempt, site, sources, claim, '0' * 64, diagnostic_fixture=True)
                 packet['observations']['camera_visibility']['observed'] = False
                 claim.write_text(json.dumps(packet) + '\n')
                 with self.assertRaisesRegex(ValueError, 'required original physical observation absent'):
-                    review(attempt, site, sources, claim, sha(claim))
+                    review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
                 packet['observations']['camera_visibility']['observed'] = True
                 packet['observations']['camera_visibility']['camera_sha256'] = '0' * 64
                 claim.write_text(json.dumps(packet) + '\n')
                 with self.assertRaisesRegex(ValueError, 'camera source changed'):
-                    review(attempt, site, sources, claim, sha(claim))
+                    review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
+                packet['observations']['camera_visibility']['camera_sha256'] = delivery['source_hashes']['overview.mkv']
+                packet['observations']['camera_visibility']['original_frame'] = 100
+                claim.write_text(json.dumps(packet) + '\n')
+                with self.assertRaisesRegex(ValueError, 'frame or camera invalid'):
+                    review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
 
     def test_missing_review_observation_and_wrong_region(self):
         scratch = Path('.runtime-work/c150153-physical-review-tests')
@@ -65,14 +72,14 @@ class PhysicalReviewTests(unittest.TestCase):
             claim.write_text(json.dumps(packet) + '\n')
             with patch('physical_review.audit', return_value=delivery):
                 with self.assertRaisesRegex(ValueError, 'observations incomplete'):
-                    review(attempt, site, sources, claim, sha(claim))
+                    review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
             packet['observations']['sidewalk_elevator_identity'] = dict(
                 packet['observations']['elevator_front_and_side_edges'])
             claim.write_text(json.dumps(packet) + '\n')
             bad = dict(delivery, case_id=delivery['case_id'].replace('west_inside', 'front_park'))
             with patch('physical_review.audit', return_value=bad):
                 with self.assertRaisesRegex(ValueError, 'source binding differs'):
-                    review(attempt, site, sources, claim, sha(claim))
+                    review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
 
 
 if __name__ == '__main__':

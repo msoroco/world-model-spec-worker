@@ -1,0 +1,81 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-257-1",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "approach_policy",
+      "range_or_domain": "slow or stop at the reviewed nearest-view reference"
+    },
+    {
+      "kind": "world_setup",
+      "name": "through_state",
+      "range_or_domain": "approaching or already occupying the intersection"
+    },
+    {
+      "kind": "world_setup",
+      "name": "officer_controls",
+      "range_or_domain": "source-reviewed true or false"
+    },
+    {
+      "kind": "world_setup",
+      "name": "yield_sign_present",
+      "range_or_domain": "reviewed true"
+    },
+    {
+      "kind": "world_setup",
+      "name": "stop_line_present",
+      "range_or_domain": "reviewed false"
+    },
+    {
+      "kind": "world_setup",
+      "name": "near_crosswalk_present",
+      "range_or_domain": "reviewed false"
+    },
+    {
+      "kind": "world_setup",
+      "name": "signal_controls",
+      "range_or_domain": "source-reviewed false"
+    }
+  ],
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Proper yield sign governs the approach; neither marked stop line nor near crosswalk exists, and officer/signal control does not supersede the sign.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "This subsection yields to the governing control",
+        "replacement_obligation": "Follow the controlling officer or signal under its applicable law",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal",
+        "trigger": "Traffic controlled by a police officer or traffic-control signal"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "",
+        "phrase": "has a view of approaching traffic"
+      },
+      {
+        "note": "",
+        "phrase": "immediate hazard"
+      },
+      {
+        "note": "",
+        "phrase": "yield the right-of-way"
+      }
+    ],
+    "law_id": "NRS-484B-257-1",
+    "obligation": {
+      "description": "Slow or stop for the yield sign at the nearest point with a view, then yield to through-highway vehicles already within or immediately approaching during ego movement across or within.",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Sign response before the reviewed nearest-view reference and yielding throughout the movement across or within the intersection.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver"
+}

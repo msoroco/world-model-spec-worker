@@ -43,8 +43,13 @@ class Adapter:
             'municipal_jurisdiction_sha256': s['municipal_jurisdiction_sha256'],
             'sidewalk_sha256': s['sidewalk_sha256'], 'curb_sha256': s['curb_sha256'],
         }
-        if self.case.exception == 'police_direction':
-            row['exception_source_sha256'] = s['police_direction_source_sha256']
+        source_key = {
+            'lawful_traffic_conflict': 'traffic_conflict_source_sha256',
+            'police_direction': 'police_direction_source_sha256',
+            'traffic_device_direction': 'traffic_device_source_sha256',
+        }.get(self.case.exception)
+        if source_key:
+            row['exception_source_sha256'] = s[source_key]
         if self.mutate is not None:
             self.mutate(i, row)
         return row

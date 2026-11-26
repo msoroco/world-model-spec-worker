@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
-SOURCE_NAMES = ("fire_hose_delivery.py", "delivery_audit.py")
-CAMERAS = ("overview", "approach", "hose_detail", "driver_reference")
+SOURCE_NAMES = ("fire_hose_delivery.py", "delivery_audit.py", "native_capture.py")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 RUNNER = '''"""Exact hose entrypoint; original reviewed sources are mandatory for capture."""
 import argparse
@@ -18,7 +18,8 @@ import json
 import os
 from pathlib import Path
 
-from fire_hose_delivery import construct_hose, segment_intersects, Point
+from fire_hose_delivery import segment_intersects, Point
+from native_capture import capture
 
 
 def check(root):
@@ -31,7 +32,7 @@ def check(root):
         raise ValueError("hose law/cell/actor identity differs")
     if (config["frame_count"], config["rate_hz"], config["duration_s"]) != (900, 20, 45):
         raise ValueError("Native capture profile differs")
-    if set(config["camera_views"]) != {"overview", "approach", "hose_detail", "driver_reference"}:
+    if set(config["camera_views"]) != {"overview", "approach", "reference_corner", "driver_reference"}:
         raise ValueError("four camera source views differ")
     if case["incident_purpose"] not in ("fire", "alarm", "practice"):
         raise ValueError("qualifying hose incident purpose differs")
@@ -52,6 +53,7 @@ def reviewed_source(packet_path, source_root, config):
         raise ValueError("reviewed packet exact case differs")
     if (packet.get("cell_id"), packet.get("law_id")) != ("C197786", "NRS-484B-913"):
         raise ValueError("reviewed packet law/cell differs")
+    source_paths = set()
     for key in ("private_way", "hose", "incident", "official", "consent", "vehicle"):
         source = packet.get(key)
         if not isinstance(source, dict) or not source.get("path") or not source.get("sha256"):
@@ -61,6 +63,13 @@ def reviewed_source(packet_path, source_root, config):
             raise ValueError(key + " reviewed original file unavailable")
         if hashlib.sha256(path.read_bytes()).hexdigest() != source["sha256"]:
             raise ValueError(key + " reviewed original hash mismatch")
+        if path in source_paths:
+            raise ValueError("distinct reviewed original sources required")
+        source_paths.add(path)
+        original = json.loads(path.read_text())
+        expected = {field: value for field, value in source.items() if field not in ("path", "sha256")}
+        if original != expected:
+            raise ValueError(key + " reviewed original content mismatch")
     hose = packet["hose"]
     if hose.get("fire_department_affiliation") is not True:
         raise ValueError("fire-department hose affiliation unproven")
@@ -118,11 +127,8 @@ def main():
     adapter = importlib.import_module(adapter_name).create_adapter(config, args.host, args.port)
     if adapter.provenance() != "original_native":
         raise ValueError("original Native adapter provenance required")
-    # The adapter owns world/session restoration and synchronized camera capture.
-    # The worker requires a real hose actor readback before it may capture frames.
-    actor = construct_hose(adapter.world, packet["hose"]["blueprint_id"],
-                           adapter.hose_transform(packet))
-    adapter.capture_original(config, packet, actor, args.output_dir)
+    print(json.dumps(capture(adapter, config, packet, packet_path, source_root, args.output_dir),
+                     sort_keys=True))
 
 
 if __name__ == "__main__":
@@ -165,9 +171,7 @@ class ExactHoseBundleTest(unittest.TestCase):
     def test_reviewed_geometry_and_source_hashes(self):
         with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as temp:
             root = Path(temp)
-            original = root / "original.txt"
-            original.write_text("diagnostic source only\\n")
-            binding = {"path": "original.txt", "sha256": hashlib.sha256(original.read_bytes()).hexdigest()}
+            binding = {"path": "pending.json", "sha256": "0" * 64}
             packet = {"case_id": self.config["selected_case_id"], "cell_id": "C197786",
                       "law_id": "NRS-484B-913", "private_way": dict(binding, owner="owner",
                       permitted_access=["owner"], ego_route_xy=[[0, -1], [0, 1]]),
@@ -182,6 +186,13 @@ class ExactHoseBundleTest(unittest.TestCase):
                 packet["consent"].update(official_identity="captain", frame=20, scope="hose crossing")
             if not self.config["case"]["planned_hose_crossing"]:
                 packet["private_way"]["ego_route_xy"] = [[2, -1], [2, 1]]
+            for key in ("private_way", "hose", "incident", "official", "consent", "vehicle"):
+                source = root / (key + ".json")
+                original = {field: value for field, value in packet[key].items()
+                            if field not in ("path", "sha256")}
+                source.write_text(json.dumps(original, sort_keys=True) + "\\n")
+                packet[key]["path"] = source.name
+                packet[key]["sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
             path = root / "packet.json"
             path.write_text(json.dumps(packet))
             self.assertEqual(reviewed_source(path, root, self.config)["case_id"],
@@ -190,12 +201,12 @@ class ExactHoseBundleTest(unittest.TestCase):
             path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "hose reviewed original hash mismatch"):
                 reviewed_source(path, root, self.config)
-            packet["hose"]["sha256"] = binding["sha256"]
+            packet["hose"]["sha256"] = hashlib.sha256((root / "hose.json").read_bytes()).hexdigest()
             packet["private_way"]["ego_route_xy"] = ([[2, -1], [2, 1]]
                                                          if self.config["case"]["planned_hose_crossing"]
                                                          else [[0, -1], [0, 1]])
             path.write_text(json.dumps(packet))
-            with self.assertRaisesRegex(ValueError, "geometry differs"):
+            with self.assertRaisesRegex(ValueError, "content mismatch"):
                 reviewed_source(path, root, self.config)
 '''
 
@@ -207,6 +218,9 @@ def write_json(path, obj):
 
 def build():
     plan = json.loads((ROOT / "case-plan.json").read_text())
+    semantic_path = ROOT / "proposals" / "cases.json"
+    semantic_cases = ({case["case_id"]: case for case in json.loads(semantic_path.read_text())["cases"]}
+                      if semantic_path.is_file() else {})
     manifest_cases = []
     for item in plan["cases"]:
         short_id = item["case_id"].removeprefix(ASSIGNMENT + "__")
@@ -215,7 +229,12 @@ def build():
             "selected_case_id": item["case_id"],
             "cell_id": "C197786", "law_id": "NRS-484B-913", "actor": "motor_vehicle_driver",
             "frame_count": 900, "rate_hz": 20, "duration_s": 45,
-            "camera_views": list(CAMERAS), "cameras": [{"name": name} for name in CAMERAS],
+            "camera_views": list(CAMERAS),
+            "camera_dimensions": {name: ([1920, 1080] if name == "overview" else [1280, 720])
+                                  for name in CAMERAS},
+            "cameras": [{"name": name,
+                         "width": 1920 if name == "overview" else 1280,
+                         "height": 1080 if name == "overview" else 720} for name in CAMERAS],
             "required_atoms": [], "source_packets": [], "source_gate": "reviewed_original_required",
             "case": {"short_id": short_id,
                      "incident_purpose": item["incident_purpose"],
@@ -232,6 +251,8 @@ def build():
             "actor": "motor_vehicle_driver", "entrypoint": "runner.py", "files": files,
             "diagnostic_only": True, "physical_acceptance_claimed": False, "legal_judgment": None,
         }
+        if item["case_id"] in semantic_cases:
+            construction["recording_description"] = semantic_cases[item["case_id"]]["recording_description"]
         path = ROOT / "cases" / short_id / "construction.json"
         write_json(path, construction)
         manifest_cases.append({

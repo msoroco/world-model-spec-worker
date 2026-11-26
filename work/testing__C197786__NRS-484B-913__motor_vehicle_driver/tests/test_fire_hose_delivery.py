@@ -15,6 +15,11 @@ module = importlib.util.module_from_spec(spec)
 import sys
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
+CAPTURE_PATH = MODULE_PATH.parent / "native_capture.py"
+capture_spec = importlib.util.spec_from_file_location("native_capture", CAPTURE_PATH)
+capture_module = importlib.util.module_from_spec(capture_spec)
+sys.modules[capture_spec.name] = capture_module
+capture_spec.loader.exec_module(capture_module)
 
 
 def source(**kwargs):
@@ -59,15 +64,127 @@ class FakeWorld:
         return FakeActor() if actor_id == 9 else None
 
 
+class FakeAdapter:
+    world = FakeWorld()
+
+    def __init__(self):
+        self.index = -1
+        self.restored = False
+        self.stopped = False
+        self.destroyed = []
+
+    def provenance(self):
+        return "diagnostic_fixture"
+
+    def snapshot_settings(self):
+        return "settings"
+
+    def set_synchronous(self, delta):
+        assert delta == 0.05
+
+    def hose_transform(self, reviewed):
+        return object()
+
+    def spawn_ego(self, vehicle, private_way):
+        assert vehicle["human_driver"] is True
+        return type("Ego", (), {"id": 5})()
+
+    def set_route(self, ego, points, crossing):
+        assert ego.id == 5 and len(points) == 2 and crossing is True
+
+    def start_cameras(self, views):
+        assert set(views) == set(capture_module.VIEWS)
+
+    def tick(self):
+        self.index += 1
+        return {"frame": 100 + self.index, "time_s": self.index / 20}
+
+    def observe(self, snapshot, hose):
+        y = 0 if self.index == 1 else -2
+        return {"ego_xy": [0, y], "ego_body_corners_xy": [
+            [-0.2, y - 0.2], [0.2, y - 0.2], [0.2, y + 0.2], [-0.2, y + 0.2]],
+            "ego_actor_id": 5}
+
+    def camera_packets(self, snapshot):
+        return {view: {"frame": snapshot["frame"], "time_s": snapshot["time_s"],
+                       "sensor_id": view, "png": capture_module.PNG_SIGNATURE + b"diagnostic",
+                       "width": 1920 if view == "overview" else 1280,
+                       "height": 1080 if view == "overview" else 720}
+                for view in capture_module.VIEWS}
+
+    def stop_cameras(self):
+        self.stopped = True
+
+    def destroy(self, actor):
+        self.destroyed.append(actor.id)
+
+    def restore_settings(self, settings):
+        assert settings == "settings"
+        self.restored = True
+
+
 class HoseTests(unittest.TestCase):
+    def test_diagnostic_native_capture_seal_and_cleanup(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:
+            root = Path(tmp)
+            reviewed = {}
+            original = {
+                "private_way": {"owner": "owner", "permitted_access": ["owner"],
+                                "ego_route_xy": [[0, -2], [0, 2]]},
+                "hose": {"blueprint_id": "static.prop.firehose", "segment_xy": [[-1, 0], [1, 0]],
+                         "fire_department_affiliation": True, "protection": "unprotected"},
+                "incident": {"purpose": "fire"},
+                "official": {"identity": "captain", "in_command": True},
+                "consent": {"status": "none"},
+                "vehicle": {"ordinary_motor_vehicle": True, "human_driver": True},
+            }
+            for role, value in original.items():
+                source_path = root / (role + ".json")
+                source_path.write_text(json.dumps(value, sort_keys=True) + "\n")
+                reviewed[role] = dict(value, path=source_path.name,
+                                      sha256=hashlib.sha256(source_path.read_bytes()).hexdigest())
+            packet_path = root / "reviewed.json"
+            packet_path.write_text(json.dumps(reviewed) + "\n")
+            config = {"selected_case_id": "case-a", "case": {"planned_hose_crossing": True},
+                      "camera_dimensions": {view: ([1920, 1080] if view == "overview"
+                                                   else [1280, 720]) for view in capture_module.VIEWS}}
+            adapter = FakeAdapter()
+            seal = capture_module.capture(adapter, config, reviewed, packet_path, root,
+                                          root / "attempt", diagnostic=True, frame_count=3)
+            self.assertEqual(seal["body_contact_frames"], [101])
+            self.assertTrue(adapter.restored and adapter.stopped)
+            self.assertEqual(adapter.destroyed, [5, 9])
+            saved = json.loads((root / "attempt" / "saved-packet.json").read_text())
+            self.assertEqual(saved["native"]["source_sha256"],
+                             hashlib.sha256((root / "attempt" / "frames.jsonl").read_bytes()).hexdigest())
+            self.assertEqual(saved["road"]["private_way_owner"], "owner")
+            self.assertEqual(len(json.loads((root / "attempt" / "camera-index.json").read_text())), 4)
+            class BadCameraAdapter(FakeAdapter):
+                def camera_packets(self, snapshot):
+                    packets = super().camera_packets(snapshot)
+                    packets["overview"]["width"] = 100
+                    return packets
+
+            bad_adapter = BadCameraAdapter()
+            bad_out = root / "attempt-fail"
+            with self.assertRaisesRegex(ValueError, "camera dimensions differ"):
+                capture_module.capture(bad_adapter, config, reviewed, packet_path, root,
+                                       bad_out, diagnostic=True, frame_count=3)
+            self.assertTrue(bad_adapter.restored and bad_adapter.stopped)
+            self.assertEqual(bad_adapter.destroyed, [5, 9])
+            self.assertFalse((bad_out / "seal.json").exists())
+
     def test_complete_body_cli_source_join_and_negative_passage(self):
         with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:
             root = Path(tmp)
-            (root / "original.txt").write_text("diagnostic source only\n")
-            source_hash = hashlib.sha256((root / "original.txt").read_bytes()).hexdigest()
             p = packet()
             for key in ("hose", "road", "incident", "command_official", "consent", "vehicle"):
-                p[key].update(source_path="original.txt", sha256=source_hash)
+                original = {name: value for name, value in p[key].items()
+                            if name not in ("source_path", "sha256")}
+                path = root / (key + ".json")
+                path.write_text(json.dumps(original, sort_keys=True) + "\n")
+                p[key].update(source_path=path.name,
+                              sha256=hashlib.sha256(path.read_bytes()).hexdigest())
             p["native"]["frames"] = [
                 {"frame": i, "elapsed_seconds": i / 20, "ego_xy": [0, -2],
                  "ego_body_corners_xy": [[-0.2, -2.2], [0.2, -2.2],
@@ -80,6 +197,11 @@ class HoseTests(unittest.TestCase):
                                     for row in p["native"]["frames"]))
             p["native"].update(source_path="frames.jsonl",
                                source_sha256=hashlib.sha256(rows.read_bytes()).hexdigest())
+            seal = {"case_id": "case-a", "frame_count": 900, "rate_hz": 20,
+                    "frames_sha256": p["native"]["source_sha256"],
+                    "physical_completion": "unreviewed"}
+            (root / "seal.json").write_text(json.dumps(seal) + "\n")
+            p["native"]["result_sha256"] = hashlib.sha256((root / "seal.json").read_bytes()).hexdigest()
             packet_path = root / "packet.json"
             packet_path.write_text(json.dumps(p))
             cmd = [sys.executable, str(MODULE_PATH.parent / "delivery_audit.py"),
@@ -98,6 +220,18 @@ class HoseTests(unittest.TestCase):
             stale = subprocess.run(cmd, text=True, capture_output=True)
             self.assertNotEqual(stale.returncode, 0)
             self.assertIn("Native original frame source hash mismatch", stale.stderr)
+            p["native"]["source_sha256"] = hashlib.sha256(rows.read_bytes()).hexdigest()
+            p["hose"]["protection"] = "protected"
+            packet_path.write_text(json.dumps(p))
+            altered = subprocess.run(cmd, text=True, capture_output=True)
+            self.assertNotEqual(altered.returncode, 0)
+            self.assertIn("hose original source content mismatch", altered.stderr)
+            p["hose"]["protection"] = "unprotected"
+            p["native"]["result_sha256"] = "0" * 64
+            packet_path.write_text(json.dumps(p))
+            unsealed = subprocess.run(cmd, text=True, capture_output=True)
+            self.assertNotEqual(unsealed.returncode, 0)
+            self.assertIn("sealed Native result source hash mismatch", unsealed.stderr)
 
     def test_complete_body_footprint_contact_and_avoidance(self):
         p = packet()

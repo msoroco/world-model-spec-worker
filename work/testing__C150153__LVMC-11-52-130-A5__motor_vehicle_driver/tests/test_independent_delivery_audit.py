@@ -23,16 +23,16 @@ def sha(path):
 
 
 class DeliveryAuditTests(unittest.TestCase):
-    def fixture(self, root):
+    def fixture(self, root, case_name='west_inside'):
         root = Path(root)
         packet_path, sources, packet = ReviewedSiteTests().make_packet(root)
         source_site = dict(packet['site'])
         source_site['site_sha256'] = sha(packet_path)
-        case = next(item for item in CASES if item.id == 'west_inside')
+        case = next(item for item in CASES if item.id == case_name)
         attempt = root / 'attempt'
         attempt.mkdir()
         run_case(CombinedAdapter(source_site, case), packet_path, sources,
-                 HERE.name + '__west_inside', 4.0, attempt / 'history.jsonl')
+                 HERE.name + '__' + case_name, 4.0, attempt / 'history.jsonl')
         rows = [json.loads(line) for line in (attempt / 'history.jsonl').read_text().splitlines()]
         mapping = [{'original_frame': row['original_frame'], 'time_s': row['time_s'],
                     'camera_frames': {name: index for name in CAMERAS}}
@@ -41,10 +41,24 @@ class DeliveryAuditTests(unittest.TestCase):
             ''.join(json.dumps(row) + '\n' for row in mapping))
         for name in CAMERAS:
             (attempt / (name + '.mkv')).write_text('synthetic camera placeholder\n')
-        names = ('history.jsonl', 'camera-frame-map.jsonl',
+        context = {'format': 'sidewalk-elevator-original-comparison-context',
+                   'case_id': HERE.name + '__' + case_name,
+                   'site_packet_sha256': sha(packet_path),
+                   'history_sha256': sha(attempt / 'history.jsonl'),
+                   'ego_blueprint_sha256': source_site['ego_blueprint_sha256'],
+                   'weather_sha256': 'synthetic-weather-source',
+                   'route_sha256': source_site['one_way_direction_sha256'],
+                   'curb_gap_target_m': 0.3,
+                   'exception_source_sha256': (source_site.get({
+                       'lawful_traffic_conflict': 'traffic_conflict_source_sha256',
+                       'police_direction': 'police_direction_source_sha256',
+                       'traffic_device_direction': 'traffic_device_source_sha256',
+                   }.get(case.exception)) if case.exception != 'none' else None)}
+        (attempt / 'comparison-context.json').write_text(json.dumps(context) + '\n')
+        names = ('history.jsonl', 'camera-frame-map.jsonl', 'comparison-context.json',
                  *(name + '.mkv' for name in CAMERAS))
         seal = {'format': 'sidewalk-elevator-native-seal',
-                'case_id': HERE.name + '__west_inside', 'site_packet_sha256': sha(packet_path),
+                'case_id': HERE.name + '__' + case_name, 'site_packet_sha256': sha(packet_path),
                 'frames': 900, 'capture_rate_hz': 20, 'owner_released': True,
                 'restoration_verified': True, 'native_process_exit_code': 0,
                 'encoder_exit_codes': {name: 0 for name in CAMERAS},

@@ -28,11 +28,14 @@ def _sha(path: Path) -> str:
 
 
 def review(attempt: Path, site_packet: Path, source_root: Path,
-           reviewer_packet: Path, reviewer_sha256: str) -> dict:
+           reviewer_packet: Path, reviewer_sha256: str,
+           *, diagnostic_fixture: bool = False) -> dict:
     attempt = Path(attempt).resolve()
     reviewer_packet = Path(reviewer_packet).resolve()
     if reviewer_packet.is_relative_to(attempt) or attempt.is_relative_to(reviewer_packet):
         raise ValueError("reviewer packet must be external to original attempt")
+    if not diagnostic_fixture and reviewer_packet.is_relative_to(Path(__file__).resolve().parents[2]):
+        raise ValueError("original reviewer packet must be outside worker repository")
     if _sha(reviewer_packet) != reviewer_sha256:
         raise ValueError("external reviewer packet hash differs")
     source_packet = verify(site_packet, source_root)
@@ -44,15 +47,19 @@ def review(attempt: Path, site_packet: Path, source_root: Path,
             claim.get("site_packet_sha256") != delivery["site_packet_sha256"] or
             claim.get("source_hashes") != delivery["source_hashes"]):
         raise ValueError("pixel review original source binding differs")
+    rows = [json.loads(line) for line in (attempt / "history.jsonl").read_text().splitlines()]
+    frame_ids = {row["original_frame"] for row in rows}
+    if len(rows) != 900 or len(frame_ids) != 900:
+        raise ValueError("original review history frame identities differ")
     observations = claim.get("observations", {})
     if set(observations) != set(OBSERVATIONS):
         raise ValueError("pixel review observations incomplete")
     for name, item in observations.items():
-        if not isinstance(item, dict) or item.get("observed") not in (True, False):
+        if not isinstance(item, dict) or type(item.get("observed")) is not bool:
             raise ValueError("pixel review observation missing: " + name)
         camera = item.get("camera")
         frame = item.get("original_frame")
-        if camera not in CAMERAS or type(frame) is not int or not 0 <= frame < 900:
+        if camera not in CAMERAS or type(frame) is not int or frame not in frame_ids:
             raise ValueError("pixel review frame or camera invalid: " + name)
         if item.get("camera_sha256") != delivery["source_hashes"][camera + ".mkv"]:
             raise ValueError("pixel review camera source changed: " + name)
@@ -60,6 +67,15 @@ def review(attempt: Path, site_packet: Path, source_root: Path,
             raise ValueError("pixel review explanation missing: " + name)
     case_name = delivery["case_id"].removeprefix(source_packet["assignment_id"] + "__")
     case = next(item for item in CASES if item.id == case_name)
+    exception_key = {
+        "lawful_traffic_conflict": "traffic_conflict_source_sha256",
+        "police_direction": "police_direction_source_sha256",
+        "traffic_device_direction": "traffic_device_source_sha256",
+    }.get(case.exception)
+    expected_exception = source_packet["site"].get(exception_key) if exception_key else None
+    if any(row.get("exception_kind") != case.exception or
+           row.get("exception_source_sha256") != expected_exception for row in rows):
+        raise ValueError("original necessity exception source differs")
     required = {"sidewalk_elevator_identity", "elevator_front_and_side_edges",
                 "ego_vehicle_body", "one_way_approach", "curb_relation",
                 "stop_stand_park_activity", "camera_visibility"}
@@ -72,7 +88,6 @@ def review(attempt: Path, site_packet: Path, source_root: Path,
         required.add(exception_name)
     if any(observations[name]["observed"] is not True for name in required):
         raise ValueError("required original physical observation absent")
-    rows = [json.loads(line) for line in (attempt / "history.jsonl").read_text().splitlines()]
     measured = measure_original_history(rows, source_packet["site"], case)
     if measured["frame_count"] != 900:
         raise ValueError("original physical history duration differs")
