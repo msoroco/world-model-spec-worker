@@ -17,7 +17,7 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        source = SCRATCH / ('saved-v2-' + name) / 'v0001' / 'processing.json'
+        source = SCRATCH / ('saved-v3-' + name) / 'v0001' / 'processing.json'
         receipt = json.loads(source.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True
                 or receipt.get('candidate_id') != 'primary'):

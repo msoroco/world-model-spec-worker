@@ -37,7 +37,9 @@ def main():
     speed = json.loads((ROOT / 'speed-sweep-extension.json').read_text())
     speed_cases = [{**row['draft_variables'], 'case_id': row['case_id']}
                    for row in speed['cases']]
-    for case in plan['cases'] + speed_cases:
+    cases = {case['case_id']: case for case in plan['cases']}
+    cases.update({case['case_id']: case for case in speed_cases})
+    for case in cases.values():
         suffix = case['case_id'].removeprefix(ROOT.name + '__')
         files = dict(base['files'])
         sources = {}

@@ -15,8 +15,8 @@ DECODER = ROOT / '.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
 
 def process(case):
     cid = HERE.name + '__' + case.name
-    attempt = ROOT / '.runtime-work/c149470' / ('grid9-compat-' + case.name)
-    output = ROOT / '.runtime-work/c149470' / ('grid9-saved-' + case.name)
+    attempt = ROOT / '.runtime-work/c149470' / ('grid10-compat-' + case.name)
+    output = ROOT / '.runtime-work/c149470' / ('grid10-saved-' + case.name)
     command = [str(PYTHON), 'runtime.py', 'process-saved', '--manifest', str(MANIFEST),
                '--case', cid, '--attempt', str(attempt), '--output', str(output),
                '--library', 'runtime/library', '--validator', str(DECODER)]

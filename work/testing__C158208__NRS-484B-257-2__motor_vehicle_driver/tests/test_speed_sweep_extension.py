@@ -66,9 +66,10 @@ class SpeedSweepExtensionTests(unittest.TestCase):
             row.pop("requested_ego_crossing_speed_mps")
         self.assertEqual(fixed[0], fixed[1])
         self.assertEqual(fixed[1], fixed[2])
-        self.assertNotIn(extension["cases"][0]["case_id"],
-                         [row["case_id"] for row in
-                          json.loads((HERE / "execution-manifest.json").read_text())["cases"]])
+        selected_ids = [row["case_id"] for row in
+                        json.loads((HERE / "execution-manifest.json").read_text())["cases"]]
+        self.assertTrue(all(row["case_id"] in selected_ids for row in extension["cases"]))
+        self.assertEqual(len(selected_ids), 7)
 
     def test_source_and_adapter_capability_gate(self):
         case = json.loads((HERE / "speed-sweep-extension.json").read_text())["cases"][0]["case_id"]

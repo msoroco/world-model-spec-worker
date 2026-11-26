@@ -1,4 +1,4 @@
-"""Selected diagnostic receipt and four-comparison integrity tests."""
+"""Selected diagnostic receipt and comparison integrity tests."""
 import json
 from pathlib import Path
 import sys
@@ -15,10 +15,10 @@ def inputs():
 
 
 class SelectedAuditTests(unittest.TestCase):
-    def test_sixteen_selected_receipts_four_comparisons_and_three_sweeps(self):
+    def test_sixteen_selected_receipts_seven_comparisons_and_three_sweeps(self):
         result = audit_selected()
         self.assertEqual(len(result['cases']), 16)
-        self.assertEqual(len(result['comparisons']), 4)
+        self.assertEqual(len(result['comparisons']), 7)
         self.assertEqual(len(result['sweep_audits']), 3)
         self.assertFalse(result['original_source_verified'])
         self.assertFalse(result['physical_acceptance'])
@@ -50,7 +50,7 @@ class SelectedAuditTests(unittest.TestCase):
     def test_missing_comparison_rejected(self):
         manifest, plan = inputs()
         plan['comparisons'].pop()
-        with self.assertRaisesRegex(ValueError, 'four planned comparisons'):
+        with self.assertRaisesRegex(ValueError, 'seven planned comparisons'):
             audit_selected(manifest, plan)
 
     def test_missing_declared_difference_rejected(self):

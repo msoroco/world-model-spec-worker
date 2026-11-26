@@ -41,9 +41,9 @@ def prove_case(case):
     name = case.name
     cid = HERE.name + '__' + name
     base = [str(PYTHON), 'runtime.py']
-    selected_output = ROOT / '.runtime-work/c149470' / ('grid9-selected-offline-' + name)
-    fallback_output = ROOT / '.runtime-work/c149470' / ('grid9-fallback-offline-' + name)
-    compatibility_output = ROOT / '.runtime-work/c149470' / ('grid9-fallback-compat-' + name)
+    selected_output = ROOT / '.runtime-work/c149470' / ('grid10-selected-offline-' + name)
+    fallback_output = ROOT / '.runtime-work/c149470' / ('grid10-fallback-offline-' + name)
+    compatibility_output = ROOT / '.runtime-work/c149470' / ('grid10-fallback-compat-' + name)
     primary_args = base + ['offline', '--manifest', str(MANIFEST), '--case', cid,
                            '--output', str(selected_output), '--python', str(PYTHON)]
     fallback_args = base + ['offline', '--manifest', str(MANIFEST), '--case', cid,

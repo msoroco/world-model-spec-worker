@@ -115,6 +115,9 @@ def audit_attempt(attempt, case_id):
                       'original_history_sha256': sha(history_path), **fixed,
                       'conduct': case.conduct, 'passenger_action': case.passenger_action,
                       'release_delay_s': case.release_delay_s,
+                      'zone_boundary_signed_distance_m': measured['zone_boundary_signed_distance_m'],
+                      'civil_boundary_offset_min': measured['civil_boundary_offset_min'],
+                      'passenger_event_delay_s': measured['passenger_event_delay_s'],
                       'regulations_effective': site['regulations']['effective_at_civil_time']}
     return {'format': 'c150116-independent-original-audit-v1', 'case_id': case_id,
             'source_kind': 'original_native_capture', 'source_manifest_sha256': sha(manifest_path),
@@ -128,7 +131,10 @@ def audit_comparisons(reports):
     differences = {'conduct_without_passenger': 'conduct',
                    'passenger_exception_activity': 'passenger_action',
                    'activity_timing': 'release_delay_s',
-                   'effective_hours': 'regulations_effective'}
+                   'effective_hours': 'regulations_effective',
+                   'engineering_zone_marking': 'zone_boundary_signed_distance_m',
+                   'engineering_regulation_hours': 'civil_boundary_offset_min',
+                   'engineering_expeditious': 'passenger_event_delay_s'}
     out = []
     for comparison in plan['comparisons']:
         cid_list = comparison['case_ids']
@@ -141,6 +147,25 @@ def audit_comparisons(reports):
                  report.get('legal_status') == 'unresolved' and report.get('physical_acceptance') is False and
                  report.get('comparison_record', {}).get('original_history_sha256'),
                  'comparison includes nonoriginal or wrong-case audit')
+        if comparison['comparison_id'].startswith('engineering_'):
+            need(len(cid_list) == 3, 'engineering comparison requires three original attempts')
+            values = [reports[cid]['comparison_record'].get(difference) for cid in cid_list]
+            need(all(type(value) in (int, float) for value in values) and len(set(values)) == 3,
+                 'original engineering measurements missing or collapsed')
+            fixed_keys = ['road_source_sha256', 'regulations_source_sha256',
+                          'effective_hours_source_sha256', 'zone_source_sha256',
+                          'camera_plan_sha256', 'vehicle_blueprint', 'passenger_blueprint']
+            if difference != 'civil_boundary_offset_min':
+                fixed_keys.extend(['clock_source_sha256', 'civil_time_iso'])
+            for cid in cid_list[1:]:
+                left, right = anchor['comparison_record'], reports[cid]['comparison_record']
+                for key in fixed_keys:
+                    need(left.get(key) and left[key] == right.get(key),
+                         'fixed engineering comparison source changed: ' + key)
+            out.append({'comparison_id': comparison['comparison_id'], 'case_ids': cid_list,
+                        'measured_difference': difference, 'measured_values': values,
+                        'legal_status': 'unresolved', 'physical_acceptance': False})
+            continue
         for cid in cid_list[1:]:
             left, right = anchor['comparison_record'], reports[cid]['comparison_record']
             if difference == 'regulations_effective':

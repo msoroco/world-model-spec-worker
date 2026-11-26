@@ -64,7 +64,7 @@ class Adapter:
     def read_cameras(self, frame, actors):
         return {name: {'frame': frame, 'time_s': self.index / 20,
                        'png': b'\x89PNG\r\n\x1a\nsynthetic pixels'}
-                for name in ('overview', 'approach', 'curb_wheel', 'traffic')}
+                for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
 
     def brake(self):
         pass
@@ -108,10 +108,10 @@ class NativeCaptureTests(unittest.TestCase):
                 receipt = capture(adapter, packet, 'bus_stop_below', destination)
             self.assertEqual(receipt['source_kind'], 'original_native_capture')
             self.assertEqual(len((destination / 'original-bus-frames.jsonl').read_text().splitlines()), 900)
-            self.assertEqual(set(receipt['cameras']), {'overview', 'approach', 'curb_wheel', 'traffic'})
+            self.assertEqual(set(receipt['cameras']), {'overview', 'approach', 'reference_corner', 'driver_reference'})
             self.assertEqual(len((destination / 'camera-frame-map.jsonl').read_text().splitlines()), 900)
             self.assertEqual(set(receipt['camera_archives']),
-                             {'overview', 'approach', 'curb_wheel', 'traffic'})
+                             {'overview', 'approach', 'reference_corner', 'driver_reference'})
             self.assertEqual(adapter.destroyed, ['traffic', 'bus'])
             self.assertTrue(adapter.restored)
             reject = Adapter(adapter.source_hashes)

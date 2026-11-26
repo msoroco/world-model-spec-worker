@@ -42,7 +42,7 @@ def probe(case_id, negative):
         frame_map = [{'original_frame': 100 + index, 'time_s': index / 20,
                       'camera_png_sha256': {}}
                      for index in range(900)]
-        for camera in ('overview', 'approach', 'curb_wheel', 'traffic'):
+        for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             path = root / (camera + '.mkv')
             path.write_text('MOCK ONLY ' + camera + '\n')
             cameras[camera] = {'path': path.name, 'sha256': sha(path),

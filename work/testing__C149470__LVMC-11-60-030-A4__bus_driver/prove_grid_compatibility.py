@@ -24,8 +24,8 @@ def run(command, log):
 
 def prove(case):
         cid = HERE.name + '__' + case.name
-        offline = ROOT / '.runtime-work/c149470' / ('grid9-offline-' + case.name)
-        compat = ROOT / '.runtime-work/c149470' / ('grid9-compat-' + case.name)
+        offline = ROOT / '.runtime-work/c149470' / ('grid10-offline-' + case.name)
+        compat = ROOT / '.runtime-work/c149470' / ('grid10-compat-' + case.name)
         run([str(PYTHON), 'runtime.py', 'offline', '--manifest', str(MANIFEST),
              '--case', cid, '--output', str(offline), '--python', str(PYTHON)],
             HERE / ('cpu-grid-offline-' + case.name + '.log'))

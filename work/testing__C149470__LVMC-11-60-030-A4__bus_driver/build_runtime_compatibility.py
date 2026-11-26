@@ -13,6 +13,10 @@ DONOR = ROOT / 'work/testing__C135087__NRS-484B-517__motor_vehicle_driver'
 DONOR_SOURCE = DONOR / 'diagnostics/loading_open_waiting'
 DONOR_GENERATOR = DONOR / 'diagnostics/loading_open_waiting-generator.json'
 NAMES = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CAMERAS = [{'name': name, 'width': 1920 if index == 0 else 1280,
+            'height': 1080 if index == 0 else 720, 'fov_deg': 75,
+            'pose_strategy': 'reviewed bus, curb, stopped loading and separate traffic route'}
+           for index, name in enumerate(NAMES)]
 DESC = {'channels': [
     {'name': 'right_front_wheel_curb', 'unit': 'm with uncertainty',
      'method': 'right-front-wheel XY point to reviewed curb segment, 20 Hz',
@@ -59,6 +63,8 @@ def build():
     donor = json.loads(DONOR_GENERATOR.read_text())
     semantic_cases = {item['case_id']: item for item in
         json.loads((HERE / 'proposals/cases.json').read_text())['cases']}
+    selected_case_ids = [item['case_id'] for item in
+        json.loads((HERE / 'case-plan.json').read_text())['cases']]
     note = HERE / 'diagnostic-source-note.json'
     source_names = ('trace.jsonl', 'video_frames.jsonl',
                     'capture/native/frames.jsonl', 'capture/evidence.jsonl')
@@ -73,7 +79,8 @@ def build():
         config = json.loads(files['config.json'])
         config['case']['recording_description'] = DESC
         config['case']['sweep_measurements'] = semantic_cases[cid].get('sweep_measurements', [])
-        config['cameras'] = list(NAMES)
+        config['supported_case_ids'] = selected_case_ids
+        config['cameras'] = CAMERAS
         files['config.json'] = json.dumps(config, indent=2) + '\n'
         files['analysis.py'] = (HERE / 'analysis.py').read_text()
         original['recording_description'] = DESC
@@ -165,7 +172,7 @@ def build():
                         'measurement_procedure': {'entrypoint': 'analysis.py'}})
     proposal = {'cell_id': 'C149470', 'actor': 'bus_driver', 'status': 'draft',
                 'sweep_specs': [], 'cases': proposals}
-    dump(HERE / 'diagnostics/compatibility-proposal.json', proposal)
+    dump(HERE / 'diagnostics/compat-proposal.json', proposal)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': AID,
                 'status': 'synthetic_compatibility_only',
                 'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),

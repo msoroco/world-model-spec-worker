@@ -70,7 +70,7 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
     if len(frame_map) != len(rows):
         raise ValueError('camera/original frame count differs')
     archives = identity.get('camera_archives')
-    if not isinstance(archives, dict) or set(archives) != {'overview', 'approach', 'curb_wheel', 'traffic'}:
+    if not isinstance(archives, dict) or set(archives) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
         raise ValueError('four original pixel archives missing')
     for index, (row, item) in enumerate(zip(rows, frame_map)):
         if item.get('original_frame') != row.get('original_frame') or \
@@ -97,7 +97,7 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
                     raise ValueError('original pixel/frame hash differs')
         archive_hashes[name] = item['sha256']
     camera = identity.get('cameras')
-    if not isinstance(camera, dict) or set(camera) != {'overview', 'approach', 'curb_wheel', 'traffic'}:
+    if not isinstance(camera, dict) or set(camera) != {'overview', 'approach', 'reference_corner', 'driver_reference'}:
         raise ValueError('four original camera streams missing')
     camera_hashes = {}
     camera_decodes = {}

@@ -1,4 +1,4 @@
-"""Build seven synthetic-only passenger zone construction protocol bundles."""
+"""Build synthetic-only passenger zone construction protocol bundles."""
 import hashlib
 import json
 from datetime import datetime, timedelta
@@ -31,7 +31,7 @@ def build():
         'status': 'selected_required',
         'case_ids': [row['case_id'] for row in plan['cases']],
         'evidence_or_gap': 'Synthetic CPU protocol only; original marked passenger zone, civil-time regulation and Native capture absent.',
-        'reason': 'All seven exact conduct, passenger activity, timing and hours cases need original measurements; expeditious has no numeric legal cutoff.'}]
+        'reason': 'All selected conduct, passenger activity, timing and hours cases need original measurements; expeditious has no numeric legal cutoff.'}]
     write(HERE / 'case-plan.json', plan)
     note = HERE / 'diagnostic-source-note.json'
     write(note, {'format': 'c150116-synthetic-source-v1',
@@ -90,7 +90,8 @@ def build():
                            'zone_boundary_offset_m': case.zone_boundary_offset_m,
                            'civil_clock_offset_min': case.civil_clock_offset_min,
                            'recording_description': description}}
-        files = {'runner.py': (HERE / 'diagnostic_runner.py').read_text(),
+        files = {'runner.py': (HERE / 'source_deferred_runner.py').read_text(),
+                 'original_runner.py': (HERE / 'original_runner.py').read_text(),
                  'passenger_zone.py': (HERE / 'passenger_zone.py').read_text(),
                  'tests/test_bundle.py': (HERE / 'diagnostic_bundle_test.py').read_text(),
                  'config.json': json.dumps(config, indent=2) + '\n',

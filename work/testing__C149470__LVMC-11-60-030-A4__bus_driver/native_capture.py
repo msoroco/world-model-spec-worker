@@ -12,7 +12,7 @@ import zipfile
 
 from reviewed_source import FIELDS, construct_reviewed, verify
 
-CAMERAS = ('overview', 'approach', 'curb_wheel', 'traffic')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):

@@ -33,11 +33,22 @@ class IndependentAuditTests(unittest.TestCase):
                             'conduct': case.conduct,
                             'passenger_action': case.passenger_action,
                             'release_delay_s': case.release_delay_s,
+                            'zone_boundary_signed_distance_m': case.zone_boundary_offset_m,
+                            'civil_boundary_offset_min': case.civil_clock_offset_min,
+                            'passenger_event_delay_s': case.release_delay_s if case.name.startswith('expeditious-') else None,
                             'regulations_effective': case.hours == 'effective'}}
         return out
 
-    def test_four_controlled_comparisons(self):
-        self.assertEqual(len(audit_comparisons(self.reports())), 4)
+    def test_seven_controlled_comparisons(self):
+        self.assertEqual(len(audit_comparisons(self.reports())), 7)
+
+    def test_collapsed_original_sweep_measurement_rejected(self):
+        reports = self.reports()
+        left = ASSIGNMENT + '__zone_marking-0000'
+        right = ASSIGNMENT + '__zone_marking-0001'
+        reports[right]['comparison_record']['zone_boundary_signed_distance_m'] = reports[left]['comparison_record']['zone_boundary_signed_distance_m']
+        with self.assertRaisesRegex(ValueError, 'measurements missing or collapsed'):
+            audit_comparisons(reports)
 
     def test_changed_site_rejected(self):
         reports = self.reports()

@@ -26,7 +26,7 @@ def main():
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
         for candidate in ('primary', 'fallback1'):
-            output = SCRATCH / ('offline-' + suffix + '-' + candidate + '-v6')
+            output = SCRATCH / ('offline-' + suffix + '-' + candidate + '-v7')
             command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
                        'offline', '--manifest', str(manifest_path), '--case',
                        entry['case_id'], '--output', str(output), '--python',

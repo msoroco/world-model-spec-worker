@@ -63,7 +63,8 @@ def main() -> None:
     plan_path = ROOT / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
     entries = []
-    for row in plan['cases']:
+    for row in (item for item in plan['cases']
+                if item.get('target_type') != 'crossing_speed_judgment_sweep_attempt'):
         case = row['case_id']
         suffix = case.removeprefix(ROOT.name + '__')
         config = {'assignment_id': ROOT.name, 'law_id': plan['law_id'],

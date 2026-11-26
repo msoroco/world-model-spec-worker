@@ -36,6 +36,34 @@ def build() -> dict:
     extension = json.loads((HERE / "speed-sweep-extension.json").read_text())
     anchor = json.loads((HERE / "cases/approaching_near_response/construction.json").read_text())
     anchor_config = json.loads((HERE / "cases/approaching_near_response/config.json").read_text())
+    base_plan = json.loads((HERE / "case-plan.json").read_text())
+    known_cases = {item["case_id"] for item in base_plan["cases"]}
+    anchor_plan_case = next(item for item in base_plan["cases"]
+                            if item["case_id"] == anchor_config["selected_case_id"])
+    for row in extension["cases"]:
+        if row["case_id"] not in known_cases:
+            plan_case = json.loads(json.dumps(anchor_plan_case))
+            plan_case["case_id"] = row["case_id"]
+            plan_case["draft_variables"] = row["draft_variables"]
+            plan_case["target_type"] = "crossing_speed_judgment_sweep_attempt"
+            base_plan["cases"].append(plan_case)
+            base_plan["requirement_dispositions"][0]["case_ids"].append(row["case_id"])
+    write(HERE / "case-plan.json", base_plan)
+    proposal_path = HERE / "proposals/cases.json"
+    proposals = json.loads(proposal_path.read_text())
+    proposal_anchor = next(item for item in proposals["cases"]
+                           if item["case_id"] == anchor_config["selected_case_id"])
+    known_proposals = {item["case_id"] for item in proposals["cases"]}
+    for row in extension["cases"]:
+        if row["case_id"] not in known_proposals:
+            proposed = json.loads(json.dumps(proposal_anchor))
+            proposed["case_id"] = row["case_id"]
+            proposed["rationale"] = "Source-gated crossing speed judgment sweep; realized speed and legal meaning require original capture."
+            proposed["variable_assignments"]["requested_ego_crossing_speed_mps"] = {
+                "kind": "controller", "note": "Requested target; original result measured separately",
+                "value": row["draft_variables"]["requested_ego_crossing_speed_mps"]}
+            proposals["cases"].append(proposed)
+    write(proposal_path, proposals)
     runner = (HERE / "speed_sweep_runner.py").read_text()
     analysis = (HERE / "analysis.py").read_text().replace(
         "from nonthrough_yield import CASES, measure_frozen_windows",
@@ -54,11 +82,15 @@ def build() -> dict:
         config["case"]["draft_variables"] = row["draft_variables"]
         config["control"]["requested_ego_crossing_speed_mps"] = row["draft_variables"][
             "requested_ego_crossing_speed_mps"]
+        case_plan = base_plan
         files = []
         for item in anchor["files"]:
             item = dict(item)
             if item["path"] == "config.json":
                 item["content"] = json.dumps(config, indent=2, sort_keys=True) + "\n"
+            elif item["path"] == "case-plan.json":
+                item["content"] = json.dumps(case_plan, indent=2, sort_keys=True) + "\n"
+                item.pop("source", None)
             elif item["path"] == "runner.py":
                 item["content"] = runner
                 item["source"] = f"work/{HERE.name}/speed_sweep_runner.py"

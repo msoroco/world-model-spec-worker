@@ -59,7 +59,7 @@ def build():
                   'candidate_id': 'primary',
                   'rate_hz': 20, 'duration_s': 45, 'required_atoms': [],
                   'source_packets': [],
-                  'cameras': ['overview', 'approach', 'curb_wheel', 'traffic'],
+                  'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
                   'case': {'kind': case.name, 'case_id': case_id,
                            'heading_request_deg': case.heading_request_deg,
                            'traffic_lateral_request_m': case.traffic_lateral_request_m,

@@ -15,6 +15,11 @@ DIFFERENCES = {
     'activity_timing': 'release_delay_s',
     'effective_hours': 'hours',
 }
+SWEEP_COMPARISONS = {
+    'engineering_zone_marking': 'zone_boundary_offset_m',
+    'engineering_regulation_hours': 'civil_clock_offset_min',
+    'engineering_expeditious': 'release_delay_s',
+}
 
 
 def need(ok, message):
@@ -115,12 +120,23 @@ def audit_selected(manifest=None, plan=None):
     reports = {entry['case_id']: audit_case(entry) for entry in manifest['cases']}
     need({item['case_id'] for item in plan['cases']} == expected, 'plan and selection differ')
     comparisons = []
-    need({item['comparison_id'] for item in plan['comparisons']} == set(DIFFERENCES),
-         'four planned comparisons required')
+    need({item['comparison_id'] for item in plan['comparisons']} == set(DIFFERENCES) | set(SWEEP_COMPARISONS),
+         'seven planned comparisons required')
     for item in plan['comparisons']:
         ids = item['case_ids']
         need(len(ids) >= 2 and len(ids) == len(set(ids)) and set(ids) <= expected,
              'comparison case identity changed')
+        if item['comparison_id'] in SWEEP_COMPARISONS:
+            family = item['comparison_id'].removeprefix('engineering_')
+            need(ids == [PREFIX + family + '-' + f'{index:04d}' for index in range(3)],
+                 'engineering comparison case identity changed')
+            variable = SWEEP_COMPARISONS[item['comparison_id']]
+            need(len({reports[cid][variable] for cid in ids}) == 3,
+                 'engineering grid lacks three distinct points')
+            comparisons.append({'comparison_id': item['comparison_id'], 'case_ids': ids,
+                                'declared_difference': variable,
+                                'original_source_verified': False})
+            continue
         variable = DIFFERENCES[item['comparison_id']]
         anchor = reports[ids[0]]
         for cid in ids[1:]:

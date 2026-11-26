@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parents[1]
 class FallbackIsolationTests(unittest.TestCase):
     def test_only_passenger_anchor_moves_toward_curb(self):
         manifest = json.loads((HERE / 'execution-manifest.json').read_text())
-        self.assertEqual(len(manifest['cases']), 7)
+        self.assertEqual(len(manifest['cases']), 16)
         shifts = []
         for entry in manifest['cases']:
             primary = json.loads((HERE / entry['construction']).read_text())

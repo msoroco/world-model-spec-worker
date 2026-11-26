@@ -21,6 +21,11 @@ def load_reviewed_site(manifest_path, site_path, exact_case_id):
             manifest.get('diagnostic_fixture') is not False or not manifest.get('reviewer') or
             manifest.get('case_id') != exact_case_id):
         raise ValueError('reviewed original source identity missing')
+    provenance = manifest.get('source_provenance', {})
+    if (provenance.get('kind') != 'original_reviewed_site' or
+            provenance.get('diagnostic_fixture') is not False or
+            not provenance.get('reviewer') or not provenance.get('citation')):
+        raise ValueError('original reviewed site provenance missing')
     record = manifest.get('files', {}).get('site-context.json', {})
     if record.get('sha256') != sha(site_path):
         raise ValueError('original site source hash mismatch')
