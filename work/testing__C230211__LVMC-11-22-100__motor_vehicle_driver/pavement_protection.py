@@ -74,6 +74,17 @@ def validate_scene(scene: Mapping, case: Case):
     if case.protection.startswith('barrier'):
         require(rect(scene.get('barrier_rect_m')),
                 'physical barrier geometry missing')
+        if case.protection == 'barrier_around':
+            perimeter = scene.get('barrier_perimeter_rects_m')
+            require(isinstance(perimeter, list) and len(perimeter) >= 3 and
+                    all(rect(item) for item in perimeter),
+                    'physical barrier perimeter missing')
+            pavement = scene['pavement_rect_m']
+            require(any(item[0] <= pavement[0] for item in perimeter) and
+                    any(item[2] >= pavement[2] for item in perimeter) and
+                    any(item[1] <= pavement[1] for item in perimeter) and
+                    any(item[3] >= pavement[3] for item in perimeter),
+                    'barrier perimeter does not surround pavement')
     elif case.protection == 'warning_person':
         require(scene.get('warning_person_id'), 'warning person missing')
     else:
@@ -96,13 +107,21 @@ def construct(adapter, scene: Mapping, case: Case):
         adapter.mark_pavement(scene['pavement_rect_m'],
                               scene['pavement_condition'])
         if case.protection.startswith('barrier'):
-            adapter.place_barrier(scene['barrier_rect_m'], case.protection)
+            barriers = (scene['barrier_perimeter_rects_m'] if
+                        case.protection == 'barrier_around' else
+                        [scene['barrier_rect_m']])
+            for rectangle in barriers:
+                barrier = adapter.place_barrier(rectangle, case.protection)
+                require(barrier is not None, 'physical barrier spawn failed')
+                owned.append(barrier)
         elif case.protection == 'warning_person':
             person = adapter.spawn_warning_person(scene['warning_person_xy'])
             require(person is not None, 'warning person spawn failed')
             owned.append(person)
         else:
-            adapter.place_sign(scene['sign_xy'], scene['sign_text'])
+            sign = adapter.place_sign(scene['sign_xy'], scene['sign_text'])
+            require(sign is not None, 'physical sign spawn failed')
+            owned.append(sign)
         vehicle = adapter.spawn_vehicle(scene['vehicle_route_xy'][0])
         require(vehicle is not None, 'vehicle spawn failed')
         owned.append(vehicle)

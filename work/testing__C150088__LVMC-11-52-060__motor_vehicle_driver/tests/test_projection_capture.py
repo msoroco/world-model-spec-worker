@@ -110,6 +110,7 @@ def packet_in(root, case_id):
 
 class CaptureTest(unittest.TestCase):
     def test_reviewed_source_byte_mutation_rejected(self):
+        Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as temp:
             root = Path(temp)
             case = "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below"
@@ -119,6 +120,7 @@ class CaptureTest(unittest.TestCase):
                 load_reviewed(packet, case)
 
     def test_original_frame_join_and_cleanup(self):
+        Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as temp:
             root = Path(temp)
             case = "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below"
@@ -140,7 +142,9 @@ class CaptureTest(unittest.TestCase):
                     {"name": name, "unit": "CPU fixture"} for name in (
                         "maximum_perpendicular_projection", "controlling_physical_part",
                         "curb_street_side_geometry", "parked_assembly_stability",
-                        "camera_frame_identity")]}}}) + "\n")
+                        "camera_frame_identity")], "context_inputs": [
+                    {"name": "reviewed_original_opendrive_and_curb_survey", "unit": "source hashes"},
+                    {"name": "vehicle_load_trailer_attachment", "unit": "source actor IDs"}]}}}) + "\n")
             (root / "attempt" / "diagnostic-source-note.json").write_text(json.dumps({
                 "source_kind": "synthetic_diagnostic_fixture", "accepted_original_source": False,
                 "case_id": case}) + "\n")
@@ -150,6 +154,7 @@ class CaptureTest(unittest.TestCase):
             self.assertFalse(report["target_check"]["legal_equality_claimed"])
 
     def test_missing_camera_join_is_rejected_and_world_restored(self):
+        Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as temp:
             root = Path(temp)
             case = "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below"

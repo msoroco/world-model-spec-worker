@@ -14,6 +14,7 @@ from projection_capture import CAMERAS, FRAMES
 from projection_construction import CASES
 from projection_measurement import ASSIGNMENT, LIMIT_M, measure_packet
 from projection_sources import load_reviewed, sha
+from physical_completion import assess
 
 
 def required(root, name):
@@ -191,6 +192,13 @@ def analyze(root):
               "recording_evidence": evidence, "realized_observables": {},
               "diagnostic_fixture": diagnostic, "physical_acceptance_claimed": False,
               "legal_verdict_claimed": False}
+    if not diagnostic:
+        dwell = assess(root, case_id)
+        result["physical_checks"]["maneuver"] = dwell["physical_checks"]["maneuver"]
+        result["maneuver_completed"] = dwell["maneuver_completed"]
+        result["setup_confirmed"] = dwell["maneuver_completed"]
+        result["behavior_attempted"] = dwell["maneuver_completed"]
+        result["realized_observables"] = dwell["realized_observables"]
     write_result(root, result)
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "analysis_complete": True, "diagnostic_fixture": diagnostic,

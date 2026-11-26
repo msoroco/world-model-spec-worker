@@ -4,6 +4,92 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Common reviewed curb and parked-assembly reference.",
+      "variable_assignments": {
+        "requested_projection_m": {
+          "kind": "world_setup",
+          "value": 4.2,
+          "note": "Engineering construction target; measured original outline governs."
+        },
+        "controlling_part": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "note": "Selected assembly part, confirmed from original source."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "maximum_perpendicular_projection",
+            "unit": "metres",
+            "method": "complete original vehicle, load and trailer outline vertices measured normal to reviewed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native map and curb survey",
+            "uncertainty": "engineering target and synthetic fixture do not establish legal equality or physical visibility"
+          },
+          {
+            "name": "controlling_physical_part",
+            "unit": "original category",
+            "method": "outermost actual vehicle, load or attached trailer part",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native map and curb survey",
+            "uncertainty": "engineering target and synthetic fixture do not establish legal equality or physical visibility"
+          },
+          {
+            "name": "curb_street_side_geometry",
+            "unit": "original coordinates",
+            "method": "reviewed curb line and independently confirmed street side",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native map and curb survey",
+            "uncertainty": "engineering target and synthetic fixture do not establish legal equality or physical visibility"
+          },
+          {
+            "name": "parked_assembly_stability",
+            "unit": "metres",
+            "method": "900-frame maximum minus minimum original projection",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native map and curb survey",
+            "uncertainty": "engineering target and synthetic fixture do not establish legal equality or physical visibility"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four synchronized original cameras",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native map and curb survey",
+            "uncertainty": "engineering target and synthetic fixture do not establish legal equality or physical visibility"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_opendrive_and_curb_survey",
+            "unit": "source hashes",
+            "method": "local source packet plus Native map and curb readback"
+          },
+          {
+            "name": "vehicle_load_trailer_attachment",
+            "unit": "source actor IDs",
+            "method": "original Native attachment and hitch readback"
+          }
+        ],
+        "limitations": [
+          "The statutory boundary is exactly fifteen feet (4.572 m); the 0.08 m construction tolerance is engineering only.",
+          "Physical pixel visibility and legal interpretation require independent local review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "At-boundary physical measurement uncertainty remains for local review."
+      ]
+    },
+    {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below",
       "target_law_id": "LVMC-11-52-060",
       "target_type": "boundary_probe",
@@ -87,7 +173,25 @@
       },
       "unresolved_judgment_calls": [
         "At-boundary physical measurement uncertainty remains for local review."
-      ]
+      ],
+      "paired_probe_id": "projection-boundary",
+      "deliberate_differences": [
+        "requested_projection_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_projection_m",
+        "comparison_or_standard": "exact statutory fifteen-foot (4.572 m) perpendicular curb boundary",
+        "target_value_or_branch": "vehicle_below",
+        "test_value": 4.2,
+        "unit": "m",
+        "operator": ">",
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0.428,
+        "unit": "m",
+        "rationale": "Engineering probe spacing; legal boundary remains exact."
+      }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal",
@@ -173,7 +277,25 @@
       },
       "unresolved_judgment_calls": [
         "At-boundary physical measurement uncertainty remains for local review."
-      ]
+      ],
+      "paired_probe_id": "projection-boundary",
+      "deliberate_differences": [
+        "requested_projection_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_projection_m",
+        "comparison_or_standard": "exact statutory fifteen-foot (4.572 m) perpendicular curb boundary",
+        "target_value_or_branch": "vehicle_equal",
+        "test_value": 4.572,
+        "unit": "m",
+        "operator": ">",
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0,
+        "unit": "m",
+        "rationale": "Engineering probe spacing; legal boundary remains exact."
+      }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above",
@@ -259,12 +381,30 @@
       },
       "unresolved_judgment_calls": [
         "At-boundary physical measurement uncertainty remains for local review."
-      ]
+      ],
+      "paired_probe_id": "projection-boundary",
+      "deliberate_differences": [
+        "requested_projection_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_projection_m",
+        "comparison_or_standard": "exact statutory fifteen-foot (4.572 m) perpendicular curb boundary",
+        "target_value_or_branch": "vehicle_above",
+        "test_value": 5.0,
+        "unit": "m",
+        "operator": ">",
+        "threshold_ref": "obligation.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 0.428,
+        "unit": "m",
+        "rationale": "Engineering probe spacing; legal boundary remains exact."
+      }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above",
       "target_law_id": "LVMC-11-52-060",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Original complete assembly outline projected perpendicular to the reviewed curb; physical and legal findings deferred.",
       "variable_assignments": {
         "requested_projection_m": {
@@ -345,12 +485,25 @@
       },
       "unresolved_judgment_calls": [
         "At-boundary physical measurement uncertainty remains for local review."
-      ]
+      ],
+      "paired_probe_id": "projection-load_above",
+      "deliberate_differences": [
+        "controlling_part",
+        "requested_projection_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_projection_m",
+        "comparison_or_standard": "exact statutory fifteen-foot (4.572 m) perpendicular curb boundary",
+        "target_value_or_branch": "load_above",
+        "test_value": 5.0,
+        "unit": "m",
+        "operator": ">"
+      }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above",
       "target_law_id": "LVMC-11-52-060",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Original complete assembly outline projected perpendicular to the reviewed curb; physical and legal findings deferred.",
       "variable_assignments": {
         "requested_projection_m": {
@@ -431,7 +584,20 @@
       },
       "unresolved_judgment_calls": [
         "At-boundary physical measurement uncertainty remains for local review."
-      ]
+      ],
+      "paired_probe_id": "projection-trailer_above",
+      "deliberate_differences": [
+        "controlling_part",
+        "requested_projection_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_projection_m",
+        "comparison_or_standard": "exact statutory fifteen-foot (4.572 m) perpendicular curb boundary",
+        "target_value_or_branch": "trailer_above",
+        "test_value": 5.0,
+        "unit": "m",
+        "operator": ">"
+      }
     }
   ],
   "sweep_specs": [],

@@ -12,7 +12,8 @@ def scene(case):
          'stationary_rail_carrier_person_or_property': True,
          'streetcar_rail': False, 'one_way_highway': case.one_way,
          'crossing_near_station_m': 0, 'crossing_far_station_m': 5,
-         'route_xy': [[-60, 0], [-30, 0], [10, 0]]}
+         'route_xy': [[-60, 0], [-30, 0], [10, 0]],
+         'centerline_point_xy': [0, 0], 'centerline_heading_xy': [1, 0]}
     for field in ('jurisdiction', 'highway_status', 'one_way_status', 'vehicle',
                   'driver_control', 'rail_carrier', 'rail_grade', 'streetcar_exclusion',
                   'crossing_near_edge', 'crossing_far_edge', 'centerline',

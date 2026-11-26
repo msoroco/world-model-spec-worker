@@ -4,7 +4,7 @@
 assumptions retained with original sources, not substituted legal definitions.
 """
 from dataclasses import dataclass
-from math import isfinite
+from math import hypot, isfinite
 from typing import Mapping
 
 
@@ -62,6 +62,11 @@ def validate_scene(scene: Mapping, case: Case):
     require(isinstance(route, list) and len(route) >= 2 and
             all(isinstance(p, list) and len(p) == 2 and
                 all(number(v) for v in p) for p in route), 'rail approach route missing')
+    point = scene.get('centerline_point_xy')
+    heading = scene.get('centerline_heading_xy')
+    require(isinstance(point, list) and len(point) == 2 and all(number(v) for v in point)
+            and isinstance(heading, list) and len(heading) == 2 and all(number(v) for v in heading)
+            and hypot(*heading) > .5, 'original centerline geometry missing')
     return {'statutory_approach_distance_ft': 100,
             'crossing_extent_engineering_m': [near, far],
             'body_reference_assumption': 'leading body station at near crossing edge',

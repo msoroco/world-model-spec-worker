@@ -18,6 +18,7 @@ class ProjectionTests(unittest.TestCase):
                                     "outline_vertices_m": [[1, 0], [3, 0], [3, 4], [1, 4]]}]}
 
     def run_measure(self, packet):
+        Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]).mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as d:
             p = Path(d) / "original.json"
             p.write_text(json.dumps(packet), encoding="utf-8")

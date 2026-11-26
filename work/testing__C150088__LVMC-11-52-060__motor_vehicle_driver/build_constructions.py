@@ -10,7 +10,8 @@ from projection_measurement import ASSIGNMENT
 
 ROOT = Path(__file__).resolve().parent
 MODULES = ("runner.py", "analysis.py", "projection_measurement.py",
-           "projection_construction.py", "projection_sources.py", "projection_capture.py")
+           "projection_construction.py", "projection_sources.py", "projection_capture.py",
+           "physical_completion.py")
 TESTS = tuple("tests/" + p.name for p in sorted((ROOT / "tests").glob("test*.py")))
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
            ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))

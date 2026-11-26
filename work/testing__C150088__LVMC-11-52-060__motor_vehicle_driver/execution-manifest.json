@@ -7,7 +7,7 @@
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "ca4edb5c4a1c486c0abf252698121a6fa478dfb1e16bfd9c7e8f9272b1855e1f",
+      "construction_sha256": "23f513de54146ddc13ec532240c672ace9a6224f83c9b834be9ce8ba19e7cdc3",
       "candidate_risk": {
         "status": "physical",
         "reason": "A parked body near the curb can hide the curb reference beneath its wheels in overview pixels."
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "cases/vehicle_below/fallback1-construction.json",
-          "construction_sha256": "74d2b5f21ad6eae1a380c9c0113bacc3fa68b08688dc92ef10fa5e53d0a28bb2",
+          "construction_sha256": "6d676c4e947c1625736c2c6980c19ed9202f1f414ea3137f959f7f0f96e9655b",
           "trigger": {
             "source": "900-frame original Native part readback and four-camera pixel audit",
             "metric": "complete controlling-part and curb-line visibility in synchronized original pixels",
@@ -24,20 +24,123 @@
           },
           "changed_knobs": [
             "parking station along the same reviewed curb, 15.0 m to 18.0 m; all perpendicular targets and camera plan fixed"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_below-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cpu-offline-vehicle_below-fallback1.log",
+            "log_sha256": "7d6ed6fdcaf90ff3fd3db0e2212e79744a17355d344a862ce77e280714f36b08",
+            "construction_sha256": "6d676c4e947c1625736c2c6980c19ed9202f1f414ea3137f959f7f0f96e9655b"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_below-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-vehicle_below-fallback1.json",
+            "sha256": "88d36d1a6bea9700729920132d88453f388ad3465015cbb1d9f71384516aed07",
+            "log": "cpu-compatibility-analysis-vehicle_below-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-vehicle_below-fallback1.log"
+          },
+          "negative": {
+            "log": "cpu-compatibility-negative-vehicle_below-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contract.json",
       "fixture_recipe": "work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/diagnostics/vehicle_below/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "maximum_perpendicular_projection": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-maximum_perpendicular_projection.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "controlling_physical_part": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-controlling_physical_part.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "curb_street_side_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-curb_street_side_geometry.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "parked_assembly_stability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-parked_assembly_stability.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_below-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cpu-offline-vehicle_below-primary.log",
+        "log_sha256": "115b74c73ceadd02fd31ea0440ab566c6aa7cf9d6b1c40d39867c26778288e01",
+        "construction_sha256": "23f513de54146ddc13ec532240c672ace9a6224f83c9b834be9ce8ba19e7cdc3"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_below-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-vehicle_below-primary.json",
+        "sha256": "2dca08706ec257a4caf73eec002ad3b9f99e03c1a8a09ee08c21dda621823754",
+        "log": "cpu-compatibility-analysis-vehicle_below-primary.log",
+        "negative_log": "cpu-compatibility-negative-vehicle_below-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-vehicle_below-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-vehicle_below-proof.json",
+        "sha256": "710a0e715ac3518c6e887e5c7f0cb040dcaa9be6fbb5c79923b2acaeb80c9ae3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_below-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_below-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_below-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_below-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-vehicle_below.log",
+        "test_log_sha256": "0d68d56597e17d83a586bf2cd9b73ff1ae900677b3a67f8ed97daa63c6b92666"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "57b59619c52b7fddc1fb0bdbd47fd54f9a29eb7986e7ee63fcd95a1f6749a8b7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_below-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-vehicle_below-positive.log",
+        "test_log_sha256": "4201a3c3372c2f51f09fc0921873499a166b5e77fadd0cac34cc634f00665a0d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_below-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-vehicle_below-negative.log",
+        "negative_log_sha256": "e8b4a541d4846ed99e6cb15218d2c0694c8c28c42b06721c64f9e313e6fd6eca"
       }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal",
       "kind": "delivery",
       "construction": "cases/vehicle_equal/construction.json",
-      "construction_sha256": "251916d3ce171d3ae2385e7ce248c03380b06c6fe891641645f30a79f6e98b57",
+      "construction_sha256": "5216ab4f4e88c63ccead6e83697b90009300ef83d940b7c99d3e94b8f0ba464f",
       "candidate_risk": {
         "status": "physical",
         "reason": "At 4.572 m the curb reference and outer body edge must both remain visible; geometry readback uncertainty cannot decide legal equality."
@@ -46,7 +149,7 @@
         {
           "id": "fallback1",
           "construction": "cases/vehicle_equal/fallback1-construction.json",
-          "construction_sha256": "54d07c50eebe7218d8ad9be7d3ca23861752fe9d1c66570e7621b0a2fcbf6134",
+          "construction_sha256": "2e16d50e43532be78e527816db05f89427be2ef8f8732f535a22abe1e3c6fbf9",
           "trigger": {
             "source": "900-frame original Native part readback and four-camera pixel audit",
             "metric": "complete controlling-part and curb-line visibility in synchronized original pixels",
@@ -54,20 +157,123 @@
           },
           "changed_knobs": [
             "parking station along the same reviewed curb, 15.0 m to 18.0 m; all perpendicular targets and camera plan fixed"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_equal-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cpu-offline-vehicle_equal-fallback1.log",
+            "log_sha256": "b9c0e797746e9c1efb47c7877aef1fdf7c4aa75ee337f397b9f5a26c8c88eaaf",
+            "construction_sha256": "2e16d50e43532be78e527816db05f89427be2ef8f8732f535a22abe1e3c6fbf9"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_equal-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-vehicle_equal-fallback1.json",
+            "sha256": "9c901337f251bf3e9c9ec9c0b18f0dac41fdf95222b721070789433397f34235",
+            "log": "cpu-compatibility-analysis-vehicle_equal-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-vehicle_equal-fallback1.log"
+          },
+          "negative": {
+            "log": "cpu-compatibility-negative-vehicle_equal-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "cases/vehicle_equal/measurement-contract.json",
       "fixture_recipe": "work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/diagnostics/vehicle_equal/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "maximum_perpendicular_projection": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-maximum_perpendicular_projection.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "controlling_physical_part": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-controlling_physical_part.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "curb_street_side_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-curb_street_side_geometry.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "parked_assembly_stability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-parked_assembly_stability.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_equal-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cpu-offline-vehicle_equal-primary.log",
+        "log_sha256": "5ff81c02077fe5df35a0c8a3487b29435a1479ef527db56ec782d09af11f135e",
+        "construction_sha256": "5216ab4f4e88c63ccead6e83697b90009300ef83d940b7c99d3e94b8f0ba464f"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_equal-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-vehicle_equal-primary.json",
+        "sha256": "1ab48b3d0712dd0426d7390359660e7af8a1dd497db516d4d71c8367138370b5",
+        "log": "cpu-compatibility-analysis-vehicle_equal-primary.log",
+        "negative_log": "cpu-compatibility-negative-vehicle_equal-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-vehicle_equal-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-vehicle_equal-proof.json",
+        "sha256": "128c4a85e4f2ac22d12860d0b3a058c22bf246802da69026c7bd32ee6ec362d9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_equal-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_equal-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_equal-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_equal-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-vehicle_equal.log",
+        "test_log_sha256": "cf0f52edaa9a8aa1143f5e08a47bd1233125b451a570bfaeba07511661e57d12"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "57b59619c52b7fddc1fb0bdbd47fd54f9a29eb7986e7ee63fcd95a1f6749a8b7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_equal-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-vehicle_equal-positive.log",
+        "test_log_sha256": "dba362d4bebc0b0c2ee265b9bfc2f39c6f3ee2724d14c04e62894c5d2bfdf0e4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_equal --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_equal-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-vehicle_equal-negative.log",
+        "negative_log_sha256": "e8b4a541d4846ed99e6cb15218d2c0694c8c28c42b06721c64f9e313e6fd6eca"
       }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above",
       "kind": "delivery",
       "construction": "cases/vehicle_above/construction.json",
-      "construction_sha256": "6e3b3b38595dc40a94cda6f6dc395ecd09e9ac0a2835a935ba29b2a3863664e6",
+      "construction_sha256": "b653745cca3265884428e7367ef548b37b541b0fd67be92829219ed4b06a9604",
       "candidate_risk": {
         "status": "physical",
         "reason": "The farthest body corner may leave the overview frame or mask its curb-normal reference."
@@ -76,7 +282,7 @@
         {
           "id": "fallback1",
           "construction": "cases/vehicle_above/fallback1-construction.json",
-          "construction_sha256": "9eb2620ef11d6e1bb8b8cf3b060239b6df8b41d29f6af04f447881f0a51b141f",
+          "construction_sha256": "16893aeedaf74a793dfdac8c154587ebae48bcd819de0a946cfcc2a101977a36",
           "trigger": {
             "source": "900-frame original Native part readback and four-camera pixel audit",
             "metric": "complete controlling-part and curb-line visibility in synchronized original pixels",
@@ -84,20 +290,123 @@
           },
           "changed_knobs": [
             "parking station along the same reviewed curb, 15.0 m to 18.0 m; all perpendicular targets and camera plan fixed"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_above-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cpu-offline-vehicle_above-fallback1.log",
+            "log_sha256": "7700220e4f24f76d2a150dde9dc20926b77e80bed1079ab1fdfa039a871fe8bc",
+            "construction_sha256": "16893aeedaf74a793dfdac8c154587ebae48bcd819de0a946cfcc2a101977a36"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_above-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-vehicle_above-fallback1.json",
+            "sha256": "d0faf9458d5575deea40d9d0282fec3feffe50bb12f9a16016f85ece6061db08",
+            "log": "cpu-compatibility-analysis-vehicle_above-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-vehicle_above-fallback1.log"
+          },
+          "negative": {
+            "log": "cpu-compatibility-negative-vehicle_above-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "cases/vehicle_above/measurement-contract.json",
       "fixture_recipe": "work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/diagnostics/vehicle_above/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "maximum_perpendicular_projection": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-maximum_perpendicular_projection.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "controlling_physical_part": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-controlling_physical_part.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "curb_street_side_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-curb_street_side_geometry.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "parked_assembly_stability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-parked_assembly_stability.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_above-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cpu-offline-vehicle_above-primary.log",
+        "log_sha256": "f713dbd260a81d1451664dc8f1edf7b4b9e7b897a19159ce1899a8978ce1a9b1",
+        "construction_sha256": "b653745cca3265884428e7367ef548b37b541b0fd67be92829219ed4b06a9604"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/vehicle_above-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-vehicle_above-primary.json",
+        "sha256": "8f7c04098507d35576d48d2999a1a99af99381cc6f8899d6abd7e8342f121c4d",
+        "log": "cpu-compatibility-analysis-vehicle_above-primary.log",
+        "negative_log": "cpu-compatibility-negative-vehicle_above-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-vehicle_above-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-vehicle_above-proof.json",
+        "sha256": "9851d4fa31376f21d5585911b40836cdedcd80706c0b47cfe86b7118090799df"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/vehicle_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-vehicle_above.log",
+        "test_log_sha256": "970d4069cdb46022784ce753b421552c5a580077ed655203de3ebe709418ec43"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "57b59619c52b7fddc1fb0bdbd47fd54f9a29eb7986e7ee63fcd95a1f6749a8b7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_above-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-vehicle_above-positive.log",
+        "test_log_sha256": "f05bcfd05608ca7e5043253cf5b2d61569687d608146fed5f16279d2ecdbddb0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__vehicle_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/vehicle_above-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-vehicle_above-negative.log",
+        "negative_log_sha256": "e8b4a541d4846ed99e6cb15218d2c0694c8c28c42b06721c64f9e313e6fd6eca"
       }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above",
       "kind": "delivery",
       "construction": "cases/load_above/construction.json",
-      "construction_sha256": "d8b4e1bfdceae31837f319624f0520bb259faa8d342a3ff2015296ab2b23193d",
+      "construction_sha256": "4599b424c796292e5c11864ec430bd03109b464e857e8b4c89dca58bc82129a9",
       "candidate_risk": {
         "status": "physical",
         "reason": "The attached load tip can be occluded by the vehicle body in overview or driver-reference pixels."
@@ -106,7 +415,7 @@
         {
           "id": "fallback1",
           "construction": "cases/load_above/fallback1-construction.json",
-          "construction_sha256": "c7afccfa7d81c483dead4d9e16c54f7c1366b64b636e31f5b137a143f4cacd6f",
+          "construction_sha256": "09b760f0353a543dc8eea47257b4f58e1b0b23f21cd210156c1740a51b5e9ea4",
           "trigger": {
             "source": "900-frame original Native part readback and four-camera pixel audit",
             "metric": "complete controlling-part and curb-line visibility in synchronized original pixels",
@@ -114,20 +423,123 @@
           },
           "changed_knobs": [
             "parking station along the same reviewed curb, 15.0 m to 18.0 m; all perpendicular targets and camera plan fixed"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/load_above-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cpu-offline-load_above-fallback1.log",
+            "log_sha256": "08cc24d4ae32ebc95a221b51d7ca3dd7e1cf687ba15f262cbede1f9322b16465",
+            "construction_sha256": "09b760f0353a543dc8eea47257b4f58e1b0b23f21cd210156c1740a51b5e9ea4"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/load_above-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-load_above-fallback1.json",
+            "sha256": "a7052c874a00e8fbf57d1b733659e5a1c933f66d7b668ec49a76d78058cfc287",
+            "log": "cpu-compatibility-analysis-load_above-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-load_above-fallback1.log"
+          },
+          "negative": {
+            "log": "cpu-compatibility-negative-load_above-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "cases/load_above/measurement-contract.json",
       "fixture_recipe": "work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/diagnostics/load_above/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "maximum_perpendicular_projection": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-maximum_perpendicular_projection.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "controlling_physical_part": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-controlling_physical_part.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "curb_street_side_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-curb_street_side_geometry.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "parked_assembly_stability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-parked_assembly_stability.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/load_above-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cpu-offline-load_above-primary.log",
+        "log_sha256": "127fd6e29852558ce3ca11eb541028051a34984d33d2302ed14cf0f9ef5f99a3",
+        "construction_sha256": "4599b424c796292e5c11864ec430bd03109b464e857e8b4c89dca58bc82129a9"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/load_above-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-load_above-primary.json",
+        "sha256": "97e3caef9b6a4dbd3624f32cbce735f766f69a6638ff20e7a943b20bd620f8a6",
+        "log": "cpu-compatibility-analysis-load_above-primary.log",
+        "negative_log": "cpu-compatibility-negative-load_above-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-load_above-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-load_above-proof.json",
+        "sha256": "ea6b706cb885e456dad72c197194125ce4955187f6d93065e8c6d1a01616c076"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/load_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/load_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/load_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/load_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-load_above.log",
+        "test_log_sha256": "b28302b2b621676ffd317d8121af1c5efcd8e963d0b4d3b731a1399ba65a5936"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "57b59619c52b7fddc1fb0bdbd47fd54f9a29eb7986e7ee63fcd95a1f6749a8b7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/load_above-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-load_above-positive.log",
+        "test_log_sha256": "228b7138d5d67f92bd648346df2f38b7a827075a6016a2c7caee78e07606d6bd",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__load_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/load_above-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-load_above-negative.log",
+        "negative_log_sha256": "e8b4a541d4846ed99e6cb15218d2c0694c8c28c42b06721c64f9e313e6fd6eca"
       }
     },
     {
       "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above",
       "kind": "delivery",
       "construction": "cases/trailer_above/construction.json",
-      "construction_sha256": "0ace0d9e01bd24defd91e70da6850afd30fa57b708ceef1ecbe2c9a9e6fb1872",
+      "construction_sha256": "190447e5a318edc9c7cb0785332e429ca0dd9f2cc95f39e00e39b5b8d084b464",
       "candidate_risk": {
         "status": "physical",
         "reason": "The hitch and farthest trailer corner may be occluded separately, defeating attachment and projection review."
@@ -136,7 +548,7 @@
         {
           "id": "fallback1",
           "construction": "cases/trailer_above/fallback1-construction.json",
-          "construction_sha256": "61ffadd641a325930d53a787c796e343842efbed49f098514dbb52869271b31e",
+          "construction_sha256": "8e08f83a3b997865c00c6a849a2d3d8b266d6ac2b5ff9dd2d2b05eac5f6f6653",
           "trigger": {
             "source": "900-frame original Native part readback and four-camera pixel audit",
             "metric": "complete controlling-part and curb-line visibility in synchronized original pixels",
@@ -144,13 +556,116 @@
           },
           "changed_knobs": [
             "parking station along the same reviewed curb, 15.0 m to 18.0 m; all perpendicular targets and camera plan fixed"
-          ]
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/trailer_above-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "cpu-offline-trailer_above-fallback1.log",
+            "log_sha256": "213ce4469574fb02ad6e8e7a1f4237e5e0d495e2f1b7bc00b8f54c006b1975fe",
+            "construction_sha256": "8e08f83a3b997865c00c6a849a2d3d8b266d6ac2b5ff9dd2d2b05eac5f6f6653"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/trailer_above-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-trailer_above-fallback1.json",
+            "sha256": "80ee1be1cf50bfa456fc1ccc442cf6d1d904f36a487666cc5ebc40157ca43f68",
+            "log": "cpu-compatibility-analysis-trailer_above-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-trailer_above-fallback1.log"
+          },
+          "negative": {
+            "log": "cpu-compatibility-negative-trailer_above-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "cases/trailer_above/measurement-contract.json",
       "fixture_recipe": "work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/diagnostics/trailer_above/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "maximum_perpendicular_projection": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-maximum_perpendicular_projection.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "controlling_physical_part": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-controlling_physical_part.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "curb_street_side_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-curb_street_side_geometry.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "parked_assembly_stability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-parked_assembly_stability.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "Original sealed Native projection and four-camera frame map, measured from saved sources"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/trailer_above-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "cpu-offline-trailer_above-primary.log",
+        "log_sha256": "f91ce1eb3968ac84332994f609f705b9686696c97e2ed596063aadeefcca3f66",
+        "construction_sha256": "190447e5a318edc9c7cb0785332e429ca0dd9f2cc95f39e00e39b5b8d084b464"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/proofs-v5/trailer_above-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-trailer_above-primary.json",
+        "sha256": "68ff1d362a987ede979c369c4bd206c565a6a08e05f9f43ad2ae29e0e891701b",
+        "log": "cpu-compatibility-analysis-trailer_above-primary.log",
+        "negative_log": "cpu-compatibility-negative-trailer_above-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-trailer_above-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-trailer_above-proof.json",
+        "sha256": "25f85ed533162ad484046c890b7bb2c98c7012d401331c38507a4cc29e055ad3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/trailer_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/trailer_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/execution-manifest.json --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/trailer_above-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/saved-proofs-v2/trailer_above-output --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-trailer_above.log",
+        "test_log_sha256": "2e58585036f85f9719a33a798d626ce7e2eee9d0f3718908d454c7eb90b5593a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "57b59619c52b7fddc1fb0bdbd47fd54f9a29eb7986e7ee63fcd95a1f6749a8b7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/trailer_above-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-trailer_above-positive.log",
+        "test_log_sha256": "4e6fe0fd65a5999faa28a523a283e995d0313677ce441c9a64189df4b68daca2",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/audit_probe.py --case testing__C150088__LVMC-11-52-060__motor_vehicle_driver__trailer_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150088-nov26/audit-proofs-v1/trailer_above-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-trailer_above-negative.log",
+        "negative_log_sha256": "e8b4a541d4846ed99e6cb15218d2c0694c8c28c42b06721c64f9e313e6fd6eca"
       }
     }
   ]

@@ -2,36 +2,24 @@
   "assignment_id": "testing__C150088__LVMC-11-52-060__motor_vehicle_driver",
   "input_sha256": "949b86ff89bcb16a558ea6c2bc98101d6ee6197c86595ebdcc96f39ee090a37a",
   "status": "partial",
-  "readiness_kind": "projection_geometry_and_case_decomposition",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150088-nov26 PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "226c17ac1c2b7d8404d84edac85fa77170ea3e7d5f55022158154a89ba4ae7f0"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C150088__LVMC-11-52-060__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "1f171ab732a00e5de83833ce9c2a5559708a923870ff9bc5fc88e53d375c785d"
+      "log": "cpu-focused-tests.log",
+      "sha256": "8ccc4ba125254d62d069c2c73029b092aae3f5a48f72ed01b043cc07cfdfd8b9"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150088__LVMC-11-52-060__motor_vehicle_driver --complete",
       "exit_code": 0,
-      "log": "static.log",
+      "log": "cpu-scoped-partial.log",
       "sha256": "e8e7ffebb446fd4a467b09ff16d18f73bbb7cb9fda43955f11973121d19bb0e5"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150088__LVMC-11-52-060__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact controlled projection cases, three comparisons, source-bound full-assembly perpendicular curb geometry measurement and five CPU tests are added. Executable construction, original source outlines, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
+  "reason": "Independent delivery audit and comparison audit CPU proofs remain; exact scoped strict assignment gate has not passed."
 }

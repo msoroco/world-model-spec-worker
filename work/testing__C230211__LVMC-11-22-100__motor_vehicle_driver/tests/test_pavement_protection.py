@@ -20,6 +20,8 @@ def scene(case):
              employee_engaged=case.employee_engaged,
              employee_pavement_id='p1', work_kind='paving', work_active=True,
              barrier_rect_m=[-1, 0, 0, 4], warning_person_id='w1',
+             barrier_perimeter_rects_m=[[-1, -1, 0, 5], [10, -1, 11, 5],
+                                        [0, -1, 10, 0], [0, 4, 10, 5]],
              warning_person_xy=[-1, 2], sign_xy=[-1, 2],
              sign_text=('highway_closed' if case.protection ==
                         'highway_closed_sign' else 'do_not_drive_on_pavement'),
@@ -59,7 +61,7 @@ class Adapter:
     def __getattr__(self, name):
         def invoke(*args):
             self.calls.append((name, args))
-            if name.startswith('spawn_'):
+            if name.startswith('spawn_') or name.startswith('place_'):
                 return None if self.fail and name == 'spawn_vehicle' else name
         return invoke
 

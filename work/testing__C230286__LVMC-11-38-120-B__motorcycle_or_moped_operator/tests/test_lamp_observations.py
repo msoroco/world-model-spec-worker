@@ -60,9 +60,9 @@ class LampTests(unittest.TestCase):
 
     def test_exact_lamp_and_coverage_plan(self):
         plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(plan["cases"]), 26)
-        self.assertEqual(len(plan["comparisons"]), 20)
-        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 26)
+        self.assertEqual(len(plan["cases"]), 27)
+        self.assertEqual(len(plan["comparisons"]), 23)
+        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 27)
 
     def test_original_lamp_states_and_calibration_preserved(self):
         result = self.run_measure()
