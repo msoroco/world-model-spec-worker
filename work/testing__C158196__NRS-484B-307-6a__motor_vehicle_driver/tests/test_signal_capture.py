@@ -31,6 +31,7 @@ class CaptureAdapter(FakeAdapter):
         color = "green" if i < 100 else "yellow" if i < 500 else "red"
         return {"origin": "native_world_snapshot", "native_frame": frame,
                 "native_time_s": 50 + i / 20,
+                "heading_deg": 0.0, "speed_mps": 5.0,
                 "ego_front_signed_distance_m": i - 200 + .25,
                 "ego_vertices": [[float(i), float(j), 0.0] for j in range(8)],
                 "ego_geometry_source": SOURCE,

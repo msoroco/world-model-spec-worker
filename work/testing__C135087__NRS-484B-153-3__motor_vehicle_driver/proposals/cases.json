@@ -2,6 +2,109 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__baseline",
+      "paired_probe_id": "baseline",
+      "rationale": "Shared neutral reference for original side, load kind and activity comparisons.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_door_articulation",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_loading_activity",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_passing_body_path",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_narrow_road_geometry",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_frame_map",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical visibility pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original map, loading position and passing route",
+            "name": "reviewed_narrow_road_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Necessity and immediacy remain legal judgments; diagnostic fixtures are not physical evidence."
+        ]
+      },
+      "target_law_id": "NRS-484B-153-3",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "longer than is necessary",
+        "immediate loading or unloading"
+      ],
+      "variable_assignments": {
+        "door_side": {
+          "kind": "world_setup",
+          "value": "traffic_side"
+        },
+        "load_kind": {
+          "kind": "world_setup",
+          "value": "cargo"
+        },
+        "open_activity": {
+          "kind": "controller",
+          "value": "continuous loading"
+        }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "continuous loading"
+      }
+    },
+    {
       "case_id": "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_active",
       "paired_probe_id": "cargo_activity_gap",
       "rationale": "Measure the original door side and loading/inactivity interval in a controlled narrow-road episode; no legal duration cutoff.",
@@ -81,17 +184,27 @@
       ],
       "variable_assignments": {
         "door_side": {
-          "kind": "physical_door",
+          "kind": "world_setup",
           "value": "traffic_side"
         },
         "load_kind": {
-          "kind": "physical_actor",
+          "kind": "world_setup",
           "value": "cargo"
         },
         "open_activity": {
           "kind": "controller",
           "value": "continuous loading"
         }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "continuous loading"
       }
     },
     {
@@ -174,17 +287,27 @@
       ],
       "variable_assignments": {
         "door_side": {
-          "kind": "physical_door",
+          "kind": "world_setup",
           "value": "traffic_side"
         },
         "load_kind": {
-          "kind": "physical_actor",
+          "kind": "world_setup",
           "value": "cargo"
         },
         "open_activity": {
           "kind": "controller",
           "value": "loading then inactive while open"
         }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "loading then inactive while open"
       }
     },
     {
@@ -267,17 +390,27 @@
       ],
       "variable_assignments": {
         "door_side": {
-          "kind": "physical_door",
+          "kind": "world_setup",
           "value": "traffic_side"
         },
         "load_kind": {
-          "kind": "physical_actor",
+          "kind": "world_setup",
           "value": "passenger"
         },
         "open_activity": {
           "kind": "controller",
           "value": "continuous boarding"
         }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "continuous boarding"
       }
     },
     {
@@ -360,17 +493,27 @@
       ],
       "variable_assignments": {
         "door_side": {
-          "kind": "physical_door",
+          "kind": "world_setup",
           "value": "traffic_side"
         },
         "load_kind": {
-          "kind": "physical_actor",
+          "kind": "world_setup",
           "value": "passenger"
         },
         "open_activity": {
           "kind": "controller",
           "value": "boarding then inactive while open"
         }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "boarding then inactive while open"
       }
     },
     {
@@ -453,22 +596,52 @@
       ],
       "variable_assignments": {
         "door_side": {
-          "kind": "physical_door",
+          "kind": "world_setup",
           "value": "opposite_side"
         },
         "load_kind": {
-          "kind": "physical_actor",
+          "kind": "world_setup",
           "value": "cargo"
         },
         "open_activity": {
           "kind": "controller",
           "value": "continuous loading"
         }
+      },
+      "deliberate_differences": {
+        "door_side": "reviewed side",
+        "load_kind": "reviewed loading actor",
+        "open_activity": "controlled activity interval"
+      },
+      "probe": {
+        "primary_variable": "open_activity",
+        "comparison_or_standard": "source-bound original active/inactive and door-side controls",
+        "target_value_or_branch": "continuous loading"
       }
     }
   ],
   "cell_id": "C135087",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "necessity_context_review",
+      "target_law_id": "NRS-484B-153-3",
+      "judgment_refs": [
+        {
+          "phrase": "closest to passing traffic",
+          "note": "Review original passing body path, vehicle heading, door side and source geometry."
+        },
+        {
+          "phrase": "longer than is necessary for immediate loading or unloading",
+          "note": "Review original active/inactive passenger or cargo motion and open interval; necessity and immediacy remain unresolved."
+        }
+      ],
+      "rationale": "Original source and legal necessity context cannot be selected as a numeric threshold.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Legal review of necessity and immediacy; original Native site and actor pixel evidence."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

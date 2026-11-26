@@ -39,8 +39,9 @@ class World:
 
 
 class Actor:
-    def __init__(self, identity):
+    def __init__(self, identity, type_id):
         self.id = identity
+        self.type_id = type_id
         self.is_alive = True
         self.destroyed = False
     def destroy(self):
@@ -64,7 +65,9 @@ class NativeCaptureTests(unittest.TestCase):
 
     def run_fixture(self, *, omit_articulation=False):
         case = native_capture.ASSIGNMENT + "__cargo_inactive"
-        with tempfile.TemporaryDirectory() as temp:
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work/c135087-owner-nov26/temp'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temp:
             folder = Path(temp)
             survey = folder / "site.json"
             raw = (json.dumps(self.survey(), sort_keys=True) + "\n").encode()
@@ -72,7 +75,10 @@ class NativeCaptureTests(unittest.TestCase):
             actors = {}
             world = World()
             def factory(_world, role, _packet, _variant):
-                actor = Actor(len(actors) + 1)
+                blueprint = _packet['selected_vehicle_blueprint'] if role == 'selected_vehicle' else (
+                    _packet['passing_vehicle_blueprint'] if role == 'passing_vehicle' else
+                    _packet['passenger_actor_blueprint'] if role == 'passenger' else _packet['cargo_actor_blueprint'])
+                actor = Actor(len(actors) + 1, blueprint)
                 actors[role] = actor
                 return actor
             door_state = {"open": False, "side": "left"}

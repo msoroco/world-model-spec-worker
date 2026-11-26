@@ -92,7 +92,7 @@ def capture(adapter, scene, case, destination):
         for row in rows:
             vertices = row.pop("ego_vertices")
             row["position_m"] = [sum(point[axis] for point in vertices) / 8
-                                 for axis in (0, 1)]
+                                 for axis in (0, 1, 2)]
             geometry_records.append({"frame": row["frame"],
                                      "native_frame": row["native_frame"],
                                      "ego_vertices": vertices,
@@ -103,8 +103,17 @@ def capture(adapter, scene, case, destination):
         geometry_source = {"path": geometry.name, "sha256": sha(geometry)}
         for row in rows:
             row["ego_geometry_source"] = geometry_source
+        trace_rows = [{"frame": row["native_frame"], "time_s": row["native_time_s"],
+                       "position": {"x": row["position_m"][0],
+                                    "y": row["position_m"][1],
+                                    "z": row["position_m"][2]},
+                       "position_m": row["position_m"],
+                       "heading_deg": row["heading_deg"],
+                       "speed_mps": row["speed_mps"],
+                       "speed_mph": row["speed_mps"] / 0.44704}
+                      for row in rows]
         (stage / "trace.jsonl").write_text(
-            "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in trace_rows),
             encoding="utf-8")
         packet["native_result"] = {"path": "trace.jsonl", "sha256": sha(stage / "trace.jsonl")}
         write(stage / "original-signal-packet.json", packet)

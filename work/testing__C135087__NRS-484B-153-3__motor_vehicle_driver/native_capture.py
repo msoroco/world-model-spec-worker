@@ -131,6 +131,11 @@ def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
             raise ValueError("original Native actor spawn failed")
         if len({_actor_id(actor) for actor in owned}) != 3:
             raise ValueError("original participant identity collision")
+        expected_blueprints = (packet["selected_vehicle_blueprint"], packet["passing_vehicle_blueprint"],
+                               packet["passenger_actor_blueprint"] if load_kind == "passenger" else packet["cargo_actor_blueprint"])
+        if any(getattr(actor, "type_id", None) != expected
+               for actor, expected in zip(owned, expected_blueprints)):
+            raise ValueError("spawned Native actor blueprint differs from reviewed site")
         cameras = camera_factory(world, selected, VIEWS, packet)
         if not isinstance(cameras, dict) or set(cameras) != set(VIEWS):
             raise ValueError("four original cameras missing")
@@ -227,6 +232,9 @@ def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
                                      body_xy_m=passing_body))
         geometry = {"source_kind": "original_native_geometry", "selected_vehicle_id": _actor_id(selected),
                     "passing_vehicle_id": _actor_id(passing), "loading_position_supported": True,
+                    "selected_vehicle_blueprint": selected.type_id,
+                    "passing_vehicle_blueprint": passing.type_id,
+                    "loading_actor_blueprint": loading_actor.type_id,
                     "road_width_m": packet["road_width_m"],
                     "selected_vehicle_width_m": packet["selected_vehicle_width_m"],
                     "selected_vehicle_length_m": packet["selected_vehicle_length_m"],

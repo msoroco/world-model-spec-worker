@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 
 from native_capture import capture, validate_survey
+from native_output_bridge import publish
 
 HERE = Path(__file__).resolve().parent
 
@@ -78,6 +79,7 @@ def main():
                      survey_sha256=survey_sha256, output=args.output_dir,
                      door_open_tick=config.get("door_open_tick", 120),
                      **{name: hooks[name] for name in names})
+    publish(args.output_dir, map_bytes=hooks["map_reader"](world), restored=True)
     print(json.dumps(result, sort_keys=True))
 
 

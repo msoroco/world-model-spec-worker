@@ -242,6 +242,8 @@ class CarlaSignalAdapter:
                     (point.y - center.y) * forward[1])
         selected_id = str(scene["selected_signal_id"])
         selected = self.signals[selected_id]
+        velocity = ego.get_velocity()
+        speed_mps = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
         state = str(selected.get_state()).split(".")[-1].lower()
         need(state in {"green", "yellow", "red"}, "Native selected signal state invalid")
         companions = []
@@ -264,6 +266,8 @@ class CarlaSignalAdapter:
                             "source": scene["other_route_device_source"]})
         return {"origin": "native_world_snapshot", "native_frame": frame,
                 "native_time_s": self.last_time,
+                "heading_deg": ego.get_transform().rotation.yaw,
+                "speed_mps": speed_mps,
                 "ego_front_signed_distance_m": signed_distance(front.x, front.y,
                                                                   scene["intersection_polygon_xy"]),
                 "ego_vertices": [[point.x, point.y, point.z] for point in vertices],

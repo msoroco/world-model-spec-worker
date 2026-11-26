@@ -25,6 +25,11 @@ def required(root, name):
     return path
 
 
+def source_sealed_signal_measurement(value):
+    """Retain a concrete source measurement without a legal cutoff."""
+    return value
+
+
 def analyze(attempt):
     root = Path(attempt).resolve()
     config = json.loads(required(root, "config.json").read_text())
@@ -66,9 +71,16 @@ def analyze(attempt):
         "comparison_isolation": {"selected_route_id": observed["selected_route_id"],
                                  "other_route_red_frames": observed["other_route_red_frames"],
                                  "source_provenance": receipt["source_kind"]},
+        "entry_governance": {"selected_signal_id": observed["selected_signal_id"],
+                             "entry_observation": observed["entry_observation"],
+                             "other_route_red_frames": observed["other_route_red_frames"]},
     }
+    contract_sources = {name: sources[name] for name in
+                        ("original-signal-packet.json", "original-source-receipt.json",
+                         "trace.jsonl")}
     measurements = {name: {"method": "source_sealed_signal_measurement",
-                           "value": value, "sources": sources}
+                           "value": source_sealed_signal_measurement(value),
+                           "sources": contract_sources}
                     for name, value in values.items()}
     evidence = []
     for channel in config["case"]["recording_description"]["channels"]:
@@ -90,9 +102,10 @@ def analyze(attempt):
             target.write_text(encoded)
         evidence.append({"name": name, "unit": channel["unit"], "reference": target.name})
     context = root / "channel-reviewed_native_signal_scene.json"
-    content = json.dumps({"route": observed["selected_route_id"],
-                          "signal": observed["selected_signal_id"],
-                          "source_hashes": sources}, sort_keys=True) + "\n"
+    content = json.dumps({"reviewed_native_signal_scene": {
+        "route": observed["selected_route_id"],
+        "signal": observed["selected_signal_id"],
+        "source_hashes": sources}}, sort_keys=True) + "\n"
     if context.exists():
         need(context.read_text() == content, "reviewed source context changed")
     else:

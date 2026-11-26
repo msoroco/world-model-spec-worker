@@ -1,0 +1,50 @@
+{
+  "template_id": "NRS-484B-153-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-153-3",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not leave open a door on the side of a vehicle which is closest to passing traffic longer than is necessary for immediate loading or unloading of passengers or cargo.",
+  "structure": {
+    "law_id": "NRS-484B-153-3",
+    "activation": {
+      "condition": "Door on the side closest to passing traffic is open.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not leave it open longer than necessary for immediate passenger or cargo loading or unloading.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Measure original open, activity, inactivity and closing intervals without choosing a legal duration.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "closest to passing traffic",
+        "note": "Review original passing body path, vehicle heading, door side and source geometry."
+      },
+      {
+        "phrase": "longer than is necessary for immediate loading or unloading",
+        "note": "Review original active/inactive passenger or cargo motion and open interval; necessity and immediacy remain unresolved."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "door_side",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed traffic-facing or opposite side"
+    },
+    {
+      "name": "load_kind",
+      "kind": "world_setup",
+      "range_or_domain": "passenger or cargo"
+    },
+    {
+      "name": "open_activity",
+      "kind": "controller",
+      "range_or_domain": "active through open interval or active then inactive"
+    }
+  ]
+}

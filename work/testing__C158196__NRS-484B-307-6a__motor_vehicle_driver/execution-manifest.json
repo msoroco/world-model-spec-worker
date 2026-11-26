@@ -1,0 +1,967 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+      "kind": "delivery",
+      "construction": "construction-selected-enters_yellow.json",
+      "construction_sha256": "4d02b16147b79c79fcc2e2e653d4a0136a0c4258ecfa272de2def0838b64ea7d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-enters_yellow.json",
+          "construction_sha256": "fdc94694f07f573cd32e8f626f02e95a3c2c53af63926513421bf9e94819ed0a",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/enters_yellow --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-enters_yellow.log",
+            "log_sha256": "3eda9c85924be836eff195b433c1ff14afc6db5f2fc28d9cda1254f0a97446ca",
+            "construction_sha256": "fdc94694f07f573cd32e8f626f02e95a3c2c53af63926513421bf9e94819ed0a"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-enters_yellow.json",
+            "sha256": "551c2542a517f4499b6b6ff8223551777e826a6d40b13bbc393a4fcbe129d4b2",
+            "log": "proof-fallback-analysis-enters_yellow.log",
+            "negative_log": "proof-fallback-negative-enters_yellow.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/enters_yellow-recipe.json",
+      "measurement_contract": "diagnostics/enters_yellow-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/enters_yellow --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-enters_yellow.log",
+        "log_sha256": "d868f62330c9c49fbd09dd4d8cdb68f3bced9b18d1f68f81db257c9a9d20931a",
+        "construction_sha256": "4d02b16147b79c79fcc2e2e653d4a0136a0c4258ecfa272de2def0838b64ea7d"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-enters_yellow.json",
+        "sha256": "0de0a309d7d59d421d33edae13cb26a256f746b1e6a0f503d78cb6c2fff95954",
+        "log": "proof-compat-analysis-enters_yellow.log",
+        "negative_log": "proof-compat-negative-enters_yellow.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-enters_yellow.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-enters_yellow-receipt.json",
+        "sha256": "c4fa5777f806a60fa1087cb1df928e3f0845af64b930de91c225422fb9c132ad"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-enters_yellow.log",
+        "sha256": "4929d698a194d6e69c59bbc66190e61e01ea2c9ec8db539825daa97f161e4214"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-enters_yellow.log",
+        "test_log_sha256": "4929d698a194d6e69c59bbc66190e61e01ea2c9ec8db539825daa97f161e4214"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_yellow --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/enters_yellow/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_yellow/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_yellow --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/enters_yellow/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_yellow/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-enters_yellow.log",
+        "test_log_sha256": "5831ba4bd636634aac42c5645a99d12ba9ea1c8f395a5dbf662508ad5382a95d",
+        "negative_log": "proof-delivery-negative-enters_yellow.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+      "kind": "delivery",
+      "construction": "construction-selected-enters_red.json",
+      "construction_sha256": "8cbc72ebc132c275d4924fdd009f2c7dd0d749a9edfa3839f3908c97ffa40758",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-enters_red.json",
+          "construction_sha256": "4c01fd5d575c2247213708d04de778447607a419cae7ba4cc3171dbb521830ca",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/enters_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-enters_red.log",
+            "log_sha256": "061d3318f1eca413e1c7229d93b3f0dd62706bccd0600e10a3a749323f0fe60a",
+            "construction_sha256": "4c01fd5d575c2247213708d04de778447607a419cae7ba4cc3171dbb521830ca"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-enters_red.json",
+            "sha256": "74d8b29d4c138674d8c9e353f7460dfb3444ec62c5659b873de6d24135d207fb",
+            "log": "proof-fallback-analysis-enters_red.log",
+            "negative_log": "proof-fallback-negative-enters_red.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/enters_red-recipe.json",
+      "measurement_contract": "diagnostics/enters_red-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/enters_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-enters_red.log",
+        "log_sha256": "ffd6a01fba8f80fa7cde667dd7a91abb221ef5e76b8624ceae27bf656269911e",
+        "construction_sha256": "8cbc72ebc132c275d4924fdd009f2c7dd0d749a9edfa3839f3908c97ffa40758"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-enters_red.json",
+        "sha256": "ddb5016df1b879fa9760918d51752935f3b8f897e5aa7b1f59cc1de9fd5875c1",
+        "log": "proof-compat-analysis-enters_red.log",
+        "negative_log": "proof-compat-negative-enters_red.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-enters_red.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-enters_red-receipt.json",
+        "sha256": "4c865773d7f202895e2cc285fc0042fb3581e484e2975a259626f3a9cc638780"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-enters_red.log",
+        "sha256": "f00d6fcb2f0096283c722085dda460e419d275dbf5210703d94ffe82e7623908"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-enters_red.log",
+        "test_log_sha256": "f00d6fcb2f0096283c722085dda460e419d275dbf5210703d94ffe82e7623908"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/enters_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_red/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/enters_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/enters_red/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-enters_red.log",
+        "test_log_sha256": "397f469981b7bacda8730fd5b360c70f1ab85fcc7d566df606f19d3b4bedb65d",
+        "negative_log": "proof-delivery-negative-enters_red.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red",
+      "kind": "delivery",
+      "construction": "construction-selected-inside_on_red.json",
+      "construction_sha256": "31ee25dbbe57a60f6c346f16a691a096effa27392ca80ff66047e4376f977944",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-inside_on_red.json",
+          "construction_sha256": "0c70236eea44c80aeab50e488f5b905a4c5881eaf4777e980f9c5174e85758f2",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/inside_on_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-inside_on_red.log",
+            "log_sha256": "4302aea32d2a3f9135015099f242cf880663708416aff7eb6a28761a88107b4e",
+            "construction_sha256": "0c70236eea44c80aeab50e488f5b905a4c5881eaf4777e980f9c5174e85758f2"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-inside_on_red.json",
+            "sha256": "d21253fc9b3c59608a3e7c2af74b76513a87cfa7b6b7aaeb4bf528d6abddff7a",
+            "log": "proof-fallback-analysis-inside_on_red.log",
+            "negative_log": "proof-fallback-negative-inside_on_red.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/inside_on_red-recipe.json",
+      "measurement_contract": "diagnostics/inside_on_red-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/inside_on_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-inside_on_red.log",
+        "log_sha256": "ad44f026952c5db19013ea53b636a46b6c4e262cf614deb78c8f178fd068fe84",
+        "construction_sha256": "31ee25dbbe57a60f6c346f16a691a096effa27392ca80ff66047e4376f977944"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_on_red.json",
+        "sha256": "e5c88a7bad677fefeab05eb90d8fabf4339981e98b20ba8f1e56cd7331baa609",
+        "log": "proof-compat-analysis-inside_on_red.log",
+        "negative_log": "proof-compat-negative-inside_on_red.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_on_red.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_on_red-receipt.json",
+        "sha256": "4d894c8cfaf2eb501c806a7d6c7cd26540580db0499ff41c120ac35b46e32850"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-inside_on_red.log",
+        "sha256": "4992f79e6bb7e2dc39c5cd525deaefc6b9dd1d2dc360a9b1a072b04a3b139d5f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-inside_on_red.log",
+        "test_log_sha256": "4992f79e6bb7e2dc39c5cd525deaefc6b9dd1d2dc360a9b1a072b04a3b139d5f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/inside_on_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/inside_on_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/inside_on_red/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/inside_on_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/inside_on_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/inside_on_red/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-inside_on_red.log",
+        "test_log_sha256": "22df2772c0432df79fa20b219673fecce977626bc9ff6087dc983fc41b55d515",
+        "negative_log": "proof-delivery-negative-inside_on_red.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route",
+      "kind": "delivery",
+      "construction": "construction-selected-red_other_route.json",
+      "construction_sha256": "e51eede7594d3deca5937e821c07ee4c55d0525df50e29e49eb8529fce54820f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-red_other_route.json",
+          "construction_sha256": "d1764246a14b8e95a477787f1c1c73c29efd7161766e8b243c41f9f8c80a2f01",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/red_other_route --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-red_other_route.log",
+            "log_sha256": "b5caa242befb5197e35e953cd359a20e43336ef503bba47e47ee285ec445c23f",
+            "construction_sha256": "d1764246a14b8e95a477787f1c1c73c29efd7161766e8b243c41f9f8c80a2f01"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-red_other_route.json",
+            "sha256": "cbe2aa1073637c69ef033ad13f23cc620bfc6b074ba353f792fde2cb19182da9",
+            "log": "proof-fallback-analysis-red_other_route.log",
+            "negative_log": "proof-fallback-negative-red_other_route.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/red_other_route-recipe.json",
+      "measurement_contract": "diagnostics/red_other_route-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/red_other_route --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-red_other_route.log",
+        "log_sha256": "56c6755bdac431e5cdd16a290d4baa21f3e17bd5e0deeb93cb4f1c32e74432d8",
+        "construction_sha256": "e51eede7594d3deca5937e821c07ee4c55d0525df50e29e49eb8529fce54820f"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-red_other_route.json",
+        "sha256": "a4450c1dc026cef1883ecddf0446f2cae9cc23c343013f446b1a9f12a4ee3a7b",
+        "log": "proof-compat-analysis-red_other_route.log",
+        "negative_log": "proof-compat-negative-red_other_route.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-red_other_route.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-red_other_route-receipt.json",
+        "sha256": "49dee9059e722599ca0e671ffd7c798d02cbea8d8f1b06722326ed219ed37122"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-red_other_route.log",
+        "sha256": "dfc98d63822184b2be809ed046f896f245eaf3f9ffafe99286344435dcee4645"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-red_other_route.log",
+        "test_log_sha256": "dfc98d63822184b2be809ed046f896f245eaf3f9ffafe99286344435dcee4645"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/red_other_route --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/red_other_route/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/red_other_route/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/red_other_route --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/red_other_route/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/red_other_route/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-red_other_route.log",
+        "test_log_sha256": "59950282f43d4c756710af93b25784f68c8305773a2641eca72f33355bb732ce",
+        "negative_log": "proof-delivery-negative-red_other_route.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red",
+      "kind": "delivery",
+      "construction": "construction-selected-yellow_red.json",
+      "construction_sha256": "93cad66aee2a190f9a39e0424593fabc0a3f5a5eca11dc6693d5edeab4903a02",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-yellow_red.json",
+          "construction_sha256": "1ff9e490b769cd0e2b3d6a7d361bebacc3cbfd2ad6e90c8c92c38d40b43f59f6",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/yellow_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-yellow_red.log",
+            "log_sha256": "090a60cd78b8a06e7c8fcdf0439d02ac44e909e1bacdfe25862ff7ced82c55c1",
+            "construction_sha256": "1ff9e490b769cd0e2b3d6a7d361bebacc3cbfd2ad6e90c8c92c38d40b43f59f6"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-yellow_red.json",
+            "sha256": "34d3957a23cf26c8778002d09e51ff0b610940bd743b281504fc61f7313c63b4",
+            "log": "proof-fallback-analysis-yellow_red.log",
+            "negative_log": "proof-fallback-negative-yellow_red.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/yellow_red-recipe.json",
+      "measurement_contract": "diagnostics/yellow_red-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/yellow_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-yellow_red.log",
+        "log_sha256": "324f64ca52d0dc5681d99c3116fb84ed99da03ada2fd05ff122e0494261e7f5e",
+        "construction_sha256": "93cad66aee2a190f9a39e0424593fabc0a3f5a5eca11dc6693d5edeab4903a02"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-yellow_red.json",
+        "sha256": "71038960b312267e55fc38e937a57bb58a18c1e25c03a460277e30d8ec458044",
+        "log": "proof-compat-analysis-yellow_red.log",
+        "negative_log": "proof-compat-negative-yellow_red.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-yellow_red.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-yellow_red-receipt.json",
+        "sha256": "ec426122cb769180342a9c909bc2d9f2b58ff40b6f5a72d78941bef908169f91"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-yellow_red.log",
+        "sha256": "f9b7f6f0acacc2882f8ffc6c57cf8eb11f42be821addbb6f8807b80c6de61aee"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-yellow_red.log",
+        "test_log_sha256": "f9b7f6f0acacc2882f8ffc6c57cf8eb11f42be821addbb6f8807b80c6de61aee"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/yellow_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_red/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/yellow_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_red/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-yellow_red.log",
+        "test_log_sha256": "20918ad18f663071c6be5de838c60dec2dc6a9219a195a1dac9d37d35b584769",
+        "negative_log": "proof-delivery-negative-yellow_red.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red",
+      "kind": "delivery",
+      "construction": "construction-selected-stops_red.json",
+      "construction_sha256": "675f76f6eb619756147b1ed9ba475dc4b4b5b85b750516f7df3030a4874b0a97",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-stops_red.json",
+          "construction_sha256": "9d9b778cd8f3f662dc6e4599c9dee63dde4350e2a79f0dfe9919c556e3a707c2",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/stops_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-stops_red.log",
+            "log_sha256": "7e85c99adc672f87c7bbde702f177c689b18722c999b80ed9a55403607e2ffb5",
+            "construction_sha256": "9d9b778cd8f3f662dc6e4599c9dee63dde4350e2a79f0dfe9919c556e3a707c2"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-stops_red.json",
+            "sha256": "1b15f87a50609feee2668ab5274844c80fcb47f44d1185b5003158a069965fe8",
+            "log": "proof-fallback-analysis-stops_red.log",
+            "negative_log": "proof-fallback-negative-stops_red.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/stops_red-recipe.json",
+      "measurement_contract": "diagnostics/stops_red-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/stops_red --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-stops_red.log",
+        "log_sha256": "2164e159bc2bb69fe42bde4ad02448eecb35b3c4b509493116428636af4c4f7f",
+        "construction_sha256": "675f76f6eb619756147b1ed9ba475dc4b4b5b85b750516f7df3030a4874b0a97"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-stops_red.json",
+        "sha256": "849c871ba4f4b00feb3944f0d1d2824201cfe17eee49afaff6e856d18a0a34de",
+        "log": "proof-compat-analysis-stops_red.log",
+        "negative_log": "proof-compat-negative-stops_red.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-stops_red.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stops_red-receipt.json",
+        "sha256": "40bc3565beaea2ecdbb1828f27dc4898f8c77ea32234e0844b47a3389305fb61"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-stops_red.log",
+        "sha256": "ff6efc7ece3e2d22adeab7a7a5d8a91d8ff481ba06618be9ad5d498f8063d67e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-stops_red.log",
+        "test_log_sha256": "ff6efc7ece3e2d22adeab7a7a5d8a91d8ff481ba06618be9ad5d498f8063d67e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/stops_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/stops_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/stops_red/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/stops_red --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/stops_red/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/stops_red/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-stops_red.log",
+        "test_log_sha256": "6eb0e7de9c0ef507990c5b65c5cafb26d67c1a6c7f9a0086767b15cd6e7a1633",
+        "negative_log": "proof-delivery-negative-stops_red.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone",
+      "kind": "delivery",
+      "construction": "construction-selected-yellow_non_alone.json",
+      "construction_sha256": "e7180367e495b65f72d67fcf992ad52de7cd4db5362f34b6a5e43203bf5797e3",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original 20 Hz signal phase and ego body-entry frames may straddle the requested bracket; slower approach can shift the physical entry without changing the signal rule."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-yellow_non_alone.json",
+          "construction_sha256": "b611897ad2e9740b42f2aece9e9baa6c6cc8dc3e76adcdb71a24af75fa09a401",
+          "trigger": {
+            "source": "original 900-frame signal packet, body geometry and four camera source audit",
+            "metric": "selected facing phase at surveyed front-body entry frame",
+            "failure_condition": "the planned entry-phase bracket is absent in the original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-fallback-offline-v1/yellow_non_alone --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-yellow_non_alone.log",
+            "log_sha256": "292fbe8bbb9e983f60e4a2234b0ffdacdf194576c63207e818e7581b028ddf7b",
+            "construction_sha256": "b611897ad2e9740b42f2aece9e9baa6c6cc8dc3e76adcdb71a24af75fa09a401"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-yellow_non_alone.json",
+            "sha256": "e5a0d95530435297175be4a37159bd833a031413642160dda88bd3b2833b300b",
+            "log": "proof-fallback-analysis-yellow_non_alone.log",
+            "negative_log": "proof-fallback-negative-yellow_non_alone.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/diagnostics/yellow_non_alone-recipe.json",
+      "measurement_contract": "diagnostics/yellow_non_alone-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "original bound signal and body-entry bracket"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/selected-v2/offline/yellow_non_alone --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-yellow_non_alone.log",
+        "log_sha256": "d5d48b5b064273a7fbad82d73c107493c04b2ef44ddc92a5c503fbbecd7d3309",
+        "construction_sha256": "e7180367e495b65f72d67fcf992ad52de7cd4db5362f34b6a5e43203bf5797e3"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-yellow_non_alone.json",
+        "sha256": "d074f54d2c0e34e796f57027cafc85fa3b6169055af648c96ec06798c5b37387",
+        "log": "proof-compat-analysis-yellow_non_alone.log",
+        "negative_log": "proof-compat-negative-yellow_non_alone.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-yellow_non_alone.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-yellow_non_alone-receipt.json",
+        "sha256": "ae9097426ed4778510c84b8ac5262e5072a01f0b3f25b40f424049ea6c2868aa"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-yellow_non_alone.log",
+        "sha256": "2047a57d0fbd84e1a3e9fef0f1144483b1a223d119b7308bd798f9f2fc194e9b"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-yellow_non_alone.log",
+        "test_log_sha256": "2047a57d0fbd84e1a3e9fef0f1144483b1a223d119b7308bd798f9f2fc194e9b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_non_alone --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/yellow_non_alone/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_non_alone/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/delivery_audit.py --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_non_alone --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/proofs/physical/yellow_non_alone/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158196-owner-nov26/signal-delivery-diagnostic-v2/yellow_non_alone/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "29c774947da3fe3547a1a7b082c4e8c3330bc54fc93b75e5a0197693003b19ec",
+        "test_log": "proof-delivery-positive-yellow_non_alone.log",
+        "test_log_sha256": "1e0d843270254df652a48a4d9be5402a6c15b95ea7c92532132086c199aaf063",
+        "negative_log": "proof-delivery-negative-yellow_non_alone.log",
+        "negative_log_sha256": "7b05232993c4c47958d77c3d3a090d87bffd99eb6023b3fd087de6677902097a",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C158196_REVIEWED_SCENE",
+        "adapter_module_env_var": "C158196_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "selected_facing_signal_sequence": {
+          "entrypoint": "signal_capture.py",
+          "method": "original 20 Hz official selected head readback",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "intersection_entry_bracket": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original front body and surveyed polygon bracket",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "signal_vs_entry": {
+          "entrypoint": "signal_measurement.py",
+          "method": "original phase transition and body entry comparison",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "comparison_isolation": {
+          "entrypoint": "analysis.py",
+          "method": "saved fixed-context source fields and realized difference",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "signal_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, original-signal-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-6a",
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed entry polygon and official route-facing head"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed entry polygon and official route-facing head"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed entry polygon and official route-facing head"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed entry polygon and official route-facing head"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__inside_on_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__red_other_route",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_red",
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__yellow_non_alone"
+  ],
+  "case": {
+    "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__enters_yellow",
+    "target_law_id": "NRS-484B-307-6a",
+    "kind": "delivery",
+    "gap_ids": [
+      "unverified-law-coverage"
+    ],
+    "target_type": "selected",
+    "target_description": "Front crosses the surveyed intersection entry while the facing selected vehicular head reads steady yellow alone.",
+    "deliberate_variable": "approach speed and entry phase",
+    "construction_status": "pending_source_bound_native_binding",
+    "evidence_reuse_candidate": "9538bf92362619b9bcf2ba79d53dd650344edfecf826dc7b399cd4232960c9fd",
+    "physical_risk": {
+      "status": "physical",
+      "reason": "A CARLA signal head may not be bound to the selected route, and controller timing may straddle the 20 Hz phase/entry bracket."
+    },
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Entry and phase timing must be confirmed from original device and ego geometry; a tuned approach may miss the intended bracket.",
+      "candidates": []
+    },
+    "required_sources": [
+      "surveyed intersection polygon",
+      "one-way-to-two-way lane connectivity",
+      "official vehicle signal identity and facing route",
+      "original per-frame signal readback",
+      "original ego body geometry",
+      "four raw camera streams"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "selected_facing_signal_sequence",
+          "unit": "original state/frame",
+          "method": "official bound vehicular signal readback at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second signal interval",
+          "reference_frame": "surveyed Native map and original world snapshot",
+          "uncertainty": "20 Hz phase/entry bracket and legal reading require review"
+        },
+        {
+          "name": "intersection_entry_bracket",
+          "unit": "world meters/frame",
+          "method": "ego front body versus surveyed entry polygon",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second signal interval",
+          "reference_frame": "surveyed Native map and original world snapshot",
+          "uncertainty": "20 Hz phase/entry bracket and legal reading require review"
+        },
+        {
+          "name": "signal_vs_entry",
+          "unit": "original frame bracket",
+          "method": "green/yellow/red transitions relative to body entry",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second signal interval",
+          "reference_frame": "surveyed Native map and original world snapshot",
+          "uncertainty": "20 Hz phase/entry bracket and legal reading require review"
+        },
+        {
+          "name": "comparison_isolation",
+          "unit": "source record",
+          "method": "fixed Native route and realized changed indication or entry",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second signal interval",
+          "reference_frame": "surveyed Native map and original world snapshot",
+          "uncertainty": "20 Hz phase/entry bracket and legal reading require review"
+        },
+        {
+          "name": "camera_frame_identity",
+          "unit": "original frame",
+          "method": "four synchronized Native RGB cameras",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second signal interval",
+          "reference_frame": "surveyed Native map and original world snapshot",
+          "uncertainty": "20 Hz phase/entry bracket and legal reading require review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_native_signal_scene",
+          "unit": "source record",
+          "method": "hash-sealed map, polygon, route and official devices"
+        }
+      ],
+      "limitations": [
+        "Synthetic fixtures establish software compatibility only.",
+        "The meaning of immediately thereafter and intersection entry remains for legal review."
+      ]
+    }
+  }
+}

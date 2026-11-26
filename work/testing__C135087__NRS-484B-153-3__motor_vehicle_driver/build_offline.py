@@ -23,7 +23,7 @@ from native_capture import validate_survey
 
 class BundleTests(unittest.TestCase):
     def test_exact_identity(self):
-        self.assertEqual(runner.check(), json.loads(Path("config.json").read_text())["selected_case_id"])
+        self.assertEqual(runner.check(), json.loads((runner.HERE / "config.json").read_text())["selected_case_id"])
 
     def test_native_source_gate_precedes_carla_import(self):
         with patch("sys.argv", ["runner.py", "--host", "localhost", "--port", "2000", "--output-dir", "attempt"]):
@@ -33,7 +33,7 @@ class BundleTests(unittest.TestCase):
 
     def test_unreviewed_site_rejected(self):
         with self.assertRaisesRegex(ValueError, "reviewed C135087"):
-            validate_survey({}, json.loads(Path("config.json").read_text())["selected_case_id"])
+            validate_survey({}, json.loads((runner.HERE / "config.json").read_text())["selected_case_id"])
 
 if __name__ == "__main__":
     unittest.main()
@@ -79,6 +79,7 @@ def build():
             config["door_open_tick"] = open_tick
             content = {"runner.py": (HERE / "runner.py").read_text(),
                        "native_capture.py": (HERE / "native_capture.py").read_text(),
+                       "native_output_bridge.py": (HERE / "native_output_bridge.py").read_text(),
                        "door_measurement.py": (HERE / "door_measurement.py").read_text(),
                        "analysis.py": (HERE / "analysis.py").read_text(),
                        "case-plan.json": plan_bytes.decode(),

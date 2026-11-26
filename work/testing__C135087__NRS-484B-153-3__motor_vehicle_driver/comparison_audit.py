@@ -28,7 +28,7 @@ def audit_pair(left: Path, right: Path, comparison_id: str, plan_path: Path) -> 
     a, b = matches[0]["case_ids"]
     left_result, left_packets = _read_attempt(Path(left), a, plan_path)
     right_result, right_packets = _read_attempt(Path(right), b, plan_path)
-    if left_packets["frame_map"] != right_packets["frame_map"]:
+    if left_packets["frame_map"].get("frames") != right_packets["frame_map"].get("frames"):
         raise ValueError("comparison original frame/time coverage differs")
     if left_packets["geometry"] != right_packets["geometry"]:
         raise ValueError("comparison narrow-road and loading geometry differs")
@@ -76,9 +76,13 @@ def main():
     parser.add_argument("--left", type=Path, required=True)
     parser.add_argument("--right", type=Path, required=True)
     parser.add_argument("--comparison", required=True)
+    parser.add_argument("--comparison-id", required=True)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    expected_id = "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__" + args.comparison
+    if args.comparison_id != expected_id:
+        raise ValueError("exact comparison audit identity differs")
     if args.output.exists():
         raise ValueError("refusing to overwrite comparison audit")
     result = audit_pair(args.left, args.right, args.comparison, args.plan)

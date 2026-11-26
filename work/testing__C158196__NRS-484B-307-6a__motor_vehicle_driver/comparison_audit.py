@@ -1,6 +1,10 @@
 """Independent CPU comparison check for captured signal cases."""
 from __future__ import annotations
 
+import argparse
+import json
+from pathlib import Path
+
 
 class ComparisonError(ValueError):
     pass
@@ -41,3 +45,28 @@ def audit(left: dict, right: dict, *, deliberate_differences: list[str]) -> dict
     return {"format": "signal-comparison-audit", "case_ids": [left["case_id"], right["case_id"]],
             "fixed_conditions_checked": list(FIXED_FIELDS), "deliberate_differences": deliberate_differences,
             "status": "measurement_comparable_legal_judgment_unresolved"}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--comparison", required=True)
+    parser.add_argument("--records", required=True, type=Path)
+    args = parser.parse_args()
+    here = Path(__file__).resolve().parent
+    plan = json.loads((here / "case-plan.json").read_text())
+    selected = [item for item in plan["comparisons"]
+                if item["comparison_id"] == args.comparison]
+    if len(selected) != 1:
+        raise ComparisonError("unknown exact comparison")
+    records = json.loads(args.records.read_text())
+    case_ids = selected[0]["case_ids"]
+    if set(records) != set(case_ids):
+        raise ComparisonError("comparison record identities differ")
+    result = audit(records[case_ids[0]], records[case_ids[1]],
+                   deliberate_differences=selected[0]["deliberate_differences"])
+    result["comparison_id"] = args.comparison
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()

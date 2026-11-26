@@ -72,21 +72,24 @@ def audit(attempt, case, *, probe=None, decoder=None):
     geometry_sha = sha(geometry)
     native_previous = None
     for index, (row, mapped, body) in enumerate(zip(trace, mapping, geometry_rows)):
-        need(row == packet["frames"][index] and row.get("frame") == index and
-             row.get("source_frame") == index and mapped.get("video_frame") == index and
-             row.get("native_frame") == mapped.get("native_frame") ==
-             mapped.get("carla_frame") and body.get("frame") == index and
-             body.get("native_frame") == row.get("native_frame") and
+        packet_row = packet["frames"][index]
+        need(packet_row.get("frame") == index and
+             packet_row.get("source_frame") == index and mapped.get("video_frame") == index and
+             row.get("frame") == packet_row.get("native_frame") ==
+             mapped.get("native_frame") == mapped.get("carla_frame") and
+             row.get("time_s") == packet_row.get("native_time_s") == mapped.get("time_s") and
+             body.get("frame") == index and
+             body.get("native_frame") == row.get("frame") and
              len(body.get("ego_vertices", [])) == 8,
              "original signal/body/video frame join differs")
-        ref = row.get("ego_geometry_source", {})
+        ref = packet_row.get("ego_geometry_source", {})
         need(ref.get("path") == geometry.name and ref.get("sha256") == geometry_sha,
              "original body geometry source hash differs")
         if native_previous is not None:
-            need(row["native_frame"] == native_previous[0] + 1 and
-                 abs(row["native_time_s"] - native_previous[1] - .05) <= .002,
+            need(row["frame"] == native_previous[0] + 1 and
+                 abs(row["time_s"] - native_previous[1] - .05) <= .002,
                  "original Native frame/time cadence differs")
-        native_previous = row["native_frame"], row["native_time_s"]
+        native_previous = row["frame"], row["time_s"]
     camera_refs = receipt.get("cameras")
     need(isinstance(camera_refs, dict) and set(camera_refs) == set(CAMERAS),
          "four original videos missing")
