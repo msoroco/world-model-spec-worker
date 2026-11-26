@@ -19,6 +19,7 @@ source_packet = importlib.import_module('source_packet')
 runner = importlib.import_module('runner')
 native_acquisition = importlib.import_module('native_acquisition')
 saved_audit = importlib.import_module('saved_audit')
+finalize_original = importlib.import_module('finalize_original')
 
 
 def scene(case):
@@ -28,10 +29,20 @@ def scene(case):
              map_sha256='reviewed_map_sha256',
              device_directs=case.device_directs,
              lamps_on_request=case.lamps_on, context=case.context,
-             official_device=case.device_directs, device_message='use_lamps',
+             official_device=case.device_directs,
+             device_message='use_lamps' if case.device_directs else 'no_device',
              device_operative=case.device_directs,
              device_governs_route=case.device_directs,
              required_lamp_ids=['headlamp_left', 'headlamp_right'],
+             required_lamp_provisions={'headlamp_left': 'NRS 484D class-specific provision',
+                                       'headlamp_right': 'NRS 484D class-specific provision'},
+             highway={'public_dedication': True, 'boundaries_documented': True,
+                      'public_vehicular_access': True},
+             device_authority={'public_authority_placed': True,
+                               'nrs_484a_145_qualified': True,
+                               'agency': 'reviewed agency', 'review_reference': 'site source'},
+             device_timing={'operative': True, 'start_time_s': 1,
+                            'end_time_s': 86399},
              route_xy=[[0, 0], [20, 0]], device_xy=[5, 2],
              sunset_time_s=60000, sunrise_time_s=20000,
              clock_time_s=62000 if case.context == 'night' else 30000,
@@ -76,6 +87,21 @@ class Adapter:
 
 
 class LampTests(unittest.TestCase):
+    def test_exact_time_and_visibility_boundaries_are_separate(self):
+        s = scene(probe.CASES[0])
+        s['clock_time_s'] = 61799
+        s['visibility_ahead_m'] = 304.8
+        self.assertFalse(probe.statutory_context(s)['half_hour_night'])
+        self.assertFalse(probe.statutory_context(s)['under_1000ft_discernibility'])
+        s['clock_time_s'] = 61800
+        s['visibility_ahead_m'] = 304.799
+        self.assertTrue(probe.statutory_context(s)['half_hour_night'])
+        self.assertTrue(probe.statutory_context(s)['under_1000ft_discernibility'])
+        s['clock_time_s'] = 18200
+        self.assertTrue(probe.statutory_context(s)['half_hour_night'])
+        s['clock_time_s'] = 18201
+        self.assertFalse(probe.statutory_context(s)['half_hour_night'])
+
     def write_packet(self, root, case):
         s = scene(case)
         sources = {}
@@ -87,8 +113,7 @@ class LampTests(unittest.TestCase):
             checksum = hashlib.sha256(raw).hexdigest()
             s[field + '_source_sha256'] = checksum
             sources[field] = {'path': name, 'sha256': checksum}
-        s['device_message'] = 'use_lamps'
-        raw = (json.dumps({'device_message': 'use_lamps'}) + '\n').encode()
+        raw = (json.dumps({'device_message': s['device_message']}) + '\n').encode()
         (root / 'device_message.json').write_bytes(raw)
         sources['device_message']['sha256'] = hashlib.sha256(raw).hexdigest()
         s['device_message_source_sha256'] = sources['device_message']['sha256']
@@ -127,8 +152,20 @@ class LampTests(unittest.TestCase):
         s['official_device'] = False
         with self.assertRaisesRegex(ValueError, 'official lamp direction'):
             probe.validate_scene(s, case)
+        s = scene(case)
+        s['device_authority']['nrs_484a_145_qualified'] = False
+        with self.assertRaisesRegex(ValueError, 'authority source incomplete'):
+            probe.validate_scene(s, case)
+        s = scene(case)
+        s['required_lamp_provisions'].pop('headlamp_right')
+        with self.assertRaisesRegex(ValueError, 'provision citations missing'):
+            probe.validate_scene(s, case)
         with self.assertRaisesRegex(ValueError, 'vehicle spawn failed'):
             probe.construct(Adapter(fail=True), scene(case), case)
+        neutral = scene(probe.CASES[2])
+        neutral['device_message'] = 'use_lamps'
+        with self.assertRaisesRegex(ValueError, 'no-device comparison control changed'):
+            probe.validate_scene(neutral, probe.CASES[2])
 
     def test_source_packet_binds_actual_bytes_and_assertions(self):
         case = probe.CASES[0]
@@ -213,9 +250,14 @@ class LampTests(unittest.TestCase):
             self.assertEqual(len(adapter.destroyed), 6)
             checked = saved_audit.audit_saved(attempt, case.name)
             self.assertEqual(checked['camera_count'], 4)
+            report = finalize_original.finalize(attempt, case.name)
+            self.assertEqual(report['measurements']['required_lamp_states']['value']['on_frame_counts']['headlamp_left'], 900)
+            self.assertIsNone(report['legal_verdict'])
             (attempt / 'cameras/overview/0001.png').unlink()
             with self.assertRaisesRegex(ValueError, 'camera source missing'):
                 saved_audit.audit_saved(attempt, case.name)
+            with self.assertRaisesRegex(ValueError, 'camera source missing'):
+                finalize_original.finalize(attempt, case.name)
 
 
 if __name__ == '__main__':

@@ -33,7 +33,9 @@ class AnalysisTests(unittest.TestCase):
         context = {"case_id": case_id, "highway_source": "reviewed site",
                    "lane_count_same_direction": 1, "centerline_y": 3,
                    "right_side_y": 1, "vehicle_id": "ego", "bicycle_id": "bike",
-                   "bicycle_kind": "bicycle", "reviewed_packet_sha256": "fixture-packet"}
+                   "bicycle_kind": "bicycle", "reviewed_packet_sha256": "fixture-packet",
+                   "centerline_source": "fixture-lane", "zone_source": "fixture-zone",
+                   "exception_213_217_source": "fixture-incorporated-exceptions"}
         write(self.root / "original-context.json", context)
         bike = [10, 12, 0, .5]
         boxes = [[0, 4, 0, .5], [9, 11, 1.7, 3.7], [13, 15, 1.5, 3.5]]
@@ -64,7 +66,7 @@ class AnalysisTests(unittest.TestCase):
         report = analyze(self.root)
         self.assertTrue(report["analysis_complete"])
         self.assertFalse(report["physical_acceptance_claimed"])
-        self.assertTrue(report["measurements"]["pass_geometry"]["value"]
+        self.assertTrue(report["measurements"]["left_clearance"]["value"]
                         ["three_foot_floor_observed"])
         native = json.loads((self.root / "result.json").read_text())
         self.assertFalse(native["legal_verdict_claimed"])

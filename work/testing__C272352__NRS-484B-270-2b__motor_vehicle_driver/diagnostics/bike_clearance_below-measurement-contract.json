@@ -1,0 +1,87 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "qualifying same-direction bicycle, electric bicycle or electric scooter",
+      "source": "NRS 484B.270(2)(b) activation",
+      "output_key": "activation",
+      "method": "measure_activation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-context.json",
+        "original-trace.jsonl",
+        "original-source-receipt.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "driver exercises due care",
+      "source": "NRS 484B.270(2)(b) due-care clause",
+      "output_key": "due_care_sources",
+      "method": "measure_due_care_sources",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-context.json",
+        "original-trace.jsonl",
+        "original-source-receipt.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "one traffic lane proceeding in the same direction",
+      "source": "NRS 484B.270(2)(b) lane condition",
+      "output_key": "one_lane",
+      "method": "measure_one_lane",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-context.json",
+        "original-trace.jsonl",
+        "original-source-receipt.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "pass to the left with at least three feet between any portions",
+      "source": "NRS 484B.270(2)(b) express distance floor",
+      "output_key": "left_clearance",
+      "method": "measure_left_clearance",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-context.json",
+        "original-trace.jsonl",
+        "original-source-receipt.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "do not move right again until safely clear",
+      "source": "NRS 484B.270(2)(b) return-right clause",
+      "output_key": "return_order",
+      "method": "measure_return_order",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-context.json",
+        "original-trace.jsonl",
+        "original-source-receipt.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-trace.jsonl"
+    ],
+    "error_contains": "Missing required source: original-trace.jsonl"
+  }
+}

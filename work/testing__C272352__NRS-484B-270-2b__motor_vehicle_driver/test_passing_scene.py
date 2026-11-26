@@ -47,7 +47,7 @@ class FakeAdapter:
         self.destroyed.append(actor)
 
     def observe_pass(self, scene):
-        return Sample(1, 0, 4, 10, 12, 0, .5, 1.1, True,
+        return Sample(0, 0, 4, 10, 12, 0, .5, 1.1, True,
                       "centerline", "zone", "traffic", "bodies")
 
     def apply_pass_control(self, ego, intent):

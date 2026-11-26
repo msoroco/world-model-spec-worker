@@ -22,6 +22,58 @@ def required(root, name):
     return path
 
 
+def measure_activation(observed, context, case, rows):
+    return {"qualifying_kind": context["bicycle_kind"],
+            "participant_ids": [context["vehicle_id"], context["bicycle_id"]],
+            "first_frame": rows[0]["frame"],
+            "passing_frames": observed["passing_original_frames"]}
+
+
+def measure_due_care_sources(observed, context, case, rows):
+    return {"motor_vehicle_speed_mps": [row["vehicle_speed_mps"] for row in rows],
+            "qualifying_rider_speed_mps": [row["bicycle_speed_mps"] for row in rows],
+            "sampled_original_frames": [row["frame"] for row in rows],
+            "legal_due_care": None}
+
+
+def measure_one_lane(observed, context, case, rows):
+    return {"same_direction_lane_count": context["lane_count_same_direction"],
+            "highway_source": context["highway_source"],
+            "centerline_y": context["centerline_y"]}
+
+
+def measure_left_clearance(observed, context, case, rows):
+    return {"minimum_body_gap_m": observed["minimum_body_gap_m"],
+            "three_foot_floor_observed": observed["three_foot_floor_observed"],
+            "left_during_overlap": observed["left_during_overlap"],
+            "legal_safe_distance": None}
+
+
+def measure_return_order(observed, context, case, rows):
+    return {"first_return_original_frame": observed["first_return_original_frame"],
+            "longitudinal_clear_before_return": observed["longitudinal_clear_before_return"],
+            "legal_safely_clear": None}
+
+
+def measure_special_authorization(observed, context, case, rows):
+    return {"route_request": case["route_request"],
+            "reviewed_packet_sha256": context["reviewed_packet_sha256"],
+            "centerline_source": context["centerline_source"],
+            "zone_source": context["zone_source"],
+            "exception_213_217_source": context["exception_213_217_source"],
+            "observed_centerline_crossing_frames": [row["frame"] for row in rows
+                                                    if row["vehicle_box"][3] > context["centerline_y"]],
+            "opposing_traffic_sources": [row.get("opposing_traffic_source") for row in rows],
+            "incorporated_exceptions": None, "legal_safety": None}
+
+
+METHODS = (measure_activation, measure_due_care_sources, measure_one_lane,
+           measure_left_clearance, measure_return_order,
+           measure_special_authorization)
+KEYS = ("activation", "due_care_sources", "one_lane", "left_clearance",
+        "return_order", "special_authorization")
+
+
 def analyze(attempt):
     root = Path(attempt).resolve()
     config = json.loads(required(root, "config.json").read_text(encoding="utf-8"))
@@ -88,7 +140,8 @@ def analyze(attempt):
             target.write_text(data, encoding="utf-8")
         evidence.append({"name": name, "unit": channel["unit"], "reference": target.name})
     context_channel = root / "channel-reviewed_native_site_packet.json"
-    data = json.dumps({"reviewed_packet_sha256": receipt["reviewed_packet_sha256"],
+    data = json.dumps({"reviewed_native_site_packet": receipt["reviewed_packet_sha256"],
+                       "reviewed_packet_sha256": receipt["reviewed_packet_sha256"],
                        "context_sha256": sources["original-context.json"]}, sort_keys=True) + "\n"
     if context_channel.exists() and context_channel.read_text(encoding="utf-8") != data:
         raise ValueError("derived site context differs from original replay")
@@ -121,11 +174,14 @@ def analyze(attempt):
               "legal_verdict_claimed": False}
     result = physical_result(root, result)
     write_result(root, result)
+    measurements = {key: {"method": method.__name__,
+                          "value": method(observed, context, case, rows),
+                          "sources": sources}
+                    for key, method in zip(KEYS, METHODS)}
     return {"format": "worker-analysis-report", "case_id": case["case_id"],
             "analysis_complete": True, "diagnostic_fixture": diagnostic,
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False,
-            "measurements": {"pass_geometry": {"method": "measure_pass", "value": observed,
-                                                "sources": sources}},
+            "measurements": measurements,
             "physical_checks": result["physical_checks"],
             "realized_observables": result["realized_observables"],
             "limitations": ["Original measurements do not decide due care, safe distance, safely clear or incorporated exceptions."]}

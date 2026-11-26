@@ -1,0 +1,86 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver",
+  "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Nevada public highway and ordinary moving motor vehicle; parked-vehicle exception context retained",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "output_key": "vehicle_context",
+      "method": "measure_vehicle_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "source-packet.json",
+        "original-lamp-ticks.jsonl",
+        "camera-source-manifest.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "official traffic-control device directs lamp use on the governed route at the operative time",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "output_key": "device_direction",
+      "method": "measure_device_direction",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "source-packet.json",
+        "original-lamp-ticks.jsonl",
+        "camera-source-manifest.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "actual states of every lamp and illuminating device required for the vehicle class",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "output_key": "required_lamp_states",
+      "method": "measure_required_lamps",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "source-packet.json",
+        "original-lamp-ticks.jsonl",
+        "camera-source-manifest.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "independent half-hour sunset/sunrise and 1,000-foot discernibility alternatives",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "output_key": "time_visibility_context",
+      "method": "measure_time_visibility",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "source-packet.json",
+        "original-lamp-ticks.jsonl",
+        "camera-source-manifest.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "source-packet.json"
+    ],
+    "error_contains": "Missing required source: source-packet.json"
+  },
+  "scope": "Original source-bound lamp/device and independent time/visibility measurements; no legal verdict"
+}

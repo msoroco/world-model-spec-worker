@@ -55,9 +55,9 @@ def assess(comparison_id, records, *, diagnostic=False):
         site_hashes.add(site)
         receipts.add(receipt)
         values = row.get("measurements")
-        need(isinstance(values, dict) and "pass_geometry" in values,
+        need(isinstance(values, dict) and "left_clearance" in values,
              "source-bound pass measurement missing")
-        measurements[ident] = values["pass_geometry"]
+        measurements[ident] = values["left_clearance"]
     need(len(site_hashes) == 1, "fixed Native map/source context changed")
     need(len(receipts) == len(ids), "original receipt reused across cases")
     return {"format": "passing-exact-comparison-audit", "comparison_id": comparison_id,

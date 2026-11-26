@@ -1,0 +1,74 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-533",
+  "template_id": "NRS-484B-533@motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A vehicle shall not be permitted to stand unattended upon any perceptible grade without stopping the engine and effectively setting the brake thereon and turning the front wheels to the curb or side of the highway.",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "grade_probe",
+      "range_or_domain": "reviewed sloped or flat road"
+    },
+    {
+      "kind": "world_setup",
+      "name": "person_action",
+      "range_or_domain": "depart, stay or passenger exchange"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_engine_off",
+      "range_or_domain": "source-confirmed stopped or running"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_brake_set",
+      "range_or_domain": "source-confirmed effective or ineffective"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_wheels_toward_curb",
+      "range_or_domain": "source-confirmed toward or away"
+    },
+    {
+      "kind": "world_setup",
+      "name": "capture_profile",
+      "range_or_domain": "four original cameras at 20Hz for 900 frames"
+    },
+    {
+      "kind": "world_setup",
+      "name": "reviewed_site",
+      "range_or_domain": "reviewed original map and source packet"
+    }
+  ],
+  "structure": {
+    "activation": {
+      "condition": "A vehicle stands unattended upon a perceptible grade on a highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "prepare_vehicle",
+      "description": "Stop engine, effectively set brake and turn front wheels toward curb or highway side.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observed standing interval and responsible-person attendance transition.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "perceptible grade",
+        "note": "Source-bound slope geometry is required."
+      },
+      {
+        "phrase": "unattended",
+        "note": "Responsible-person actions cannot be inferred from a vacant seat."
+      },
+      {
+        "phrase": "effectively setting the brake",
+        "note": "Parking-brake engagement and held-vehicle motion require independent readings."
+      }
+    ]
+  }
+}

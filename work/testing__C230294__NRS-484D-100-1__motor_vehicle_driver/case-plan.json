@@ -155,12 +155,111 @@
     }
   ],
   "observations": [
-    "Nevada highway public dedication, boundaries and public access; ordinary moving motor vehicle and parking/loading status",
-    "source-validated official traffic-control device authority, message, location, governed route and operative time",
-    "class-specific required lamp provisions and actual states of all required illuminating devices",
-    "date/location/clock basis, sunset and sunrise; half-hour trigger retained separately",
-    "visibility/atmosphere and 1,000-foot (304.8 m) discernibility retained separately",
-    "no assumption that parked-vehicle exception applies to moving ego"
+    {
+      "name": "original_frame",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "native_time_s",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "map_sha256",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "vehicle_id",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "ego_position",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "ego_heading",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "ego_lamp_bits",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "required_lamp_states",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "device_actor_id",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "device_message",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "device_authority",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "device_route",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "device_timing",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "jurisdiction",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "highway",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "parking_status",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "clock",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "sunset_sunrise",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "visibility",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    },
+    {
+      "name": "camera_frames",
+      "mandatory": true,
+      "description": "source-bound original Native or camera stream"
+    }
   ],
   "sources": [
     {
@@ -215,5 +314,111 @@
       "required_context": [],
       "reason": null
     }
+  ],
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "Nevada public highway and ordinary moving motor vehicle; parked-vehicle exception context retained",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "source-hashed jurisdiction, public-way, vehicle-class and parking-status documents plus original motion",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on"
+      ]
+    },
+    {
+      "requirement": "official traffic-control device directs lamp use on the governed route at the operative time",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "source-hashed authority, device face, governance and timing plus original Native/pixel readback",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on"
+      ]
+    },
+    {
+      "requirement": "actual states of every lamp and illuminating device required for the vehicle class",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "class-provision citation inventory and original per-lamp readback, with legal sufficiency pending review",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on"
+      ]
+    },
+    {
+      "requirement": "independent half-hour sunset/sunrise and 1,000-foot discernibility alternatives",
+      "source": {
+        "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+        "sha256": "6359f1283cafe835e6e6b62eb9fda1518f1598be13862edb22b82fc78a205613",
+        "law": "NRS 484D.100(1)"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "source-hashed clock, sunrise/sunset and original discernibility context retained separately",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "Nevada public highway and moving ego",
+        "interval": "full original 45-second episode"
+      },
+      {
+        "view": "approach",
+        "subject": "official device direction and governed route",
+        "interval": "full original 45-second episode"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "device face and route station",
+        "interval": "full original 45-second episode"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego front and rear lamp state",
+        "interval": "full original 45-second episode"
+      }
+    ]
+  },
+  "observation_notes": [
+    "Nevada highway public dedication, boundaries and public access; ordinary moving motor vehicle and parking/loading status",
+    "source-validated official traffic-control device authority, message, location, governed route and operative time",
+    "class-specific required lamp provisions and actual states of all required illuminating devices",
+    "date/location/clock basis, sunset and sunrise; half-hour trigger retained separately",
+    "visibility/atmosphere and 1,000-foot (304.8 m) discernibility retained separately",
+    "no assumption that parked-vehicle exception applies to moving ego"
   ]
 }

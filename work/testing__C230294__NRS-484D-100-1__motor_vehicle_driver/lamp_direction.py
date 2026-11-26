@@ -30,6 +30,22 @@ def number(value):
     return type(value) in (int, float) and isfinite(value)
 
 
+def statutory_context(scene):
+    """Keep independent time and visibility triggers as observations only."""
+    sunrise = scene.get('sunrise_time_s')
+    sunset = scene.get('sunset_time_s')
+    clock = scene.get('clock_time_s')
+    visible = scene.get('visibility_ahead_m')
+    require(all(number(value) for value in (sunrise, sunset, clock, visible)) and
+            0 <= sunrise < sunset < 86400 and 0 <= clock < 86400 and visible >= 0,
+            'source-bound statutory context missing')
+    return {'half_hour_night': clock >= sunset + 1800 or clock <= sunrise - 1800,
+            'under_1000ft_discernibility': visible < 304.8,
+            'sunrise_boundary_s': sunrise - 1800,
+            'sunset_boundary_s': sunset + 1800,
+            'visibility_boundary_m': 304.8}
+
+
 def validate_scene(scene: Mapping, case: Case):
     require(case in CASES, 'unknown exact lamp case')
     require(scene.get('cell_id') == 'C230294' and
@@ -48,38 +64,63 @@ def validate_scene(scene: Mapping, case: Case):
         require(scene.get(field + '_source_sha256'),
                 'original context missing: ' + field)
     if case.device_directs:
+        authority = scene.get('device_authority')
+        require(isinstance(authority, dict) and
+                authority.get('public_authority_placed') is True and
+                authority.get('nrs_484a_145_qualified') is True and
+                authority.get('agency') and authority.get('review_reference'),
+                'official device authority source incomplete')
+        timing = scene.get('device_timing')
+        require(isinstance(timing, dict) and timing.get('operative') is True and
+                number(timing.get('start_time_s')) and
+                number(timing.get('end_time_s')) and
+                timing['start_time_s'] <= scene.get('clock_time_s', -1) <= timing['end_time_s'],
+                'official device operative timing source incomplete')
         require(scene.get('official_device') is True and
                 scene.get('device_message') == 'use_lamps' and
                 scene.get('device_operative') is True and
                 scene.get('device_governs_route') is True,
                 'operative official lamp direction missing')
+    else:
+        require(scene.get('official_device') is False and
+                scene.get('device_operative') is False and
+                scene.get('device_governs_route') is False and
+                scene.get('device_message') == 'no_device',
+                'no-device comparison control changed')
     required = scene.get('required_lamp_ids')
     require(isinstance(required, list) and required and
             all(isinstance(x, str) and x for x in required) and
             len(set(required)) == len(required),
             'class-specific lamp inventory missing')
+    provisions = scene.get('required_lamp_provisions')
+    require(isinstance(provisions, dict) and set(provisions) == set(required) and
+            all(isinstance(citation, str) and citation for citation in provisions.values()),
+            'class-specific lamp provision citations missing')
+    highway = scene.get('highway')
+    require(isinstance(highway, dict) and
+            highway.get('public_dedication') is True and
+            highway.get('boundaries_documented') is True and
+            highway.get('public_vehicular_access') is True,
+            'Nevada public highway source incomplete')
     route = scene.get('route_xy')
     require(isinstance(route, list) and len(route) >= 2 and
             all(isinstance(p, list) and len(p) == 2 and
                 all(number(x) for x in p) for p in route),
             'governed vehicle route missing')
-    require(number(scene.get('sunset_time_s')) and
-            number(scene.get('sunrise_time_s')) and
-            number(scene.get('clock_time_s')) and
-            number(scene.get('visibility_ahead_m')),
-            'sun/visibility context missing')
+    context = statutory_context(scene)
     if case.context == 'day_clear':
         require(scene['sunrise_time_s'] + 1800 < scene['clock_time_s'] <
                 scene['sunset_time_s'] - 1800 and
                 scene['visibility_ahead_m'] >= 304.8,
                 'isolated daylight device context missing')
     if case.context == 'night':
-        require(scene['clock_time_s'] >= scene['sunset_time_s'] + 1800,
+        require(context['half_hour_night'],
                 'half-hour-after-sunset context missing')
     if case.context == 'poor_visibility':
         require(scene['visibility_ahead_m'] < 304.8,
                 '1,000-foot discernibility context missing')
-    return {'case_id': case.name, 'legal_judgment': None}
+    return {'case_id': case.name, 'statutory_context': context,
+            'legal_judgment': None}
 
 
 def construct(adapter, scene: Mapping, case: Case):
@@ -141,6 +182,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     return {'case_id': case.name, 'frame_count': 900,
             'device_directs': case.device_directs,
             'lamp_on_frame_counts': lamp_counts,
+            'statutory_context': statutory_context(scene),
             'legal_judgment': None}
 
 

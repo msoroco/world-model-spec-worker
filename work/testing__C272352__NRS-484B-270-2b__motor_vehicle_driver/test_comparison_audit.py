@@ -20,7 +20,7 @@ class ComparisonTests(unittest.TestCase):
                         "physical_status": "unverified", "legal_verdict": None,
                         "native_map_sha256": "a" * 64,
                         "receipt_sha256": f"{index + 1:064x}",
-                        "measurements": {"pass_geometry": {"value": {"minimum_body_gap_m": 1.2}}}}
+                        "measurements": {"left_clearance": {"value": {"minimum_body_gap_m": 1.2}}}}
                 for index, ident in enumerate(ids)}
 
     def test_four_controlled_comparisons(self):

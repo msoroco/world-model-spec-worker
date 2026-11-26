@@ -55,6 +55,10 @@ def capture(adapter, packet_path, case, destination, *, synthetic=False,
                              "bicycle_id": str(adapter.actor_id(scene["control"])),
                              "bicycle_kind": scene["survey"]["control_kind"],
                              "map_sha256": map_ref["sha256"],
+                             "centerline_source": scene["survey"]["centerline_source"],
+                             "zone_source": scene["survey"]["zone_source"],
+                             "opposing_traffic_source": scene["survey"]["opposing_traffic_source"],
+                             "exception_213_217_source": scene["survey"]["exception_213_217_source"],
                              "reviewed_packet_sha256": sha(packet_path)})
         camera_dirs = {name: stage / ("frames-" + name) for name in CAMERAS}
         for folder in camera_dirs.values():
@@ -71,7 +75,7 @@ def capture(adapter, packet_path, case, destination, *, synthetic=False,
             snapshot = adapter.tick(scene)
             frame, time_s = snapshot.get("frame"), snapshot.get("time_s")
             if type(frame) is not int or type(time_s) not in (int, float) or \
-                    frame != observed.original_frame:
+                    frame != observed.original_frame + 1:
                 raise ValueError("Native motion/frame join failed")
             if prior is not None and (frame != prior[0] + 1 or
                                       abs(time_s - prior[1] - .05) > .002):
@@ -112,10 +116,15 @@ def capture(adapter, packet_path, case, destination, *, synthetic=False,
             for item in joined:
                 canonical.append(item["frame"], item["time_s"],
                                  camera_png_sha256=item["camera_png_sha256"])
+        def corners(box):
+            return [[box[0], box[2], 0.0], [box[0], box[3], 0.0],
+                    [box[1], box[2], 0.0], [box[1], box[3], 0.0]]
         (stage / "trace.jsonl").write_text("".join(json.dumps({
             "frame": row["frame"], "time_s": row["time_s"],
             "position_m": [(row["vehicle_box"][0] + row["vehicle_box"][1]) / 2,
                            (row["vehicle_box"][2] + row["vehicle_box"][3]) / 2],
+            "vehicle_vertices_m": corners(row["vehicle_box"]),
+            "bicycle_vertices_m": corners(row["bicycle_box"]),
             "vehicle_box": row["vehicle_box"], "bicycle_box": row["bicycle_box"]
         }, sort_keys=True) + "\n" for row in trace), encoding="utf-8")
         videos = {}
