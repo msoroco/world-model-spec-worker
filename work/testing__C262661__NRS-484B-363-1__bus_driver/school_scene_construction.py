@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from school_timing import derive
 
 ASSIGNMENT = "testing__C262661__NRS-484B-363-1__bus_driver"
 ROOT = Path(__file__).resolve().parent
@@ -87,11 +88,24 @@ def validate_site(path, case_id):
             "independent school calendar fact required")
     require(isinstance(packet.get("operational_beacon_designation"), bool),
             "independent beacon designation fact required")
-    require(packet["school_in_session_today"] == (case["session_request"] == "session"),
+    facts = derive(packet.get("timing_packet"), records)
+    require(packet["school_in_session_today"] == facts["school_in_session_today"] and
+            packet["operational_beacon_designation"] == facts["operational_beacon_designation"] and
+            packet["beacon_yellow_lamp_count"] == packet["timing_packet"]["beacon_yellow_lamp_count"] and
+            packet["beacon_alternating_capable"] == packet["timing_packet"]["beacon_alternating_capable"],
+            "independent clock/device facts differ from reviewed site")
+    require(facts["school_in_session_today"] == (case["session_request"] == "session"),
             "requested session branch differs from original calendar")
     require(packet.get("time_window_label") == case["time_request"] and
             packet.get("beacon_or_sign_state") == case["beacon_or_sign_request"],
             "requested clock/device branch differs from source packet")
+    time_request = case["time_request"]
+    require((time_request == "active" and not facts["outside_operation_half_hour"]) or
+            (time_request == "class_hours" and facts["during_class"] and
+             not facts["outside_operation_half_hour"]) or
+            (time_request == "after_half_hour" and facts["near_after_operation_boundary"]) or
+            (time_request == "before_half_hour" and facts["near_before_next_start_boundary"]),
+            "requested half-hour/class branch lacks independent clock proof")
     lamp_count = packet.get("beacon_yellow_lamp_count")
     require(type(lamp_count) is int and lamp_count >= 0,
             "beacon yellow lamp configuration required")
@@ -104,6 +118,20 @@ def validate_site(path, case_id):
     elif case["beacon_or_sign_request"].startswith("nonbeacon_"):
         require(not packet["operational_beacon_designation"],
                 "nonbeacon case has operational beacon designation")
+    device = case["beacon_or_sign_request"]
+    if device == "operational_flashing":
+        require(facts["alternating_flash_observed"], "alternating yellow flash not observed")
+    elif device == "operational_not_flashing":
+        require(not facts["alternating_flash_observed"], "beacon no-flash control differs")
+    elif device == "one_yellow_light":
+        require(lamp_count == 1 and not facts["beacon_definition_supported"],
+                "one-light beacon control differs")
+    elif device == "nonalternating_yellow":
+        require(lamp_count >= 2 and not facts["beacon_definition_supported"],
+                "nonalternating beacon control differs")
+    elif device in ("nonbeacon_sign_on", "nonbeacon_sign_off"):
+        require(facts["sign_limit_active"] == (device == "nonbeacon_sign_on"),
+                "nonbeacon sign instruction differs")
     packet["_source_sha256"] = sha(path)
     return packet
 

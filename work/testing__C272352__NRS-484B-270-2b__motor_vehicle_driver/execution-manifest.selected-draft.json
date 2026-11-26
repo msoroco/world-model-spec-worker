@@ -8,20 +8,50 @@
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
       "kind": "delivery",
       "construction": "construction-selected-bike_clearance_below.json",
-      "construction_sha256": "876ad01149d0b410384ce8463405efebc06b4e6723faebebdebc77d2e479350a",
+      "construction_sha256": "693c940b1fc15725544453c238ce4bd971be7b608ca868b6aab028c15484a026",
       "candidate_risk": {
         "status": "physical",
         "reason": "Bicycle body motion near statutory floor; controller may miss requested clearance."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bike_clearance_below.json",
+          "construction_sha256": "4b65e0e45aca3f369757a991d4791f140a7aa15e68ed3d07803ff4a905e277ac",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-bike_clearance_below-v2",
+            "exit_code": 0,
+            "construction_sha256": "4b65e0e45aca3f369757a991d4791f140a7aa15e68ed3d07803ff4a905e277ac",
+            "log": "proof-fallback-offline-bike_clearance_below.log",
+            "log_sha256": "86def1222aa5c0976b95cce3f162910485175b67533a543e1ef958a99a063e6e"
+          },
+          "compatibility": {
+            "receipt": "cases/bike_clearance_below/fallback1-compatibility.json",
+            "sha256": "1c6cc624eef0f81419c929b48b243b004b703c55dbfc39db4fec881e0114c734",
+            "log": "cases/bike_clearance_below/fallback1-analysis.log",
+            "negative_log": "cases/bike_clearance_below/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-bike_clearance_below-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/bike_clearance_below-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_below-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_below-v10",
         "exit_code": 0,
-        "construction_sha256": "876ad01149d0b410384ce8463405efebc06b4e6723faebebdebc77d2e479350a",
+        "construction_sha256": "693c940b1fc15725544453c238ce4bd971be7b608ca868b6aab028c15484a026",
         "log": "proof-selected-offline-bike_clearance_below.log",
         "log_sha256": "ec0461b53d9f6c2bf132570b6f371a3df08d545f45af1b6df5ec8259d8808416"
       },
@@ -65,9 +95,9 @@
       },
       "compatibility": {
         "receipt": "cases/bike_clearance_below/compatibility.json",
-        "sha256": "4ceeb9e5391b03ef7195dc396b1895838e945b8fe50a8fdc8b74df04b6bbd85c",
+        "sha256": "7996da9df4bff588d156d4b4915b78f1a5edeeb8177d0f1be75daac9ecf95ce2",
         "log": "cases/bike_clearance_below/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_below-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_below-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -75,31 +105,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/bike_clearance_below/saved-processing-diagnostic.json",
-        "sha256": "d8f9e51e4e30bfe0596b1ce3c76254896808eab44f00ceb86f33aad12d76790a",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_below-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_below-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "b4207befaf7c870dd445e76a3beabaa888cfc5c032f64963ffac73ec86a5b4d4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_below-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_below-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-bike_clearance_below.log",
-        "log_sha256": "d8f9e51e4e30bfe0596b1ce3c76254896808eab44f00ceb86f33aad12d76790a"
+        "log_sha256": "b4207befaf7c870dd445e76a3beabaa888cfc5c032f64963ffac73ec86a5b4d4"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bike_clearance_below-proof.json",
+        "sha256": "57796bb8f99d3e327458d2d2fd7546409291d61341639ea9038d16ecfc8a7874"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at",
       "kind": "delivery",
       "construction": "construction-selected-bike_clearance_at.json",
-      "construction_sha256": "680e446cd087de5cfca543af20089454853f0e144b03e42780cd6e86e67e9417",
+      "construction_sha256": "c899e9f80f0d223d928648b154de9ac2844ab6df3036894d4e0037fab48dbe60",
       "candidate_risk": {
         "status": "physical",
         "reason": "At-floor target can be lost to actual body extent or controller tolerance."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bike_clearance_at.json",
+          "construction_sha256": "7ada08a7f8417d461c1f1489345df9afc5769485f0d8e36e76e4b8b28ba31237",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-bike_clearance_at-v2",
+            "exit_code": 0,
+            "construction_sha256": "7ada08a7f8417d461c1f1489345df9afc5769485f0d8e36e76e4b8b28ba31237",
+            "log": "proof-fallback-offline-bike_clearance_at.log",
+            "log_sha256": "71473c5bf8bcb905c33798445acd9a2c9bcf800269b5665db45a857d141b861b"
+          },
+          "compatibility": {
+            "receipt": "cases/bike_clearance_at/fallback1-compatibility.json",
+            "sha256": "3885fd7be6dffc4e2c1fa8a23ddcf34ce545ca96a4376105418dff94d800f18b",
+            "log": "cases/bike_clearance_at/fallback1-analysis.log",
+            "negative_log": "cases/bike_clearance_at/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-bike_clearance_at-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/bike_clearance_at-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_at-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_at-v10",
         "exit_code": 0,
-        "construction_sha256": "680e446cd087de5cfca543af20089454853f0e144b03e42780cd6e86e67e9417",
+        "construction_sha256": "c899e9f80f0d223d928648b154de9ac2844ab6df3036894d4e0037fab48dbe60",
         "log": "proof-selected-offline-bike_clearance_at.log",
         "log_sha256": "075b9c9e819cb10d87cd0b3ed155048415c3efebfd4408fd468cc06670492354"
       },
@@ -143,9 +207,9 @@
       },
       "compatibility": {
         "receipt": "cases/bike_clearance_at/compatibility.json",
-        "sha256": "83387f4477fb870fe3003c72302cdba9fa4953ec197171ac2c990ae532f63f1f",
+        "sha256": "48a81cf197f6cb390dd72b4c8c63c69fc493803b3de2916b5d7a8d3fb485c77c",
         "log": "cases/bike_clearance_at/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_at-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_at-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -153,31 +217,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/bike_clearance_at/saved-processing-diagnostic.json",
-        "sha256": "11329ac11956a9a646ed296500767c64797ab206857d4cb74742c855e92448eb",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_at-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_at-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "e859bccfc9a222046ab0e2e80bea9c3a734415cda58724c819ee2463853cc643",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_at-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_at-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-bike_clearance_at.log",
-        "log_sha256": "11329ac11956a9a646ed296500767c64797ab206857d4cb74742c855e92448eb"
+        "log_sha256": "e859bccfc9a222046ab0e2e80bea9c3a734415cda58724c819ee2463853cc643"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bike_clearance_at-proof.json",
+        "sha256": "9d6b59cef35f4008d81c54ee2b37c648d372f1800f0ed6d787cccd36f831a92f"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
       "kind": "delivery",
       "construction": "construction-selected-bike_clearance_above.json",
-      "construction_sha256": "93df6d8f21fe4633cd6e55f74feb67d1511491802bfa39be3e62fd9bfe77bb31",
+      "construction_sha256": "b49e37091f4c6638393109db875c89c7f1c789db6be79523c8f1a6a9b792c27c",
       "candidate_risk": {
         "status": "physical",
         "reason": "Wider pass may interact with centerline or opposing traffic."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bike_clearance_above.json",
+          "construction_sha256": "063b3f465a52e86c5381439281807756b82b710fd08b1f21c24dafe43b40fb33",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-bike_clearance_above-v2",
+            "exit_code": 0,
+            "construction_sha256": "063b3f465a52e86c5381439281807756b82b710fd08b1f21c24dafe43b40fb33",
+            "log": "proof-fallback-offline-bike_clearance_above.log",
+            "log_sha256": "86b60984bdb8c291da96def6807cf28ddd3d3728b512b476977291c726e768ce"
+          },
+          "compatibility": {
+            "receipt": "cases/bike_clearance_above/fallback1-compatibility.json",
+            "sha256": "b20af6993ada9448052b1a7030e50a71fc9083033ad8128fe6f068fa13e74330",
+            "log": "cases/bike_clearance_above/fallback1-analysis.log",
+            "negative_log": "cases/bike_clearance_above/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-bike_clearance_above-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/bike_clearance_above-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_above-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_clearance_above-v10",
         "exit_code": 0,
-        "construction_sha256": "93df6d8f21fe4633cd6e55f74feb67d1511491802bfa39be3e62fd9bfe77bb31",
+        "construction_sha256": "b49e37091f4c6638393109db875c89c7f1c789db6be79523c8f1a6a9b792c27c",
         "log": "proof-selected-offline-bike_clearance_above.log",
         "log_sha256": "bab6ef242b23265c116bad26c0a4c2100160ff366dad66a999d22cab4dcac9d9"
       },
@@ -221,9 +319,9 @@
       },
       "compatibility": {
         "receipt": "cases/bike_clearance_above/compatibility.json",
-        "sha256": "81915eb23bf96d03884ddb2debd078cc713307ec921aea34d23dcfea537e0f1c",
+        "sha256": "ce3c9cc4eeb85293b51882cbab02fcc6c2bfa7dadc276abd8f989dd1ba0dff44",
         "log": "cases/bike_clearance_above/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_above-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_above-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -231,31 +329,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/bike_clearance_above/saved-processing-diagnostic.json",
-        "sha256": "3468b68f6d88c6ec069a472073a0ce715c6ea93208d17b3b6eae4f5ff454ed0c",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_above-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_above-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "0f95e977c4efd3544edc35d9e6c90645b5c91fbd09b070e60ef4bd647ae626d7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_clearance_above-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_clearance_above-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-bike_clearance_above.log",
-        "log_sha256": "3468b68f6d88c6ec069a472073a0ce715c6ea93208d17b3b6eae4f5ff454ed0c"
+        "log_sha256": "0f95e977c4efd3544edc35d9e6c90645b5c91fbd09b070e60ef4bd647ae626d7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bike_clearance_above-proof.json",
+        "sha256": "73cf592535c2390b03b62fca43e7f4c6bb42b74c9561c0b31c36d8dd14b00604"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early",
       "kind": "delivery",
       "construction": "construction-selected-bike_return_early.json",
-      "construction_sha256": "ff85d4dac2490f7db6fbdfcd9e650a5033ae1ae49b52a1ad6c3824f698e0220d",
+      "construction_sha256": "e05b95b2ac4ab1852bc79de5f9df88ca3dcde26a9d996aa2086a1118a5c6ddae",
       "candidate_risk": {
         "status": "physical",
         "reason": "Return trajectory may overlap the cyclist body."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bike_return_early.json",
+          "construction_sha256": "5b07e8a501432cf7e8fe4fadad08a9f8b20158f2646f86e7dd5988b078e6fbe3",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-bike_return_early-v2",
+            "exit_code": 0,
+            "construction_sha256": "5b07e8a501432cf7e8fe4fadad08a9f8b20158f2646f86e7dd5988b078e6fbe3",
+            "log": "proof-fallback-offline-bike_return_early.log",
+            "log_sha256": "b2ad0f1840e4fdb738eaab6c78dc42471815da7ad9644e13f1bacf70b52c95d6"
+          },
+          "compatibility": {
+            "receipt": "cases/bike_return_early/fallback1-compatibility.json",
+            "sha256": "46ea1add839f47c0edd094afb2834114ac1b9ba304b3474a432df2eedc44728e",
+            "log": "cases/bike_return_early/fallback1-analysis.log",
+            "negative_log": "cases/bike_return_early/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-bike_return_early-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/bike_return_early-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_return_early-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_return_early-v10",
         "exit_code": 0,
-        "construction_sha256": "ff85d4dac2490f7db6fbdfcd9e650a5033ae1ae49b52a1ad6c3824f698e0220d",
+        "construction_sha256": "e05b95b2ac4ab1852bc79de5f9df88ca3dcde26a9d996aa2086a1118a5c6ddae",
         "log": "proof-selected-offline-bike_return_early.log",
         "log_sha256": "f1aad4768e49324d03bc572badcd10181abbb669105a3f2aea75aab13c31f2ce"
       },
@@ -299,9 +431,9 @@
       },
       "compatibility": {
         "receipt": "cases/bike_return_early/compatibility.json",
-        "sha256": "28828093352d024ad939ebfb828b7bd8fb6808b140ec7845e7d65b2a0faa0d31",
+        "sha256": "a3e9aa4d0d3a49bcebd9ea9ac67c3fed9b98deaca56ad41b6a29ec9474623aec",
         "log": "cases/bike_return_early/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_early-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_early-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -309,31 +441,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/bike_return_early/saved-processing-diagnostic.json",
-        "sha256": "930a3fafeafa33d8999c77d3918bd2ca0ec4b7e013d4e8de20626230d2a037ee",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_early-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_return_early-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "19aae658b7a2b36f4b2a0ace0153d8c3da63af903b0069b3c12786d335ee0b3c",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_early-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_return_early-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-bike_return_early.log",
-        "log_sha256": "930a3fafeafa33d8999c77d3918bd2ca0ec4b7e013d4e8de20626230d2a037ee"
+        "log_sha256": "19aae658b7a2b36f4b2a0ace0153d8c3da63af903b0069b3c12786d335ee0b3c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bike_return_early-proof.json",
+        "sha256": "a73365338b735d5c20b4fdc6b5a531a46532417314a573c4a5c2fddaa2df2fda"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear",
       "kind": "delivery",
       "construction": "construction-selected-bike_return_after_clear.json",
-      "construction_sha256": "ab8fb8877187a63bb4ff96ac3cbc2b42a7c12c05b663f163f5c77119db12c3ab",
+      "construction_sha256": "e9b526946acdf8b15f9731f561f6324ffb262933c0731a460f0552e1842f5141",
       "candidate_risk": {
         "status": "physical",
         "reason": "Return-right path may be clipped by lane geometry."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bike_return_after_clear.json",
+          "construction_sha256": "5807ecbc3e90f56c7382b032d9e8cd807a2b1aab7e189f961bc07de174ba3de9",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-bike_return_after_clear-v2",
+            "exit_code": 0,
+            "construction_sha256": "5807ecbc3e90f56c7382b032d9e8cd807a2b1aab7e189f961bc07de174ba3de9",
+            "log": "proof-fallback-offline-bike_return_after_clear.log",
+            "log_sha256": "11ce0e44b60a7f734bce408e32ebb3b17523cdbcc655df4e0c0a978b415adc08"
+          },
+          "compatibility": {
+            "receipt": "cases/bike_return_after_clear/fallback1-compatibility.json",
+            "sha256": "7224f4c34899e290200d17d280888e6add0c369a17e7b8ae7489012c1d891f2f",
+            "log": "cases/bike_return_after_clear/fallback1-analysis.log",
+            "negative_log": "cases/bike_return_after_clear/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-bike_return_after_clear-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/bike_return_after_clear-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_return_after_clear-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-bike_return_after_clear-v10",
         "exit_code": 0,
-        "construction_sha256": "ab8fb8877187a63bb4ff96ac3cbc2b42a7c12c05b663f163f5c77119db12c3ab",
+        "construction_sha256": "e9b526946acdf8b15f9731f561f6324ffb262933c0731a460f0552e1842f5141",
         "log": "proof-selected-offline-bike_return_after_clear.log",
         "log_sha256": "8f74906468be222c555399af5b7d78296fd6b9e43c2fe52f7335816a23ab9005"
       },
@@ -377,9 +543,9 @@
       },
       "compatibility": {
         "receipt": "cases/bike_return_after_clear/compatibility.json",
-        "sha256": "f93d6c752f29f9135e6f58dccd27b2b3c85d267a22aeda50bce5aeaf4d7c1e37",
+        "sha256": "b240d86a3c9dbff301be346e183bb1a735c4e96a4fde41a20b9c3775d62af1c3",
         "log": "cases/bike_return_after_clear/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_after_clear-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_after_clear-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -387,31 +553,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/bike_return_after_clear/saved-processing-diagnostic.json",
-        "sha256": "fc5cd8e0fb0a6d92bf2c6517fd826244f9f6cba54c3cdf6a248cf7e1ebbc79f6",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_after_clear-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_return_after_clear-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "12dd42ebef8ab4d7b31e6e4ea65b2eff6edddfd676e71149489cd6aa8b3d1669",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-bike_return_after_clear-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-bike_return_after_clear-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-bike_return_after_clear.log",
-        "log_sha256": "fc5cd8e0fb0a6d92bf2c6517fd826244f9f6cba54c3cdf6a248cf7e1ebbc79f6"
+        "log_sha256": "12dd42ebef8ab4d7b31e6e4ea65b2eff6edddfd676e71149489cd6aa8b3d1669"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bike_return_after_clear-proof.json",
+        "sha256": "1fe91e4f8fb8519a749599f29dc5486d0f73395da8ebd3153aecb58004304f24"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass",
       "kind": "delivery",
       "construction": "construction-selected-electric_bicycle_pass.json",
-      "construction_sha256": "e3f06176742b9afefc25fe84a11e8f4902b53b9b32a7ce8919b7484828dee179",
+      "construction_sha256": "1613bcd2803de247b14cac30c3e0f2ee83619d5386ed48c676acbdf11fff23db",
       "candidate_risk": {
         "status": "physical",
         "reason": "Electric bicycle classification needs actual actor verification."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-electric_bicycle_pass.json",
+          "construction_sha256": "dbc5ec454b2a9c35ae2975046ced7b7324df3f70092e7d8feac4d00487757f7b",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-electric_bicycle_pass-v2",
+            "exit_code": 0,
+            "construction_sha256": "dbc5ec454b2a9c35ae2975046ced7b7324df3f70092e7d8feac4d00487757f7b",
+            "log": "proof-fallback-offline-electric_bicycle_pass.log",
+            "log_sha256": "dc1d5f44f34a8eed7ed12a7b7f45a4efe962cf677ed3855aa0555417c540ad4a"
+          },
+          "compatibility": {
+            "receipt": "cases/electric_bicycle_pass/fallback1-compatibility.json",
+            "sha256": "1e16a955e1b20215e8656f057841deaec9c314c9eaf5bc8f994eb7b36e3676fa",
+            "log": "cases/electric_bicycle_pass/fallback1-analysis.log",
+            "negative_log": "cases/electric_bicycle_pass/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-electric_bicycle_pass-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/electric_bicycle_pass-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-electric_bicycle_pass-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-electric_bicycle_pass-v10",
         "exit_code": 0,
-        "construction_sha256": "e3f06176742b9afefc25fe84a11e8f4902b53b9b32a7ce8919b7484828dee179",
+        "construction_sha256": "1613bcd2803de247b14cac30c3e0f2ee83619d5386ed48c676acbdf11fff23db",
         "log": "proof-selected-offline-electric_bicycle_pass.log",
         "log_sha256": "36e72c7c368fe1d9bbb8ec929c2bc2db82e47ffc05019b2da5d95fb514ec16f1"
       },
@@ -455,9 +655,9 @@
       },
       "compatibility": {
         "receipt": "cases/electric_bicycle_pass/compatibility.json",
-        "sha256": "936a473c8f05c1ec3b575779fe9b6c6a905c266a42af4c52628a20c4c3ae31ed",
+        "sha256": "5991075020e4518dfdab7bf11fa061d7a4e5f88dd7ef24dfac4405ff5361732c",
         "log": "cases/electric_bicycle_pass/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_bicycle_pass-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_bicycle_pass-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -465,31 +665,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/electric_bicycle_pass/saved-processing-diagnostic.json",
-        "sha256": "7712c1c0c511ebab915f12423887a2bbec0f31942c2634ed83160e0df69b819e",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_bicycle_pass-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-electric_bicycle_pass-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "a66cec5e9ce87cd809b8e503f520b6f897aab57c5031e028be424317ecaae0ea",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_bicycle_pass-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-electric_bicycle_pass-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-electric_bicycle_pass.log",
-        "log_sha256": "7712c1c0c511ebab915f12423887a2bbec0f31942c2634ed83160e0df69b819e"
+        "log_sha256": "a66cec5e9ce87cd809b8e503f520b6f897aab57c5031e028be424317ecaae0ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_bicycle_pass-proof.json",
+        "sha256": "0ba198080c1c205b8c05737c05b4d5fd9f9975d988968ccee30a8d29549a2c18"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass",
       "kind": "delivery",
       "construction": "construction-selected-electric_scooter_pass.json",
-      "construction_sha256": "7f5a64a6c5a27f775f9984ec7d41dc21d58bab16d2823730db51d248914c2ac8",
+      "construction_sha256": "6a4526b00664facad3bf4df0a970f7f54ab7fd49871e8dfe67a301827aef56ea",
       "candidate_risk": {
         "status": "physical",
         "reason": "Electric scooter classification and small body extent need actual verification."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-electric_scooter_pass.json",
+          "construction_sha256": "2dffddf4695b104e28e09a4e733d9abf9b0f740f30a477f4bb1f89bc88c49a7c",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-electric_scooter_pass-v2",
+            "exit_code": 0,
+            "construction_sha256": "2dffddf4695b104e28e09a4e733d9abf9b0f740f30a477f4bb1f89bc88c49a7c",
+            "log": "proof-fallback-offline-electric_scooter_pass.log",
+            "log_sha256": "2b7d2aae186f66b8cfbc217c7df13efbc54d4ab158b94885596df2d1b1fd1608"
+          },
+          "compatibility": {
+            "receipt": "cases/electric_scooter_pass/fallback1-compatibility.json",
+            "sha256": "71ad9bb362630280884a792c8b0ad1eda1295fcac579ae008620eee74ed322b8",
+            "log": "cases/electric_scooter_pass/fallback1-analysis.log",
+            "negative_log": "cases/electric_scooter_pass/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-electric_scooter_pass-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/electric_scooter_pass-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-electric_scooter_pass-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-electric_scooter_pass-v10",
         "exit_code": 0,
-        "construction_sha256": "7f5a64a6c5a27f775f9984ec7d41dc21d58bab16d2823730db51d248914c2ac8",
+        "construction_sha256": "6a4526b00664facad3bf4df0a970f7f54ab7fd49871e8dfe67a301827aef56ea",
         "log": "proof-selected-offline-electric_scooter_pass.log",
         "log_sha256": "43e8370e4c1ec7034cf94b225c6c9bdc6cedc9d9919371f99169f3aaffa23eb7"
       },
@@ -533,9 +767,9 @@
       },
       "compatibility": {
         "receipt": "cases/electric_scooter_pass/compatibility.json",
-        "sha256": "09d08d2c6e7acf3dc1f7799f71ad95f2678314681e7841559712fb9c92d8bd01",
+        "sha256": "11668c2c8abea35627672befc096b302d80bfb96f1c82d89d6f8790eb408937c",
         "log": "cases/electric_scooter_pass/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_scooter_pass-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_scooter_pass-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -543,31 +777,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/electric_scooter_pass/saved-processing-diagnostic.json",
-        "sha256": "416fc59707e67ed25427ea7a1431e468d80b135e4150d7b367c391dc160b3af8",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_scooter_pass-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-electric_scooter_pass-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "d85980de15c890cf7eef70fe10366cb9a6d42b57b7fb250c8167b04e2187b274",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-electric_scooter_pass-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-electric_scooter_pass-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-electric_scooter_pass.log",
-        "log_sha256": "416fc59707e67ed25427ea7a1431e468d80b135e4150d7b367c391dc160b3af8"
+        "log_sha256": "d85980de15c890cf7eef70fe10366cb9a6d42b57b7fb250c8167b04e2187b274"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_scooter_pass-proof.json",
+        "sha256": "a386766e34ac81be2e40c5a94f57e6e0187ecfbf30637db7bca5a399eca2490a"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized",
       "kind": "delivery",
       "construction": "construction-selected-centerline_authorized.json",
-      "construction_sha256": "5f868c6bd059859b299a6e7b6b1bf5890c3dc62f2edaf69823877cd004660177",
+      "construction_sha256": "bdff1ceb798e836a02a46b60e6bffcb6b2e98d563005f6b9a6f679b585e1dc5a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Opposing traffic and incorporated exceptions may defeat a physically safe pass."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-centerline_authorized.json",
+          "construction_sha256": "66e39861b0c74841060dd0d09e7dcc6a2dd3118a9397d77bba31c46ee5b33531",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-centerline_authorized-v2",
+            "exit_code": 0,
+            "construction_sha256": "66e39861b0c74841060dd0d09e7dcc6a2dd3118a9397d77bba31c46ee5b33531",
+            "log": "proof-fallback-offline-centerline_authorized.log",
+            "log_sha256": "42511f4ca0e5c1aebd1c020dbcf69825d7fada43d2186338110518204c05ffc0"
+          },
+          "compatibility": {
+            "receipt": "cases/centerline_authorized/fallback1-compatibility.json",
+            "sha256": "105a1774a7bf725e106ea4a019288f8399fddb9c414dc62d9e02606f6be68ae6",
+            "log": "cases/centerline_authorized/fallback1-analysis.log",
+            "negative_log": "cases/centerline_authorized/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-centerline_authorized-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/centerline_authorized-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-centerline_authorized-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-centerline_authorized-v10",
         "exit_code": 0,
-        "construction_sha256": "5f868c6bd059859b299a6e7b6b1bf5890c3dc62f2edaf69823877cd004660177",
+        "construction_sha256": "bdff1ceb798e836a02a46b60e6bffcb6b2e98d563005f6b9a6f679b585e1dc5a",
         "log": "proof-selected-offline-centerline_authorized.log",
         "log_sha256": "d636d8977bce110e4d75d10b855dd51a847d3219b08e795364d546973fd5d40f"
       },
@@ -611,9 +879,9 @@
       },
       "compatibility": {
         "receipt": "cases/centerline_authorized/compatibility.json",
-        "sha256": "7987ef36f323d9b73974e3f391f846857eca1eab46b296fd06b9399cb8d690d8",
+        "sha256": "ffaeae3e93b40d507e0dc5bd6934414dfb1217fb7dbb8b4316b8820c88cafa14",
         "log": "cases/centerline_authorized/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-centerline_authorized-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-centerline_authorized-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -621,31 +889,65 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/centerline_authorized/saved-processing-diagnostic.json",
-        "sha256": "e872c41c87b26bbda46d582af75856ce9a33875858c86037fbcd763b38d45ad5",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-centerline_authorized-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-centerline_authorized-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "1738027f8150d65194729e4a411adfa1b4eb6b72f7d2669afa63f8490cb3a9b4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-centerline_authorized-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-centerline_authorized-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-centerline_authorized.log",
-        "log_sha256": "e872c41c87b26bbda46d582af75856ce9a33875858c86037fbcd763b38d45ad5"
+        "log_sha256": "1738027f8150d65194729e4a411adfa1b4eb6b72f7d2669afa63f8490cb3a9b4"
+      },
+      "physical_preparation": {
+        "receipt": "physical-centerline_authorized-proof.json",
+        "sha256": "4dadd771883df5eda0c43d7df893d5859ae58f7f84cac6d8983c6e4ac759dc7b"
       }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized",
       "kind": "delivery",
       "construction": "construction-selected-no_passing_zone_authorized.json",
-      "construction_sha256": "c00770cb9e5ad912fc8f8d3c97cec34e8964e2d387271ffb55b675a486e5f77d",
+      "construction_sha256": "9cbbd3f2f7d19152e71409bf7d4563801284cff588666afb178cfe91db0ed7d5",
       "candidate_risk": {
         "status": "physical",
         "reason": "Zone controls and incorporated exceptions need source verification."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-no_passing_zone_authorized.json",
+          "construction_sha256": "c90196124bd8801fb28a33e46c59bc8f1f0693af383662ed221b2a4a77442e3d",
+          "trigger": {
+            "source": "original-trace.jsonl",
+            "metric": "minimum body gap and lateral setpoint error in original passing-overlap frames",
+            "failure_condition": "measured gap differs from requested gap by more than 0.05 m or the requested lateral setpoint is not attained before overlap"
+          },
+          "changed_knobs": [
+            "approach_speed_scale=0.65",
+            "lateral_setpoint_margin_m=0.15"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-offline-no_passing_zone_authorized-v2",
+            "exit_code": 0,
+            "construction_sha256": "c90196124bd8801fb28a33e46c59bc8f1f0693af383662ed221b2a4a77442e3d",
+            "log": "proof-fallback-offline-no_passing_zone_authorized.log",
+            "log_sha256": "af4873bc212e6e906e99ad7ad42b87657b3722a204db052cc2a78a261dcb5992"
+          },
+          "compatibility": {
+            "receipt": "cases/no_passing_zone_authorized/fallback1-compatibility.json",
+            "sha256": "dc4757df2cc3c66738e5001864cf28f9611cd180d47f6479e3df8cc20651dd12",
+            "log": "cases/no_passing_zone_authorized/fallback1-analysis.log",
+            "negative_log": "cases/no_passing_zone_authorized/fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/fallback-compat-no_passing_zone_authorized-v2 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
       "measurement_contract": "diagnostics/no_passing_zone_authorized-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-no_passing_zone_authorized-v9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/offline-no_passing_zone_authorized-v10",
         "exit_code": 0,
-        "construction_sha256": "c00770cb9e5ad912fc8f8d3c97cec34e8964e2d387271ffb55b675a486e5f77d",
+        "construction_sha256": "9cbbd3f2f7d19152e71409bf7d4563801284cff588666afb178cfe91db0ed7d5",
         "log": "proof-selected-offline-no_passing_zone_authorized.log",
         "log_sha256": "b3fab32966c99e6446bf63009587da9611462eab32a845483f1b8eb2187005d7"
       },
@@ -689,9 +991,9 @@
       },
       "compatibility": {
         "receipt": "cases/no_passing_zone_authorized/compatibility.json",
-        "sha256": "0ea907d1a913be44a2ca335cca5f9f0e046536fdc64a2dc1bfa5e6f8cb4c2ebe",
+        "sha256": "aaca9a4ae6fb804c2a29e4cc1a107a60f71154945ed6e65112429ce0fa1b10dd",
         "log": "cases/no_passing_zone_authorized/compatibility-analysis.log",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-no_passing_zone_authorized-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-no_passing_zone_authorized-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0
       },
       "negative": {
@@ -699,11 +1001,15 @@
       },
       "saved_processing_diagnostic": {
         "receipt": "cases/no_passing_zone_authorized/saved-processing-diagnostic.json",
-        "sha256": "c9ec5da854ef58ef5d3871478226725dca5f183651fad6e437f88ff93c255bd3",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-no_passing_zone_authorized-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-no_passing_zone_authorized-v5 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "sha256": "019fc8a7f8fd93d70b2c16ebe8b8595e67356d6f6d75db9ff5523f373dcf3686",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C272352__NRS-484B-270-2b__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/compat-no_passing_zone_authorized-v6 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c272352-nov26/saved-no_passing_zone_authorized-v6 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "proof-saved-no_passing_zone_authorized.log",
-        "log_sha256": "c9ec5da854ef58ef5d3871478226725dca5f183651fad6e437f88ff93c255bd3"
+        "log_sha256": "019fc8a7f8fd93d70b2c16ebe8b8595e67356d6f6d75db9ff5523f373dcf3686"
+      },
+      "physical_preparation": {
+        "receipt": "physical-no_passing_zone_authorized-proof.json",
+        "sha256": "de13aa400441aa35d36402222a6d7796eb7ca65feeab281ab13a810b3edc5e80"
       }
     }
   ]

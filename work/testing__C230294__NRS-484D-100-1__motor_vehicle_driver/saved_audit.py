@@ -20,7 +20,7 @@ def rows(path):
 def audit_saved(attempt, case_name):
     """Reject missing or changed original sources before any acceptance claim."""
     attempt = Path(attempt).resolve()
-    source = verify(attempt / 'source-packet.json', case_name)
+    source = verify(attempt / 'lamp-context-packet.json', case_name)
     packet = source['packet']
     for field, checksum in source['source_sha256'].items():
         path = (attempt / packet['sources'][field]['path']).resolve()

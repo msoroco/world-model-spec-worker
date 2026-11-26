@@ -89,6 +89,7 @@ class SceneTests(unittest.TestCase):
                      "target_clearance_m": 1.1, "route_request": "within_right_half"}
         self.packet = {
             "case_id": self.case["case_id"], "cell_id": "C272352",
+            "target_clearance_m": self.case["target_clearance_m"],
             "source_kind": "synthetic_cpu_fixture", "source_refs": refs,
             "public_highway_source": "map.json", "map_name": "CPU fixture map",
             "centerline_source": "lanes.json", "zone_source": "lanes.json",

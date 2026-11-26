@@ -83,16 +83,22 @@ def assess(case, capture, review, physical, *, diagnostic=False, attempt=None):
             "canonical_acceptance": False, "legal_verdict": None}
 
 
-def audit(case, attempt, review_path, physical_path):
+def audit(case, attempt, review_path, physical_path, *, diagnostic_fixture=False):
     attempt = Path(attempt).resolve()
     review_path = Path(review_path).resolve()
     physical_path = Path(physical_path).resolve()
     need(review_path.is_file() and physical_path.is_file(),
          "independent review and physical result required")
-    capture = capture_audit(attempt, case)
+    if diagnostic_fixture:
+        diagnostic_capture = attempt / "diagnostic-capture-audit.json"
+        need(diagnostic_capture.is_file(), "diagnostic capture protocol missing")
+        capture = json.loads(diagnostic_capture.read_text(encoding="utf-8"))
+    else:
+        capture = capture_audit(attempt, case)
     review = json.loads(review_path.read_text(encoding="utf-8"))
     physical = json.loads(physical_path.read_text(encoding="utf-8"))
-    result = assess(case, capture, review, physical, attempt=attempt)
+    result = assess(case, capture, review, physical,
+                    diagnostic=diagnostic_fixture, attempt=attempt)
     result["pixel_review_sha256"] = sha(review_path)
     return result
 
@@ -103,5 +109,7 @@ if __name__ == "__main__":
     parser.add_argument("--attempt", required=True)
     parser.add_argument("--review", required=True)
     parser.add_argument("--physical", required=True)
+    parser.add_argument("--diagnostic-fixture", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(audit(args.case, args.attempt, args.review, args.physical), indent=2))
+    print(json.dumps(audit(args.case, args.attempt, args.review, args.physical,
+                           diagnostic_fixture=args.diagnostic_fixture), indent=2))

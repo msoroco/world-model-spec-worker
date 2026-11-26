@@ -1,0 +1,85 @@
+{
+  "template_id": "NRS-484B-270-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-270-2b",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is only one lane for traffic proceeding in the same direction, pass to the left of the bicycle, electric bicycle or electric scooter at a safe distance, which must be not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, and shall not move again to the right side of the highway until the vehicle is safely clear of the overtaken bicycle, electric bicycle or electric scooter. Except as otherwise provided in NRS 484B.213 and 484B.217 [NRS-484B-213-1, NRS-484B-213-2a, NRS-484B-213-2b, NRS-484B-213-2c, NRS-484B-217-2], when passing to the left of a bicycle, electric bicycle or electric scooter at a safe distance of not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, this paragraph authorizes the driver, if it is safe, to pass: (1) To the left of the center of the highway. (2) In a no-passing zone.",
+  "structure": {
+    "law_id": "NRS-484B-270-2b",
+    "activation": {
+      "condition": "Motor vehicle overtakes or passes a qualifying bicycle, electric bicycle or electric scooter proceeding in the same direction.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "On one same-direction lane, exercise due care, pass left at a safe distance not less than three feet, and stay left until safely clear.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "measured_body_clearance_m",
+          "operator": ">=",
+          "value": 0.9144,
+          "unit": "m",
+          "source_clause": "not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in NRS 484B.213 and 484B.217",
+        "disposition": "incorporated sources and applicability require original review"
+      },
+      {
+        "source_clause": "if it is safe",
+        "disposition": "centerline/no-passing authorization safety requires original review"
+      }
+    ],
+    "timing": {
+      "description": "During original longitudinal passing overlap and before return right.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "due care",
+        "note": "Original motion and traffic do not alone resolve due care."
+      },
+      {
+        "phrase": "safe distance",
+        "note": "The three-foot floor does not alone resolve safe distance."
+      },
+      {
+        "phrase": "safely clear",
+        "note": "Original body ordering is evidence, not a legal safely-clear verdict."
+      },
+      {
+        "phrase": "if it is safe",
+        "note": "Opposing traffic and incorporated exceptions need independent review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "control_kind",
+      "kind": "world_setup",
+      "range_or_domain": "bicycle, electric bicycle or electric scooter",
+      "unit": "source request"
+    },
+    {
+      "name": "target_clearance_m",
+      "kind": "controller",
+      "range_or_domain": "nonnegative source-requested lateral body gap in metres",
+      "unit": "m"
+    },
+    {
+      "name": "return_request",
+      "kind": "controller",
+      "range_or_domain": "early or after_clear",
+      "unit": "source request"
+    },
+    {
+      "name": "route_request",
+      "kind": "controller",
+      "range_or_domain": "within_right_half, centerline or no_passing_zone",
+      "unit": "source request"
+    }
+  ]
+}

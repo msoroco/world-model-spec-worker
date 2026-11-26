@@ -9,7 +9,7 @@ from lamp_direction import require
 from saved_audit import audit_saved
 
 
-SOURCES = ('source-packet.json', 'original-lamp-ticks.jsonl',
+SOURCES = ('lamp-context-packet.json', 'original-lamp-ticks.jsonl',
            'camera-source-manifest.json')
 
 
@@ -74,6 +74,10 @@ def main():
     case_name = config['selected_case_id'].rsplit('__', 1)[-1]
     report = finalize(args.attempt, case_name)
     Path(args.output).write_text(json.dumps(report, indent=2) + '\n')
+    if (Path(args.attempt) / 'capture' / 'manifest.json').is_file():
+        from native_publication import publish
+        from worker_exchange.native_output import write_result
+        write_result(args.attempt, publish(args.attempt, report))
 
 
 if __name__ == '__main__':

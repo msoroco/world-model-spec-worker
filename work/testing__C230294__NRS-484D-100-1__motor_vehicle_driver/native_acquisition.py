@@ -36,7 +36,7 @@ def acquire(adapter, packet_path, output_dir):
             'reviewed Native map bytes differ')
     require(not output_dir.exists(), 'retain previous Native attempt')
     output_dir.mkdir(parents=True)
-    packet_copy = output_dir / 'source-packet.json'
+    packet_copy = output_dir / 'lamp-context-packet.json'
     shutil.copyfile(packet_path, packet_copy)
     for field, entry in checked['packet']['sources'].items():
         path = packet_path.parent / entry['path']

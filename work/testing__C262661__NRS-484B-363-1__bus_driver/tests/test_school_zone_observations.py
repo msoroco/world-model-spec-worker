@@ -15,7 +15,9 @@ spec.loader.exec_module(observations)
 
 class SchoolZoneTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = Path.cwd() / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.case_id = observations.ASSIGNMENT_ID + "__beacon_flashing_15_1"

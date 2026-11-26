@@ -1,3 +1,33 @@
+## 2026-11-26 21:40 UTC: C272352 delivery audits pass before adapter hash rebuild
+
+- C272352/NRS-484B-270(2)(b) has passing nine primary/fallback offline and compatibility chains, nine physical-preparation probes, pinned semantic validation, canonical saved replay and positive/negative diagnostic delivery audits. Its owner added a concrete CARLA adapter and is integrating it into source-sealed construction. Because that changes construction hashes, the full scoped CPU proof chain is being rebuilt and rerun before any ready claim. Status remains partial; no queue row added.
+
+## 2026-11-26 21:37 UTC: C262661 school-zone capture and comparisons implemented
+
+- C262661/NRS-484B-363(1) owner now has 15 source-gated constructions, original 900-frame/four-camera capture code, a stable-window speed finalizer and CPU implementations for all twelve planned comparison branches. Nineteen focused tests pass, including twelve contrast paths and negative source/motion checks. Scoped `--complete` passes; exact strict still rejects its truthful partial status while selected manifest, semantic and proof chains continue. No queue row added.
+
+## 2026-11-26 21:35 UTC: C272352 canonical contracts pass; C230294 compatibility repair
+
+- C272352/NRS-484B-270(2)(b) passes pinned canonical execution-manifest validation and its nine-case/nine-stage semantic chain. It binds source-backed below/at/above 0.9144 m floor probes and retains incomplete qualitative sweeps with explicit missing feasibility inputs. Independent delivery and post-capture audit proofs continue; status partial.
+- C230294/NRS-484D-100(1) materialized a source-hashed compatibility fixture with 900 lamp rows, 3,600 explicit camera source frames and four diagnostic videos. The first positive run found that pinned runtime source copying omits filenames beginning `source-`; owner corrected the owned packet name to `lamp-context-packet.json` across acquisition, finalizer and contracts. Seven focused tests pass. Current-hash bundles/offline proofs and compatibility are being rebuilt; status partial. No queue row added.
+
+## 2026-11-26 21:31 UTC: C272352 fallback construction passes pinned proofs
+
+- C272352/NRS-484B-270(2)(b) now has one risk-justified fallback for each of nine exact cases, preserving the same case/configuration/recording contract while slowing approach and widening lateral setpoint. Nine fallback pinned offline and nine positive/negative compatibility checks pass, in addition to passing primary compatibility, saved-only replay and physical/lifecycle fixtures. Canonical manifest, post-capture and independent delivery/comparison audits remain in progress; status stays partial. No queue row added.
+
+## 2026-11-26 21:29 UTC: C262661 school-zone source construction starts
+
+- C262661/NRS-484B-363(1) owner added source-sealed school-zone scene construction and independent clock/beacon derivation for 15 planned cases. Twelve focused tests, pinned runtime verify/preflight and scoped `--complete` pass. It remains partial while exact capture and proof work continues; no queue row added.
+
+## 2026-11-26 21:29 UTC: returned-file and queue checkpoint
+
+- Fresh non-Git scan of 60,162 files under `work/` found zero oversize, UTF-8, trailing-whitespace, blank-EOF, conflict-marker or bytecode-cache issues. Ready result IDs and shared queue IDs match exactly: 154 assignments, 952 exact cases and 637 comparisons. Eighty-eight assignments remain partial. Whole-batch strict is deferred under START_HERE.md while retained completions and partial packages remain; each published new package passed its own exact scoped strict gate. Active owners continue C262661, C272352 and C230294. No Git or checkpoint command was run.
+
+## 2026-11-26 21:28 UTC: C230294 checkpoint hygiene repaired; selected proof work continues
+
+- The full returned-file scan found one trailing-whitespace line in C230294 `cpu-tests.log`; its owner normalized the log, rebound `result.json.tests[0].sha256` to the current SHA256 `6b1febb8a91811d405feb8f902aa215f0f508a6e0aa5aaed92eb20ba5301db0d`, and reran scoped `--complete` successfully. All ten primary/fallback pinned offline runs pass on the saved-only finalizer construction. Status remains partial pending compatible recipe, semantic and independent delivery/comparison proofs.
+- C272352/NRS-484B-270(2)(b) now passes nine positive/negative pinned compatibility receipts, nine saved-only diagnostic replays and nine synthetic three-outcome physical overtaking/lifecycle receipts under pinned physical-preparation validation. Its engineering body-order criterion does not claim legal or Native physical acceptance. Post-capture, delivery/comparison, semantic and concrete Native adapter work continue; status remains partial. Queue remains 154 assignments, 952 cases and 637 comparisons. No Git or checkpoint command was run.
+
 ## 2026-11-26 21:24 UTC: C276300 current-runtime package ready and queued
 
 - Newly ready: `testing__C276300__NRS-484B-533__motor_vehicle_driver`. Owner exact scoped strict and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C276300__NRS-484B-533__motor_vehicle_driver --complete --require-delivery-ready` exit 0 on the final queue-bound hash (`.runtime-work/c276300-lead-final-nov26/strict-after-proposal.log`, `static_checks_passed: true`). Seven exact grade/engine/parking-brake cases and six controlled comparisons match plan, manifest and queue proposal. Fourteen primary/fallback pinned offline and positive/negative compatibility checks, seven three-outcome physical/lifecycle fixtures, eight semantic stages, seven saved positives plus missing-engine negatives, seven independent four-video full-decode delivery positives/missing-engine negatives and six fixed-scene comparison audits pass. Sixty-two proposed commands pass shell syntax and exact case-ID binding. Original grade, engine/brake readbacks, Native motion and legal/physical judgment remain local source/review gates. Plan SHA256 `ba774ffa24adc42b403e539204d8200eddc25d562465df9df5e3fbfa814dcc73`; manifest `c30c0bb2fbfb4ebcd09cea4180ad31feef565b1cea7a54bdeee1c93faac8db27`; queue proposal `5d4fdd3354c2ea0b162998039e9b0c80a819803bd06cf31e332e475b846d945a`; result `9352200c5d072d603db6a8ebbc39bd6424ec35610127c6110ff53076a9677d71`.

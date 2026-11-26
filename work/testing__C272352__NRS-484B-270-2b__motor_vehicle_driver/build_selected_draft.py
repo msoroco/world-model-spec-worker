@@ -9,7 +9,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 AID = "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver"
 SOURCES = ("runner.py", "passing_scene.py", "passing_controller.py",
-           "passing_native_capture.py", "passing_probe.py", "analysis.py")
+           "passing_native_capture.py", "passing_probe.py", "analysis.py",
+           "passing_carla_adapter.py")
 MEASUREMENT_KEYS = ("activation", "due_care_sources", "one_lane", "left_clearance",
                     "return_order", "special_authorization")
 MEASUREMENT_METHODS = ("measure_activation", "measure_due_care_sources",
@@ -92,7 +93,18 @@ def build():
         construction = {"law_id": "NRS-484B-270-2b", "cell_id": "C272352",
                         "actor": "motor_vehicle_driver", "case_id": ident,
                         "entrypoint": "runner.py", "recording_description": RECORDING,
-                        "files": files}
+                        "files": files,
+                        "measurement_plan": {"rate_hz": 20, "duration_s": 45,
+                                             "required_channels": [x["name"] for x in RECORDING["channels"]]},
+                        "static_checks": ["exact frozen law, cell, actor and case",
+                                          "source-sealed original Native one-lane map, bicycle identity and controls",
+                                          "900 original-frame body and four-camera joins",
+                                          "positive/negative saved-source software compatibility"],
+                        "termination_rules": ["900 consecutive original 20 Hz Native frames",
+                                              "brake, destroy owned actors and restore world on every exit"],
+                        "mechanisms": ["reviewed Native map and qualifying-rider construction",
+                                       "per-frame clearance and return controller with measurable fallback",
+                                       "saved original source measurement and independent four-view delivery audit"]}
         target = HERE / ("construction-selected-" + suffix + ".json")
         write(target, construction)
         if ident == ids[0]:

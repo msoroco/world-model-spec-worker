@@ -1,36 +1,179 @@
 {
-  "format": "worker-cases-proposal",
-  "assignment_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver",
   "cell_id": "C272352",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "qualitative-passing-review",
+      "target_law_id": "NRS-484B-270-2b",
+      "judgment_refs": [
+        {
+          "phrase": "due care",
+          "note": "Original motion and traffic do not alone resolve due care."
+        },
+        {
+          "phrase": "safe distance",
+          "note": "The three-foot floor does not alone resolve safe distance."
+        },
+        {
+          "phrase": "safely clear",
+          "note": "Original body ordering is evidence, not a legal safely-clear verdict."
+        },
+        {
+          "phrase": "if it is safe",
+          "note": "Opposing traffic and incorporated exceptions need independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original feasibility and source-reviewed ranges are required before freezing qualitative judgment sweeps.",
+      "missing_inputs": [
+        "Original Native geometry and feasible sweep ranges for due care, safe distance, safely clear and route safety"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
   "cases": [
+    {
+      "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__shared_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared one-lane qualifying-rider source request; no accepted recording.",
+      "variable_assignments": {
+        "control_kind": {
+          "kind": "world_setup",
+          "value": "bicycle",
+          "unit": "source request"
+        },
+        "target_clearance_m": {
+          "kind": "controller",
+          "value": 1.2,
+          "unit": "m"
+        },
+        "return_request": {
+          "kind": "controller",
+          "value": "after_clear",
+          "unit": "source request"
+        },
+        "route_request": {
+          "kind": "controller",
+          "value": "within_right_half",
+          "unit": "source request"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "body_envelopes",
+            "unit": "m",
+            "method": "original ego and qualifying rider body extents",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          },
+          {
+            "name": "passing_clearance",
+            "unit": "m",
+            "method": "minimum body gap during longitudinal overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          },
+          {
+            "name": "return_order",
+            "unit": "original frame",
+            "method": "first right return versus rider front",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          },
+          {
+            "name": "lane_controls",
+            "unit": "source record",
+            "method": "one forward lane, centerline and zone",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          },
+          {
+            "name": "opposing_traffic",
+            "unit": "source record",
+            "method": "original opposing trajectories",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          },
+          {
+            "name": "camera_identity",
+            "unit": "frame",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original pass",
+            "reference_frame": "source-sealed Native road axis and original frame",
+            "uncertainty": "actual motion and legal judgment require local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_native_site_packet",
+            "unit": "source record",
+            "method": "sealed map, lane, actors, controls, traffic and exception sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures prove CPU software only.",
+          "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
+        ]
+      }
+    },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for bike_clearance_below; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "three_foot_boundary",
+      "deliberate_differences": [
+        "target_clearance_m"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 0.8
+          "value": 0.8,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -101,38 +244,54 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "target_clearance_m",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "bike_clearance_below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 0.8
+      },
+      "epsilon_used": true
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for bike_clearance_at; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "three_foot_boundary",
+      "deliberate_differences": [
+        "target_clearance_m"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 0.9144
+          "value": 0.9144,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -203,38 +362,52 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "target_clearance_m",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "bike_clearance_at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 0.9144
+      },
+      "epsilon_used": true
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for bike_clearance_above; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "three_foot_boundary",
+      "deliberate_differences": [],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -305,38 +478,54 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "target_clearance_m",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "bike_clearance_above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 1.2
+      },
+      "epsilon_used": true
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for bike_return_early; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "bike_return_early",
+      "deliberate_differences": [
+        "return_request"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "early"
+          "value": "early",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -407,38 +596,47 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "return_request",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "bike_return_early"
+      }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for bike_return_after_clear; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "bike_return_after_clear",
+      "deliberate_differences": [],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -509,38 +707,49 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "return_request",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "bike_return_after_clear"
+      }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for electric_bicycle_pass; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "electric_bicycle_pass",
+      "deliberate_differences": [
+        "control_kind"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "electric_bicycle"
+          "value": "electric_bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -611,38 +820,49 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "control_kind",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "electric_bicycle_pass"
+      }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for electric_scooter_pass; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "electric_scooter_pass",
+      "deliberate_differences": [
+        "control_kind"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "electric_scooter"
+          "value": "electric_scooter",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "within_right_half"
+          "value": "within_right_half",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -713,38 +933,49 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "control_kind",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "electric_scooter_pass"
+      }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for centerline_authorized; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "centerline_authorized",
+      "deliberate_differences": [
+        "route_request"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "centerline"
+          "value": "centerline",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -815,38 +1046,49 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "route_request",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "centerline_authorized"
+      }
     },
     {
       "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized",
       "target_law_id": "NRS-484B-270-2b",
       "target_type": "boundary_probe",
-      "rationale": "Source-bound passing geometry probe for no_passing_zone_authorized; statutory three-foot floor and other legal judgments require original evidence review.",
+      "status": "draft",
+      "rationale": "Controlled exact passing source request; physical and legal judgments unresolved.",
+      "paired_probe_id": "no_passing_zone_authorized",
+      "deliberate_differences": [
+        "route_request"
+      ],
       "variable_assignments": {
         "control_kind": {
           "kind": "world_setup",
-          "value": "bicycle"
+          "value": "bicycle",
+          "unit": "source request"
         },
         "target_clearance_m": {
           "kind": "controller",
-          "value": 1.2
+          "value": 1.2,
+          "unit": "m"
         },
         "return_request": {
           "kind": "controller",
-          "value": "after_clear"
+          "value": "after_clear",
+          "unit": "source request"
         },
         "route_request": {
           "kind": "controller",
-          "value": "no_passing_zone"
+          "value": "no_passing_zone",
+          "unit": "source request"
         }
       },
       "unresolved_judgment_calls": [
-        "Due care, safe distance, safely clear and incorporated NRS 484B.213/217 exception applicability require human review of original Native sources."
+        "due care",
+        "safe distance",
+        "safely clear",
+        "if it is safe"
       ],
       "recording_description": {
         "channels": [
@@ -917,13 +1159,11 @@
           "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
         ]
       },
-      "deliberate_differences": [
-        "control_kind",
-        "target_clearance_m",
-        "return_request",
-        "route_request"
-      ]
+      "probe": {
+        "primary_variable": "route_request",
+        "comparison_or_standard": "Original body geometry and source records; no qualitative legal verdict.",
+        "target_value_or_branch": "no_passing_zone_authorized"
+      }
     }
-  ],
-  "sweeps_expanded": true
+  ]
 }

@@ -30,6 +30,8 @@ def validate(packet_path, case, *, synthetic=False):
     packet = json.loads(path.read_text(encoding="utf-8"))
     need(packet.get("case_id") == case["case_id"] and
          packet.get("cell_id") == "C272352", "exact case/site mismatch")
+    need(packet.get("target_clearance_m") == case["target_clearance_m"],
+         "reviewed target clearance mismatch")
     need(packet.get("source_kind") == "reviewed_original_native_map" or
          (synthetic and packet.get("source_kind") == "synthetic_cpu_fixture"),
          "reviewed original Native map required")

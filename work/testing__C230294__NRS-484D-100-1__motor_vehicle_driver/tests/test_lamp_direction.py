@@ -20,6 +20,7 @@ runner = importlib.import_module('runner')
 native_acquisition = importlib.import_module('native_acquisition')
 saved_audit = importlib.import_module('saved_audit')
 finalize_original = importlib.import_module('finalize_original')
+native_publication = importlib.import_module('native_publication')
 
 
 def scene(case):
@@ -253,6 +254,23 @@ class LampTests(unittest.TestCase):
             report = finalize_original.finalize(attempt, case.name)
             self.assertEqual(report['measurements']['required_lamp_states']['value']['on_frame_counts']['headlamp_left'], 900)
             self.assertIsNone(report['legal_verdict'])
+            (attempt / 'config.json').write_text((path.parent / 'config.json').read_text())
+            (attempt / 'construction.json').write_text((path.parent / 'construction.json').read_text())
+            (attempt / 'trace.jsonl').write_text(''.join(json.dumps({
+                'frame': row['original_frame'], 'time_s': row['time_s'],
+                'position': {'x': i / 4, 'y': 0, 'z': 0},
+                'heading_deg': 0, 'speed_mps': row['speed_mps']}) + '\n'
+                for i, row in enumerate(original_rows)))
+            (attempt / 'video_frames.jsonl').write_text(''.join(json.dumps({
+                'video_frame': i, 'carla_frame': row['original_frame'],
+                'time_s': row['time_s']}) + '\n'
+                for i, row in enumerate(original_rows)))
+            for view in native_publication.VIDEOS:
+                (attempt / view).write_text('diagnostic placeholder for publication unit test\n')
+            published = native_publication.publish(attempt, report)
+            self.assertEqual(published['measured_values']['frame_count'], 900)
+            self.assertEqual(len(published['recording_evidence']), 23)
+            self.assertFalse(published['setup_confirmed'])
             (attempt / 'cameras/overview/0001.png').unlink()
             with self.assertRaisesRegex(ValueError, 'camera source missing'):
                 saved_audit.audit_saved(attempt, case.name)

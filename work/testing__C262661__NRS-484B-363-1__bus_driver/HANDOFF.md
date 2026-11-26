@@ -30,3 +30,25 @@ Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, in
 Pinned preflight passed (`cpu-preflight.log`, SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`). Seven focused tests passed (`cpu-school-tests.log`, SHA256 `c9a6d8f3060916129de4809fbbaa000a2a56ea91ce55c6170e0a3aa067e42b6d`). Scoped static check passed (`assignment-check.log`, SHA256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`). Exact scoped strict exited 1 on truthful partial status (`strict-gate.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`). Source hashes: plan `dcd754e2ca3cc7515bfbcfbc49009bf46504e777d85ee27bd7432c88bf538b28`, measurement `c3eba4a4bdfa0c686b43760b377f322b1083d294fc40b3ac37b505e8a65a5b10`, focused tests `cec32588a9eecf29879391984189b1aabe0bbc622d2ce4ae940a051b6aec4e75`.
 
 Remaining CPU work: bind a reviewed Native designated school-zone map, bus route, children and independent school-calendar/device source, construct fifteen physical scenes/controllers with synchronized original four-camera capture, validate the operational alternating-yellow beacon and sign-time branches, then implement finalizers/proposals, exact offline and positive/negative compatibility, saved-only delivery and twelve comparison audits. Physical and legal acceptance remain unverified.
+
+## 2026-11-26 source-gated construction and capture checkpoint
+
+The fifteen existing exact 15-mph and four-exception case IDs are preserved. `school_scene_construction.py` now seals all sixteen original school-zone source records, binds the selected site and map, validates zone polygon/route, bus or car blueprint, child inventory, speed-controller readback, calendar, and beacon/sign intervention. `school_timing.py` derives session, class, half-hour, two-yellow-light and alternating-history facts from independent source-hashed clock and device records; unsupported labels and lamp states fail. These facts remain measurements and do not assert the legal conclusion.
+
+`runner.py` gates execution on a reviewed exact site and operator hash. `native_capture.py` obtains 900 consecutive 20 Hz Native frames, original speed/zone/beacon/child readbacks and four RGB FFV1 streams, seals context/trace/camera hashes, and restores world settings with readback. The source operator is still a reviewed local dependency. A two-tick synthetic fake-world test exercised synchronized capture and restoration; it is not original footage.
+
+Fourteen focused tests passed; pinned runtime verify, preflight, and scoped `--complete` passed. Exact scoped strict exited 1 because truthful `result.json.status` remains `partial`. The remaining worker-owned CPU chain is selected execution manifest, semantic proposals, all exact offline and positive/negative compatibility receipts, saved processing, independent delivery/comparison and physical/lifecycle fixture audits. No original school-zone packet or physical receipt has been invented.
+
+Current hashes:
+
+- `school_scene_construction.py` SHA-256 `bebfad7e64cc62266b7bdd0cf142ec21fa35c0f48e1096034bf7533853fcfe30`.
+- `school_timing.py` SHA-256 `e83504c8fc897e48f9755afa68d5f6aabf1833af6d52d61ad50a6ab7a267c6d6`.
+- `native_capture.py` SHA-256 `c298e26872299a561c65ba1dfd4bf440a47d5051f1002d72b73913f23a302a1a`.
+- `runner.py` SHA-256 `720816ee651dcde15ebb23313e82d9f5c3f6fc89069d31e6958ae29f60cd4b6f`.
+- `school_zone_observations.py` SHA-256 `c3eba4a4bdfa0c686b43760b377f322b1083d294fc40b3ac37b505e8a65a5b10`.
+- `case-plan.json` SHA-256 `dcd754e2ca3cc7515bfbcfbc49009bf46504e777d85ee27bd7432c88bf538b28`.
+- `cpu-school-tests-nov26.log` SHA-256 `2359172246ed1865b0eaaec4df3323a866d883d8c2c171e324e4e8ead57e5e17`.
+- `cpu-verify-nov26.log` SHA-256 `e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d`.
+- `cpu-preflight-nov26.log` SHA-256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `assignment-check-nov26.log` SHA-256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`.
+- `strict-gate-nov26.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`.
