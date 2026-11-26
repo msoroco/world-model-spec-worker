@@ -17,17 +17,17 @@ def run(entry):
     name = case.removeprefix(HERE.name + '__')
     attempt = next(
         (candidate for candidate in (
-            SCRATCH / ('compat-' + name + '-v4'),)
+            SCRATCH / ('compat-' + name + '-v5'),)
          if (candidate / 'compatibility.json').is_file() and
          json.loads((candidate / 'compatibility.json').read_text()).get('construction_sha256') == entry['construction_sha256']),
         None)
     if attempt is None:
         return name, 1, 'current compatibility attempt missing'
-    replay_attempt = SCRATCH / ('saved-input-truck-v4-' + name)
+    replay_attempt = SCRATCH / ('saved-input-truck-v5-' + name)
     if not replay_attempt.exists():
         shutil.copytree(attempt, replay_attempt, copy_function=os.link)
         (replay_attempt / 'candidate-selection.json').unlink(missing_ok=True)
-    output = SCRATCH / ('saved-truck-v4-' + name)
+    output = SCRATCH / ('saved-truck-v5-' + name)
     for prior in sorted(output.glob('v*/processing.json'), reverse=True):
         receipt = json.loads(prior.read_text())
         if (receipt.get('passed') is True and receipt.get('recorded_only') is True and

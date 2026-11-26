@@ -41,7 +41,7 @@ def check_source(root, case_id):
                 seal.get("restoration", {}).get("restored") is not True):
             raise ValueError("sealed original Native emergency capture required")
         files = seal.get("sources")
-        mandatory = {HISTORY, "camera-frame-map.jsonl", "video_frames.jsonl",
+        mandatory = {HISTORY, "emergency-site.json", "camera-frame-map.jsonl", "video_frames.jsonl",
                      *[view + ".mkv" for view in VIEWS]}
         if not isinstance(files, dict) or not mandatory <= set(files):
             raise ValueError("sealed original emergency source inventory incomplete")
@@ -53,7 +53,8 @@ def check_source(root, case_id):
         if (revision.get("construction_sha256") != sha(required(root, "construction.json"))
                 or revision.get("runner_sha256") != sha(required(root, "runner.py"))):
             raise ValueError("sealed Native implementation changed")
-        return False, {HISTORY: sha(required(root, HISTORY)), "capture-seal.json": sha(seal_path)}
+        return False, {HISTORY: sha(required(root, HISTORY)),
+                       "emergency-site.json": sha(required(root, "emergency-site.json"))}
     note_path = required(root, "diagnostic-source-note.json")
     note = json.loads(note_path.read_text(encoding="utf-8"))
     if (note.get("source_kind") != "synthetic_diagnostic_fixture" or
@@ -61,7 +62,7 @@ def check_source(root, case_id):
             note.get("case_id") != case_id):
         raise ValueError("explicit synthetic emergency diagnostic provenance required")
     return True, {HISTORY: sha(required(root, HISTORY)),
-                  "diagnostic-source-note.json": sha(note_path)}
+                  "emergency-site.json": sha(required(root, "emergency-site.json"))}
 
 
 def check_joins(root, history):

@@ -99,8 +99,7 @@ def build():
                 "requirement": branch["requirement"], "source": branch["source"],
                 "output_key": "emergency_movement_and_response",
                 "method": "measure_case", "value_type": "object", "kind": "measured",
-                "inputs": ["original-emergency-history.jsonl", "emergency-site.json",
-                           "diagnostic-source-note.json"]}],
+                "inputs": ["original-emergency-history.jsonl", "emergency-site.json"]}],
             "negative": {"remove": ["original-emergency-history.jsonl"],
                 "error_contains": "Missing required source: original-emergency-history.jsonl"}})
         sources = []

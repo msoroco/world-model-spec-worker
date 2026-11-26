@@ -1,0 +1,71 @@
+{
+  "template_id": "NRS-484B-267-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2b",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Proceed with caution. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "structure": {
+    "law_id": "NRS-484B-267-2b",
+    "activation": {
+      "condition": "Approach an authorized emergency or regulatory official vehicle moving or preparing to move, with qualifying flashing lights.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Proceed with caution.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Source-bound law-enforcement direction can alter the driver's response."
+      }
+    ],
+    "timing": {
+      "description": "Observe the approach, visible movement or hand signal and response over the original 45 seconds.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "Proceed with caution",
+        "note": "Record original ego approach, speed, controls, target movement and separation; do not infer a legal numeric cutoff."
+      },
+      {
+        "phrase": "any indication that is visible to an approaching driver",
+        "note": "Review actual driver-view original pixels and movement or hand signal timing."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "unit_class",
+      "kind": "world_setup",
+      "range_or_domain": "authorized emergency or regulatory official",
+      "unit": "class"
+    },
+    {
+      "name": "cue_kind",
+      "kind": "world_setup",
+      "range_or_domain": "vehicle movement, driver hand signal or none",
+      "unit": "kind"
+    },
+    {
+      "name": "light_request",
+      "kind": "world_setup",
+      "range_or_domain": "qualified active, qualified inactive or unqualified active",
+      "unit": "class"
+    },
+    {
+      "name": "approaching_requested",
+      "kind": "controller",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    },
+    {
+      "name": "officer_direction_requested",
+      "kind": "world_setup",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    }
+  ]
+}

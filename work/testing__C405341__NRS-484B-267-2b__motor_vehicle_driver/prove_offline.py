@@ -44,7 +44,8 @@ def proof():
             "acquisition": {channel: {"entrypoint": "runner.py", "method": "capture_original",
                 "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."}
                 for channel in ("sealed_native_original_frames", "unit_motion",
-                                "qualifying_flashing_lights", "driver_view_movement_cue",
+                                "qualifying_flashing_lights", "target_authorization",
+                                "driver_view_movement_cue", "driver_hand_signal",
                                 "ego_approach", "ego_response", "officer_direction", "video_four_views")},
             "candidate_risk": {"status": "physical", "reason":
                 "Native movement, visibility, hand signal or emergency equipment may not realize on reviewed route"},

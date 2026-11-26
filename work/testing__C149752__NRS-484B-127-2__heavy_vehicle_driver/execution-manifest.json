@@ -1,14 +1,14 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
-  "status": "source_gated_draft",
+  "status": "selected_cpu_proofs_bound_native_review_pending",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "cases": [
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
       "kind": "delivery",
       "construction": "construction-gap_below_500ft.json",
-      "construction_sha256": "93d48a90d3f39bf7949bb3e6ba94376488599b71c4b53fa3256358f0d7e7b74f",
+      "construction_sha256": "2b33fb4df1dd2a2f3dcd98c447fd209911d1fdf2453f7063a053d1a40f291788",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/gap_below_500ft-recipe.json",
       "measurement_contract": "diagnostics/gap_below_500ft-measurement-contract.json",
       "measurement_procedure": {
@@ -18,7 +18,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -65,16 +66,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "93d48a90d3f39bf7949bb3e6ba94376488599b71c4b53fa3256358f0d7e7b74f",
+        "construction_sha256": "2b33fb4df1dd2a2f3dcd98c447fd209911d1fdf2453f7063a053d1a40f291788",
         "log": "cpu-offline-gap_below_500ft.log",
-        "log_sha256": "523604531180257be947bd4f5f7c14328f668e11e8e9bc4eb1aebea9475bed1e"
+        "log_sha256": "a5ccc52f6c88d9487e8fc60ad51e64271f356494824f9052dd21bda4afb3ce91"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-gap_below_500ft-receipt.json",
+        "sha256": "df839837d47a2914fcc88d182800f2dc04e629973580fc384c62430532f35378",
+        "log": "cpu-compat-analysis-gap_below_500ft.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-gap_below_500ft.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-gap_below_500ft-receipt.json",
+        "sha256": "850936d75bba5962042365ae3e38fd9dbd0903cfdaa3d7c1b7f6dd222a12e1be"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-gap_below_500ft.log",
+        "sha256": "e16901690120bb67fa7b60c125ca74f712454fcf13a809cdf623b76f875b8c8e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-gap_below_500ft.log",
+        "test_log_sha256": "e16901690120bb67fa7b60c125ca74f712454fcf13a809cdf623b76f875b8c8e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_below_500ft-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-gap_below_500ft-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-gap_below_500ft.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_below_500ft-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_below_500ft-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-gap_below_500ft.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
       "kind": "delivery",
       "construction": "construction-gap_at_500ft.json",
-      "construction_sha256": "8a2696f39bf6ba9c0043e5a6d9cc55c3ca463b3358c6bc918cf8f6ed4e9d835e",
+      "construction_sha256": "cea0060e952ef6dcb44b6c32e2433fb8ff256372adef462bb5a39e3da7f3efbe",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/gap_at_500ft-recipe.json",
       "measurement_contract": "diagnostics/gap_at_500ft-measurement-contract.json",
       "measurement_procedure": {
@@ -84,7 +136,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -131,16 +184,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "8a2696f39bf6ba9c0043e5a6d9cc55c3ca463b3358c6bc918cf8f6ed4e9d835e",
+        "construction_sha256": "cea0060e952ef6dcb44b6c32e2433fb8ff256372adef462bb5a39e3da7f3efbe",
         "log": "cpu-offline-gap_at_500ft.log",
-        "log_sha256": "08490db1db0edc1f813a0c6b4cc55bfe3cbbe6a0ae0ebe5b2739c75b3efb9e7e"
+        "log_sha256": "97579a80c30e8d7e406957aa1a9597a93790f21b16cb24adf94c94b33b0585f8"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-gap_at_500ft-receipt.json",
+        "sha256": "af1e0ea4b76c603ddcca1e2d2286dd78db9e5a4aa9204102486d9888db978309",
+        "log": "cpu-compat-analysis-gap_at_500ft.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-gap_at_500ft.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-gap_at_500ft-receipt.json",
+        "sha256": "58f02d58772760b5113b5f5ead221527ee1194d98192de0ee62145d292372f6c"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-gap_at_500ft.log",
+        "sha256": "eb1297d10efbe10c20ac9248c22e06635e0010caa352b9c2a1465b486e59c974"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-gap_at_500ft.log",
+        "test_log_sha256": "eb1297d10efbe10c20ac9248c22e06635e0010caa352b9c2a1465b486e59c974"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_at_500ft-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-gap_at_500ft-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-gap_at_500ft.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_at_500ft-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_at_500ft-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-gap_at_500ft.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
       "kind": "delivery",
       "construction": "construction-gap_above_500ft.json",
-      "construction_sha256": "0654d4602d22a2233f977cd69ff7ddd3a865834b797e0a67e191cb495c00d547",
+      "construction_sha256": "fe115129fccd330e8dfcdc98cea1c69eb356da0e7f474698dd62d8659460dccb",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/gap_above_500ft-recipe.json",
       "measurement_contract": "diagnostics/gap_above_500ft-measurement-contract.json",
       "measurement_procedure": {
@@ -150,7 +254,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -197,16 +302,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "0654d4602d22a2233f977cd69ff7ddd3a865834b797e0a67e191cb495c00d547",
+        "construction_sha256": "fe115129fccd330e8dfcdc98cea1c69eb356da0e7f474698dd62d8659460dccb",
         "log": "cpu-offline-gap_above_500ft.log",
-        "log_sha256": "1885dd2f72cbd8ec5f4cc47ed504ee5f2cb43c6c9d7ced39e3e8d30db3bd48bd"
+        "log_sha256": "eb12ce08a7d7f2013c25aff3e26679caa2fd3645f56e8376b27d94fce34a41ed"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-gap_above_500ft-receipt.json",
+        "sha256": "01f705b68cfa9706c1b6a553e0c85f04f190457f5a0882aff324d217c9015547",
+        "log": "cpu-compat-analysis-gap_above_500ft.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-gap_above_500ft.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-gap_above_500ft-receipt.json",
+        "sha256": "94724a2330c02e1ec682126d26ac56b495ab574c44a7f96098e9d73331a24829"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-gap_above_500ft.log",
+        "sha256": "64dc891c8dd79624aaef13c9b26921ece350d790754fa359737cf21d95344efa"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-gap_above_500ft.log",
+        "test_log_sha256": "64dc891c8dd79624aaef13c9b26921ece350d790754fa359737cf21d95344efa"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_above_500ft-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-gap_above_500ft-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-gap_above_500ft.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_above_500ft-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/gap_above_500ft-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-gap_above_500ft.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion",
       "kind": "delivery",
       "construction": "construction-passing_completion.json",
-      "construction_sha256": "123f6c8bc3b1ee27bdad21fba08296d5becf55640b123b24fd540c8fa8c706c0",
+      "construction_sha256": "fd6f6faab2a40dd19c1ad71fdc95103234fb0bb078b45eb6abbeee2660dcfe41",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/passing_completion-recipe.json",
       "measurement_contract": "diagnostics/passing_completion-measurement-contract.json",
       "measurement_procedure": {
@@ -216,7 +372,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -263,7 +420,7 @@
         {
           "id": "fallback1",
           "construction": "construction-passing_completion-fallback1.json",
-          "construction_sha256": "5609043470ddf21c6e08eab018dbec9a943e1ee20fa8e3c27da09ee4395615db",
+          "construction_sha256": "09ca8910994d3b7c87147543dc822f70c1e6d6df7702f4333bd7ca21e66aec32",
           "trigger": {
             "source": "original whole-body and lane relation history",
             "metric": "observed opposing-lane pass and return geometry",
@@ -275,25 +432,82 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
             "exit_code": 0,
-            "construction_sha256": "5609043470ddf21c6e08eab018dbec9a943e1ee20fa8e3c27da09ee4395615db",
+            "construction_sha256": "09ca8910994d3b7c87147543dc822f70c1e6d6df7702f4333bd7ca21e66aec32",
             "log": "cpu-offline-passing_completion-fallback1.log",
-            "log_sha256": "1446fcc7f9ecb2a7a0eae217cf45e2cf61b4490e3cbddd966087bf97e0c72b70"
+            "log_sha256": "e932aa96d74e442a6e74106f08b2d2aec1607b393d634a0427051db50ab8076e"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-passing_completion-fallback1-receipt.json",
+            "sha256": "69e12987b22ea69990b615ca3059fb45bac2d7aebf60355b17f54f2e71b340aa",
+            "log": "cpu-compat-analysis-passing_completion-fallback1.log",
+            "negative_log": "cpu-compat-negative-passing_completion-fallback1.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "123f6c8bc3b1ee27bdad21fba08296d5becf55640b123b24fd540c8fa8c706c0",
+        "construction_sha256": "fd6f6faab2a40dd19c1ad71fdc95103234fb0bb078b45eb6abbeee2660dcfe41",
         "log": "cpu-offline-passing_completion.log",
-        "log_sha256": "1008d48d258aa84dfbe24a89700a0dc026d3ec2574942e0b2f6104663c511d53"
+        "log_sha256": "e10caa628ef8e31ccfa7dbbb3fef076daee3efbb3bf1415930bc1b3c3b0b924a"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-passing_completion-receipt.json",
+        "sha256": "d206e3f7589813c1b534f2f375bf382d551988f2d0d23594e1778c16bb3f66f4",
+        "log": "cpu-compat-analysis-passing_completion.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-passing_completion.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-passing_completion-receipt.json",
+        "sha256": "003e8fd95c7ee8cd20ac320a891a653aeb81dc2ad0450befd974fd32d55e1f64"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-passing_completion.log",
+        "sha256": "d46d05dd74671471affb028ac2482c1e2aeb419dbac749b8a0244cedb61a5289"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-passing_completion.log",
+        "test_log_sha256": "d46d05dd74671471affb028ac2482c1e2aeb419dbac749b8a0244cedb61a5289"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/passing_completion-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-passing_completion-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-passing_completion.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/passing_completion-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/passing_completion-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-passing_completion.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle",
       "kind": "delivery",
       "construction": "construction-entering_vehicle.json",
-      "construction_sha256": "4011e0ac84a9f07e4915fed74fa7f5627396e484fc99c1f7e6bd6dbe4c6f40ed",
+      "construction_sha256": "6287059ccc9a23dafccde31a405afcbe42f7c461b02c0caba5fa776e8408155b",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/entering_vehicle-recipe.json",
       "measurement_contract": "diagnostics/entering_vehicle-measurement-contract.json",
       "measurement_procedure": {
@@ -303,7 +517,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -350,16 +565,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "4011e0ac84a9f07e4915fed74fa7f5627396e484fc99c1f7e6bd6dbe4c6f40ed",
+        "construction_sha256": "6287059ccc9a23dafccde31a405afcbe42f7c461b02c0caba5fa776e8408155b",
         "log": "cpu-offline-entering_vehicle.log",
-        "log_sha256": "558f1d2a94faedb7918f30220288d2c4aded35fb6a47ac6213cbc9fc7c090352"
+        "log_sha256": "cf36a3055c1874d52a46be444546a9cd97050f04b5f5435506c8bb7a6495bc3a"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-entering_vehicle-receipt.json",
+        "sha256": "6e93a6af50d6dbd79bcc6e83e5c5fbd5069125962dba46c6b1b238fb6ae1c29d",
+        "log": "cpu-compat-analysis-entering_vehicle.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-entering_vehicle.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-entering_vehicle-receipt.json",
+        "sha256": "f9a4e887464b9d9ba08b20714d001bccbba19c8574b7f83dc1854f8edb26ee4e"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-entering_vehicle.log",
+        "sha256": "1a09b9eee2d5271f6180719d6d35f17b1f739c6cf1b2ea66529cacbe101531ea"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-entering_vehicle.log",
+        "test_log_sha256": "1a09b9eee2d5271f6180719d6d35f17b1f739c6cf1b2ea66529cacbe101531ea"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/entering_vehicle-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-entering_vehicle-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-entering_vehicle.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/entering_vehicle-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/entering_vehicle-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-entering_vehicle.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes",
       "kind": "delivery",
       "construction": "construction-two_available_lanes.json",
-      "construction_sha256": "d97d0cd2e7cbe53cd10ce5b72fe72157c0a9504d0a6e9daad5b7b45b8d4c878a",
+      "construction_sha256": "c364b452f863d44023af8d7769b6b8fdc94304954d200ae29aeb42b1647e1262",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/two_available_lanes-recipe.json",
       "measurement_contract": "diagnostics/two_available_lanes-measurement-contract.json",
       "measurement_procedure": {
@@ -369,7 +635,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -416,16 +683,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "d97d0cd2e7cbe53cd10ce5b72fe72157c0a9504d0a6e9daad5b7b45b8d4c878a",
+        "construction_sha256": "c364b452f863d44023af8d7769b6b8fdc94304954d200ae29aeb42b1647e1262",
         "log": "cpu-offline-two_available_lanes.log",
-        "log_sha256": "8918d7e6769038512486c942e87bfb574d2cffdf0844790576008c40eb491b07"
+        "log_sha256": "38e2316011abb5bb30335d2eb3561f53055d269d9594b5632efa3979806e6291"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-two_available_lanes-receipt.json",
+        "sha256": "025626856f858fadf167dd0bc62fdb4c084fe19a0f9a505791d474c7968db7df",
+        "log": "cpu-compat-analysis-two_available_lanes.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-two_available_lanes.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-two_available_lanes-receipt.json",
+        "sha256": "1ad7f8e956f0e0c186d0f8ebfd1d81ded6c4fbea112288be5c675c1d96fb327b"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-two_available_lanes.log",
+        "sha256": "36f490d522693e60561f305345abc212922647e10cc99247e36835d3f12e6c53"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-two_available_lanes.log",
+        "test_log_sha256": "36f490d522693e60561f305345abc212922647e10cc99247e36835d3f12e6c53"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/two_available_lanes-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-two_available_lanes-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-two_available_lanes.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/two_available_lanes-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/two_available_lanes-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-two_available_lanes.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in",
       "kind": "delivery",
       "construction": "construction-lead_below_80in.json",
-      "construction_sha256": "cb0968d1265afb5aeca0d11082f35a5ca645c7a25cf645ac81b2d4db99c5001d",
+      "construction_sha256": "9282ef47d54d0c2dbca8e85f4d3df36b520a9e9befb51c1507d7970b55614d1c",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/lead_below_80in-recipe.json",
       "measurement_contract": "diagnostics/lead_below_80in-measurement-contract.json",
       "measurement_procedure": {
@@ -435,7 +753,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -482,16 +801,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "cb0968d1265afb5aeca0d11082f35a5ca645c7a25cf645ac81b2d4db99c5001d",
+        "construction_sha256": "9282ef47d54d0c2dbca8e85f4d3df36b520a9e9befb51c1507d7970b55614d1c",
         "log": "cpu-offline-lead_below_80in.log",
-        "log_sha256": "1976d0e96b57b1278c3107932504905ab541e49823823027024fdccc5f20863d"
+        "log_sha256": "446eb247fd2976e4fd3a52c01c56fcf693ffa7f4c957335b0fa287cc1ca96115"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-lead_below_80in-receipt.json",
+        "sha256": "ae1dfbfe8b2b73b3b022b514ee425ae8dac3e26c92cef0ddb34eb7cf438c4cc6",
+        "log": "cpu-compat-analysis-lead_below_80in.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-lead_below_80in.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-lead_below_80in-receipt.json",
+        "sha256": "be113f362c92466f63dc7d809f0a68ab63ea10f81207d3853a34ba704078f95a"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-lead_below_80in.log",
+        "sha256": "ff6f494cf88ae2b27fbd13ed8246633d851aaf7afa28bbe8558c30b0e4232d78"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-lead_below_80in.log",
+        "test_log_sha256": "ff6f494cf88ae2b27fbd13ed8246633d851aaf7afa28bbe8558c30b0e4232d78"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/lead_below_80in-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-lead_below_80in-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-lead_below_80in.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/lead_below_80in-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/lead_below_80in-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-lead_below_80in.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in",
       "kind": "delivery",
       "construction": "construction-subject_below_80in.json",
-      "construction_sha256": "1f169a54287b65e99493029b612aa24f895f83b9c9c632b9b32d975ec8f57dca",
+      "construction_sha256": "b69c9e6fc864c71acb38f0e710279dbb35c652431be0c4cecdb83d054c1e88b5",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/subject_below_80in-recipe.json",
       "measurement_contract": "diagnostics/subject_below_80in-measurement-contract.json",
       "measurement_procedure": {
@@ -501,7 +871,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -548,16 +919,67 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "1f169a54287b65e99493029b612aa24f895f83b9c9c632b9b32d975ec8f57dca",
+        "construction_sha256": "b69c9e6fc864c71acb38f0e710279dbb35c652431be0c4cecdb83d054c1e88b5",
         "log": "cpu-offline-subject_below_80in.log",
         "log_sha256": "133f1b2c42d0516d4eb7bd6c02607762615172186bc4c39d4a85d6d733a2fa79"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-subject_below_80in-receipt.json",
+        "sha256": "cbe360db7aa44636cd5b979ac3a55ec0cf9b6917df12764115ff0ad904652151",
+        "log": "cpu-compat-analysis-subject_below_80in.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-subject_below_80in.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-subject_below_80in-receipt.json",
+        "sha256": "c34ca84bd45e093477ba8a48cd608780ee0da308bb01657a3d3bd5a5a0687c26"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-subject_below_80in.log",
+        "sha256": "ac4cac77cfb25edf27ce48aab8c3f94f8d69071264007a832434a8cb1984fc20"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-subject_below_80in.log",
+        "test_log_sha256": "ac4cac77cfb25edf27ce48aab8c3f94f8d69071264007a832434a8cb1984fc20"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/subject_below_80in-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-subject_below_80in-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-subject_below_80in.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/subject_below_80in-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/subject_below_80in-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-subject_below_80in.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     },
     {
       "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained",
       "kind": "delivery",
       "construction": "construction-conditions_constrained.json",
-      "construction_sha256": "310b8d75f498909909112b0b11efec7460c0d3c3dcc189590c75381a5a20c6d2",
+      "construction_sha256": "4b914d0f69b0a40cc060ea15779855519f09c26cb0cffa4f3c10d3825aaefaea",
       "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/diagnostics/conditions_constrained-recipe.json",
       "measurement_contract": "diagnostics/conditions_constrained-measurement-contract.json",
       "measurement_procedure": {
@@ -567,7 +989,8 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C149752_REVIEWED_PACKET"
       },
       "acquisition": {
         "sealed_native_original_frames": {
@@ -614,9 +1037,60 @@
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
-        "construction_sha256": "310b8d75f498909909112b0b11efec7460c0d3c3dcc189590c75381a5a20c6d2",
+        "construction_sha256": "4b914d0f69b0a40cc060ea15779855519f09c26cb0cffa4f3c10d3825aaefaea",
         "log": "cpu-offline-conditions_constrained.log",
         "log_sha256": "6b46c06b1939c3f542e263024f986c9a8042357f79cb783b6845116c13a3cb93"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-conditions_constrained-receipt.json",
+        "sha256": "ff740d8a55bfbd865354b07e6309cdbf673dfd814134fca2506dba7196bc2c8d",
+        "log": "cpu-compat-analysis-conditions_constrained.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-conditions_constrained.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-conditions_constrained-receipt.json",
+        "sha256": "eb12e48bdd68aec31ed02ddffb34574062bd369a7e064eb1605561356130208c"
+      },
+      "saved_replay": {
+        "log": "cpu-saved-conditions_constrained.log",
+        "sha256": "5ed853c91d0b32bafb73847302e640793b71c3e03ff417d19889558c720cbdc3"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained --attempt $ATTEMPT --processed $PROCESSED --output $AUDIT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-conditions_constrained.log",
+        "test_log_sha256": "5ed853c91d0b32bafb73847302e640793b71c3e03ff417d19889558c720cbdc3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f24e904b53e04871a83a3232021b626767879da07bbf2a2a3bc6023644e033c7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/conditions_constrained-positive.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/compat-conditions_constrained-v5",
+        "test_exit_code": 0,
+        "test_log": "delivery-positive-conditions_constrained.log",
+        "test_log_sha256": "bde294368bfed77c2cddf8cec271d398aee9cdbab3b26e1059281bd33adb0120",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/unused-synthetic-processed.json --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/conditions_constrained-negative.json --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c149752/delivery-protocol/conditions_constrained-missing-view",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: approach.mkv",
+        "negative_log": "delivery-negative-conditions_constrained.log",
+        "negative_log_sha256": "e3f3a0d04842d335c2b06a15a58674317fb22d3cabf845c9c1c19f4aea513b6c",
+        "diagnostic_scope": "Synthetic protocol only; no physical or pixel acceptance claimed"
       }
     }
   ],

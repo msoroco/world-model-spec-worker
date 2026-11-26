@@ -78,17 +78,45 @@ def audit_attempt(attempt, processed, case_id, decoder=decode):
         'legal_status': 'unresolved'}
 
 
+def audit_diagnostic_protocol(attempt, case_id):
+    """Exercise source joins and decoder receipt without asserting Native acceptance."""
+    attempt = Path(attempt)
+    diagnostic, source = check_source(attempt, case_id)
+    require(diagnostic, 'marked synthetic diagnostic source required')
+    history = rows(required(attempt, 'original-truck-history.jsonl'))
+    check_joins(attempt, history)
+    measured = audit_original_frames({'source_kind': 'sealed_native_original_frames',
+        'case_id': case_id, 'frames': history}, case_id=case_id)
+    receipt = json.loads(required(attempt, 'compatibility.json').read_text(encoding='utf-8'))
+    require(receipt.get('passed') is True and receipt.get('case_id') == case_id
+            and 'final_decode' in receipt.get('checks', []),
+            'pinned full video decode receipt missing')
+    sources = {}
+    for view in VIEWS:
+        name = view + '.mkv'
+        sources[name] = hashlib.sha256(required(attempt, name).read_bytes()).hexdigest()
+    return {'format': 'c149752-diagnostic-delivery-protocol', 'case_id': case_id,
+            'original_frame_count': measured['original_frame_count'],
+            'video_source_hashes': {view: sources[view + '.mkv'] for view in VIEWS},
+            'source_hashes': source, 'diagnostic_fixture': True,
+            'physical_acceptance_claimed': False, 'actual_pixels_visible': 'unreviewed',
+            'legal_status': 'unresolved'}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--processed', required=True)
     parser.add_argument('--case', required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--diagnostic-fixture', action='store_true')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('retain prior truck delivery audit')
-    args.output.write_text(json.dumps(audit_attempt(args.attempt, args.processed,
-                                                    args.case), indent=2) + '\n',
+    report = (audit_diagnostic_protocol(args.attempt, args.case)
+              if args.diagnostic_fixture else
+              audit_attempt(args.attempt, args.processed, args.case))
+    args.output.write_text(json.dumps(report, indent=2) + '\n',
                            encoding='utf-8')
 
 

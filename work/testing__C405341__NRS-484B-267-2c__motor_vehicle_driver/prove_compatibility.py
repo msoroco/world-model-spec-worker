@@ -27,7 +27,7 @@ def run_one(case, candidate=None):
     name = case.suffix
     case_id = ASSIGNMENT + '__' + name
     label = name + ('-fallback1' if candidate else '')
-    output = SCRATCH / ('compat-' + label + '-v3')
+    output = SCRATCH / ('compat-' + label + '-v5')
     if (output / 'compatibility.json').is_file():
         result = json.loads((output / 'compatibility.json').read_text())
         if result.get('case_id') == case_id and result.get('passed') is True:

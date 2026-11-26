@@ -52,7 +52,9 @@ def check_source(root, case_id):
         if (revision.get("construction_sha256") != sha(required(root, "construction.json"))
                 or revision.get("runner_sha256") != sha(required(root, "runner.py"))):
             raise ValueError("sealed Native implementation changed")
-        return False, {HISTORY: sha(required(root, HISTORY)), "capture-seal.json": sha(seal_path)}
+        return False, {HISTORY: sha(required(root, HISTORY)),
+                       "emergency-site.json": sha(required(root, "emergency-site.json")),
+                       "camera-frame-map.jsonl": sha(required(root, "camera-frame-map.jsonl"))}
     note_path = required(root, "diagnostic-source-note.json")
     note = json.loads(note_path.read_text(encoding="utf-8"))
     if (note.get("source_kind") != "synthetic_diagnostic_fixture" or
@@ -60,7 +62,8 @@ def check_source(root, case_id):
             note.get("case_id") != case_id):
         raise ValueError("explicit synthetic emergency diagnostic provenance required")
     return True, {HISTORY: sha(required(root, HISTORY)),
-                  "diagnostic-source-note.json": sha(note_path)}
+                  "emergency-site.json": sha(required(root, "emergency-site.json")),
+                  "camera-frame-map.jsonl": sha(required(root, "camera-frame-map.jsonl"))}
 
 
 def check_joins(root, history):
@@ -105,7 +108,7 @@ def measure_case(case, site, frames):
         raise ValueError("movement comparison has no actual target motion")
     if case.light_request == "qualified_inactive" and any(f["flashing_light_on"] for f in frames):
         raise ValueError("inactive flashing-light comparison has active lights")
-    if case.light_request.endswith("active") and not any(f["flashing_light_on"] for f in frames):
+    if case.light_request != "qualified_inactive" and not any(f["flashing_light_on"] for f in frames):
         raise ValueError("active flashing-light comparison has no active lights")
     if case.officer_direction and not any(f["officer_direction"] for f in frames):
         raise ValueError("officer-direction comparison lacks original direction")
@@ -138,7 +141,7 @@ def analyze(root):
         "driver_hand_signal": lambda row: row["driver_hand_signal_visible"],
         "ego_approach": lambda row: {"xy": row["ego_xy"], "speed_mps": row["ego_speed_mps"]},
         "ego_response": lambda row: {"brake": row["ego_brake"], "speed_mps": row["ego_speed_mps"]},
-        "officer_direction": lambda row: row["officer_direction"],
+        "officer_direction": lambda row: row["officer_direction"] or "none",
         "video_four_views": lambda row: row["frame"],
     }
     evidence = []
