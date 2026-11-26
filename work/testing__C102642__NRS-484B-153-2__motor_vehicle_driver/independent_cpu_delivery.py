@@ -18,7 +18,10 @@ KINDS = {"open_near_overlap": ("open", "left"),
          "open_near_clear": ("open", "left"),
          "open_far_side": ("open", "right"),
          "board_near": ("board", "left"),
-         "alight_near": ("alight", "left")}
+         "alight_near": ("alight", "left"),
+         "door_interference_physical_range-0000": ("open", "left"),
+         "door_interference_physical_range-0001": ("open", "left"),
+         "door_interference_physical_range-0002": ("open", "left")}
 VIDEOS = ("overview.mkv", "approach.mkv", "reference_corner.mkv",
           "driver_reference.mkv")
 

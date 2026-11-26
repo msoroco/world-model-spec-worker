@@ -47,8 +47,12 @@ class AnalysisTest(CaptureTest):
         self.assertTrue(report['analysis_complete'])
         self.assertEqual(result['provenance_kind'], 'synthetic_fixture')
         self.assertFalse(result['physical_acceptance_claimed'])
-        self.assertEqual(len(result['recording_evidence']), 7)
-        self.assertEqual(len(list((self.attempt / 'channels').glob('*.jsonl'))), 6)
+        self.assertEqual(len(result['recording_evidence']), 9)
+        self.assertIn('stop_reference_front_signed_distance',
+                      {item['name'] for item in result['recording_evidence']})
+        self.assertIn('directed_conflict_release_delay',
+                      {item['name'] for item in result['recording_evidence']})
+        self.assertEqual(len(list((self.attempt / 'channels').glob('*.jsonl'))), 8)
 
     def test_reject_tampered_original_history(self):
         original = self.attempt / 'original-attempt' / 'history.jsonl'

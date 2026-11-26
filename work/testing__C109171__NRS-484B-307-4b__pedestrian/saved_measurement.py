@@ -20,6 +20,16 @@ EXPECTED = {
     'arrow_early_entry': (True, False),
     'arrow_walk_entry': (True, True),
     'arrow_walk_wait': (False, True),
+    'permission_applicability-0000': (True, True),
+    'permission_applicability-0001': (True, True),
+    'permission_applicability-0002': (True, True),
+    'permission_applicability-0003': (True, True),
+}
+SWEEP_ENTRY_DELAY_TICKS = {
+    'permission_applicability-0000': 20,
+    'permission_applicability-0001': 80,
+    'permission_applicability-0002': 40,
+    'permission_applicability-0003': 60,
 }
 
 
@@ -54,6 +64,9 @@ def measure_saved(root, site_ref, events_ref, case_id, expected_frames=900):
     want_entry, want_walk = EXPECTED[suffix]
     entry = measured['first_highway_entry']
     _require((entry is not None) == want_entry, 'entry behavior differs from exact case')
+    if suffix in SWEEP_ENTRY_DELAY_TICKS:
+        _require(entry['frame'] >= SWEEP_ENTRY_DELAY_TICKS[suffix],
+                 'sweep entry precedes authored controller delay')
     walk_frames = []
     for index, row in enumerate(rows):
         _require(row.get('frame') == index, 'frame identity mismatch')
@@ -83,6 +96,7 @@ def measure_saved(root, site_ref, events_ref, case_id, expected_frames=900):
         'fps': 20,
         'sole_green_arrow_frames': measured['sole_green_arrow_frames'],
         'first_highway_entry': entry,
+        'first_highway_entry_time_s': entry['frame'] / 20 if entry is not None else None,
         'separate_walk_first_frame': walk_frames[0] if walk_frames else None,
         'separate_walk_frame_count': len(walk_frames),
         'original_site_sha256': site_ref['sha256'],

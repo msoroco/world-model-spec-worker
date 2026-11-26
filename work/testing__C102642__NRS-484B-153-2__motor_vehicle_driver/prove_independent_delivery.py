@@ -12,9 +12,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work/c102642-owner"
+SCRATCH = REPO / ".runtime-work/c102642-new"
 KINDS = ("open_near_overlap", "open_near_clear", "open_far_side",
-         "board_near", "alight_near")
+         "board_near", "alight_near", "door_interference_physical_range-0000",
+         "door_interference_physical_range-0001", "door_interference_physical_range-0002")
 
 
 def sha(path: Path) -> str:
@@ -27,8 +28,8 @@ def prove() -> None:
     for kind in KINDS:
         case = HERE / "cases" / kind
         case_id = HERE.name + "__" + kind
-        positive = SCRATCH / f"compat-{kind}-v5"
-        negative = SCRATCH / f"independent-negative-{kind}-v5"
+        positive = SCRATCH / f"compat-{kind}-v7"
+        negative = SCRATCH / f"independent-negative-{kind}-v8"
         if negative.exists():
             raise ValueError("Use a fresh negative attempt: " + str(negative))
         shutil.copytree(positive, negative, copy_function=os.link)

@@ -51,7 +51,8 @@ def prove() -> None:
         report = output / (ident + "-cpu-audit.json")
         command = [sys.executable, str(HERE / "compare_saved.py"),
                    "--plan", str(HERE / "case-plan.json"),
-                   "--spec", str(spec), "--output", str(report)]
+                   "--spec", str(spec), "--expected-comparison-id", ident,
+                   "--output", str(report)]
         positive = subprocess.run(command, cwd=REPO, env=env,
                                   capture_output=True, text=True)
         (output / (ident + "-cpu-audit.log")).write_text(positive.stdout + positive.stderr)
@@ -64,6 +65,7 @@ def prove() -> None:
         negative = subprocess.run([sys.executable, str(HERE / "compare_saved.py"),
                                    "--plan", str(HERE / "case-plan.json"),
                                    "--spec", str(negative_spec),
+                                   "--expected-comparison-id", ident,
                                    "--output", str(scratch / (ident + "-negative-output.json"))],
                                   cwd=REPO, env=env, capture_output=True, text=True)
         log = output / (ident + "-missing-source.log")

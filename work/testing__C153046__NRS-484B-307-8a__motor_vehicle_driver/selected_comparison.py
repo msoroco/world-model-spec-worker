@@ -15,6 +15,8 @@ DIFFERENCE = {
     'receiving_direction': 'receiving_direction',
     'pedestrian_yield': 'conflict_response_request',
     'traffic_yield': 'conflict_response_request',
+    'engineering_stop_margin': 'stop_hold_margin_m',
+    'engineering_yield_release': 'yield_release_delay_s',
 }
 
 
@@ -39,10 +41,10 @@ def audit(comparison_id: str, left: Path, right: Path, allow_diagnostic: bool) -
     changed = {key for key in variables[0] if variables[0][key] != variables[1][key]}
     if changed != {DIFFERENCE[comparison_id]}:
         raise ValueError('comparison requested variables differ beyond declared axis')
+    source_hashes = [json.loads((path / 'original-attempt/site-packet.json').read_text())['sources']
+                     for path in attempts]
     for name in ('opendrive', 'official_signal', 'stop_reference'):
-        left_file = attempts[0] / 'original-attempt/source-review' / (name + '.txt')
-        right_file = attempts[1] / 'original-attempt/source-review' / (name + '.txt')
-        if sha(left_file) != sha(right_file):
+        if source_hashes[0][name]['sha256'] != source_hashes[1][name]['sha256']:
             raise ValueError('comparison fixed source changed: ' + name)
     if comparison_id != 'receiving_direction' and inventories[0]['site_sha256'] != inventories[1]['site_sha256']:
         raise ValueError('comparison fixed site changed')
@@ -53,7 +55,7 @@ def audit(comparison_id: str, left: Path, right: Path, allow_diagnostic: bool) -
     return {'format': 'worker-selected-red-left-comparison-audit',
             'comparison_id': comparison_id, 'case_ids': cases,
             'source_custody': records, 'fixed_source_sha256': {
-                name: sha(attempts[0] / 'original-attempt/source-review' / (name + '.txt'))
+                name: source_hashes[0][name]['sha256']
                 for name in ('opendrive', 'official_signal', 'stop_reference')},
             'requested_difference': DIFFERENCE[comparison_id],
             'diagnostic_fixture': any(row['diagnostic_fixture'] for row in records),

@@ -88,6 +88,21 @@ class Adapter:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_sweep_rejects_unreviewed_route_before_native_access(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            survey = base / "survey.json"
+            survey.write_text(json.dumps(packet()))
+            digest = hashlib.sha256(survey.read_bytes()).hexdigest()
+            class NoNativeAccess:
+                def map_sha256(self):
+                    raise AssertionError("Native map accessed before source preflight")
+            with self.assertRaisesRegex(ValueError, "reviewed passing clearance route source"):
+                native.capture(NoNativeAccess(), survey_path=survey,
+                               survey_sha256=digest,
+                               case_id=ROOT.name + "__door_interference_physical_range-0000",
+                               output=base / "out")
+
     def test_actor_identity_uses_native_id_not_python_rendering(self):
         actor = type("CarlaActor", (), {"id": 42,
                                         "__str__": lambda self: "<actor wrapper>"})()
@@ -230,6 +245,8 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_complete_original_capture(self):
         for key in native.CASE_ACTIONS:
+            if key.startswith("door_interference_physical_range-"):
+                continue
             with self.subTest(key=key):
                 self.run_case(case_key=key)
 

@@ -45,5 +45,13 @@ class ControlTest(unittest.TestCase):
         follower=mod.RouteFollower('arrow_early_entry',self.site)
         with self.assertRaisesRegex(ValueError,'nonfinite walker position'):
             follower.control((float('inf'),1),self.control,self.vector)
+    def test_four_cited_sweep_controller_delays_are_distinct(self):
+        for index in range(4):
+            suffix='permission_applicability-'+str(index).zfill(4)
+            follower=mod.RouteFollower(suffix,self.site)
+            delay=mod.SWEEP_ENTRY_DELAY_TICKS[suffix]
+            for _ in range(delay):
+                self.assertEqual(follower.control((-2,1),self.control,self.vector)['speed'],0)
+            self.assertEqual(follower.control((-2,1),self.control,self.vector)['speed'],1.2)
 
 if __name__=='__main__':unittest.main()

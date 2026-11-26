@@ -13,7 +13,9 @@ from saved_measurement import measure_saved
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-KINDS = ('arrow_wait', 'arrow_early_entry', 'arrow_walk_entry', 'arrow_walk_wait')
+KINDS = ('arrow_wait', 'arrow_early_entry', 'arrow_walk_entry', 'arrow_walk_wait',
+         'permission_applicability-0000', 'permission_applicability-0001',
+         'permission_applicability-0002', 'permission_applicability-0003')
 FIXTURES = ('complete_motion', 'incomplete_motion', 'missing_evidence')
 EVENTS = ['capture_finished', 'encoders_closed', 'restoration_verified',
           'native_exit', 'owner_released', 'saved_processing_started']
@@ -50,7 +52,10 @@ def fixture(case_id, fixture_kind, output):
     elif fixture_kind == 'incomplete_motion':
         altered = [dict(row) for row in original_events]
         # Reverse the observed entry outcome while retaining the source clock.
-        altered[-1]['pedestrian_xy'] = [-0.5, 1.0] if kind.endswith('entry') else [1.0, 1.0]
+        if kind.endswith('entry') or kind.startswith('permission_applicability-'):
+            for row in altered: row['pedestrian_xy'] = [-0.5, 1.0]
+        else:
+            altered[-1]['pedestrian_xy'] = [1.0, 1.0]
         changed = root / 'incomplete-events.json'
         write(changed, altered)
         changed_ref = {'path': changed.name, 'sha256': sha(changed)}
@@ -74,7 +79,7 @@ def fixture(case_id, fixture_kind, output):
                        'status': status, 'method': 'source_bound_sampled_wait_or_entry_goal',
                        'sources': refs}}, 'maneuver_completed': status == 'met',
                    'realized_observables': realized,
-                   'scope': 'Three-frame CPU outcome classification only; 900-frame Native review pending'})
+                   'scope': 'Synthetic CPU outcome classification only; 900-frame Native review pending'})
     print(fixture_kind, status, sha(output))
 
 

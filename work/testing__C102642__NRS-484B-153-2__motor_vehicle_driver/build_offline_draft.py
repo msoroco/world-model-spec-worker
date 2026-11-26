@@ -7,7 +7,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-KINDS = ("open_near_overlap", "open_near_clear", "open_far_side", "board_near", "alight_near")
+KINDS = ("open_near_overlap", "open_near_clear", "open_far_side", "board_near", "alight_near",
+         "door_interference_physical_range-0000", "door_interference_physical_range-0001",
+         "door_interference_physical_range-0002")
 RECORDING_DESCRIPTION = {
     "channels": [
         {"name": name, "unit": unit, "sampling_rate_hz": 20,
@@ -32,6 +34,14 @@ RECORDING_DESCRIPTION = {
             ("camera_frame_map", "structured"))],
     "context_inputs": [],
     "limitations": ["Observed proximity and traffic response do not decide statutory interference."]}
+
+SWEEP_RECORDING_DESCRIPTION = json.loads(json.dumps(RECORDING_DESCRIPTION))
+SWEEP_RECORDING_DESCRIPTION["channels"].append({
+    "name": "door_body_clearance_m", "unit": "m", "sampling_rate_hz": 20,
+    "method": "original same-frame door and moving-body polygon distance",
+    "time_window": "all 900 original world ticks; original door/body outline in every frame",
+    "reference_frame": "original CARLA world frame",
+    "uncertainty": "requested clearance may differ from observed; legal interference unresolved"})
 
 RUNNER = '''"""Exact door-action diagnostic entrypoint."""
 import argparse
@@ -174,7 +184,9 @@ def build() -> None:
                   "cameras": ["front", "rear", "left", "right"],
                   "diagnostic_only": True, "required_atoms": [],
                   "case": {"case_id": case,
-                           "recording_description": RECORDING_DESCRIPTION}}
+                           "recording_description": (SWEEP_RECORDING_DESCRIPTION if kind.startswith(
+                               "door_interference_physical_range-") else RECORDING_DESCRIPTION)}}
+        description = config["case"]["recording_description"]
         files = {"runner.py": RUNNER,
                  "site_contract.py": (HERE / "site_contract.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
@@ -193,7 +205,7 @@ def build() -> None:
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case,
                         "entrypoint": "runner.py", "diagnostic_only": True,
-                        "recording_description": RECORDING_DESCRIPTION,
+                        "recording_description": description,
                         "files": [{"path": name, "content": content} for name, content in files.items()]}
         file = HERE / ("construction-" + kind + ".json")
         file.write_text(json.dumps(construction, indent=2) + "\n")

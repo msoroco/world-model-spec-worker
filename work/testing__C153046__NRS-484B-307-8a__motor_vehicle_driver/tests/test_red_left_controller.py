@@ -82,6 +82,24 @@ class ControllerTests(unittest.TestCase):
                                             participants=[participant('traffic', True)]))['action'],
                          'turn_left_request')
 
+    def test_directed_release_grid_request_uses_original_frame_time(self):
+        c = mod.RedLeftController('yield_grid',
+                                  variables(conflict_response_request='pedestrian_yield'),
+                                  site(), 1.0, 0.5)
+        busy = [participant('pedestrian', True)]
+        clear = [participant('pedestrian', False)]
+        self.assertEqual(c.step(observation(100, 0.5, 0.0, participants=busy))['action'],
+                         'hold_before_reference')
+        self.assertEqual(c.step(observation(101, 0.5, 0.0, participants=busy))['action'],
+                         'hold_for_directed_conflict')
+        for frame in range(102, 111):
+            self.assertEqual(c.step(observation(frame, 0.5, 0.0, participants=clear))['action'],
+                             'hold_for_directed_conflict_release')
+        self.assertEqual(c.step(observation(111, 0.5, 0.0, participants=clear))['action'],
+                         'turn_left_request')
+        with self.assertRaisesRegex(ValueError, 'outside tested range'):
+            mod.RedLeftController('yield_grid', variables(), site(), 1.0, 2.5)
+
     def test_exact_site_lane_signal_and_time_are_required(self):
         with self.assertRaisesRegex(ValueError, 'receiving road'):
             mod.RedLeftController('two_way', variables(receiving_direction='two_way'), site())

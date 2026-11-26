@@ -186,10 +186,16 @@ class DeliveryMeasureTests(unittest.TestCase):
             spec = {"comparison_id": "door_side", "sources": sources}
             spec_path.write_text(json.dumps(spec))
             command = [sys.executable, str(SOURCE.with_name("compare_saved.py")),
-                       "--plan", str(plan), "--spec", str(spec_path), "--output", str(output)]
+                       "--plan", str(plan), "--spec", str(spec_path),
+                       "--expected-comparison-id", "door_side", "--output", str(output)]
             self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
             self.assertEqual(json.loads(output.read_text())["pair_audits"][0]
                              ["deliberate_difference"], "act_side")
+            mismatch = command.copy()
+            mismatch[mismatch.index("door_side")] = "selected_act"
+            rejected = subprocess.run(mismatch, capture_output=True, text=True)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn("comparison ID differs from dispatched queue row", rejected.stderr)
             spec["sources"] = list(reversed(sources))
             spec_path.write_text(json.dumps(spec))
             self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
@@ -197,6 +203,11 @@ class DeliveryMeasureTests(unittest.TestCase):
             spec["sources"][1] = {**sources[1], "sha256": "0" * 64}
             spec_path.write_text(json.dumps(spec))
             self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+
+    def test_queue_comparison_commands_bind_exact_ids(self):
+        proposal = json.loads((SOURCE.parent / "gpu-queue-proposal.json").read_text())
+        for row in proposal["comparison_audit_commands"]:
+            self.assertIn("--expected-comparison-id " + row["comparison_id"], row["command"])
 
 
 if __name__ == "__main__":

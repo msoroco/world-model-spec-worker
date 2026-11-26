@@ -9,7 +9,7 @@ import json
 import zipfile
 from pathlib import Path
 
-from red_left_measurement import measure_exact
+from red_left_measurement import measure_exact, validate_site, _dot, _xy
 
 
 def required(root: Path, relative: str) -> Path:
@@ -88,6 +88,23 @@ def build(attempt: Path) -> tuple[dict, dict]:
                 image.get('time_s') != native['time_s']:
             raise ValueError('original red-left timestamp/frame join differs')
     measurement = measure_exact(packet, history, case, attempt / 'case-plan.json')
+    site = validate_site(packet, config['case']['draft_variables']['receiving_direction'])
+    distance_by_frame = {}
+    delay_by_frame = {}
+    last_conflict_time = None
+    first_release_delay = None
+    for row in rows:
+        native = row['native_frame']
+        front = max(_dot(tuple(_xy(point, 'ego body')[i] - site['reference'][i]
+                               for i in (0, 1)), site['direction'])
+                    for point in native['ego']['body_vertices_xy'])
+        distance_by_frame[native['frame']] = site['stop_progress_m'] - front
+        if any(actor['conflict_zone_occupied'] for actor in native['directed_participants']):
+            last_conflict_time = native['time_s']
+        if (first_release_delay is None and last_conflict_time is not None and
+                row.get('control_request', {}).get('action') == 'turn_left_request'):
+            first_release_delay = native['time_s'] - last_conflict_time
+        delay_by_frame[native['frame']] = first_release_delay or 0.0
     channels = attempt / 'channels'
     if channels.exists():
         raise ValueError('refusing to overwrite prior red-left channels')
@@ -101,6 +118,8 @@ def build(attempt: Path) -> tuple[dict, dict]:
         'directed_conflict': lambda row: any(
             actor['conflict_zone_occupied'] for actor in
             row['native_frame']['directed_participants']),
+        'stop_reference_front_signed_distance': lambda row: distance_by_frame[row['native_frame']['frame']],
+        'directed_conflict_release_delay': lambda row: delay_by_frame[row['native_frame']['frame']],
     }
     evidence = []
     description = construction['recording_description']
@@ -138,6 +157,23 @@ def build(attempt: Path) -> tuple[dict, dict]:
               'limitations': ['Original signal and conflict evidence require review.',
                               'Diagnostic fixture is not a physical or legal finding.']}
     diagnostic = inventory.get('diagnostic_fixture') is True
+    realized = {}
+    plan_case = next(item for item in json.loads((attempt / 'case-plan.json').read_text())['cases']
+                     if item['case_id'] == case)
+    if plan_case.get('sweep_id'):
+        proposal = json.loads((attempt / 'proposals/cases.json').read_text()) if \
+            (attempt / 'proposals/cases.json').is_file() else None
+        definitions = (next(item for item in proposal['cases'] if item['case_id'] == case)
+                       ['sweep_measurements'] if proposal else config.get('sweep_measurements', []))
+        for axis in definitions:
+            name = axis['observable']
+            values = [observed[name](row) for row in rows]
+            statistic = axis['measurement']['statistic']
+            realized[name] = {**axis['measurement'], 'unit': axis['unit'],
+                              'value': min(values) if statistic == 'min' else values[-1],
+                              'reference': 'channels/' + name + '.jsonl',
+                              'sample_window_s': [rows[0]['native_frame']['time_s'],
+                                                  rows[-1]['native_frame']['time_s']]}
     result = {'case_id': case, 'measured_values': value,
               'target_checks': [{'target': 'original stop, lane and directed conflict',
                                  'requested': config['case']['draft_variables'],
@@ -154,7 +190,7 @@ def build(attempt: Path) -> tuple[dict, dict]:
                                     'driver_reference')],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': description, 'recording_evidence': evidence,
-              'realized_observables': {},
+              'realized_observables': realized,
               'provenance_kind': 'synthetic_fixture' if diagnostic else 'native',
               'diagnostic_fixture': diagnostic, 'physical_acceptance_claimed': False}
     return report, result

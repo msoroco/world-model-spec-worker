@@ -67,7 +67,8 @@ def _native_result(root: Path, source: dict, measurement: dict, rows: list):
         'official_sole_arrow': lambda row: {'head_id': row['vehicle_head_id'],
                                             'lit_aspects': row['vehicle_head_lit_aspects']},
         'camera_frame_map': lambda row: {'frame': row['frame'],
-                                         'original_map': source['frame_map_ref']['path']}}
+                                         'original_map': source['frame_map_ref']['path']},
+        'first_highway_entry_time_s': lambda row: measurement['first_highway_entry_time_s']}
     evidence = []
     for item in description['channels']:
         name = item['name']
@@ -102,7 +103,15 @@ def _native_result(root: Path, source: dict, measurement: dict, rows: list):
             'video_references': [name + '.mkv' for name in CAMERAS],
             'video_frame_map_reference': 'video_frames.jsonl',
             'recording_description': description, 'recording_evidence': evidence,
-            'realized_observables': {}}
+            'realized_observables': (
+                {'first_highway_entry_time_s': {
+                    'value': measurement['first_highway_entry_time_s'], 'unit': 's',
+                    'method': 'original 20 Hz walker outside-to-inside bracket and four-camera frame join',
+                    'time_window': 'all 900 original world ticks', 'statistic': 'first',
+                    'reference': 'channels/first_highway_entry_time_s.jsonl',
+                    'sample_window_s': [rows[0]['sim_time_seconds'], rows[-1]['sim_time_seconds']]}}
+                if measurement.get('first_highway_entry_time_s') is not None
+                and any(item['name'] == 'first_highway_entry_time_s' for item in description['channels']) else {})}
 
 
 def analyze(root: Path, output: Path, report_only=False):

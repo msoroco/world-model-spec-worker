@@ -25,7 +25,7 @@ def main() -> None:
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.removeprefix(ROOT.name + '__')
-        output = REPO / '.runtime-work/c153046-nov25d' / ('offline-' + suffix + '-v8')
+        output = REPO / '.runtime-work/c153046-nov25d' / ('offline-' + suffix + '-v12')
         command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'), 'offline',
                    '--manifest', str(manifest_path), '--case', case,
                    '--output', str(output), '--python', str(REPO / '.venv-cpu/bin/python')]
@@ -41,7 +41,7 @@ def main() -> None:
                             'log': log.name, 'log_sha256': sha(log)}
         print('offline passed:', suffix, flush=True)
         candidate = entry['candidates'][0]
-        alternate = REPO / '.runtime-work/c153046-nov25d' / ('fallback-' + suffix + '-v4')
+        alternate = REPO / '.runtime-work/c153046-nov25d' / ('fallback-' + suffix + '-v8')
         fallback_command = command + ['--candidate', 'fallback1']
         fallback_command[fallback_command.index(str(output))] = str(alternate)
         fallback_run = subprocess.run(fallback_command, cwd=REPO, env=env, text=True,

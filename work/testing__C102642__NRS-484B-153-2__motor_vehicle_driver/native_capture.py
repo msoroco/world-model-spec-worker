@@ -83,6 +83,10 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
             observed = adapter.observe(native_id, driver, parked, passing)
             if not isinstance(observed, dict):
                 raise ValueError("original actor observation is missing")
+            if site["requested_engineering_clearance_m"] is not None and not (
+                    isinstance(observed.get("act_envelope_xy"), list) and
+                    isinstance(observed.get("passing_body_xy"), list)):
+                raise ValueError("original door and passing-body outlines are required for clearance sweep")
             observed = dict(observed)
             observed.update(frame_id=native_id, sim_time_s=episode_time_s,
                             native_elapsed_time_s=float(sim_time_s),
@@ -107,7 +111,8 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
                      "driver_id": actor_id(driver),
                      "passing_vehicle_id": actor_id(passing),
                      "traffic_route_id": packet.get("traffic_route_id", packet["lane_id"]),
-                     "camera_contract_id": "four-camera-20hz-900f"},
+                     "camera_contract_id": "four-camera-20hz-900f",
+                     "requested_engineering_clearance_m": site["requested_engineering_clearance_m"]},
                  "parked_center_xy": packet["parked_center_xy"],
                  "parked_heading_xy": packet["parked_heading_xy"],
                  "frames": frames}
@@ -116,6 +121,9 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
         observed_measurement = measure(trace, expected_case_id=case_id,
                                        expected_act=site["selected_act"],
                                        expected_side=site["selected_door_side"])
+        if site["requested_engineering_clearance_m"] is not None and not math.isfinite(
+                observed_measurement["minimum_body_gap_m"]):
+            raise ValueError("original Native clearance measurement is required")
         if observed_measurement["act_on_closest_side"] != (CASE_ACTIONS[key][1] == "near"):
             raise ValueError("observed act side differs from selected passing-side relation")
         payload = (json.dumps(trace, sort_keys=True, separators=(",", ":")) + "\n").encode()

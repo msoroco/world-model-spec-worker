@@ -11,6 +11,16 @@ CASE_BEHAVIOR = {
     'arrow_early_entry': (True, False),
     'arrow_walk_entry': (True, True),
     'arrow_walk_wait': (False, True),
+    'permission_applicability-0000': (True, True),
+    'permission_applicability-0001': (True, True),
+    'permission_applicability-0002': (True, True),
+    'permission_applicability-0003': (True, True),
+}
+SWEEP_ENTRY_DELAY_TICKS = {
+    'permission_applicability-0000': 20,
+    'permission_applicability-0001': 80,
+    'permission_applicability-0002': 40,
+    'permission_applicability-0003': 60,
 }
 
 
@@ -36,12 +46,16 @@ class RouteFollower:
         self.speed_mps = speed_mps
         self.reach_m = reach_m
         self.next_index = 1
+        self.delay_ticks = SWEEP_ENTRY_DELAY_TICKS.get(case_suffix, 0)
+        self.tick_count = 0
 
     def control(self, position_xy, walker_control_factory, vector_factory):
+        tick = self.tick_count
+        self.tick_count += 1
         x, y = map(float, position_xy)
         if not math.isfinite(x) or not math.isfinite(y):
             raise ValueError('nonfinite walker position')
-        if not CASE_BEHAVIOR[self.case_suffix][0]:
+        if not CASE_BEHAVIOR[self.case_suffix][0] or tick < self.delay_ticks:
             return walker_control_factory(direction=vector_factory(0,0,0), speed=0.0, jump=False)
         while self.next_index < len(self.route):
             goal = self.route[self.next_index]

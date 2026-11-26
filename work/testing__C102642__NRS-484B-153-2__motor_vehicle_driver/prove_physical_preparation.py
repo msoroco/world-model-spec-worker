@@ -16,12 +16,16 @@ from delivery_measure import measure
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 KINDS = ("open_near_overlap", "open_near_clear", "open_far_side",
-         "board_near", "alight_near")
+         "board_near", "alight_near", "door_interference_physical_range-0000",
+         "door_interference_physical_range-0001", "door_interference_physical_range-0002")
 ACTIONS = {"open_near_overlap": ("open", "left"),
            "open_near_clear": ("open", "left"),
            "open_far_side": ("open", "right"),
            "board_near": ("board", "left"),
-           "alight_near": ("alight", "left")}
+           "alight_near": ("alight", "left"),
+           "door_interference_physical_range-0000": ("open", "left"),
+           "door_interference_physical_range-0001": ("open", "left"),
+           "door_interference_physical_range-0002": ("open", "left")}
 FIXTURES = ("complete_motion", "incomplete_motion", "missing_evidence")
 EVENTS = ["capture_finished", "encoders_closed", "restoration_verified",
           "native_exit", "owner_released", "saved_processing_started"]

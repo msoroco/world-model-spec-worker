@@ -15,10 +15,12 @@ VARIABLES = {
 }
 
 
-def compare(plan_path: Path, spec_path: Path) -> dict:
+def compare(plan_path: Path, spec_path: Path, expected_comparison_id: str) -> dict:
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
     comparison_id = spec.get("comparison_id")
+    if comparison_id != expected_comparison_id:
+        raise ValueError("comparison ID differs from dispatched queue row")
     if comparison_id not in VARIABLES:
         raise ValueError("unknown exact comparison ID")
     rows = [row for row in plan.get("comparisons", [])
@@ -47,9 +49,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, default=Path(__file__).with_name("case-plan.json"))
     parser.add_argument("--spec", type=Path, required=True)
+    parser.add_argument("--expected-comparison-id", required=True, choices=tuple(VARIABLES))
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = compare(args.plan, args.spec)
+    result = compare(args.plan, args.spec, args.expected_comparison_id)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 

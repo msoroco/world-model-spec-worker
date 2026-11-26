@@ -31,8 +31,8 @@ def main() -> None:
     # Materialize every source before adding proof metadata to the manifest.
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        source = REPO / '.runtime-work' / ('c153046-saved-source-' + suffix + '-v4')
-        fixture = REPO / '.runtime-work' / ('c153046-saved-fixture-' + suffix + '-v4')
+        source = REPO / '.runtime-work' / ('c153046-saved-source-' + suffix + '-v7')
+        fixture = REPO / '.runtime-work' / ('c153046-saved-fixture-' + suffix + '-v7')
         if source.exists() or fixture.exists():
             raise ValueError('choose fresh saved-source version: ' + suffix)
         command('materialize', '--manifest', MANIFEST, '--case', entry['case_id'],
@@ -48,8 +48,8 @@ def main() -> None:
                 shutil.copy2(path, destination)
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        source = REPO / '.runtime-work' / ('c153046-saved-source-' + suffix + '-v4')
-        output = REPO / '.runtime-work' / ('c153046-saved-proof-' + suffix + '-v4')
+        source = REPO / '.runtime-work' / ('c153046-saved-source-' + suffix + '-v7')
+        output = REPO / '.runtime-work' / ('c153046-saved-proof-' + suffix + '-v7')
         command('process-saved', '--manifest', MANIFEST, '--case', entry['case_id'],
                 '--attempt', source, '--output', output, '--library',
                 REPO / 'runtime/library', '--validator',

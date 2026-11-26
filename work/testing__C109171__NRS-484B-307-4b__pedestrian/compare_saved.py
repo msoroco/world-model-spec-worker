@@ -9,6 +9,7 @@ from pathlib import Path
 from comparison_audit import audit_pair
 from independent_cpu_delivery import audit as audit_delivery
 from saved_measurement import measure_saved
+from permission_sweep_audit import audit as audit_permission_sweep
 
 
 def sha(path):
@@ -30,6 +31,12 @@ def summary(attempt: Path, case_id: str):
     review_ref = source.get('permission_review_ref')
     if not diagnostic and not review_ref:
         raise ValueError('original cited-device permission review missing')
+    focus = config.get('focus_provision_id')
+    disposition = None
+    if focus and not diagnostic:
+        cited = audit_permission_sweep(attempt, case_id, source['site_ref'], review_ref,
+                                       source['events_ref'], len(events), focus)
+        disposition = cited['focus_applicability']
     refs = {ref['path']: ref['sha256'] for ref in site['original_sources']}
     if not all(name in refs for name in ('map.json', 'head.json', 'device.json')):
         raise ValueError('original intersection source set differs')
@@ -45,6 +52,9 @@ def summary(attempt: Path, case_id: str):
                 'cameras': config['cameras'], 'fps': config['fps'],
                 'frame_count': config['frame_count']}, sort_keys=True).encode()).hexdigest(),
             'duration_frames': len(events),
+            'focus_provision_id': focus, 'entry_delay_s': config.get('entry_delay_s'),
+            'review_disposition': disposition,
+            'first_highway_entry_time_s': measured['first_highway_entry_time_s'],
             'sole_green_arrow_frames': measured['sole_green_arrow_frames'],
             'first_highway_entry': measured['first_highway_entry'],
             'separate_walk_indication_without_entry': measured['separate_walk_frame_count'] > 0,

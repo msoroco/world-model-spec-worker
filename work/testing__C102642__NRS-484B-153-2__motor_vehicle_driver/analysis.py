@@ -10,7 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from delivery_measure import measure
+from delivery_measure import measure, _outline_gap
 
 
 INPUTS = ("door-source.json", "native-trace.json")
@@ -93,6 +93,8 @@ def native_result(root: Path, observed: dict) -> dict:
         "traffic_response": lambda r: r["passing_response"],
         "camera_frame_map": lambda r: {"frame_ids": r["camera_frames"],
                                        "pixel_sha256": r["camera_sha256"]},
+        "door_body_clearance_m": lambda r: _outline_gap(
+            r["act_envelope_xy"], r["passing_body_xy"]),
     }
     channels = root / "channels"
     channels.mkdir(exist_ok=False)
@@ -116,6 +118,16 @@ def native_result(root: Path, observed: dict) -> dict:
                                                 separators=(",", ":")) + "\n")
         evidence.append({"name": item["name"], "unit": item["unit"],
                          "reference": relative})
+    realized = {}
+    if any(item["name"] == "door_body_clearance_m" for item in description["channels"]):
+        best = min(observed["body_gap_by_frame_m"], key=lambda row: row["body_gap_m"])
+        frame = next(row for row in frames if row["frame_id"] == best["frame_id"])
+        realized["door_body_clearance_m"] = {
+            "value": best["body_gap_m"], "unit": "m",
+            "method": "same-frame original door and moving-body polygon distance",
+            "time_window": "minimum-gap original act and moving-traffic overlap frame",
+            "statistic": "min", "sample_window_s": [frame["sim_time_s"], frame["sim_time_s"]],
+            "reference": "channels/door_body_clearance_m.jsonl"}
     return {"case_id": observed["case_id"], "measured_values": observed,
             "target_checks": [{"target": "original door and moving-traffic source join",
                                "requested": True, "measured": True,
@@ -130,7 +142,7 @@ def native_result(root: Path, observed: dict) -> dict:
                                  ("overview", "approach", "reference_corner", "driver_reference")],
             "video_frame_map_reference": "video_frames.jsonl",
             "recording_description": description, "recording_evidence": evidence,
-            "realized_observables": {}}
+            "realized_observables": realized}
 
 
 def analyze(root: Path, output: Path, report_only: bool = False) -> dict:

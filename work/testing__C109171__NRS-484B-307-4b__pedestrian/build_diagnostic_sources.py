@@ -1,4 +1,4 @@
-"""Generate textual three-frame compatibility fixtures for four exact cases.
+"""Generate textual three-frame compatibility fixtures for eight exact cases.
 
 The diagnostic map and media are synthetic; they are never physical evidence.
 """
@@ -11,7 +11,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 AID = HERE.name
-KINDS = ('arrow_wait', 'arrow_early_entry', 'arrow_walk_entry', 'arrow_walk_wait')
+KINDS = ('arrow_wait', 'arrow_early_entry', 'arrow_walk_entry', 'arrow_walk_wait',
+         'permission_applicability-0000', 'permission_applicability-0001',
+         'permission_applicability-0002', 'permission_applicability-0003')
+SWEEP_DELAY = {'permission_applicability-0000': 20, 'permission_applicability-0001': 80,
+               'permission_applicability-0002': 40, 'permission_applicability-0003': 60}
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -64,10 +68,14 @@ def build():
                 'sole_green_arrow_aspect': 'green-left-arrow',
                 'pedestrian_route_xy': route, 'highway_boundary_xy': boundary}
         site_ref = ref('site.json', site)
-        enter = kind.endswith('entry')
-        walk = 'walk' in kind
+        enter = kind.endswith('entry') or kind in SWEEP_DELAY
+        walk = 'walk' in kind or kind in SWEEP_DELAY
+        delay = SWEEP_DELAY.get(kind, 0)
+        frame_count = max(SWEEP_DELAY.values()) + 3 if delay else 3
         events = []
-        for i, x in enumerate((-2.0, -1.0, 1.0 if enter else -0.5)):
+        for i in range(frame_count):
+            x = (1.0 if i >= (delay + 1 if delay else 2) else -1.0) if enter else -0.5
+            if i == 0: x = -2.0
             events.append({'frame': i, 'world_frame': i+1, 'sim_time_seconds': i*.05,
                            'vehicle_head_id': 'head-1', 'pedestrian_device_id': 'ped-1',
                            'vehicle_head_lit_aspects': ['green-left-arrow'],
@@ -79,16 +87,16 @@ def build():
             {'frame': i, 'sim_time_seconds': i*.05,
              'cameras': {name: {'path': f'camera_png/{i:04d}_{name}.png',
                                 'sha256': 'synthetic-video-only'} for name in CAMERAS}}
-            for i in range(3)])
+            for i in range(frame_count)])
         source = {'case_id': case_id, 'site_ref': site_ref, 'events_ref': events_ref,
                   'frame_map_ref': frame_map_ref, 'diagnostic_fixture': True}
         source_ref = ref('pedestrian-source.json', source)
         trace = [{'frame': i+1, 'time_s': i*.05, 'position_m': [0, 0, 0],
                   'position': {'x': 0, 'y': 0, 'z': 0}, 'heading_deg': 0,
                   'speed_mps': 0, 'speed_mph': 0,
-                  'velocity_mps': [0, 0, 0], 'control': {}} for i in range(3)]
+                  'velocity_mps': [0, 0, 0], 'control': {}} for i in range(frame_count)]
         mapping = [{'video_frame': i, 'carla_frame': i+1, 'native_frame': i+1,
-                    'time_s': i*.05} for i in range(3)]
+                    'time_s': i*.05} for i in range(frame_count)]
         evidence = [{'actor_id': 7, 'original_frame': i+1, 'replay_frame': i+1,
                      'recording_time_s': i*.05, 'replay_simulation_time_s': i*.05,
                      'ego': {'body_vertices_m': [[x, y, z] for x in (-.5, .5)
@@ -97,14 +105,14 @@ def build():
                              'speed_mps': 0, 'speed_provenance': 'synthetic_native_sample'},
                      'original_observations': {'frame': i+1, 'time_s': i*.05,
                                                'participants': [], 'map_context': {'diagnostic_fixture': True}},
-                     'world': {'weather': {}}} for i in range(3)]
+                     'world': {'weather': {}}} for i in range(frame_count)]
         native_frames = [{'frame': i+1, 'simulation_time': i*.05,
-                          'adapter_graph': f'graphs/base/{i+1:08d}.adapter.json'} for i in range(3)]
+                          'adapter_graph': f'graphs/base/{i+1:08d}.adapter.json'} for i in range(frame_count)]
         graphs = [{'path': f'capture/native/graphs/base/{i+1:08d}.adapter.json',
                    'attributes': {'frame': i+1, 'time_s': i*.05,
                                   'observed_evidence': {'frame': i+1, 'time_s': i*.05,
                                                         'participants': [], 'map_context': {'diagnostic_fixture': True}}},
-                   'nodes': [], 'edges': []} for i in range(3)]
+                   'nodes': [], 'edges': []} for i in range(frame_count)]
         trace_text = lines(trace)
         files = {'road.xodr': road, 'trace.jsonl': trace_text,
                  'video_frames.jsonl': lines(mapping),
@@ -115,10 +123,10 @@ def build():
                                                           'provenance_kind': 'synthetic_fixture'}) + '\n'}
         files['capture/manifest.json'] = compact({'acquisition': 'synthetic_fixture',
                                                    'diagnostic_fixture': True, 'case_id': case_id,
-                                                   'extraction_confirmed': True, 'frames': 3,
+                                                   'extraction_confirmed': True, 'frames': frame_count,
                                                    'sources': {'road.xodr': hashlib.sha256(road.encode()).hexdigest(),
                                                                'trace.jsonl': hashlib.sha256(trace_text.encode()).hexdigest()}}) + '\n'
-        videos = [{'path': name + '.mkv', 'frames': 3, 'width': width,
+        videos = [{'path': name + '.mkv', 'frames': frame_count, 'width': width,
                    'height': height, 'fps': 20, 'color': 'black'}
                   for name, width, height in (('overview', 1920, 1080),
                                               ('approach', 1280, 720),

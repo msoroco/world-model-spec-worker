@@ -1,0 +1,180 @@
+{
+  "actor": "motor_vehicle_driver",
+  "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+  "cell_id": "C102642",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "content": "\"\"\"Exact door-action diagnostic entrypoint.\"\"\"\nimport argparse\nimport hashlib\nimport importlib.util\nimport json\nimport os\nfrom pathlib import Path\nfrom site_contract import CASE_ACTIONS\nfrom site_contract import read_packet, validate_site\nfrom native_capture import CAMERAS, RATE_HZ, FRAME_COUNT\nfrom native_runner import run_capture\n\n\ndef check():\n    root = Path(__file__).resolve().parent\n    config = json.loads((root / \"config.json\").read_text())\n    source = (root / \"case-plan.json\").read_bytes()\n    if hashlib.sha256(source).hexdigest() != config[\"plan_sha256\"]:\n        raise ValueError(\"case plan source changed\")\n    plan = json.loads(source)\n    case = config[\"selected_case_id\"]\n    if case not in {row[\"case_id\"] for row in plan[\"cases\"]}:\n        raise ValueError(\"selected case absent from exact plan\")\n    kind = case.removeprefix(config[\"assignment_id\"] + \"__\")\n    if kind not in CASE_ACTIONS or tuple(config[\"action\"]) != CASE_ACTIONS[kind]:\n        raise ValueError(\"selected door act/side differs\")\n    camera_names = tuple(item[\"name\"] if isinstance(item, dict) else item for item in config[\"cameras\"])\n    if config[\"rate_hz\"] != RATE_HZ or config[\"frame_count\"] != FRAME_COUNT or len(camera_names) != len(CAMERAS) or len(set(camera_names)) != len(CAMERAS):\n        raise ValueError(\"original camera or duration profile differs\")\n    return case\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--output-dir\")\n    parser.add_argument(\"--host\")\n    parser.add_argument(\"--port\", type=int)\n    args = parser.parse_args()\n    case = check()\n    if args.check:\n        print(\"diagnostic door bundle passed: \" + case)\n        return\n    if not args.output_dir or not args.host or not args.port:\n        raise ValueError(\"Native host, port and output directory are required\")\n    survey_name = os.environ.get(\"SCENARIO_DOOR_SURVEY_PACKET\")\n    survey_hash = os.environ.get(\"SCENARIO_DOOR_SURVEY_SHA256\")\n    operator_name = os.environ.get(\"SCENARIO_DOOR_OPERATOR_MODULE\")\n    operator_hash = os.environ.get(\"SCENARIO_DOOR_OPERATOR_SHA256\")\n    if not all((survey_name, survey_hash, operator_name, operator_hash)):\n        raise ValueError(\"original survey and source-hashed operator module are required\")\n    survey = Path(survey_name).resolve()\n    packet = read_packet(survey, survey_hash)\n    validate_site(packet, case.removeprefix(json.loads((Path(__file__).resolve().parent / \"config.json\").read_text())[\"assignment_id\"] + \"__\"))\n    operator = Path(operator_name).resolve()\n    if hashlib.sha256(operator.read_bytes()).hexdigest() != operator_hash:\n        raise ValueError(\"operator module source hash mismatch\")\n    spec = importlib.util.spec_from_file_location(\"door_operator\", operator)\n    if spec is None or spec.loader is None:\n        raise ValueError(\"operator module cannot be loaded\")\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    import carla\n    client = carla.Client(args.host, args.port)\n    client.set_timeout(30.0)\n    world = client.get_world()\n    hooks = module.make_hooks(world, packet, case)\n    required = {\"actor_factory\", \"driver_act_controller\", \"original_observer\"}\n    if not isinstance(hooks, dict) or not required <= hooks.keys() or not all(callable(hooks[key]) for key in required):\n        raise ValueError(\"operator module did not supply three Native hooks\")\n    map_reader = hooks.get(\"map_reader\", lambda native_world: native_world.get_map().to_opendrive().encode(\"utf-8\"))\n    if not callable(map_reader):\n        raise ValueError(\"operator map reader must be callable\")\n    try:\n        result = run_capture(world, carla, survey_path=survey, survey_sha256=survey_hash,\n                             case_id=case, output=Path(args.output_dir), map_reader=map_reader,\n                             actor_factory=hooks[\"actor_factory\"],\n                             driver_act_controller=hooks[\"driver_act_controller\"],\n                             original_observer=hooks[\"original_observer\"])\n    except Exception as error:\n        # The runtime retains a failed Native attempt only with an explicit\n        # failure status. Never turn an incomplete acquisition into success.\n        status = Path(args.output_dir) / \"native-run-status.json\"\n        status.write_text(json.dumps({\"errors\": [str(error)], \"case_id\": case,\n                                      \"capture_complete\": False}, sort_keys=True) + \"\\n\")\n        raise\n    print(json.dumps(result, sort_keys=True))\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "path": "runner.py"
+    },
+    {
+      "content": "{\n  \"action\": [\n    \"open\",\n    \"near\",\n    \"overlap\"\n  ],\n  \"actor\": \"motor_vehicle_driver\",\n  \"assignment_id\": \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver\",\n  \"cameras\": [\n    {\n      \"fov_deg\": 75,\n      \"height\": 1080,\n      \"name\": \"overview\",\n      \"pose_strategy\": \"whole hill crest loading site and passing traffic\",\n      \"width\": 1920\n    },\n    {\n      \"fov_deg\": 75,\n      \"height\": 720,\n      \"name\": \"approach\",\n      \"pose_strategy\": \"passing vehicle approach and crest\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 75,\n      \"height\": 720,\n      \"name\": \"reference_corner\",\n      \"pose_strategy\": \"door sweep and passing body\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 75,\n      \"height\": 720,\n      \"name\": \"driver_reference\",\n      \"pose_strategy\": \"driver act and side relation\",\n      \"width\": 1280\n    }\n  ],\n  \"case\": {\n    \"case_id\": \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap\",\n    \"recording_description\": {\n      \"channels\": [\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"original_interaction\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"observed_driver_act\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"door_envelope_xy\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"passing_body_xy\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"passing_speed_mps\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"m/s\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"passing_response\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"camera_frame_join\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"hill_crest_loading_site\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"parked_vehicle_pose\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"driver_act_and_side\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"door_vertices\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"passing_traffic_body\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"traffic_response\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        },\n        {\n          \"method\": \"source-sealed original Native actor and camera observation\",\n          \"name\": \"camera_frame_map\",\n          \"reference_frame\": \"original CARLA world frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 900 original world ticks\",\n          \"uncertainty\": \"physical visibility and legal interpretation pending\",\n          \"unit\": \"structured\"\n        }\n      ],\n      \"context_inputs\": [],\n      \"limitations\": [\n        \"Observed proximity and traffic response do not decide statutory interference.\"\n      ]\n    }\n  },\n  \"cell_id\": \"C102642\",\n  \"diagnostic_only\": true,\n  \"duration_s\": 45,\n  \"frame_count\": 900,\n  \"law_id\": \"NRS-484B-153-2\",\n  \"plan_sha256\": \"346835f508b92fa87c1f744b85c0a4bd58ea4b6b86e3c3840d55ef2973e2a26b\",\n  \"rate_hz\": 20,\n  \"required_atoms\": [],\n  \"selected_case_id\": \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap\",\n  \"source_packets\": [],\n  \"supported_case_ids\": [\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__door_interference_physical_range-0000\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__door_interference_physical_range-0001\",\n    \"testing__C102642__NRS-484B-153-2__motor_vehicle_driver__door_interference_physical_range-0002\"\n  ]\n}\n",
+      "path": "config.json"
+    },
+    {
+      "content": "import json\nfrom pathlib import Path\nimport sys\nimport unittest\nfrom unittest.mock import patch\n\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nimport runner\n\n\nclass BundleTests(unittest.TestCase):\n    def test_exact_case_and_action(self):\n        root = Path(__file__).resolve().parents[1]\n        self.assertEqual(runner.check(), json.loads((root / \"config.json\").read_text())[\"selected_case_id\"])\n\n    def test_refuses_diagnostic_native_capture(self):\n        with patch(\"sys.argv\", [\"runner.py\", \"--output-dir\", \".\"]):\n            with self.assertRaisesRegex(ValueError, \"Native host, port\"):\n                runner.main()\n\n    def test_native_requires_original_source_before_client_import(self):\n        with patch(\"sys.argv\", [\"runner.py\", \"--output-dir\", \".\",\n                                \"--host\", \"localhost\", \"--port\", \"2000\"]):\n            with patch.dict(\"os.environ\", {}, clear=True):\n                with self.assertRaisesRegex(ValueError, \"original survey and source-hashed operator\"):\n                    runner.main()\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+      "path": "tests/test_bundle.py"
+    }
+  ],
+  "law_id": "NRS-484B-153-2",
+  "measurement_plan": {
+    "case_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap",
+    "legal_judgment": "unresolved",
+    "original_frames": 900,
+    "procedure": "delivery_measure.py",
+    "source_packets": [
+      "original_survey",
+      "original_native_trace",
+      "four_camera_rgb"
+    ]
+  },
+  "mechanisms": [
+    "source-gated hill-crest loading survey",
+    "original door and passing-body actor observation",
+    "four-camera capture and saved-only measurement"
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "original_interaction",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "observed_driver_act",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "door_envelope_xy",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "passing_body_xy",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "passing_speed_mps",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "m/s"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "passing_response",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "camera_frame_join",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "hill_crest_loading_site",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "parked_vehicle_pose",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "driver_act_and_side",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "door_vertices",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "passing_traffic_body",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "traffic_response",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      },
+      {
+        "method": "source-sealed original Native actor and camera observation",
+        "name": "camera_frame_map",
+        "reference_frame": "original CARLA world frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 900 original world ticks",
+        "uncertainty": "physical visibility and legal interpretation pending",
+        "unit": "structured"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Observed proximity and traffic response do not decide statutory interference."
+    ]
+  },
+  "static_checks": [
+    "exact law/cell/case identity",
+    "source-hashed original hill-crest survey and passing route",
+    "four-camera 20 Hz original frame joins"
+  ],
+  "termination_rules": [
+    "900 original frames at 20 Hz",
+    "fail closed on missing surveyed route or original Native outlines"
+  ]
+}

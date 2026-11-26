@@ -45,11 +45,20 @@ def audit(attempt: Path, case: str, allow_diagnostic: bool) -> dict:
                           not row['native_frame'].get('signal_actor_id') or
                           not row['native_frame'].get('ego') for row in history):
         raise ValueError('selected Native participants missing')
-    site = attempt / 'original-attempt/source-review'
-    route_name = ('two_way_routes' if case.endswith('two_way_receive') else 'one_way_routes')
+    original = attempt / 'original-attempt'
+    packet = json.loads((original / 'site-packet.json').read_text())
+    variables = json.loads((attempt / 'config.json').read_text())['case']['draft_variables']
+    route_name = ('two_way_routes' if variables['receiving_direction'] == 'two_way'
+                  else 'one_way_routes')
     required = ('opendrive', 'official_signal', 'stop_reference', route_name)
-    if any(not (site / (name + '.txt')).is_file() for name in required):
+    sources = packet.get('sources', {})
+    if any(name not in sources for name in required):
         raise ValueError('selected Native source review incomplete')
+    for name in required:
+        path = (original / sources[name]['path']).resolve()
+        if not path.is_relative_to(original) or not path.is_file() or \
+                sha(path) != sources[name]['sha256']:
+            raise ValueError('selected Native source review changed: ' + name)
     if not source['diagnostic_fixture'] and len(history) != 900:
         raise ValueError('original Native acquisition duration incomplete')
     media = {name: decode(attempt / (name + '.mkv'), len(history)) for name in CAMERAS}

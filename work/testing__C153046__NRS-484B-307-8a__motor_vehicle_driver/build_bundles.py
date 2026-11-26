@@ -22,7 +22,9 @@ CHANNELS = [
         ('pre_entry_stop', 'original full-body front and speed', 'source record'),
         ('approach_lane', 'reviewed one-way lane and original ego lane', 'source record'),
         ('receiving_direction', 'reviewed route direction', 'source record'),
-        ('directed_conflict', 'original pedestrian and traffic conflict frames', 'source record'))]
+        ('directed_conflict', 'original pedestrian and traffic conflict frames', 'source record'),
+        ('stop_reference_front_signed_distance', 'Original minimum front-body offset to the reviewed applicable stop reference', 'm'),
+        ('directed_conflict_release_delay', 'Original time from sourced directed pedestrian conflict clearing to first turn request', 's'))]
 RECORDING = {'channels': CHANNELS,
              'context_inputs': [{'name': 'reviewed_red_left_site_packet',
                                  'method': 'source-hashed OpenDRIVE, official signal, route and stop reference',
@@ -55,6 +57,8 @@ def write(path: Path, value: dict) -> str:
 def main() -> None:
     plan_path = ROOT / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
+    proposal_cases = {item['case_id']: item for item in
+                      json.loads((ROOT / 'proposals/cases.json').read_text())['cases']}
     entries = []
     for row in plan['cases']:
         case = row['case_id']
@@ -65,6 +69,7 @@ def main() -> None:
                   'supported_case_ids': sorted(item['case_id'] for item in plan['cases']),
                   'case': {'case_id': case, 'draft_variables': row['draft_variables'],
                            'recording_description': RECORDING},
+                  'sweep_measurements': proposal_cases[case].get('sweep_measurements', []),
                   'plan_sha256': hashlib.sha256(plan_path.read_bytes()).hexdigest(),
                   'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
                   'control': {'approach_hold_margin_m': row['draft_variables'].get('stop_hold_margin_m', 1.0),

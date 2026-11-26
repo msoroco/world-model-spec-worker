@@ -15,6 +15,16 @@ LAW = ASSIGNMENT['law']
 IDENT = LAW['id'] + '@' + ASSIGNMENT['actor']
 RECORDING = json.loads((ROOT / 'cases' / PLAN['cases'][0]['case_id'].removeprefix(ROOT.name + '__') /
                         'construction.json').read_text())['recording_description']
+for name, method, unit in (
+    ('stop_reference_front_signed_distance',
+     'Original minimum front-body offset to the reviewed applicable stop reference', 'm'),
+    ('directed_conflict_release_delay',
+     'Original time from sourced directed pedestrian conflict clearing to first turn request', 's')):
+    if not any(channel['name'] == name for channel in RECORDING['channels']):
+        RECORDING['channels'].append({'name': name, 'method': method, 'unit': unit,
+            'reference_frame': 'source-sealed original Native frame map', 'sampling_rate_hz': 20,
+            'time_window': 'full 45-second episode',
+            'uncertainty': 'physical realization and legal classification remain unresolved'})
 
 
 def write(name: str, value: dict) -> dict:
@@ -135,11 +145,11 @@ def main() -> None:
     for name, phrase, variable, observable, unit, start, stop, spacing, method, values in (
         ('stop_reference_source_review', phrase_stop, 'stop_hold_margin_m',
          'stop_reference_front_signed_distance', 'm', 0.5, 2.0, 0.75,
-         'Original front-body offset to the reviewed applicable stop reference at first zero-speed frame',
+         'Original minimum front-body offset to the reviewed applicable stop reference',
          dict(base, stop_request='complete_stop', conflict_response_request='no_conflict')),
         ('directed_yield_source_review', phrase_yield, 'yield_release_delay_s',
          'directed_conflict_release_delay', 's', 0.0, 1.0, 0.5,
-         'Original time from sourced directed pedestrian conflict clearing to ego turn-entry request',
+         'Original time from sourced directed pedestrian conflict clearing to first turn request',
          dict(base, stop_request='complete_stop', conflict_response_request='pedestrian_yield'))):
         sweep_specs.append({'sweep_id': ROOT.name + '__' + name, 'target_law_id': LAW['id'],
             'judgment_refs': [{'phrase': phrase, 'note': ''}], 'status': 'complete',
@@ -148,7 +158,7 @@ def main() -> None:
             'axes': [{'variable': variable, 'observable': observable, 'unit': unit,
                       'min': start, 'max': stop, 'spacing': spacing,
                       'measurement': {'method': method, 'time_window': 'original 20 Hz approach and turn episode',
-                                      'statistic': 'first'},
+                                      'statistic': 'min' if variable == 'stop_hold_margin_m' else 'last'},
                       'range_rationale': 'Bounded controller request supported by red_left_controller.py; no legal threshold is inferred.',
                       'spacing_rationale': 'Physical increments exceed one 20 Hz frame and separate requested maneuvers; no legal boundary is inferred.',
                       'feasibility_evidence': 'red_left_controller.py bounded request checks and source-gated synthetic diagnostic tests'}],

@@ -32,6 +32,8 @@ class SiteContractTests(unittest.TestCase):
     def test_five_case_actions_and_both_traffic_sides(self):
         source = packet()
         for key, (act, relation, variant) in site.CASE_ACTIONS.items():
+            if key.startswith("door_interference_physical_range-"):
+                continue
             with self.subTest(key=key):
                 result = site.validate_site(source, key)
                 self.assertEqual(result["selected_act"], act)
@@ -42,6 +44,18 @@ class SiteContractTests(unittest.TestCase):
         source["passing_route_xy"] = [[8, 1], [16, 1]]
         self.assertEqual(site.validate_site(source, "open_near_overlap")["selected_door_side"],
                          "right")
+
+    def test_engineering_clearance_requires_reviewed_route_feasibility(self):
+        source = packet()
+        key = "door_interference_physical_range-0000"
+        with self.assertRaisesRegex(ValueError, "reviewed passing clearance route source"):
+            site.validate_site(source, key)
+        source["passing_clearance_route_source"] = {"path": "route.json", "sha256": "1" * 64}
+        source["passing_clearance_feasible_range_m"] = [0.2, 1.3]
+        self.assertEqual(site.validate_site(source, key)["requested_engineering_clearance_m"], .25)
+        source["passing_clearance_feasible_range_m"] = [0.5, 1.3]
+        with self.assertRaisesRegex(ValueError, "outside reviewed route feasibility"):
+            site.validate_site(source, key)
 
     def test_missing_governance_or_grade_fails(self):
         source = packet()
@@ -69,6 +83,25 @@ class SiteContractTests(unittest.TestCase):
             path.write_text(json.dumps({**packet(), "source_kind": "synthetic"}))
             with self.assertRaises(ValueError):
                 site.read_packet(path, hashlib.sha256(path.read_bytes()).hexdigest())
+
+    def test_original_passing_route_hash_is_checked_before_site_use(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            route = base / "route.json"
+            route.write_text(json.dumps({"source_kind": "original_surveyed_passing_route",
+                                         "route_xy": [[8, 4], [16, 4]]}))
+            source = packet()
+            source["passing_clearance_route_source"] = {
+                "path": route.name, "sha256": hashlib.sha256(route.read_bytes()).hexdigest()}
+            source["passing_clearance_feasible_range_m"] = [0.2, 1.3]
+            survey = base / "survey.json"
+            survey.write_text(json.dumps(source))
+            digest = hashlib.sha256(survey.read_bytes()).hexdigest()
+            site.validate_site(site.read_packet(survey, digest),
+                               "door_interference_physical_range-0001")
+            route.write_text("{}")
+            with self.assertRaisesRegex(ValueError, "route source hash mismatch"):
+                site.read_packet(survey, digest)
 
 
 if __name__ == "__main__":

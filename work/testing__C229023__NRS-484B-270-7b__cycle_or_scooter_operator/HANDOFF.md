@@ -18,3 +18,7 @@ Status: CPU delivery package prepared for seven exact NRS 484B.270(7)(b) cycle a
 ## Proof locations
 
 `execution-manifest.json` binds each construction, current hash, offline, compatibility, physical, saved and delivery audit proof. `proposals/semantic-index.json` and `qualitative-review-contract.json` bind the canonical sweeps. `proofs/compat-*` contains compatibility receipts. `proof-saved-*`, `physical-*` and `proof-delivery-*` contain diagnostic evidence. Original captures and temporary diagnostic media stay outside `work/` under `.runtime-work/c229023-owner/`.
+
+## Exact scoped gate
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C229023__NRS-484B-270-7b__cycle_or_scooter_operator --complete --require-delivery-ready` exits 0 with `static_checks_passed: true`. The exact output is in `cpu-strict-check.log`. This establishes CPU delivery preparation, subject to the original source and Native checks above.

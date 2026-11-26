@@ -17,7 +17,10 @@ KINDS = {"open_near_overlap": ("open", "left", .05),
          "open_near_clear": ("open", "left", 2.0),
          "open_far_side": ("open", "right", .05),
          "board_near": ("board", "left", .05),
-         "alight_near": ("alight", "left", .05)}
+         "alight_near": ("alight", "left", .05),
+         "door_interference_physical_range-0000": ("open", "left", .25),
+         "door_interference_physical_range-0001": ("open", "left", 1.25),
+         "door_interference_physical_range-0002": ("open", "left", .75)}
 
 
 def compact(value):

@@ -34,6 +34,8 @@ def build():
         {'name': 'selected_act', 'kind': 'controller', 'range_or_domain': 'open, board or alight'},
         {'name': 'side_relation', 'kind': 'world_setup', 'range_or_domain': 'near or far relative to passing path'},
         {'name': 'clearance_variant', 'kind': 'controller', 'range_or_domain': 'overlap or clear physical target; measure original body gap'},
+        {'name': 'engineering_clearance_m', 'kind': 'controller', 'range_or_domain': '0.25 to 1.25 m engineering requests; source-gated feasibility and original measurement'},
+        {'name': 'door_body_clearance_m', 'kind': 'controller', 'range_or_domain': 'original measured same-frame polygon gap; never a requested legal threshold'},
         {'name': 'hill_crest_loading_site', 'kind': 'world_setup', 'range_or_domain': 'source-reviewed C102642 loading location'},
         {'name': 'capture_profile', 'kind': 'world_setup', 'range_or_domain': 'four original RGB views, 20 Hz, 900 frames'}]
     template = {'status': 'draft', 'law_id': LAW, 'actor': ACTOR, 'template_id': TEMPLATE,
@@ -50,7 +52,8 @@ def build():
                 'observable_requirements': {'observables': [need],
                                             'context_inputs': [{'name': 'hill_crest_loading_site', 'unit': 'structured',
                                                                 'description': 'Original surveyed grade and loading governance.'}],
-                                            'sweep_dimensions': [], 'landmarks': [],
+                                            'sweep_dimensions': [{'name': 'door_body_clearance_m', 'unit': 'm',
+                                                                  'description': 'Physical coverage requests; original Native gap and legal interference remain separate'}], 'landmarks': [],
                                             'recording_needs': [need],
                                             'limitations': ['Measured proximity and vehicle response cannot independently define statutory interference.']}}
     bindings = {'status': 'draft', 'cell_id': CELL, 'actor': ACTOR,
@@ -64,6 +67,8 @@ def build():
         'selected_act': {'kind': 'controller', 'value': 'board' if kind == 'board_near' else 'alight' if kind == 'alight_near' else 'open'},
         'side_relation': {'kind': 'world_setup', 'value': 'far' if kind == 'open_far_side' else 'near'},
         'clearance_variant': {'kind': 'controller', 'value': 'clear' if kind == 'open_near_clear' else 'overlap'},
+        'engineering_clearance_m': {'kind': 'controller', 'value': None},
+        'door_body_clearance_m': {'kind': 'controller', 'value': None},
         'hill_crest_loading_site': {'kind': 'world_setup', 'value': 'source-reviewed C102642 loading location'},
         'capture_profile': {'kind': 'world_setup', 'value': 'four original RGB views, 20 Hz, 900 frames'}}
     description = json.loads((HERE / draft['cases'][0]['construction']).read_text())['recording_description']
@@ -73,6 +78,8 @@ def build():
              'recording_description': description, 'unresolved_judgment_calls': [PHRASE]}]
     for item in draft['cases']:
         case_id = item['case_id']; kind = case_id.removeprefix(AID + '__')
+        if kind.startswith('door_interference_physical_range-'):
+            continue
         primary = ('side_relation' if kind == 'open_far_side' else
                    'selected_act' if kind in ('board_near', 'alight_near') else 'clearance_variant')
         rows.append({'case_id': case_id, 'target_law_id': LAW, 'target_type': 'boundary_probe',
@@ -83,12 +90,31 @@ def build():
                      'rationale': 'Original source-gated action and passing-traffic probe: ' + kind,
                      'variable_assignments': vars_for(kind), 'recording_description': description,
                      'unresolved_judgment_calls': [PHRASE]})
+    sweep_description = json.loads((HERE / draft['cases'][-1]['construction']).read_text())['recording_description']
+    sweep_assignments = vars_for('open_near_overlap')
+    sweep_assignments['clearance_variant'] = {'kind': 'controller', 'value': 'source-gated measured clearance request'}
     cases = {'status': 'draft', 'cell_id': CELL, 'actor': ACTOR, 'cases': rows,
-             'sweep_specs': [{'sweep_id': 'door_interference_physical_range', 'target_law_id': LAW,
+             'sweep_specs': [{'sweep_id': AID + '__door_interference_physical_range',
+                              'target_law_id': LAW,
                               'judgment_refs': [{'phrase': PHRASE, 'note': NOTE}],
-                              'status': 'incomplete',
-                              'missing_inputs': ['Source-reviewed hill-crest geometry and realizable door/body clearance axis, with original range evidence.'],
-                              'rationale': 'Preserve the unresolved judgment; no legal cutoff or unverified physical range is invented.'}]}
+                              'status': 'complete', 'mode': 'one_dimensional',
+                              'rationale': 'Three source-gated physical engineering requests with original measured door/body gap; no statutory interference cutoff or verdict.',
+                              'landmarks': [], 'recording_description': sweep_description,
+                              'variable_assignments': sweep_assignments,
+                              'axes': [{'variable': 'engineering_clearance_m',
+                                        'observable': 'door_body_clearance_m', 'unit': 'm',
+                                        'min': 0.25, 'max': 1.25, 'spacing': 0.5,
+                                        'range_rationale': 'Engineering physical coverage candidates; reviewed route source must independently establish feasibility before original capture.',
+                                        'spacing_rationale': 'Endpoint and midpoint coverage at one surveyed site; no legal boundary.',
+                                        'feasibility_evidence': 'site_contract.py requires a byte-hashed original passing route and surveyed feasible clearance interval before CARLA mutation.',
+                                        'measurement': {'method': 'same-frame original door and moving-body polygon distance',
+                                                        'time_window': 'minimum-gap original act and moving-traffic overlap frame',
+                                                        'statistic': 'min'}}]}]}
+    from sys import path
+    repo = HERE.parents[1]
+    path.insert(0, str(repo / 'runtime/scenario_pipeline'))
+    from batch_pipeline.sweeps import expand_sweeps
+    expand_sweeps(cases, templates=[template], bindings=bindings)
     refs = {'relevance_batch': write(folder / 'relevance_batch.json', relevance),
             'relevance': write(folder / 'relevance.json', relevance),
             'template': write(folder / 'template.json', template),

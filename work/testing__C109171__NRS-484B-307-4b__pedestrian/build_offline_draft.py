@@ -1,4 +1,4 @@
-"""Build four exact, source-gated C109171 diagnostic constructions."""
+"""Build eight exact, source-gated C109171 diagnostic constructions."""
 from __future__ import annotations
 
 import hashlib
@@ -12,7 +12,7 @@ HERE = Path(__file__).resolve().parent
 SOURCES = ('native_scene.py', 'permission_applicability.py', 'pedestrian_control.py', 'carla_adapter.py',
            'native_capture.py', 'native_runner.py', 'saved_measurement.py', 'saved_process.py',
            'comparison_audit.py', 'delivery_media.py', 'analysis.py',
-           'native_output_bridge.py')
+           'native_output_bridge.py', 'permission_sweep_audit.py')
 
 RECORDING_DESCRIPTION = {
     'channels': [
@@ -55,8 +55,13 @@ def check():
     if suffix not in EXPECTED or config["expected_observations"] != list(EXPECTED[suffix]):
         raise ValueError("Exact C109171 case behavior changed")
     planned = json.loads(source)
-    if sum(row["case_id"] == case_id for row in planned["cases"]) != 1:
+    matching = [row for row in planned["cases"] if row["case_id"] == case_id]
+    if len(matching) != 1:
         raise ValueError("Exact C109171 case absent from plan")
+    parameters = matching[0]["scenario_parameters"]
+    if suffix.startswith("permission_applicability-"):
+        if config.get("entry_delay_s") != parameters.get("entry_delay_s") or config.get("focus_provision_id") != parameters.get("focus_provision_id"):
+            raise ValueError("Cited applicability sweep binding changed")
     if config["fps"] != FPS or config["frame_count"] != DEFAULT_FRAMES:
         raise ValueError("C109171 diagnostic timebase changed")
     if config["cameras"] != list(CAMERAS):
@@ -150,10 +155,12 @@ def build():
              if row['case_id'].startswith(ASSIGNMENT + '__')}
     if len(plan['cases']) != len(EXPECTED) or found != set(EXPECTED):
         raise ValueError('Exact C109171 case coverage differs from plan')
+    proposals = {row['case_id']: row for row in json.loads((HERE / 'proposals/cases.json').read_text())['cases']}
     rows = []
     for item in plan['cases']:
         case_id = item['case_id']
         suffix = case_id.removeprefix(ASSIGNMENT + '__')
+        recording_description = proposals[case_id]['recording_description']
         config = {'assignment_id': ASSIGNMENT, 'law_id': 'NRS-484B-307-4b',
                   'cell_id': 'C109171', 'actor': 'pedestrian', 'selected_case_id': case_id,
                   'expected_observations': list(EXPECTED[suffix]),
@@ -165,7 +172,10 @@ def build():
                                        'native_event_trace',
                                        'original_camera_png'], 'required_atoms': [],
                   'case': {'case_id': case_id,
-                           'recording_description': RECORDING_DESCRIPTION}}
+                           'recording_description': recording_description}}
+        if 'entry_delay_s' in item['scenario_parameters']:
+            config['entry_delay_s'] = item['scenario_parameters']['entry_delay_s']
+            config['focus_provision_id'] = item['scenario_parameters']['focus_provision_id']
         files = {name: (HERE / name).read_text(encoding='utf-8') for name in SOURCES}
         files.update({'runner.py': RUNNER, 'case-plan.json': source.decode('utf-8'),
                       'config.json': json.dumps(config, indent=2) + '\n',
@@ -173,7 +183,7 @@ def build():
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],
                         'actor': config['actor'], 'case_id': case_id,
                         'entrypoint': 'runner.py', 'diagnostic_only': True,
-                        'recording_description': RECORDING_DESCRIPTION,
+                        'recording_description': recording_description,
                         'files': [{'path': name, 'content': content}
                                   for name, content in files.items()]}
         path = HERE / ('construction-' + suffix + '.json')
