@@ -50,7 +50,7 @@ def measure(context, rows):
         source_hash(context, 'dot_width_determination')
     if len(rows) != FRAMES:
         raise ValueError('Incomplete 30-second source trace')
-    curb_y = finite(context.get('right_curb_y_m' if kind == 'default_right' else 'left_curb_y_m'), 'curb position')
+    curb_y = finite(context.get('left_curb_y_m' if kind == 'left_ordinance' else 'right_curb_y_m'), 'curb position')
     previous = None
     rest = []
     front = []
@@ -69,10 +69,10 @@ def measure(context, rows):
         if speed < 0:
             raise ValueError('Negative speed')
         if row.get('stopped_or_parked') is True and speed <= .1:
-            side = 'right' if kind == 'default_right' else 'left'
+            side = 'left' if kind == 'left_ordinance' else 'right'
             fy = finite(row.get(side + '_front_wheel_outer_y_m'), 'front wheel')
             ry = finite(row.get(side + '_rear_wheel_outer_y_m'), 'rear wheel')
-            if kind == 'default_right':
+            if kind != 'left_ordinance':
                 gaps = (fy - curb_y, ry - curb_y)
             else:
                 gaps = (curb_y - fy, curb_y - ry)

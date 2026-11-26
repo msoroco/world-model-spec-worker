@@ -8,18 +8,115 @@
       "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "f237583e555f2a38a5b93a4e7deaafec7abbf6afd70e82bb3deec53f1e140f77",
+      "construction_sha256": "a53950b73d86bba6f2e47e8b859f9a9415c4fddfe8f719910f6dcb1d5e869b73",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native OpenDRIVE device rendering and exact stop point require first local source review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1.json",
+          "construction_sha256": "cb9235c2ba9070b231281aebe96653da491c6c37b4334112f9f6351e62993512",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing sign actual-pixel visibility in overview and reference_corner",
+            "failure_condition": "governing sign unreadable or occluded in either required source view"
+          },
+          "changed_knobs": [
+            "overview fixed-world camera position/pitch/yaw",
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ]
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-complete_stop_then_yield.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/selected-recipe-complete_stop_then_yield.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "nrs-484b-257-1-selected-analysis-v1"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture same-tick original subject transform and speed",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "ego_stop_and_yield_sequence": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original subject and through-vehicle bodies/motion with source RGB hashes",
+          "evidence": "stop_yield_motion.jsonl, ego_body.jsonl, through_body.jsonl, video_frames.jsonl"
+        },
+        "governing_control": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map device readback",
+          "evidence": "road.xodr and governing_controls.json"
+        },
+        "stopping_reference_hierarchy": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map stop-line or crosswalk readback",
+          "evidence": "road.xodr and stopping_reference.json"
+        },
+        "through_highway": {
+          "entrypoint": "runner.py",
+          "method": "original through-road map and actor source readback",
+          "evidence": "road.xodr, through_road.json and through_body.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --output .runtime-work/nrs257-offline-primary-4",
+        "exit_code": 0,
+        "construction_sha256": "a53950b73d86bba6f2e47e8b859f9a9415c4fddfe8f719910f6dcb1d5e869b73",
+        "log": "native-offline-primary.log",
+        "log_sha256": "5dcdb4ac2e552fb07c4228bf6a2323e6133046a55393d38859921f8c1f55c2ff"
+      },
+      "compatibility": {
+        "receipt": "compatibility/complete_stop_then_yield-primary.json",
+        "sha256": "0c1f7c855bec3201245a45c3d22d9265aae26412b445dfa664fde60a48c87c45",
+        "log": "compatibility/complete_stop_then_yield-primary-analysis.log",
+        "negative_log": "compatibility/complete_stop_then_yield-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/complete_stop_then_yield-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/complete_stop_then_yield-analysis.log",
+        "test_log_sha256": "778eb0cc7556a6fe487e6577215b12269298e9a5ad07b4a22b87d5b4fc36d8d3",
+        "processing_receipt": "saved/complete_stop_then_yield-processing.json",
+        "processing_receipt_sha256": "fedbd5f6c2b24c106ba4281333f59c1998b916f9f1e4670c857ee568b2ff47a8"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/complete_stop_then_yield/proof.json",
+        "sha256": "62735bcaf6f049ae0f1307105edaaa1ad1fe539f72bd4a895bab3366005bc483"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0949331c28915237b2dd7696a268ec2c291d31ab5036ffc1e00a98c98740384e",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-positive.log",
+        "test_log_sha256": "90b3e2a9e757f4ffd9fe498a72eedce3acea4985d2279aa044f662e51ab8a05e",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING --missing-source governing_sign.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: governing_sign.json",
+        "negative_log": "delivery-audit-negative.log",
+        "negative_log_sha256": "22260ca1d16e6acd028358ab8612a9c065807ef2c71e576aa534a9408328914d",
+        "diagnostic_scope": "CPU fixture proof only; production audit requires original Native capture and independent source review"
       }
     }
   ]

@@ -60,9 +60,15 @@ def request(case_id):
     kind, gap_in, yaw, rest_mode = CASES[case_id]
     curb_y = 2 if kind == 'left_ordinance' else -10
     center_y = curb_y - .8 - gap_in * .0254 if kind == 'left_ordinance' else curb_y + .8 + gap_in * .0254
+    if kind.startswith('angle'):
+        center_y = -7.4
+    approach = [8, center_y + 8] if kind.startswith('angle') else [-12, center_y]
     return {'format': 'worker-c149985-selected-request', 'case': case_id,
-            'parking_kind': kind, 'rest_mode': rest_mode, 'requested_gap_in': gap_in,
+            'parking_kind': kind, 'rest_mode': rest_mode,
+            'requested_gap_in': None if kind.startswith('angle') else gap_in,
             'requested_heading_deg': yaw, 'requested_center_xy_m': [0, center_y],
+            'approach_start_xy_m': approach,
+            'reverse_approach': kind.startswith('angle'),
             'source_map': road_xml(kind), 'right_curb_y_m': -10, 'left_curb_y_m': 2,
             'roadway_lanes': {'same_direction_driving': [-1, -2],
                               'parking_shoulders': [1, -3]},

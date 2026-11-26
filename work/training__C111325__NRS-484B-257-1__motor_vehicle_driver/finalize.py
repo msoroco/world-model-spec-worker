@@ -8,7 +8,7 @@ from pathlib import Path
 
 from measure_saved_packet import inspect
 from native_capture import CAMERAS, COUNT
-from worker_exchange.native_output import write_result
+from worker_exchange.native_output import physical_result, write_result
 
 
 def required(root, relative):
@@ -193,6 +193,7 @@ def finalize(attempt, output):
                                  else "synthetic_fixture",
               "diagnostic_fixture": observed["source_kind"] != "original_native_readback",
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
+    result = physical_result(root, result)
     write_result(root, result)
     report = {"format": "nrs-484b-257-1-selected-analysis-v1", "case_id": case,
               "measurements": measurements, "analysis_complete": True,

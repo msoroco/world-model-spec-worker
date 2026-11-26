@@ -152,8 +152,10 @@ def capture(slug, output, host, port):
             motion_path = output / "stop_yield_motion.jsonl"
             ego_path = output / "ego_body.jsonl"
             through_path = output / "through_body.jsonl"
+            interaction_path = output / "interaction_history.jsonl"
             with (output / "video_frames.jsonl").open("x") as frames, motion_path.open("x") as motion, \
-                    ego_path.open("x") as ego_bodies, through_path.open("x") as through_bodies:
+                    ego_path.open("x") as ego_bodies, through_path.open("x") as through_bodies, \
+                    interaction_path.open("x") as interactions:
                 for i in range(COUNT):
                     apply_requested_control(carla, actors, scene, i)
                     native = world.tick()
@@ -196,6 +198,10 @@ def capture(slug, output, host, port):
                                                  "body_vertices_m": ego_body}, allow_nan=False) + "\n")
                     through_bodies.write(json.dumps({"native_frame": native, "actor_id": through.id,
                                                      "body_vertices_m": other_body}, allow_nan=False) + "\n")
+                    interactions.write(json.dumps({"frame": native, "time_s": time_s,
+                        "ego": {"actor_id": ego.id, "body_vertices_m": ego_body},
+                        "through": {"actor_id": through.id, "body_vertices_m": other_body}},
+                        allow_nan=False) + "\n")
             for process in encoders.values():
                 process.stdin.close()
                 if process.wait(timeout=120) != 0:
@@ -229,6 +235,14 @@ def capture(slug, output, host, port):
                 "ego_body": ego_path,
                 "through_body": through_path,
             }
+            source_file(output, "control_context.json", {
+                "case_id": case_id(slug), "source_kind": "original_native_readback",
+                "intersection_xy_m": [[scene["intersection_near_x_m"], -3.5],
+                                      [scene["intersection_far_x_m"], -3.5],
+                                      [scene["intersection_far_x_m"], 3.5],
+                                      [scene["intersection_near_x_m"], 3.5]],
+                "governing_sign_id": scene["governing_sign"],
+                "map_readback_sha256": sha(output / "road.xodr")})
             reference = scene["stopping_reference"]
             source_file(output, "stop_yield_context.json", {
                 "case_id": case_id(slug), "source_kind": "original_native_readback",

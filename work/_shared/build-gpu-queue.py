@@ -38,6 +38,10 @@ def build(root=ROOT):
         manifest = "work/" + aid + "/execution-manifest.json"
         for case_id in sorted(case_ids):
             prefix = "python3.11 work/_shared/we.py"
+            survey_binding = ""
+            if aid == "training__C230266__NRS-484B-280-1c__motor_vehicle_driver":
+                survey_binding = ("SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/"
+                                  + aid + "/" + case_id + "/context-survey.json ")
             # Derive the assignment from the exact case ID in a POSIX shell.
             # This keeps every command executable while avoiding a second long
             # assignment ID in each of the three local-integration commands.
@@ -51,7 +55,8 @@ def build(root=ROOT):
                 "status": status,
                 "selected": case_id in selected_ids,
                 "dispatchable": False,
-                "capture_command": manifest_binding + "python3.11 runtime.py capture --manifest $MANIFEST"
+                "capture_command": manifest_binding + survey_binding
+                    + "python3.11 runtime.py capture --manifest $MANIFEST"
                     + " --case $CASE_ID --output ${ATTEMPT_DIR} --host ${CARLA_HOST}"
                     + " --port ${CARLA_PORT} --python ${NATIVE_PYTHON}",
                 "postprocessing_command": manifest_binding + "python3.11 runtime.py process-saved --manifest $MANIFEST"
@@ -67,7 +72,8 @@ def build(root=ROOT):
                     + " --complete --require-delivery-ready",
                 "prepare_command": case_binding + prefix + " prepare-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} " + identity,
-                "execute_command": case_binding + prefix + " execute-delivery --repo . --batch full-train-delivery"
+                "execute_command": case_binding + survey_binding + prefix
+                    + " execute-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} --run ${RUN_ID} " + identity
                     + " --job ${JOB_ID} --python ${NATIVE_PYTHON} --host ${CARLA_HOST}"
                     + " --port ${CARLA_PORT}",

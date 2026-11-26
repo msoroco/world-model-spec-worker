@@ -34,8 +34,8 @@ def fixture(kind, gap_in=18, heading_deg=0):
                      'time_s': i / 20, 'source_cameras': {name: i for name in CAMERAS},
                      'ego_speed_mps': 2 if i < 240 else 0,
                      'stopped_or_parked': i >= 240,
-                     'right_front_wheel_outer_y_m': -4 + gap_m,
-                     'right_rear_wheel_outer_y_m': -4 + gap_m,
+                     'right_front_wheel_outer_y_m': -4 + (2.95 if kind.startswith('angle') else gap_m),
+                     'right_rear_wheel_outer_y_m': -4 + (.91 if kind.startswith('angle') else gap_m),
                      'left_front_wheel_outer_y_m': 4 - gap_m,
                      'left_rear_wheel_outer_y_m': 4 - gap_m,
                      'ego_heading_deg': heading_deg, 'curb_heading_deg': 0})
