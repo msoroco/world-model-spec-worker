@@ -31,8 +31,8 @@ def main():
             raise ValueError('Independent delivery audit missing: ' + suffix)
         command = '.venv-cpu/bin/python ' + SCRIPT + ' --case ' + entry['case_id']
         entry['delivery_acceptance'] = {
-            'case_id': entry['case_id'], 'sets': ['full-train'],
-            'checks': CHECKS, 'script': SCRIPT,
+            'case_id': entry['case_id'], 'sets': ['demo-train', 'full-train'],
+            'checks': CHECKS, 'script': 'native/audit_delivery.py',
             'script_sha256': sha(HERE / 'audit_delivery.py'),
             'command': command, 'test_exit_code': 0,
             'test_log': str(positive.relative_to(PACKAGE)),

@@ -36,11 +36,16 @@ def build():
         body = change(json.loads((SOURCE / f'{name}.json').read_text()))
         if name == 'cases':
             body['cases'] = [case for case in body['cases']
-                             if case['case_id'] in (NEW + '__probe_a', NEW + '__probe_b')]
-            if len(body['cases']) != 2:
+                             if case['case_id'] in (NEW + '__baseline_reference', NEW + '__probe_a', NEW + '__probe_b')]
+            if len(body['cases']) != 3:
                 raise ValueError('Exact no-reference semantic cases missing')
             for case in body['cases']:
-                case['paired_probe_id'] = NEW + '__comparison'
+                if case['target_type'] == 'baseline':
+                    case['rationale'] = 'Shared no-reference signed approach context; no extra recording'
+                    case['variable_assignments']['near_side_crosswalk_present']['value'] = False
+                    case['variable_assignments']['requested_pre_crosswalk_stop']['value'] = None
+                else:
+                    case['paired_probe_id'] = NEW + '__comparison'
         elif name == 'bindings':
             body['established_contexts'][0]['name'] = 'C24805 no-reference blind intersection approach'
         target = TARGET / f'{name}.json'

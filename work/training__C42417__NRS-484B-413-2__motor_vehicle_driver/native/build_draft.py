@@ -7,6 +7,7 @@ BASE=HERE.parent.name+'__selected_c8ca9085__condition_'
 RUNNER='''import argparse
 import json
 from pathlib import Path
+from capture import check as capture_check, capture
 
 def check(c):
     base="training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_"
@@ -20,11 +21,15 @@ def check(c):
     if c.get("layout")!="business_district" or c.get("maneuver")!="right_turn" or c.get("precipitation")!="rain":raise ValueError("Fixed scene differs")
     if c.get("turn_onset_frame")!=300 or c.get("speed_mps")!=10 or c.get("signal_distance_m")!=expected[case]:raise ValueError("Signal-distance comparison differs")
     if c.get("observed_indicator_required") is not True or c.get("physical_verified") is not False or c.get("legal_verdict") is not None:raise ValueError("Source or legal claim differs")
-    return {"case_id":case,"frames":600,"simulation_started":False,"selected_for_delivery":False}
+    return capture_check(c)
 if __name__=="__main__":
-    ap=argparse.ArgumentParser();ap.add_argument("--check",action="store_true");a=ap.parse_args()
-    if not a.check:raise SystemExit("Native capture and saved processing not implemented")
-    print(json.dumps(check(json.loads(Path("config.json").read_text())),sort_keys=True))
+    ap=argparse.ArgumentParser();ap.add_argument("--check",action="store_true")
+    ap.add_argument("--output-dir");ap.add_argument("--host");ap.add_argument("--port",type=int);a=ap.parse_args()
+    config=json.loads(Path("config.json").read_text())
+    if a.check:print(json.dumps(check(config),sort_keys=True))
+    else:
+        if not (a.output_dir and a.host and a.port):ap.error("Original capture needs --output-dir, --host and --port")
+        print(json.dumps(capture(config,Path(a.output_dir),a.host,a.port),sort_keys=True))
 '''
 TESTS='''import copy
 import json
@@ -61,7 +66,9 @@ def build():
            'observed_indicator_required':True,'physical_verified':False,'legal_verdict':None}
         construction={'format':'worker-inline-construction','case_id':case,'cell_id':'C42417','actor':'motor_vehicle_driver',
                       'entrypoint':'runner.py','files':[{'path':'config.json','content':json.dumps(c,indent=2)+'\n'},
-                                                    {'path':'runner.py','content':RUNNER},{'path':'tests/test_offline.py','content':TESTS}],
+                                                    {'path':'runner.py','content':RUNNER},{'path':'tests/test_offline.py','content':TESTS}]
+                      + [{'path':name,'content':(HERE/name).read_text()} for name in
+                         ('capture.py','geometry.py','controller.py','cameras.py','measure_observed.py','saved_measure.py')],
                       'recording_description':{'channels':[{'name':n,'method':m,'sampling_rate_hz':20,'time_window':'600 frames'} for n,m in (
                           ('raw_ego_path_and_heading','original ego transform/heading'),
                           ('observed_turn_indicator','original lamp-state or image readback'),

@@ -37,7 +37,11 @@ def build():
                             {"path": "config.json", "content": json.dumps(config, indent=2) + "\n"},
                             {"path": "runner.py", "content": (HERE / "draft_runner.py").read_text()},
                             {"path": "tests/test_offline.py", "content":
-                             (HERE / "test_draft_offline.py").read_text()}],
+                             (HERE / "test_draft_offline.py").read_text()},
+                            *[{"path": name, "content": (HERE / name).read_text()}
+                              for name in ("road_source.py", "authored-road.xodr",
+                                           "stop_line_request.py", "saved_stop_line.py",
+                                           "live_capture.py")]],
                         "recording_description": {"channels": [
                             {"name": "raw_ego_motion", "method": "original actor velocity and footprint",
                              "sampling_rate_hz": 20, "time_window": "600 frames"},
@@ -45,7 +49,7 @@ def build():
                              "sampling_rate_hz": 20, "time_window": "600 frames"},
                             {"name": "four_camera_video", "method": "four named source streams",
                              "sampling_rate_hz": 20, "time_window": "600 frames"}],
-                            "limitations": ["Native sign/line topology and original pixels unverified"]},
+                            "limitations": ["Native sign/line rendering and original pixels unverified"]},
                         "status": "exact_unselected_offline_draft"}
         path = HERE / (condition + "-construction.json")
         path.write_text(json.dumps(construction, indent=2) + "\n")

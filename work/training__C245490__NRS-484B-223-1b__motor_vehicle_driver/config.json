@@ -1,0 +1,184 @@
+{
+  "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
+  "selected_case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
+  "cell_id": "C245490",
+  "law_id": "NRS-484B-223-1b",
+  "actor": "motor_vehicle_driver",
+  "candidate_id": "primary",
+  "spawn_point_index": 0,
+  "duration_s": 30,
+  "rate_hz": 20,
+  "vehicle_blueprint": "vehicle.tesla.model3",
+  "required_atoms": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -12,
+        0,
+        12
+      ],
+      "rotation_pyr_deg": [
+        -35,
+        0,
+        0
+      ],
+      "pose_strategy": "fixed_source_view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        8,
+        -12,
+        5
+      ],
+      "rotation_pyr_deg": [
+        -10,
+        35,
+        0
+      ],
+      "pose_strategy": "fixed_source_view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -8,
+        10,
+        5
+      ],
+      "rotation_pyr_deg": [
+        -10,
+        -35,
+        0
+      ],
+      "pose_strategy": "fixed_source_view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        0.4,
+        0,
+        1.5
+      ],
+      "rotation_pyr_deg": [
+        0,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_attached_source_view"
+    }
+  ],
+  "control_phases": [
+    {
+      "name": "approach",
+      "first_frame": 0,
+      "last_frame": 179,
+      "throttle": 0.22,
+      "steer": 0.0,
+      "brake": 0.0
+    },
+    {
+      "name": "lane_change_left",
+      "first_frame": 180,
+      "last_frame": 229,
+      "throttle": 0.18,
+      "steer": -0.08,
+      "brake": 0.0
+    },
+    {
+      "name": "lane_change_countersteer",
+      "first_frame": 230,
+      "last_frame": 279,
+      "throttle": 0.18,
+      "steer": 0.08,
+      "brake": 0.0
+    },
+    {
+      "name": "follow_target_lane",
+      "first_frame": 280,
+      "last_frame": 599,
+      "throttle": 0.05,
+      "steer": 0.0,
+      "brake": 0.25
+    }
+  ],
+  "legal_verdict": null,
+  "target_vehicle_ahead_m": 35.0,
+  "check_frame": 170,
+  "supported_case_ids": [
+    "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
+    "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe",
+    "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe",
+    "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check"
+  ],
+  "signal_start_frame": 100,
+  "target_vehicle_behind_m": 30.0,
+  "check_action": "evaluated",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_lane",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "method": "original Native source and four camera frames",
+        "reference_frame": "same-tick simulator world and target lane",
+        "uncertainty": "simulator coordinate and sampled-frame resolution"
+      },
+      {
+        "name": "front_actor",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "method": "original Native source and four camera frames",
+        "reference_frame": "same-tick simulator world and target lane",
+        "uncertainty": "simulator coordinate and sampled-frame resolution"
+      },
+      {
+        "name": "rear_actor",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "method": "original Native source and four camera frames",
+        "reference_frame": "same-tick simulator world and target lane",
+        "uncertainty": "simulator coordinate and sampled-frame resolution"
+      },
+      {
+        "name": "observed_indicator",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "method": "original Native source and four camera frames",
+        "reference_frame": "same-tick simulator world and target lane",
+        "uncertainty": "simulator coordinate and sampled-frame resolution"
+      },
+      {
+        "name": "controller_check",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "method": "original Native source and four camera frames",
+        "reference_frame": "same-tick simulator world and target lane",
+        "uncertainty": "simulator coordinate and sampled-frame resolution"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Controller gap rule is engineering, not statutory.",
+      "A controller check is not proof of a human mental state.",
+      "Pixels and physical completion require later local review."
+    ]
+  }
+}

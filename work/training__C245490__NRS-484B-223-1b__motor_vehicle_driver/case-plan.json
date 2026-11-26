@@ -86,6 +86,7 @@
       "kind": "delivery",
       "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
       "selection_targets": [
+        "demo-train",
         "full-train"
       ],
       "requested_not_measured": true,
@@ -101,6 +102,7 @@
       "kind": "delivery",
       "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
       "selection_targets": [
+        "demo-train",
         "full-train"
       ],
       "requested_not_measured": true,
@@ -116,6 +118,7 @@
       "kind": "delivery",
       "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
       "selection_targets": [
+        "demo-train",
         "full-train"
       ],
       "requested_not_measured": true,
@@ -131,6 +134,7 @@
       "kind": "delivery",
       "source_branch": "Both conjunctive prerequisites before movement from the occupied lane.",
       "selection_targets": [
+        "demo-train",
         "full-train"
       ],
       "requested_not_measured": true,
@@ -328,44 +332,29 @@
   "selected_branch": "two or more clearly marked same-direction lanes; prior appropriate signal; separately observed controller safety check and front/rear target-lane gaps",
   "observations": [
     {
-      "name": "drv.laned_roadway",
+      "name": "ego_lane",
       "mandatory": true,
-      "reason": "two or more marked lanes in the subject's direction"
+      "reason": "Original Native source channel for exact lane-change proof"
     },
     {
-      "name": "st.lane",
+      "name": "front_actor",
       "mandatory": true,
-      "reason": "the lane occupied"
+      "reason": "Original Native source channel for exact lane-change proof"
     },
     {
-      "name": "drv.lane_change",
+      "name": "rear_actor",
       "mandatory": true,
-      "reason": "the movement out of the lane"
+      "reason": "Original Native source channel for exact lane-change proof"
     },
     {
-      "name": "sig.turn_indicator",
+      "name": "observed_indicator",
       "mandatory": true,
-      "reason": "the appropriate turn signal"
+      "reason": "Original Native source channel for exact lane-change proof"
     },
     {
-      "name": "drv.distance_while",
+      "name": "controller_check",
       "mandatory": true,
-      "reason": "the signal held before the movement begins"
-    },
-    {
-      "name": "drv.lane_change_feasible",
-      "mandatory": true,
-      "reason": "operationalizes 'ascertained that the movement can be made with safety'"
-    },
-    {
-      "name": "rel.surface_gap",
-      "mandatory": true,
-      "reason": "the gap in the target lane"
-    },
-    {
-      "name": "drv.time_to_conflict",
-      "mandatory": true,
-      "reason": "with users in the target lane"
+      "reason": "Original Native source channel for exact lane-change proof"
     }
   ],
   "runtime_uncertainties": [
@@ -374,13 +363,11 @@
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
   ],
-  "source_observation_mapping": [
-    {
-      "term": "drv.laned_roadway",
-      "measurement": "same_direction_marked_lane_count",
+  "source_observation_mapping": {
+    "drv.laned_roadway": {
       "evidence": "road waypoint/lane-mark review",
       "channels": [
-        "source_trace"
+        "ego_lane"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -390,14 +377,13 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "same_direction_marked_lane_count"
     },
-    {
-      "term": "st.lane",
-      "measurement": "occupied_lane_id and occupied_lane_half_width_m",
+    "st.lane": {
       "evidence": "retained occupied-lane geometry",
       "channels": [
-        "source_trace"
+        "ego_lane"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -407,14 +393,13 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "occupied_lane_id and occupied_lane_half_width_m"
     },
-    {
-      "term": "drv.lane_change",
-      "measurement": "first_body_departure_frame",
+    "drv.lane_change": {
       "evidence": "body extent versus occupied-lane boundary",
       "channels": [
-        "source_trace"
+        "ego_lane"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -424,28 +409,27 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "first_body_departure_frame"
     },
-    {
-      "term": "sig.turn_indicator",
-      "measurement": "requested versus actually observed target-direction indicator state plus pixel review",
+    "sig.turn_indicator": {
       "evidence": "Native light state request plus pixels for independent review",
       "channels": [
-        "source_trace"
+        "observed_indicator"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
         "video_frames.jsonl",
         "overview.mkv",
         "reference_corner.mkv"
-      ]
+      ],
+      "measurement": "requested versus actually observed target-direction indicator state plus pixel review"
     },
-    {
-      "term": "drv.distance_while",
-      "measurement": "signal_lead_s",
+    "drv.distance_while": {
       "evidence": "difference between signal onset and measured body departure",
       "channels": [
-        "source_trace"
+        "observed_indicator",
+        "ego_lane"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -455,14 +439,15 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "signal_lead_s"
     },
-    {
-      "term": "drv.lane_change_feasible",
-      "measurement": "independent predeparture controller check action, decision, sampled front/rear target-lane gap and native frame join",
+    "drv.lane_change_feasible": {
       "evidence": "native-driver-checks.jsonl with source actor IDs; controller decision is not human mental ascertainment or legal safety",
       "channels": [
-        "source_trace"
+        "controller_check",
+        "front_actor",
+        "rear_actor"
       ],
       "source_refs": [
         "native-driver-checks.jsonl",
@@ -470,14 +455,14 @@
         "driving-context.json",
         "video_frames.jsonl",
         "reference_corner.mkv"
-      ]
+      ],
+      "measurement": "independent predeparture controller check action, decision, sampled front/rear target-lane gap and native frame join"
     },
-    {
-      "term": "rel.surface_gap",
-      "measurement": "target_lane_min_surface_gap_m",
+    "rel.surface_gap": {
       "evidence": "Native actor body extents and positions",
       "channels": [
-        "source_trace"
+        "front_actor",
+        "rear_actor"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -487,14 +472,14 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "target_lane_min_surface_gap_m"
     },
-    {
-      "term": "drv.time_to_conflict",
-      "measurement": "target_lane_closing_speed_mps and gap_at_departure_m",
+    "drv.time_to_conflict": {
       "evidence": "kinematic quotient where closing speed is positive",
       "channels": [
-        "source_trace"
+        "front_actor",
+        "rear_actor"
       ],
       "source_refs": [
         "native-ego-frames.jsonl",
@@ -504,9 +489,10 @@
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
-      ]
+      ],
+      "measurement": "target_lane_closing_speed_mps and gap_at_departure_m"
     }
-  ],
+  },
   "draft_source_diagnostic": {
     "path": "native/lane-change-diagnostic-proof.json",
     "selected": false,
@@ -633,6 +619,33 @@
         "requirement": "Source-observed indicator, occupied-lane departure, front and rear target-lane gaps, and independent predeparture check action in exact comparisons",
         "source": "NRS 484B.223(1)(b); inputs/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/review-context/review.json",
         "why_existing_insufficient": "Frozen review context lists requested settings and accepted membership but no original source receipts or check action."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego body, marked occupied and target lanes",
+        "interval": "startup through final clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "front and rear target-lane actors",
+        "interval": "approach through lane departure",
+        "view": "approach"
+      },
+      {
+        "subject": "observed indicator, lane boundary and target actor",
+        "interval": "indicator onset through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver perspective and target lane",
+        "interval": "startup through final observation",
+        "view": "driver_reference"
       }
     ]
   }

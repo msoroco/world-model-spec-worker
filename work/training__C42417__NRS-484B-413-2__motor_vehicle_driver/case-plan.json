@@ -148,7 +148,7 @@
         ]
       },
       "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "audit_gap": "Authored 40 m versus 20 m request and source-shaped meter pass; selected original-source comparison and independent audit not yet built."
     }
   ],
   "observations": [
@@ -156,49 +156,49 @@
       "name": "sig.turn_indicator",
       "mandatory": true,
       "source_note": "the signal, left or right",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     },
     {
       "name": "sig.hand_signal",
       "mandatory": true,
       "source_note": "or the arm signal with its meaning",
-      "status": "unmapped_to_native_and_core"
+      "status": "statutory_alternative_pending"
     },
     {
       "name": "drv.distance_while",
       "mandatory": true,
       "source_note": "the path length over which the signal has been shown continuously",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     },
     {
       "name": "kin.path_length",
       "mandatory": true,
       "source_note": "the 100-foot and 300-foot thresholds",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     },
     {
       "name": "drv.turning",
       "mandatory": true,
       "source_note": "the turn or course change that follows",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     },
     {
       "name": "drv.lane_change",
       "mandatory": true,
       "source_note": "'otherwise turn from a direct course'",
-      "status": "unmapped_to_native_and_core"
+      "status": "statutory_alternative_pending"
     },
     {
       "name": "env.precipitation",
       "mandatory": true,
       "source_note": "'regardless of the weather' — no weather excuse",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     },
     {
       "name": "kin.speed",
       "mandatory": true,
       "source_note": "the speed that converts the distance into a time",
-      "status": "unmapped_to_native_and_core"
+      "status": "proposed_native_source_unverified"
     }
   ],
   "sources": [
@@ -217,72 +217,98 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Measure continuous physical indicator/hand-signal activity along actual traveled distance before course-change onset; distinguish 100-foot business/residential from 300-foot other-area branch.",
-    "Weather cannot waive the distance rule; command station is not observed onset or visible flashing.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Connected OpenDRIVE and right-turn controller pass CPU geometry tests but have not run in CARLA.",
+    "Original lamp-state readback, actual flashing pixels, full-body road transition, business district classification and weather remain unverified.",
+    "Selected compatibility, saved-only process receipts, semantic and independent delivery/comparison audits remain unbuilt.",
+    "The statutory other-area 300-foot branch belongs to a distinct compatible cell; this fixed cell is business_district."
   ],
   "source_observation_mapping": {
     "sig.turn_indicator": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:right_lamp_commanded",
+        "native_samples.jsonl:right_lamp_observed",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "sig.hand_signal": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
+      "evidence": "Statutory alternative pending; no source asserted in these right-indicator/right-turn cases.",
       "channels": [],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.distance_while": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:ego_center_xy_m",
+        "native_samples.jsonl:right_lamp_observed",
+        "native/measure_observed.py",
+        "native/saved_measure.py"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.path_length": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:ego_center_xy_m",
+        "native/saved_measure.py"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:ego_heading_deg",
+        "native_samples.jsonl:course_change_observed",
+        "body_history.jsonl",
+        "video_frames.jsonl"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
+      "evidence": "Statutory alternative pending; no source asserted in these right-indicator/right-turn cases.",
       "channels": [],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "env.precipitation": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:precipitation",
+        "native/capture.py:HardRainNoon",
+        "road_geometry.json"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Proposed original Native acquisition and source-joined saved measurement; no CARLA capture yet.",
+      "channels": [
+        "native_samples.jsonl:ego_speed_mps",
+        "video_frames.jsonl"
+      ],
       "source_refs": [
         "inputs/training__C42417__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     }
   },
   "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
-  "readiness": "planning_only",
+  "readiness": "implementation_checkpoint",
   "physical_prerequisites": "Measure continuous physical indicator/hand-signal activity along actual traveled distance before course-change onset; distinguish 100-foot business/residential from 300-foot other-area branch.",
   "legal_interpretation_limit": "Weather cannot waive the distance rule; command station is not observed onset or visible flashing."
 }

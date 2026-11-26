@@ -1,0 +1,46 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__white_wholly",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "LVMC-11-30-140-B",
+      "source": "LVMC 11.30.140(B)",
+      "output_key": "blindness_extent",
+      "method": "blindness",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle-person-poses.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "blind-person-context.json",
+        "road-survey.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "LVMC-11-30-140-B",
+      "source": "LVMC 11.30.140(B)",
+      "output_key": "cane_marker_form",
+      "method": "marker",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle-person-poses.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "blind-person-context.json",
+        "road-survey.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "blind-person-context.json"
+    ],
+    "error_contains": "Missing required source: blind-person-context.json"
+  }
+}

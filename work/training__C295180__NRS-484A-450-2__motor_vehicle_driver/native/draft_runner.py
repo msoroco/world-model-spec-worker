@@ -1,4 +1,4 @@
-"""Offline contract for exact, unselected stop-line requests."""
+"""Exact stop-line construction contract and lazy local Native entrypoint."""
 import argparse
 import json
 from pathlib import Path
@@ -30,14 +30,27 @@ def check(config):
         raise ValueError("Governing stop sign absent")
     if config.get("physical_verified") is not False or config.get("legal_verdict") is not None:
         raise ValueError("Physical or legal result claimed")
+    from road_source import inspect
+    inspect(Path(__file__).resolve().parent / 'authored-road.xodr')
     return {"case_id": case, "frames": 600, "simulation_started": False,
+            "native_capture_implemented": True,
             "selected_for_delivery": False}
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
-    if not args.check:
-        raise SystemExit("Native capture and saved processing are not implemented")
-    print(json.dumps(check(json.loads(Path("config.json").read_text())), sort_keys=True))
+    config = json.loads(Path("config.json").read_text())
+    proof = check(config)
+    if args.check:
+        print(json.dumps(proof, sort_keys=True))
+    elif args.output_dir:
+        from live_capture import capture
+        print(json.dumps(capture(config['case_id'], args.output_dir,
+                                 args.host, args.port), sort_keys=True))
+    else:
+        parser.error('Supply --check or --output-dir')

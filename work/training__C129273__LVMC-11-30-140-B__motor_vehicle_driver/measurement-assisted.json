@@ -1,0 +1,29 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C129273__LVMC-11-30-140-B__motor_vehicle_driver__assisted",
+  "requirements": [
+    {
+      "disposition_index": 3,
+      "requirement": "LVMC-11-30-140-B",
+      "source": "LVMC 11.30.140(B)",
+      "output_key": "assisted_person",
+      "method": "assistance",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle-person-poses.jsonl",
+        "video_frames.jsonl",
+        "camera-frames.jsonl",
+        "blind-person-context.json",
+        "road-survey.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "blind-person-context.json"
+    ],
+    "error_contains": "Missing required source: blind-person-context.json"
+  }
+}

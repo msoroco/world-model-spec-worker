@@ -1,25 +1,26 @@
-# NRS-484B-223-1b at C245490
+# C245490 NRS 484B.223(1)(b) delivery handoff
 
-Actor: `motor_vehicle_driver`. Frozen cell: `same_direction_multilane` / `change_lane` / `lane_marking`.
+Status: `ready` for CPU delivery preparation. The assignment-scoped strict gate passed on 2026-11-25. Original Native recording and legal/physical acceptance remain for local delivery.
 
-Exact statutory source: NRS 484B.223(1)(b). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Both conjunctive prerequisites before movement from the occupied lane..
+The frozen cell is two or more clearly marked same-direction lanes. Four selected 30-second/20-Hz constructions isolate prior observed indicator, later indicator, close target-lane rear actor, and an independently skipped controller check. Each records occupied-lane body departure, original front/rear actor gap, requested and observed signal separately, and a source row for check action. No engineering gap threshold is asserted as a statutory cutoff. Accepted historical membership was reviewed; no source-hashed reuse is claimed.
 
-Controlled planning variable: `prior_signal_before_lane_departure`. Proposed requests: driver signals and checks safe gap before departing marked lane; driver departs same lane without prior signal. These are scene/controller targets, not observed conduct or legal verdicts.
+Selected cases and construction SHA-256:
 
-Statutory alternatives and exceptions still to cover or disposition: two or more clearly marked same-direction lanes; independent safety ascertainment; unsafe-gap branch.
+- `training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe`: `72a16b2826fa276301fd60152fd0cd3dd1cba97ec2e785b2dc9124c55e62bfe5`
+- `training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe`: `99216415e8f351902f4be8126aa0a4d2af336671ec1e4b7fc56995a5ea878c37`
+- `training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe`: `6d5fcf77c608dd2b20414458fd7bce8da5b22b1e8d47ea185bfbddc4e5bcf14a`
+- `training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check`: `68196942d65651bbb7c36d4d93ae6321680843d615a200aba38d018fe4bf0a7f`
 
-Accepted membership: 10 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
+Proofs: four selected offline passes; four public compatibility positives and missing-source negatives; four recorded-only saved runs; four synthetic physical/lifecycle fixtures; four independent delivery positives and tamper negatives; three source-isolated comparison audits with missing-check-source negatives; seven-stage semantic validation; root CPU unit tests. The selected source graphs are diagnostic software fixtures and do not assert original Native motion or pixels.
 
-Historical baseline gap before this checkpoint: no executable construction or measured source-trace diagnostic existed. The current draft and diagnostic are documented below; the selected exact delivery path and its remaining proofs are still incomplete.
+Three comparison axes: signal order, safe/unsafe engineering gap, and evaluated/skipped ascertainment source. Both `demo-train` and `full-train` delivery acceptance targets are bound.
 
-Original resume list (partly advanced below): reconcile every branch against exact text and physical cell; promote and test selected Native routes and controllers, and execute pinned-runtime compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Hashes:
 
-## 2026-11-23 CPU construction and source-trace checkpoint
+- execution manifest: `c8c0069450c9d65147471ddaf50068fc3a371735f6edcde2fb7bab2dc6508a75`
+- case plan: `a303347f1072e2f91e44f4c431f677c2d4a962c9bd60df1a6b07af382531c5bb`
+- comparison audit: `b7ea7acfd8b7686a591b6444546f0adac9065c1a2aefd310c887987b07df7d17`
+- root unit test log: `fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658`
+- semantic index: `ce919e78d993389370b6e7f6ac77e313bf42f103912bfb1035c79c5913898676`
 
-Pinned `.venv-cpu/bin/python runtime.py preflight` passed. `native/measure_lane_change.py` measures 600 synchronized 20 Hz source rows. It tests the two-or-more same-direction marked-lane activation, first ego-body departure from the retained occupied-lane boundary, whether the target-direction indicator began before departure, signal lead time, target-lane surface gap, and time to conflict where closing speed is positive. It keeps driver safety ascertainment and legal verdict unobserved. `native/prove_lane_change.py` binds the frozen assignment SHA and produces four 600-frame diagnostic traces (early signal, late signal, small gap, one lane) plus three rejected-source tests. The proof is `native/lane-change-diagnostic-proof.json` (SHA-256 `f5bbf532ceaeab9964750accb990e067fd5aa1ea01a9a03158f46e43705a2a36`). These are labelled synthetic Native samples and do not prove the planned physical cases.
-
-`native/build_draft.py` builds one exact unselected Native proposal, `signal_before_draft`, with 600 synchronous ticks, signal request before steering, a controlled left-lane departure request, a target-lane vehicle, four RGB source cameras, FrameMap, original motion trace, encoder checks and world restoration. Pinned `runtime.py offline` passed with five CPU checks (runner check plus four unit tests). Construction SHA-256 `25332da455f1556505ef65ece21d79551c7676aa4be6869781d6c659a535ef66`; manifest SHA-256 `1ff6354eebb5dd4e49ae659d5b8c46a11f78f4048c4a95bcb0dff85b15f5b76b`; hashed log and command are in `native/draft-offline-proof.json`.
-
-The draft requires map review before selection: its occupied-lane center is sampled at the current OpenDRIVE road station and requires Native road-station review, the signal state needs independent pixel confirmation, and the target vehicle gap needs original actor and camera review. The current plan's two signal cases do not cover independent safety ascertainment or the unsafe-gap comparison. Accepted membership alone is insufficient for source-hashed equivalence. Finish exact selected constructions, original-source measurement/finalization, compatibility and saved-only proofs, fallback assessments, independent audits and statutory branch comparisons before trying the assignment-scoped strict gate. Physical outcomes and acceptance remain unverified.
-
-The final draft offline receipt SHA-256 is `2dc50e7c71d0bbd6335ad8d0638dfc4ca2394466708443c463ea5785721172cd`; its log SHA-256 is `051b57dc3f8ec1a587472c4b1b1adbdc1479df70bbb5735f529662be69f32f8f`. The earlier draft hashes in this handoff have been superseded by the final road-station geometry revision.
+First GPU command is in `result.json`. Local delivery must inspect original Native actor histories, indicator pixels, lane markings, time joins, four source videos, and physical completion before acceptance. Driver mental ascertainment and legal safety require independent judgment.

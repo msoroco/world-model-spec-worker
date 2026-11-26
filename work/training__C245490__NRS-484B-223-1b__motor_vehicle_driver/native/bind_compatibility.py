@@ -30,7 +30,7 @@ def main():
                 receipt['construction_sha256'] != entry['construction_sha256']):
             raise ValueError('Selected public proof absent or stale: ' + suffix)
         folder = PACKAGE / 'proofs' / suffix
-        analysis = folder / 'compatibility-analysis.log'
+        analysis = folder / 'analysis.log'
         negative = folder / 'negative-analysis.log'
         clean_copy(source / 'compatibility-analysis.log', analysis)
         clean_copy(source / 'negative-analysis.log', negative)
