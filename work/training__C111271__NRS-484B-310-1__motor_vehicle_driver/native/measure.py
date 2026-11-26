@@ -41,7 +41,9 @@ def measure(config_path, native_path, frame_path, geometry_path):
     prior_frame = None
     prior_x = None
     conflicts_after_crossing = []
-    signal_seen = 0
+    signal_states = []
+    if not geometry.get("official_device_source") or not geometry.get("signal_head_facing_source") or not geometry.get("signal_head_id"):
+        raise ValueError("Official facing signal source missing")
     for i, (sample, frame) in enumerate(zip(native, frames)):
         nframe = sample.get("native_frame")
         t = (i + 1) / RATE
@@ -60,18 +62,22 @@ def measure(config_path, native_path, frame_path, geometry_path):
         prior_x = x
         if sample.get("source_kind") != geometry["source_kind"]:
             raise ValueError("Native and geometry provenance differ")
-        if type(sample.get("flashing_red_observed")) is not bool or \
+        if sample.get("signal_head_id") != geometry["signal_head_id"] or \
+                sample.get("signal_lamp_state") not in ("red", "off") or \
                 type(sample.get("signal_faces_ego_observed")) is not bool or \
                 type(sample.get("conflict_occupied")) is not bool:
             raise ValueError("Original signal or conflict source missing")
-        signal_seen += sample["flashing_red_observed"] and sample["signal_faces_ego_observed"]
+        if not sample["signal_faces_ego_observed"]:
+            raise ValueError("Facing flashing-red source incomplete")
+        signal_states.append(sample["signal_lamp_state"])
         if speed <= .05 and x < xref and crossed is None:
             stopped_before.append(i)
         if crossed is None and x >= xref:
             crossed = i
         if sample["conflict_occupied"] and x >= xref:
             conflicts_after_crossing.append(i)
-    if signal_seen != FRAMES:
+    if (set(signal_states) != {"red", "off"} or
+            sum(a != b for a, b in zip(signal_states, signal_states[1:])) < 4):
         raise ValueError("Facing flashing-red source incomplete")
     halt_runs = []
     for frame_index in stopped_before:
@@ -86,6 +92,7 @@ def measure(config_path, native_path, frame_path, geometry_path):
             "first_crossing_frame": crossed,
             "conflict_occupied_after_crossing_frames": len(conflicts_after_crossing),
             "first_conflict_after_crossing_frame": (conflicts_after_crossing[0] if conflicts_after_crossing else None),
+            "flashing_red_transition_count": sum(a != b for a, b in zip(signal_states, signal_states[1:])),
             "source_hashes": {"config": sha(config_path), "native": sha(native_path),
                               "frame_map": sha(frame_path), "geometry": sha(geometry_path)},
             "engineering_stop_threshold_mps": .05,

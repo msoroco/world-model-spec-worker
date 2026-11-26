@@ -1,14 +1,42 @@
 {
   "assignment_id": "training__C229398__NRS-484B-457-1__motor_vehicle_driver",
   "input_sha256": "b9f6d246070a5d2a007847858d6400dd5b316ca51645061d173c261ac5ac5c9d",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "C229398 source-shaped 600-frame right-wheel/curb metric and 12 primary/fallback scene requests now pass a CPU diagnostic with eight negative controls; exact runtime construction, source-bound Native and saved-processing proofs, semantic stages, independent audits and evidence equivalence review remain CPU work. No original Native or ordinance authority was observed.",
-  "readiness_kind": "implementation_checkpoint",
-  "cases_planned": 3,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "reason": "Seven selected Native construction cases and nine candidate CPU proof chains passed offline, exact compatibility, saved-only, physical-outcome, semantic and independent delivery/comparison diagnostics. Original CARLA recording, physical and pixel review, original accepted membership evidence, applicable local ordinances, DOT highway status and DOT width determination remain for delivery; no legal acceptance or accepted-evidence equivalence is claimed.",
+  "readiness_kind": "delivery_prepared",
+  "cases_planned": 7,
+  "cases_selected": 7,
+  "candidate_plans_proven": 9,
+  "comparison_audits_passed": 3,
   "carla_executed": false,
-  "recordings_accepted": 0
+  "recordings_accepted": 0,
+  "cpu_diagnostic_proof": "parking-branches-proof.json",
+  "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C229398__NRS-484B-457-1__motor_vehicle_driver --case training__C229398__NRS-484B-457-1__motor_vehicle_driver__right_16_parked --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C229398__NRS-484B-457-1__motor_vehicle_driver/tests -p test*.py",
+      "exit_code": 0,
+      "log": "native/proofs/selected-tests.log",
+      "sha256": "7f651a454b7b284efe70fac28605ab5d9c389d39a8b6c9aae1f2193f021e78e2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C229398__NRS-484B-457-1__motor_vehicle_driver/comparison_audit.py --comparison curb_boundary --self-test",
+      "exit_code": 0,
+      "log": "native/proofs/curb_boundary-comparison-positive.log",
+      "sha256": "6fcfd9d00edf923af8a72f687f64e5964d9f5b7a98aa1db86dc7d3ad57f054b5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C229398__NRS-484B-457-1__motor_vehicle_driver/comparison_audit.py --comparison rest_mode --self-test",
+      "exit_code": 0,
+      "log": "native/proofs/rest_mode-comparison-positive.log",
+      "sha256": "147e6b3571c421ac58b9303c4346ffdb28f40c617b07a899e6b3787b84651509"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C229398__NRS-484B-457-1__motor_vehicle_driver/comparison_audit.py --comparison angle_dot_context --self-test",
+      "exit_code": 0,
+      "log": "native/proofs/angle_dot_context-comparison-positive.log",
+      "sha256": "0a501efaef6597ac550dcd5b1d2706fba9063e72253bb157cdd36f79b8125fee"
+    }
+  ]
 }

@@ -6,51 +6,234 @@
   "selected_branch": "Flashing red at an intersection",
   "requirement_dispositions": [
     {
-      "requirement": "NRS-484B-310-1",
-      "source": "NRS 484B.310(1)",
+      "requirement": "Flashing red requires a halt before the applicable limit_line reference, with post-stop right to proceed subject to required-stop rules",
+      "source": "inputs/training__C111271__NRS-484B-310-1__motor_vehicle_driver/assignment.json#law.text",
       "branch": "Flashing red at an intersection",
+      "disposition_index": 0,
       "status": "selected_required",
       "case_ids": [
         "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
         "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Exact Native-facing signal, reference geometry, body footprint, full halt and post-stop conflict must be captured and independently reviewed; the paired software fixture is not physical evidence."
+    },
+    {
+      "requirement": "Flashing red requires a halt before the applicable crosswalk reference, with post-stop right to proceed subject to required-stop rules",
+      "source": "inputs/training__C111271__NRS-484B-310-1__motor_vehicle_driver/assignment.json#law.text",
+      "branch": "Flashing red at an intersection",
+      "disposition_index": 1,
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop"
+      ],
+      "evidence_or_gap": "Exact Native-facing signal, reference geometry, body footprint, full halt and post-stop conflict must be captured and independently reviewed; the paired software fixture is not physical evidence."
+    },
+    {
+      "requirement": "Flashing red requires a halt before the applicable intersection reference, with post-stop right to proceed subject to required-stop rules",
+      "source": "inputs/training__C111271__NRS-484B-310-1__motor_vehicle_driver/assignment.json#law.text",
+      "branch": "Flashing red at an intersection",
+      "disposition_index": 2,
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop"
+      ],
+      "evidence_or_gap": "Exact Native-facing signal, reference geometry, body footprint, full halt and post-stop conflict must be captured and independently reviewed; the paired software fixture is not physical evidence."
     }
   ],
   "cases": [
     {
       "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-310-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
-      "physical_target": "stop at applicable boundary before proceeding",
-      "comparison_variable": "flashing_red_stop"
+      "physical_target": "full stop before limit_line reference; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "limit_line",
+      "halt_requested": true,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_limit_line",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
     },
     {
       "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-310-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
-      "physical_target": "cross boundary without stopping",
-      "comparison_variable": "flashing_red_stop"
+      "physical_target": "cross limit_line reference without stopping; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "limit_line",
+      "halt_requested": false,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_limit_line",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
+      "physical_target": "full stop before crosswalk reference; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "crosswalk",
+      "halt_requested": true,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_crosswalk",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "kind": "delivery",
+      "target_type": "violating_attempt",
+      "physical_target": "cross crosswalk reference without stopping; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "crosswalk",
+      "halt_requested": false,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_crosswalk",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
+      "physical_target": "full stop before intersection reference; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "intersection",
+      "halt_requested": true,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_intersection",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "kind": "delivery",
+      "target_type": "violating_attempt",
+      "physical_target": "cross intersection reference without stopping; post-stop conflict held clear in both cases",
+      "comparison_variable": "flashing_red_stop",
+      "reference_kind": "intersection",
+      "halt_requested": false,
+      "gap_ids": [
+        "original_facing_flash",
+        "original_reference_intersection",
+        "original_motion",
+        "original_post_stop",
+        "original_pixels"
+      ]
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__limit_line_stop_pair",
       "case_ids": [
         "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
         "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b"
       ],
       "deliberate_differences": [
-        "flashing_red_stop"
+        "requested pre-reference halt policy"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
-      ]
+        "same frozen law/cell/actor, flashing-red phase, reference hierarchy, lane and route, conflict clearance, camera policy and 600-frame duration"
+      ],
+      "audit_rule": "compare original pre-reference halt runs while verifying identical source-bound reference kind and post-stop conflict policy"
+    },
+    {
+      "comparison_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop_pair",
+      "case_ids": [
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop"
+      ],
+      "deliberate_differences": [
+        "requested pre-reference halt policy"
+      ],
+      "fixed_conditions": [
+        "same frozen law/cell/actor, flashing-red phase, reference hierarchy, lane and route, conflict clearance, camera policy and 600-frame duration"
+      ],
+      "audit_rule": "compare original pre-reference halt runs while verifying identical source-bound reference kind and post-stop conflict policy"
+    },
+    {
+      "comparison_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop_pair",
+      "case_ids": [
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+        "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop"
+      ],
+      "deliberate_differences": [
+        "requested pre-reference halt policy"
+      ],
+      "fixed_conditions": [
+        "same frozen law/cell/actor, flashing-red phase, reference hierarchy, lane and route, conflict clearance, camera policy and 600-frame duration"
+      ],
+      "audit_rule": "compare original pre-reference halt runs while verifying identical source-bound reference kind and post-stop conflict policy"
     }
   ],
   "observations": [
+    {
+      "name": "native_signal_reference_body_and_conflict",
+      "mandatory": true,
+      "reason": "original 20-Hz signal, facing head, applicable reference, body front/velocity and conflict source"
+    },
+    {
+      "name": "four_camera_video",
+      "mandatory": true,
+      "reason": "four synchronized original RGB sources with facing signal and stopping reference visible"
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/training__C111271__NRS-484B-310-1__motor_vehicle_driver/assignment.json",
+      "sha256": "f16e6159019fe748ffc89f204e5a37cb1a856fef5cd503511ff7cacff8027bfe"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Original Native facing flashing-red phase, official device designation, lane governance, reference hierarchy and geometry, body halt, post-stop yield, camera pixels and physical completion remain unverified. CPU fixtures test software only."
+  ],
+  "statutory_text": "Whenever an illuminated flashing red or yellow signal is used in conjunction with an official traffic-control device, it shall require obedience by vehicular traffic as follows: When a red lens is illuminated with rapid intermittent flashes, drivers of vehicles shall stop before entering the nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection, and the right to proceed shall be subject to the rules applicable after making a required stop.",
+  "activation_conditions_from_unreviewed_summary": [
+    "a red lens flashes rapidly at the subject's approach",
+    "the subject approaches the intersection"
+  ],
+  "witness_branches": [
+    "Flashing red at an intersection"
+  ],
+  "physical_capability_to_check": [
+    "flashing_red_stop",
+    "dev.traffic_signal",
+    "dev.governs",
+    "st.lane_enters",
+    "st.crosswalk",
+    "st.stop_line",
+    "st.intersection",
+    "drv.stopped",
+    "drv.crossing_line",
+    "drv.entering_intersection",
+    "drv.yields_to"
+  ],
+  "source_observation_requirements": [
     {
       "name": "dev.traffic_signal",
       "mandatory": true,
@@ -102,36 +285,139 @@
       "reason": "the rules applicable after a required stop"
     }
   ],
-  "sources": [
-    {
-      "path": "inputs/training__C111271__NRS-484B-310-1__motor_vehicle_driver/assignment.json",
-      "sha256": "f16e6159019fe748ffc89f204e5a37cb1a856fef5cd503511ff7cacff8027bfe"
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original Native signal/map/body source and independent saved review; requested control or fixture is not a legal finding",
+      "channels": [
+        "native_signal_reference_body_and_conflict"
+      ],
+      "source_refs": [
+        "native/runner.py",
+        "native/measure.py"
+      ]
     }
-  ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
-  ],
-  "statutory_text": "Whenever an illuminated flashing red or yellow signal is used in conjunction with an official traffic-control device, it shall require obedience by vehicular traffic as follows: When a red lens is illuminated with rapid intermittent flashes, drivers of vehicles shall stop before entering the nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection, and the right to proceed shall be subject to the rules applicable after making a required stop.",
-  "activation_conditions_from_unreviewed_summary": [
-    "a red lens flashes rapidly at the subject's approach",
-    "the subject approaches the intersection"
-  ],
-  "witness_branches": [
-    "Flashing red at an intersection"
-  ],
-  "physical_capability_to_check": [
-    "flashing_red_stop",
-    "dev.traffic_signal",
-    "dev.governs",
-    "st.lane_enters",
-    "st.crosswalk",
-    "st.stop_line",
-    "st.intersection",
-    "drv.stopped",
-    "drv.crossing_line",
-    "drv.entering_intersection",
-    "drv.yields_to"
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego body, facing flashing-red head, applicable stop reference and conflict approach",
+        "interval": "startup through reference crossing and clearance"
+      },
+      {
+        "view": "approach",
+        "subject": "ego body, facing flashing-red head, applicable stop reference and conflict approach",
+        "interval": "startup through reference crossing and clearance"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego body, facing flashing-red head, applicable stop reference and conflict approach",
+        "interval": "startup through reference crossing and clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego body, facing flashing-red head, applicable stop reference and conflict approach",
+        "interval": "startup through reference crossing and clearance"
+      }
+    ]
+  }
 }

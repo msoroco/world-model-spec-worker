@@ -29,7 +29,10 @@ def make_sources(directory, case_suffix, halt, reference):
     config_path = directory / "config.json"
     write_json(config_path, config)
     geometry = {"source_kind": "synthetic_native_sample", "lane_enters_intersection": True,
-                "signal_head_faces_subject": True, "flashing_red_source": "synthetic_native_sample",
+                "signal_head_faces_subject": True,
+                "official_device_source": "synthetic_native_sample",
+                "signal_head_facing_source": "synthetic_native_sample",
+                "signal_head_id": "fixture_head_1",
                 "limit_line_x_m": 48.0 if reference == "limit_line" else None,
                 "crosswalk_near_x_m": 50.0 if reference != "intersection" else None,
                 "intersection_near_x_m": 52.0}
@@ -45,7 +48,9 @@ def make_sources(directory, case_suffix, halt, reference):
             x += speed / RATE
             source = {"source_kind": "synthetic_native_sample", "native_frame": 1000 + i,
                       "time_s": (i + 1) / RATE, "front_x_m": round(x, 6), "speed_mps": speed,
-                      "flashing_red_observed": True, "signal_faces_ego_observed": True,
+                      "signal_head_id": "fixture_head_1",
+                      "signal_lamp_state": "red" if (i // 10) % 2 == 0 else "off",
+                      "signal_faces_ego_observed": True,
                       "conflict_occupied": 170 <= i < 190}
             frame = {"video_frame": i, "native_frame": 1000 + i,
                      "time_s": (i + 1) / RATE}
@@ -70,8 +75,11 @@ def run():
         shutil.rmtree(scratch)
     scratch.mkdir(parents=True)
     observations = {}
+    pair_names = {"limit_line": ("probe_a", "probe_b"),
+                  "crosswalk": ("crosswalk_stop", "crosswalk_no_stop"),
+                  "intersection": ("intersection_stop", "intersection_no_stop")}
     for ref in ("limit_line", "crosswalk", "intersection"):
-        for suffix, halt in (("probe_a", True), ("probe_b", False)):
+        for suffix, halt in zip(pair_names[ref], (True, False)):
             paths = make_sources(scratch / ref / suffix, suffix, halt, ref)
             result = measure(*paths)
             if result["frames"] != FRAMES or result["stopping_reference"] != ref:
@@ -97,7 +105,8 @@ def run():
     positive = list(make_sources(scratch / "negative-base", "probe_a", True, "limit_line"))
     native_lines = positive[1].read_text().splitlines()
     altered = [json.loads(line) for line in native_lines]
-    altered[200]["flashing_red_observed"] = False
+    for row in altered:
+        row["signal_lamp_state"] = "red"
     positive[1].write_text("\n".join(json.dumps(row, sort_keys=True) for row in altered) + "\n")
     negative["missing_flashing_phase"] = rejects(positive, "Facing flashing-red source incomplete")
     positive = list(make_sources(scratch / "negative-base", "probe_a", True, "limit_line"))

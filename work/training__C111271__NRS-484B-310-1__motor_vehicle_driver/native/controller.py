@@ -16,7 +16,9 @@ class State:
 
 def command(case_suffix: str, front_x_m: float, speed_mps: float,
             reference_x_m: float, conflict_occupied: bool, state: State) -> dict:
-    if case_suffix not in ("probe_a", "probe_b"):
+    stop_cases = {"probe_a", "crosswalk_stop", "intersection_stop"}
+    nonstop_cases = {"probe_b", "crosswalk_no_stop", "intersection_no_stop"}
+    if case_suffix not in stop_cases | nonstop_cases:
         raise ValueError("Unknown comparison case")
     if any(type(value) not in (float, int) or not math.isfinite(value) for value in
            (front_x_m, speed_mps, reference_x_m)) or speed_mps < 0:
@@ -26,7 +28,7 @@ def command(case_suffix: str, front_x_m: float, speed_mps: float,
     if state.previous_front_x_m is not None and front_x_m < state.previous_front_x_m - .1:
         raise ValueError("Native body moved backwards")
     state.previous_front_x_m = front_x_m
-    if case_suffix == "probe_a" and not state.departed:
+    if case_suffix in stop_cases and not state.departed:
         # 2.5 m/s^2 is an engineering deceleration target, not a legal threshold.
         braking_distance = speed_mps * speed_mps / 5 + 1.5
         if front_x_m >= reference_x_m - braking_distance:

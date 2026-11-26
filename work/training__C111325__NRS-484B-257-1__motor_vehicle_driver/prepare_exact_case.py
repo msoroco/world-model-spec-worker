@@ -37,6 +37,13 @@ def prepare(slug):
                         'result["selected_case_id"], case_id("' + slug + '")')
     test_path = HERE / ("test_native_capture_" + slug + ".py")
     test_path.write_text(test)
+    plan = json.loads((HERE / "case-plan.json").read_text())
+    contract = json.loads((HERE / "measurement-complete_stop_then_yield.json").read_text())
+    contract["case_id"] = case
+    contract["requirements"] = [r for r in contract["requirements"] if case in
+                                plan["requirement_dispositions"][r["disposition_index"]]["case_ids"]]
+    needs_reference_negative = not any("governing_sign.json" in r["inputs"]
+                                       for r in contract["requirements"])
     constructions = []
     for candidate, original in (("primary", "construction.json"),
                                 ("fallback1", "construction-fallback1.json")):
@@ -49,16 +56,15 @@ def prepare(slug):
             if item["path"] == "tests/test_native_capture.py":
                 item["content"] = test
                 item["source"] = str(test_path.relative_to(REPO))
+            if item["path"] == "finalize.py" and needs_reference_negative:
+                finalizer = HERE / "finalize_yield.py"
+                item["content"] = finalizer.read_text()
+                item["source"] = str(finalizer.relative_to(REPO))
         name = "construction-" + slug + ("" if candidate == "primary" else "-fallback1") + ".json"
         output = HERE / name
         save(output, value)
         constructions.append((name, sha(output)))
-    plan = json.loads((HERE / "case-plan.json").read_text())
-    contract = json.loads((HERE / "measurement-complete_stop_then_yield.json").read_text())
-    contract["case_id"] = case
-    contract["requirements"] = [r for r in contract["requirements"] if case in
-                                plan["requirement_dispositions"][r["disposition_index"]]["case_ids"]]
-    if not any("governing_sign.json" in r["inputs"] for r in contract["requirements"]):
+    if needs_reference_negative:
         contract["negative"] = {"remove": ["stopping_reference.json"],
                                 "error_contains": "Missing required source: stopping_reference.json"}
     contract_name = "measurement-" + slug + ".json"
