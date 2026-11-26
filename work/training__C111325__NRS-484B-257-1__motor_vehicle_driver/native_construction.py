@@ -101,7 +101,8 @@ def constructed_scene(client, carla, scene):
         if set(cameras) != {"overview", "approach", "reference_corner", "driver_reference"}:
             raise ValueError("Four source cameras not constructed")
         yield {"world": world, "ego": ego, "through": through, "officer": officer,
-               "cameras": cameras, "map_opendrive": original_map_check(world, scene)}
+               "cameras": cameras, "map_opendrive": original_map_check(world, scene),
+               "prior_synchronous_mode": old_sync, "prior_fixed_delta_seconds": old_delta}
     finally:
         for actor in reversed(owned):
             actor.destroy()

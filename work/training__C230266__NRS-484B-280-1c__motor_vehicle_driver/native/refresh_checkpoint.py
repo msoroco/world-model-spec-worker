@@ -86,7 +86,8 @@ def main():
                    f"Current-construction public compatibility {len(compatible)}/{len(plan['cases'])}, "
                    f"recorded-only positive/negative {len(saved)}/{len(plan['cases'])}. "
                    "Canonical semantic and independent delivery/comparison CPU predicates pass. "
-                   "Final execution-manifest and strict proofs remain. "
+                   "Native runner now writes a pending-review result with observation and caution unknown; saved analysis requires a separate 600-frame original-source review. "
+                   "Receipts from prior construction hashes are historical; final execution-manifest and strict proofs remain. "
                    "Original driver observation, statutory position, Native motion and pixels are unverified."),
         "cpu_proofs": [proof(path) for path in (
             "statutory-source-audit.json", "native/branch-meter-proof.json",
@@ -114,6 +115,8 @@ Status: **partial**. The frozen law is split into {len(plan['requirement_disposi
 - All {len(plan['cases'])} selected current-runtime offline checks pass (`selected-offline/index.json`). Draft construction checks pass {len(plan['cases'])} positives, {len(plan['cases'])} missing-source negatives and {len(plan['comparisons'])} comparison-isolation checks (`native/branch-construction-proof.json`). Source meters and saved finalization retain actual driver observation as a separate source fact.
 - All {len(plan['cases'])} physical/lifecycle CPU fixtures under `physical/` show complete travel, incomplete travel and missing evidence separately, plus capture seal, encoder closure, restoration, Native exit and owner release ordering. They are synthetic checker tests, not original motion.
 - Current selected construction hashes have {len(compatible)}/{len(plan['cases'])} public positive/missing-source compatibility receipts and {len(saved)}/{len(plan['cases'])} public recorded-only positive/negative processing proofs. The public proof loops are `native/run_selected_compatibility.py` and `native/run_selected_saved.py`.
+- The current preflight manifest is `{sha(ROOT / 'selected-preflight-manifest.json')}`. Receipts bound to earlier construction or manifest hashes are historical and excluded from these counts. The Native runner emits a pending-review result after capture closure; its actual driver observation and proper caution values are null, with no claimed physical or legal acceptance.
+- After a Native attempt, an independent reviewer must add `pedestrian-source-review.jsonl` with 600 frame-matched source findings and explicit observation provenance where observation is asserted. The saved-only finalizer refuses a missing review; visibility and requested speed never fill the observation field. The four camera originals, trace and context survey remain the source for that review.
 - `statutory-source-audit.json` binds separate bus stop, bench, shelter, transit stop, bus boarding and other public transportation boarding positions. Original designation, use and actor class require independent sources; a label or prop alone cannot establish them.
 - `proposals/semantic-index.json` passes the six-stage current-runtime semantic validator for all {len(plan['cases'])} selected cases. Driver observation and proper caution stay unresolved. The physical judgment sweep is explicitly incomplete pending original sources and a defensible sampling range.
 - `delivery-audit/index.json` passes {len(plan['cases'])} positive and {len(plan['cases'])} missing-observation negative CPU predicate tests. `comparison-audit/index.json` passes {len(plan['comparisons'])} positive and {len(plan['comparisons'])} changed-source negative tests. Neither attests an original Native capture.

@@ -5,7 +5,50 @@
   "actor": "motor_vehicle_driver",
   "selected_case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",
   "case": {
-    "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield"
+    "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose",
+          "unit": "m,deg",
+          "sampling_rate_hz": 20,
+          "method": "original Native subject actor transform and body extent joined to frame map",
+          "time_window": "all 600 frames including reference approach and intersection exit",
+          "reference_frame": "original CARLA world XY and native frame",
+          "uncertainty": "50 ms sampling and physical camera coverage require independent review"
+        },
+        {
+          "name": "ego_stop_and_yield_sequence",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original Native ego/through-vehicle motion, bodies, governing sign, reference and control state joined to four source camera identities",
+          "time_window": "all 600 frames, including while moving across or within intersection",
+          "reference_frame": "original Native frame, surveyed road and reference geometry",
+          "uncertainty": "immediate hazard, yielding and legal applicability require human review of original sources"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "governing_control",
+          "unit": "structured",
+          "method": "original sign, officer or traffic-signal object and per-frame controlling state readback"
+        },
+        {
+          "name": "stopping_reference_hierarchy",
+          "unit": "structured",
+          "method": "source-hashed marked line, near-side crosswalk or sight-ray/viewpoint geometry"
+        },
+        {
+          "name": "through_highway",
+          "unit": "structured",
+          "method": "source-hashed road geometry and through-vehicle actor identity"
+        }
+      ],
+      "limitations": [
+        "Requested stopping policy and fixture trajectory are not observed motion or a legal verdict.",
+        "Source video pixels, official control state, physical completion and legal immediate hazard remain for local independent review."
+      ]
+    }
   },
   "supported_case_ids": [
     "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield",

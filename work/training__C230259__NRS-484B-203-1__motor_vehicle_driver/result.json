@@ -1,16 +1,41 @@
 {
   "assignment_id": "training__C230259__NRS-484B-203-1__motor_vehicle_driver",
   "input_sha256": "00d8e2c61f1d6edda0cd4e6e1161b93362fd5f7b3ac8b24b337e90a4f65ffee5",
-  "status": "partial",
-  "reason": "CPU-tested two 600-frame synthetic opposing-vehicle source traces with fixed longitudinal meeting and paved-road geometry, measuring full body encroachment across each right-half boundary; six missing-source negatives pass. Current runtime preflight and scoped complete checkpoint pass. This is a diagnostic, not Native body motion or a judgment of 'as nearly as possible.' Exact Native construction, source camera video, pinned offline/compatibility/process-saved, semantic and independent audits remain unfinished.",
-  "readiness_kind": "implementation_checkpoint",
-  "planned_case_count": 2,
-  "comparison_count": 1,
-  "candidate_count": 0,
-  "source_law_review": "Exact frozen law text retained; recovered summary requires clause-by-clause source review before selection",
-  "accepted_membership_count": 0,
-  "reuse_count": 0,
-  "unresolved_branch_count": 1,
+  "status": "ready",
+  "reason": "CPU delivery preparation passed for two selected opposing-direction meetings. Original Native recording, source and pixel review, both drivers' full-body paved-width measurements, and the statutory as-nearly-as-possible judgment remain for delivery.",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 16,
-  "draft_saved_measurement_proof": "native/opposing-pass-proof.json"
+  "cases_planned": 2,
+  "cases_selected": 2,
+  "candidate_plans_proven": 4,
+  "comparison_audits_passed": 1,
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230259__NRS-484B-203-1__motor_vehicle_driver --case training__C230259__NRS-484B-203-1__motor_vehicle_driver__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C230259__NRS-484B-203-1__motor_vehicle_driver/tests -p test*.py",
+      "exit_code": 0,
+      "log": "native/proofs/selected-tests.log",
+      "sha256": "f1876c71f1b88ec0ab8c4ec9fbe8106d502721ea7cc267e3ac669033b7cf2109"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-203-1__motor_vehicle_driver/comparison_audit.py --selftest",
+      "exit_code": 0,
+      "log": "native/proofs/comparison-positive.log",
+      "sha256": "9453336e3ea1954ae5fe812b1b614d8cbf7f4bce27f682933526a9d038113996"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-203-1__motor_vehicle_driver/delivery_audit.py --selftest witness_1",
+      "exit_code": 0,
+      "log": "native/proofs/witness_1-delivery-positive.log",
+      "sha256": "51e74e69b699d5b4c14497204a25bbb6d46cdf6b1ed04c759253e205467aa3eb"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C230259__NRS-484B-203-1__motor_vehicle_driver/delivery_audit.py --selftest witness_2",
+      "exit_code": 0,
+      "log": "native/proofs/witness_2-delivery-positive.log",
+      "sha256": "c324bc1e5af20fd7635884e88c5b8ce31c95284c6676d233eb340099c04caa43"
+    }
+  ]
 }

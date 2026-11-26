@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C149985",
   "law_id": "NRS-484B-457-1",
-  "selected_branch": null,
+  "selected_branch": "Default right-curb position",
   "scope_branches": [
     {
       "law_id": "NRS-484B-457-1",
@@ -33,26 +33,28 @@
       "case_ids": [
         "training__C149985__NRS-484B-457-1__motor_vehicle_driver__16",
         "training__C149985__NRS-484B-457-1__motor_vehicle_driver__18",
-        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__20"
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__20",
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped"
       ]
     },
     {
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: Local authorities may by ordinance permit parking of vehicles with the left-hand wheels adjacent to and within 18 inches of the left-hand curb of a one-way highway. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "Exact conditional left-curb permission on a one-way highway; authored scene and source-shaped geometry diagnostic exist. Applicable local ordinance must be independently sourced and original recording checked.",
       "case_ids": [
-        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__16",
-        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__18",
-        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__20"
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance"
       ]
     },
     {
       "requirement": "text-2",
       "source": "inputs/coverage/branch-sources.json",
-      "status": "exception_pending",
-      "evidence_or_gap": "statutory_text: Local authorities may by ordinance permit angle parking on any highway, except that angle parking must not be permitted on any highway constructed and maintained by the Department of Transportation under the authority granted by chapter 408 of NRS unless the Department has determined that the highway is of sufficient width to permit angle parking without interfering with the free movement of traffic. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Conditional local angle-parking ordinance and separate DOT-maintained-highway width determination are explicit. Authored angle scenes exist; neither administrative fact is supplied in frozen evidence, so original authority review is required before acceptance.",
+      "case_ids": [
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary",
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot"
+      ]
     },
     {
       "requirement": "reviewed-scope-0",
@@ -123,6 +125,74 @@
         "reviewed-scope-0"
       ],
       "selected": false
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped",
+      "target_law_id": "NRS-484B-457-1",
+      "planning_status": "unverified_definition",
+      "target_type": "conditional_branch_probe",
+      "comparison_variable": "rest_mode",
+      "requested_setting": 18,
+      "recorded_value": null,
+      "case_description": "default_right on the frozen one-way highway, with original authority review required for exception applicability",
+      "fixed_context": "C149985 one-way highway, two adjacent curbs, 600 frames, four cameras, same vehicle blueprint; original ordinance and DOT authority remain unknown",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance",
+      "target_law_id": "NRS-484B-457-1",
+      "planning_status": "unverified_definition",
+      "target_type": "conditional_branch_probe",
+      "comparison_variable": "parking_kind",
+      "requested_setting": 18,
+      "recorded_value": null,
+      "case_description": "left_ordinance on the frozen one-way highway, with original authority review required for exception applicability",
+      "fixed_context": "C149985 one-way highway, two adjacent curbs, 600 frames, four cameras, same vehicle blueprint; original ordinance and DOT authority remain unknown",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary",
+      "target_law_id": "NRS-484B-457-1",
+      "planning_status": "unverified_definition",
+      "target_type": "conditional_branch_probe",
+      "comparison_variable": "parking_kind",
+      "requested_setting": 45,
+      "recorded_value": null,
+      "case_description": "angle_ordinary on the frozen one-way highway, with original authority review required for exception applicability",
+      "fixed_context": "C149985 one-way highway, two adjacent curbs, 600 frames, four cameras, same vehicle blueprint; original ordinance and DOT authority remain unknown",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot",
+      "target_law_id": "NRS-484B-457-1",
+      "planning_status": "unverified_definition",
+      "target_type": "conditional_branch_probe",
+      "comparison_variable": "parking_kind",
+      "requested_setting": 45,
+      "recorded_value": null,
+      "case_description": "angle_dot on the frozen one-way highway, with original authority review required for exception applicability",
+      "fixed_context": "C149985 one-way highway, two adjacent curbs, 600 frames, four cameras, same vehicle blueprint; original ordinance and DOT authority remain unknown",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": false
     }
   ],
   "comparisons": [
@@ -148,6 +218,45 @@
       ],
       "status": "planned_unverified",
       "measurement_method": "Measure right-wheel outer edge to curb, parallel heading, physical wheel positions."
+    },
+    {
+      "comparison_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__rest_mode_comparison",
+      "case_ids": [
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__18",
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped"
+      ],
+      "deliberate_differences": [
+        "stopped versus parked resting state"
+      ],
+      "fixed_conditions": [
+        "right curb",
+        "requested 18-inch wheel gap",
+        "one-way road geometry",
+        "vehicle blueprint",
+        "camera profile",
+        "duration"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Original Native speed and resting-state history, separately from wheel and curb geometry."
+    },
+    {
+      "comparison_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot_context_comparison",
+      "case_ids": [
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary",
+        "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot"
+      ],
+      "deliberate_differences": [
+        "DOT maintenance and width-determination applicability"
+      ],
+      "fixed_conditions": [
+        "one-way road geometry",
+        "vehicle blueprint",
+        "angle request",
+        "four cameras",
+        "duration"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Independent administrative source review; physical angle and traffic movement measured from original Native frames."
     }
   ],
   "observations": [
@@ -261,30 +370,21 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Local ordinance left-curb and angle-parking permissions need verified authority; exact 18-inch boundary has measurement uncertainty."
+    "Seven source-shaped branch requests and measured diagnostic fixtures now exist; exact selected Native construction and current-runtime receipt chains remain CPU work.",
+    "Local left-curb and angle ordinance authority and the separate DOT width determination are not supplied by frozen evidence. The conditional scenes cannot establish these facts; original source review is mandatory.",
+    "Physical parking motion, wheel geometry, curb geometry, four camera pixels, semantic proposals and independent audits remain unverified."
   ],
   "selection_targets": [
     "full-train"
   ],
   "cpu_construction": {
-    "status": "authored_diagnostic_only",
-    "scene_script": "right_curb_scene.py",
-    "measurement_script": "measure_right_curb.py",
-    "proof_script": "prove_right_curb.py",
-    "proof": "right-curb-proof.json",
-    "measurement_contract": "right-curb-measurement-contract.json",
+    "status": "expanded_diagnostic_only",
+    "scene_script": "parking_scene.py",
+    "measurement_script": "measure_parking.py",
+    "proof_script": "prove_parking_branches.py",
+    "proof": "parking-branches-proof.json",
     "frames": 600,
     "rate_hz": 20,
-    "cameras": [
-      "overview",
-      "ego_front",
-      "curb_side",
-      "wheel_closeup"
-    ],
     "observed_native": false,
     "selected_delivery": false
   },

@@ -5,6 +5,7 @@ generated full diagnostic fixtures remain under ignored .runtime-work/.
 """
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -77,14 +78,22 @@ def run(entry):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--skip", action="append", default=[])
+    parser.add_argument("--shard", type=int, default=0)
+    parser.add_argument("--shards", type=int, default=1)
     args = parser.parse_args()
+    if args.shards < 1 or not 0 <= args.shard < args.shards:
+        raise ValueError("Invalid compatibility shard")
     manifest = json.loads(MANIFEST.read_text())
     index_path = ROOT / "compatibility" / "index.json"
-    index = json.loads(index_path.read_text()) if index_path.is_file() else {
-        "format": "worker-nrs280-selected-compatibility-index-v1", "passed": []}
-    passed = {row["case_id"]: row for row in index["passed"]}
-    for entry in manifest["cases"]:
+    lock_path = REPO / ".runtime-work" / "nrs280-compat-index.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    for number, entry in enumerate(manifest["cases"]):
+        if number % args.shards != args.shard:
+            continue
         suffix = entry["case_id"].rsplit("__", 1)[-1]
+        index = json.loads(index_path.read_text()) if index_path.is_file() else {
+            "format": "worker-nrs280-selected-compatibility-index-v1", "passed": []}
+        passed = {row["case_id"]: row for row in index["passed"]}
         previous = passed.get(entry["case_id"])
         valid_previous = False
         if previous is not None:
@@ -104,11 +113,19 @@ def main():
         if suffix in args.skip or valid_previous:
             continue
         row = run(entry)
-        passed[entry["case_id"]] = row
-        index["passed"] = [passed[key] for key in sorted(passed)]
-        atomic_text(index_path, json.dumps(index, indent=2))
+        with lock_path.open("a+") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            index = json.loads(index_path.read_text()) if index_path.is_file() else {
+                "format": "worker-nrs280-selected-compatibility-index-v1", "passed": []}
+            passed = {saved["case_id"]: saved for saved in index["passed"]}
+            passed[entry["case_id"]] = row
+            index["passed"] = [passed[key] for key in sorted(passed)]
+            atomic_text(index_path, json.dumps(index, indent=2))
+            fcntl.flock(lock, fcntl.LOCK_UN)
         print(json.dumps({"case": suffix, "receipt_sha256": row["receipt_sha256"]}),
               flush=True)
+    index = json.loads(index_path.read_text())
+    passed = {row["case_id"]: row for row in index["passed"]}
     print(json.dumps({"compatibility_passed": len(passed),
                       "index_sha256": sha(index_path)}), flush=True)
 

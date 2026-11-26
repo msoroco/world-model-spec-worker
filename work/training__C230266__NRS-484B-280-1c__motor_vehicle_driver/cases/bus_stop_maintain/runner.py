@@ -102,6 +102,49 @@ def read_survey(path):
     return survey
 
 
+def write_pending_result(output, config):
+    """Report the captured attempt without deciding unreviewed legal facts."""
+    from finalize import derive_channels
+    from worker_exchange.native_output import write_result
+
+    result = {
+        "case_id": CASE,
+        "measured_values": {"captured_frames": 600,
+                            "driver_observed_pedestrian": None,
+                            "proper_caution": None},
+        "target_checks": [{
+            "target": "sourced statutory position and response after actual observation",
+            "requested": {"mode": MODE, "controller": config["controller"]},
+            "measured": {"captured_frames": 600,
+                         "driver_observed_pedestrian": None,
+                         "proper_caution": None},
+            "method": "original Native capture awaiting separate saved-source review",
+            "tolerance": "no legal proximity or caution cutoff inferred",
+            "matched": False,
+            "physical_cause_confirmed": False,
+            "cause_evidence": ["pedestrian-caution-trace.jsonl",
+                               "video_frames.jsonl", "context-survey.json"]}],
+        "setup_confirmed": False,
+        "behavior_attempted": True,
+        "maneuver_completed": False,
+        "termination_reason": "Native 600-frame capture complete; independent source and physical review pending",
+        "physical_failure_flags": ["driver_observation_unverified",
+                                   "statutory_position_unreviewed",
+                                   "proper_caution_unreviewed"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in VIEWS],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": derive_channels(output),
+        "realized_observables": {},
+        "provenance_kind": "native",
+        "diagnostic_fixture": False,
+        "physical_acceptance_claimed": False,
+        "legal_verdict_claimed": False,
+        "accepted": False}
+    write_result(output, result)
+
+
 def control(distance_m, speed_mps):
     require(math.isfinite(distance_m) and math.isfinite(speed_mps)
             and speed_mps >= 0, "Measured distance and speed required")
@@ -236,6 +279,7 @@ def execute(config, output_dir, survey_path, host, port):
                                                                   "pedestrian_actor_id": ped.id,
                                                                   "context_actor_ids": context_ids})
                 frame_map.append(native_frame, frame / 20,
+                                 camera_native_frames={name: native_frame for name in VIEWS},
                                  native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
                 trace.write(json.dumps({"source_kind": "original_native_pose_and_control",
                                         "branch": BRANCH, "frame": frame,
@@ -272,6 +316,7 @@ def execute(config, output_dir, survey_path, host, port):
         if completed and len(encoder_codes) == 4:
             seal_capture(output, frames=600, restoration=restored, errors=[],
                          encoder_exit_codes=encoder_codes, context={"case_id": CASE})
+            write_pending_result(output, config)
             record_native_exit(output)
 
 

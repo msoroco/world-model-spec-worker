@@ -5,6 +5,8 @@ entrypoint. Original fixture bytes are compared before and after processing.
 """
 
 import hashlib
+import argparse
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -127,20 +129,32 @@ def run_case(entry, compatible):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--shard", type=int, default=0)
+    parser.add_argument("--shards", type=int, default=1)
+    args = parser.parse_args()
+    if args.shards < 1 or not 0 <= args.shard < args.shards:
+        raise ValueError("Invalid saved-only shard")
     manifest = json.loads(MANIFEST.read_text())
     entries = manifest["cases"]
+    owned = [entry for number, entry in enumerate(entries)
+             if number % args.shards == args.shard]
+    lock_path = REPO / ".runtime-work" / "nrs280-saved-index.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
     index = json.loads(INDEX.read_text()) if INDEX.is_file() else {
         "format": "worker-nrs280-recorded-only-index-v1", "passed": []}
     passed = {row["case_id"]: row for row in index["passed"]}
-    while len(passed) < len(entries):
+    def current(entry):
+        row = passed.get(entry["case_id"])
+        return bool(row and row.get("construction_sha256") == entry["construction_sha256"]
+                    and row.get("manifest_sha256") == sha(MANIFEST))
+    while not all(current(entry) for entry in owned):
         compatible = {row["case_id"]: row for row in
                       json.loads(COMPAT.read_text())["passed"]} if COMPAT.is_file() else {}
         progressed = False
-        for entry in entries:
+        for entry in owned:
             case = entry["case_id"]
-            previous = passed.get(case)
-            if (previous and previous.get("construction_sha256") == entry["construction_sha256"]
-                    and previous.get("manifest_sha256") == sha(MANIFEST)):
+            if current(entry):
                 continue
             if case not in compatible:
                 continue
@@ -156,14 +170,22 @@ def main():
             if selection.get("manifest_sha256") != sha(MANIFEST):
                 continue
             row = run_case(entry, compatible[case])
+            with lock_path.open("a+") as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                index = json.loads(INDEX.read_text()) if INDEX.is_file() else {
+                    "format": "worker-nrs280-recorded-only-index-v1", "passed": []}
+                merged = {saved["case_id"]: saved for saved in index["passed"]}
+                merged[case] = row
+                index["passed"] = [merged[name] for name in sorted(merged)]
+                atomic(INDEX, json.dumps(index, indent=2))
+                fcntl.flock(lock, fcntl.LOCK_UN)
             passed[case] = row
-            index["passed"] = [passed[name] for name in sorted(passed)]
-            atomic(INDEX, json.dumps(index, indent=2))
             print(json.dumps({"case": case.rsplit("__", 1)[-1],
                               "proof_sha256": row["proof_sha256"]}), flush=True)
             progressed = True
         if not progressed:
             time.sleep(5)
+    passed = {row["case_id"]: row for row in json.loads(INDEX.read_text())["passed"]}
     print(json.dumps({"saved_only_passed": len(passed),
                       "index_sha256": sha(INDEX)}), flush=True)
 
