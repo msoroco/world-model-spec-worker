@@ -1,0 +1,168 @@
+{
+  "assignment_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-210-2",
+  "cell_id": "C178759",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed paved right lane and both moving vehicle bodies"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed paved right lane and both moving vehicle bodies"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed paved right lane and both moving vehicle bodies"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed paved right lane and both moving vehicle bodies"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+    "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap",
+    "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic"
+  ],
+  "case": {
+    "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+    "target_law_id": "NRS-484B-210-2",
+    "target_type": "unresolved_judgment_observation",
+    "branch": "Right-side overtaking and passing; safety conditions unresolved",
+    "gap_ids": [
+      "G1",
+      "G2",
+      "G3"
+    ],
+    "draft_variables": {
+      "world_setup": {
+        "layout": "paved_road",
+        "maneuver": "overtake_right",
+        "control": "other_vehicle",
+        "same_direction_right_lane": true,
+        "pavement_and_shoulders": "source-verified Native map"
+      },
+      "controller": {
+        "variant": "open_gap",
+        "requested_ego_and_target_speeds": "source-bound controls",
+        "requested_initial_body_gap": "source-bound controls"
+      },
+      "subject_behavior": {
+        "actual_right_pass": null,
+        "approach_ttc_s": null,
+        "lateral_body_clearance_m": null,
+        "conflict_body_distance_m": null
+      }
+    },
+    "intended_observation": "right-lane pass with measured approach space and no constructed crossing actor",
+    "source_measurement": "right_pass.py construct/spawn_native/measure on sealed Native map and original 20 Hz actor history",
+    "physical_risk_assessment": {
+      "status": "physical",
+      "reason": "Right-lane clearance, target tracking, and for the crossing variant conflict actor timing can fail in Native motion; original map and actor readback must be checked."
+    },
+    "physical_acceptance_claimed": false,
+    "legal_outcome": "unresolved",
+    "preparation_status": "case_and_measurement_cpu_draft",
+    "kind": "delivery",
+    "new_capture_selected": true,
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "qualifying_vehicles_and_driver",
+          "unit": "source record",
+          "method": "original Native ego, target and driver identities",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "right_lane_and_pavement",
+          "unit": "source record",
+          "method": "surveyed right lane and paved boundary",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "whole_right_pass",
+          "unit": "world meters/frame",
+          "method": "original behind, alongside-right and ahead body envelopes",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "approach_space",
+          "unit": "meters/frame",
+          "method": "original body gap and closing time",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "lateral_space",
+          "unit": "meters/frame",
+          "method": "original side-by-side body clearance",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "conflict_space",
+          "unit": "meters/frame",
+          "method": "original crossing actor body separation when present",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        },
+        {
+          "name": "motion_context",
+          "unit": "world meters/frame",
+          "method": "original speed, brake and steer history",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-pass approach and completion",
+          "reference_frame": "source-surveyed Native paved road and actor body frames",
+          "uncertainty": "Motion measurements do not decide conditions permitting safety"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_native_right_pass_site",
+          "unit": "source record",
+          "method": "source-sealed map, pavement, actors and surrounding traffic"
+        }
+      ],
+      "limitations": [
+        "Synthetic diagnostics prove software compatibility only.",
+        "Safety condition requires independent human legal review."
+      ]
+    }
+  }
+}

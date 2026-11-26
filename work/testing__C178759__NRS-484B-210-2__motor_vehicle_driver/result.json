@@ -1,31 +1,22 @@
 {
   "assignment_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver",
   "input_sha256": "4fc7425bd18f51af31e79bdd3a4d9d11f3f4c27287faec38fe012fff3e5dac4b",
-  "status": "partial",
-  "readiness_kind": "case_and_measurement_cpu_draft",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "706556ee51b6200bf9ba01d43b669187a6fc12919ad2c14d5dca4bb5dcf769be"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-check.log",
-      "sha256": "41003b27e11328b86c88a1529b619d93cb97dfd057554476503f922b61a69b89"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "sha256": "a0dd26088be04095ce28b77d3f957784fe01d22366fcaa6041ce20dd02598226"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, whole-pass body clearances, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native CARLA right-side pass and actor motion",
+    "Independent four-view participant pixel and physical completion review",
+    "Human interpretation of conditions permitting movement in safety"
   ],
-  "reason": "Three right-pass cases, two controlled comparisons, source-gated Native construction, original-frame measurement, sealed finalizer and comparison audit have CPU tests. Strict gate still rejects truthful partial status: canonical semantic proposals, exact case bundles/manifests, offline and positive/negative compatibility receipts, saved-only processing and independent delivery audits remain CPU work."
+  "reason": "Three exact right-side passing cases and two controlled comparisons have current-hash selected and fallback offline, positive/negative compatibility, saved-only, physical/lifecycle, independent delivery and comparison CPU proofs. Original Native capture and human safety-condition judgment remain for GPU delivery.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --case testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

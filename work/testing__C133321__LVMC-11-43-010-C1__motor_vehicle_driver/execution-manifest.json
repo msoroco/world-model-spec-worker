@@ -2,6 +2,33 @@
   "assignment_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "original_departure_heading": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json, map.json",
+          "method": "Original post-ring actor heading and source-mapped entry heading"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_output_bridge.py",
+          "evidence": "cameras/, overview.mkv, approach.mkv, reference_corner.mkv, driver_reference.mkv",
+          "method": "Four original synchronized RGB callback PNG streams encoded into FFV1 views"
+        },
+        "original_operator_intention": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json",
+          "method": "Reviewed operator intended opposite exit bound to original actor identity"
+        },
+        "original_ring_lane_history": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json",
+          "method": "Original per-tick actor map lane, section and body readback"
+        },
+        "original_roundabout_topology": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map.json, road.xodr",
+          "method": "Reviewed loaded OpenDRIVE hash and source-mapped both allocated circular lanes"
+        }
+      },
       "candidate_risk": {
         "reason": "Source-mapped lane tracking may overshoot the circular exit under the reviewed vehicle dynamics.",
         "status": "physical"
@@ -11,9 +38,24 @@
           "changed_knobs": [
             "route throttle 0.25 instead of 0.35 for both comparison members"
           ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-left_lane_u_turn-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "cpu-compat-left_lane_u_turn-fallback1-analysis.log",
+            "negative_log": "cpu-compat-left_lane_u_turn-fallback1-negative.log",
+            "negative_log_sha256": "294df0a320625ebdb620a54f4b1a2963b9a4cd0e62e2c136c2db98f624a883d8",
+            "receipt": "cpu-compat-left_lane_u_turn-fallback1-receipt.json",
+            "sha256": "338b03b6ed49b92b52bbaf21228a4b5def5e5a3bdf7785ce05c31ddae1c80bdf"
+          },
           "construction": "cases/left_lane_u_turn/fallback1/construction.json",
-          "construction_sha256": "c723e5e3e91051e9d9ab2c486a512f9ef833255564b6336d6a1a11463b25e91a",
+          "construction_sha256": "2ad5e696c1ab400d3264aff079c20c90df68377f7101ebaacb03601bd65945e9",
           "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/offline-final-left_lane_u_turn-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "2ad5e696c1ab400d3264aff079c20c90df68377f7101ebaacb03601bd65945e9",
+            "exit_code": 0,
+            "log": "cpu-offline-left_lane_u_turn-fallback1.log",
+            "log_sha256": "acd28c0d9d318b85bfed9b23d42f97717306a6515bc2a5151805a43aca39590f"
+          },
           "trigger": {
             "failure_condition": "primary steering does not reach reviewed opposite exit",
             "metric": "circular-route overshoot or missed exit",
@@ -22,8 +64,43 @@
         }
       ],
       "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-left_lane_u_turn-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "log": "cpu-compat-left_lane_u_turn-primary-analysis.log",
+        "negative_log": "cpu-compat-left_lane_u_turn-primary-negative.log",
+        "negative_log_sha256": "322ff436173e2c3b406a2877eabc234d5d7a698a6590cf5cf47a31da2a9a8020",
+        "receipt": "cpu-compat-left_lane_u_turn-primary-receipt.json",
+        "sha256": "bb7eba7e3b72cb8428013e78881c4b8cde9b91b2ead8467c36521a9850832e0c"
+      },
       "construction": "cases/left_lane_u_turn/construction.json",
-      "construction_sha256": "ffbf3bfa0eab09e80ccb413647aa68b6d62eadfd9800cd505aabef1da52327be",
+      "construction_sha256": "76c40ecf4b205ca8af467f12558b806d243736bf3ac061b051616a2e61e12b7a",
+      "delivery_acceptance": {
+        "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case-id testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-left_lane_u_turn-primary --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/left_lane_u_turn-audit.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case-id testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/left_lane_u_turn-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/left_lane_u_turn-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: history.json",
+        "negative_log": "cpu-delivery-left_lane_u_turn-negative.log",
+        "negative_log_sha256": "b8ad5843a2b0fd875dbed350915eed0e6e3633a2907878f1f4945cef199fcb30",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "ca049ef9125144093dc688e8ed7260be510aafd152048bb9131432c617eebcc2",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-left_lane_u_turn.log",
+        "test_log_sha256": "c40997244c56b716c0b5f74e302f49ba155d7dce9b51793329c3ca774c0dd561"
+      },
       "fixture_recipe": "work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/cases/left_lane_u_turn/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/left_lane_u_turn/measurement-contract.json",
@@ -35,9 +112,64 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-left_lane_u_turn-primary-negative.log",
+        "log_sha256": "322ff436173e2c3b406a2877eabc234d5d7a698a6590cf5cf47a31da2a9a8020"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/offline-final-left_lane_u_turn-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "76c40ecf4b205ca8af467f12558b806d243736bf3ac061b051616a2e61e12b7a",
+        "exit_code": 0,
+        "log": "cpu-offline-left_lane_u_turn-primary.log",
+        "log_sha256": "acd28c0d9d318b85bfed9b23d42f97717306a6515bc2a5151805a43aca39590f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_lane_u_turn-receipt.json",
+        "sha256": "dce9e22fdb5dbc518b893ff50e29f30510e7868d63527eaa2af2c13614a77049"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-left_lane_u_turn-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-left_lane_u_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-missing-attempt-left_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-missing-left_lane_u_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-left_lane_u_turn-missing.log",
+        "feedback_log_sha256": "76f8706776ce350055c24ba543a70427bccdf0f8a0645226270a3bd2ba529f9e",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-left_lane_u_turn.log",
+        "test_log_sha256": "a142c258a1009c8196c2a1157cb9e7d7dd748cb0ed3780e7e969ab4dcf91087f"
       }
     },
     {
+      "acquisition": {
+        "original_departure_heading": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json, map.json",
+          "method": "Original post-ring actor heading and source-mapped entry heading"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_output_bridge.py",
+          "evidence": "cameras/, overview.mkv, approach.mkv, reference_corner.mkv, driver_reference.mkv",
+          "method": "Four original synchronized RGB callback PNG streams encoded into FFV1 views"
+        },
+        "original_operator_intention": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json",
+          "method": "Reviewed operator intended opposite exit bound to original actor identity"
+        },
+        "original_ring_lane_history": {
+          "entrypoint": "native_capture.py",
+          "evidence": "history.json",
+          "method": "Original per-tick actor map lane, section and body readback"
+        },
+        "original_roundabout_topology": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map.json, road.xodr",
+          "method": "Reviewed loaded OpenDRIVE hash and source-mapped both allocated circular lanes"
+        }
+      },
       "candidate_risk": {
         "reason": "Source-mapped lane tracking may overshoot the circular exit under the reviewed vehicle dynamics.",
         "status": "physical"
@@ -47,9 +179,24 @@
           "changed_knobs": [
             "route throttle 0.25 instead of 0.35 for both comparison members"
           ],
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-outer_lane_u_turn-fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "log": "cpu-compat-outer_lane_u_turn-fallback1-analysis.log",
+            "negative_log": "cpu-compat-outer_lane_u_turn-fallback1-negative.log",
+            "negative_log_sha256": "8c7770def5c184b472e0ffe2a267a0ecfe1a310c3a5a551d3c133ab8fb07ad00",
+            "receipt": "cpu-compat-outer_lane_u_turn-fallback1-receipt.json",
+            "sha256": "7ead174fc520cd359362ff14f7c7fa037d90e5c268f7f8c7a9fda1775e377712"
+          },
           "construction": "cases/outer_lane_u_turn/fallback1/construction.json",
-          "construction_sha256": "65dac94924bf24a8a0d1f020694668c4c2d3c85ba6ef9b9c193d19592d88d905",
+          "construction_sha256": "5b418caa2640e442a0451ea085d5644c932c07fa290776b7eba96eb5ea8a56a6",
           "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/offline-final-outer_lane_u_turn-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "5b418caa2640e442a0451ea085d5644c932c07fa290776b7eba96eb5ea8a56a6",
+            "exit_code": 0,
+            "log": "cpu-offline-outer_lane_u_turn-fallback1.log",
+            "log_sha256": "89797342ea26fb688740bf7d580cbf301c15daadedef64d6b14b88d3163507dc"
+          },
           "trigger": {
             "failure_condition": "primary steering does not reach reviewed opposite exit",
             "metric": "circular-route overshoot or missed exit",
@@ -58,8 +205,43 @@
         }
       ],
       "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn",
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-outer_lane_u_turn-primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "log": "cpu-compat-outer_lane_u_turn-primary-analysis.log",
+        "negative_log": "cpu-compat-outer_lane_u_turn-primary-negative.log",
+        "negative_log_sha256": "096557dd9c52f00c9abbe43fb3375e91e6daa9baecc2def8334d1fd323983704",
+        "receipt": "cpu-compat-outer_lane_u_turn-primary-receipt.json",
+        "sha256": "ed826f47a11a7ede794a1b15ece573723415ccffa807cd6ef19411fd92f77586"
+      },
       "construction": "cases/outer_lane_u_turn/construction.json",
-      "construction_sha256": "0735d7b0814c2106b80fa5cdb25ad1e89de77c825a830f127459ae930f884c5d",
+      "construction_sha256": "d5e3320478fbb1c84b3c97dd71464b7a94e27bea62bbfb384a8e527936682511",
+      "delivery_acceptance": {
+        "case_id": "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case-id testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-outer_lane_u_turn-primary --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/outer_lane_u_turn-audit.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case-id testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/outer_lane_u_turn-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/delivery-proofs/outer_lane_u_turn-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: history.json",
+        "negative_log": "cpu-delivery-outer_lane_u_turn-negative.log",
+        "negative_log_sha256": "b8ad5843a2b0fd875dbed350915eed0e6e3633a2907878f1f4945cef199fcb30",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "ca049ef9125144093dc688e8ed7260be510aafd152048bb9131432c617eebcc2",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-outer_lane_u_turn.log",
+        "test_log_sha256": "45c4e68963e608bae2911649fd7c1ed0d4cb8fa9b11a625776d602eecbb5f4c8"
+      },
       "fixture_recipe": "work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/cases/outer_lane_u_turn/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outer_lane_u_turn/measurement-contract.json",
@@ -71,6 +253,34 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-outer_lane_u_turn-primary-negative.log",
+        "log_sha256": "096557dd9c52f00c9abbe43fb3375e91e6daa9baecc2def8334d1fd323983704"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/offline-final-outer_lane_u_turn-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "d5e3320478fbb1c84b3c97dd71464b7a94e27bea62bbfb384a8e527936682511",
+        "exit_code": 0,
+        "log": "cpu-offline-outer_lane_u_turn-primary.log",
+        "log_sha256": "89797342ea26fb688740bf7d580cbf301c15daadedef64d6b14b88d3163507dc"
+      },
+      "physical_preparation": {
+        "receipt": "physical-outer_lane_u_turn-receipt.json",
+        "sha256": "0e29a73c08b8b10059d6d22f34cdcd5b382af5effb468871a32c2597f9c81d21"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/compat-final-outer_lane_u_turn-primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-outer_lane_u_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-missing-attempt-outer_lane_u_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c133321-owner-nov26/saved-final2-missing-outer_lane_u_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-outer_lane_u_turn-missing.log",
+        "feedback_log_sha256": "7e04e444afbe29467733508f74a2ac6a91ea3eb5d0dbbebba2378856bbecd6f2",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-outer_lane_u_turn.log",
+        "test_log_sha256": "18987a5257bdcb719258bd630d546304940d7195e6ff7f57a54260c011bdcfad"
       }
     }
   ],

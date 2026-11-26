@@ -45,7 +45,8 @@ def measure(attempt):
         raise ValueError("exact U-turn case suffix unknown")
     topology = verify_topology(map_packet, "left" if role == "left_lane_u_turn" else "outer")
     expected = 9 if (root / "fixture-provenance.json").is_file() else 900
-    observed = verify_original_history(history, topology, case, expected_frames=expected)
+    observed = verify_original_history(history, topology, case, expected_frames=expected,
+                                       strict_geometry=expected == 900)
     if inventory.get("frame_count") != expected or inventory.get("camera_views") != list(VIEWS):
         raise ValueError("source-profile four-view inventory incomplete")
     return observed
@@ -105,8 +106,9 @@ def analyze(attempt, output):
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": str(path.relative_to(root))})
     context = channels / "reviewed_roundabout_map.json"
-    context.write_text(json.dumps({"map_sha256": hashes["map.json"],
-                                   "legal_judgment": "unresolved"}) + "\n")
+    context.write_text(json.dumps({"reviewed_roundabout_map": {
+                                   "map_sha256": hashes["map.json"],
+                                   "legal_judgment": "unresolved"}}) + "\n")
     evidence.append({"name": "reviewed_roundabout_map", "unit": "source",
                      "reference": str(context.relative_to(root))})
     result = {"case_id": observed["case_id"], "measured_values": values,

@@ -231,6 +231,8 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
                 actor.destroy()
 
         result = _module("runner").execute(Adapter(), case_id, lane_role, throttle=throttle)
+        packet = json.loads((output / "history.json").read_text())
+        result = route.verify_original_history(packet, topology, case_id, strict_geometry=True)
         if not result["requested_lane_observed"] or not result["opposite_departure_observed"]:
             raise ValueError("physical route did not realize requested U-turn")
         return result

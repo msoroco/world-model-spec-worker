@@ -127,8 +127,9 @@ def measure(history: dict) -> dict:
     ttc = []
     lateral_clearance = []
     conflict_distances = []
+    start_time = number(rows[0]["time_s"])
     for i, row in enumerate(rows):
-        if row.get("frame") != i or abs(number(row["time_s"])-i/20) > 0.001:
+        if row.get("frame") != i or abs(number(row["time_s"])-start_time-i/20) > 0.001:
             raise ValueError("20 Hz original frame continuity failed")
         if row.get("actor_ids") != ids:
             raise ValueError("actor identities changed")

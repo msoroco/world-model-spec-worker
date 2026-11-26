@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import math
 import pathlib
 import sys
 import tempfile
@@ -26,7 +27,17 @@ class TestSavedMeasurement(unittest.TestCase):
         write(root / "construction.json", {"case_id": case})
         map_packet = topology_source()
         map_ref = write(root / "map.json", map_packet)
-        history_ref = write(root / "history.json", history("lane-inner", case))
+        observed = history("lane-inner", case)
+        for index, row in enumerate(observed["frames"]):
+            if index < 200:
+                x, y = -4.0 + 4.0 * index / 199.0, -2.0
+            elif index <= 600:
+                angle = -math.pi / 2.0 + math.pi * (index - 200) / 400.0
+                x, y = 2.0 * math.cos(angle), 2.0 * math.sin(angle)
+            else:
+                x, y = -4.0 * (index - 601) / 298.0, 2.0
+            row["x"], row["y"] = x, y
+        history_ref = write(root / "history.json", observed)
         write(root / "inventory.json", {"case_id": case, "source_kind": "original_native",
                 "frame_count": 900, "camera_views": list(ANALYSIS.VIEWS),
                 "sources": {"map": map_ref, "history": history_ref}})

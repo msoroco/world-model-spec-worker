@@ -2,6 +2,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import math
 import pathlib
 import tempfile
 import unittest
@@ -83,11 +84,19 @@ class Operator:
     def observe(self, world, actor, frame):
         index = frame - 101
         section = "entry" if index < 200 else "ring" if index <= 600 else "exit"
+        if section == "entry":
+            x, y = -4.0 + 4.0 * index / 199.0, -2.0
+        elif section == "ring":
+            angle = -math.pi / 2.0 + math.pi * (index - 200) / 400.0
+            x, y = 2.0 * math.cos(angle), 2.0 * math.sin(angle)
+        else:
+            x, y = -4.0 * (index - 601) / 298.0, 2.0
         return {"source_frame_id": frame,
                 "actor_id": "wrong" if self.wrong_identity else str(actor.id),
                 "section": section, "lane_id": "lane-inner", "heading_x": -1, "heading_y": 0,
-                "x": -4.0, "y": -2.0, "z": 0.0, "speed_mps": 1.0,
-                "body_vertices_m": [[-5, -3, 0], [-5, -1, 0], [-3, -1, 0], [-3, -3, 0]]}
+                "x": x, "y": y, "z": 0.0, "speed_mps": 1.0,
+                "body_vertices_m": [[x-1, y-1, 0], [x-1, y+1, 0],
+                                    [x+1, y+1, 0], [x+1, y-1, 0]]}
 
     def cameras(self, world, actor, views, review):
         return {name: lambda frame: b"fixture-image" for name in views}, []

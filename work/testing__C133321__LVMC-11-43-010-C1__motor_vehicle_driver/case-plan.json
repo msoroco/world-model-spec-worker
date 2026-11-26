@@ -91,24 +91,29 @@
   ],
   "observations": [
     {
-      "name": "native_map_lane_geometry",
+      "name": "original_roundabout_topology",
       "mandatory": true,
-      "source": "map readback; both allocated lanes, travel tangent and circular routes"
+      "source": "source-hashed Native allocated lanes and route"
     },
     {
-      "name": "operator_intended_departure",
+      "name": "original_operator_intention",
       "mandatory": true,
-      "source": "source-bound authored intention and actor binding"
+      "source": "reviewed operator plan bound to actor"
     },
     {
-      "name": "original_ego_lane_history",
+      "name": "original_ring_lane_history",
       "mandatory": true,
-      "source": "sealed Native 20 Hz identity, position, lane and section history"
+      "source": "original map-associated actor lane and section on all frames"
     },
     {
-      "name": "actual_exit_heading",
+      "name": "original_departure_heading",
       "mandatory": true,
-      "source": "original departure frames and map entrance bearing"
+      "source": "actual original opposite-direction departure"
+    },
+    {
+      "name": "original_four_camera_pixels",
+      "mandatory": true,
+      "source": "four synchronized original RGB callbacks"
     }
   ],
   "sources": [
@@ -135,9 +140,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "A source-surveyed CARLA map with two correctly allocated lanes and connected opposite-direction U-turn routes has not yet been bound.",
-    "No original 900-frame Native history or four-view video exists; actual motion, camera coverage and physical outcome remain unverified.",
-    "Canonical runner, exact offline/compatibility receipts, semantic proposals, delivery and comparison audit integration remain CPU work."
+    "Actual source-reviewed CARLA map and jurisdiction, route clearance, left-lane allocation, four-view pixels and physical U-turn completion remain for local Native execution and legal review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -195,5 +198,33 @@
         "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver__outer_lane_u_turn"
       ]
     }
-  ]
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both allocated circular lanes, operator and opposite exit",
+        "interval": "entry through departure"
+      },
+      {
+        "view": "approach",
+        "subject": "entry and allocated lane selection",
+        "interval": "entry through ring"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ring lane and opposite-direction exit",
+        "interval": "circular traversal through departure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "operator body and road scene",
+        "interval": "all 900 ticks"
+      }
+    ]
+  }
 }

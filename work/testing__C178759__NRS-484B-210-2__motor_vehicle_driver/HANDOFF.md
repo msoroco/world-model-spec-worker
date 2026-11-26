@@ -1,25 +1,13 @@
-# testing__C178759__NRS-484B-210-2__motor_vehicle_driver
+# C178759 right-side passing delivery handoff
 
-Status: partial CPU construction and measurement. Exact static check passes; strict delivery readiness does not.
+Status: ready for original Native GPU delivery; no original capture or legal safety judgment claimed.
 
-Exact law: NRS 484B.210(2), right-side overtaking only under conditions permitting movement in safety. The word safety has no authored numerical cutoff or legal verdict here. Frozen accepted evidence inventory contains zero recordings. The exported judgment-range file has no NRS-484B-210-2 entry.
+Exact law: NRS 484B.210(2). The driver of a vehicle may overtake and pass another vehicle upon the right only under conditions permitting such movement in safety. The conditional source witness requires driver attribution, qualifying vehicles, paved same-direction right lane, whole-maneuver motion and surrounding conflict context. Frozen accepted evidence contains no recording. No numeric legal safety cutoff is asserted.
 
-## Case and source coverage
+Three selected cases are `open_gap`, `close_gap`, and `cross_traffic`. The `approach_space` and `crossing_actor_proximity` comparisons hold map, pavement, vehicles, camera profile, controller, and duration fixed, then require independently measured original differences. The exact runner requires SHA-sealed reviewed Native site sources, creates the actor pair or crossing actor, captures 900 original 20 Hz body and four-view camera frames, and preserves physical gaps without a legal verdict. A speed-scale fallback is available only if original whole-pass progression fails.
 
-- `case-plan.json` names exact `__open_gap`, `__close_gap`, and `__cross_traffic` cases, controlled `approach_space` and `crossing_actor_proximity` comparisons, three source-based evidence gaps and mandatory map, actor, body, speed and conflict observations. All three cases have concrete physical-risk assessments.
-- `right_pass.py` checks original Native paved-road cross sections every at most 5 m across both approach and exit, verifies a distinct same-direction right lane, rejects shoulder use and bodies outside pavement, and requires a sourced crossing actor pose for the conflict case. Its lazy `spawn_native` instantiates both vehicles (plus the conflict actor when relevant), reads actor identity/transform, and cleans up a failed partial spawn.
-- `measure` requires original 20 Hz frame/time continuity and actor identities, measured body envelopes on pavement, actual same-direction ego overtaking speed, and observed behind/alongside/ahead phases with the ego on the right. It retains minimum approach gap and TTC, lateral body clearance and closest conflict-body separation as physical facts only. `finalize_sealed` verifies source SHA; `audit_comparison` rejects missing sources, changed fixed conditions and absent deliberate measured difference.
-- Actual passing, conflict trajectory and visual visibility remain to be checked on an original Native capture. The small fake objects in the tests establish software behavior only.
+CPU proofs: all three primary and fallback bundles passed current-hash offline and positive/negative compatibility checks; all primary bundles passed saved-only replay. Three-outcome physical and lifecycle diagnostics, independent delivery positive/negative protocol, and both comparison isolation checks passed. Eight focused unit tests passed. Synthetic diagnostics establish software behavior only. Exact scoped strict delivery gate passed on 2026-11-26.
 
-## Checks
+Manifest SHA256: `21788ed49fd14914763579f19810115833256e6897dffb4dcd44eed194e551e8`. Queue proposal SHA256: `4a4dd20a02008766e9853fdd063da92f815fb760c09b6060ebc7acfb71659435`.
 
-- `.venv-cpu/bin/python runtime.py preflight`: passed with pinned Lean/lake and CPU runtime.
-- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/tests -v`: 8 passed; `cpu-tests.log` SHA256 `706556ee51b6200bf9ba01d43b669187a6fc12919ad2c14d5dca4bb5dcf769be`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C178759__NRS-484B-210-2__motor_vehicle_driver --complete`: passed; `cpu-static-check.log` SHA256 `41003b27e11328b86c88a1529b619d93cb97dfd057554476503f922b61a69b89`.
-- Same exact command plus `--require-delivery-ready`: exit 1, `Preparation acceptance failed: partial/missing packages remain`; `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
-
-## Next CPU work
-
-1. Bind each exact case to a CARLA-capable primary bundle with config, runner, construction hash, source packets, camera/duration plan, measurement contract and diagnostic recipe. Recheck source map and crossing actor geometry on the chosen Native route.
-2. Author source-preserving canonical semantic proposals and index, plus the execution manifest with justified fallback only if a measurable physical trigger requires one.
-3. Run exact offline and positive/negative compatibility proofs for each case; implement and test `process-saved` finalization, independent delivery acceptance and comparison audits, then rerun the exact strict gate. Keep the unresolved judgment unlabeled.
+GPU delivery: follow `gpu-queue-proposal.json` case order and case-specific post-capture/source audit commands in `execution-manifest.json`. Original source audit, four-view pixel review, physical completion and fixed-context comparison are required. Human interpretation of conditions permitting safe movement remains unresolved.

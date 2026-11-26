@@ -72,7 +72,7 @@ def publish(root, *, map_bytes, restored):
         raise ValueError("loaded OpenDRIVE source differs from sealed map")
     role = "left" if history["case_id"].endswith("__left_lane_u_turn") else "outer"
     topology = verify_topology(map_packet, role)
-    measured = verify_original_history(history, topology, history["case_id"])
+    measured = verify_original_history(history, topology, history["case_id"], strict_geometry=True)
     if not measured["requested_lane_observed"] or not measured["opposite_departure_observed"]:
         raise ValueError("original U-turn route physically incomplete")
     frames = history["frames"]

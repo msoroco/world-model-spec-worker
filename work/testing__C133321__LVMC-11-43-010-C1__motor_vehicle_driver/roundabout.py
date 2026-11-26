@@ -40,6 +40,15 @@ def _dot(a: tuple[float, float], b: tuple[float, float]) -> float:
     return a[0] * b[0] + a[1] * b[1]
 
 
+def _segment_distance(point: tuple[float, float], a: dict, b: dict) -> float:
+    ax, ay = float(a["x"]), float(a["y"])
+    dx, dy = float(b["x"]) - ax, float(b["y"]) - ay
+    length2 = dx * dx + dy * dy
+    _require(length2 > 0.001, "degenerate mapped route segment")
+    t = max(0.0, min(1.0, ((point[0] - ax) * dx + (point[1] - ay) * dy) / length2))
+    return math.hypot(point[0] - ax - t * dx, point[1] - ay - t * dy)
+
+
 def verify_topology(source: dict, lane_role: str) -> dict:
     """Select a mapped, connected U-turn route after checking both lane positions.
 
@@ -77,12 +86,13 @@ def verify_topology(source: dict, lane_role: str) -> dict:
         gap = math.hypot(*_vector(current, following))
         _require(0.05 < gap <= 12.0, "disconnected mapped route")
     return {"lane_role": lane_role, "lane_id": lanes[lane_role]["lane_id"], "route": route,
+            "center": center,
             "entry_heading": entry, "exit_heading": departure,
             "map_id": source["map_id"], "map_sha256": source["map_sha256"]}
 
 
 def verify_original_history(history: dict, topology: dict, case_id: str,
-                            expected_frames: int = 900) -> dict:
+                            expected_frames: int = 900, strict_geometry: bool = False) -> dict:
     """Measure observed ring-lane occupation and actual departure from Native frames."""
     _require(history.get("source_kind") == "sealed_native_original_history", "missing original Native history")
     _require(history.get("case_id") == case_id, "case source mismatch")
@@ -108,20 +118,42 @@ def verify_original_history(history: dict, topology: dict, case_id: str,
     exit_frames = [f for f in frames if f.get("section") == "exit" and f["frame"] > last_ring]
     _require(exit_frames, "departure after ring absent")
     heading = _unit((float(exit_frames[-1]["heading_x"]), float(exit_frames[-1]["heading_y"])))
+    if strict_geometry:
+        _require(expected_frames == 900, "physical geometry requires full original history")
+        route = topology["route"]
+        points = []
+        for row in frames:
+            x, y = row.get("x"), row.get("y")
+            _require(type(x) in (int, float) and type(y) in (int, float)
+                     and math.isfinite(x) and math.isfinite(y), "original actor position absent")
+            point = float(x), float(y)
+            _require(min(_segment_distance(point, a, b) for a, b in zip(route, route[1:])) <= 4.0,
+                     "original actor left mapped U-turn corridor")
+            points.append(point)
+        _require(math.hypot(points[-1][0] - points[0][0], points[-1][1] - points[0][1]) > 3.0,
+                 "original actor did not traverse the mapped route")
+        center = topology["center"]
+        ring_points = [(float(row["x"]), float(row["y"])) for row in ring]
+        angles = [math.atan2(y - center["y"], x - center["x"]) for x, y in ring_points]
+        steps = [((b - a + math.pi) % (2 * math.pi)) - math.pi for a, b in zip(angles, angles[1:])]
+        _require(sum(steps) >= math.pi - .2 and all(step >= -.08 for step in steps),
+                 "original actor did not complete mapped circular arc")
     return {"case_id": case_id, "map_id": topology["map_id"], "actor_id": history["actor_id"],
             "fixed_conditions": {key: history[key] for key in fixed_keys},
             "requested_lane_id": topology["lane_id"], "occupied_ring_lane_ids": sorted(occupied),
             "requested_lane_observed": topology["lane_id"] in occupied,
             "other_ring_lane_observed": bool(occupied - {topology["lane_id"]}),
             "opposite_departure_observed": _dot(topology["entry_heading"], heading) < -0.95,
-            "ring_frame_count": len(ring), "source_frame_count": len(frames)}
+            "ring_frame_count": len(ring), "source_frame_count": len(frames),
+            "mapped_arc_verified": strict_geometry}
 
 
-def compare(a: dict, b: dict) -> dict:
+def compare(a: dict, b: dict, expected_frames: int = 900) -> dict:
     _require(a["map_id"] == b["map_id"], "comparison changed map")
     _require(a["fixed_conditions"] == b["fixed_conditions"], "comparison changed fixed conditions")
     _require(a["requested_lane_id"] != b["requested_lane_id"], "lane variable did not change")
-    _require(a["source_frame_count"] == b["source_frame_count"] == 900, "comparison source incomplete")
+    _require(expected_frames in (9, 900), "unsupported comparison profile")
+    _require(a["source_frame_count"] == b["source_frame_count"] == expected_frames, "comparison source incomplete")
     return {"case_ids": [a["case_id"], b["case_id"]], "same_map": True,
             "both_departures_observed": a["opposite_departure_observed"] and b["opposite_departure_observed"],
             "observed_lane_ids": [a["occupied_ring_lane_ids"], b["occupied_ring_lane_ids"]]}

@@ -63,7 +63,10 @@
       },
       "physical_acceptance_claimed": false,
       "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "kind": "delivery",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap",
@@ -103,7 +106,10 @@
       },
       "physical_acceptance_claimed": false,
       "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "kind": "delivery",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "case_id": "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic",
@@ -143,7 +149,10 @@
       },
       "physical_acceptance_claimed": false,
       "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "kind": "delivery",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     }
   ],
   "comparisons": [
@@ -160,7 +169,7 @@
         "same right-pass route and controller gains"
       ],
       "deliberate_differences": [
-        "requested initial longitudinal body gap and measured approach gap/TTC"
+        "minimum_approach_body_gap_m"
       ]
     },
     {
@@ -176,52 +185,45 @@
         "same right-pass route and controller gains"
       ],
       "deliberate_differences": [
-        "source-pose crossing actor and measured closest body separation"
+        "minimum_conflict_body_distance_m"
       ]
     }
   ],
   "observations": [
     {
       "name": "qualifying_vehicles_and_driver",
-      "mandatory": true,
-      "source": "Native actor spawn/readback",
-      "method": "Distinct ego and target identities, vehicle types, control owner"
+      "method": "original Native ego, target and driver identities",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "right_lane_and_pavement",
-      "mandatory": true,
-      "source": "original Native map geometry",
-      "method": "Right same-direction lane, paved boundaries and no shoulder use at surveyed cross sections"
+      "method": "surveyed right lane and paved boundary",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "whole_right_pass",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Continuous 20 Hz behind, alongside on right, ahead body envelopes"
+      "method": "original behind, alongside-right and ahead body envelopes",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "approach_space",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Original body-gap and closing-time histories without legal cutoff"
+      "method": "original body gap and closing time",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "lateral_space",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Body-to-body lateral clearance during overlap"
+      "method": "original side-by-side body clearance",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "conflict_space",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Conflict actor original body distance, when constructed"
+      "method": "original crossing actor body separation when present",
+      "source": "original Native right-pass capture"
     },
     {
       "name": "motion_context",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Actual speed, braking and steering histories for safety review"
+      "method": "original speed, brake and steer history",
+      "source": "original Native right-pass capture"
     }
   ],
   "sources": [
@@ -277,7 +279,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "case_and_measurement_cpu_draft",
+  "planning_status": "three_selected_right_pass_cases_source_gated_cpu_preparation",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -296,5 +298,60 @@
       ],
       "reason": "A paved road permits construction of a right-side passing route without changing the intended maneuver."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "driver of a vehicle overtakes and passes another vehicle upon the right",
+      "source": "inputs/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic"
+      ],
+      "evidence_or_gap": "original driver and two vehicle identities with behind, alongside-right and ahead body phases"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "conditions permitting such movement in safety",
+      "source": "inputs/testing__C178759__NRS-484B-210-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__open_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__close_gap",
+        "testing__C178759__NRS-484B-210-2__motor_vehicle_driver__cross_traffic"
+      ],
+      "evidence_or_gap": "original lane, pavement, approach, lateral, conflict and motion histories; legal judgment unresolved"
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and passed vehicle on paved right-pass route",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "approach gap and target body",
+        "interval": "approach through right-side passage"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lateral body clearance and pavement",
+        "interval": "alongside passage"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego trajectory and crossing actor when present",
+        "interval": "first through final original frame"
+      }
+    ],
+    "limitation": "Camera placement and participant visibility require original review"
+  }
 }

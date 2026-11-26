@@ -53,6 +53,7 @@ def build():
     source_files = ("runner.py", "native_capture.py", "native_output_bridge.py",
                     "roundabout.py", "analysis.py", "case-plan.json")
     content = {name: (HERE / name).read_text() for name in source_files}
+    (HERE / "tests/test_bundle.py").write_text(BUNDLE_TEST)
     entries = []
     for name in CASES:
         case = AID + "__" + name
