@@ -32,11 +32,13 @@ def packet(start=0, district="business", direction="left", case_id="a", step_m=1
 
 
 def write_sources(root, p):
-    values = {"sealed_result": {"source": "sealed"},
+    values = {"sealed_result": {"source": "sealed", "case_id": p["case_id"],
+                                 "turn_direction": p["turn_direction"]},
               "frame_map": {"frames": [{"frame": row["frame"], "time_s": row["time_s"]}
                                        for row in p["samples"]]},
               "light_readback": {"samples": p["samples"]},
-              "turn_onset": {"turn_onset_frame": p["turn_onset_frame"]},
+              "turn_onset": {"turn_onset_frame": p["turn_onset_frame"],
+                             "turn_direction": p["turn_direction"]},
               "district_context": {k: p[k] for k in ("district_class", "district_source", "weather")}}
     p["source_files"] = {}
     for name, value in values.items():
@@ -170,6 +172,23 @@ class SignalDistanceTest(unittest.TestCase):
             p["source_files"]["frame_map"]["sha256"] = digest
             p["frame_map_sha256"] = digest
             with self.assertRaisesRegex(mod.EvidenceError, "frame map disagrees"):
+                mod.verify_source_bindings(p, root)
+
+    def test_relabelled_turn_direction_rejected_by_original_sources(self):
+        p = packet(direction="left")
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            write_sources(root, p)
+            p["turn_direction"] = "right"
+            with self.assertRaisesRegex(mod.EvidenceError, "sealed result turn direction"):
+                mod.verify_source_bindings(p, root)
+            sealed = root / "sealed_result.json"
+            sealed.write_text(json.dumps({"source": "sealed", "case_id": p["case_id"],
+                                          "turn_direction": "right"}) + "\n")
+            digest = sha256(sealed.read_bytes()).hexdigest()
+            p["source_files"]["sealed_result"]["sha256"] = digest
+            p["sealed_result_sha256"] = digest
+            with self.assertRaisesRegex(mod.EvidenceError, "observed turn direction"):
                 mod.verify_source_bindings(p, root)
 
     def test_cli_reads_and_verifies_source_packet(self):

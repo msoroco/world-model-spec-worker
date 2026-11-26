@@ -34,7 +34,10 @@
       "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
       "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
       "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
     },
     {
       "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
@@ -45,7 +48,10 @@
       "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
       "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
       "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
     },
     {
       "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
@@ -56,7 +62,10 @@
       "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
       "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
       "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
     },
     {
       "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
@@ -67,7 +76,10 @@
       "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
       "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
       "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
     },
     {
       "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel",
@@ -78,7 +90,10 @@
       "construction": "access_aisle.construct: sourced one-way route, target vehicle-body footprint and activity request",
       "measurement": "access_aisle.measure_original: 900 original frame identity/time, body polygon overlap, activity and stop/travel history",
       "physical_risk": "actual accessible-route design, parking behavior and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "gap_ids": [
+        "no-accepted-recording"
+      ]
     }
   ],
   "comparisons": [
@@ -88,10 +103,13 @@
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park"
       ],
-      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "fixed_conditions": [
+        "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture"
+      ],
       "deliberate_differences": [
         "vehicle body overlap amount"
-      ]
+      ],
+      "comparison_id": "full_vs_partial"
     },
     {
       "legal_judgment": "unresolved",
@@ -99,10 +117,13 @@
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park"
       ],
-      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "fixed_conditions": [
+        "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture"
+      ],
       "deliberate_differences": [
         "vehicle body footprint inside adjacent space"
-      ]
+      ],
+      "comparison_id": "aisle_vs_adjacent"
     },
     {
       "legal_judgment": "unresolved",
@@ -110,10 +131,13 @@
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop"
       ],
-      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "fixed_conditions": [
+        "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture"
+      ],
       "deliberate_differences": [
         "actual loading activity versus parking"
-      ]
+      ],
+      "comparison_id": "park_vs_loading"
     },
     {
       "legal_judgment": "unresolved",
@@ -121,19 +145,48 @@
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
         "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel"
       ],
-      "fixed_conditions": "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture",
+      "fixed_conditions": [
+        "same jurisdiction, marked aisle, adjacent designated space, accessible-route design, vehicle, approach and 900-frame capture"
+      ],
       "deliberate_differences": [
         "travel versus parking"
-      ]
+      ],
+      "comparison_id": "park_vs_travel"
     }
   ],
   "observations": [
-    "original jurisdiction and one-way approach sources",
-    "qualifying access aisle markings and adjacent designated handicapped space",
-    "original ingress, egress and accessible-route design",
-    "11.52.135(A) sign requirements if designation relies on it",
-    "900 original vehicle-body polygons, identity and speed",
-    "actual activity/purpose evidence; time alone does not decide parking"
+    {
+      "name": "site_source",
+      "mandatory": true
+    },
+    {
+      "name": "aisle_polygon",
+      "mandatory": true
+    },
+    {
+      "name": "adjacent_space_polygon",
+      "mandatory": true
+    },
+    {
+      "name": "body_footprint_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_history",
+      "mandatory": true
+    },
+    {
+      "name": "activity_history",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    },
+    {
+      "name": "legal_aisle_and_parking_judgment",
+      "mandatory": false
+    }
   ],
   "sources": [
     {
@@ -178,7 +231,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_exact_access_aisle_cpu_geometry",
+  "planning_status": "selected_exact_source_gated_construction_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -199,5 +252,49 @@
       ],
       "reason": "The one-way-road parking task can terminate in a qualifying marked access aisle."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "No person shall park a vehicle in an access aisle.",
+      "source": "LVMC 11.52.136",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted original recording; source-gated exact capture and independent activity/aisle review required",
+      "case_ids": [
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
+        "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel"
+      ],
+      "disposition_index": 0
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "one-way approach, marked aisle and vehicle body",
+        "view": "overview",
+        "interval": "all 45 seconds"
+      },
+      {
+        "subject": "approach, turn and vehicle activity",
+        "view": "approach",
+        "interval": "approach through terminal observation"
+      },
+      {
+        "subject": "aisle markings, adjacent space and body footprint",
+        "view": "reference_corner",
+        "interval": "terminal 20 seconds"
+      },
+      {
+        "subject": "driver approach and curb sight",
+        "view": "driver_reference",
+        "interval": "approach through terminal observation"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

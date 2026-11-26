@@ -39,3 +39,11 @@ The source-bound signal measurement now decodes the sealed original frame-map fi
 - `tests/test_signal_distance.py` SHA256 `598155976e9aa64ece55fade2c9d93dc4bbdc3705bc1492739790c93e6d22a71`
 
 Seventeen focused tests, pinned preflight and scoped complete static check pass. Exact scoped strict exits 1 because status remains partial. Next CPU work: source-backed exact right-turn construction and full canonical compatibility/delivery proof, preserving the frozen left-turn cell and accepted metadata.
+
+## 2026-11-25 original turn-direction binding
+
+`signal_distance.py` now requires original sealed-result case identity and turn direction, plus independently observed turn-onset direction, to match the measurement packet. It rejects a left-turn packet relabeled right even if the sealed-result file is rehashed. Eighteen focused tests pass in `cpu-source-direction-tests.log`.
+
+The exact alternate-cell prerequisite is lead/shared binding reconciliation: frozen `inputs/.../assignment.json` fixes C178244 to `left_turn`, while its selected branch is business-district right-turn. `inputs/coverage/candidate-cells.json` lists C378304 as `business_district/right_turn`; `work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/result.json` already reports a ready CPU package for this selected branch with five exact cases and three comparisons. FULL_BRANCH_CONTRACT requires an additional binding for incompatible fixed maneuvers. C178244 may retain its six historical left-turn metadata cases, but they are not right-turn evidence. The scoped strict gate must remain partial until the lead resolves this binding without modifying the frozen cell or asserting unsupported existing-evidence coverage.
+
+Scoped static check passes in `cpu-nov25-static.log`; exact strict check exits 1 in `cpu-nov25-strict.log` with `Preparation acceptance failed: partial/missing packages remain`.

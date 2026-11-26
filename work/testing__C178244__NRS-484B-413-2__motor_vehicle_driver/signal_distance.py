@@ -47,16 +47,23 @@ def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
             "sealed result binding mismatch")
     require(sources["frame_map"]["sha256"] == packet.get("frame_map_sha256"),
             "frame map binding mismatch")
+    sealed = json.loads((root / sources["sealed_result"]["path"]).read_text())
     light = json.loads((root / sources["light_readback"]["path"]).read_text())
     frame_map = json.loads((root / sources["frame_map"]["path"]).read_text())
     onset = json.loads((root / sources["turn_onset"]["path"]).read_text())
     district = json.loads((root / sources["district_context"]["path"]).read_text())
+    require(sealed.get("case_id") == packet.get("case_id"),
+            "sealed result case identity disagrees with packet")
+    require(sealed.get("turn_direction") == packet.get("turn_direction"),
+            "sealed result turn direction disagrees with packet")
     require(light.get("samples") == packet.get("samples"), "light/position samples disagree with source")
     expected_frames = [{"frame": row.get("frame"), "time_s": row.get("time_s")}
                        for row in packet.get("samples", [])]
     require(frame_map.get("frames") == expected_frames,
             "original frame map disagrees with signal samples")
     require(onset.get("turn_onset_frame") == packet.get("turn_onset_frame"), "turn onset disagrees with source")
+    require(onset.get("turn_direction") == packet.get("turn_direction"),
+            "observed turn direction disagrees with source")
     for key in ("district_class", "district_source", "weather"):
         require(district.get(key) == packet.get(key), f"{key} disagrees with source")
     return list(required)

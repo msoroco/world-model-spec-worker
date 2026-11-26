@@ -8,7 +8,7 @@
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
       "kind": "delivery",
       "construction": "construction-production-bicycle_signal_before_yield.json",
-      "construction_sha256": "707a761da0899083c64ad62e08f3f477d2223084c6e0e38b358eb8d0ee51591a",
+      "construction_sha256": "c0006312a8d9801d41c4b7272fce50657a03e3418f0143914c18fd2be3efafb6",
       "measurement_contract": "diagnostics/bicycle_signal_before_yield-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -22,7 +22,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-bicycle_signal_before_yield.json",
-          "construction_sha256": "b29b4646067d8c81bc17e0a4c947205c765f2b54dd651a54c45d4574d7807a1b",
+          "construction_sha256": "f58fb739344a082afb940d99fe16e76f8323590c9530d27a463b0c25105e3458",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -34,16 +34,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --output .runtime-work/c142510-owner/selected-fallback1-bicycle_signal_before_yield --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "b29b4646067d8c81bc17e0a4c947205c765f2b54dd651a54c45d4574d7807a1b",
+            "construction_sha256": "f58fb739344a082afb940d99fe16e76f8323590c9530d27a463b0c25105e3458",
             "log": "cpu-nov25-production-offline-fallback1-bicycle_signal_before_yield.log",
             "log_sha256": "14e95c39ece11db7d054bf889d0f3fe5bcc76a64b9c80ec978849589975dc342"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-bicycle_signal_before_yield/receipt.json",
+            "sha256": "48d56c7311735d9c2a4421a0c9fa82f77dbb78b2a1a772ab69454cb21a6a3b42",
+            "log": "proofs/production-fallback1-bicycle_signal_before_yield/analysis.log",
+            "negative_log": "proofs/production-fallback1-bicycle_signal_before_yield/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --output .runtime-work/c142510-owner/selected-primary-bicycle_signal_before_yield",
         "exit_code": 0,
-        "construction_sha256": "707a761da0899083c64ad62e08f3f477d2223084c6e0e38b358eb8d0ee51591a",
+        "construction_sha256": "c0006312a8d9801d41c4b7272fce50657a03e3418f0143914c18fd2be3efafb6",
         "log": "cpu-nov25-production-offline-primary-bicycle_signal_before_yield.log",
         "log_sha256": "3f9468cb3920d85001c63e73ea4258c34074676bfa0802f138e4b2bceb30dbae"
       },
@@ -74,13 +80,51 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-bicycle_signal_before_yield/receipt.json",
+        "sha256": "da0499fd3b0b7cf4420e7cb5be7fdfd3b6c1a309f350e46d22edba42a54a9c01",
+        "log": "proofs/production-primary-bicycle_signal_before_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-bicycle_signal_before_yield/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-bicycle_signal_before_yield.log",
+        "test_log_sha256": "17b036034750fab529098cb3e61fdf33b78d759db4940d54631698f988ee999b",
+        "negative_log": "cpu-nov25-production-delivery-negative-bicycle_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_before_yield-receipt.json",
+        "sha256": "a572625155c5e71f6323e729b0ee7b1d9cd7b6075300851ad13ef46bc755dcf2"
       }
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
       "kind": "delivery",
       "construction": "construction-production-bicycle_signal_late_yield.json",
-      "construction_sha256": "d65aebfbcfecfde9b450c148da137fcf490eb2e67aa2807bff7c152e3b3794f2",
+      "construction_sha256": "4665acae8a4483df9fec606df8a957d2e3203a1c4f4b5b7854b9c21d611c8ce5",
       "measurement_contract": "diagnostics/bicycle_signal_late_yield-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -94,7 +138,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-bicycle_signal_late_yield.json",
-          "construction_sha256": "87546310c74d74242f8bc4716c0a3e895cc10cc9ce528efdddcf63298a700266",
+          "construction_sha256": "422865326d0d0c10413972b384bf9a4c2d23f59e7477f77f877ae18c8ef6b976",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -106,16 +150,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --output .runtime-work/c142510-owner/selected-fallback1-bicycle_signal_late_yield --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "87546310c74d74242f8bc4716c0a3e895cc10cc9ce528efdddcf63298a700266",
+            "construction_sha256": "422865326d0d0c10413972b384bf9a4c2d23f59e7477f77f877ae18c8ef6b976",
             "log": "cpu-nov25-production-offline-fallback1-bicycle_signal_late_yield.log",
             "log_sha256": "561f197f157385199c5a8bf6476763a569f6d72ae582b27002bccfe1ef842b56"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-bicycle_signal_late_yield/receipt.json",
+            "sha256": "b228054b096fadbb5b79b036a8cd935915c4922b884226c95f09c520454f9487",
+            "log": "proofs/production-fallback1-bicycle_signal_late_yield/analysis.log",
+            "negative_log": "proofs/production-fallback1-bicycle_signal_late_yield/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --output .runtime-work/c142510-owner/selected-primary-bicycle_signal_late_yield",
         "exit_code": 0,
-        "construction_sha256": "d65aebfbcfecfde9b450c148da137fcf490eb2e67aa2807bff7c152e3b3794f2",
+        "construction_sha256": "4665acae8a4483df9fec606df8a957d2e3203a1c4f4b5b7854b9c21d611c8ce5",
         "log": "cpu-nov25-production-offline-primary-bicycle_signal_late_yield.log",
         "log_sha256": "54d3c006a3c5231aec82a67db1c4857b7ca1beda4285926e711c0c39c245ea9a"
       },
@@ -146,13 +196,51 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-bicycle_signal_late_yield/receipt.json",
+        "sha256": "552f216318cda533971a5fb362e8a1b77bd1bcd69dd6dcf95f24c4ae0f4076dc",
+        "log": "proofs/production-primary-bicycle_signal_late_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-bicycle_signal_late_yield/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-bicycle_signal_late_yield.log",
+        "test_log_sha256": "e1fadb5b1cf45afcf5354bfbae430e8328731fbb716453d025dd4e288fcba6e3",
+        "negative_log": "cpu-nov25-production-delivery-negative-bicycle_signal_late_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_late_yield-receipt.json",
+        "sha256": "3d7a78b8eada385ef8d4dd20fd1221a50b8f0941de3930b2fbf77821c2635e74"
       }
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
       "kind": "delivery",
       "construction": "construction-production-bicycle_silent_yield.json",
-      "construction_sha256": "c017ee5ea7b007b6b76fe97da303ad368d2f2b071e19cd006fed2808c6994353",
+      "construction_sha256": "3b8efde04cb5f1be2c3db795740dade8722fb33992b29013007b5a9dfb638b64",
       "measurement_contract": "diagnostics/bicycle_silent_yield-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -166,7 +254,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-bicycle_silent_yield.json",
-          "construction_sha256": "d6657f2bc1fee8a17e186e9640eaf97ee5c59d2d4b871d3ed85ff19af9740454",
+          "construction_sha256": "37e380d44afdb39813d500f6ff1169c88be78be5e9b6001e53707dd1d0d4c1d0",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -178,16 +266,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --output .runtime-work/c142510-owner/selected-fallback1-bicycle_silent_yield --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "d6657f2bc1fee8a17e186e9640eaf97ee5c59d2d4b871d3ed85ff19af9740454",
+            "construction_sha256": "37e380d44afdb39813d500f6ff1169c88be78be5e9b6001e53707dd1d0d4c1d0",
             "log": "cpu-nov25-production-offline-fallback1-bicycle_silent_yield.log",
             "log_sha256": "09935cf3443558aaa5e72a9588a720e9fee538c95cbca9b93dea7942bc9e1845"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-bicycle_silent_yield/receipt.json",
+            "sha256": "0ad62efef62ab3f01c22be6b5fe84911fc86689c13142bcac03a4c87f75136a8",
+            "log": "proofs/production-fallback1-bicycle_silent_yield/analysis.log",
+            "negative_log": "proofs/production-fallback1-bicycle_silent_yield/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --output .runtime-work/c142510-owner/selected-primary-bicycle_silent_yield",
         "exit_code": 0,
-        "construction_sha256": "c017ee5ea7b007b6b76fe97da303ad368d2f2b071e19cd006fed2808c6994353",
+        "construction_sha256": "3b8efde04cb5f1be2c3db795740dade8722fb33992b29013007b5a9dfb638b64",
         "log": "cpu-nov25-production-offline-primary-bicycle_silent_yield.log",
         "log_sha256": "2895bfa5907a0ae07c5a29096ef03bec93ab2d8a7bf80a95ecc4751fca5a0a2d"
       },
@@ -218,13 +312,51 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-bicycle_silent_yield/receipt.json",
+        "sha256": "4caf8d20e1e0232585cf2f506adb53d5f08c428b755be48883d4a0a92b068ae4",
+        "log": "proofs/production-primary-bicycle_silent_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-bicycle_silent_yield/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-bicycle_silent_yield.log",
+        "test_log_sha256": "92674e1ed7802b83d9d011a2049666915ce7678a43c35fc0006b28e8a3bf1d51",
+        "negative_log": "cpu-nov25-production-delivery-negative-bicycle_silent_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_silent_yield-receipt.json",
+        "sha256": "b50c9824457b06c25a92b0b2519aa0d7530c316633d0543d935cd9cad92278ed"
       }
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
       "kind": "delivery",
       "construction": "construction-production-bicycle_signal_before_advance.json",
-      "construction_sha256": "fdd5528f12bbfee51524551cd9a951d9d7d3d0d0a3b42717727d47d96f86606e",
+      "construction_sha256": "953fb59033a3a5a76c6ed13a1d1bbb92ee13af4837df317939062c037108f001",
       "measurement_contract": "diagnostics/bicycle_signal_before_advance-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -238,7 +370,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-bicycle_signal_before_advance.json",
-          "construction_sha256": "f5a2173d79fe7283e335d69fa017924a86f6d1d916786cb858565f2e1616ef60",
+          "construction_sha256": "d04ebf3341e5d7f03422d84f1c94a0b040302067be40b38bd1b6abefab03f3bf",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -250,16 +382,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --output .runtime-work/c142510-owner/selected-fallback1-bicycle_signal_before_advance --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "f5a2173d79fe7283e335d69fa017924a86f6d1d916786cb858565f2e1616ef60",
+            "construction_sha256": "d04ebf3341e5d7f03422d84f1c94a0b040302067be40b38bd1b6abefab03f3bf",
             "log": "cpu-nov25-production-offline-fallback1-bicycle_signal_before_advance.log",
             "log_sha256": "d4a80d21fcbc9e1445619d293672d73b30f3cf7c2079bdbbca00ef1206d175de"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-bicycle_signal_before_advance/receipt.json",
+            "sha256": "802896fa690a7701c601af0b9ad52582e96f4b0d4c8a18b7394f6703766561d0",
+            "log": "proofs/production-fallback1-bicycle_signal_before_advance/analysis.log",
+            "negative_log": "proofs/production-fallback1-bicycle_signal_before_advance/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --output .runtime-work/c142510-owner/selected-primary-bicycle_signal_before_advance",
         "exit_code": 0,
-        "construction_sha256": "fdd5528f12bbfee51524551cd9a951d9d7d3d0d0a3b42717727d47d96f86606e",
+        "construction_sha256": "953fb59033a3a5a76c6ed13a1d1bbb92ee13af4837df317939062c037108f001",
         "log": "cpu-nov25-production-offline-primary-bicycle_signal_before_advance.log",
         "log_sha256": "d7cfb489a811db3babc9b090222723199ed42593438dc521bdd061f3ee80245a"
       },
@@ -290,13 +428,51 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-bicycle_signal_before_advance/receipt.json",
+        "sha256": "4a8e0c8936f03765da126debcb64d8d0c449ea9cde6075a150d357de92b70410",
+        "log": "proofs/production-primary-bicycle_signal_before_advance/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-bicycle_signal_before_advance/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-bicycle_signal_before_advance.log",
+        "test_log_sha256": "a16c4e0c98c34188def76ecfdd3c8e97a4f0950b1da8a470cb24a61ce32af1c9",
+        "negative_log": "cpu-nov25-production-delivery-negative-bicycle_signal_before_advance.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_before_advance-receipt.json",
+        "sha256": "4b5344a39530f3f72c05de2d2cb9cc382dfa09ebb66f59b3179751363ba282b6"
       }
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
       "kind": "delivery",
       "construction": "construction-production-electric_bicycle_signal_before_yield.json",
-      "construction_sha256": "76b9d9e805f3b2073d03588ead4840222128164d7f50f35c4d1d4690a3746308",
+      "construction_sha256": "39e4ff08e21e2ac9d74a0985d6627373723f4b935f96b0e21d6cb85d2e6f0a6e",
       "measurement_contract": "diagnostics/electric_bicycle_signal_before_yield-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -310,7 +486,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-electric_bicycle_signal_before_yield.json",
-          "construction_sha256": "6f1d011d2234d8c7eddef8a9a3848f9e05cb6b7e80eb6e43f6e5e6310466d9a6",
+          "construction_sha256": "a33f4b3e823b1c02d7089dd7c6b9b989e504181cc394c0e55c0c52028eb88132",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -322,16 +498,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --output .runtime-work/c142510-owner/selected-fallback1-electric_bicycle_signal_before_yield --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "6f1d011d2234d8c7eddef8a9a3848f9e05cb6b7e80eb6e43f6e5e6310466d9a6",
+            "construction_sha256": "a33f4b3e823b1c02d7089dd7c6b9b989e504181cc394c0e55c0c52028eb88132",
             "log": "cpu-nov25-production-offline-fallback1-electric_bicycle_signal_before_yield.log",
             "log_sha256": "be5a229b95ab3998f483f7766a1d325867b684c8710e6186c5855411b2f3a528"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-electric_bicycle_signal_before_yield/receipt.json",
+            "sha256": "76888e0c1b0b45147a6c48f5527b1d6683fe4464065b01a1dcd6f0aad7c0d4ea",
+            "log": "proofs/production-fallback1-electric_bicycle_signal_before_yield/analysis.log",
+            "negative_log": "proofs/production-fallback1-electric_bicycle_signal_before_yield/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --output .runtime-work/c142510-owner/selected-primary-electric_bicycle_signal_before_yield",
         "exit_code": 0,
-        "construction_sha256": "76b9d9e805f3b2073d03588ead4840222128164d7f50f35c4d1d4690a3746308",
+        "construction_sha256": "39e4ff08e21e2ac9d74a0985d6627373723f4b935f96b0e21d6cb85d2e6f0a6e",
         "log": "cpu-nov25-production-offline-primary-electric_bicycle_signal_before_yield.log",
         "log_sha256": "d9bdbc17de66bb95ca244421799572687605cefd8b7a4b4d9601ea9860a12077"
       },
@@ -362,13 +544,51 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-electric_bicycle_signal_before_yield/receipt.json",
+        "sha256": "853639e2e60f74ef50767d64c7b37b3dbef7c149c494f5df5cbcf3f08576f201",
+        "log": "proofs/production-primary-electric_bicycle_signal_before_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-electric_bicycle_signal_before_yield/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-electric_bicycle_signal_before_yield.log",
+        "test_log_sha256": "57b61c520ef233b608ad5f93ef4940c4c88eb4f7441f90b44080a2b326e7e1ed",
+        "negative_log": "cpu-nov25-production-delivery-negative-electric_bicycle_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_bicycle_signal_before_yield-receipt.json",
+        "sha256": "ceb3ec5f285ce2a6db46dc8711eeb85c95f106b5a420f12744acb2b1ad9a8c6d"
       }
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
       "kind": "delivery",
       "construction": "construction-production-electric_scooter_signal_before_yield.json",
-      "construction_sha256": "2a8a687760854278a7625a50329771dbed886106c0460394eb0c08a8199e3c0b",
+      "construction_sha256": "fa5f6cdc259649ff73c5f9690617658772d318cbb88da83a1e963951b256db2f",
       "measurement_contract": "diagnostics/electric_scooter_signal_before_yield-production-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -382,7 +602,7 @@
         {
           "id": "fallback1",
           "construction": "construction-production-fallback1-electric_scooter_signal_before_yield.json",
-          "construction_sha256": "5724859549d0fe692f4b1f3c414acb0c82c32c9e3c32b5bb2b9759fcf826e40d",
+          "construction_sha256": "3b3f021f5d544e4e3b6f064e75cb3a52b0feecdcc64b8ed5e5d1b1b682cbcfd6",
           "trigger": {
             "source": "original rider spawn and 900-frame body history",
             "metric": "spawn clearance and behind-to-ahead pass",
@@ -394,16 +614,22 @@
           "offline": {
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --output .runtime-work/c142510-owner/selected-fallback1-electric_scooter_signal_before_yield --candidate fallback1",
             "exit_code": 0,
-            "construction_sha256": "5724859549d0fe692f4b1f3c414acb0c82c32c9e3c32b5bb2b9759fcf826e40d",
+            "construction_sha256": "3b3f021f5d544e4e3b6f064e75cb3a52b0feecdcc64b8ed5e5d1b1b682cbcfd6",
             "log": "cpu-nov25-production-offline-fallback1-electric_scooter_signal_before_yield.log",
             "log_sha256": "228b75236b30464082904e6d50665b02dd22463d1f53d98878d0e6a343f629c9"
+          },
+          "compatibility": {
+            "receipt": "proofs/production-fallback1-electric_scooter_signal_before_yield/receipt.json",
+            "sha256": "a51810cda5f2c959263cd2bb92ee9ed0cead29a1709c9fb66e6f8c867a10b235",
+            "log": "proofs/production-fallback1-electric_scooter_signal_before_yield/analysis.log",
+            "negative_log": "proofs/production-fallback1-electric_scooter_signal_before_yield/negative.log"
           }
         }
       ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.production-draft.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --output .runtime-work/c142510-owner/selected-primary-electric_scooter_signal_before_yield",
         "exit_code": 0,
-        "construction_sha256": "2a8a687760854278a7625a50329771dbed886106c0460394eb0c08a8199e3c0b",
+        "construction_sha256": "fa5f6cdc259649ff73c5f9690617658772d318cbb88da83a1e963951b256db2f",
         "log": "cpu-nov25-production-offline-primary-electric_scooter_signal_before_yield.log",
         "log_sha256": "108e4b07d02b741d1513c2653f9d72ed9d20b29b2d7c88e8c193daf327de4a8d"
       },
@@ -434,6 +660,44 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/production-primary-electric_scooter_signal_before_yield/receipt.json",
+        "sha256": "08d89a1b6bcf29d7460dd4275ae84d317188d4395a8bf2280b7b0b6c4b33213e",
+        "log": "proofs/production-primary-electric_scooter_signal_before_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/production-primary-electric_scooter_signal_before_yield/negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --negative-missing-attempt",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "test_log": "cpu-nov25-production-delivery-positive-electric_scooter_signal_before_yield.log",
+        "test_log_sha256": "26b58ec04e5fa4b20bbcacaa9a9699fc002ce96c916054cad9437bad061775bd",
+        "negative_log": "cpu-nov25-production-delivery-negative-electric_scooter_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea",
+        "scope": "CPU mock-only audit wiring; physical acceptance awaits original reviewed capture"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_scooter_signal_before_yield-receipt.json",
+        "sha256": "af689c205749f1e7c14ea3f82f58c2d99b1353a93d4d6d6403b919bd8e3f7287"
       }
     }
   ]

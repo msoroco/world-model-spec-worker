@@ -51,7 +51,11 @@ def bind() -> None:
                                          stderr=subprocess.STDOUT, timeout=90)
                 if run.returncode:
                     raise ValueError('physical fixture command failed: ' + stem)
-            if 'status' not in log_path.read_text() or not result_path.is_file():
+            expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
+                        'missing_evidence': 'unverified'}[outcome_kind]
+            if (not result_path.is_file() or
+                    json.loads(result_path.read_text())['physical_checks']['maneuver']['status'] != expected or
+                    f'{kind} {outcome_kind} {expected}' not in log_path.read_text()):
                 raise ValueError('physical fixture proof absent: ' + stem)
             fixtures.append({'kind': outcome_kind, 'command': ' '.join(command),
                              'exit_code': 0, 'log': log_path.name,
