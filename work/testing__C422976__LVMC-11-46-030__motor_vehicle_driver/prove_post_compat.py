@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 import subprocess
 
-from school_lane_controls import ASSIGNMENT, VARIANTS
 from prove_saved import source_attempt
 
 
@@ -37,9 +36,9 @@ def execute(command, log, expected=0):
             "log": str(log.relative_to(HERE)), "log_sha256": digest(log)}
 
 
-def one(variant):
-    suffix = variant.suffix
-    case_id = ASSIGNMENT + "__" + suffix
+def one(entry):
+    case_id = entry["case_id"]
+    suffix = case_id.rsplit("__", 1)[-1]
     folder = HERE / "cases" / suffix
     attempt = source_attempt(case_id, suffix)
     saved_log = folder / "cpu-saved.log"
@@ -71,11 +70,10 @@ def one(variant):
                         str(HERE / "prove_delivery_contract.py"), "--case", case_id,
                         "--mode", "delivery-negative"],
                        folder / "delivery-delivery-negative.log", expected=1)
-    if "released original school-lane Native attempt required" not in (folder / negative["log"]).read_text():
+    if "released original school-lane Native attempt required" not in (HERE / negative["log"]).read_text():
         raise ValueError("delivery negative did not reject unreleased attempt")
     preparation = {"format": "worker-physical-preparation", "case_id": case_id,
-                   "construction_sha256": digest(HERE / ("construction.json" if suffix == VARIANTS[0].suffix
-                                                        else "cases/" + suffix + "/construction.json")),
+                   "construction_sha256": digest(HERE / entry["construction"]),
                    "fixtures": fixtures, "lifecycle": life, "diagnostic_fixture": True,
                    "physical_acceptance_claimed": False}
     path = folder / "physical-preparation.json"
@@ -86,8 +84,11 @@ def one(variant):
 
 
 def main():
+    entries = json.loads((HERE / "diagnostic-execution-manifest.json").read_text())["cases"]
+    if len(entries) != 15:
+        raise ValueError("all selected exact cases required")
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        results = list(pool.map(one, VARIANTS))
+        results = list(pool.map(one, entries))
     (HERE / "post-compat-proof-summary.json").write_text(
         json.dumps({"format": "c422976-post-compat-proof-summary-v1", "cases": results},
                    indent=2, sort_keys=True) + "\n")

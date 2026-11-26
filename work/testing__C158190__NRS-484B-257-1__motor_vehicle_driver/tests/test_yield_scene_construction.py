@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from yield_scene_construction import VARIANTS, construct
+from yield_scene_construction import VARIANTS, construct, verify_original_sources
 from yield_view_measurement import ASSIGNMENT
 
 
@@ -46,9 +46,11 @@ class ConstructionTests(unittest.TestCase):
     def packet(self):
         digest = "a" * 64
         return {"assignment_id": ASSIGNMENT, "cell_id": "C158190",
+                "intersection_id": "intersection-fixture",
                 "review_status": "reviewed", "source_kind": "original_site_survey",
                 "approved_control_variant": "yield_sign",
-                "map_source_sha256": digest, "yield_sign_survey_sha256": digest,
+                "map_source_sha256": digest, "ego_route_source_sha256": digest,
+                "yield_sign_survey_sha256": digest,
                 "marking_survey_sha256": digest, "view_ray_survey_sha256": digest,
                 "through_highway_survey_sha256": digest,
                 "police_control_active": False, "traffic_signal_control_active": False,
@@ -97,6 +99,27 @@ class ConstructionTests(unittest.TestCase):
         adapter.stop_line = True
         with self.assertRaisesRegex(ValueError, "marking readback"):
             self.run_build(self.packet(), adapter)
+
+    def test_independent_original_source_bytes_rechecked(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as directory:
+            root = Path(directory)
+            site = self.packet()
+            site["source_records"] = {}
+            for key in ("map_source_sha256", "ego_route_source_sha256",
+                        "yield_sign_survey_sha256", "marking_survey_sha256",
+                        "view_ray_survey_sha256", "through_highway_survey_sha256"):
+                path = root / (key + ".source")
+                path.write_text(key + " reviewed fixture\n")
+                import hashlib
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                site[key] = digest
+                site["source_records"][key] = {"path": path.name, "sha256": digest}
+            packet = root / "site.json"
+            packet.write_text(json.dumps(site) + "\n")
+            verify_original_sources(site, packet)
+            (root / "view_ray_survey_sha256.source").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "original source bytes differ"):
+                verify_original_sources(site, packet)
 
 
 if __name__ == "__main__":

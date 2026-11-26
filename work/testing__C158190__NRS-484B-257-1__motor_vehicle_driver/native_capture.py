@@ -17,7 +17,7 @@ SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
          "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 FRAMES = 900
 RATE = 20
-SOURCE_FIELDS = ("map_source_sha256", "yield_sign_survey_sha256",
+SOURCE_FIELDS = ("map_source_sha256", "ego_route_source_sha256", "yield_sign_survey_sha256",
                  "marking_survey_sha256", "view_ray_survey_sha256",
                  "through_highway_survey_sha256")
 
@@ -89,9 +89,28 @@ def capture(world, adapter, site, case_id, output, site_sha256):
     suffix = case_id.removeprefix(ASSIGNMENT + "__")
     require(suffix in VARIANTS, "unknown selected yield case")
     output = Path(output)
-    require(not output.exists() or not any(output.iterdir()),
-            "original attempt output already populated")
+    for name in ("context.json", "original-trace.jsonl", "cameras.json", "receipt.json",
+                 "reviewed-site.json", "reviewed-sources.json", "comparison-packet.json",
+                 *(view + ".mkv" for view in VIEWS)):
+        require(not (output / name).exists(), "original attempt output already populated: " + name)
     output.mkdir(parents=True, exist_ok=True)
+    site_path = Path(site.get("_source_path", ""))
+    require(site_path.is_file() and not site_path.is_symlink() and
+            hashlib.sha256(site_path.read_bytes()).hexdigest() == site_sha256,
+            "reviewed yield site bytes changed before capture")
+    (output / "reviewed-site.json").write_bytes(site_path.read_bytes())
+    source_index = {}
+    source_root = site_path.resolve().parent
+    for key in SOURCE_FIELDS:
+        record = site["source_records"][key]
+        source = source_root / record["path"]
+        require(source.is_file() and not source.is_symlink() and
+                hashlib.sha256(source.read_bytes()).hexdigest() == record["sha256"] == site[key],
+                "reviewed original source changed during capture: " + key)
+        target = output / ("reviewed-" + key + ".source")
+        target.write_bytes(source.read_bytes())
+        source_index[key] = {"path": target.name, "sha256": site[key]}
+    write_json(output / "reviewed-sources.json", source_index)
     context = adapter.read_original_context(site, case_id)
     require(isinstance(context, dict) and context.get("case_id") == case_id and
             context.get("assignment_id") == ASSIGNMENT and
@@ -105,13 +124,18 @@ def capture(world, adapter, site, case_id, output, site_sha256):
             "original governed yield/no-line/no-crosswalk readback missing")
     for key in SOURCE_FIELDS:
         require(context.get(key) == site[key], "original source differs: " + key)
-    require(isinstance(context.get("source_recording_id"), str) and
+    require(context.get("intersection_id") == site["intersection_id"] and
+            context.get("ego_route_source_sha256") == site["ego_route_source_sha256"] and
+            isinstance(context.get("source_recording_id"), str) and
             bool(context["source_recording_id"]) and
             isinstance(context.get("approach_view_stations"), list) and
             bool(context["approach_view_stations"]),
             "original recording identity and view-ray stations required")
     context["yield_sign_source_sha256"] = site["yield_sign_survey_sha256"]
     context["view_ray_source_sha256"] = site["view_ray_survey_sha256"]
+    cameras = json.loads((Path(__file__).resolve().parent / "config.json").read_text())["cameras"]
+    context["camera_plan_sha256"] = hashlib.sha256(json.dumps(
+        cameras, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     context["site_sha256"] = site_sha256
     context["duration_frames"] = FRAMES
     context["planned_ego_response"], context["planned_through_traffic_phase"] = VARIANTS[suffix]
@@ -172,7 +196,8 @@ def capture(world, adapter, site, case_id, output, site_sha256):
                              "fps": RATE, "frame_count": FRAMES,
                              "context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
                              "camera_manifest_sha256": sha(camera_manifest),
-                             "site_sha256": site_sha256})
+                             "site_sha256": site_sha256,
+                             "reviewed_source_index_sha256": sha(output / "reviewed-sources.json")})
         return {"context": str(context_path), "trace": str(trace_path),
                 "camera_manifest": str(camera_manifest), "receipt": str(receipt)}
     finally:

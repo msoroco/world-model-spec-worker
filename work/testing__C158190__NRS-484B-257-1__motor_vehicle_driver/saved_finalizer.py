@@ -57,6 +57,24 @@ def finalize(case_id, root):
             packet.get("assignment_id") != ASSIGNMENT or
             packet.get("site") != site or packet.get("frames") != rows):
         raise ValueError("original yield source seal mismatch")
+    site_path = root / "reviewed-site.json"
+    source_index_path = root / "reviewed-sources.json"
+    if (receipt.get("site_sha256") != sha(site_path) or
+            receipt.get("reviewed_source_index_sha256") != sha(source_index_path)):
+        raise ValueError("reviewed original yield site custody differs")
+    reviewed = json.loads(site_path.read_text())
+    source_index = json.loads(source_index_path.read_text())
+    keys = ("map_source_sha256", "ego_route_source_sha256", "yield_sign_survey_sha256", "marking_survey_sha256",
+            "view_ray_survey_sha256", "through_highway_survey_sha256")
+    if set(source_index) != set(keys):
+        raise ValueError("reviewed original yield source index incomplete")
+    for key in keys:
+        record = source_index[key]
+        if (record.get("path") != "reviewed-" + key + ".source" or
+                record.get("sha256") != sha(root / record["path"]) or
+                record["sha256"] != reviewed.get(key) or
+                record["sha256"] != site.get(key)):
+            raise ValueError("reviewed original yield source byte seal differs: " + key)
     if (len(rows) != 900 or receipt.get("frame_count") != 900 or
             receipt.get("fps") != 20 or cameras.get("frame_count") != 900 or
             cameras.get("fps") != 20):

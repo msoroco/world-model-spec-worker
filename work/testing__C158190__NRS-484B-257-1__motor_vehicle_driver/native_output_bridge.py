@@ -45,6 +45,16 @@ def publish(root: Path, *, map_bytes: bytes, restored: bool) -> dict:
     for key, path in (("context_sha256", context_path), ("trace_sha256", original_path),
                       ("camera_manifest_sha256", camera_path)):
         require(receipt.get(key) == sha(path), "sealed Native packet changed: " + path.name)
+    require(receipt.get("site_sha256") == sha(root / "reviewed-site.json") and
+            receipt.get("reviewed_source_index_sha256") == sha(root / "reviewed-sources.json"),
+            "reviewed original yield sources changed")
+    source_index = json.loads((root / "reviewed-sources.json").read_text())
+    for key in ("map_source_sha256", "ego_route_source_sha256", "yield_sign_survey_sha256", "marking_survey_sha256",
+                "view_ray_survey_sha256", "through_highway_survey_sha256"):
+        record = source_index.get(key, {})
+        require(record.get("path") == "reviewed-" + key + ".source" and
+                record.get("sha256") == sha(root / record["path"]),
+                "reviewed yield source byte seal differs: " + key)
     context = json.loads(context_path.read_text())
     rows = [json.loads(line) for line in original_path.read_text().splitlines()]
     cameras = json.loads(camera_path.read_text())

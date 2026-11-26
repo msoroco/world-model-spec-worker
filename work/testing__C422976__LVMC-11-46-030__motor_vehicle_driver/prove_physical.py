@@ -7,11 +7,12 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from school_lane_controls import ASSIGNMENT, VARIANTS
+HERE = Path(__file__).resolve().parent
 
 
 def run(case, kind, attempt, output):
-    if case not in {ASSIGNMENT + "__" + item.suffix for item in VARIANTS}:
+    selected = json.loads((HERE / "diagnostic-execution-manifest.json").read_text())["cases"]
+    if case not in {item["case_id"] for item in selected}:
         raise ValueError("exact selected case required")
     if kind not in ("complete_motion", "incomplete_motion", "missing_evidence"):
         raise ValueError("unknown physical fixture kind")

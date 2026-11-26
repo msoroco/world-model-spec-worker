@@ -44,7 +44,9 @@ def validate_site(path: str | Path, case_id: str) -> dict:
         raise ValueError("original reviewed Native site survey required")
     if site.get("approved_control_variant") != "yield_sign":
         raise ValueError("reviewed yield control variant required for stop-sign catalog cell")
-    for name in ("map_source_sha256", "yield_sign_survey_sha256",
+    if not isinstance(site.get("intersection_id"), str) or not site["intersection_id"]:
+        raise ValueError("reviewed exact intersection identity required")
+    for name in ("map_source_sha256", "ego_route_source_sha256", "yield_sign_survey_sha256",
                  "marking_survey_sha256", "view_ray_survey_sha256",
                  "through_highway_survey_sha256"):
         _digest(site.get(name), name)
@@ -74,6 +76,7 @@ def validate_site(path: str | Path, case_id: str) -> dict:
         raise ValueError("reviewed exact-case intervention differs")
     _finite_nonnegative(plan.get("through_start_delay_s"), "through-vehicle timing")
     site["_source_sha256"] = hashlib.sha256(raw).hexdigest()
+    site["_source_path"] = str(path.resolve())
     return site
 
 
@@ -81,7 +84,7 @@ def verify_original_sources(site: dict, site_path: str | Path) -> None:
     """Read every independent reviewed source byte, not only its digest label."""
     root = Path(site_path).resolve().parent
     records = site.get("source_records")
-    keys = ("map_source_sha256", "yield_sign_survey_sha256",
+    keys = ("map_source_sha256", "ego_route_source_sha256", "yield_sign_survey_sha256",
             "marking_survey_sha256", "view_ray_survey_sha256",
             "through_highway_survey_sha256")
     if not isinstance(records, dict) or set(records) != set(keys):
@@ -107,25 +110,40 @@ def construct(adapter, site_path: str | Path, case_id: str) -> dict:
     before = adapter.read_control(site["yield_sign"]["governed_approach_id"])
     if before == "stop_sign":
         raise ValueError("active stop sign conflicts with selected yield governance")
-    sign_id = adapter.spawn_yield_sign(site["yield_sign"]["blueprint_id"],
-                                       site["yield_sign"]["transform"])
-    readback = adapter.read_sign(sign_id)
-    if readback.get("control") != "yield_sign" or readback.get("governed_approach_id") != site["yield_sign"]["governed_approach_id"]:
-        raise ValueError("Native yield-sign governance readback failed")
-    markings = adapter.survey_markings(site["yield_sign"]["governed_approach_id"])
-    if (markings.get("stop_line_present") is not False or
-            markings.get("near_crosswalk_present") is not False or
-            markings.get("sidewalk_derived_crosswalk_present") is not False):
-        raise ValueError("Native marking readback contradicts source survey")
-    stations = adapter.survey_view_stations(site["yield_sign"]["governed_approach_id"])
-    if not isinstance(stations, list) or not any(s.get("view_of_through_traffic") is True for s in stations):
-        raise ValueError("Native through-highway view readback missing")
-    vehicle_id = adapter.spawn_through_vehicle(site["through_vehicle"],
-                                               site["case_plans"][suffix]["through_start_delay_s"])
-    if not vehicle_id:
-        raise ValueError("Native through-vehicle spawn failed")
-    return {"case_id": case_id, "site_source_sha256": site["_source_sha256"],
-            "yield_sign_actor_id": sign_id, "through_vehicle_actor_id": vehicle_id,
-            "planned_response": site["case_plans"][suffix]["ego_response"],
-            "planned_through_traffic_phase": site["case_plans"][suffix]["through_traffic_phase"],
-            "readback_limit": "Native actor and map readback must be retained with original capture."}
+    owned = []
+    try:
+        sign_id = adapter.spawn_yield_sign(site["yield_sign"]["blueprint_id"],
+                                           site["yield_sign"]["transform"])
+        if not sign_id:
+            raise ValueError("Native yield-sign spawn failed")
+        owned.append(sign_id)
+        readback = adapter.read_sign(sign_id)
+        if (not isinstance(readback, dict) or readback.get("control") != "yield_sign" or
+                readback.get("governed_approach_id") != site["yield_sign"]["governed_approach_id"]):
+            raise ValueError("Native yield-sign governance readback failed")
+        markings = adapter.survey_markings(site["yield_sign"]["governed_approach_id"])
+        if (not isinstance(markings, dict) or
+                markings.get("stop_line_present") is not False or
+                markings.get("near_crosswalk_present") is not False or
+                markings.get("sidewalk_derived_crosswalk_present") is not False):
+            raise ValueError("Native marking readback contradicts source survey")
+        stations = adapter.survey_view_stations(site["yield_sign"]["governed_approach_id"])
+        if not isinstance(stations, list) or not any(
+                isinstance(s, dict) and s.get("view_of_through_traffic") is True for s in stations):
+            raise ValueError("Native through-highway view readback missing")
+        vehicle_id = adapter.spawn_through_vehicle(site["through_vehicle"],
+                                                   site["case_plans"][suffix]["through_start_delay_s"])
+        if not vehicle_id:
+            raise ValueError("Native through-vehicle spawn failed")
+        owned.append(vehicle_id)
+        return {"case_id": case_id, "site_source_sha256": site["_source_sha256"],
+                "yield_sign_actor_id": sign_id, "through_vehicle_actor_id": vehicle_id,
+                "planned_response": site["case_plans"][suffix]["ego_response"],
+                "planned_through_traffic_phase": site["case_plans"][suffix]["through_traffic_phase"],
+                "readback_limit": "Native actor and map readback must be retained with original capture."}
+    except Exception:
+        destroy = getattr(adapter, "destroy", None)
+        if callable(destroy):
+            for actor in reversed(owned):
+                destroy(actor)
+        raise

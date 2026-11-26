@@ -7,9 +7,6 @@ import os
 from pathlib import Path
 import subprocess
 
-from school_lane_controls import VARIANTS
-
-
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 SCRATCH = REPO / ".runtime-work/c422976-owner"
@@ -29,9 +26,9 @@ def source_attempt(case_id, suffix):
     raise ValueError("matching current exact compatibility attempt missing: " + suffix)
 
 
-def one(variant):
-    suffix = variant.suffix
-    case_id = ASSIGNMENT + "__" + suffix
+def one(entry):
+    case_id = entry["case_id"]
+    suffix = case_id.rsplit("__", 1)[-1]
     attempt = source_attempt(case_id, suffix)
     output = SCRATCH / ("saved-" + suffix)
     env = dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH), TMPDIR=str(SCRATCH),
@@ -65,8 +62,11 @@ def one(variant):
 def main():
     if not VALIDATOR.is_file():
         raise ValueError("pinned compiled CPU validator missing")
+    entries = json.loads((HERE / "diagnostic-execution-manifest.json").read_text())["cases"]
+    if len(entries) != 15:
+        raise ValueError("all selected exact cases required")
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        results = list(pool.map(one, VARIANTS))
+        results = list(pool.map(one, entries))
     (HERE / "saved-proof-summary.json").write_text(
         json.dumps({"format": "c422976-saved-proof-summary-v1", "cases": results},
                    indent=2, sort_keys=True) + "\n")

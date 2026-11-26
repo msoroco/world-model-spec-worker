@@ -113,13 +113,13 @@ def validate_map(packet, case_id):
     return island_polygon, circulation, {lane["lane_id"]: lane["role"] for lane in lanes}
 
 
-def measure(*, case_id, map_path, trace_path, receipt_path):
+def measure(*, case_id, map_path, trace_path, receipt_path, allow_diagnostic=False):
     if case_id not in {ASSIGNMENT_ID + "__" + suffix for suffix in SUFFIXES}:
         raise ValueError("unknown exact case ID")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture"):
+    if receipt.get("diagnostic_fixture") and not allow_diagnostic:
         raise ValueError("diagnostic fixture is not delivery evidence")
     if _sha(map_path) != receipt.get("map_sha256") or _sha(trace_path) != receipt.get("trace_sha256"):
         raise ValueError("original source bytes changed")
@@ -164,6 +164,7 @@ def measure(*, case_id, map_path, trace_path, receipt_path):
     if not passage:
         raise ValueError("no sampled rotary-island passage")
     return {"assignment_id": ASSIGNMENT_ID, "case_id": case_id,
+            "diagnostic_fixture": bool(receipt.get("diagnostic_fixture")),
             "source_bindings": {"map_packet_sha256": _sha(map_path),
                                 "trace_sha256": _sha(trace_path),
                                 "receipt_sha256": _sha(receipt_path),

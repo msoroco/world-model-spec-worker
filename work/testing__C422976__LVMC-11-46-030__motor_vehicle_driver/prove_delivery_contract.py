@@ -5,13 +5,9 @@ import json
 from pathlib import Path
 import sys
 
-from school_lane_controls import VARIANTS
-
-
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "tests"))
 from test_delivery_audit import DeliveryAuditTests
-from delivery_audit import ASSIGNMENT
 
 
 def main():
@@ -20,7 +16,8 @@ def main():
     parser.add_argument("--mode", choices=("diagnostic-positive", "delivery-negative"),
                         required=True)
     args = parser.parse_args()
-    if args.case not in {ASSIGNMENT + "__" + item.suffix for item in VARIANTS}:
+    selected = json.loads((ROOT / "diagnostic-execution-manifest.json").read_text())["cases"]
+    if args.case not in {item["case_id"] for item in selected}:
         raise ValueError("exact selected case required")
     fixture = DeliveryAuditTests("test_original_source_joins_and_decode_protocol")
     fixture.setUp()

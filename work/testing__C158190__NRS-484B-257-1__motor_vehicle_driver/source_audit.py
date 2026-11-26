@@ -10,7 +10,8 @@ from pathlib import Path
 from yield_view_measurement import ASSIGNMENT
 
 
-REQUIRED_ORIGINAL = ("yield_sign_and_governing_approach", "line_crosswalk_sidewalk_survey",
+REQUIRED_ORIGINAL = ("yield_sign_and_governing_approach", "ego_route_survey",
+                     "line_crosswalk_sidewalk_survey",
                      "nearest_view_ray_survey", "through_highway_route_and_motion")
 
 
@@ -26,9 +27,11 @@ def audit(repo: Path) -> dict:
     accepted = sorted((source / "accepted").glob("*/metadata.json"))
     original_files = sorted(path for path in source.rglob("*") if path.is_file()
                             and path.name in {"trace.json", "video.webm", "yield-site.json",
+                                              "ego-route-survey.json",
                                               "marking-survey.json", "view-ray-survey.json",
                                               "through-highway-survey.json"})
     required_names = {"yield_sign_and_governing_approach": "yield-site.json",
+                      "ego_route_survey": "ego-route-survey.json",
                       "line_crosswalk_sidewalk_survey": "marking-survey.json",
                       "nearest_view_ray_survey": "view-ray-survey.json",
                       "through_highway_route_and_motion": "through-highway-survey.json"}

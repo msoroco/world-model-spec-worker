@@ -15,7 +15,7 @@ class SourceAndQueueTests(unittest.TestCase):
         self.assertEqual(result["frozen_cell_control"], "stop_sign")
         self.assertEqual(result["accepted_metadata_count"], 2)
         self.assertEqual(result["accepted_original_file_count"], 0)
-        self.assertEqual(len(result["missing_source_classes"]), 4)
+        self.assertEqual(len(result["missing_source_classes"]), 5)
 
     def test_exact_case_queue_order_and_command_grammar(self):
         proposal = build()
