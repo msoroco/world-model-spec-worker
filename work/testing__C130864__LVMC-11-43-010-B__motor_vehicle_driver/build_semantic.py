@@ -65,7 +65,7 @@ def build():
                 "description": "Source-bound original Native map, lane, body, speed and time observations."}
         judgments.append(write(PROPOSALS / f"judgment-{index}.json", {
             "status": "draft", "template_id": TEMPLATE, "phrase": phrase,
-            "note": "Physical observation does not itself decide legal right-of-way or gap sufficiency.",
+            "note": "No legal traffic-gap threshold is supplied; independent source and physical review required.",
             "observable_requirements": {"observables": [item], "recording_needs": [item],
                 "context_inputs": [{"name": "reviewed_roundabout_source", "unit": "source",
                     "description": "Original jurisdiction, map, connected entry and circulating route source."}],
@@ -79,21 +79,35 @@ def build():
         variable_parameters=[{"name": name, "kind": kind, "range_or_domain": domain,
                               "used_by_laws": [LAW]} for name, kind, domain in PARAMETERS]))
     cases = []
+    baseline_description = json.loads((ROOT / "cases/connected_wait/construction.json").read_text())["recording_description"]
+    cases.append({"case_id": ROOT.name + "__baseline", "target_law_id": None,
+        "target_type": "baseline", "rationale": "Shared reviewed roundabout reference.",
+        "variable_assignments": {name: {"kind": kind, "value": value}
+            for (name, kind, _), value in zip(PARAMETERS,
+                ("connected", "near", "wait", "four original RGB views, 20 Hz, 900 frames"))},
+        "recording_description": baseline_description,
+        "unresolved_judgment_calls": [phrase for phrase, _, _ in PHRASES]})
     for case in plan["cases"]:
+        short = case["case_id"].split("__")[-1]
+        construction = json.loads((ROOT / "cases" / short / "construction.json").read_text())
+        recording_description = construction["recording_description"]
         values = {name: case[name] for name in
                   ("opponent_lane_relation", "planned_gap_condition", "ego_entry_request")}
         values["capture_profile"] = "four original RGB views, 20 Hz, 900 frames"
         cases.append({"case_id": case["case_id"], "target_law_id": LAW,
             "target_type": "boundary_probe", "rationale": case["recording_description"],
+            "paired_probe_id": "source-gated-roundabout-variables",
+            "deliberate_differences": ["opponent_lane_relation", "planned_gap_condition",
+                                      "ego_entry_request"],
             "variable_assignments": {name: {"kind": kind, "value": values[name]}
                                      for name, kind, _ in PARAMETERS},
             "unresolved_judgment_calls": [phrase for phrase, _, _ in PHRASES],
-            "recording_description": case["recording_description"],
+            "recording_description": recording_description,
             "probe": {"primary_variable": "ego_entry_request",
                 "comparison_or_standard": "same reviewed map, lane, actors, 20 Hz and four-camera policy",
                 "target_value_or_branch": case["ego_entry_request"]}})
     sweep = {"sweep_id": "source-gated-gap-coverage", "target_law_id": LAW,
-        "judgment_refs": [{"phrase": phrase, "note": "Physical and legal source review pending."}
+        "judgment_refs": [{"phrase": phrase, "note": "No legal traffic-gap threshold is supplied; independent source and physical review required."}
                           for phrase, _, _ in PHRASES],
         "rationale": "Requested near and wider conditions are engineering probes, not legal gap cutoffs.",
         "status": "incomplete", "missing_inputs": ["reviewed original roundabout map and routes",

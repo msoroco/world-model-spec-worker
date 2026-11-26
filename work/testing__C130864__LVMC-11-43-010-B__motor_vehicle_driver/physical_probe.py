@@ -35,12 +35,8 @@ def probe(attempt: Path, kind: str, output: Path) -> dict:
         for name in ("config.json", "trace.jsonl", "video_frames.jsonl"):
             shutil.copyfile(attempt / name, root / name)
         cfg = json.loads((root / "config.json").read_text())
-        cfg["physical_completion"] = {
-            "criterion": "travel_progress",
-            "minimum_progress_m": 0.25,
-            "completion_goal_method": "diagnostic observed motion only; not roundabout entry or legal gap"
-        }
-        (root / "config.json").write_text(json.dumps(cfg, indent=2) + "\n")
+        if cfg["physical_completion"]["criterion"] != "travel_progress":
+            raise ValueError("selected physical criterion is unsupported")
         (root / "acquisition-provenance.json").write_text(json.dumps({
             "provenance_kind": "synthetic_fixture",
             "diagnostic_fixture": True

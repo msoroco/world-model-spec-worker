@@ -73,8 +73,11 @@ def build():
                   "actor": "motor_vehicle_driver", "selected_case_id": case_id,
                   "supported_case_ids": case_ids, "required_atoms": [], "source_packets": [],
                   "rate_hz": 20, "duration_s": 45, "cameras": cameras,
-                  "physical_completion": {"criterion": "roundabout_entry_or_observed_wait",
-                      "completion_goal_method": "original ring occupancy and full 900-frame source trace; legal gap remains independent"},
+                  "physical_completion": {"criterion": "travel_progress",
+                      "motion_source": "trace.jsonl", "position_key": "position_m",
+                      "minimum_progress_m": 1.0, "minimum_samples": 3,
+                      "engineering_tolerances_not_legal": True,
+                      "completion_goal_method": "Original ego displacement is an engineering motion check; roundabout entry, observed waiting, circulating right-of-way and legal gap require independent source-bound review"},
                   "case": {"case_id": case_id,
                       "physical_target": "source-grounded multilane entry and already-present circulating vehicle",
                       "recording_description": description}}

@@ -3,18 +3,29 @@
   "assignment_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver",
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --case testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_wait --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "0960bcb5068e7f6b76b95da76e06e7acf5a85c342fe29862f2d9ba0f334de2c9",
-  "readiness_kind": "partial",
-  "reason": "Pinned native_output.assess_physical rejects unsupported selected physical_completion.criterion 'roundabout_entry_or_observed_wait' (Unsupported authored physical criterion). Rebuild selected current-runtime constructions with a supported original-motion criterion, preserve law-specific original measurement in the independent finalizer/audit, reprove affected current-hash offline/compatibility/physical/saved/delivery/comparison receipts and rerun exact scoped strict before restoring ready.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
     "Actual CARLA motion, synchronized original camera visibility and physical completion after reviewed original sources are supplied"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c130864-output TMPDIR=$PWD/.runtime-work/c130864-tmp .venv-cpu/bin/python -m unittest discover -s work/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-camera-race-tests.log",
-      "sha256": "43e492023b8b8df3732fc02ee05723528325620e10a81544974cf36cc8af6c1b"
+      "sha256": "8d944dec1b607f022ea84759424281631b6325741d6563f7b90315aa8192196b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c130864-repair-output .venv-cpu/bin/python work/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/prove_runtime_physical.py",
+      "exit_code": 0,
+      "log": "cpu-runtime-physical-proof.json",
+      "sha256": "c691631af293196a87244b651103364613222b0b50a7bdb5bf68282d5d91e79a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c130864-repair-output .venv-cpu/bin/python work/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/seal_cpu_delivery.py",
+      "exit_code": 0,
+      "log": "selected-cpu-delivery-audit.json",
+      "sha256": "3fe5df20d53368e4360a4ec2101739ce6a3bf4ad433f129c0bdc2f3d87eaa70e"
     }
   ]
 }

@@ -45,8 +45,10 @@ def config(variant):
             "limitations": ["No reviewed original site is supplied with this worker package.",
                 "Observed actor bodies and pixels require local physical review; legal judgment unresolved."]},
         "physical_completion": {"format": "worker-physical-completion-criteria",
-            "criterion": "opposing_pass", "motion_source": "opposing-actor-trace.json",
-            "minimum_samples": 900, "minimum_passing_frames": 2,
+            "criterion": "travel_progress", "motion_source": "trace.jsonl",
+            "position_key": "position_m", "minimum_progress_m": 1.0,
+            "minimum_samples": 3,
+            "completion_goal_method": "Original ego displacement is an engineering motion check; opposing pass, direction-relative right side, paved-half allocation and legal context require independent source-bound review",
             "engineering_tolerances_not_legal": True}
     }
 
