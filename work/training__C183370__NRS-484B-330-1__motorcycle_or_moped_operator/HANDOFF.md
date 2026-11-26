@@ -1,5 +1,9 @@
 # NRS-484B-330-1 at C183370
 
+## 2026-11-26 separate location alternative disposition
+
+The exact NRS 484B.330(1) location alternatives are now explicit in the case plan: the current two-case designated temporary-zone witness is selected for construction, while the clearly marked highway construction or maintenance area alternative is `alternative_pending` with no assigned case or invented source review. Updated plan SHA-256 `814d1b1afdd716625652816ddce54b2a685f87fd70360aac3c1036e3e3ca2f56`. Strict readiness remains unavailable until that branch is constructed and selected or source-backed equivalent evidence is established. The current pair and all original flagger/source review claims remain partial.
+
 ## 2026-11-26 independent original-review receipt binding
 
 A new review checker binds a reviewer receipt to the exact sealed original attempt, its four camera stream hashes, authority/zone/signal source copies, 600 frames and five required flagger/zone observations. The source-shaped synthetic proof passes four binding positives and ten altered/incomplete receipt negatives (`native/review-binding-proof.json` SHA-256 `721ca24003073e63675d8aea4c6235acf4ee67335302a166e835aed43d7bd679`). A self-declared original receipt is treated only as a bound declaration; the proof does not claim original pixels reviewed, physical completion or a legal outcome. C183370 stays partial pending accepted original authority/zone/signal sources and selected public/saved/semantic/delivery chains.

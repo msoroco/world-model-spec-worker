@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 AID = 'training__C262666__NRS-484B-363-1__heavy_vehicle_driver'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CASE = AID + '__probe_03'
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 MPS_PER_MPH = .44704
 
@@ -25,7 +26,7 @@ def finite(value):
     return type(value) in (int, float) and math.isfinite(value)
 
 
-def measure(root):
+def measure(root, expected_case=CASE):
     root = Path(root)
     paths = {name: root/name for name in ('video_frames.jsonl', 'native_motion.jsonl', 'school_zone_context.json')}
     for name, path in paths.items():
@@ -36,11 +37,42 @@ def measure(root):
     if len(frames) != COUNT or len(trace) != COUNT:
         raise ValueError('Requires 600 joined original 20 Hz frames')
     kind = context.get('review_kind')
-    if context.get('assignment_id') != AID or kind not in ('synthetic_diagnostic', 'original_source_review'):
-        raise ValueError('Assignment or source provenance mismatch')
+    if (context.get('assignment_id') != AID or context.get('case_id') != expected_case or
+            kind not in ('synthetic_diagnostic', 'original_source_review')):
+        raise ValueError('Exact case or source provenance mismatch')
+    if kind == 'original_source_review':
+        survey_path = root/'native_survey.json'
+        if not survey_path.is_file() or context.get('native_survey_sha256') != sha(survey_path):
+            raise ValueError('Original survey bytes missing or changed')
+        survey = json.loads(survey_path.read_text())
+        for source_key, context_key in (
+                ('zone_establishment_source', 'zone_designation_source'),
+                ('installed_sign_source', 'zone_sign_source'),
+                ('calendar_source', 'calendar_source'),
+                ('school_hours_source', 'school_hours_source'),
+                ('half_hour_window_source', 'half_hour_window_source'),
+                ('beacon_source', 'beacon_source'),
+                ('beacon_phase_source', 'beacon_phase_source'),
+                ('nonbeacon_sign_schedule_source', 'nonbeacon_sign_schedule_source'),
+                ('heavy_vehicle_class_source', 'vehicle_class_source'),
+                ('civil_time_source', 'civil_time_source'),
+                ('governing_road_direction_source', 'road_axis_source'),
+                ('zone_station_bounds_m', 'zone_station_bounds_m'),
+                ('road_axis_xy', 'road_axis_xy'),
+                ('road_id', 'road_id'),
+                ('travel_direction_id', 'travel_direction_id'),
+                ('authorized_mph', 'authorized_mph'),
+                ('civil_start_iso', 'civil_start_iso')):
+            if survey.get(source_key) != context.get(context_key):
+                raise ValueError('Original survey and reviewed context disagree: '+context_key)
+        if survey.get('reviewed_plan_case_id') != expected_case or not survey.get('planned_context_source'):
+            raise ValueError('Original survey lacks exact school-zone plan source')
+        if survey.get('planned_context') != context.get('planned_context') or survey.get('planned_context_source') != context.get('planned_context_source'):
+            raise ValueError('Original planned school-zone condition changed')
+        paths['native_survey.json'] = survey_path
     hashes = {}
     for name in CAMERAS:
-        path = root/('camera_'+name+'.mkv')
+        path = root/(name+'.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing source camera: '+name)
         run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -49,7 +81,7 @@ def measure(root):
         if run.returncode:
             raise ValueError('Source camera decode failed: '+name)
         streams = json.loads(run.stdout).get('streams', [])
-        wanted = (1920, 1080) if name == 'forward' else (1280, 720)
+        wanted = (1920, 1080) if name == 'overview' else (1280, 720)
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: '+name)
         if kind == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != wanted:
@@ -70,8 +102,11 @@ def measure(root):
             raise ValueError('Missing reviewed school-zone fact: '+key)
     if not context['condition_stable_30s']:
         raise ValueError('School-zone condition changes during capture; per-frame review required')
-    if not isinstance(context.get('road_id'), int) or not isinstance(context.get('ego_actor_id'), int):
-        raise ValueError('Missing source road or vehicle identity')
+    if (type(context.get('road_id')) is not int or type(context.get('ego_actor_id')) is not int or
+            not isinstance(context.get('travel_direction_id'), str) or not context['travel_direction_id']):
+        raise ValueError('Missing source road, direction or vehicle identity')
+    if context.get('authorized_mph') != 15:
+        raise ValueError('Reviewed school-zone speed limit differs from statute')
     bounds, axis = context.get('zone_station_bounds_m'), context.get('road_axis_xy')
     if not isinstance(bounds, list) or len(bounds) != 2 or not all(finite(v) for v in bounds) or bounds[0] >= bounds[1]:
         raise ValueError('Invalid reviewed school-zone boundaries')
@@ -94,8 +129,9 @@ def measure(root):
             raise ValueError('Invalid original 20 Hz cadence')
         if (row.get('video_frame') != i or row.get('native_frame') != native or
                 row.get('source_kind') != expected or row.get('ego_actor_id') != context['ego_actor_id'] or
-                row.get('road_id') != context['road_id']):
-            raise ValueError('Motion source does not join original frame, road, vehicle or provenance')
+                row.get('road_id') != context['road_id'] or
+                row.get('travel_direction_id') != context['travel_direction_id']):
+            raise ValueError('Motion source does not join original frame, road, direction, vehicle or provenance')
         for key in ('ego_x_m', 'ego_y_m', 'velocity_x_mps', 'velocity_y_mps', 'velocity_z_mps'):
             if not finite(row.get(key)):
                 raise ValueError('Missing finite Native measurement: '+key)
@@ -115,7 +151,7 @@ def measure(root):
     active = (context['zone_designated'] and context['ego_is_motor_vehicle'] and
               context['school_session_day'] and not context['half_hour_window_exception'] and
               not beacon_exception and not sign_exception)
-    return {'format': 'saved-heavy-school-zone-observation', 'assignment_id': AID,
+    return {'format': 'saved-heavy-school-zone-observation', 'assignment_id': AID, 'case_id': expected_case,
             'review_kind': kind, 'sources': {**{name: sha(path) for name, path in paths.items()}, **hashes},
             'sample_count': COUNT, 'sample_span_s': prev_t-frames[0]['time_s'],
             'civil_start_iso': civil_start.isoformat(),

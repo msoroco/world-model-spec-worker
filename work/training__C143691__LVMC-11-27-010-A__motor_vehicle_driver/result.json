@@ -2,7 +2,7 @@
   "assignment_id": "training__C143691__LVMC-11-27-010-A__motor_vehicle_driver",
   "input_sha256": "b814c7a3cd90a0818d0cfcf235aad38c1ac18e47722e785edaa07e535f4d1848",
   "status": "partial",
-  "reason": "Seven selected primary current-runtime CPU chains are prepared. A new source-bound B(3) eligibility audit and original paired comparison audit pass 11 CPU tests, but B(3) remains unselected: no original eligible mobility-device asset, device design, impaired-user use, or operator binding is supplied, and the frozen motor_vehicle_driver eligibility is unresolved. Original physical and legal acceptance remain unverified.",
+  "reason": "Seven selected primary current-runtime CPU chains remain prepared. B(3) has no source-bound eligible mobility device or frozen-actor binding. The new Native blueprint inventory probe and 13 CPU tests pass, but a blueprint name alone cannot establish device design or impaired-person use. Original physical and legal acceptance remain unverified.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 7,
   "candidate_count": 0,
@@ -46,7 +46,9 @@
   "scoped_partial_static_check": {
     "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C143691__LVMC-11-27-010-A__motor_vehicle_driver --complete",
     "exit_code": 0,
-    "static_checks_passed": true
+    "static_checks_passed": true,
+    "log": "scoped-complete.log",
+    "log_sha256": "4cff9f5c483e1c74ece423bc3f6ceb3d67139e5ddc7d7e4e5dbadc2116010b71"
   },
   "mobility_eligibility_checkpoint": {
     "audit": "native/mobility_eligibility.py",
@@ -64,17 +66,26 @@
       "command": "TMPDIR=$PWD/.runtime-work/c143691-temp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143691-output PYTHONPATH=$PWD/work/training__C143691__LVMC-11-27-010-A__motor_vehicle_driver/native PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B -m unittest discover -s native/tests -v (cwd=work/training__C143691__LVMC-11-27-010-A__motor_vehicle_driver)",
       "exit_code": 0,
       "log": "native-cpu-tests.log",
-      "sha256": "4c430e9cf7511ccd153805e605c1c4ba40a5d0574c84112e3fc8078b7edcdd6b"
+      "sha256": "5cebcad533b4902ae0635a2d8ef19614e5b63c120fd7e0bb4b24e48713c6cfa7"
     }
   ],
   "comparison_audit_checkpoint": {
     "audit": "native/original_comparison_audit.py",
     "audit_sha256": "0a5d40fd6a307fc59238e232a7fc8428d445ecf2a3ffd67673791074d9eb6245",
     "test_log": "native-cpu-tests.log",
-    "test_log_sha256": "4c430e9cf7511ccd153805e605c1c4ba40a5d0574c84112e3fc8078b7edcdd6b",
+    "test_log_sha256": "5cebcad533b4902ae0635a2d8ef19614e5b63c120fd7e0bb4b24e48713c6cfa7",
     "test_exit_code": 0,
     "pair_count": 6,
     "original_delivery_receipts_required": true,
     "physical_comparisons_accepted": false
+  },
+  "mobility_asset_probe_checkpoint": {
+    "probe": "native/mobility_asset_probe.py",
+    "probe_sha256": "f863cd7dfc6d0e1899769e3660a72f1ba25064d146365f9338eff3b2ba760a48",
+    "test_log": "native-cpu-tests.log",
+    "test_log_sha256": "5cebcad533b4902ae0635a2d8ef19614e5b63c120fd7e0bb4b24e48713c6cfa7",
+    "test_exit_code": 0,
+    "candidate_native_inventory_available": false,
+    "asset_or_actor_eligibility_claimed": false
   }
 }

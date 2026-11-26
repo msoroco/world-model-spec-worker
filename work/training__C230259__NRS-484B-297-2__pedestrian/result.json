@@ -2,68 +2,48 @@
   "assignment_id": "training__C230259__NRS-484B-297-2__pedestrian",
   "input_sha256": "a33c69092db333ca78af3708ea9b7cc8db9c54f18c954ff8c6266624dc14c0ff",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Two corrected side-only drafts pass pinned offline; five semantic stages and both exact measurement contracts validate on the current runtime. Runner now streams and composes four original cameras, owns the pedestrian trace through PipelineCapture, and seals only after cleanup. The pinned PipelineCapture/SGG path still assumes a vehicle ego for control and lights, so original pedestrian Core capture cannot yet be represented honestly. Selected public compatibility, physical/saved/delivery receipts and a tested fallback remain CPU work.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "Two selected pedestrian cases and measured Walker-spawn fallback candidates passed pinned offline, four-camera public positive/missing-road negative, recorded-only saved processing, semantic, physical/lifecycle, independent delivery/comparison and exact assignment-scoped strict CPU checks. The package is prepared for original Native capture and review; no original physical or legal result is claimed.",
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 2,
     "selected_comparison_cases_planned": 2,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
-    "candidates_proven": 0,
+    "delivery_cases_prepared": 2,
+    "candidates_proven": 4,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
-      "exit_code": 0
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0
-    },
-    {
-      "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-297-2__pedestrian/native/walking_side.py",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B runtime.py preflight",
       "exit_code": 0,
-      "proof": "native/walking-side-proof.json",
-      "proof_sha256": "f17ed50c48e7167e4ccf6a489d51d29f67f8bff9a53eb9b25a61390b6f6af159"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp .venv-cpu/bin/python -B work/training__C230259__NRS-484B-297-2__pedestrian/native/prove_saved_walking.py",
-      "exit_code": 0,
-      "proof": "native/saved-walking-proof.json",
-      "proof_sha256": "4eee9a1bb78aa2fd0f8bf4f1784bd7381e599c1402084881047b7c8cfc366322"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp .venv-cpu/bin/python -B work/training__C230259__NRS-484B-297-2__pedestrian/native/prove_comparison.py",
-      "exit_code": 0,
-      "proof": "native/comparison-proof.json",
-      "proof_sha256": "ba65efcd32d151041e7ae367b24bb619803a0e18edbc6e550fd711851c114f4f"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a --output .runtime-work/c230259-297-2-offline-a-runner-v3",
-      "exit_code": 0,
-      "log": "native/draft-offline-a.log",
-      "log_sha256": "4624b223d5871b303d4e9417bbb6a1e4eea63237d0adc2b7d6f2a41d28c76234"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c230259-297-2-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-297-2__pedestrian/draft-native-manifest.json --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b --output .runtime-work/c230259-297-2-offline-b-runner-v3",
-      "exit_code": 0,
-      "log": "native/draft-offline-b.log",
-      "log_sha256": "5d039e67fbdc5083343218c9d66eefa64592fe2358ed527a06028d5500aa6f7f"
+      "log": "native/cpu-preflight.log",
+      "sha256": "1e637643ddc3f53c9ffe627e11bf79b9d467bae3b43c4ea74f811f4794a8a490"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-297-2-output .venv-cpu/bin/python -B work/training__C230259__NRS-484B-297-2__pedestrian/native/validate_stage_contracts.py",
       "exit_code": 0,
-      "log": "native/stage-contracts.log",
-      "sha256": "1a4c7d5ce2e93ecff5cf89ca211fa71e07dba38e34ab3ac5586eb3b25e27f310"
+      "log": "native/cpu-stage-contracts.log",
+      "sha256": "cabbb3850a2702e33bb21a9ca8366b59acef7552feb39a1bd873eb6003a84a3c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C230259__NRS-484B-297-2__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "native/cpu-root-tests.log",
+      "sha256": "2cf642a14dfbfeddf1f98d930793b3dfdc811480263510aa7f4271b72abdc0e0"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C230259__NRS-484B-297-2__pedestrian --complete",
+      "exit_code": 0,
+      "log": "native/cpu-scoped-complete.log",
+      "sha256": "03d16faead447a8f7dd79b02250f4ae9d9fac68d8992c1653796ad070fb8047d"
     }
   ],
   "semantic_validation": {
     "status": "passed_current_runtime",
     "stage_count": 5,
-    "index_sha256": "f1c339a00604a114ba2148af90752e99a5c71805ff49263b0eef15929c0f7024"
+    "index_sha256": "98f5b6f577b52b90ea986fd6808805248f34805f8324d0ea5d6bf5b5445068cd"
   },
   "measurement_contract_validation": {
     "status": "passed_current_runtime",
@@ -75,13 +55,14 @@
   },
   "runner_repair": {
     "source": "native/runner.py",
-    "sha256": "d741887c15f2a10d6e0e4dcf85cb2b31338f2e69a5924e72e41ccdc6e2a2e2a6",
+    "sha256": "b79d4198971b35b2768b6a82f8194c4d72df8939a87bb4edb28b007db9aed6cc",
     "draft_construction_sha256": {
-      "a": "70e4c5b37b10cd00c8b469b722df3b5e9cb6d8f4d33c5dc4b31eb226edcd3867",
-      "b": "8a4bebcf0e3d42d9eeff21a0087581b8e339746ea6412ea374f95478d3be55b8"
+      "a": "636bbac13e50204c8fe920ebda2433c84d88999f71702581e2640082e94c1a5d",
+      "b": "0f89d4c88cf65f629e81a74aa8bde4b1fda975b5ede96fda4aa918f44a8523c1"
     },
     "limits": [
-      "Pinned graph capture assumes a vehicle ego; walker live execution remains unproved."
+      "Original Native CARLA capture requires local simulator execution and post-capture source review."
     ]
-  }
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230259__NRS-484B-297-2__pedestrian --case training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

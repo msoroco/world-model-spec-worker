@@ -65,6 +65,27 @@ def main():
                 'evidence': 'trail-authority-context.json, trail-inventory.json, road.xodr',
             },
         }
+        saved_log = HERE / 'saved' / (suffix + '-processing.log')
+        saved_receipt = HERE / 'saved' / (suffix + '-processing.json')
+        if not saved_log.is_file() or not saved_receipt.is_file():
+            raise ValueError('Selected saved-processing proof missing for ' + case)
+        saved = json.loads(saved_receipt.read_text())
+        if (saved.get('case_id') != case or saved.get('passed') is not True
+                or saved.get('recorded_only') is not True):
+            raise ValueError('Selected saved-processing proof differs for ' + case)
+        entry['post_capture'] = {
+            'recorded_only': True,
+            'command': '.venv-cpu/bin/python -B runtime.py process-saved'
+                       + ' --manifest ' + str(MANIFEST.relative_to(ROOT))
+                       + ' --case ' + case
+                       + ' --attempt "$ATTEMPT" --output "$SAVED_OUTPUT"'
+                       + ' --library runtime/library --validator "$DECODER"'
+                       + ' --owner-release-receipt "$ATTEMPT/owner-release.json"',
+            'feedback_command': 'cat "$SAVED_OUTPUT/v0001/feedback.json"',
+            'test_log': str(saved_log.relative_to(HERE)),
+            'test_log_sha256': sha(saved_log),
+            'test_exit_code': 0,
+        }
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'cases': len(manifest['cases']), 'manifest_sha256': sha(MANIFEST)}))
 

@@ -4,16 +4,18 @@
 reviewed speed-zone survey; requested speed is never an observed velocity.
 """
 import argparse
+import hashlib
 import json
 import math
 import queue
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 AID = 'training__C262666__NRS-484B-363-1__heavy_vehicle_driver'
 CASE = AID + '__probe_03'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 MPS_PER_MPH = 0.44704
 
@@ -24,7 +26,10 @@ def config_check():
             config.get('cell_id') != 'C262666' or config.get('law_id') != 'NRS-484B-363-1' or
             config.get('actor') != 'heavy_vehicle_driver' or config.get('candidate_id') != 'primary' or
             config.get('rate_hz') != 20 or config.get('duration_s') != 30 or
-            config.get('frames') != COUNT or [c.get('name') for c in config.get('cameras', [])] != list(CAMERAS) or
+            config.get('frames') != COUNT or type(config.get('target_mph')) not in (int, float) or
+            not math.isfinite(config['target_mph']) or not (0 < config['target_mph'] <= 30) or
+            not config.get('planned_context') or
+            [c.get('name') for c in config.get('cameras', [])] != list(CAMERAS) or
             [(c.get('width'), c.get('height')) for c in config['cameras']] !=
             [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)] or
             config.get('physical_acceptance_claimed') is not False or config.get('legal_verdict') is not None):
@@ -41,7 +46,7 @@ def survey_check(survey):
             'zone_boundary_source', 'governing_road_direction_source',
             'ego_blueprint', 'spawn_xyz_m', 'spawn_yaw_deg', 'camera_world_transforms',
             'road_axis_xy', 'zone_station_bounds_m', 'civil_start_iso', 'authorized_mph', 'road_id',
-            'travel_direction_id')
+            'travel_direction_id', 'reviewed_plan_case_id', 'planned_context_source', 'planned_context')
     for key in keys:
         if key not in survey or survey[key] is None or survey[key] == '':
             raise ValueError('Missing reviewed Native survey source: ' + key)
@@ -55,6 +60,15 @@ def survey_check(survey):
         raise ValueError('Invalid surveyed zone bounds')
     if survey['authorized_mph'] != 15:
         raise ValueError('School-zone clause requires 15 mph')
+    config = json.loads((HERE/'config.json').read_text())
+    if survey['reviewed_plan_case_id'] != CASE or survey['planned_context'] != config['planned_context']:
+        raise ValueError('Survey does not bind exact planned school-zone condition')
+    try:
+        civil_start = datetime.fromisoformat(survey['civil_start_iso'])
+        if civil_start.tzinfo is None or civil_start.utcoffset() is None:
+            raise ValueError('timezone absent')
+    except (ValueError, TypeError) as exc:
+        raise ValueError('Reviewed civil start needs timezone') from exc
     if set(survey['camera_world_transforms']) != set(CAMERAS):
         raise ValueError('Four surveyed source cameras required')
     for item in survey['camera_world_transforms'].values():
@@ -70,10 +84,16 @@ def transform(carla, xyz, rotation):
 
 def capture(survey, output, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     survey_check(survey)
     output.mkdir(parents=True, exist_ok=True)
     if (output/'video_frames.jsonl').exists() or (output/'native_motion.jsonl').exists():
         raise ValueError('Retain prior Native source attempt; use a new directory')
+    survey_path = output/'native_survey.json'
+    if survey_path.exists():
+        raise ValueError('Retain prior Native survey; use a new directory')
+    survey_path.write_text(json.dumps(survey, sort_keys=True, allow_nan=False)+'\n')
+    survey_sha256 = hashlib.sha256(survey_path.read_bytes()).hexdigest()
     client = carla.Client(host, port)
     client.set_timeout(120)
     world = client.get_world()
@@ -82,6 +102,7 @@ def capture(survey, output, host, port):
     settings = world.get_settings()
     old_sync, old_step = settings.synchronous_mode, settings.fixed_delta_seconds
     actors, encoders = [], {}
+    core_capture = None
     try:
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
@@ -111,8 +132,9 @@ def capture(survey, output, host, port):
                 ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                  '-video_size', f"{spec['width']}x{spec['height']}", '-framerate', '20',
                  '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+spec['name']+'.mkv'))], stdin=subprocess.PIPE)
-        target_mps = (15.0+2.0)*MPS_PER_MPH
+                 str(output/(spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+        core_capture = PipelineCapture(client, ego, output, CASE, required_observations=[])
+        target_mps = json.loads((HERE/'config.json').read_text())['target_mph']*MPS_PER_MPH
         first_elapsed = None
         with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_motion.jsonl').open('w') as motion_file:
             for i in range(COUNT):
@@ -135,7 +157,12 @@ def capture(survey, output, host, port):
                     raise RuntimeError('Native ego has no measured driving road')
                 if velocity.x*survey['road_axis_xy'][0]+velocity.y*survey['road_axis_xy'][1] < -.1:
                     raise RuntimeError('Native ego motion opposes surveyed sign direction')
-                frame_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
+                core_capture.capture(native_frame, i/20,
+                                     extra={'school_zone_source': {'road_id': observed_waypoint.road_id,
+                                                                   'travel_direction_id': survey['travel_direction_id'],
+                                                                   'zone_survey_sha256': survey_sha256}})
+                frame_file.write(json.dumps({'video_frame': i, 'carla_frame': native_frame,
+                                             'native_frame': native_frame,
                                              'time_s': snapshot.timestamp.elapsed_seconds-first_elapsed})+'\n')
                 motion_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
                                               'source_kind': 'original_native_velocity',
@@ -154,19 +181,15 @@ def capture(survey, output, host, port):
             proc.stdin.close()
             if proc.wait(timeout=120) != 0:
                 raise RuntimeError('Source camera encoding failed')
-        (output/'school_zone_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
-            'zone_station_bounds_m': survey['zone_station_bounds_m'],
-            'road_axis_xy': survey['road_axis_xy'], 'road_id': survey['road_id'],
-            'ego_actor_id': ego.id,
-            'travel_direction_id': survey['travel_direction_id'],
-            'authorized_mph': survey['authorized_mph'], 'civil_start_iso': survey['civil_start_iso'],
-            'camera_sha256': {}, 'review_required': True, 'zone_designated': None,
-            'school_session_day': None, 'beacon_operational': None, 'beacon_flashing': None,
-            'condition_stable_30s': None}, indent=2)+'\n')
+        core_capture.close(confirmed=True)
+        core_capture = None
+        (output/'school_zone_context.template.json').write_text(
+            json.dumps(context_template(survey, ego.id, survey_sha256), indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT,
                 'requested_target_mps': target_mps, 'physical_acceptance_claimed': False}
     finally:
+        if core_capture is not None:
+            core_capture.close(confirmed=False)
         for actor in reversed(actors):
             try:
                 actor.destroy()
@@ -179,6 +202,38 @@ def capture(survey, output, host, port):
         settings.synchronous_mode = old_sync
         settings.fixed_delta_seconds = old_step
         world.apply_settings(settings)
+
+
+def context_template(survey, ego_actor_id, survey_sha256):
+    """Copy surveyed sources while withholding all independent review facts."""
+    return {
+        'assignment_id': AID, 'case_id': CASE, 'review_kind': 'original_source_review',
+        'reviewer': None, 'native_survey_sha256': survey_sha256,
+        'planned_context_source': survey['planned_context_source'],
+        'planned_context': survey['planned_context'],
+        'zone_station_bounds_m': survey['zone_station_bounds_m'],
+        'road_axis_xy': survey['road_axis_xy'], 'road_id': survey['road_id'],
+        'ego_actor_id': ego_actor_id, 'travel_direction_id': survey['travel_direction_id'],
+        'authorized_mph': survey['authorized_mph'], 'civil_start_iso': survey['civil_start_iso'],
+        'camera_sha256': {}, 'review_required': True,
+        'zone_designation_source': survey['zone_establishment_source'],
+        'zone_sign_source': survey['installed_sign_source'],
+        'calendar_source': survey['calendar_source'],
+        'school_hours_source': survey['school_hours_source'],
+        'half_hour_window_source': survey['half_hour_window_source'],
+        'beacon_source': survey['beacon_source'],
+        'beacon_phase_source': survey['beacon_phase_source'],
+        'nonbeacon_sign_schedule_source': survey['nonbeacon_sign_schedule_source'],
+        'vehicle_class_source': survey['heavy_vehicle_class_source'],
+        'civil_time_source': survey['civil_time_source'],
+        'road_axis_source': survey['governing_road_direction_source'],
+        'condition_stability_source': None,
+        'zone_designated': None, 'school_session_day': None,
+        'half_hour_window_exception': None, 'beacon_operational': None,
+        'pupils_in_class': None, 'beacon_flashing': None,
+        'nonbeacon_sign_in_effect': None, 'ego_is_motor_vehicle': None,
+        'condition_stable_30s': None,
+    }
 
 
 if __name__ == '__main__':

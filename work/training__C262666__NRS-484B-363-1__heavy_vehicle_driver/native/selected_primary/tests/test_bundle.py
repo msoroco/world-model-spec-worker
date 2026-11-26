@@ -1,5 +1,7 @@
 """CPU checks for exact heavy school-zone capture identity and survey gate."""
 import importlib.util
+import json
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -8,14 +10,66 @@ runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 
 
-def test_config():
-    assert runner.config_check()['case_id'] == runner.CASE
+class ExactBundleTest(unittest.TestCase):
+    def test_config(self):
+        self.assertEqual(runner.config_check()['case_id'], runner.CASE)
 
+    def test_survey_rejects_missing_sources(self):
+        with self.assertRaisesRegex(ValueError, 'Missing reviewed Native survey source'):
+            runner.survey_check({})
 
-def test_survey_rejects_missing_sources():
-    try:
-        runner.survey_check({})
-    except ValueError as exc:
-        assert 'Missing reviewed Native survey source' in str(exc)
-    else:
-        raise AssertionError('unsourced survey accepted')
+    def test_capture_is_lazy(self):
+        self.assertNotIn('carla', runner.__dict__)
+
+    def test_exact_requested_speed(self):
+        expected = {'probe_01': 14, 'probe_02': 15, 'probe_03': 17,
+                    'probe_04': 17, 'probe_05': 17, 'probe_06': 17,
+                    'probe_07': 17, 'probe_08': 17}
+        suffix = runner.CASE.rsplit('__', 1)[-1]
+        config = json.loads((ROOT/'config.json').read_text())
+        self.assertEqual(config['target_mph'], expected[suffix])
+
+    def test_review_template_withholds_authority_facts(self):
+        survey = {name: 'survey-only-source' for name in (
+            'zone_establishment_source', 'installed_sign_source', 'calendar_source',
+            'school_hours_source', 'half_hour_window_source', 'beacon_source',
+            'beacon_phase_source', 'nonbeacon_sign_schedule_source',
+            'heavy_vehicle_class_source', 'civil_time_source',
+            'governing_road_direction_source')}
+        survey.update(zone_station_bounds_m=[10, 40], road_axis_xy=[1, 0],
+                      road_id=42, travel_direction_id='eastbound',
+                      authorized_mph=15, civil_start_iso='2026-11-23T08:00:00-08:00',
+                      planned_context_source='survey-only-source', planned_context='test plan')
+        template = runner.context_template(survey, 7, 'a'*64)
+        self.assertEqual(template['case_id'], runner.CASE)
+        self.assertEqual(template['travel_direction_id'], 'eastbound')
+        self.assertEqual(template['road_id'], 42)
+        self.assertIsNone(template['zone_designated'])
+        self.assertIsNone(template['beacon_flashing'])
+        self.assertIsNone(template['condition_stable_30s'])
+        self.assertEqual(template['camera_sha256'], {})
+        self.assertEqual(template['native_survey_sha256'], 'a'*64)
+
+    def test_survey_binds_case_and_civil_clock(self):
+        config = json.loads((ROOT/'config.json').read_text())
+        source_names = ('survey_source', 'zone_establishment_source', 'installed_sign_source',
+                        'calendar_source', 'school_hours_source', 'half_hour_window_source',
+                        'beacon_source', 'beacon_phase_source', 'nonbeacon_sign_schedule_source',
+                        'civil_time_source', 'heavy_vehicle_class_source', 'zone_boundary_source',
+                        'governing_road_direction_source', 'planned_context_source')
+        survey = {name: 'reviewed local source' for name in source_names}
+        survey.update(map_name='surveyed local map', ego_blueprint='vehicle.heavy',
+                      spawn_xyz_m=[0, 0, 1], spawn_yaw_deg=0,
+                      camera_world_transforms={name: {'xyz_m': [0, 0, 2],
+                                                     'rotation_deg': [0, 0, 0]}
+                                               for name in runner.CAMERAS},
+                      road_axis_xy=[1, 0], zone_station_bounds_m=[10, 40],
+                      civil_start_iso='2026-11-23T08:00:00-08:00', authorized_mph=15,
+                      road_id=42, travel_direction_id='eastbound',
+                      reviewed_plan_case_id=runner.CASE,
+                      planned_context=config['planned_context'])
+        self.assertEqual(runner.survey_check(survey), survey)
+        with self.assertRaisesRegex(ValueError, 'exact planned school-zone condition'):
+            runner.survey_check({**survey, 'reviewed_plan_case_id': 'another case'})
+        with self.assertRaisesRegex(ValueError, 'civil start needs timezone'):
+            runner.survey_check({**survey, 'civil_start_iso': '2026-11-23T08:00:00'})
