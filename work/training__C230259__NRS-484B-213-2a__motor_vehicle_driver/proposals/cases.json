@@ -4,48 +4,30 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
-      "target_law_id": "NRS-484B-213-2a",
-      "target_type": "compliant_attempt",
-      "rationale": "Source-grounded physical request for probe_a; no legal verdict or hazard threshold assigned",
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral context; no additional recording.",
+      "paired_probe_id": null,
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "left_of_center_request",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
+        "target_value_or_branch": "probe_a"
+      },
       "variable_assignments": {
         "feature_kind": {
           "kind": "world_setup",
-          "value": "crest",
-          "unit": "categorical"
+          "value": null
         },
         "road_directionality": {
           "kind": "world_setup",
-          "value": "two_way",
-          "unit": "categorical"
+          "value": null
         },
         "left_of_center_request": {
           "kind": "controller",
-          "value": false,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
+          "value": null
         }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_contrast",
-      "deliberate_differences": [
-        "left_of_center_request"
-      ],
-      "probe": {
-        "primary_variable": "left_of_center_request",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
-        "target_value_or_branch": "probe_a"
       },
       "recording_description": {
         "channels": [
@@ -142,51 +124,168 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_left_side",
+      "deliberate_differences": [
+        "left_of_center_request"
+      ],
+      "probe": {
+        "primary_variable": "left_of_center_request",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
+        "target_value_or_branch": "probe_a"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "crest"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "two_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": false
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-213-2a",
-      "target_type": "violating_attempt",
-      "rationale": "Source-grounded physical request for probe_b; no legal verdict or hazard threshold assigned",
-      "variable_assignments": {
-        "feature_kind": {
-          "kind": "world_setup",
-          "value": "crest",
-          "unit": "categorical"
-        },
-        "road_directionality": {
-          "kind": "world_setup",
-          "value": "two_way",
-          "unit": "categorical"
-        },
-        "left_of_center_request": {
-          "kind": "controller",
-          "value": true,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_contrast",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_left_side",
       "deliberate_differences": [
         "left_of_center_request"
       ],
       "probe": {
         "primary_variable": "left_of_center_request",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
         "target_value_or_branch": "probe_b"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "crest"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "two_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": true
+        }
       },
       "recording_description": {
         "channels": [
@@ -283,51 +382,39 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
       "target_law_id": "NRS-484B-213-2a",
-      "target_type": "compliant_attempt",
-      "rationale": "Source-grounded physical request for curve_right; no legal verdict or hazard threshold assigned",
-      "variable_assignments": {
-        "feature_kind": {
-          "kind": "world_setup",
-          "value": "curve",
-          "unit": "categorical"
-        },
-        "road_directionality": {
-          "kind": "world_setup",
-          "value": "two_way",
-          "unit": "categorical"
-        },
-        "left_of_center_request": {
-          "kind": "controller",
-          "value": false,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_contrast",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left_side",
       "deliberate_differences": [
         "left_of_center_request"
       ],
       "probe": {
         "primary_variable": "left_of_center_request",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
         "target_value_or_branch": "curve_right"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "curve"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "two_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": false
+        }
       },
       "recording_description": {
         "channels": [
@@ -424,51 +511,39 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
       "target_law_id": "NRS-484B-213-2a",
-      "target_type": "violating_attempt",
-      "rationale": "Source-grounded physical request for curve_left; no legal verdict or hazard threshold assigned",
-      "variable_assignments": {
-        "feature_kind": {
-          "kind": "world_setup",
-          "value": "curve",
-          "unit": "categorical"
-        },
-        "road_directionality": {
-          "kind": "world_setup",
-          "value": "two_way",
-          "unit": "categorical"
-        },
-        "left_of_center_request": {
-          "kind": "controller",
-          "value": true,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_contrast",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left_side",
       "deliberate_differences": [
         "left_of_center_request"
       ],
       "probe": {
         "primary_variable": "left_of_center_request",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
         "target_value_or_branch": "curve_left"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "curve"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "two_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": true
+        }
       },
       "recording_description": {
         "channels": [
@@ -565,51 +640,39 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
       "target_law_id": "NRS-484B-213-2a",
-      "target_type": "compliant_attempt",
-      "rationale": "Source-grounded physical request for one_way_crest; no legal verdict or hazard threshold assigned",
-      "variable_assignments": {
-        "feature_kind": {
-          "kind": "world_setup",
-          "value": "crest",
-          "unit": "categorical"
-        },
-        "road_directionality": {
-          "kind": "world_setup",
-          "value": "one_way",
-          "unit": "categorical"
-        },
-        "left_of_center_request": {
-          "kind": "controller",
-          "value": true,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_contrast",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_one_way_exception",
       "deliberate_differences": [
         "road_directionality"
       ],
       "probe": {
         "primary_variable": "road_directionality",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
         "target_value_or_branch": "one_way_crest"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "crest"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "one_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": true
+        }
       },
       "recording_description": {
         "channels": [
@@ -706,51 +769,39 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
       "target_law_id": "NRS-484B-213-2a",
-      "target_type": "compliant_attempt",
-      "rationale": "Source-grounded physical request for one_way_curve; no legal verdict or hazard threshold assigned",
-      "variable_assignments": {
-        "feature_kind": {
-          "kind": "world_setup",
-          "value": "curve",
-          "unit": "categorical"
-        },
-        "road_directionality": {
-          "kind": "world_setup",
-          "value": "one_way",
-          "unit": "categorical"
-        },
-        "left_of_center_request": {
-          "kind": "controller",
-          "value": true,
-          "unit": "boolean"
-        },
-        "observed_left_of_center": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "per frame"
-        },
-        "observed_sightline": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "meters with censor status"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Hazard-creating obstruction distance and original highway authority require source review"
-      ],
-      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_contrast",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound physical crest/curve and highway-directionality comparison; legal outcome unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_one_way_exception",
       "deliberate_differences": [
         "road_directionality"
       ],
       "probe": {
         "primary_variable": "road_directionality",
-        "comparison_or_standard": "controlled contrast; legal judgment deferred",
+        "comparison_or_standard": "Controlled physical comparison with legal judgment deferred",
         "target_value_or_branch": "one_way_curve"
+      },
+      "variable_assignments": {
+        "feature_kind": {
+          "kind": "world_setup",
+          "value": "curve"
+        },
+        "road_directionality": {
+          "kind": "world_setup",
+          "value": "one_way"
+        },
+        "left_of_center_request": {
+          "kind": "controller",
+          "value": true
+        }
       },
       "recording_description": {
         "channels": [
@@ -847,8 +898,34 @@
           "No original Native capture or legal highway designation is claimed by CPU construction",
           "Actual curve/crest obstruction and pixel visibility require local review"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+        "one-way highway"
+      ]
     }
   ],
-  "sweep_specs": []
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c230259-213-2a-source-review",
+      "target_law_id": "NRS-484B-213-2a",
+      "judgment_refs": [
+        {
+          "phrase": "the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction",
+          "note": "Original sight rays, road geometry and possible opposite-direction approach require physical and legal review."
+        },
+        {
+          "phrase": "one-way highway",
+          "note": "The subsection 3 exception requires original highway designation, not an authored map label."
+        }
+      ],
+      "rationale": "Hazard distance and one-way highway authority need original source review; no numeric legal cutoff is authored.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original line-of-sight and opposite-approach source",
+        "Independent one-way highway designation source"
+      ]
+    }
+  ]
 }

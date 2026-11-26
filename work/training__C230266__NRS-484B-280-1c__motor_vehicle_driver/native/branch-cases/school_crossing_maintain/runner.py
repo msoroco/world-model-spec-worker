@@ -10,6 +10,7 @@ import json
 import math
 import os
 import queue
+import subprocess
 from pathlib import Path
 
 CASE = "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__school_crossing_maintain"
@@ -140,6 +141,8 @@ def execute(config, output_dir, survey_path, host, port):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import restore, snapshot
 
     output = Path(output_dir)
@@ -153,8 +156,9 @@ def execute(config, output_dir, survey_path, host, port):
     client.set_timeout(15)
     world = client.get_world()
     original = snapshot(client)
-    actors, sensors = [], []
+    actors, sensors, encoders, encoder_codes = [], [], {}, {}
     images = queue.Queue()
+    completed = False
     try:
         require(world.get_map().name == survey["map_name"], "Native survey map differs")
         settings = world.get_settings()
@@ -186,7 +190,14 @@ def execute(config, output_dir, survey_path, host, port):
                                        attach_to=ego)
             actors.append(sensor)
             sensors.append(sensor)
-            (output / camera["name"]).mkdir()
+            encoders[camera["name"]] = subprocess.Popen([
+                "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "rawvideo", "-pix_fmt", "bgra",
+                "-s", f"{camera['width']}x{camera['height']}",
+                "-r", "20", "-i", "-", "-frames:v", "600",
+                "-c:v", "ffv1", "-level", "1",
+                str(output / (camera["name"] + ".mkv"))],
+                stdin=subprocess.PIPE, stderr=subprocess.PIPE)
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
         with PipelineCapture(client, ego, output, CASE,
                              required_observations=config["required_atoms"]) as capture, \
@@ -211,7 +222,7 @@ def execute(config, output_dir, survey_path, host, port):
                     name, image = images.get(timeout=15)
                     if image.frame != native_frame or name in seen:
                         continue
-                    image.save_to_disk(str(output / name / f"{frame:06d}.png"))
+                    encoders[name].stdin.write(image.raw_data)
                     seen.add(name)
                 capture.capture(native_frame, frame / 20, extra={"video_frame": frame,
                                                                   "pedestrian_actor_id": ped.id,
@@ -220,6 +231,8 @@ def execute(config, output_dir, survey_path, host, port):
                                  native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
                 trace.write(json.dumps({"source_kind": "original_native_pose_and_control",
                                         "branch": BRANCH, "frame": frame,
+                                        "ego_actor_id": ego.id,
+                                        "pedestrian_actor_id": ped.id,
                                         "context_survey_sha256": survey_sha256,
                                         "native_frame": native_frame, "video_frame": frame,
                                         "time_s": frame / 20,
@@ -231,12 +244,27 @@ def execute(config, output_dir, survey_path, host, port):
                                         "line_of_sight_clear": None,
                                         "branch_position_evidenced": None,
                                         "requested_control": request}) + "\n")
+        for name, process in encoders.items():
+            process.stdin.close()
+            error = process.stderr.read()
+            encoder_codes[name] = process.wait(timeout=180)
+            require(encoder_codes[name] == 0 and (output / (name + ".mkv")).is_file(),
+                    "Original camera encode failed: " + name + " " + error.decode()[-200:])
+        completed = True
     finally:
+        for process in encoders.values():
+            if process.poll() is None:
+                process.kill()
+                process.wait()
         for sensor in sensors:
             sensor.stop()
         for actor in reversed(actors):
             actor.destroy()
-        restore(client, original)
+        restored = restore(client, original)
+        if completed and len(encoder_codes) == 4:
+            seal_capture(output, frames=600, restoration=restored, errors=[],
+                         encoder_exit_codes=encoder_codes, context={"case_id": CASE})
+            record_native_exit(output)
 
 
 if __name__ == "__main__":

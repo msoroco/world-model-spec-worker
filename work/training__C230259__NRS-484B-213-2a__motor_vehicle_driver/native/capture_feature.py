@@ -19,6 +19,23 @@ CAMERAS = (('overview', 1920, 1080, 90, (0, 0, 36), -90),
            ('driver_reference', 1280, 720, 90, (1, 0, 1.5), 0))
 
 
+def generation_parameters(carla, config):
+    """Ask CARLA to construct solid roadside walls along the curved sight path.
+
+    A flat, open OpenDRIVE arc alone does not obstruct the driver's view. The
+    generated wall is a physical occluder request; original cast-ray and camera
+    evidence still determine whether it actually limits the view.
+    """
+    height = config.get('roadside_wall_height_m')
+    if height != 4.0:
+        raise ValueError('Exact roadside occluder geometry changed')
+    return carla.OpendriveGenerationParameters(
+        vertex_distance=.25, max_road_length=50,
+        wall_height=height, additional_width=0,
+        smooth_junctions=False, enable_mesh_visibility=True,
+        enable_pedestrian_navigation=False)
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -133,9 +150,7 @@ def execute(bundle, output, host, port, checked):
     capture, changed, frames, restored, error = None, False, 0, None, None
     try:
         world = client.generate_opendrive_world((bundle / 'road.xodr').read_text(),
-            carla.OpendriveGenerationParameters(vertex_distance=.25, max_road_length=50,
-                wall_height=0, additional_width=0, smooth_junctions=False,
-                enable_mesh_visibility=True, enable_pedestrian_navigation=False))
+                                                 generation_parameters(carla, config))
         changed = True
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -179,6 +194,9 @@ def execute(bundle, output, host, port, checked):
             'centerline_source': 'original Native lane waypoint at each ego frame',
             'grade_profile_source': 'original Native map elevation readback' if 'curve' not in config['case_id'] else None,
             'curvature_source': 'original Native planView arc readback' if 'curve' in config['case_id'] else None,
+            'roadside_occluder_request': {'kind': 'generated roadside wall',
+                                          'height_m': config['roadside_wall_height_m'],
+                                          'physical_occlusion_verified': False},
             'legal_highway_authority_verified': False,
             'source_kind': 'original_native_map_readback_pending_review'})
         for name, width, height, fov, location, pitch in CAMERAS:

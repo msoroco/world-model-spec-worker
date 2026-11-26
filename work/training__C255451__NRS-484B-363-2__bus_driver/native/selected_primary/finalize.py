@@ -116,7 +116,7 @@ def finalize(attempt, output):
                 abs(core['speed_mps'] - speed) > 1e-4 or
                 abs(sensor['ego']['speed_mps'] - speed) > 1e-4):
             raise ValueError('School-zone original motion/Core source join differs')
-    channel = attempt / 'channels/school_zone_observation.jsonl'
+    channel = attempt / 'channels/school_crossing_observation.jsonl'
     channel.parent.mkdir(exist_ok=True)
     channel.write_text(''.join(json.dumps({'time_s': frame['time_s'],
             'value': {'speed_mps': math.sqrt(sum(sample[key] ** 2 for key in
@@ -143,8 +143,8 @@ def finalize(attempt, output):
               'trace_reference': 'trace.jsonl', 'video_references': [name + '.mkv' for name in CAMERAS],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
-              'recording_evidence': [{'name': 'school_zone_observation', 'unit': 'structured',
-                                      'reference': 'channels/school_zone_observation.jsonl'},
+              'recording_evidence': [{'name': 'school_crossing_observation', 'unit': 'structured',
+                                      'reference': 'channels/school_crossing_observation.jsonl'},
                                      {'name': 'school_zone_context', 'unit': 'structured',
                                       'reference': 'channels/school_zone_context.json'}],
               'realized_observables': {'school_zone_speed': {'value': speed, 'unit': 'mph',

@@ -38,6 +38,10 @@ def reviewed_measurement(folder, branch, ego_id, pedestrian_id):
             "Original context survey required")
     joined = []
     for frame, (capture, checked) in enumerate(zip(trace, review)):
+        require(str(capture.get("ego_actor_id")) == str(ego_id) and
+                str(capture.get("pedestrian_actor_id")) == str(pedestrian_id) and
+                ego_id != pedestrian_id,
+                "Captured actor identity changed")
         require(checked.get("source_kind") == "original_saved_source_review",
                 "Independent original-source review required")
         require(checked.get("frame") == capture.get("frame") == frame and

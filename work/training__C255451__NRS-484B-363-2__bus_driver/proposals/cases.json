@@ -5,6 +5,64 @@
   "sweep_specs": [],
   "cases": [
     {
+      "case_id": "training__C255451__NRS-484B-363-2__bus_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected reference for the source-bound school crossing comparison; no extra recording.",
+      "cell_id": "C255451",
+      "actor": "bus_driver",
+      "variable_assignments": {
+        "requested_bus_speed_mph": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "mph"
+        },
+        "reviewed_school_context": {
+          "kind": "controller",
+          "value": "beacon_active",
+          "unit": "category"
+        },
+        "observed_bus_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "mph"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "school_crossing_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original bus velocity and reviewed school-crossing zone station",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and school-crossing road station",
+            "uncertainty": "50 ms sampling; designation and exceptions require independent authority review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_zone_context",
+            "unit": "structured",
+            "method": "survey-bound reviewed designation, sign, calendar, civil time and beacon state"
+          }
+        ],
+        "limitations": [
+          "Original bus and children, zone designation, sign, beacon pixels, school schedule and civil clock require local source review",
+          "Requested speed is not observed velocity or legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "deliberate_differences": [
+        "measured_bus_speed"
+      ],
+      "probe": {
+        "primary_variable": "measured_bus_speed",
+        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "target_value_or_branch": "condition_a"
+      }
+    },
+    {
       "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_a",
       "target_law_id": "NRS-484B-363-2",
       "target_type": "boundary_probe",
@@ -59,12 +117,22 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "measured_bus_speed"
+        "requested_bus_speed_mph"
       ],
       "probe": {
-        "primary_variable": "measured_bus_speed",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
-        "target_value_or_branch": "condition_a"
+        "primary_variable": "observed_bus_speed_mph",
+        "comparison_or_standard": "exact statutory 25 mph limit when active",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 20
+      },
+      "paired_probe_id": "school_crossing_25_mph_boundary",
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed; no legal tolerance or achieved speed is implied."
       }
     },
     {
@@ -122,12 +190,22 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "measured_bus_speed"
+        "requested_bus_speed_mph"
       ],
       "probe": {
-        "primary_variable": "measured_bus_speed",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
-        "target_value_or_branch": "at_limit"
+        "primary_variable": "observed_bus_speed_mph",
+        "comparison_or_standard": "exact statutory 25 mph limit when active",
+        "target_value_or_branch": "at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 25
+      },
+      "paired_probe_id": "school_crossing_25_mph_boundary",
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed; no legal tolerance or achieved speed is implied."
       }
     },
     {
@@ -185,12 +263,22 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "measured_bus_speed"
+        "requested_bus_speed_mph"
       ],
       "probe": {
-        "primary_variable": "measured_bus_speed",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
-        "target_value_or_branch": "condition_b"
+        "primary_variable": "observed_bus_speed_mph",
+        "comparison_or_standard": "exact statutory 25 mph limit when active",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 30
+      },
+      "paired_probe_id": "school_crossing_25_mph_boundary",
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed; no legal tolerance or achieved speed is implied."
       }
     },
     {
@@ -248,13 +336,14 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "reviewed_school_exception_source"
+        "reviewed_school_context"
       ],
       "probe": {
-        "primary_variable": "reviewed_school_exception_source",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "primary_variable": "reviewed_school_context",
+        "comparison_or_standard": "original-source-reviewed statutory exception context",
         "target_value_or_branch": "no_school_day"
-      }
+      },
+      "paired_probe_id": "school_crossing_exception_contexts"
     },
     {
       "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__half_hour_window",
@@ -311,13 +400,14 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "reviewed_school_exception_source"
+        "reviewed_school_context"
       ],
       "probe": {
-        "primary_variable": "reviewed_school_exception_source",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "primary_variable": "reviewed_school_context",
+        "comparison_or_standard": "original-source-reviewed statutory exception context",
         "target_value_or_branch": "half_hour_window"
-      }
+      },
+      "paired_probe_id": "school_crossing_exception_contexts"
     },
     {
       "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__beacon_not_flashing",
@@ -374,13 +464,14 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "reviewed_school_exception_source"
+        "reviewed_school_context"
       ],
       "probe": {
-        "primary_variable": "reviewed_school_exception_source",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "primary_variable": "reviewed_school_context",
+        "comparison_or_standard": "original-source-reviewed statutory exception context",
         "target_value_or_branch": "beacon_not_flashing"
-      }
+      },
+      "paired_probe_id": "school_crossing_exception_contexts"
     },
     {
       "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active",
@@ -437,13 +528,14 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "reviewed_school_exception_source"
+        "reviewed_school_context"
       ],
       "probe": {
-        "primary_variable": "reviewed_school_exception_source",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "primary_variable": "reviewed_school_context",
+        "comparison_or_standard": "original-source-reviewed statutory exception context",
         "target_value_or_branch": "nonbeacon_sign_active"
-      }
+      },
+      "paired_probe_id": "school_crossing_exception_contexts"
     },
     {
       "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_inactive",
@@ -500,13 +592,14 @@
         "physical realization and legal applicability"
       ],
       "deliberate_differences": [
-        "reviewed_school_exception_source"
+        "reviewed_school_context"
       ],
       "probe": {
-        "primary_variable": "reviewed_school_exception_source",
-        "comparison_or_standard": "exact NRS 484B.363(2) 25 mph and four exceptions",
+        "primary_variable": "reviewed_school_context",
+        "comparison_or_standard": "original-source-reviewed statutory exception context",
         "target_value_or_branch": "nonbeacon_sign_inactive"
-      }
+      },
+      "paired_probe_id": "school_crossing_exception_contexts"
     }
   ]
 }

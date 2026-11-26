@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from runner import check
-from capture_feature import phase
+from capture_feature import phase, generation_parameters
 
 
 class ExactSelectedFeature(unittest.TestCase):
@@ -40,3 +40,19 @@ class ExactSelectedFeature(unittest.TestCase):
         altered['control_phases'][-1]['last_frame'] = 598
         with self.assertRaisesRegex(ValueError, 'control phase'):
             phase(altered, 599)
+
+    def test_exact_roadside_occluder_request(self):
+        class Carla:
+            @staticmethod
+            def OpendriveGenerationParameters(**options):
+                return options
+
+        params = generation_parameters(Carla, self.config)
+        self.assertEqual(params['wall_height'], 4.0)
+        self.assertEqual(params['additional_width'], 0)
+        self.assertTrue(params['enable_mesh_visibility'])
+        for bad_height in (None, 0, 3.9):
+            changed = dict(self.config)
+            changed['roadside_wall_height_m'] = bad_height
+            with self.assertRaisesRegex(ValueError, 'occluder geometry'):
+                generation_parameters(Carla, changed)

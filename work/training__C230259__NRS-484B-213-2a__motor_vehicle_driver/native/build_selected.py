@@ -57,6 +57,7 @@ def main():
             'limitations': ['No original Native capture or legal highway designation is claimed by CPU construction',
                             'Actual curve/crest obstruction and pixel visibility require local review']}
         config.update(candidate_id='primary', supported_case_ids=[case_id],
+                      roadside_wall_height_m=4.0,
                       status='selected_native_cpu_prepared', original_native_observed=False,
                       required_atoms=['kin.position', 'kin.heading', 'rel.occupies'],
                       source_packets=[], recording_description=description,
@@ -77,6 +78,7 @@ def main():
                                              'status': 'cpu_prepared_original_native_unobserved'},
                         'termination_rules': ['Retain all 600 original frames', 'retain failure report and restore world'],
                         'mechanisms': ['Source-bound OpenDRIVE feature geometry',
+                                       'CARLA generated four-meter roadside wall',
                                        'lane-target controller', 'four synchronized lossless cameras'],
                         'status': 'selected_cpu_construction'}
         target = ROOT / 'selected-constructions' / suffix / 'primary/construction.json'

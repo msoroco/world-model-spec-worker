@@ -2,6 +2,7 @@
 import hashlib
 import json
 import math
+import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,11 +53,14 @@ def source_files(suffix, config, road_text):
             'grade_profile_source': 'synthetic elevation readback' if not curve else None,
             'curvature_source': 'synthetic arc readback' if curve else None,
             'legal_highway_authority_verified': False,
+            'roadside_occluder_request': {'kind': 'generated roadside wall',
+                                          'height_m': config['roadside_wall_height_m'],
+                                          'status': 'synthetic request only'},
             'source_kind': 'synthetic_cpu_diagnostic'}
     feature, trace, frame_map, evidence = [], [], [], []
     graph_points = []
     for index in range(600):
-        s = 300 + .25*index
+        s = config['ego_spawn']['s_m'] + .25*index
         left_now = left and 240 <= index < 400
         lateral = (-1.75 if left_now else -5.25) if one_way else (1.75 if left_now else -1.75)
         x, y, heading = point(s, lateral, curve)
@@ -100,14 +104,14 @@ def source_files(suffix, config, road_text):
     return road, feature, trace, frame_map, evidence, graph_points
 
 
-def main():
+def main(candidate):
     base = json.loads(REFERENCE.read_text())
     outputs = []
     for suffix in SUFFIXES:
-        construction = json.loads((ROOT / 'selected-constructions' / suffix / 'primary/construction.json').read_text())
+        construction = json.loads((ROOT / 'selected-constructions' / suffix / candidate / 'construction.json').read_text())
         files = {part['path']:part['content'] for part in construction['files']}
         config = json.loads(files['config.json'])
-        folder = ROOT / 'selected-fixtures' / suffix
+        folder = ROOT / ('selected-fixtures' if candidate == 'primary' else 'selected-fallback-fixtures') / suffix
         folder.mkdir(parents=True, exist_ok=True)
         road, feature, trace, frame_map, evidence, graph_points = source_files(suffix, config, files['road.xodr'])
         source_values = {'road-context.json':encode(road),
@@ -142,11 +146,13 @@ def main():
         recipe_path.write_text(encode(recipe))
         outputs.append({'case_id':config['case_id'],'fixture_recipe':str(recipe_path.relative_to(REPO)),
                         'fixture_sha256':sha(recipe_path)})
-    target = ROOT / 'selected-fixture-index.json'
+    target = ROOT / ('selected-fixture-index.json' if candidate == 'primary' else 'selected-fallback-fixture-index.json')
     target.write_text(encode({'assignment_id':ROOT.name,'cases':outputs,
                               'source_kind':'synthetic CPU diagnostic, not Native observation'}))
     print(json.dumps({'cases':len(outputs),'index_sha256':sha(target)}))
 
 
 if __name__=='__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--candidate', choices=('primary', 'fallback1'), default='primary')
+    main(parser.parse_args().candidate)

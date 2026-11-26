@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484B-363-2@bus_driver",
+  "law_id": "NRS-484B-363-2",
+  "actor": "bus_driver",
+  "status": "draft",
+  "quote": "A person shall not drive a motor vehicle at a speed in excess of 25 miles per hour in an area designated as a school crossing zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "structure": {
+    "activation": {
+      "source_clause": "in an area designated as a school crossing zone",
+      "description": "Original authority for designation, installed sign, zone boundaries and bus route."
+    },
+    "obligation": {
+      "source_clause": "shall not drive a motor vehicle at a speed in excess of 25 miles per hour",
+      "type": "must_not",
+      "description": "Measure original Native motor-bus speed inside the designated crossing zone.",
+      "numeric_conditions": [
+        {
+          "variable": "observed_bus_speed_mph",
+          "operator": ">",
+          "value": 25,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "On a day on which school is not in session",
+        "trigger": "On a day on which school is not in session",
+        "effect": "25 mph school-crossing-zone exception subject to original-source review",
+        "replacement_obligation": null,
+        "description": "Review the original school calendar and exact local day."
+      },
+      {
+        "source_clause": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation",
+        "trigger": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation",
+        "effect": "25 mph school-crossing-zone exception subject to original-source review",
+        "replacement_obligation": null,
+        "description": "Review operation schedule and time-zone-aware civil clock at both half-hour boundaries."
+      },
+      {
+        "source_clause": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect",
+        "trigger": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect",
+        "effect": "25 mph school-crossing-zone exception subject to original-source review",
+        "replacement_obligation": null,
+        "description": "Review operational beacon designation, class hours, sign and two alternating yellow lights."
+      },
+      {
+        "source_clause": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect",
+        "trigger": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect",
+        "effect": "25 mph school-crossing-zone exception subject to original-source review",
+        "replacement_obligation": null,
+        "description": "Review absence of operational beacon and original sign schedule and indication."
+      }
+    ],
+    "timing": {
+      "source_clause": "during the hours when the pupils of the school are in class",
+      "description": "Review local school calendar, operating windows and time-zone-aware civil clock."
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": []
+}

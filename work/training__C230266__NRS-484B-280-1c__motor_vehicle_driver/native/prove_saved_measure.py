@@ -38,6 +38,7 @@ def fixture(folder, branch):
     trace = copy.deepcopy(synthetic_packet(branch)["trace"])
     for row in trace:
         row.update(source_kind="synthetic_capture_fixture", branch=branch,
+                   ego_actor_id=101, pedestrian_actor_id=102,
                    context_survey_sha256=survey_hash,
                    line_of_sight_clear=None, branch_position_evidenced=None,
                    driver_observed_pedestrian=None, driver_observation_source=None)
@@ -60,7 +61,7 @@ def main():
     for branch in BRANCHES:
         folder = scratch / branch
         review = fixture(folder, branch)
-        result = reviewed_measurement(folder, branch, "ego-1", "ped-2")
+        result = reviewed_measurement(folder, branch, "101", "102")
         measured = result["measurement"]
         assert measured["branch"] == branch and measured["frames"] == 600
         assert measured["actual_driver_observation_unverified"]
@@ -68,7 +69,7 @@ def main():
                              "source_count": len(result["sources"])}
         (folder / "pedestrian-source-review.jsonl").unlink()
         negatives[branch + "_missing_review"] = rejected(
-            lambda: reviewed_measurement(folder, branch, "ego-1", "ped-2"),
+            lambda: reviewed_measurement(folder, branch, "101", "102"),
             "Missing required source: pedestrian-source-review.jsonl")
         write_rows(folder / "pedestrian-source-review.jsonl", review)
         if branch == "road":
@@ -76,13 +77,13 @@ def main():
             broken[0]["native_frame"] += 1
             write_rows(folder / "pedestrian-source-review.jsonl", broken)
             negatives["bad_join"] = rejected(
-                lambda: reviewed_measurement(folder, branch, "ego-1", "ped-2"),
+                lambda: reviewed_measurement(folder, branch, "101", "102"),
                 "Capture/review frame join failed")
             broken = copy.deepcopy(review)
             broken[100]["driver_observed_pedestrian"] = True
             write_rows(folder / "pedestrian-source-review.jsonl", broken)
             negatives["unsupported_observation"] = rejected(
-                lambda: reviewed_measurement(folder, branch, "ego-1", "ped-2"),
+                lambda: reviewed_measurement(folder, branch, "101", "102"),
                 "Actual observation provenance missing")
     proof = {"format": "worker-nrs280-saved-source-cpu-proof-v1",
              "positive": positives, "negative_rejections": negatives,
