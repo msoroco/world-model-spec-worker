@@ -70,7 +70,8 @@ def verified_sources(attempt, context):
     if not isinstance(case_context, str) or not case_context:
         raise ValueError('Independent selected case context missing')
     return {'records': bound, 'exception_dispositions': dispositions,
-            'case_context': case_context}
+            'case_context': case_context, 'case_facts': review.get('case_facts'),
+            'beacon_definition': review.get('beacon_definition')}
 
 
 def attach_original_review(output, source_dir):

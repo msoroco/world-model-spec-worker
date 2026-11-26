@@ -8,7 +8,7 @@ from layout import ZONE,TURN,planned_pose
 from measure_turn import CAMERAS,measure
 from review_context import REQUIRED, EXCEPTIONS, EXCEPTION_TOPICS
 from finalize import run as finalize_run
-from branch_cases import CASES
+from branch_cases import CASES, FACT_TOPICS, expected_facts
 
 
 def fixture(path,turn,reviewed=True,suffix=None):
@@ -40,9 +40,22 @@ def fixture(path,turn,reviewed=True,suffix=None):
                 'observation':'Synthetic '+branch['context']+' source shape only'}
         context['independent_review']={'format':'c263073-source-review-v1','records':records,
             'case_context':branch['context'],
-            'exception_dispositions':{name:{'status':'applies' if name == branch['target_exception'] else 'does_not_apply',
+            'exception_dispositions':{name:{'status':'applies' if (name == branch['target_exception'] or
+                (suffix == 'exception_b' and name == 'c_operation_interval')) else 'does_not_apply',
                 'source_topics':sorted(EXCEPTION_TOPICS[name]),
                 'reason':'Synthetic branch source shape only; legal verdict unresolved'} for name in EXCEPTIONS}}
+        expected = expected_facts(suffix)
+        context['independent_review']['case_facts'] = {
+            key: {'value': expected[key], 'source_topics': list(topics),
+                  'source_sha256': {topic: records[topic]['sha256'] for topic in topics},
+                  'reviewer_reason': 'Synthetic source fact shape only; independent original review required'}
+            for key, topics in FACT_TOPICS.items()}
+        beacon_topics = ('beacon_configuration', 'beacon_lights', 'zone_sign')
+        context['independent_review']['beacon_definition'] = {
+            'yellow_light_count': 2, 'flashes_alternately': True,
+            'used_with_sign': True, 'source_topics': list(beacon_topics),
+            'source_sha256': {topic: records[topic]['sha256'] for topic in beacon_topics},
+            'reviewer_reason': 'Synthetic device-definition shape only; original device review required'}
     (path/'school-context.json').write_text(json.dumps(context)+'\n')
     with (path/'native-motion.jsonl').open('w') as motion,(path/'video_frames.jsonl').open('w') as frames,(path/'trace.jsonl').open('w') as trace:
         for index in range(600):
@@ -80,11 +93,42 @@ def main():
         try:measure(turn)
         except ValueError as error:assert 'Missing required source' in str(error)
         else:raise AssertionError('Missing original camera accepted')
+        for suffix, branch in CASES.items():
+            if suffix in ('controlled_1', 'controlled_2'):
+                continue
+            selected=root/suffix
+            fixture(selected,branch['turn'],suffix=suffix)
+            report=finalize_run(selected,selected/'analysis-report.json')
+            observation=report['measurements']['school_zone_turn_observation']['value']
+            assert abs(observation['cumulative_absolute_heading_change_deg']-180)<1e-6
+            assert observation['other_person_zone_frame_count']==(600 if branch['child_actor'] else 0)
+            target=branch['target_exception']
+            if target:
+                assert report['measurements']['exception_'+target]['value']['status']=='applies'
+            if suffix == 'exception_b':
+                assert report['measurements']['exception_c_operation_interval']['value']['status']=='applies'
+            context_path=selected/'school-context.json'
+            context=json.loads(context_path.read_text())
+            context['independent_review']['case_facts']['children_present']['value']=not branch['child_actor']
+            context_path.write_text(json.dumps(context)+'\n')
+            try:measure(selected)
+            except ValueError as error:assert 'Selected school context fact differs' in str(error)
+            else:raise AssertionError('Mismatched reviewed source facts accepted')
+            if suffix == 'exception_d':
+                context['independent_review']['case_facts']['children_present']['value']=branch['child_actor']
+                context['independent_review']['beacon_definition']['yellow_light_count']=1
+                context_path.write_text(json.dumps(context)+'\n')
+                try:measure(selected)
+                except ValueError as error:assert 'Speed-limit-beacon device definition' in str(error)
+                else:raise AssertionError('Unsupported beacon definition accepted')
         print(json.dumps({'synthetic_saved_shape_passed':True,
             'straight_heading_change_deg':0,'turn_heading_change_deg':180,
             'person_zone_frames':600,'unreviewed_zone_rejected':True,
             'missing_camera_rejected':True,'saved_finalizers_passed':2,
             'u_turn_legal_verdict':'unresolved',
+            'exception_branch_fixtures_checked':6,
+            'mismatched_source_facts_rejected':True,
+            'unsupported_beacon_definition_rejected':True,
             'physical_acceptance_claimed':False}))
 
 

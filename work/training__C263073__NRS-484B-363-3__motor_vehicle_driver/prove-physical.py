@@ -11,6 +11,7 @@ REPO = HERE.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from worker_exchange.native_output import assess_physical, seal_capture
 from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release
+from native.branch_cases import CASES
 
 
 def sha(path):
@@ -105,4 +106,4 @@ def prove(suffix):
 
 
 if __name__ == '__main__':
-    print(json.dumps([prove(s) for s in ('controlled_1', 'controlled_2')]))
+    print(json.dumps([prove(s) for s in CASES]))

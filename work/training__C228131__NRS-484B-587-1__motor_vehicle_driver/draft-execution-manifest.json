@@ -1,0 +1,80 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_selected_preparation",
+  "cases": [
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_1/primary/construction.json",
+      "construction_sha256": "7782c218745b557372d93a65b0253e6dfb12304900a7d3f368f50275794f4558",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original motor-vehicle steering can oscillate while crossing frontage, ramp and highway pavement, missing the requested edge-crossing point."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_1/fallback1/construction.json",
+          "construction_sha256": "52768f8c5c4f081d2bf79614ce04642f29edc8551770049690606831ef57bc14",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "lateral tracking and measured highway-edge crossing x",
+            "failure_condition": "oscillation, off-pavement body motion, or measured crossing misses the selected target after source completeness review"
+          },
+          "changed_knobs": [
+            "common steering gain 0.10 to 0.07 across the pair; same map, sign, route target, cameras, duration and comparison variable"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/diagnostic-witness_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    },
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_2/primary/construction.json",
+      "construction_sha256": "b4505bea0fede8d9ba819432f6f55d2276ccdacdbd1777209e7b12365bc8009a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original motor-vehicle steering can oscillate while crossing frontage, ramp and highway pavement, missing the requested edge-crossing point."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_2/fallback1/construction.json",
+          "construction_sha256": "8b97a5b9c3280f659b7facfdad6afe9d058f795b9fab382087ec5f1b66198a94",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "lateral tracking and measured highway-edge crossing x",
+            "failure_condition": "oscillation, off-pavement body motion, or measured crossing misses the selected target after source completeness review"
+          },
+          "changed_knobs": [
+            "common steering gain 0.10 to 0.07 across the pair; same map, sign, route target, cameras, duration and comparison variable"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/diagnostic-witness_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    }
+  ]
+}

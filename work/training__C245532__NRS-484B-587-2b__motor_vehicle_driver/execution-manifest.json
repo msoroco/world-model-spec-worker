@@ -8,7 +8,7 @@
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "native/bundles/controlled_1/construction.json",
-      "construction_sha256": "8767be414453b11ce0ccb96854fd57cc2b5d218709a644b3d477482ac965e6b6",
+      "construction_sha256": "4b1439460c868386505d83152a6898267b9f121d9903f8b737eb06220158d0cb",
       "candidate_risk": {
         "status": "none",
         "reason": "No measured original Native motion or camera failure trigger exists yet; authority review is not a fallback knob"
@@ -26,19 +26,109 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --output .runtime-work/c245532/selected-controlled_1-v2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --output .runtime-work/c245532/selected-controlled_1-v3",
         "exit_code": 0,
-        "construction_sha256": "8767be414453b11ce0ccb96854fd57cc2b5d218709a644b3d477482ac965e6b6",
+        "construction_sha256": "4b1439460c868386505d83152a6898267b9f121d9903f8b737eb06220158d0cb",
         "log": "native/controlled_1-offline-selected.log",
-        "log_sha256": "2a9c5831baad3067360f563c2f765deba42aef08b5322d72574adcff481c368c"
+        "log_sha256": "d118aa0ac98d46b003c5efc987da53f7dceb7ec182db7c76afafe12cc3e8b9ed"
       },
-      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-controlled_1.json"
+      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-controlled_1.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "35359e1c898052635d984ea060e830221ce48778e6aeee203ec3d3303ea0f09e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "348baa27db1cd30e9649887fbf9acb739c5d8df93ac5c9a750beef65e8ede977",
+        "command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/controlled_1-positive.log",
+        "test_log_sha256": "76703d540f04d86050befe94bc35a90f596ee04992bb6afc9d89a26d145fc001",
+        "negative_log": "delivery-proofs/controlled_1-negative.log",
+        "negative_log_sha256": "a60de566d1a824e325fbc05b05f20ce6acb804a8f11834397d756b13838d8553"
+      },
+      "compatibility": {
+        "receipt": "compatibility/controlled_1-primary-compatibility.json",
+        "sha256": "9e9c00bec17eedb84461d3e6ae8ef5a4e3409d961f0322468f9311a88c10cf90",
+        "log": "compatibility/controlled_1-primary-analysis.log",
+        "negative_log": "compatibility/controlled_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/controlled_1-primary-negative.log"
+      },
+      "acquisition": {
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.straddles_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.lane_change": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/controlled_1-processing.log",
+        "test_log_sha256": "462b703ca81df5b8c3ec27d5dd71df759d6cd901ea197ea56544d79348ab230d",
+        "processing_receipt": "saved/controlled_1-processing.json",
+        "processing_receipt_sha256": "462b703ca81df5b8c3ec27d5dd71df759d6cd901ea197ea56544d79348ab230d"
+      }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "native/bundles/controlled_2/construction.json",
-      "construction_sha256": "50c89b9b1b0341dc90e6de72502226e959a8eae4f8f2575d7c622b99c77957a1",
+      "construction_sha256": "4a6097111084307facaa8834593ced86807dccf17ac6ddb508bdc8489f34d65d",
       "candidate_risk": {
         "status": "none",
         "reason": "No measured original Native motion or camera failure trigger exists yet; authority review is not a fallback knob"
@@ -56,19 +146,109 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --output .runtime-work/c245532/selected-controlled_2-v2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --output .runtime-work/c245532/selected-controlled_2-v3",
         "exit_code": 0,
-        "construction_sha256": "50c89b9b1b0341dc90e6de72502226e959a8eae4f8f2575d7c622b99c77957a1",
+        "construction_sha256": "4a6097111084307facaa8834593ced86807dccf17ac6ddb508bdc8489f34d65d",
         "log": "native/controlled_2-offline-selected.log",
-        "log_sha256": "0325c0aa2b979f71f69fc32a00f3575886942d585e84a3f8bb950e355edfc811"
+        "log_sha256": "e322cd44829ae1819d2fc2d4dab74679f3f27b89b981ac272ed34d165c0f0b85"
       },
-      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-controlled_2.json"
+      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-controlled_2.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "c71768a6f0128ab48982725c779d66e167202a214bb26dea9bc0a2d8a0383416"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "348baa27db1cd30e9649887fbf9acb739c5d8df93ac5c9a750beef65e8ede977",
+        "command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/controlled_2-positive.log",
+        "test_log_sha256": "e152ed588b462c7a1a8ffc2375b4e63dae3e6e7cf563417798fd245625decfd0",
+        "negative_log": "delivery-proofs/controlled_2-negative.log",
+        "negative_log_sha256": "a60de566d1a824e325fbc05b05f20ce6acb804a8f11834397d756b13838d8553"
+      },
+      "compatibility": {
+        "receipt": "compatibility/controlled_2-primary-compatibility.json",
+        "sha256": "5a7fdf95c966051cdce7538b8a17e6333d9ba3363b3fc98cf79b894a5c93bb2d",
+        "log": "compatibility/controlled_2-primary-analysis.log",
+        "negative_log": "compatibility/controlled_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/controlled_2-primary-negative.log"
+      },
+      "acquisition": {
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.straddles_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.lane_change": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/controlled_2-processing.log",
+        "test_log_sha256": "79026d61ed48b62c4c871e1a6dcc1f400932671f880d2483ead937081e28f78e",
+        "processing_receipt": "saved/controlled_2-processing.json",
+        "processing_receipt_sha256": "79026d61ed48b62c4c871e1a6dcc1f400932671f880d2483ead937081e28f78e"
+      }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1",
       "kind": "delivery",
       "construction": "native/bundles/emergency_1/construction.json",
-      "construction_sha256": "59a788ba38abce487eff2deeb50912fc0e8f1b2b244b2d557c8991f8e55eb31b",
+      "construction_sha256": "b5071bf98e3fe2f09370b5182bcd71b3bdf7f5e0b52ceae1f964e20075514b98",
       "candidate_risk": {
         "status": "none",
         "reason": "No measured original Native motion or camera failure trigger exists yet; authority review is not a fallback knob"
@@ -86,19 +266,109 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --output .runtime-work/c245532/selected-emergency_1-v2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --output .runtime-work/c245532/selected-emergency_1-v3",
         "exit_code": 0,
-        "construction_sha256": "59a788ba38abce487eff2deeb50912fc0e8f1b2b244b2d557c8991f8e55eb31b",
+        "construction_sha256": "b5071bf98e3fe2f09370b5182bcd71b3bdf7f5e0b52ceae1f964e20075514b98",
         "log": "native/emergency_1-offline-selected.log",
-        "log_sha256": "00d3649ec6ed465b8f5dab92326b1ecb10a8d9724fe8fbe20703b1c20a0d7e8d"
+        "log_sha256": "041fd80bb5337dcb660ef368f9d48d4ab66d19d7b5f264c6f5e007a09387090f"
       },
-      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-emergency_1.json"
+      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-emergency_1.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/emergency_1/proof.json",
+        "sha256": "46f391f4688afc7256dfd6dad0d43a4aaacb3dc9122cc69a288313e332c5d6cf"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "348baa27db1cd30e9649887fbf9acb739c5d8df93ac5c9a750beef65e8ede977",
+        "command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/emergency_1-positive.log",
+        "test_log_sha256": "6ed5518536c175d5415e3fe7be702b3c68d8ee146e0840f2826676bd01a37d07",
+        "negative_log": "delivery-proofs/emergency_1-negative.log",
+        "negative_log_sha256": "a60de566d1a824e325fbc05b05f20ce6acb804a8f11834397d756b13838d8553"
+      },
+      "compatibility": {
+        "receipt": "compatibility/emergency_1-primary-compatibility.json",
+        "sha256": "b599f250bb8ddc7d9979d14e5986d56ea42ebabe405249ec6775eba90d9dd7b2",
+        "log": "compatibility/emergency_1-primary-analysis.log",
+        "negative_log": "compatibility/emergency_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/emergency_1-primary-negative.log"
+      },
+      "acquisition": {
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.straddles_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.lane_change": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/emergency_1-processing.log",
+        "test_log_sha256": "ba11c28bac3c0c8f1d0030ea73bd08379fcea3243b8a7e085e35cc06b67d41b9",
+        "processing_receipt": "saved/emergency_1-processing.json",
+        "processing_receipt_sha256": "ba11c28bac3c0c8f1d0030ea73bd08379fcea3243b8a7e085e35cc06b67d41b9"
+      }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2",
       "kind": "delivery",
       "construction": "native/bundles/emergency_2/construction.json",
-      "construction_sha256": "5086bc4ed847bbf84463f265a57179092fb222a14abc0d71ee77f412e63a28ac",
+      "construction_sha256": "427be5eb7a000df92d6f0e835e76611ac6f950630cb5578010d2802d6e1cc962",
       "candidate_risk": {
         "status": "none",
         "reason": "No measured original Native motion or camera failure trigger exists yet; authority review is not a fallback knob"
@@ -116,13 +386,103 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --output .runtime-work/c245532/selected-emergency_2-v2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --output .runtime-work/c245532/selected-emergency_2-v3",
         "exit_code": 0,
-        "construction_sha256": "5086bc4ed847bbf84463f265a57179092fb222a14abc0d71ee77f412e63a28ac",
+        "construction_sha256": "427be5eb7a000df92d6f0e835e76611ac6f950630cb5578010d2802d6e1cc962",
         "log": "native/emergency_2-offline-selected.log",
-        "log_sha256": "e7fd56ace0c6056be78f99eb1c3ff9f71d8629abbbfc75c9fc2e390ef100d416"
+        "log_sha256": "533c67f5a4af3b957869f6c37f5789e2dc3bb725bd63f07a3d8a8dad227be175"
       },
-      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-emergency_2.json"
+      "fixture_recipe": "work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/selected-recipe-emergency_2.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/emergency_2/proof.json",
+        "sha256": "4444348ce0aa3a30a60bc5ddbd012b78e2f4cc0908d21ef2c5cfa8ebbca7e385"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "348baa27db1cd30e9649887fbf9acb739c5d8df93ac5c9a750beef65e8ede977",
+        "command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/emergency_2-positive.log",
+        "test_log_sha256": "66646da4f820e08a578d8c96b9b5ba468682df7a7ec4de1ddd1e161ecc138860",
+        "negative_log": "delivery-proofs/emergency_2-negative.log",
+        "negative_log_sha256": "a60de566d1a824e325fbc05b05f20ce6acb804a8f11834397d756b13838d8553"
+      },
+      "compatibility": {
+        "receipt": "compatibility/emergency_2-primary-compatibility.json",
+        "sha256": "006feee62738b7ec04e47c8db12bc25b3b3225fc6615cd5224b9a83512c53bbd",
+        "log": "compatibility/emergency_2-primary-analysis.log",
+        "negative_log": "compatibility/emergency_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/emergency_2-primary-negative.log"
+      },
+      "acquisition": {
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.straddles_marking": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "drv.lane_change": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "native-motion.jsonl, separator-context.json, video_frames.jsonl and observation streams; original authority and pixels reviewed after capture"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C245532__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/emergency_2-processing.log",
+        "test_log_sha256": "5aab19d9cf3888ebdc3c6eaeec5746ef21b106c6fef0fe8a3963a6e3e9d2c490",
+        "processing_receipt": "saved/emergency_2-processing.json",
+        "processing_receipt_sha256": "5aab19d9cf3888ebdc3c6eaeec5746ef21b106c6fef0fe8a3963a6e3e9d2c490"
+      }
     }
   ]
 }

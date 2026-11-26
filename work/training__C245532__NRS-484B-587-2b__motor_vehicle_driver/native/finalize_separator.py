@@ -62,6 +62,32 @@ def finalize(attempt,output):
     cfg=json.loads(required(attempt,'config.json').read_text())
     context=json.loads(required(attempt,'separator-context.json').read_text())
     observed=measure(attempt)
+    motion=[json.loads(line) for line in required(attempt,'native-motion.jsonl').read_text().splitlines()]
+    observation_sources={name:[] for name in ('st.lane_marking','st.controlled_access',
+        'drv.straddles_marking','drv.lane_change','rel.occupies','st.shoulder',
+        'ru.emergency_vehicle','ru.transit_bus')}
+    previous_lane=None
+    for row in motion:
+        center=row['ego']['center_xy_m'];body=row['ego']['body_xy_m']
+        lane=row['lane_id'];separator=context['separator']['y_m']
+        values={
+            'st.lane_marking':{'form':context['separator']['form'],'color':context['separator']['color'],
+                'source_reviewed':context['official_line_reviewed']},
+            'st.controlled_access':{'authored_motorway':True,
+                'legal_status_reviewed':context['legal_controlled_access_reviewed']},
+            'drv.straddles_marking':min(point[1] for point in body)<separator<max(point[1] for point in body),
+            'drv.lane_change':previous_lane is not None and lane!=previous_lane,
+            'rel.occupies':{'lane_id':lane,'center_xy_m':center},
+            'st.shoulder':{'signed_permission_reviewed':context['subsection_3_conditions_reviewed']},
+            'ru.emergency_vehicle':{'vehicle_class_reviewed':context['vehicle_driver_scope_reviewed']},
+            'ru.transit_bus':{'vehicle_class_reviewed':context['vehicle_driver_scope_reviewed']}}
+        for name,value in values.items():
+            observation_sources[name].append({'time_s':row['time_s'],'value':value})
+        previous_lane=lane
+    stream_dir=attempt/'observations';stream_dir.mkdir(exist_ok=False)
+    for name,rows in observation_sources.items():
+        (stream_dir/(name+'.jsonl')).write_text(''.join(json.dumps(row,allow_nan=False)+'\n' for row in rows))
+    (attempt/'observation-context.json').write_text(json.dumps({'separator_context':context},allow_nan=False)+'\n')
     hashes={name:sha(required(attempt,name)) for name in SOURCES}
     provenance=provenance_record(attempt)
     native=provenance['provenance_kind']=='native' and not provenance['diagnostic_fixture']
@@ -82,10 +108,9 @@ def finalize(attempt,output):
         'trace_reference':'trace.jsonl','video_references':list(VIDEOS),
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':cfg['recording_description'],
-        'recording_evidence':[{'name':name,'unit':'structured','reference':'separator-context.json'}
-            for name in ('st.lane_marking','st.controlled_access','st.shoulder','ru.emergency_vehicle','ru.transit_bus')]+
-            [{'name':name,'unit':'structured','reference':'native-motion.jsonl'}
-            for name in ('drv.straddles_marking','drv.lane_change','rel.occupies')],
+        'recording_evidence':[{'name':name,'unit':'structured','reference':'observations/'+name+'.jsonl'}
+            for name in observation_sources]+
+            [{'name':'separator_context','unit':'structured','reference':'observation-context.json'}],
         'realized_observables':{'body_straddle_frame_count':{'value':observed['body_straddle_frame_count'],
             'unit':'frames','method':'original body versus solid line','time_window':'600 frames',
             'statistic':'count','reference':'native-motion.jsonl'}},

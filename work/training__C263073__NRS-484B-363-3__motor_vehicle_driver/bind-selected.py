@@ -23,7 +23,7 @@ def main():
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[-1]
         proof = HERE / 'proofs' / suffix
-        processing = REPO / '.runtime-work/c263073-owner' / ('saved-' + suffix + '-primary-v2/v0001/processing.json')
+        processing = REPO / '.runtime-work/c263073-owner' / ('saved-' + suffix + '-primary-v4/v0001/processing.json')
         receipt = json.loads(processing.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True or
                 receipt.get('candidate_id') != 'primary' or receipt.get('case_id') != case or

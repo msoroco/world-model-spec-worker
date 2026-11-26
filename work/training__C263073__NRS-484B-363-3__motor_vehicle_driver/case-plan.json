@@ -149,7 +149,7 @@
         "full-train"
       ],
       "construction": "native/bundles/exception_a/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -163,14 +163,14 @@
       "target_law_id": "NRS-484B-363-3",
       "kind": "selected_native_cpu_draft",
       "source_branch": "(b) school not in session",
-      "physical_target": "same local clock hour on a non-session school day; U-turn with child present",
+      "physical_target": "same local clock hour on a non-session school day; U-turn with child present; half-hour operation interval may also apply",
       "comparison_variable": "school session day",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
       "construction": "native/bundles/exception_b/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -191,7 +191,7 @@
         "full-train"
       ],
       "construction": "native/bundles/exception_c/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -212,7 +212,7 @@
         "full-train"
       ],
       "construction": "native/bundles/exception_d/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -233,7 +233,7 @@
         "full-train"
       ],
       "construction": "native/bundles/exception_e_reference/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -254,7 +254,7 @@
         "full-train"
       ],
       "construction": "native/bundles/exception_e/construction.json",
-      "offline_passed": false,
+      "offline_passed": true,
       "candidate_risk": {
         "status": "physical",
         "reason": "Original driven path may not track authored school-zone envelope; matched compact-vehicle fallback"
@@ -291,7 +291,7 @@
       ],
       "fixed_conditions": [
         "frozen cell, role, road geometry, U-turn controller and 30-second four-camera capture",
-        "all independent school-context source topics outside the named comparison variable",
+        "all independent school-context source topics outside the listed deliberate differences",
         "source records remain original and legal applicability is independently reviewed"
       ]
     },
@@ -302,12 +302,15 @@
         "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_b"
       ],
       "deliberate_differences": [
-        "school session day"
+        "school session day",
+        "linked school operation interval",
+        "linked class-hour status"
       ],
       "fixed_conditions": [
         "frozen cell, role, road geometry, U-turn controller and 30-second four-camera capture",
-        "all independent school-context source topics outside the named comparison variable",
-        "source records remain original and legal applicability is independently reviewed"
+        "all independent school-context source topics outside the listed deliberate differences",
+        "source records remain original and legal applicability is independently reviewed",
+        "Exception (c) may overlap this non-session-day case and is retained as a separately sourced disposition"
       ]
     },
     {
@@ -317,11 +320,12 @@
         "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_c"
       ],
       "deliberate_differences": [
-        "school operation interval and civil time"
+        "school operation interval",
+        "linked class-hour status"
       ],
       "fixed_conditions": [
         "frozen cell, role, road geometry, U-turn controller and 30-second four-camera capture",
-        "all independent school-context source topics outside the named comparison variable",
+        "all independent school-context source topics outside the listed deliberate differences",
         "source records remain original and legal applicability is independently reviewed"
       ]
     },
@@ -336,7 +340,7 @@
       ],
       "fixed_conditions": [
         "frozen cell, role, road geometry, U-turn controller and 30-second four-camera capture",
-        "all independent school-context source topics outside the named comparison variable",
+        "all independent school-context source topics outside the listed deliberate differences",
         "source records remain original and legal applicability is independently reviewed"
       ]
     },
@@ -347,11 +351,11 @@
         "training__C263073__NRS-484B-363-3__motor_vehicle_driver__exception_e"
       ],
       "deliberate_differences": [
-        "sign speed-limit indication"
+        "sign speed-limit indication with both cases lacking an operational beacon"
       ],
       "fixed_conditions": [
         "frozen cell, role, road geometry, U-turn controller and 30-second four-camera capture",
-        "all independent school-context source topics outside the named comparison variable",
+        "all independent school-context source topics outside the listed deliberate differences",
         "source records remain original and legal applicability is independently reviewed"
       ]
     }
@@ -453,9 +457,9 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Two active-prohibition Native bundles passed exact scoped CPU gate, but exception-specific branches are expanding.",
-    "Each exception requires an independently source-bound physical/context distinction and controlled comparison.",
-    "No actual CARLA execution, original pixel review or legal exception verdict has occurred."
+    "All eight exact Native constructions and 16 candidate offline CPU checks pass; original CARLA driving remains unverified.",
+    "Eight source contexts, including overlapping (b)/(c) and the subsection (9) beacon definition, have source-hashed diagnostic shape tests; actual official sources and legal applicability remain unverified.",
+    "Pinned public positive/negative, saved-only, delivery/comparison and exact strict CPU chains are completing."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -463,9 +467,9 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Six new exception-context Native cases and five comparisons require construction and full CPU proofs."
+    "Final 16 candidate public and eight saved-only CPU proofs, six comparison audits, and exact scoped strict gate are still in progress."
   ],
-  "source_context_review": "Official zone designation/bounds, school adjacency, child identity and location, and independent session, civil-time, class-hour, beacon/sign facts must support absence of all five exceptions. No age cutoff, presence radius or heading threshold adopted.",
+  "source_context_review": "Official zone designation/bounds, child identity/location, session day, civil time, operation/class intervals, beacon configuration/light state, sign indication and subsection (9) device definition must be independently source-hashed. Active/reference cases require absence of all exceptions; each exception case requires its exact source condition. Exception (b) can overlap (c). No age cutoff, presence radius or legal heading threshold is adopted.",
   "source_observation_mapping": {
     "dev.zone_sign": {
       "evidence": "independent zone designation and sign record; no legal cutoff inferred from CPU fixture",
@@ -513,7 +517,7 @@
       ]
     },
     "dev.speed_limit_beacon": {
-      "evidence": "independent operational status and yellow-light record; no legal cutoff inferred from CPU fixture",
+      "evidence": "independent source-hashed operational status, yellow-light state and subsection (9) definition (sign conjunction, two or more alternating yellow lights); no legal status inferred from synthetic fixture",
       "channels": [
         "dev.speed_limit_beacon"
       ],

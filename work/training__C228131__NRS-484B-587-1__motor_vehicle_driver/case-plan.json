@@ -21,10 +21,10 @@
   "witness_branches": [
     "Entry with additional controlled-access context."
   ],
-  "selected_branch": null,
+  "selected_branch": "Entry with additional controlled-access context.",
   "requirement_dispositions": [
     {
-      "requirement": "NRS-484B-587-1",
+      "requirement": "Measured onto-highway entry and point relative to indicated entrance",
       "source": "NRS 484B.587(1)",
       "branch": "Entry with additional controlled-access context.",
       "status": "selected_required",
@@ -32,7 +32,48 @@
         "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
         "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Original body/frame path and indicated entrance extent required; synthetic result only exercises the join."
+    },
+    {
+      "requirement": "Controlled-access highway public-authority designation, dedication, public use and boundary",
+      "source": "NRS 484B.587(1) and witness required_context",
+      "branch": "Entry with additional controlled-access context.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "Separate jurisdiction, dedication, use and access-authority sources required; original authority unresolved."
+    },
+    {
+      "requirement": "Erected official traffic-control device gives notice and indicates entrance and exit",
+      "source": "NRS 484B.587(1) and witness required_context",
+      "branch": "Entry with additional controlled-access context.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "Separate device authority, content, erection, entrance extent and original pixel source required; original authority unresolved."
+    },
+    {
+      "requirement": "Qualifying motor vehicle and actual driving activity",
+      "source": "NRS 484B.587(1) and witness required_context",
+      "branch": "Entry with additional controlled-access context.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2"
+      ],
+      "evidence_or_gap": "Native motor vehicle identity, original motion, and eligibility review required."
+    },
+    {
+      "requirement": "From-highway exit at indicated or other exit",
+      "source": "NRS 484B.587(1)",
+      "branch": "Statutory from alternative outside frozen enter_road maneuver",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Frozen C228131 maneuver is enter_road; no motor_vehicle_driver-eligible exit_road candidate is exported. Separate source/frozen assignment needed for an executable exit comparison."
     }
   ],
   "activation_conditions": [
@@ -54,9 +95,9 @@
     {
       "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-587-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "driver uses an indicated controlled-access entrance",
+      "physical_target": "entry at sourced indicated entrance",
       "comparison_variable": "controlled_access_entry",
       "source_branch": "Entry with additional controlled-access context.",
       "requested_not_measured": true,
@@ -72,10 +113,12 @@
         "activation_conditions_to_verify": [
           "official traffic-control devices indicate the entrances and exits of a controlled-access highway",
           "the subject drives onto or from the highway"
-        ]
+        ],
+        "access_and_device_authority": "requires_separate_original_review"
       },
       "controller": {
-        "requested_behavior": "driver uses an indicated controlled-access entrance"
+        "requested_behavior": "entry at sourced indicated entrance",
+        "requested_crossing_x_m": 0
       },
       "subject_behavior": {
         "value": null,
@@ -87,9 +130,9 @@
     {
       "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-587-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "driver joins controlled-access road outside the indicated entrance",
+      "physical_target": "entry away from sourced indicated entrance",
       "comparison_variable": "controlled_access_entry",
       "source_branch": "Entry with additional controlled-access context.",
       "requested_not_measured": true,
@@ -105,10 +148,12 @@
         "activation_conditions_to_verify": [
           "official traffic-control devices indicate the entrances and exits of a controlled-access highway",
           "the subject drives onto or from the highway"
-        ]
+        ],
+        "access_and_device_authority": "requires_separate_original_review"
       },
       "controller": {
-        "requested_behavior": "driver joins controlled-access road outside the indicated entrance"
+        "requested_behavior": "entry away from sourced indicated entrance",
+        "requested_crossing_x_m": 60
       },
       "subject_behavior": {
         "value": null,
@@ -129,9 +174,9 @@
         "controlled_access_entry"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+        "same authored highway/frontage/entrance geometry and device placement",
+        "same motor vehicle, speed request, cameras, 600-frame duration and controller gains",
+        "only requested crossing x changes relative to the sourced indicated entrance"
       ]
     }
   ],
@@ -139,37 +184,37 @@
     {
       "term": "st.controlled_access",
       "purpose": "the controlled-access highway and its designated entrances and exits",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "dev.regulatory_sign",
-      "purpose": "codes entrance, exit — the devices giving notice",
-      "status": "measurement_mapping_pending"
+      "purpose": "codes entrance, exit \u2014 the devices giving notice",
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "dev.governs",
       "purpose": "the point each device marks",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "rel.occupies",
       "purpose": "where the subject enters or leaves the highway",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "kin.path_length",
       "purpose": "the path onto or off the highway",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "st.lane_connectivity",
       "purpose": "whether the path used is a designated entrance or exit",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     },
     {
       "term": "kin.position",
       "purpose": "the point of entry or exit",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_original_native_and_review_sources"
     }
   ],
   "observations": [
@@ -181,7 +226,7 @@
     {
       "name": "dev.regulatory_sign",
       "mandatory": true,
-      "reason": "codes entrance, exit — the devices giving notice"
+      "reason": "codes entrance, exit \u2014 the devices giving notice"
     },
     {
       "name": "dev.governs",
@@ -230,5 +275,161 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "source_observation_mapping": [
+    {
+      "term": "st.controlled_access",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "st.controlled_access"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "dev.governs",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "rel.occupies",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "kin.path_length",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "kin.path_length"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "st.lane_connectivity",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "st.lane_connectivity"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    },
+    {
+      "term": "kin.position",
+      "method": "native/finalize.py observation and sourced authority context",
+      "evidence": [
+        "road.xodr",
+        "access-inventory.json",
+        "access-review.json",
+        "device-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv"
+      ],
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "NRS 484B.587(1)",
+        "witness required_context"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "duration_s": 30,
+    "rate_hz": 20,
+    "frames": 600,
+    "cameras": [
+      "overview",
+      "approach",
+      "indicated_gate",
+      "highway_side"
+    ],
+    "limitations": [
+      "Synthetic pixels do not establish official device content or highway status."
+    ]
+  }
 }

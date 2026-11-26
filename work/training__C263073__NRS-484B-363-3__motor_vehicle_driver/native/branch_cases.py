@@ -89,4 +89,19 @@ def check_review(review, case_suffix):
             raise ValueError('School context fact source hashes differ: ' + key)
         if not isinstance(item.get('reviewer_reason'), str) or not item['reviewer_reason'].strip():
             raise ValueError('School context fact reviewer reason missing: ' + key)
+    definition = review.get('beacon_definition')
+    if not isinstance(definition, dict):
+        raise ValueError('Statutory speed-limit-beacon definition review missing')
+    if (type(definition.get('yellow_light_count')) is not int or
+            definition['yellow_light_count'] < 2 or
+            definition.get('flashes_alternately') is not True or
+            definition.get('used_with_sign') is not True):
+        raise ValueError('Speed-limit-beacon device definition not source supported')
+    topics = ('beacon_configuration', 'beacon_lights', 'zone_sign')
+    if (definition.get('source_topics') != list(topics) or
+            definition.get('source_sha256') !=
+            {topic: review['records'][topic]['sha256'] for topic in topics} or
+            not isinstance(definition.get('reviewer_reason'), str) or
+            not definition['reviewer_reason'].strip()):
+        raise ValueError('Speed-limit-beacon definition source binding differs')
     return case

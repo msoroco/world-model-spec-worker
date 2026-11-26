@@ -8,16 +8,27 @@
   "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484B-587-2b",
-      "target_type": "controlled_attempt",
-      "rationale": "remain on own side of solid white entrance or exit separator",
+      "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected fixed-cell context without requested separator crossing or obstruction; no delivery recording.",
       "variable_assignments": {
-        "separator_crossing_target": false
+        "separator_crossing_target": {
+          "kind": "controller",
+          "value": false
+        },
+        "stopped_obstruction_request": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "observed_separator_crossing": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
-        "Official controlled-access and entrance-lane authority",
-        "Emergency necessity and subsection 3 scope"
+        "required by an emergency",
+        "as otherwise authorized by subsection 3"
       ],
       "recording_description": {
         "channels": [
@@ -105,19 +116,150 @@
           "Original Native physics and camera visibility remain unverified",
           "Authored motorway metadata does not prove legal controlled-access status"
         ]
+      }
+    },
+    {
+      "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-587-2b",
+      "target_type": "compliant_attempt",
+      "rationale": "Requested geometry and emergency candidate only; actual legal authority and necessity unresolved.",
+      "variable_assignments": {
+        "separator_crossing_target": {
+          "kind": "controller",
+          "value": false
+        },
+        "stopped_obstruction_request": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "observed_separator_crossing": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "required by an emergency",
+        "as otherwise authorized by subsection 3"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "st.controlled_access",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "ru.emergency_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          },
+          {
+            "name": "ru.transit_bus",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-tick original Native geometry or retained source-context review",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and reviewed authority context",
+            "uncertainty": "Physical and legal status require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "separator_context",
+            "unit": "structured",
+            "method": "original source and public-authority review"
+          }
+        ],
+        "limitations": [
+          "Original Native physics and camera visibility remain unverified",
+          "Authored motorway metadata does not prove legal controlled-access status"
+        ]
+      },
+      "paired_probe_id": "separator-crossing",
+      "deliberate_differences": [
+        "separator_crossing_target"
+      ],
+      "probe": {
+        "primary_variable": "separator_crossing_target",
+        "comparison_or_standard": "controlled physical comparison with no statutory numeric cutoff",
+        "target_value_or_branch": false
       }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-587-2b",
-      "target_type": "controlled_attempt",
-      "rationale": "cross solid white entrance or exit separator",
+      "target_type": "violating_attempt",
+      "rationale": "Requested geometry and emergency candidate only; actual legal authority and necessity unresolved.",
       "variable_assignments": {
-        "separator_crossing_target": true
+        "separator_crossing_target": {
+          "kind": "controller",
+          "value": true
+        },
+        "stopped_obstruction_request": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "observed_separator_crossing": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
-        "Official controlled-access and entrance-lane authority",
-        "Emergency necessity and subsection 3 scope"
+        "required by an emergency",
+        "as otherwise authorized by subsection 3"
       ],
       "recording_description": {
         "channels": [
@@ -205,21 +347,39 @@
           "Original Native physics and camera visibility remain unverified",
           "Authored motorway metadata does not prove legal controlled-access status"
         ]
+      },
+      "paired_probe_id": "separator-crossing",
+      "deliberate_differences": [
+        "separator_crossing_target"
+      ],
+      "probe": {
+        "primary_variable": "separator_crossing_target",
+        "comparison_or_standard": "controlled physical comparison with no statutory numeric cutoff",
+        "target_value_or_branch": true
       }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_1",
       "target_law_id": "NRS-484B-587-2b",
-      "target_type": "controlled_attempt",
-      "rationale": "cross without stopped obstruction candidate",
+      "target_type": "boundary_probe",
+      "rationale": "Requested geometry and emergency candidate only; actual legal authority and necessity unresolved.",
       "variable_assignments": {
-        "separator_crossing_target": true,
-        "stopped_obstruction_requested": false
+        "separator_crossing_target": {
+          "kind": "controller",
+          "value": true
+        },
+        "stopped_obstruction_request": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "observed_separator_crossing": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
-        "Emergency necessity and safe alternatives",
-        "Official controlled-access and entrance-lane authority",
-        "Subsection 3 scope"
+        "required by an emergency",
+        "as otherwise authorized by subsection 3"
       ],
       "recording_description": {
         "channels": [
@@ -307,21 +467,39 @@
           "Original Native physics and camera visibility remain unverified",
           "Authored motorway metadata does not prove legal controlled-access status"
         ]
+      },
+      "paired_probe_id": "emergency-candidate",
+      "deliberate_differences": [
+        "stopped_obstruction_request"
+      ],
+      "probe": {
+        "primary_variable": "stopped_obstruction_request",
+        "comparison_or_standard": "controlled physical comparison with no statutory numeric cutoff",
+        "target_value_or_branch": false
       }
     },
     {
       "case_id": "training__C245532__NRS-484B-587-2b__motor_vehicle_driver__emergency_2",
       "target_law_id": "NRS-484B-587-2b",
-      "target_type": "controlled_attempt",
-      "rationale": "cross with original Native stopped obstruction candidate",
+      "target_type": "boundary_probe",
+      "rationale": "Requested geometry and emergency candidate only; actual legal authority and necessity unresolved.",
       "variable_assignments": {
-        "separator_crossing_target": true,
-        "stopped_obstruction_requested": true
+        "separator_crossing_target": {
+          "kind": "controller",
+          "value": true
+        },
+        "stopped_obstruction_request": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "observed_separator_crossing": {
+          "kind": "subject_behavior",
+          "value": null
+        }
       },
       "unresolved_judgment_calls": [
-        "Emergency necessity and safe alternatives",
-        "Official controlled-access and entrance-lane authority",
-        "Subsection 3 scope"
+        "required by an emergency",
+        "as otherwise authorized by subsection 3"
       ],
       "recording_description": {
         "channels": [
@@ -409,6 +587,15 @@
           "Original Native physics and camera visibility remain unverified",
           "Authored motorway metadata does not prove legal controlled-access status"
         ]
+      },
+      "paired_probe_id": "emergency-candidate",
+      "deliberate_differences": [
+        "stopped_obstruction_request"
+      ],
+      "probe": {
+        "primary_variable": "stopped_obstruction_request",
+        "comparison_or_standard": "controlled physical comparison with no statutory numeric cutoff",
+        "target_value_or_branch": true
       }
     }
   ]

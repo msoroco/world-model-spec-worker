@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from native.branch_cases import CASES, FACT_TOPICS, expected_facts
 
 HERE = Path(__file__).resolve().parent
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -64,6 +65,34 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source):
         if not source.is_relative_to(stage) or not source.is_file() or sha(source) != record['sha256']:
             raise ValueError('Independent source binding differs: ' + topic)
         hashes[record['path']] = record['sha256']
+    suffix = case.rsplit('__', 1)[-1]
+    branch = CASES[suffix]
+    if review.get('case_context') != branch['context']:
+        raise ValueError('Independent selected case context differs')
+    facts = review.get('case_facts', {})
+    expected_factual = expected_facts(suffix)
+    if set(facts) != set(FACT_TOPICS):
+        raise ValueError('Independent case facts missing')
+    for key, topics in FACT_TOPICS.items():
+        item = facts[key]
+        if (item.get('value') != expected_factual[key] or
+                item.get('source_topics') != list(topics) or
+                item.get('source_sha256') != {topic: records[topic]['sha256'] for topic in topics}):
+            raise ValueError('Independent case fact differs: ' + key)
+    beacon = review.get('beacon_definition', {})
+    beacon_topics = ('beacon_configuration', 'beacon_lights', 'zone_sign')
+    if (type(beacon.get('yellow_light_count')) is not int or beacon['yellow_light_count'] < 2 or
+            beacon.get('flashes_alternately') is not True or beacon.get('used_with_sign') is not True or
+            beacon.get('source_topics') != list(beacon_topics) or
+            beacon.get('source_sha256') != {topic: records[topic]['sha256'] for topic in beacon_topics}):
+        raise ValueError('Statutory speed-limit-beacon definition source differs')
+    target_exception = branch['target_exception']
+    dispositions = review['exception_dispositions']
+    if target_exception is None:
+        if any(item['status'] != 'does_not_apply' for item in dispositions.values()):
+            raise ValueError('Active/reference exception source review differs')
+    elif dispositions[target_exception]['status'] != 'applies':
+        raise ValueError('Selected exception source review differs')
     report = read(stage / 'analysis-report.json')
     measurements = report.get('measurements', {})
     expected = {'school_zone_turn_observation'} | {'exception_' + name for name in EXCEPTIONS}
