@@ -77,6 +77,29 @@ def validate_site(path: str | Path, case_id: str) -> dict:
     return site
 
 
+def verify_original_sources(site: dict, site_path: str | Path) -> None:
+    """Read every independent reviewed source byte, not only its digest label."""
+    root = Path(site_path).resolve().parent
+    records = site.get("source_records")
+    keys = ("map_source_sha256", "yield_sign_survey_sha256",
+            "marking_survey_sha256", "view_ray_survey_sha256",
+            "through_highway_survey_sha256")
+    if not isinstance(records, dict) or set(records) != set(keys):
+        raise ValueError("independent original yield source records required")
+    for key in keys:
+        record = records[key]
+        if not isinstance(record, dict):
+            raise ValueError("original source record missing: " + key)
+        name = record.get("path")
+        if not isinstance(name, str) or not name or Path(name).name != name:
+            raise ValueError("original source path must be local: " + key)
+        target = root / name
+        if (not target.is_file() or target.is_symlink() or
+                hashlib.sha256(target.read_bytes()).hexdigest() != record.get("sha256") or
+                record["sha256"] != site[key]):
+            raise ValueError("original source bytes differ: " + key)
+
+
 def construct(adapter, site_path: str | Path, case_id: str) -> dict:
     """Issue Native construction calls and reject contradictory readback."""
     site = validate_site(site_path, case_id)

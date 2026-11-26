@@ -1,3 +1,21 @@
+## 2026-11-26: C255863 independently checked; next partial assigned
+
+- `testing__C255863__NRS-484B-363-3__motor_vehicle_driver` has six selected cases, five exception comparisons, current-hash offline/compatibility/diagnostic saved CPU proofs and 17 focused tests. Lead independently ran its scoped `--complete` check with exit 0 and `static_checks_passed: true` (`.runtime-work/c255863-lead-nov26/complete.log`). The exact scoped strict check exits 1 only at the all-ready condition (`.runtime-work/c255863-lead-nov26/strict.log`), matching its truthful partial status. Reviewed original school-zone site, calendar, operating hours, local clock, beacon/sign survey and Native capture remain absent; the diagnostic sources cannot supply them. No shared queue row was added.
+- The freed owner slot moved to `testing__C158190__NRS-484B-257-1__motor_vehicle_driver` for the next selected yield construction/proof chain. C394507 and C422976 continue with their own owners. Batch remains 138 ready and 104 partial. No Git or checkpoint command was run.
+
+## 2026-11-26 17:56 UTC: selected CPU proof milestones and hygiene
+
+- C255863/NRS-484B-363(3) now has six current-hash exact offline and compatibility passes, six diagnostic recorded-only revisions, a six-case/five-comparison source-bound audit, canonical six-stage semantic validation and 17 focused tests. Its owner is sealing scoped checks and documenting the absent original school-zone site/calendar/beacon/sign evidence. It remains partial; no diagnostic receipt is claimed as physical verification.
+- C394507/LVMC-11-52-130(A)(12) passes all 18 exact primary/fallback offline proofs and pinned eight-stage semantic validation on nine cases. Twenty-foot below/at/above probes are linked; exact-boundary and qualitative legal judgments stay unresolved. Its owner continues source-bound compatibility and saved/delivery audits; status partial.
+- C422976/LVMC-11-46-030 repaired a frozen sweep-measurement join, rebuilt all 15 exact offline proofs, and is rerunning compatibility. The partial scoped checker identified forbidden `compatibility-`/`offline-` returned filename prefixes; owner is mechanically renaming proof logs and rebinding them. Status partial.
+- A non-Git scan of 55,392 returned work files found zero size-cap, UTF-8, trailing-whitespace, blank-EOF or merge-marker issues; largest ordinary file was 2,088,012 bytes. No Git or checkpoint command was run. Batch remains 138 ready and 104 partial.
+
+## 2026-11-26 17:51 UTC: three active selected construction chains
+
+- C422976/LVMC-11-46-030 passed nine of 15 exact compatibility cases; six timing sweeps failed the pinned realized-measurement-to-frozen-definition join. Its owner is correcting that mapping and reproving affected constructions. One 900-frame saved-only original-preserving run and delivery audit positive/negative tests pass; 26 focused tests pass. Status stays partial.
+- C394507/LVMC-11-52-130(A)(12) now has source-gated nine-case scene/route/activity/exception construction, lazy Native runner, 900-frame 20 Hz four-camera capture with readback/restoration, and saved source-bound body-clearance measurement. Sixteen focused tests pass, including source mutation and diagnostic Native capture negatives. Selected offline and compatibility proofs remain CPU work. Status stays partial.
+- C255863/NRS-484B-363(3) owner reviewed the exact law and existing six-case timing/beacon geometry with five comparisons and is building the missing selected runner/config/manifest/proof chain. Status stays partial. A non-Git cache check found no `__pycache__` under work. Batch remains 138 ready and 104 partial; no queue change.
+
 ## 2026-11-26 17:45 UTC: C412262 selected CPU package sealed as partial; next owner assigned
 
 - `testing__C412262__NRS-484B-493__motor_vehicle_driver` remains truthful partial. Nine current-hash exact offline, compatibility positive/missing-source, and diagnostic recorded-only CPU paths pass; 25 unit tests and eight comparison implementations are present. Lead independently passed its scoped `--complete` check (`.runtime-work/c412262-lead-nov26/complete.log`, exit 0). Lead exact scoped strict exits 1 only at the all-ready condition (`.runtime-work/c412262-lead-nov26/strict.log`), matching the partial result. No queue row was added.

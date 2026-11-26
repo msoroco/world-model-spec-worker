@@ -126,6 +126,11 @@ def publish(root: Path, *, map_bytes: bytes, restored: bool) -> dict:
                          "original_observations": packet, "world": {"weather": {}}})
     write_jsonl(root / "trace.jsonl", trace)
     write_jsonl(root / "video_frames.jsonl", mapping)
+    write_json(root / "comparison-packet.json", {
+        "case_id": case_id[len(ASSIGNMENT) + 2:],
+        "original_recording_id": sha(root / "receipt.json"),
+        "scene": context,
+        "frames": rows})
     write_jsonl(root / "capture/evidence.jsonl", evidence)
     write_jsonl(root / "capture/native/frames.jsonl", native)
     (root / "capture/recorder_info.txt").write_text("Original Native school-zone U-turn capture\n")

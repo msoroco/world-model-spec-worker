@@ -73,7 +73,10 @@ def main():
     from native_capture import capture
     capture(world, operator, site, case_id, args.output_dir,
             requested_clearance_m=config["requested_body_clearance_m"],
+            camera_offset_m=config.get("camera_offset_m", 0.0),
             source_site_path=Path(site_path))
+    from native_output_bridge import publish
+    publish(args.output_dir, map_bytes=operator.map_bytes(world), restored=True)
 
 
 if __name__ == "__main__":

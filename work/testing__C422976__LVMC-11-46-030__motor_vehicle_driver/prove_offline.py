@@ -38,7 +38,7 @@ def main():
     entries = json.loads(MANIFEST.read_text())["cases"]
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         results = list(pool.map(one, entries))
-    (HERE / "offline-proof-summary.json").write_text(
+    (HERE / "cpu-offline-summary.json").write_text(
         json.dumps({"cases": results, "format": "worker-exact-offline-proof-summary"},
                    indent=2, sort_keys=True) + "\n")
     for item in results:

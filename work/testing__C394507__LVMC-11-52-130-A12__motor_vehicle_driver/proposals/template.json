@@ -1,0 +1,73 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A12",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "body_clearance_target_m",
+      "range_or_domain": "5.9, 6.096 or 6.3 m requested engineering target"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_activity",
+      "range_or_domain": "destination stop, stand, park, necessary or directed halt"
+    },
+    {
+      "kind": "world_setup",
+      "name": "requested_exception",
+      "range_or_domain": "none, traffic conflict, police or device direction"
+    },
+    {
+      "kind": "world_setup",
+      "name": "crosswalk_marked",
+      "range_or_domain": "marked or unmarked comparative reference"
+    }
+  ],
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: Within twenty feet of any marked crosswalk.",
+  "structure": {
+    "activation": {
+      "condition": "A person stops, stands or parks a vehicle near a marked crosswalk.",
+      "numeric_conditions": [
+        {
+          "operator": "within",
+          "unit": "feet",
+          "value": 20,
+          "variable": "body_clearance_ft_arithmetic"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "effect": "The stated exception may apply after source review",
+        "replacement_obligation": "Assess the source-supported exception without automatic legal classification",
+        "source_clause": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
+        "trigger": "Necessary avoidance of traffic conflict in compliance with law or applicable officer/device directions"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Original purpose, service and motion history require independent activity classification.",
+        "phrase": "stop, stand or park"
+      },
+      {
+        "note": "Original traffic trajectories and necessity require source review.",
+        "phrase": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "note": "Applicable law and actual direction authority require source review.",
+        "phrase": "in compliance with law or the directions of a police officer or a traffic control device"
+      }
+    ],
+    "law_id": "LVMC-11-52-130-A12",
+    "obligation": {
+      "description": "Do not stop, stand or park a vehicle within twenty feet of any marked crosswalk unless an exact exception applies.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Observe original approach, stationary/service interval and crossing context.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "LVMC-11-52-130-A12@motor_vehicle_driver"
+}

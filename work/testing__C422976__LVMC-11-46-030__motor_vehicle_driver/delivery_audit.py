@@ -1,5 +1,6 @@
 """Independently bind released original school-lane footage and measurements."""
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -143,3 +144,28 @@ def audit(root, receipt, probe=probe_video, decode=decode_video, pixels=pixel_ch
                        "full_video_decode", "actual_pixels", "physical_completion"],
             "physical_completion": "requires independent local review",
             "legal_verdict": "unresolved"}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--authority-root", type=Path, required=True)
+    parser.add_argument("--receipt", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--case", required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise ValueError("fresh independent audit output required")
+    receipt = json.loads(args.receipt.read_text(encoding="utf-8"))
+    if receipt.get("case_id") != args.case:
+        raise ValueError("independent audit selects another exact case")
+    result = audit(args.authority_root, receipt)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n",
+                           encoding="utf-8")
+    print(json.dumps({"case_id": result["case_id"], "source_kind": result["source_kind"],
+                      "frames_checked": result["frames_checked"],
+                      "legal_verdict": "unresolved"}, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

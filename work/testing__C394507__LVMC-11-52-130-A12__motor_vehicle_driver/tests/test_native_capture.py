@@ -49,7 +49,7 @@ class World:
 
 class Vertex:
     def __init__(self, x, y):
-        self.x, self.y = x, y
+        self.x, self.y, self.z = x, y, 0.0
 
 
 class Box:
@@ -66,10 +66,13 @@ class Vehicle:
     bounding_box = Box()
 
     def get_transform(self):
-        return object()
+        return type("Transform", (), {
+            "location": Vertex(9, 0),
+            "rotation": type("Rotation", (), {"yaw": 0.0})()})()
 
     def get_velocity(self):
-        return type("Velocity", (), {"length": lambda self: 0.0})()
+        return type("Velocity", (), {"x": 0.0, "y": 0.0, "z": 0.0,
+                                     "length": lambda self: 0.0})()
 
     def destroy(self):
         self.is_alive = False
@@ -116,7 +119,8 @@ class Operator:
                 "activity": site["requested_activity"],
                 "exception_context": site["requested_exception"]}
 
-    def cameras(self, world, vehicle, views):
+    def cameras(self, world, vehicle, views, camera_offset_m=0.0):
+        self.calls.append(("camera_offset", camera_offset_m))
         return {name: lambda frame: self.png for name in views}, []
 
     def start_pipeline_capture(self, output, case):

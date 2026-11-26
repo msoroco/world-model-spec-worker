@@ -39,7 +39,7 @@ def one(entry):
                 "error": log.read_text()[-1500:]}
     for name in ("compatibility.json", "compatibility-analysis.log", "negative-analysis.log"):
         source = output / name
-        target = folder / name
+        target = folder / ("cpu-analysis.log" if name == "compatibility-analysis.log" else name)
         content = source.read_text(encoding="utf-8")
         if content.endswith("\n\n") or any(line.rstrip(" \t") != line for line in content.splitlines()):
             raise ValueError("sealed compatibility source has checkpoint whitespace: " + name)
@@ -65,7 +65,7 @@ def main():
         raise ValueError("exact fifteen selected cases required")
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         results = list(executor.map(one, entries))
-    (HERE / "compatibility-proof-summary.json").write_text(
+    (HERE / "cpu-compatibility-summary.json").write_text(
         json.dumps({"format": "worker-compatibility-proof-summary", "cases": results},
                    indent=2, sort_keys=True) + "\n")
     for result in results:

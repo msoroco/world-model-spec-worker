@@ -43,8 +43,10 @@ def main():
     if args.check:
         print("exact source-gated school-lane construction contract passed")
         return
-    if args.output_dir is None or args.output_dir.exists():
-        raise ValueError("fresh original Native attempt output required")
+    if args.output_dir is None or not args.output_dir.is_dir():
+        raise ValueError("materialized fresh Native attempt directory required")
+    if (args.output_dir / "original-motion.json").exists() or (args.output_dir / "capture").exists():
+        raise ValueError("original Native capture already exists")
     authority_root = os.environ.get("C422976_AUTHORITY_ROOT")
     site_ref_path = os.environ.get("C422976_SITE_REF")
     if not authority_root or not site_ref_path:

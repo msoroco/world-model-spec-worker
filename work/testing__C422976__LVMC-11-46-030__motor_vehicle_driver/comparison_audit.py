@@ -59,10 +59,14 @@ def audit(comparison_id, left, right):
         if not isinstance(measurement.get("stop"), dict) or not isinstance(
                 measurement.get("warning"), dict) or not isinstance(measurement.get("release"), dict):
             raise ValueError("original stop, warning and release measurements required")
+        if ("first_zero_speed_frame" not in measurement["stop"] or
+                measurement["warning"].get("source_bound") is not True or
+                measurement["release"].get("source_bound") is not True):
+            raise ValueError("original source-bound comparison measurements incomplete")
     return {"format": "c422976-original-comparison-v1",
             "comparison_id": comparison_id, "case_ids": pair["case_ids"],
             "original_attempt_ids": [left["attempt_id"], right["attempt_id"]],
             "fixed_site_sha256": left["site_sha256"],
             "requested_differences": sorted(differences),
-            "original_measurements_retained": True,
+            "original_measurements": [left["measurement"], right["measurement"]],
             "physical_acceptance": False, "legal_verdict": "unresolved"}

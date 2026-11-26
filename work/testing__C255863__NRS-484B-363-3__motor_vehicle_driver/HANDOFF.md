@@ -1,33 +1,34 @@
-# C255863 NRS 484B.363(3) checkpoint
+# C255863 NRS 484B.363(3) handoff
 
-Status: partial. The selected school crossing-zone U-turn and five exception controls are implemented in `school_uturn.py`: no children, school not in session, outside the half-hour operation interval, operational beacon not flashing during class, and inactive sign without operational beacon. Construction creates vehicle and child actors and schedules a reversal path and beacon. The finalizer requires 900 original frames at 20 fps, stable identities, child locations, independent source hashes, zone occupancy, and a measured heading reversal. It leaves U-turn legality and children-presence interpretation unset.
+Status: **partial**. Six selected school crossing-zone U-turn cases and five fixed-geometry controls are prepared. The pinned scoped complete check passes; the exact strict delivery-ready check cannot pass while original source packets are absent.
 
-Source boundary: crossing-zone designation/extent, nonadjacent school property, pupil route, independent school calendar and operation/class times, local clock, children identities/locations, beacon configuration/state and sign instruction are separately required. The 150-degree heading span is a physical realization probe, not a legal U-turn definition. No accepted exact recording exists.
+## CPU package
 
-Focused tests, pinned CPU preflight and scoped static check pass. Exact scoped strict fails on truthful partial status; see `cpu-strict-check.log`. Successful receipt commands and hashes appear in `result.json`.
+- Six exact case constructions and 900-frame/20 fps original Native four-camera capture, source-sealed bridge and saved finalizer are implemented. The finalizer measures geometry and reversal without asserting a legal U-turn threshold.
+- School calendar, half-hour operation interval, class hours, two-yellow-light alternating beacon capability and state, sign instruction, local clock, children and zone geometry are independent source-bound inputs. Each of the five statutory exceptions has a selected control.
+- Pinned offline and compatibility: 6/6 each on current construction hashes. Compatibility checks selected analysis, missing-source rejection, Native validation, Lean and final decode.
+- Diagnostic recorded-only: 6/6 on explicitly synthetic nine-frame scaffolds. These prove the CPU saved path only; they are not original captures or physical acceptance.
+- Semantic proposal validator: ten stages, six selected cases, five exception controls. Independent delivery audit tests verify source-index byte hashes and all five comparisons, including changed-source rejection.
+- Runtime verify and preflight pass. 17 focused CPU tests pass. Scoped complete check passes. The queue proposal is source-pending and undispatched.
 
-Remaining CPU: canonical runner/config/camera capture, source-shaped positive/negative compatibility, semantic proposals, saved-only processing, and independent delivery/comparison audits.
+## Immutable source boundary
 
-## 2026-11-26 source-gated school timing and comparison checkpoint
+The exact source audit found **zero accepted original metadata**. Missing source classes are reviewed school crossing-zone site and extent, independent school calendar, operation/class schedule, local clock, beacon/sign survey, and original Native capture. Frozen law text and the conditional witness do not establish these local facts. No source packet, physical outcome, legal threshold or delivery acceptance has been fabricated. The six-case selected manifest remains `partial_source_pending`, each case `source_pending`, and `result.json` remains partial.
 
-`school_timing.py` derives the exact statutory half-hour interval from offset-aware original schedule timestamps. It requires independent calendar, operation and class schedule, clock, beacon and sign hashes. It verifies the operational speed-limit beacon has at least two yellow lights capable of alternating flashes, and distinguishes device state, class hours, sign instruction and school session without a fabricated legal conclusion. `school_uturn.py` binds those derived states to each of the six case variants, requires 64-character source hashes, and checks Native beacon readback with cleanup on mismatch. The 900-frame reversal check uses frame-relative intervals; the 150-degree probe remains an engineering realization check, not a legal U-turn definition.
+Resume by providing reviewed original source packets with byte hashes, then bind the Native site and capture 900 original frames per selected case, run original saved-only/physical/lifecycle/delivery/comparison proofs, and rerun the exact scoped strict gate.
 
-`comparison_audit.py` checks all five exact baseline controls against complete original 900-frame packets and fixed crossing-zone geometry, route and source bindings, rejecting missing or changed evidence. `gpu-queue-proposal.json` lists six exact cases and five comparisons with pinned prepare/execute/accept command order. It is unbound and not dispatchable. Eleven synthetic CPU tests pass; runtime verify, preflight and scoped partial check pass. The exact scoped strict check exits 1 on partial status.
+## Stable file hashes
 
-`source_audit.py` confirms the immutable export contains zero accepted metadata and none of the six required source classes: reviewed school crossing-zone site/extent, school calendar, operation/class schedule, local clock, beacon/sign survey, and original Native capture. The conditional witness and cell label do not establish the actual school schedule, device operation, child locations or physical U-turn. To resume, supply reviewed original source packets with hashes, bind the construction to a Native site, create current-hash selected manifest and semantic proposals, then run offline/compatibility/saved/delivery/comparison proofs and scoped strict. Actual CARLA motion and visual quality remain later local checks. Status remains partial.
-
-| Current file | SHA256 |
+| File | SHA256 |
 | --- | --- |
-| `school_uturn.py` | `bd20ef0466b0d9b543d7581b876fc952a66a7827d78752f330284f4a65d00ae0` |
-| `school_timing.py` | `e99472cf5c02d81deef88ccec5569cf4f454e28b863cc5da03dca73201fd5010` |
-| `comparison_audit.py` | `ad53cf9bf1921c7eccce58c8e5844fb6c7db64a234852ce48c9e8c4d31097d3d` |
-| `source_audit.py` | `50504c985e80a72b43174bfda2a17f9561612c2a6929d31f5532934bbd44f045` |
-| `build_queue_proposal.py` | `477f4edfec9a01e84cfba31249fb0d61d8227817cda32207050cca795df018ec` |
-| `case-plan.json` | `dd586fef64ed9409877381d515c0e1058fe6a24a362f34ed287f91f8bb611a7a` |
+| `config.json` | `0d51c18a9a5f7319a36d6a2d5ee683b3515a5ac295fb0ebe732882d7d58eeb99` |
+| `case-plan.json` | `c8eb9bce0a7f1f9045d141c1b3b55d6f64a91b15b24cb7af95097bbd50b1d1b5` |
+| `construction.json` | `43e404625b21564a5d9625a940ca0fcdfb3a3da60ce8657e416b608895ff32ab` |
+| `execution-manifest.json` | `2fcf3d8f45ddddd003a46ca32cb62f54cbb866d228a503d5399bda13a06c5b4c` |
 | `gpu-queue-proposal.json` | `0a64cd45d9dc7866cadd7ddc74871b9e9008dd763e186c6e10ee4d0cf1258748` |
-| `cpu-tests.log` | `ea3f028fd13eca08c7a8b0fa82fe028e09ed14bdfb79d80ea3df8d098e8fc5d9` |
-| `cpu-verify.log` | `e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d` |
-| `cpu-preflight.log` | `524dd3b8eca52867d7eaa871e6fb377146df4a6d5765d42d915cf0dc0a428925` |
-| `cpu-source-audit.log` | `52f45b65e2f42850f832c9511938f0088c59b07e5f776b76a416f960ca991176` |
+| `proposals/semantic-index.json` | `c8a389000e19867ebfb35aae94e44af2ec0916fdb364e72a4da98fb062324da8` |
+| `result.json` | `856ec8c70e8b36158304a46eafad7eaa854c5dd4719e5d70ff38e33c1516a1da` |
+| `cpu-tests.log` | `d121eb7c503842e8eed65f33125fb01a962f531894539ecdbbc76ca2db6eeb9d` |
+| `cpu-semantic.log` | `b713c6b5ddc79c02d846cac4d4d991862937d8de7f96c8a50f1e27a3e7cec4cf` |
 | `cpu-static-check.log` | `6f2bebff75b45f3e09e157fd3e86a3385ba639e52d52d0e141c19e48c8e0ee91` |
-| `cpu-strict-check.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+| `cpu-source-audit.log` | `52f45b65e2f42850f832c9511938f0088c59b07e5f776b76a416f960ca991176` |

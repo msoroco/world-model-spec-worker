@@ -47,7 +47,7 @@ def convex_hull(points):
 
 
 def capture(world, operator, site, case_id, output, *, requested_clearance_m,
-            diagnostic_frames=None, source_site_path=None):
+            camera_offset_m=0.0, diagnostic_frames=None, source_site_path=None):
     """Acquire source-sealed original readbacks; leave legal outcomes unresolved."""
     tag = case_id.removeprefix(crossing.ASSIGNMENT_ID + "__")
     controls = crossing.CASE_CONTROLS.get(tag)
@@ -55,6 +55,8 @@ def capture(world, operator, site, case_id, output, *, requested_clearance_m,
                      controls is not None, "unknown exact crossing case")
     crossing.require(abs(requested_clearance_m - controls[0]) < 1e-8,
                      "selected engineering clearance target changed")
+    crossing.require(camera_offset_m in (0.0, 2.0),
+                     "unsupported reviewed camera-position candidate")
     if diagnostic_frames is not None:
         crossing.require(getattr(operator, "diagnostic_test_only", False) is True and
                          type(diagnostic_frames) is int and 2 <= diagnostic_frames <= 20,
@@ -84,7 +86,8 @@ def capture(world, operator, site, case_id, output, *, requested_clearance_m,
         crossing.require(getattr(vehicle, "is_alive", False) and
                          getattr(vehicle, "type_id", "").startswith("vehicle."),
                          "original motor vehicle actor unavailable")
-        camera_callbacks, sensors = operator.cameras(world, vehicle, VIEWS)
+        camera_callbacks, sensors = operator.cameras(world, vehicle, VIEWS,
+                                                      camera_offset_m=camera_offset_m)
         crossing.require(set(camera_callbacks) == set(VIEWS),
                          "four original camera callbacks missing")
         if diagnostic_frames is None:
@@ -126,10 +129,18 @@ def capture(world, operator, site, case_id, output, *, requested_clearance_m,
                                                      for point in body for value in point),
                              "original full vehicle-body vertices missing")
             speed = float(vehicle.get_velocity().length())
+            transform = vehicle.get_transform()
+            velocity = vehicle.get_velocity()
+            position = transform.location
             crossing.require(math.isfinite(speed) and speed >= 0,
                              "original ego speed missing")
             row = {"frame": frame, "time_s": round(index / FPS, 5),
                    "ego_speed_mps": speed, "ego_body_polygon_xy_m": convex_hull(body),
+                   "body_vertices_m": [[float(vertex.x), float(vertex.y), float(vertex.z)]
+                                       for vertex in vertices],
+                   "position_m": [float(position.x), float(position.y), float(position.z)],
+                   "velocity_mps": [float(velocity.x), float(velocity.y), float(velocity.z)],
+                   "heading_deg": float(transform.rotation.yaw),
                    "actor_id": str(vehicle.id), "vehicle_blueprint": vehicle.type_id,
                    "road_id": observed["road_id"], "lane_id": observed["lane_id"],
                    "activity_readback": observed.get("activity"),
