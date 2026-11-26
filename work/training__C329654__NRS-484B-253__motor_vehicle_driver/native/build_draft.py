@@ -91,7 +91,28 @@ def build():
                         "entrypoint": "runner.py", "files": [
                             {"path": "config.json", "content": json.dumps(config,indent=2)+"\n"},
                             {"path": "runner.py", "content": RUNNER},
-                            {"path": "tests/test_offline.py", "content": TESTS}],
+                            {"path": "tests/test_offline.py", "content": TESTS},
+                            {"path": "observed_left_turn.py",
+                             "source": str(HERE / "observed_left_turn.py"),
+                             "content": (HERE / "observed_left_turn.py").read_text()},
+                            {"path": "tests/test_observed_left_turn.py",
+                             "source": str(HERE / "test_observed_left_turn.py"),
+                             "content": (HERE / "test_observed_left_turn.py").read_text()},
+                            {"path": "saved_measure.py",
+                             "source": str(HERE / "saved_measure.py"),
+                             "content": (HERE / "saved_measure.py").read_text()},
+                            {"path": "prove_observed.py",
+                             "source": str(HERE / "prove_observed.py"),
+                             "content": (HERE / "prove_observed.py").read_text()},
+                            {"path": "tests/test_saved_measure.py",
+                             "source": str(HERE / "test_saved_measure.py"),
+                             "content": (HERE / "test_saved_measure.py").read_text()},
+                            {"path": "left_turn_controller.py",
+                             "source": str(HERE / "left_turn_controller.py"),
+                             "content": (HERE / "left_turn_controller.py").read_text()},
+                            {"path": "tests/test_left_turn_controller.py",
+                             "source": str(HERE / "test_left_turn_controller.py"),
+                             "content": (HERE / "test_left_turn_controller.py").read_text()}],
                         "recording_description": {"channels": [
                             {"name":"raw_ego_motion","method":"original ego actor readback",
                              "sampling_rate_hz":20,"time_window":"600 frames"},
@@ -102,7 +123,7 @@ def build():
                             {"name":"four_camera_video","method":"four named source streams",
                              "sampling_rate_hz":20,"time_window":"600 frames"}],
                             "limitations":["Native motion, signal pixels and legal hazard unverified"]},
-                        "status":"exact_unselected_offline_draft"}
+                        "status":"exact_unselected_offline_with_observed_controller_and_saved_meter"}
         path=HERE/(condition+"-construction.json")
         path.write_text(json.dumps(construction,indent=2)+"\n")
         entries.append({"case_id":case,"construction":path.name,

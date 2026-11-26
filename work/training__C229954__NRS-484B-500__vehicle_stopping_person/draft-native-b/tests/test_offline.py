@@ -3,7 +3,7 @@ import json
 import unittest
 from pathlib import Path
 
-from runner import check, _source, _route_guidance, _identity, _body_footprint
+from runner import check, _source, _route_guidance, _identity, _body_footprint, _reviewed_context
 from stop_controller import FRAMES, command
 
 
@@ -20,7 +20,8 @@ class DraftNativeContract(unittest.TestCase):
         self.assertFalse(receipt['physical_completion'])
         self.assertEqual(FRAMES, 600)
         self.assertEqual(_identity(self.config['case_id']),
-                         (self.config['activity_mode'], self.config['case']))
+                         (self.config['activity_mode'],
+                          self.config['case']['comparison_condition']))
         self.assertEqual(command(0, 10, 1)['phase'], 'approach')
         self.assertEqual(command(100, 0, 0)['phase'], 'hold')
 
@@ -79,5 +80,19 @@ class DraftNativeContract(unittest.TestCase):
         try:
             with self.assertRaisesRegex(ValueError, 'Original official'):
                 _source(path, 'condition_a')
+        finally:
+            path.unlink()
+
+    def test_reviewed_context_source_gate(self):
+        path = Path('context-source-test.json')
+        with self.assertRaisesRegex(ValueError, 'source path required'):
+            _reviewed_context(None, ('person_id',), 'Person activity')
+        path.write_text('{}\n')
+        try:
+            with self.assertRaisesRegex(ValueError, 'review fields missing'):
+                _reviewed_context(path, ('person_id',), 'Person activity')
+            path.write_text('{"person_id":"operator"}\n')
+            self.assertEqual(_reviewed_context(path, ('person_id',),
+                                               'Person activity')['person_id'], 'operator')
         finally:
             path.unlink()

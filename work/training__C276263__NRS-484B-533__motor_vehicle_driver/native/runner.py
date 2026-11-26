@@ -11,7 +11,7 @@ PREFIX = 'training__C276263__NRS-484B-533__motor_vehicle_driver__'
 
 def check():
     config = json.loads(Path(__file__).with_name('config.json').read_text())
-    if (config['case_id'] not in (PREFIX + 'reference', PREFIX + 'contrast') or
+    if (config['case_id'] not in {PREFIX + case for case in capture_check()['cases']} or
             config['law_id'] != 'NRS-484B-533' or config['cell_id'] != 'C276263' or
             config['actor'] != 'motor_vehicle_driver' or config['rate_hz'] != 20 or
             config['duration_s'] != 30 or

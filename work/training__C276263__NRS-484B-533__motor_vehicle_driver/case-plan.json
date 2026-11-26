@@ -17,7 +17,10 @@
       "evidence_or_gap": "Exact statute: A vehicle shall not be permitted to stand unattended upon any perceptible grade without stopping the engine and effectively setting the brake thereon and turning the front wheels to the curb or side of the highway.; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
-        "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast"
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight"
       ]
     },
     {
@@ -27,7 +30,10 @@
       "evidence_or_gap": "Exact statute: All three obligations during unattended standing on a grade; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
-        "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast"
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight"
       ]
     }
   ],
@@ -45,6 +51,14 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "intended_original_state": {
+        "engine_running": false,
+        "parking_brake_set": true,
+        "front_wheels_to_right_curb": true
+      },
+      "gap_ids": [
+        "original-three-duty-source-gap"
       ]
     },
     {
@@ -60,6 +74,83 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "intended_original_state": {
+        "engine_running": false,
+        "parking_brake_set": false,
+        "front_wheels_to_right_curb": false
+      },
+      "gap_ids": [
+        "original-three-duty-source-gap"
+      ]
+    },
+    {
+      "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on",
+      "target_law_id": "NRS-484B-533",
+      "planning_status": "source_bound_construction_pending",
+      "target_type": "attempt",
+      "comparison_variable": "engine_operation",
+      "comparison_unit": "states",
+      "requested_setting": "engine_on",
+      "recorded_value": null,
+      "case_description": "Engine operating while brake and curbward wheels match reference",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "intended_original_state": {
+        "engine_running": true,
+        "parking_brake_set": true,
+        "front_wheels_to_right_curb": true
+      },
+      "gap_ids": [
+        "original-three-duty-source-gap"
+      ]
+    },
+    {
+      "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset",
+      "target_law_id": "NRS-484B-533",
+      "planning_status": "source_bound_construction_pending",
+      "target_type": "attempt",
+      "comparison_variable": "parking_brake_state",
+      "comparison_unit": "states",
+      "requested_setting": "brake_unset",
+      "recorded_value": null,
+      "case_description": "Brake unset while stopped engine and curbward wheels match reference",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "intended_original_state": {
+        "engine_running": false,
+        "parking_brake_set": false,
+        "front_wheels_to_right_curb": true
+      },
+      "gap_ids": [
+        "original-three-duty-source-gap"
+      ]
+    },
+    {
+      "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight",
+      "target_law_id": "NRS-484B-533",
+      "planning_status": "source_bound_construction_pending",
+      "target_type": "attempt",
+      "comparison_variable": "front_wheel_orientation",
+      "comparison_unit": "states",
+      "requested_setting": "wheel_straight",
+      "recorded_value": null,
+      "case_description": "Straight front wheels while stopped engine and set brake match reference",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "intended_original_state": {
+        "engine_running": false,
+        "parking_brake_set": true,
+        "front_wheels_to_right_curb": false
+      },
+      "gap_ids": [
+        "original-three-duty-source-gap"
       ]
     }
   ],
@@ -71,7 +162,8 @@
         "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast"
       ],
       "deliberate_differences": [
-        "engine_brake_wheel_triplet"
+        "parking_brake_state",
+        "front_wheel_orientation"
       ],
       "fixed_conditions": [
         "cell",
@@ -80,7 +172,70 @@
         "traffic controls",
         "weather",
         "other controller settings",
-        "camera and capture profile"
+        "camera and capture profile",
+        "engine operation",
+        "unattended interval",
+        "authored grade and right curb"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_engine_on",
+      "case_ids": [
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on"
+      ],
+      "deliberate_differences": [
+        "engine_operation"
+      ],
+      "fixed_conditions": [
+        "same authored grade and right curb",
+        "same motor vehicle class and sensor calibration",
+        "same public-highway and unattended context",
+        "same 600-frame 20-Hz camera plan",
+        "same brake and wheel observations",
+        "same brake observation",
+        "same wheel observation"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_brake_unset",
+      "case_ids": [
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset"
+      ],
+      "deliberate_differences": [
+        "parking_brake_state"
+      ],
+      "fixed_conditions": [
+        "same authored grade and right curb",
+        "same motor vehicle class and sensor calibration",
+        "same public-highway and unattended context",
+        "same 600-frame 20-Hz camera plan",
+        "same engine observation",
+        "same engine and wheel observations",
+        "same wheel observation"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_wheel_straight",
+      "case_ids": [
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
+        "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight"
+      ],
+      "deliberate_differences": [
+        "front_wheel_orientation"
+      ],
+      "fixed_conditions": [
+        "same authored grade and right curb",
+        "same motor vehicle class and sensor calibration",
+        "same public-highway and unattended context",
+        "same 600-frame 20-Hz camera plan",
+        "same engine observation",
+        "same brake observation",
+        "same engine and brake observations"
       ],
       "status": "planned_unverified"
     }
@@ -218,5 +373,18 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Reviewed all eight frozen accepted membership and review-context rows against the exact law; each has zero supplied receipt sources, so labels and membership do not establish measured equivalence.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "original-three-duty-source-gap",
+        "requirement": "Original engine operation, effective brake, front-wheel direction to surveyed curb, attendance and grade for fixed-condition contrasts",
+        "source": "work/training__C276263__NRS-484B-533__motor_vehicle_driver/accepted-evidence-review.json",
+        "why_existing_insufficient": "All eight accepted membership rows have no frozen source receipts for independent measurement or physical review."
+      }
+    ]
+  }
 }

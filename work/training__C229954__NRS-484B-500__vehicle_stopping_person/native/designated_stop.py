@@ -97,7 +97,10 @@ def measure(packet):
                 "traffic_direction", "native_trace", "video_frame_map"):
         originals[key] = _source(sources.get(key))
     device = packet.get("device", {})
-    if originals["device"] != {key: value for key, value in device.items() if key != "designated_polygon_map_m"}:
+    if any(device.get(key) != value for key, value in originals["device"].items()) or \
+            "designated_polygon_map_m" not in device or \
+            not (set(device) - set(originals["device"])).issubset({
+                "designated_polygon_map_m", "hazard_context_status"}):
         raise ValueError("Device packet differs from original device source")
     if originals["designation"].get("designated_polygon_map_m") != device.get("designated_polygon_map_m") or \
             originals["designation"].get("device_id") != device.get("device_id"):
@@ -124,10 +127,12 @@ def measure(packet):
         raise ValueError("Native rows differ from original trace source")
     if not isinstance(rows, list) or len(rows) != FRAMES:
         raise ValueError("Incomplete 30-second Native trace")
-    if originals["video_frame_map"] != [{"video_frame": row.get("video_frame"),
-                                          "native_frame": row.get("native_frame"),
-                                          "time_s": row.get("time_s")}
-                                         for row in rows]:
+    mapping = originals["video_frame_map"]
+    if not isinstance(mapping, list) or len(mapping) != FRAMES or any(
+            frame.get("video_frame") != row.get("video_frame") or
+            frame.get("native_frame") != row.get("native_frame") or
+            frame.get("time_s") != row.get("time_s")
+            for frame, row in zip(mapping, rows)):
         raise ValueError("Video joins differ from original frame-map source")
     rest_frames, overlap_frames, rest_overlap_frames = 0, 0, 0
     min_overlap, max_overlap = math.inf, 0.0

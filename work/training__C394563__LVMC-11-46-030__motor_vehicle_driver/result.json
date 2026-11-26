@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver",
   "input_sha256": "549b28354ae9df3daf94c936b51318c7534010f2bb740ff3a2c00f8b311deac8",
-  "status": "partial",
-  "reason": "Eight exact 600-frame four-camera Native delivery cases and 16 primary/fallback constructions have passing offline, public positive/missing-source compatibility, physical/lifecycle, saved-only, and independent delivery diagnostic CPU proofs. The nine-stage semantic chain and selected execution/delivery contracts validate. Exact scoped strict gate and independent comparison proof remain pending; original Native/pixel review and legal outcomes remain unverified.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 8,
   "candidate_count": 16,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
@@ -42,14 +42,34 @@
     "selected_manifest": "execution-manifest.json",
     "selected_manifest_sha256": "f2420d837067981d30128eabc2274987bc8fa909a93a1c61c81e08068f3709fe",
     "variant_saved_only_cases": 8,
-    "variant_delivery_audit_cases": 8
+    "variant_delivery_audit_cases": 8,
+    "release_comparison_proof": "proofs/release-comparison-proof.json",
+    "release_comparison_count": 3,
+    "release_comparison_negative_count": 15,
+    "comparison_ids": [
+      "training__C394563__LVMC-11-46-030__motor_vehicle_driver__comparison",
+      "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_release",
+      "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_release",
+      "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_release"
+    ]
   },
   "tests": [
     {
-      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B -m unittest discover -s work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/tests -v",
+      "command": "cd work/training__C394563__LVMC-11-46-030__motor_vehicle_driver && TMPDIR=$PWD/../../.runtime-work PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -B -m unittest discover -s tests -v",
       "exit_code": 0,
       "log": "cpu-school-tests.log",
-      "sha256": "5328b251021c59c5136ce748466a41b679bd08d764dbb8650cd4e54253523084"
+      "sha256": "cc249c607d021d4ec4c7ec215fc0caca18ae25bf634679ede4e59a785958ea5f"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/prove_school_release_comparisons.py",
+      "exit_code": 0,
+      "log": "proofs/release-comparison-proof.log",
+      "sha256": "70c6d5b01d54239e6e96e23c0195839b91434683bfd906b4e09dd321662539ee"
     }
-  ]
+  ],
+  "remaining_gpu_checks": [
+    "Original CARLA school-lane, child and warning actor identity, controller motion, stop geometry, four-camera visibility and 30-second capture",
+    "Independent municipal source and legal outcome review from original Native and pixel evidence"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C394563__LVMC-11-46-030__motor_vehicle_driver --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

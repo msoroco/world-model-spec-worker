@@ -13,11 +13,17 @@ import xml.etree.ElementTree as ET
 
 from grade import check as grade_check, open_drive
 from instrumentation import InstrumentClient, wheel_angles
+from instrument_producer import audit_packet, audit_stream
 
 FRAMES = 600
 RATE = 20
 CASES = {'reference': {'brake': True, 'steer': -.55},
-         'contrast': {'brake': False, 'steer': 0.0}}
+         'contrast': {'brake': False, 'steer': 0.0},
+         'engine_on': {'brake': True, 'steer': -.55},
+         'brake_unset': {'brake': False, 'steer': -.55},
+         'wheel_straight': {'brake': True, 'steer': 0.0}}
+ENGINE_TARGET = {case: case == 'engine_on' for case in CASES}
+WHEEL_TARGET = {case: case not in ('contrast', 'wheel_straight') for case in CASES}
 CAMERAS = (('overview', -25, -15, 13, -45), ('approach', 2, -8, 5, -25),
            ('reference_corner', 4, -5, 2, -12),
            ('driver_reference', -3, 1, 3, -10))
@@ -29,7 +35,9 @@ def check():
             len({row[0] for row in CAMERAS}) != 4 or
             tuple(row[0] for row in CAMERAS) !=
             ('overview', 'approach', 'reference_corner', 'driver_reference') or
-            CASES['reference'] == CASES['contrast']):
+            CASES['reference'] == CASES['contrast'] or
+            set(CASES) != {'reference', 'contrast', 'engine_on',
+                           'brake_unset', 'wheel_straight'}):
         raise ValueError('Graded stand capture design differs')
     return {'passed': True, 'cases': CASES, 'frames': FRAMES, 'rate_hz': RATE,
             'cameras': [x[0] for x in CAMERAS],
@@ -39,6 +47,7 @@ def check():
                                   'driver_reference': [1280, 720]},
             'geometry': g,
             'engine_wheel_occupancy_instrumentation': 'external_original_service_required',
+            'engine_target': ENGINE_TARGET, 'wheel_target': WHEEL_TARGET,
             'native_executed': False}
 
 
@@ -148,7 +157,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
                 output / 'vehicle-frames.jsonl').open('x') as vehicle_rows, (
                 output / 'occupancy-frames.jsonl').open('x') as occupancy_rows, (
                 output / 'trace.jsonl').open('x') as trace_rows, (
-                output / 'instrument-frames.jsonl').open('x') as instrument_rows:
+                output / 'instrument-frames.jsonl').open('x') as instrument_rows, (
+                output / 'instrument-source-audit.jsonl').open('x') as source_audit_rows:
             first_elapsed = None
             for i in range(FRAMES):
                 controls = CASES[case]
@@ -179,7 +189,22 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
                 t = vehicle.get_transform()
                 c = vehicle.get_control()
                 wheels = wheel_angles(vehicle, carla)
-                instrument = instruments.sample(native_frame, vehicle.id, wheels)
+                instrument = instruments.sample(native_frame, vehicle.id, wheels,
+                                                t.rotation.yaw)
+                source_audit = audit_packet(instrument)
+                if instrument['engine_running'] is not ENGINE_TARGET[case]:
+                    raise ValueError('Original engine operation differs from case target')
+                wheel_heading = instrument['front_wheel_heading_to_curb_deg']
+                if ((WHEEL_TARGET[case] and wheel_heading > -10) or
+                        (not WHEEL_TARGET[case] and abs(wheel_heading) > 5)):
+                    raise ValueError('Original front-wheel construction target differs')
+                if bool(c.hand_brake) is not controls['brake']:
+                    raise ValueError('Original parking brake readback differs from case target')
+                surveyed = instrument['calibration']['curb_survey']
+                if (abs(surveyed['right_curb_y_m'] - survey['right_curb_y_m']) > 1e-4 or
+                        surveyed['road_xodr_sha256'] != survey['opendrive_sha256']):
+                    raise ValueError('Instrument curb calibration differs from Native map survey')
+                source_audit_rows.write(json.dumps(source_audit, sort_keys=True) + '\n')
                 instrument_rows.write(json.dumps(instrument, sort_keys=True) + '\n')
                 common = {'frame': i, 'native_frame': native_frame, 'time_s': time_s}
                 vehicle_rows.write(json.dumps(dict(common, source_kind='native_actor',
@@ -216,6 +241,10 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
             errors = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed ' + name + ': ' + errors.decode()[-400:])
+        packets = [json.loads(line) for line in
+                   (output / 'instrument-frames.jsonl').read_text().splitlines()]
+        (output / 'instrument-audit.json').write_text(json.dumps(
+            audit_stream(packets), indent=2) + '\n')
         from measure import SOURCES, sha
         (output / 'acquisition-hashes.json').write_text(json.dumps(
             {name: sha(output / name) for name in SOURCES}, indent=2) + '\n')
@@ -226,10 +255,14 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
             'original_instrument_fields': ['engine_running', 'front_wheel_heading_to_curb_deg',
                 'occupant_count', 'responsible_person_outside'],
             'physical_calibration_and_attendance_review_required': True,
+            'case_construction_targets_only': {'engine_running': ENGINE_TARGET[case],
+                'parking_brake_set': CASES[case]['brake'],
+                'front_wheels_turned_toward_right_curb': WHEEL_TARGET[case]},
             'do_not_relabel_commands_as_original': True}, indent=2) + '\n')
         return {'case': case, 'frames': FRAMES,
                 'native_brake_and_motion_captured': True,
                 'engine_wheel_occupancy_instrumentation': 'original_service_packets_recorded',
+            'instrument_source_audit_passed': True,
                 'saved_measurement_ready': True,
                 'physical_acceptance_claimed': False}
     finally:

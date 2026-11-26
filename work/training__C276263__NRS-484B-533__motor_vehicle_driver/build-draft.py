@@ -5,9 +5,13 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-CASES = (HERE.name + '__reference', HERE.name + '__contrast')
+SUFFIXES = ('reference', 'contrast', 'engine_on', 'brake_unset', 'wheel_straight')
+CASES = tuple(HERE.name + '__' + suffix for suffix in SUFFIXES)
 CONTROLS = {'reference': {'brake': True, 'steer': -.55},
-            'contrast': {'brake': False, 'steer': 0.0}}
+            'contrast': {'brake': False, 'steer': 0.0},
+            'engine_on': {'brake': True, 'steer': -.55},
+            'brake_unset': {'brake': False, 'steer': -.55},
+            'wheel_straight': {'brake': True, 'steer': 0.0}}
 
 
 def sha(path):
@@ -27,6 +31,9 @@ def main():
                   'cameras': ['overview', 'approach', 'reference_corner',
                               'driver_reference'],
                   'requested_controls': CONTROLS[suffix],
+                  'required_original_engine_running': suffix == 'engine_on',
+                  'required_original_wheels_toward_curb': suffix not in
+                      ('contrast', 'wheel_straight'),
                   'required_saved_sources': ['vehicle-frames.jsonl', 'grade-readback.json',
                                              'occupancy-frames.jsonl', 'video_frames.jsonl',
                                              'trace.jsonl', 'instrument-frames.jsonl'],
@@ -59,7 +66,8 @@ def main():
         config['case'] = {'case_id': case_id,
                           'recording_description': config['recording_description']}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
-                 for name in ('runner.py', 'capture.py', 'instrumentation.py', 'grade.py', 'measure.py',
+                 for name in ('runner.py', 'capture.py', 'instrumentation.py',
+                              'instrument_producer.py', 'grade.py', 'measure.py',
                               'finalize.py',
                               'comparison.py',
                               'tests/test_measure.py', 'tests/test_finalize.py')]

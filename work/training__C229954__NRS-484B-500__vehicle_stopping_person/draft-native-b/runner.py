@@ -3,7 +3,9 @@
 import argparse
 import json
 import math
+import os
 import queue
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -73,7 +75,24 @@ def check(config):
 
 def _source(path, condition):
     source = json.loads(Path(path).read_text())
-    return validate_route(source, condition)
+    return source, validate_route(source, condition)
+
+
+def _persist_source(source, output):
+    output = Path(output)
+    for name in ('device', 'designation', 'map', 'route'):
+        ref = source['sources'][name]
+        shutil.copyfile(ref['path'], output / ('source-' + name + '.json'))
+    (output / 'source-review.json').write_text(
+        json.dumps(source, indent=2, allow_nan=False) + '\n')
+
+
+def _reviewed_context(path, required, label):
+    require(path is not None, label + ' source path required')
+    source = json.loads(Path(path).read_text())
+    require(all(source.get(name) for name in required),
+            label + ' original review fields missing')
+    return source
 
 
 def _xyz(vector):
@@ -130,7 +149,15 @@ def execute(config, output, device_source_path, host, port):
     check(config)
     require(device_source_path is not None, 'Original device source required for Native run')
     activity, condition = _identity(config['case_id'])
-    source = _source(device_source_path, condition)
+    review, source = _source(device_source_path, condition)
+    person_activity = _reviewed_context(os.environ.get('SCENARIO_PERSON_ACTIVITY_SOURCE'),
+        ('person_id', 'purpose_source', 'attendance_source',
+         'passenger_activity_source', 'merchandise_activity_source'), 'Person activity')
+    require(person_activity.get('person_caused_stop') is True,
+            'Original person-caused destination stop source required')
+    traffic_direction = _reviewed_context(os.environ.get('SCENARIO_TRAFFIC_DIRECTION_SOURCE'),
+        ('traffic_conflicts_source', 'officer_direction_source',
+         'device_direction_source'), 'Traffic direction')
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
@@ -138,7 +165,13 @@ def execute(config, output, device_source_path, host, port):
     from worker_exchange.world_restore import restore, snapshot
 
     output = Path(output)
-    output.mkdir(parents=True, exist_ok=False)
+    require(output.is_dir() and (output / 'config.json').is_file(),
+            'Runtime materialized capture bundle required')
+    _persist_source(review, output)
+    (output / 'person-activity.json').write_text(
+        json.dumps(person_activity, indent=2, allow_nan=False) + '\n')
+    (output / 'traffic-direction.json').write_text(
+        json.dumps(traffic_direction, indent=2, allow_nan=False) + '\n')
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()
@@ -274,4 +307,6 @@ if __name__ == '__main__':
         print(json.dumps(check(config)))
     else:
         require(args.output_dir is not None, '--output-dir required')
-        execute(config, args.output_dir, args.device_source, args.host, args.port)
+        execute(config, args.output_dir,
+                args.device_source or os.environ.get('SCENARIO_DEVICE_SOURCE'),
+                args.host, args.port)

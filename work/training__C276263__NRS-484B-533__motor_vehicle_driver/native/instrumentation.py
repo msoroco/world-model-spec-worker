@@ -59,10 +59,12 @@ class InstrumentClient:
         self.reader = self.connection.makefile('r', encoding='utf-8')
         self.writer = self.connection.makefile('w', encoding='utf-8')
 
-    def sample(self, native_frame, actor_id, wheel_angles_deg):
+    def sample(self, native_frame, actor_id, wheel_angles_deg,
+               actor_heading_world_deg=None):
         request = {'format': 'c276263-instrument-request-v1',
                    'native_frame': native_frame, 'actor_id': actor_id,
-                   'native_front_wheel_angles_deg': wheel_angles_deg}
+                   'native_front_wheel_angles_deg': wheel_angles_deg,
+                   'actor_heading_world_deg': actor_heading_world_deg}
         self.writer.write(json.dumps(request, sort_keys=True) + '\n')
         self.writer.flush()
         line = self.reader.readline()

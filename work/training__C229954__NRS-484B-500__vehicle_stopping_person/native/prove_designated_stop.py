@@ -23,6 +23,7 @@ def packet(base, inside):
         x = stop_x - max(0.0, 100 - i) * 0.05
         rows.append({"native_frame": i, "video_frame": i, "time_s": i / RATE_HZ,
                      "observed_speed_mps": 1.0 if i < 100 else 0.0,
+                     "position_m": [x, 0, 0],
                      "vehicle_footprint_map_m": rectangle(x - 1, -0.8, x + 1, 0.8)})
     result = {
         "format": "worker-designated-stop-native-packet",
@@ -85,19 +86,38 @@ def main():
         base = Path(tmp)
         inside = packet(base / "inside", True)
         outside = packet(base / "outside", False)
+        original_frames = packet(base / "original-frame-ids", True)
+        for index, row in enumerate(original_frames["rows"]):
+            row["native_frame"] = 1000 + index
+        for name, rows in (
+            ("native_trace", original_frames["rows"]),
+            ("video_frame_map", [{"video_frame": row["video_frame"],
+                                  "native_frame": row["native_frame"],
+                                  "time_s": row["time_s"]}
+                                 for row in original_frames["rows"]]),
+        ):
+            path = base / "original-frame-ids" / (name + ".jsonl")
+            path.write_text("\n".join(json.dumps(row, separators=(",", ":"))
+                                      for row in rows) + "\n")
+            original_frames["sources"][name] = {
+                "path": str(path),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
         # The two packets carry separate source identities and all 600 joins.
         a = measure(inside)
         b = measure(outside)
+        original_ids = measure(original_frames)
         assert a["rest_frames"] == b["rest_frames"] == 500
         assert a["rest_and_body_overlap_frames"] == 500
         assert b["rest_and_body_overlap_frames"] == 0
         assert a["body_overlap_at_any_rest_frame"] and not b["body_overlap_at_any_rest_frame"]
+        assert original_ids["rest_and_body_overlap_frames"] == 500
         negatives = {
             "missing_designation_source": rejected(inside, lambda p: p["sources"].pop("designation"), "original source reference"),
             "changed_designation_source": rejected(inside, lambda p: p["sources"]["designation"].__setitem__("sha256", "0" * 64), "original source"),
             "inactive_device": rejected(inside, lambda p: p["device"].__setitem__("active_last_frame", 200), "original device source"),
             "not_official": rejected(inside, lambda p: p["device"].__setitem__("authority_status", "unknown"), "original device source"),
-            "missing_extent": rejected(inside, lambda p: p["device"].pop("designated_polygon_map_m"), "original extent source"),
+            "missing_extent": rejected(inside, lambda p: p["device"].pop("designated_polygon_map_m"), "original device source"),
             "missing_frame": rejected(inside, lambda p: p["rows"].pop(), "original trace source"),
             "bad_join": rejected(inside, lambda p: p["rows"][200].__setitem__("video_frame", 201), "original trace source"),
             "missing_person": rejected(inside, lambda p: p["sources"].pop("person_activity"), "original source reference"),
@@ -107,6 +127,7 @@ def main():
         }
         print(json.dumps({"format": "worker-designated-stop-synthetic-proof", "inside": a,
                           "outside": b, "negative_rejections": negatives,
+                          "original_frame_id_join": original_ids,
                           "source_type": "synthetic_native_sample", "legal_verdict": "none",
                           "physical_verdict": "none"}, indent=2, sort_keys=True))
 
