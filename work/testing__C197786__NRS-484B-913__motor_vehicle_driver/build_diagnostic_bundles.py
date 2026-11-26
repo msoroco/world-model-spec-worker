@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
-SOURCE_NAMES = ("fire_hose_delivery.py", "delivery_audit.py", "native_capture.py")
+SOURCE_NAMES = ("fire_hose_delivery.py", "delivery_audit.py", "native_capture.py", "native_adapter.py", "analysis.py")
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 RUNNER = '''"""Exact hose entrypoint; original reviewed sources are mandatory for capture."""
@@ -121,9 +121,7 @@ def main():
     if not packet_path or not source_root or not args.output_dir or not args.host or not args.port:
         raise ValueError("original reviewed packet, source root, Native server and output required")
     packet = reviewed_source(packet_path, source_root, config)
-    adapter_name = os.environ.get("HOSE_NATIVE_ADAPTER")
-    if not adapter_name:
-        raise ValueError("reviewed Native hose capture adapter required")
+    adapter_name = os.environ.get("HOSE_NATIVE_ADAPTER", "native_adapter")
     adapter = importlib.import_module(adapter_name).create_adapter(config, args.host, args.port)
     if adapter.provenance() != "original_native":
         raise ValueError("original Native adapter provenance required")

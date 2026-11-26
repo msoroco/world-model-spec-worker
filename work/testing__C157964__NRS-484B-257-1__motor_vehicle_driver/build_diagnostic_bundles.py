@@ -12,7 +12,7 @@ ASSIGNMENT = ROOT.name
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("yield_view.py", "reviewed_site.py", "native_capture.py",
            "saved_audit.py", "saved_finalizer.py", "comparison_audit.py",
-           "delivery_audit.py", "judgment_sweep.py")
+           "delivery_audit.py", "judgment_sweep.py", "analysis.py")
 CHANNELS = (
     ("yield_sign", "reviewed original sign designation and Native readback", "source record"),
     ("nearest_view_reference", "reviewed absence hierarchy and source-sealed station", "m"),
@@ -134,6 +134,11 @@ def build():
             "frame_count": 900, "rate_hz": 20, "duration_s": 45,
             "camera_views": list(CAMERAS),
             "source_gate": "reviewed_original_required",
+            "diagnostic_only": True,
+            "reviewed_site_packet_sha256": hashlib.sha256(
+                (ROOT / "diagnostic-sources" / case.case_id /
+                 "original-attempt" / "reviewed-site-packet.json").read_bytes()
+            ).hexdigest(),
             "required_atoms": [], "source_packets": [],
             "cameras": [{"name": view} for view in CAMERAS],
             "case": {"case_id": case_id},
@@ -160,6 +165,37 @@ def build():
                 "diagnostic_only": True, "cases": cases,
                 "comparisons": ["slow_vs_stop", "through_phase", "officer_exception"]}
     write_json(ROOT / "diagnostic-execution-manifest.json", manifest)
+    selected = {"format": "worker-execution-manifest",
+                "assignment_id": ASSIGNMENT,
+                "runtime_manifest_sha256": hashlib.sha256(
+                    (ROOT.parents[1] / "runtime" / "SOURCE-MANIFEST.json").read_bytes()
+                ).hexdigest(),
+                "status": "partial_selected_cpu_work",
+                "cases": []}
+    for item in cases:
+        short = item["case_id"].removeprefix(ASSIGNMENT + "__")
+        selected["cases"].append({
+            "case_id": item["case_id"], "kind": "delivery",
+            "construction": item["construction"],
+            "construction_sha256": item["construction_sha256"],
+            "measurement_contract": "cases/" + short + "/measurement-contract.json",
+            "measurement_procedure": {"entrypoint": "analysis.py"},
+            "fixture_recipe": "work/" + ASSIGNMENT +
+                              "/diagnostic-fixture-recipe-" + short + ".json",
+            "candidate_risk": item["candidate_risk"], "candidates": [],
+            "acquisition": {
+                name: {"entrypoint": "native_capture.py",
+                       "method": "sealed original Native actor/camera and reviewed-site readback",
+                       "evidence": "original-attempt/rows.json"}
+                for name, _, _ in CHANNELS},
+            "native_handoff": {"python_env_var": "CARLA_PYTHON",
+                               "host_env_var": "CARLA_HOST",
+                               "port_env_var": "CARLA_PORT",
+                               "source_dir_env_var": "C157964_REVIEWED_SOURCES"},
+            "missing_proofs": ["selected compatibility and negative source",
+                               "recorded-only processing and original physical review",
+                               "independent selected delivery and comparison receipts"]})
+    write_json(ROOT / "execution-manifest.json", selected)
     print(json.dumps({"cases": len(cases), "manifest": str(ROOT / "diagnostic-execution-manifest.json")}, sort_keys=True))
 
 

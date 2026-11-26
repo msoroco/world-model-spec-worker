@@ -48,7 +48,7 @@ def main():
         capture["source_run"] = "fixture:restricted-zone-software-compatibility"
         source["files"]["capture/manifest.json"] = content(capture)
         for video, name in zip(source["videos"],
-                               ("overview", "subject", "zone_access", "passenger_door")):
+                               ("overview", "approach", "reference_corner", "driver_reference")):
             video["path"] = name + ".mkv"
         path = ROOT / ("diagnostic-" + suffix + ".json")
         path.write_text(content(source))

@@ -6,6 +6,7 @@ import io
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 import sys
 from PIL import Image
@@ -71,7 +72,7 @@ class Adapter:
                      entrant_parking_task_active=True)
         if self.missing == "state": state.pop("entrant_parking_task_active")
         pixels = {view: PNG for view in cameras}
-        if self.missing == "camera": pixels.pop("passenger_door")
+        if self.missing == "camera": pixels.pop("driver_reference")
         frame, time_s = 1000 + i, 100 + i / 20
         return dict(frame=frame, time_s=time_s, state=state, camera_png=pixels,
                     trace={"frame": frame, "time_s": time_s},
@@ -213,18 +214,21 @@ class CaptureTests(unittest.TestCase):
                 saved.DIMENSIONS.update({view: (1, 1) for view in saved.VIEWS})
                 review.write_text(json.dumps(packet_data))
                 review_sha = hashlib.sha256(review.read_bytes()).hexdigest()
-                result = delivery.audit(output, plan.case_id, site_sha, review, review_sha)
+                with patch.object(delivery, "_decode_media", return_value={name: 900 for name in (*delivery.VIEWS, "raw")}):
+                    result = delivery.audit(output, plan.case_id, site_sha, review, review_sha)
                 self.assertTrue(result["physical_completion"])
                 packet_data["observations"]["entrant_approach"]["pixel_sha256"] = "0" * 64
                 review.write_text(json.dumps(packet_data))
                 bad_sha = hashlib.sha256(review.read_bytes()).hexdigest()
-                with self.assertRaisesRegex(ValueError, "pixel citation stale"):
-                    delivery.audit(output, plan.case_id, site_sha, review, bad_sha)
+                with patch.object(delivery, "_decode_media", return_value={}):
+                    with self.assertRaisesRegex(ValueError, "pixel citation stale"):
+                        delivery.audit(output, plan.case_id, site_sha, review, bad_sha)
                 packet_data["observations"].pop("entrant_approach")
                 review.write_text(json.dumps(packet_data))
                 incomplete_sha = hashlib.sha256(review.read_bytes()).hexdigest()
-                with self.assertRaisesRegex(ValueError, "review incomplete"):
-                    delivery.audit(output, plan.case_id, site_sha, review, incomplete_sha)
+                with patch.object(delivery, "_decode_media", return_value={}):
+                    with self.assertRaisesRegex(ValueError, "review incomplete"):
+                        delivery.audit(output, plan.case_id, site_sha, review, incomplete_sha)
             finally:
                 saved.DIMENSIONS.clear()
                 saved.DIMENSIONS.update(original_dimensions)

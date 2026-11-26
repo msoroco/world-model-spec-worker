@@ -55,8 +55,8 @@ def capture(adapter, config, reviewed, packet_path, source_root, output_dir,
         owned.append(ego)
         adapter.set_route(ego, reviewed["private_way"]["ego_route_xy"],
                           config["case"]["planned_hose_crossing"])
-        adapter.start_cameras(VIEWS)
         cameras_started = True
+        adapter.start_cameras(VIEWS)
         out.mkdir(parents=True)
         frames = []
         cameras = {view: [] for view in VIEWS}

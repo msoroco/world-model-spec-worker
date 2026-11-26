@@ -20,6 +20,16 @@ capture_spec = importlib.util.spec_from_file_location("native_capture", CAPTURE_
 capture_module = importlib.util.module_from_spec(capture_spec)
 sys.modules[capture_spec.name] = capture_module
 capture_spec.loader.exec_module(capture_module)
+AUDIT_PATH = MODULE_PATH.parent / "delivery_audit.py"
+audit_spec = importlib.util.spec_from_file_location("delivery_audit", AUDIT_PATH)
+audit_module = importlib.util.module_from_spec(audit_spec)
+sys.modules[audit_spec.name] = audit_module
+audit_spec.loader.exec_module(audit_module)
+ADAPTER_PATH = MODULE_PATH.parent / "native_adapter.py"
+adapter_spec = importlib.util.spec_from_file_location("native_adapter", ADAPTER_PATH)
+adapter_module = importlib.util.module_from_spec(adapter_spec)
+sys.modules[adapter_spec.name] = adapter_module
+adapter_spec.loader.exec_module(adapter_module)
 
 
 def source(**kwargs):
@@ -124,6 +134,16 @@ class FakeAdapter:
 
 
 class HoseTests(unittest.TestCase):
+    def test_native_route_and_body_geometry(self):
+        self.assertAlmostEqual(adapter_module.steering_to((0, 0), 0, (10, 0)), 0)
+        self.assertGreater(adapter_module.steering_to((0, 0), 0, (0, 10)), 0)
+        transform = type("Transform", (), {
+            "location": type("Loc", (), {"x": 1, "y": 2})(),
+            "rotation": type("Rot", (), {"yaw": 0})()})()
+        extent = type("Ext", (), {"x": 2, "y": 1})()
+        self.assertEqual(adapter_module.body_corners(transform, extent),
+                         [[-1.0, 1.0], [3.0, 1.0], [3.0, 3.0], [-1.0, 3.0]])
+
     def test_diagnostic_native_capture_seal_and_cleanup(self):
         with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:
             root = Path(tmp)
@@ -159,6 +179,11 @@ class HoseTests(unittest.TestCase):
                              hashlib.sha256((root / "attempt" / "frames.jsonl").read_bytes()).hexdigest())
             self.assertEqual(saved["road"]["private_way_owner"], "owner")
             self.assertEqual(len(json.loads((root / "attempt" / "camera-index.json").read_text())), 4)
+            audit_module.verify_camera_sources(saved, root / "attempt", expected_frames=3)
+            changed_image = root / "attempt" / "cameras" / "overview" / "0001.png"
+            changed_image.write_bytes(changed_image.read_bytes() + b"changed")
+            with self.assertRaisesRegex(ValueError, "camera source PNG/hash mismatch"):
+                audit_module.verify_camera_sources(saved, root / "attempt", expected_frames=3)
             class BadCameraAdapter(FakeAdapter):
                 def camera_packets(self, snapshot):
                     packets = super().camera_packets(snapshot)
@@ -350,6 +375,18 @@ class HoseTests(unittest.TestCase):
         b["native"]["result_sha256"] = "b" * 64
         with self.assertRaisesRegex(ValueError, "contrast absent"):
             module.compare_saved_hose(a, b, "consent")
+
+    def test_passage_comparison_allows_only_route_variation(self):
+        a, b = packet(), packet()
+        b["native"]["result_sha256"] = "b" * 64
+        b["road"]["ego_route_xy"] = [[2, -1], [2, 1]]
+        b["native"]["frames"][0]["ego_xy"] = [2, -1]
+        b["native"]["frames"][1]["ego_xy"] = [2, 1]
+        a["road"]["ego_route_xy"] = [[0, -1], [0, 1]]
+        self.assertEqual(module.compare_saved_hose(a, b, "passage")["comparison_variable"], "passage")
+        b["road"]["private_way_owner"] = "changed"
+        with self.assertRaisesRegex(ValueError, "fixed road"):
+            module.compare_saved_hose(a, b, "passage")
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ from reviewed_site import ROLES
 from zone_audit import audit_original_frames
 
 
-DIMENSIONS = {"overview": (1920, 1080), "subject": (1280, 720),
-              "zone_access": (1280, 720), "passenger_door": (1280, 720)}
+DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+              "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _sha(data):

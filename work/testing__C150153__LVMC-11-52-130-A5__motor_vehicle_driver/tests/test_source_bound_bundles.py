@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import subprocess
 from tempfile import TemporaryDirectory
 import unittest
 
@@ -71,6 +72,25 @@ class SourceBoundBundleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'reviewed original site packet changed'):
                 namespace['run'](original_protocol, packet, sources,
                                  Path(temp) / 'changed-history.jsonl')
+
+    def test_pinned_offline_on_all_source_bound_drafts(self):
+        scratch = Path('.runtime-work/c150153-source-bound-tests')
+        scratch.mkdir(parents=True, exist_ok=True)
+        with TemporaryDirectory(dir=scratch) as temp:
+            packet, sources, _ = ReviewedSiteTests().make_packet(Path(temp))
+            output = Path(temp) / 'bundles'
+            index = generate(packet, sources, 4.0, output)
+            manifest = output / 'manifest.json'
+            manifest.write_text(json.dumps({'cases': index['cases']}) + '\n')
+            for entry in index['cases']:
+                with self.subTest(case=entry['case_id']):
+                    command = [str(HERE.parents[1] / '.venv-cpu/bin/python'), 'runtime.py', 'offline',
+                               '--manifest', str(manifest), '--case', entry['case_id'],
+                               '--output', str(Path(temp) / ('offline-' + entry['case_id'].rsplit('__', 1)[-1]))]
+                    result = subprocess.run(command, capture_output=True, text=True,
+                                            cwd=HERE.parents[1], timeout=90)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertIn('offline_passed', result.stdout)
 
 
 if __name__ == '__main__':

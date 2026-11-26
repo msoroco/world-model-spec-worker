@@ -6,6 +6,7 @@ original pixels. This audit makes no statutory interference determination.
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 from saved_audit import VIEWS, audit as audit_saved
@@ -20,6 +21,33 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _decode_media(attempt):
+    """Decode every selected encoded frame; source PNG custody is checked separately."""
+    counts = {}
+    for name in (*VIEWS, "raw"):
+        media = attempt / (name + ".mkv")
+        probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                                "-show_entries", "stream=width,height,avg_frame_rate",
+                                "-of", "json", str(media)], capture_output=True, text=True)
+        if probe.returncode:
+            raise ValueError("encoded media probe failed: " + name)
+        streams = json.loads(probe.stdout).get("streams", [])
+        if len(streams) != 1 or streams[0].get("width", 0) <= 0 or streams[0].get("height", 0) <= 0:
+            raise ValueError("encoded media video stream invalid: " + name)
+        decoded = subprocess.run(["ffmpeg", "-v", "error", "-i", str(media),
+                                  "-map", "0:v:0", "-progress", "pipe:1", "-nostats",
+                                  "-f", "null", "-"],
+                                 capture_output=True, text=True)
+        if decoded.returncode:
+            raise ValueError("encoded media full decode failed: " + name)
+        frames = [int(line.partition("=")[2]) for line in decoded.stdout.splitlines()
+                  if line.startswith("frame=")]
+        if not frames or frames[-1] != 900:
+            raise ValueError("encoded media frame count mismatch: " + name)
+        counts[name] = frames[-1]
+    return counts
+
+
 def audit(attempt, case_id, expected_site_sha256, review_path, expected_review_sha256):
     attempt = Path(attempt).resolve()
     review_path = Path(review_path).resolve()
@@ -30,6 +58,7 @@ def audit(attempt, case_id, expected_site_sha256, review_path, expected_review_s
     saved = audit_saved(attempt, case_id, expected_site_sha256)
     if saved["diagnostic_fixture"]:
         raise ValueError("diagnostic fixture cannot satisfy original delivery")
+    decoded_media = _decode_media(attempt)
     review = json.loads(review_path.read_text())
     if review.get("case_id") != case_id or review.get("site_packet_sha256") != expected_site_sha256:
         raise ValueError("external reviewer case/site mismatch")
@@ -49,4 +78,5 @@ def audit(attempt, case_id, expected_site_sha256, review_path, expected_review_s
             raise ValueError("physical observation pixel citation stale: " + topic)
     return {"case_id": case_id, "site_packet_sha256": expected_site_sha256,
             "review_sha256": expected_review_sha256, "observed_topics": list(OBSERVATIONS),
+            "encoded_media": decoded_media,
             "physical_completion": True, "legal_status": "unresolved_judgment"}

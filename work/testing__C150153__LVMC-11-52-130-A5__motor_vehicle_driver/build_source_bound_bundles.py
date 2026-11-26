@@ -18,14 +18,19 @@ ROOT = HERE.parents[1]
 MODULES = ("parking.py", "reviewed_site.py", "native_case_runner.py",
            "native_history_capture.py", "saved_audit.py",
            "independent_delivery_audit.py", "seal_original_capture.py",
-           "physical_review.py", "saved_finalizer.py", "comparison_audit.py")
+           "physical_review.py", "saved_finalizer.py", "comparison_audit.py",
+           "physical_outcomes.py", "physical_preparation.py")
+MODULES += ("native_camera_capture.py",)
+PLAN = json.loads((HERE / 'case-plan.json').read_text())
 
 RUNNER = '''"""Run one original source-reviewed sidewalk-elevator Native case."""
 import argparse
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 from native_case_runner import run_case
+from native_camera_capture import capture as capture_with_cameras
 from reviewed_site import verify
 
 CASE_ID = {case_id!r}
@@ -41,13 +46,41 @@ def run(adapter, packet, source_root, output):
     return run_case(adapter, Path(packet), Path(source_root), CASE_ID,
                     BODY_LENGTH_M, Path(output))
 
+def run_original_capture(adapter, packet, source_root, output_dir):
+    if hashlib.sha256(Path(packet).read_bytes()).hexdigest() != SITE_SHA256:
+        raise ValueError('reviewed original site packet changed')
+    verify(Path(packet), Path(source_root))
+    if not hasattr(adapter, 'provenance') or adapter.provenance() != 'original_native':
+        raise ValueError('original Native adapter provenance required')
+    return capture_with_cameras(adapter, Path(packet), Path(source_root), CASE_ID,
+                                BODY_LENGTH_M, Path(output_dir))
+
+def check():
+    root = Path(__file__).resolve().parent
+    scene = json.loads((root / 'scene.json').read_text())
+    config = json.loads((root / 'config.json').read_text())
+    if scene.get('case_id') != CASE_ID or config.get('selected_case_id') != CASE_ID:
+        raise ValueError('selected exact case differs')
+    if scene.get('reviewed_site_packet_sha256') != SITE_SHA256:
+        raise ValueError('reviewed site packet binding differs')
+    if config.get('rate_hz') != 20 or config.get('duration_s') != 45 or len(config.get('cameras', [])) != 4:
+        raise ValueError('original capture specification differs')
+    return scene
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--reviewed-packet', type=Path, required=True)
-    parser.add_argument('--source-root', type=Path, required=True)
-    parser.add_argument('--adapter-module', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--reviewed-packet', type=Path)
+    parser.add_argument('--source-root', type=Path)
+    parser.add_argument('--adapter-module', type=Path)
+    parser.add_argument('--output', type=Path)
     args = parser.parse_args()
+    check()
+    if args.check:
+        print('source-bound exact case preflight passed: ' + CASE_ID)
+        return
+    if not all((args.reviewed_packet, args.source_root, args.adapter_module, args.output)):
+        raise ValueError('original source and Native adapter arguments required')
     spec = importlib.util.spec_from_file_location('original_elevator_adapter', args.adapter_module)
     if spec is None or spec.loader is None:
         raise ValueError('original adapter module missing')
@@ -57,13 +90,27 @@ def main():
         raise ValueError('original Native adapter factory missing')
     adapter = module.open_native_adapter()
     try:
-        result = run(adapter, args.reviewed_packet, args.source_root, args.output)
+        result = run_original_capture(adapter, args.reviewed_packet, args.source_root, args.output)
         print(result)
     finally:
         adapter.close()
 
 if __name__ == '__main__':
     main()
+'''
+
+TEST = '''import unittest
+import runner
+
+class OriginalBundleTest(unittest.TestCase):
+    def test_exact_source_bound_preflight(self):
+        self.assertEqual(runner.check()['case_id'], runner.CASE_ID)
+
+    def test_original_capture_arguments_required(self):
+        from unittest.mock import patch
+        with patch('sys.argv', ['runner.py']):
+            with self.assertRaisesRegex(ValueError, 'original source and Native adapter'):
+                runner.main()
 '''
 
 
@@ -93,11 +140,24 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                  'capture_frames': 900, 'capture_rate_hz': 20,
                  'commanded_body_interval_m': item['commanded_body_interval_m'],
                  'physical_acceptance': False, 'legal_judgment': None}
+        config = {'law_id': 'LVMC-11-52-130-A5', 'cell_id': 'C150153',
+                  'actor': 'motor_vehicle_driver', 'selected_case_id': case_id,
+                  'supported_case_ids': [item['case_id'] for item in specs['cases']],
+                  'rate_hz': 20, 'duration_s': 45,
+                  'required_atoms': [], 'source_packets': [],
+                  'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference']}
         files = {'runner.py': runner, 'scene.json': json.dumps(scene, indent=2) + '\n',
+                 'config.json': json.dumps(config, indent=2) + '\n',
+                 'tests/test_bundle.py': TEST,
                  **module_files}
         construction = {'law_id': 'LVMC-11-52-130-A5', 'cell_id': 'C150153',
                         'actor': 'motor_vehicle_driver', 'case_id': case_id,
                         'entrypoint': 'runner.py', 'source_kind': 'original_reviewed_site',
+                        'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id),
+                        'measurement_plan': {'method': 'saved_finalizer.finalize', 'source': 'sealed original Native history'},
+                        'static_checks': ['reviewed site and exact case binding', '20 Hz and 900 frames'],
+                        'termination_rules': {'frame_count': 900},
+                        'mechanisms': ['native_case_runner.run_case', 'physical_preparation.prepare'],
                         'files': [{'path': path, 'content': text}
                                   for path, text in files.items()]}
         raw = (json.dumps(construction, indent=2, sort_keys=True) + '\n').encode()

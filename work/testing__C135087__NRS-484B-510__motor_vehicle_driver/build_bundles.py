@@ -8,8 +8,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 ASSIGNMENT = ROOT.name
-CAMERAS = (("overview", 1920, 1080), ("subject", 1280, 720),
-           ("zone_access", 1280, 720), ("passenger_door", 1280, 720))
+CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
+           ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 
 
 def _content(value):
@@ -116,7 +116,7 @@ def main():
                                            "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
                         "candidate_risk": case["physical_risk_assessment"],
                         "candidates": []})
-        output = REPO / ".runtime-work" / ("c135087-offline-" + suffix + "-nov26-v4")
+        output = REPO / ".runtime-work" / ("c135087-offline-" + suffix + "-nov26-v5")
         log = ROOT / ("cpu-offline-" + suffix + ".log")
         selection = output / "candidate-selection.json"
         if log.is_file() and selection.is_file():
@@ -135,6 +135,15 @@ def main():
                 "runtime_manifest_sha256": _sha(REPO / "runtime/SOURCE-MANIFEST.json"),
                 "diagnostic_only": True, "cases": entries}
     (ROOT / "diagnostic-execution-manifest.json").write_text(_content(manifest))
+    (ROOT / "execution-manifest.json").write_text(_content(manifest))
+    proposals = ROOT / "proposals"
+    proposals.mkdir(exist_ok=True)
+    (proposals / "cases.json").write_text(_content({
+        "actor": "motor_vehicle_driver", "cell_id": "C135087",
+        "semantic_status": "partial_stage_chain_pending",
+        "cases": [{"case_id": entry["case_id"], "target_type": "selected",
+                   "recording_description": json.loads((ROOT / entry["construction"]).read_text())
+                       ["recording_description"]} for entry in entries]}))
     print("bound", len(entries), "source-gated restricted-zone constructions")
 
 

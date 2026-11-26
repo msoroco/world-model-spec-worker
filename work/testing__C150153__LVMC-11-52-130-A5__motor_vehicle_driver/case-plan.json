@@ -1,64 +1,49 @@
 {
-  "assignment_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C150153",
-  "law_id": "LVMC-11-52-130-A5",
-  "selected_branches": [
-    {
-      "law_id": "LVMC-11-52-130-A5",
-      "cell_id": "C150153",
-      "actor": "motor_vehicle_driver",
-      "requirement": "LVMC-11-52-130-A5",
-      "branch": "parking near sidewalk elevator",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 310,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute.",
-  "law_source": "LVMC 11.52.130(A)(5)",
-  "topic_inventory": {
-    "exact-text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute."
-  },
+  "assignment_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver",
   "cases": [
     {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
       "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_park",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "front",
+        "script": "parking.py",
+        "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
+      },
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "front",
-        "activity": "park",
-        "side_gap_target_m": 0,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original frame map",
           "vehicle body footprint",
@@ -67,52 +52,52 @@
           "one-way route",
           "activity and exception source",
           "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
+      "requirement": "LVMC-11-52-130-A5"
     },
     {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
       "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
+      "construction": {
+        "activity": "stop",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "front",
+        "script": "parking.py",
+        "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
+      },
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "front",
-        "activity": "stop",
-        "side_gap_target_m": 0,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original frame map",
           "vehicle body footprint",
@@ -121,430 +106,430 @@
           "one-way route",
           "activity and exception source",
           "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
+      "requirement": "LVMC-11-52-130-A5"
     },
     {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
       "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stand",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
       "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "front",
         "activity": "stand",
-        "side_gap_target_m": 0,
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
           "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_inside",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "west",
-        "activity": "park",
-        "side_gap_target_m": 1.374,
-        "exception": "none",
-        "fixed_conditions": {
           "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
+          "curb_gap_target_m": 0.3,
           "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_at",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "west",
-        "activity": "park",
-        "side_gap_target_m": 1.524,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
           "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_outside",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "west",
-        "activity": "park",
-        "side_gap_target_m": 1.674,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
           "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
           "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
           "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_inside",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "east",
-        "activity": "park",
-        "side_gap_target_m": 1.374,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
           "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_at",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "east",
-        "activity": "park",
-        "side_gap_target_m": 1.524,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_outside",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "east",
-        "activity": "park",
-        "side_gap_target_m": 1.674,
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_traffic_exception",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
+          "weather": "same_source"
+        },
         "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
         "region": "front",
-        "activity": "stop",
+        "script": "parking.py",
         "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_inside",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "west",
+        "script": "parking.py",
+        "side_gap_target_m": 1.374,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_at",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "west",
+        "script": "parking.py",
+        "side_gap_target_m": 1.524,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_outside",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "west",
+        "script": "parking.py",
+        "side_gap_target_m": 1.674,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_inside",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "east",
+        "script": "parking.py",
+        "side_gap_target_m": 1.374,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_at",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "east",
+        "script": "parking.py",
+        "side_gap_target_m": 1.524,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_outside",
+      "construction": {
+        "activity": "park",
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "east",
+        "script": "parking.py",
+        "side_gap_target_m": 1.674,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_traffic_exception",
+      "construction": {
+        "activity": "stop",
+        "entrypoint": "build_case",
         "exception": "lawful_traffic_conflict",
         "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
           "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
           "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "front",
+        "script": "parking.py",
+        "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original frame map",
           "vehicle body footprint",
@@ -553,106 +538,52 @@
           "one-way route",
           "activity and exception source",
           "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
+      "requirement": "LVMC-11-52-130-A5"
     },
     {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_police_exception",
       "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_police_exception",
       "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "front",
         "activity": "stop",
-        "side_gap_target_m": 0,
+        "entrypoint": "build_case",
         "exception": "police_direction",
         "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
           "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
           "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "front",
+        "script": "parking.py",
+        "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
       },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original frame map",
-          "vehicle body footprint",
-          "fixture physical presence and geometry",
-          "sidewalk and municipal jurisdiction",
-          "one-way route",
-          "activity and exception source",
-          "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
-    },
-    {
-      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_device_exception",
-      "branch": "parking near sidewalk elevator",
-      "requirement": "LVMC-11-52-130-A5",
-      "kind": "delivery",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "parking.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
-        "region": "front",
-        "activity": "stop",
-        "side_gap_target_m": 0,
-        "exception": "traffic_device_direction",
-        "fixed_conditions": {
-          "cell_id": "C150153",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "fixture_kind": "sidewalk_elevator",
-          "one_way_direction": "source_readback",
-          "vehicle_blueprint": "same_source",
-          "route": "same_source",
-          "weather": "same_source",
-          "camera_plan": "four_camera_20hz",
-          "duration_frames": 900,
-          "curb_gap_target_m": 0.3
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original frame map",
           "vehicle body footprint",
@@ -661,25 +592,76 @@
           "one-way route",
           "activity and exception source",
           "four synchronized cameras"
-        ],
-        "measurement": "parking.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
+      "requirement": "LVMC-11-52-130-A5"
+    },
+    {
+      "branch": "parking near sidewalk elevator",
       "candidate_risk": {
-        "status": "physical",
+        "candidates": [],
         "reason": "A sidewalk elevator is not established by a catalog label; physical fixture/map object and four-camera view require live readback.",
-        "candidates": []
+        "status": "physical"
       },
-      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture."
+      "case_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_device_exception",
+      "construction": {
+        "activity": "stop",
+        "entrypoint": "build_case",
+        "exception": "traffic_device_direction",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four_camera_20hz",
+          "cell_id": "C150153",
+          "curb_gap_target_m": 0.3,
+          "duration_frames": 900,
+          "fixture_kind": "sidewalk_elevator",
+          "layout": "one_way_road",
+          "one_way_direction": "source_readback",
+          "route": "same_source",
+          "vehicle_blueprint": "same_source",
+          "weather": "same_source"
+        },
+        "fixture_physical_support": "map object or spawned prop with identity, geometry and presence readback",
+        "region": "front",
+        "script": "parking.py",
+        "side_gap_target_m": 0,
+        "site_preflight": "validate_site"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Fixture may be absent or not visible, body may miss the commanded side space, or curb alignment may fail; inspect original footprint and full video after Native capture.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "parking.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original frame map",
+          "vehicle body footprint",
+          "fixture physical presence and geometry",
+          "sidewalk and municipal jurisdiction",
+          "one-way route",
+          "activity and exception source",
+          "four synchronized cameras"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A5"
     }
   ],
+  "cell_id": "C150153",
   "comparisons": [
     {
-      "comparison_id": "front_activity_stop_park",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_park"
+      ],
+      "comparison_id": "front_activity_stop_park",
+      "deliberate_differences": [
+        "commanded activity"
       ],
       "fixed_conditions": [
         "law",
@@ -693,18 +675,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded activity"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "front_activity_stand_park",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stand",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_park"
       ],
+      "comparison_id": "front_activity_stand_park",
+      "deliberate_differences": [
+        "commanded activity"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -717,18 +699,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded activity"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "west_below_at",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_inside",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_at"
       ],
+      "comparison_id": "west_below_at",
+      "deliberate_differences": [
+        "commanded body-to-fixture side gap"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -741,18 +723,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded body-to-fixture side gap"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "west_at_above",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_at",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_outside"
       ],
+      "comparison_id": "west_at_above",
+      "deliberate_differences": [
+        "commanded body-to-fixture side gap"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -765,18 +747,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded body-to-fixture side gap"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "east_below_at",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_inside",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_at"
       ],
+      "comparison_id": "east_below_at",
+      "deliberate_differences": [
+        "commanded body-to-fixture side gap"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -789,18 +771,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded body-to-fixture side gap"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "east_at_above",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_at",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_outside"
       ],
+      "comparison_id": "east_at_above",
+      "deliberate_differences": [
+        "commanded body-to-fixture side gap"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -813,18 +795,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "commanded body-to-fixture side gap"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "symmetric_inside",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_inside",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_inside"
       ],
+      "comparison_id": "symmetric_inside",
+      "deliberate_differences": [
+        "side of fixture"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -837,18 +819,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "side of fixture"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "front_traffic_exception",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_traffic_exception"
       ],
+      "comparison_id": "front_traffic_exception",
+      "deliberate_differences": [
+        "sourced reason for necessary stop"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -861,18 +843,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "sourced reason for necessary stop"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "front_police_exception",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_police_exception"
       ],
+      "comparison_id": "front_police_exception",
+      "deliberate_differences": [
+        "sourced reason for necessary stop"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -885,18 +867,18 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "sourced reason for necessary stop"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "front_device_exception",
+      "audit": "parking.py:audit_comparison",
       "case_ids": [
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
         "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_device_exception"
       ],
+      "comparison_id": "front_device_exception",
+      "deliberate_differences": [
+        "sourced reason for necessary stop"
+      ],
       "fixed_conditions": [
         "law",
         "cell",
@@ -909,65 +891,128 @@
         "weather",
         "four camera plan",
         "900 frames"
-      ],
-      "deliberate_differences": [
-        "sourced reason for necessary stop"
-      ],
-      "audit": "parking.py:audit_comparison"
+      ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "LVMC-11-52-130-A5 elevator frontage/side-space and exceptions",
+        "source": {
+          "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
+          "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
+        },
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty; conditional witness does not prove actual fixture, vehicle stop/stand/park, geometry or exception."
+      }
+    ],
+    "method": "Frozen evidence inventory has zero recordings; witness is a conditional planning source only. No accepted original trace demonstrates this fixture or exception.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-52-130-A5",
+  "law_source": "LVMC 11.52.130(A)(5)",
+  "law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute.",
   "observations": [
     {
-      "term": "vehicle_body_footprint",
       "measurement": "original body edge interval and curb gap at 20 Hz",
       "source_refs": [
         {
           "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
           "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
         }
-      ]
+      ],
+      "term": "vehicle_body_footprint"
     },
     {
-      "term": "fixture_frontage_and_side_extents",
       "measurement": "identity/geometry and physical readback, original frame join",
       "source_refs": [
         {
           "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
           "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
         }
-      ]
+      ],
+      "term": "fixture_frontage_and_side_extents"
     },
     {
-      "term": "activity",
       "measurement": "original motion and activity observation",
       "source_refs": [
         {
           "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
           "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
         }
-      ]
+      ],
+      "term": "activity"
     },
     {
-      "term": "exception_circumstances",
       "measurement": "source-bound lawful traffic/police/device direction",
       "source_refs": [
         {
           "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
           "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
         }
-      ]
+      ],
+      "term": "exception_circumstances"
     },
     {
-      "term": "jurisdiction_and_sidewalk",
       "measurement": "municipal and sidewalk hashes tied to Native site",
       "source_refs": [
         {
           "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
           "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
         }
-      ]
+      ],
+      "term": "jurisdiction_and_sidewalk"
     }
   ],
+  "planning_status": "partial_executable_case_matrix_and_source_gated_cpu_audits",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_park",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stop",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_stand",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_inside",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_at",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__west_outside",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_inside",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_at",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__east_outside",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_traffic_exception",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_police_exception",
+        "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_device_exception"
+      ],
+      "evidence_or_gap": "No accepted original recording; each exact case needs sourced municipality, fixture, activity, vehicle body and necessity observations. The statutory measurement convention and legal applicability remain unresolved.",
+      "requirement": "LVMC-11-52-130-A5 sidewalk elevator frontage and five-foot side space with stop, stand, park and necessity exceptions",
+      "source": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Sidewalk elevator identity and legal frontage/side measurement convention require original source review; the 5 ft comparison is a numeric geometric probe, not a legal predicate.",
+    "Actual fixture, motion and four-camera visibility require Native execution.",
+    "Chute is a distinct statutory object; frozen assignment selected the sidewalk-elevator branch.",
+    "Exact offline, positive/negative compatibility, semantic proposals and independent delivery acceptance remain to be authored and proved."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "parking near sidewalk elevator",
+      "cell_id": "C150153",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-52-130-A5",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-52-130-A5",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 310,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/assignment.json",
@@ -990,39 +1035,15 @@
       "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Sidewalk elevator identity and legal frontage/side measurement convention require original source review; the 5 ft comparison is a numeric geometric probe, not a legal predicate.",
-    "Actual fixture, motion and four-camera visibility require Native execution.",
-    "Chute is a distinct statutory object; frozen assignment selected the sidewalk-elevator branch.",
-    "Exact offline, positive/negative compatibility, semantic proposals and independent delivery acceptance remain to be authored and proved."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Frozen evidence inventory has zero recordings; witness is a conditional planning source only. No accepted original trace demonstrates this fixture or exception.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_evidence",
-        "requirement": "LVMC-11-52-130-A5 elevator frontage/side-space and exceptions",
-        "source": {
-          "path": "inputs/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/witnesses.json",
-          "sha256": "b230959ead4e15a53a86f613f0dd37855eb47ed5f6e6ef04b927f1d2c18711b2"
-        },
-        "why_existing_insufficient": "Frozen accepted recording inventory is empty; conditional witness does not prove actual fixture, vehicle stop/stand/park, geometry or exception."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_executable_case_matrix_and_source_gated_cpu_audits",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 310,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "parking near sidewalk elevator",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "Parking beside a realized sidewalk elevator can activate the provision on a one-way road.",
       "required_context": [
         "Establish activity purpose, actual loading activity, occupancy and exception circumstances.",
         "Establish halt purpose, actual loading or passenger activity, occupancy, other traffic and applicable directions; nondetection does not establish fixture absence.",
@@ -1032,8 +1053,9 @@
         "Place the parking destination relative to the fixture and record vehicle body geometry.",
         "Retain parking footprint and motion sufficient to examine frontage and five-foot side spaces without assigning a legal measurement convention."
       ],
-      "reason": "Parking beside a realized sidewalk elevator can activate the provision on a one-way road."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 310,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "source_observation_mapping": {}
+  ]
 }

@@ -16,7 +16,7 @@ from saved_audit import audit_original_history
 
 
 def capture_original_history(adapter, site: dict, case, output: Path,
-                             frames: int = 900) -> dict:
+                             frames: int = 900, frame_hook=None) -> dict:
     """Tick a live adapter, seal its original observations and audit the result.
 
     `tick_and_sample()` returns a mapping with original_frame, time_s, actual
@@ -100,6 +100,8 @@ def capture_original_history(adapter, site: dict, case, output: Path,
                         raise ValueError('observed ' + name + ' missing or invalid')
                 encoded = (json.dumps(row, sort_keys=True, allow_nan=False,
                                       separators=(',', ':')) + '\n').encode('utf-8')
+                if frame_hook is not None:
+                    frame_hook(row, index)
                 stream.write(encoded)
                 sha.update(encoded)
             stream.flush()

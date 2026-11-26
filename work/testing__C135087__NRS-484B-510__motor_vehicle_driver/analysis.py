@@ -69,7 +69,7 @@ def build(attempt):
         if not trusted:
             raise ValueError("independent reviewed site hash required")
         measurement = audit_saved(attempt, case, trusted)["source_measurements"]
-    videos = [name + ".mkv" for name in ("overview", "subject", "zone_access", "passenger_door")]
+    videos = [name + ".mkv" for name in ("overview", "approach", "reference_corner", "driver_reference")]
     for name in videos:
         required(attempt, name)
     trace = required(attempt, "trace.jsonl")

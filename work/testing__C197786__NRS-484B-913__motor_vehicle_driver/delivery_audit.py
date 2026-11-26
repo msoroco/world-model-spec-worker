@@ -11,6 +11,9 @@ from pathlib import Path
 
 from fire_hose_delivery import body_over_hose_frames, compare_saved_hose, inspect_saved_hose
 
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+
 
 def verify_sources(packet, root):
     root = root.resolve()
@@ -49,6 +52,33 @@ def verify_native_frames(packet, root):
         raise ValueError("sealed Native frame identity or profile mismatch")
 
 
+def verify_camera_sources(packet, root, *, expected_frames=900):
+    """Check all source images against the sealed frame and sensor index."""
+    root = root.resolve()
+    seal = json.loads((root / "seal.json").read_text())
+    index_path = root / "camera-index.json"
+    if not index_path.is_file() or hashlib.sha256(index_path.read_bytes()).hexdigest() != seal.get("camera_index_sha256"):
+        raise ValueError("sealed original camera index missing or changed")
+    index = json.loads(index_path.read_text())
+    if set(index) != set(VIEWS) or seal.get("views") != list(VIEWS):
+        raise ValueError("four original camera views differ")
+    frames = packet["native"]["frames"]
+    if len(frames) != expected_frames or any(len(index[view]) != expected_frames for view in VIEWS):
+        raise ValueError("complete original camera frame history required")
+    paths = set()
+    for view in VIEWS:
+        for position, item in enumerate(index[view]):
+            if item.get("frame") != frames[position]["frame"] or not item.get("sensor_id"):
+                raise ValueError("original camera frame or sensor join failed")
+            path = (root / item["path"]).resolve()
+            if not path.is_relative_to(root) or path in paths or not path.is_file():
+                raise ValueError("distinct original camera source missing or outside root")
+            paths.add(path)
+            data = path.read_bytes()
+            if not data.startswith(PNG_SIGNATURE) or hashlib.sha256(data).hexdigest() != item.get("sha256"):
+                raise ValueError("original camera source PNG/hash mismatch")
+
+
 def verify_original_context(packet, root):
     """Join every claimed physical/command fact to its distinct source JSON."""
     root = root.resolve()
@@ -76,9 +106,11 @@ def main() -> None:
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--case-id", required=True)
     parser.add_argument("--compare", type=Path)
+    parser.add_argument("--compare-source-root", type=Path)
     parser.add_argument("--variable", choices=("consent", "protection", "passage", "incident_purpose"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--require-complete-body", action="store_true")
+    parser.add_argument("--require-camera-sources", action="store_true")
     parser.add_argument("--expected-passage", choices=("cross", "avoid"))
     parser.add_argument("--compare-expected-passage", choices=("cross", "avoid"))
     args = parser.parse_args()
@@ -97,16 +129,24 @@ def main() -> None:
                                          "expected_passage": args.expected_passage,
                                          "complete_original_frame_history": True,
                                          "legal_verdict": None}
+    if args.require_camera_sources:
+        verify_native_frames(packet, args.source_root)
+        verify_camera_sources(packet, args.source_root)
+        result["original_camera_sources"] = "all_sealed_source_images_joined"
     if args.compare:
         if not args.variable:
             parser.error("--variable is required with --compare")
+        if not args.compare_source_root:
+            parser.error("--compare-source-root is required with --compare")
         other = json.loads(args.compare.read_text())
-        verify_sources(other, args.source_root)
+        verify_sources(other, args.compare_source_root)
         if args.require_complete_body:
             if not args.compare_expected_passage:
                 parser.error("--compare-expected-passage required with complete comparison")
-            verify_native_frames(other, args.source_root)
-            verify_original_context(other, args.source_root)
+            verify_native_frames(other, args.compare_source_root)
+            verify_original_context(other, args.compare_source_root)
+            if args.require_camera_sources:
+                verify_camera_sources(other, args.compare_source_root)
             other_hits = body_over_hose_frames(other, other["case_id"])
             if bool(other_hits) != (args.compare_expected_passage == "cross"):
                 raise ValueError("compared original body passage differs from exact case")

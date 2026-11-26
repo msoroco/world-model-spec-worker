@@ -14,7 +14,7 @@ from restricted_zone import construct
 from reviewed_site import ROLES, validate
 
 
-VIEWS = ("overview", "subject", "zone_access", "passenger_door")
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(data):

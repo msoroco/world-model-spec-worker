@@ -13,8 +13,8 @@ from test_independent_delivery_audit import DeliveryAuditTests, sha
 
 
 class PhysicalReviewTests(unittest.TestCase):
-    def fixture(self, root):
-        attempt, site, sources, seal = DeliveryAuditTests().fixture(root)
+    def fixture(self, root, case_name='west_inside'):
+        attempt, site, sources, seal = DeliveryAuditTests().fixture(root, case_name)
         packet = {
             "format": "sidewalk-elevator-original-pixel-review",
             "reviewer": "independent reviewer", "citation": "synthetic protocol test",
@@ -80,6 +80,27 @@ class PhysicalReviewTests(unittest.TestCase):
             with patch('physical_review.audit', return_value=bad):
                 with self.assertRaisesRegex(ValueError, 'source binding differs'):
                     review(attempt, site, sources, claim, sha(claim), diagnostic_fixture=True)
+
+    def test_all_twelve_exact_cases_and_exception_observation_rejection(self):
+        scratch = Path('.runtime-work/c150153-physical-review-tests')
+        scratch.mkdir(parents=True, exist_ok=True)
+        from parking import CASES
+        exception_name = {'lawful_traffic_conflict': 'traffic_conflict',
+                          'police_direction': 'police_direction',
+                          'traffic_device_direction': 'traffic_device_direction'}
+        for case in CASES:
+            with self.subTest(case=case.id), TemporaryDirectory(dir=scratch) as temp:
+                attempt, site, sources, claim, packet, delivery = self.fixture(temp, case.id)
+                with patch('physical_review.audit', return_value=delivery):
+                    result = review(attempt, site, sources, claim, sha(claim),
+                                    diagnostic_fixture=True)
+                    self.assertEqual(result['case_id'], delivery['case_id'])
+                    if case.exception != 'none':
+                        packet['observations'][exception_name[case.exception]]['observed'] = False
+                        claim.write_text(json.dumps(packet) + '\n')
+                        with self.assertRaisesRegex(ValueError, 'required original physical observation absent'):
+                            review(attempt, site, sources, claim, sha(claim),
+                                   diagnostic_fixture=True)
 
 
 if __name__ == '__main__':
