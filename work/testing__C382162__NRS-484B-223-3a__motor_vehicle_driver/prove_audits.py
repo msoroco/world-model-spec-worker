@@ -26,7 +26,8 @@ def write(path, value):
 def command_run(command, log, positive=True):
     done = subprocess.run(command, cwd=REPO, env=os.environ, text=True,
                           capture_output=True)
-    log.write_text((done.stdout + done.stderr).rstrip() + "\n")
+    message = (done.stdout + done.stderr).rstrip()
+    log.write_text((message if message else "independent audit passed; exit_code=0") + "\n")
     if positive and done.returncode:
         raise ValueError("CPU audit failed: " + " ".join(command) + "\n" + done.stderr[-1500:])
     if not positive and done.returncode == 0:

@@ -34,7 +34,7 @@ class ComparisonTests(unittest.TestCase):
         target = folder / 'contest-packet.json'
         target.write_text(json.dumps(packet) + '\n')
         (folder / 'original-source-receipt.json').write_text(json.dumps({
-            'source_kind': 'original_native_capture', 'diagnostic_fixture': False,
+            'source_kind': 'synthetic_diagnostic_fixture', 'diagnostic_fixture': True,
             'case_id': packet['case_id'],
             'packet_sha256': hashlib.sha256(target.read_bytes()).hexdigest()}) + '\n')
         return folder
@@ -45,7 +45,7 @@ class ComparisonTests(unittest.TestCase):
                                  ('highway', CASES[3])]:
             with self.subTest(comparison=comparison):
                 alternate = self.packet(case)
-                result = audit(comparison, base, alternate)
+                result = audit(comparison, base, alternate, diagnostic=True)
                 self.assertEqual(result['deliberate_difference'],
                                  {'cue': 'cue', 'episode': 'candidate_contest',
                                   'highway': 'highway'}[comparison])
@@ -54,7 +54,7 @@ class ComparisonTests(unittest.TestCase):
         packet['scene']['ego_person_id'] = 'different-person'
         changed.write_text(json.dumps(packet) + '\n')
         with self.assertRaisesRegex(ValueError, 'sealed original'):
-            audit('cue', base, changed.parent)
+            audit('cue', base, changed.parent, diagnostic=True)
 
 
 if __name__ == '__main__':

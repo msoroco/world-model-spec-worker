@@ -1,0 +1,1427 @@
+{
+  "cell_id": "C149752",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "conditions_and_danger_review",
+      "target_law_id": "NRS-484B-127-2",
+      "judgment_refs": [
+        {
+          "phrase": "whenever conditions permit",
+          "note": "Review actual traffic and road circumstances independently."
+        },
+        {
+          "phrase": "so that an overtaking vehicle may enter and occupy such space without danger",
+          "note": "Review original entrant and traffic history; physical gap alone does not establish absence of danger."
+        },
+        {
+          "phrase": "overtaking and passing any vehicle or combination of vehicles",
+          "note": "Measure whole-body opposing-lane advancement and return independently of controller phase."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Exact statutory quantities and alternatives are prepared; conditions and danger require source review.",
+      "missing_inputs": [
+        "original traffic histories and reviewed road source",
+        "independent legal judgment of conditions and danger"
+      ],
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared truck-following context without a legal finding.",
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "gap_below_500ft"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "gap_at_500ft"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 152.4,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "gap_above_500ft"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 160.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__passing_completion",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "passing_completion"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__entering_vehicle",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "entering_vehicle"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 155.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_available_lanes",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "two_available_lanes"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 2,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_below_80in",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "lead_below_80in"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 1.98,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__subject_below_80in",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "subject_below_80in"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 1.98,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__conditions_constrained",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact statutory distance, width, lane, passage, entry or circumstance construction; no legal verdict.",
+      "paired_probe_id": "truck_following_qualifications",
+      "deliberate_differences": [
+        "requested_gap_m",
+        "subject_width_m",
+        "lead_width_m",
+        "same_direction_lanes",
+        "pass_requested",
+        "entrant_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_gap_m",
+        "comparison_or_standard": "Compare sealed original full-body and lane history with the exact statutory context.",
+        "target_value_or_branch": "conditions_constrained"
+      },
+      "variable_assignments": {
+        "requested_gap_m": {
+          "kind": "world_setup",
+          "value": 145.0,
+          "unit": "m"
+        },
+        "subject_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.1,
+          "unit": "m"
+        },
+        "same_direction_lanes": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "1"
+        },
+        "pass_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "entrant_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "so that an overtaking vehicle may enter and occupy such space without danger",
+        "overtaking and passing any vehicle or combination of vehicles"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "eight body vertices projected on surveyed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "full_mesh_width",
+            "unit": "metres",
+            "method": "Native mesh bounds for each truck",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "map_lane_availability",
+            "unit": "lane count",
+            "method": "per-frame Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "identity",
+            "method": "source-bound subject, lead and entrants",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "intent retained separately from observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Whenever conditions permit and without danger require independent review.",
+          "500 feet and 80 inches are statutory quantities, not inferred from controller commands."
+        ]
+      }
+    }
+  ]
+}

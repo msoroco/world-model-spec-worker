@@ -1,20 +1,21 @@
-# C382162 NRS 484B.223(3)(a) motor vehicle checkpoint
+# C382162 NRS 484B.223(3)(a) delivery handoff
 
-Status: partial CPU construction. Frozen assignment SHA256 `225b78ce191a1b0d04cacedaa37cfd23158ffdbf514ab71292b60b4c2b706b51`. Frozen evidence has no accepted recording for this assignment.
+Status: ready for local GPU delivery preparation. Exact assignment scoped strict gate passed on 2026-11-26. Frozen input SHA256: `225b78ce191a1b0d04cacedaa37cfd23158ffdbf514ab71292b60b4c2b706b51`.
 
-## Constructed and tested
+## Exact scope and sources
 
-`center_lane_probe.py` requires source-bound highway status and a single shared center lane designed solely for turns by both directions. It measures original-frame occupancy, observed left-turn frames and independently sourced purpose recorded before center-lane entry. It distinguishes left turn onto and from the highway, rejects alley junctions, absent occupancy, missing route or purpose source and invalid lane design. It keeps purpose sufficiency unresolved rather than inferring it from lane distance or a completed trajectory.
+Five selected cases cover left turn from highway, left turn onto highway, through travel, right turn purpose, and alley junction classification. Three source fixed comparisons cover qualifying turn direction, purpose versus trajectory, and street intersection versus alley. No accepted original recording exists in the frozen evidence. The reviewed packet must establish a public highway with exactly one exclusive bidirectional shared center turn lane, original OpenDRIVE lane identities and a pre-entry independent purpose record. `runner.py` checks packet and operator hashes before motion. `native_operator.py`, `native_live.py`, and `native_capture.py` implement a 900-frame, 20 Hz original Native route and four RGB views with capture/restoration closure.
 
-`case-plan.json` now plans five exact cases and three controlled comparisons for turn direction, purpose versus trajectory, and alley classification. Each case states a physical risk. These plans are not delivery or capture claims.
+## CPU proofs
 
-## Proofs
+All ten primary/fallback constructions passed current-hash offline and positive/negative compatibility. All five selected cases passed saved-only positive/missing-original-source checks. All five cases passed synthetic complete/incomplete/missing physical outcome and Native closure checks. All five independent delivery audits remeasured source-sealed original lane/route/intent and fully decoded four diagnostic videos. All three comparison audits checked fixed highway/lane/actor context and deliberate route/purpose/junction differences. These are diagnostic CPU proofs; actual Native pixels, physical completion and legal purpose sufficiency remain for local GPU review. No distance or duration cutoff was inferred.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `cdfe9f5cd5c14a877a9e8a6a098f5a93944bc5537b06bc8171a692063db39c60`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `0a6636cb04eded184e7e90f360164b748235afbf589447e2b341c70a7cfbe250`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C382162__NRS-484B-223-3a__motor_vehicle_driver`: exit 0, `static.log` SHA256 `0f43c0f1ba4182c6ec5ec2da65c4c81ae8d9593bac6c0973be2fee9b38d2f156`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C382162__NRS-484B-223-3a__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
+- Execution manifest SHA256: `b832218de8d9456f92978ca623c41d205ba8449203679b2c3c62f0d402da307e`.
+- Queue proposal SHA256: `bcaf58ab23f8da0c3be112861c17f701688229c98d107dc1673cb678a8ef7849`.
+- Semantic index SHA256: `97e3d4deb89ea0878ab816dff84c0f05095bf24be5418d5447161d08f0bb30dd`.
+- Focused unit suite: 13 tests passed; `cpu-tests-current.log` SHA256 `f95a7a71ed5ec4032d3b697d07e32ce01143e8a15efdc3539e6ee1b4c9a57a31`.
+- Exact gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C382162__NRS-484B-223-3a__motor_vehicle_driver --complete --require-delivery-ready` exited 0 after the final audit log refresh.
 
-## Next CPU work
+## Local handoff
 
-Construct the actual bidirectional shared center turn lane, highway and street intersection map geometry and motor-vehicle routes for turns onto and from the highway. Bind route intent independently before entry, capture original lane occupancy and exact saved finalizer for every case. Add exact offline construction and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery/comparison audits, manifest and queue entries. Review purpose evidence without an invented distance or time cutoff. Actual lane use, intersection geometry and pixel evidence require later CARLA verification.
+Integrate `gpu-queue-proposal.json` into the shared queue after independent lead gate and pinned queue validation. The queue passes exact site, purpose and operator packet environment variables to canonical delivery, releases the Native owner before saved-only processing, and invokes `delivery_audit.py` with the exact case ID. Comparison commands invoke `comparison_audit.py` with exact member attempts. The local owner must provide reviewed original site and purpose packets; the CPU fixture is diagnostic only.

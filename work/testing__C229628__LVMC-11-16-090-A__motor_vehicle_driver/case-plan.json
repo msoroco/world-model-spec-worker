@@ -125,7 +125,8 @@
         "testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver__no_cue_candidate_contest"
       ],
       "deliberate_differences": "start cue omitted",
-      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition."
+      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition.",
+      "comparison_id": "cue"
     },
     {
       "case_ids": [
@@ -133,7 +134,8 @@
         "testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver__start_cue_no_contest"
       ],
       "deliberate_differences": "underlying candidate contest omitted",
-      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition."
+      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition.",
+      "comparison_id": "episode"
     },
     {
       "case_ids": [
@@ -141,11 +143,41 @@
         "testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver__start_cue_off_highway"
       ],
       "deliberate_differences": "highway status absent",
-      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition."
+      "fixed_conditions": "Same identified two persons, two vehicles, racing route, lane marking and motion-source format; change only the named case condition.",
+      "comparison_id": "highway"
     }
   ],
   "observations": [
-    "Original 900-frame two-vehicle and two-person identity, assistance cue and timing relative to other start, motion speeds/acceleration/positions, highway status, lane marking, jurisdiction and episode context are source-gated."
+    {
+      "name": "participants",
+      "method": "two persons and qualifying motor vehicles",
+      "source": "original source-joined Native contest capture"
+    },
+    {
+      "name": "highway_jurisdiction",
+      "method": "municipal and highway source designations",
+      "source": "original source-joined Native contest capture"
+    },
+    {
+      "name": "lane_and_route",
+      "method": "reviewed lane marking and connected two-vehicle routes",
+      "source": "original source-joined Native contest capture"
+    },
+    {
+      "name": "cue_and_episode",
+      "method": "physical high-beam cue readback and episode context",
+      "source": "original source-joined Native contest capture"
+    },
+    {
+      "name": "two_vehicle_motion",
+      "method": "original positions, speeds and accelerations",
+      "source": "original source-joined Native contest capture"
+    },
+    {
+      "name": "camera_frame_identity",
+      "method": "four synchronized source cameras",
+      "source": "original source-joined Native contest capture"
+    }
   ],
   "sources": [
     {
@@ -269,15 +301,32 @@
     }
   ],
   "camera_plan": {
-    "rate_hz": 20,
+    "profile": "overview1080-capability",
     "duration_s": 45,
-    "frame_count": 900,
-    "views": [
-      "overview",
-      "approach",
-      "reference_corner",
-      "driver_reference"
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both identified motor vehicles, route and lane",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "start cue and other motorist start",
+        "interval": "cue through other start"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego light cue and lane marking",
+        "interval": "cue and route interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "other motorist motion",
+        "interval": "other start through final frame"
+      }
     ],
-    "join": "one Native snapshot frame per synchronized camera frame; preserve original video-frame map"
-  }
+    "limitation": "Original camera visibility remains for local review"
+  },
+  "source_observation_mapping": {}
 }

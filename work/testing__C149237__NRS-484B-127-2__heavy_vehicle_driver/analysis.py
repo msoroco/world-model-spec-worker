@@ -6,10 +6,14 @@ import hashlib
 import json
 from pathlib import Path
 
-from truck_following import CASES, audit_original_frames, audit_case_realization
+from truck_following import CASES, audit_original_frames as source_audit_original_frames, audit_case_realization
 from native_packet import AID, VIEWS
 
 HISTORY = 'original-truck-history.jsonl'
+
+
+def audit_original_frames(packet, *, case_id):
+    return source_audit_original_frames(packet, case_id=case_id)
 
 
 def sha(path):

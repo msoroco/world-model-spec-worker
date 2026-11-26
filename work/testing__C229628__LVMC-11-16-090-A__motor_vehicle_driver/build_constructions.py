@@ -7,9 +7,8 @@ from package_spec import AID, LAW, CELL, ACTOR, RECORDING, CHANNELS, CAMERAS
 HERE = Path(__file__).resolve().parent
 SOURCE_FILES = ('runner.py', 'native_source.py', 'contest_aid.py',
                 'contest_carla_adapter.py', 'contest_capture.py',
-                'analysis.py', 'package_spec.py', 'comparison_audit.py',
-                'tests/test_contest_aid.py', 'tests/test_native_source.py',
-                'tests/test_comparison_audit.py')
+                'analysis.py', 'package_spec.py',
+                'tests/test_contest_aid.py', 'tests/test_native_source.py')
 
 
 def write(path, value):

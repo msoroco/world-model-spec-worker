@@ -1,0 +1,59 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "stop_reference_kind",
+      "range_or_domain": "marked stop line, near-side crosswalk, nearest-view point"
+    },
+    {
+      "kind": "world_setup",
+      "name": "other_vehicle_state",
+      "range_or_domain": "prior stop, within intersection, neither"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_stop_position",
+      "range_or_domain": "at statutory reference or late"
+    }
+  ],
+  "quote": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle enters an intersection controlled by an installed uncovered vehicular signal that is inoperative at entry.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "Use near-side crosswalk",
+        "replacement_obligation": "Stop before near-side crosswalk",
+        "source_clause": "or, if there is none, before entering the crosswalk on the near side",
+        "trigger": "No clearly marked stop line"
+      },
+      {
+        "effect": "Use nearest-view point",
+        "replacement_obligation": "Stop at source-surveyed nearest-view point",
+        "source_clause": "or, if there is none, at the point nearest the intersection where the driver has a view",
+        "trigger": "No stop line or near-side crosswalk"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Cautiousness has no statutory numeric cutoff in this text; retain original movement and blind sightline for review.",
+        "phrase": "proceed cautiously"
+      }
+    ],
+    "law_id": "NRS-484B-250-4",
+    "obligation": {
+      "description": "Stop at marked stop line, else before near-side crosswalk, else nearest point with view of approaching through-highway traffic; then proceed cautiously yielding to vehicles with prior completed stop or within intersection.",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Measure signal at actual entry, prior stop, other vehicle stop/occupancy and subsequent movement on original frames.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-250-4@motor_vehicle_driver"
+}

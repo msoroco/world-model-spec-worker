@@ -21,7 +21,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def load(attempt, suffix):
+def load(attempt, suffix, *, diagnostic=False):
     root = Path(attempt).resolve()
     packet_path = root / 'contest-packet.json'
     receipt_path = root / 'original-source-receipt.json'
@@ -32,8 +32,9 @@ def load(attempt, suffix):
     if (packet.get('assignment_id') != AID or packet.get('case_id') != AID + '__' + suffix or
             receipt.get('case_id') != packet['case_id'] or
             receipt.get('packet_sha256') != sha(packet_path) or
-            receipt.get('source_kind') != 'original_native_capture' or
-            receipt.get('diagnostic_fixture') is not False):
+            receipt.get('source_kind') != ('synthetic_diagnostic_fixture' if diagnostic
+                                           else 'original_native_capture') or
+            receipt.get('diagnostic_fixture') is not diagnostic):
         raise ValueError('sealed original case or receipt differs')
     rows = packet.get('frames')
     if not isinstance(rows, list) or len(rows) != 900:
@@ -48,12 +49,12 @@ def load(attempt, suffix):
                              'receipt_sha256': sha(receipt_path)}
 
 
-def audit(comparison, left, right):
+def audit(comparison, left, right, *, diagnostic=False):
     if comparison not in DIFFERENCES:
         raise ValueError('unknown fixed comparison')
     a, b, variable = DIFFERENCES[comparison]
-    left, _, left_source = load(left, a)
-    right, _, right_source = load(right, b)
+    left, _, left_source = load(left, a, diagnostic=diagnostic)
+    right, _, right_source = load(right, b, diagnostic=diagnostic)
     ls, rs = left['scene'], right['scene']
     for name in IDENTITY:
         if ls.get(name) != rs.get(name):
@@ -83,6 +84,7 @@ def audit(comparison, left, right):
             'fixed_conditions_checked': list(IDENTITY),
             'deliberate_difference': variable,
             'sources': {'left': left_source, 'right': right_source},
+            'diagnostic_fixture': diagnostic,
             'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
             'limitations': ['The source comparison does not decide contest, aid or abet.']}
 
@@ -93,7 +95,9 @@ if __name__ == '__main__':
     parser.add_argument('--left', type=Path, required=True)
     parser.add_argument('--right', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--diagnostic-fixture', action='store_true')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('retain prior comparison audit')
-    args.output.write_text(json.dumps(audit(args.comparison, args.left, args.right), indent=2) + '\n')
+    args.output.write_text(json.dumps(audit(args.comparison, args.left, args.right,
+                                           diagnostic=args.diagnostic_fixture), indent=2) + '\n')

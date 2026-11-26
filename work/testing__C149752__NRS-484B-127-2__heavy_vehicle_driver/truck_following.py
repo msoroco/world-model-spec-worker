@@ -158,6 +158,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
     lanes = []
     entries: set[str] = set()
     pass_phases = []
+    pass_geometry = []
     previous_t = None
     first_frame = frames[0].get("frame")
     first_time_s = frames[0].get("time_s")
@@ -207,6 +208,12 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         phase = frame.get("pass_phase", "following")
         require(phase in ("following", "opposing", "ahead", "returned"), "unknown pass phase")
         pass_phases.append(phase)
+        lane_relation = frame.get("subject_lane_relation")
+        if lane_relation is not None:
+            require(lane_relation in ("follow_lane", "opposing_lane"), "unknown observed lane relation")
+            pass_geometry.append((lane_relation, subject_min > lead_max))
+        else:
+            pass_geometry.append(None)
         for identity, body in by_id.items():
             if identity in ("subject", "lead"):
                 continue
@@ -221,6 +228,17 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
         if "ahead" in later:
             second = first + 1 + later.index("ahead")
             completed_pass = "returned" in pass_phases[second + 1:]
+    geometrically_completed_pass = False
+    opposing_indices = [i for i, value in enumerate(pass_geometry)
+                        if value is not None and value[0] == "opposing_lane"]
+    if opposing_indices:
+        first = opposing_indices[0]
+        ahead = [i for i in range(first + 1, len(pass_geometry))
+                 if pass_geometry[i] is not None and pass_geometry[i][1]]
+        if ahead:
+            geometrically_completed_pass = any(
+                value is not None and value[0] == "follow_lane" and value[1]
+                for value in pass_geometry[ahead[0] + 1:])
     return {"case_id": case_id, "original_frame_count": len(frames),
             "first_original_frame": first_frame, "first_original_time_s": first_time_s,
             "steady_gap_min_m": min(gaps),
@@ -231,6 +249,7 @@ def audit_original_frames(packet: dict, *, case_id: str, expected_frames: int = 
             "same_direction_available_lane_count_max": max(lanes),
             "entered_gap_distinct_vehicle_count": len(entries),
             "subject_pass_completed": completed_pass,
+            "subject_pass_geometry_verified": geometrically_completed_pass,
             "legal_judgment": "unresolved"}
 
 
@@ -263,3 +282,39 @@ def audit_comparison(left: dict, right: dict, *, fixed_fields: tuple[str, ...], 
     require(left[varied_field] != right[varied_field], f"declared difference not observed: {varied_field}")
     return {"case_ids": [left["case_id"], right["case_id"]], "fixed_fields_checked": list(fixed_fields),
             "varied_field_checked": varied_field, "legal_judgment": "unresolved"}
+def audit_case_realization(case: Case, measured: dict, *, case_id: str) -> dict:
+    """Check that Native observations realize the planned comparison context.
+
+    Numeric agreement below is a construction check. It never decides the
+    statutory conditions-permit or without-danger qualifications.
+    """
+    require(measured.get("case_id") == case_id, "realization case mismatch")
+    require(measured.get("original_frame_count") == 900, "full original history required")
+    require(measured.get("original_source_sha256"), "sealed original source required")
+    require(measured.get("legal_judgment") == "unresolved", "legal judgment must remain unresolved")
+    gap = finite_number(measured.get("steady_gap_min_m"), "observed gap")
+    subject_width = finite_number(measured.get("subject_width_min_m"), "subject width")
+    lead_width = finite_number(measured.get("lead_width_min_m"), "lead width")
+    lane_min = measured.get("same_direction_available_lane_count_min")
+    lane_max = measured.get("same_direction_available_lane_count_max")
+    require(type(lane_min) is int and type(lane_max) is int, "observed lane count required")
+    require(lane_min == lane_max == case.available_same_direction_lanes, "observed lane count mismatch")
+    require(abs(subject_width - case.ego_width_target_m) < 0.04, "observed subject width mismatch")
+    require(abs(lead_width - case.lead_width_target_m) < 0.04, "observed lead width mismatch")
+    # The middle probe is a target inside measurement uncertainty, never an
+    # assertion that an actual body gap equals 500 feet continuously.
+    require(abs(gap - case.gap_target_m) < 3.0, "observed following gap missed target")
+    if case.passing:
+        require(measured.get("subject_pass_completed") is True, "observed pass did not complete")
+        require(measured.get("subject_pass_geometry_verified") is True, "Native pass geometry did not complete")
+    elif measured.get("subject_pass_completed") is True:
+        raise EvidenceError("unplanned pass changed comparison")
+    if case.entering_vehicle:
+        require(measured.get("entered_gap_distinct_vehicle_count", 0) >= 1, "gap entrant not observed")
+    elif measured.get("entered_gap_distinct_vehicle_count") != 0:
+        raise EvidenceError("unplanned entrant changed comparison")
+    return {"case_id": case_id, "observed_gap_m": gap,
+            "subject_qualifying_width_observed": subject_width >= MIN_QUALIFYING_WIDTH_M,
+            "lead_qualifying_width_observed": lead_width >= MIN_QUALIFYING_WIDTH_M,
+            "two_available_lanes_observed": lane_min >= 2,
+            "construction_realized": True, "legal_judgment": "unresolved"}

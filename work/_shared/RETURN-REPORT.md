@@ -1,3 +1,13 @@
+## 2026-11-26 14:24 UTC C229628 current-runtime ready and queued
+
+- Assignment: `testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver --complete --require-delivery-ready` passed. Four exact cases and three comparison audits, including 31 syntax-checked queue commands, were reviewed.
+- Manifest SHA-256: `7bbc933d62cf9c50a49ad3ceb233ceb23c5215086d7838239f0c35c3592b9bbe`; proposal SHA-256: `249855d06a4d04463bb4570bbf204eb4f43ad9cbd6666928d5ec22f82912a6cc`. Shared queue: 125 assignments, 709 cases, 459 comparison commands; SHA-256 `e098ceb924b56912ca67b0d9f991c902d6a6a3cfa3d13063401d0571266769a8`. Actual CARLA capture and local integration remain later checks.
+
+## 2026-11-26 14:18 UTC C382162 current-runtime ready and queued
+
+- Assignment: `testing__C382162__NRS-484B-223-3a__motor_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C382162__NRS-484B-223-3a__motor_vehicle_driver --complete --require-delivery-ready` passed. Five exact cases and three comparison audits, including 43 syntax-checked queue commands, were reviewed.
+- Manifest SHA-256: `b832218de8d9456f92978ca623c41d205ba8449203679b2c3c62f0d402da307e`; proposal SHA-256: `bcaf58ab23f8da0c3be112861c17f701688229c98d107dc1673cb678a8ef7849`. Shared queue: 124 assignments, 705 cases, 456 comparison commands; SHA-256 `883de15319a3c2ea0d1b48e4b94c6f50ceec1a5ed4884e71a973e062c26f0ca7`. Actual CARLA capture and local integration remain later checks.
+
 ## 2026-11-26 14:10 UTC C24751 current-runtime ready and queued
 
 - Assignment: `testing__C24751__NRS-484B-310-1__heavy_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver --complete --require-delivery-ready` passed. Four exact cases and two comparison audits, including 34 syntax-checked queue commands, were reviewed.
