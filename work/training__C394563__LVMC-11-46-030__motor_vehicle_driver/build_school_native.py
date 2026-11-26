@@ -7,6 +7,8 @@ import json
 import copy
 from pathlib import Path
 
+from school_warning_scene import CASE_VARIANTS
+
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
@@ -25,7 +27,7 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
-def build():
+def build(variant=True):
     common = [{"path": name, "content": (ROOT / name).read_text()}
               for name in ("runner.py", "school_native_plan.py", "school_warning_scene.py",
                            "finalize.py", "measure_school_warning.py")]
@@ -39,16 +41,21 @@ def build():
             "   derive('.')\n")
     common.append({"path": "tests/test_offline.py", "content": test})
     cases = []
-    for suffix, target in (("probe_1", 55), ("probe_2", 40)):
+    specifications = CASE_VARIANTS if variant else {
+        name: CASE_VARIANTS[name] for name in ("probe_1", "probe_2")}
+    construction_root = "draft-variant-exact" if variant else "draft-exact"
+    manifest_name = "draft-variant-manifest.json" if variant else "draft-native-manifest.json"
+    for suffix, (target, role, release) in specifications.items():
         case_id = ASSIGNMENT + "__" + suffix
         config = {"assignment_id": ASSIGNMENT, "case_id": case_id,
             "selected_case_id": case_id, "supported_case_ids":
-                [ASSIGNMENT + "__probe_1", ASSIGNMENT + "__probe_2"],
+                [ASSIGNMENT + "__" + name for name in specifications],
             "law_id": "LVMC-11-46-030", "cell_id": "C394563",
             "actor": "motor_vehicle_driver", "rate_hz": 20,
             "duration_s": 30, "frame_count": 600,
             "requested_stop_center_ft": target,
-            "requested_release_event": "signal_removed",
+            "requested_release_event": release,
+            "warning_role": role,
             "controller_throttle_scale": 1.0,
             "required_atoms": ["ru.motor_vehicle", "kin.position", "kin.speed"],
             "source_packets": [],
@@ -80,9 +87,9 @@ def build():
             "measurement_plan": "measure_school_warning.py observes all 600 frames, not controller targets",
             "static_checks": ["exact two-way road", "school lane marker request", "four camera and frame contract"],
             "termination_rules": ["retain Native exit and all source files", "restore exclusive world"],
-            "mechanisms": ["source-reviewed school lane and child", "observed stop and signal removal"],
+            "mechanisms": ["source-reviewed school lane and child", "observed stop and " + release],
             "status": "draft_offline_only"}
-        path = ROOT / "draft-exact" / suffix / "primary" / "construction.json"
+        path = ROOT / construction_root / suffix / "primary" / "construction.json"
         write(path, construction)
         fallback = copy.deepcopy(construction)
         fallback_config = copy.deepcopy(config)
@@ -90,13 +97,13 @@ def build():
         for item in fallback["files"]:
             if item["path"] == "config.json":
                 item["content"] = json.dumps(fallback_config, indent=2) + "\n"
-        fallback_path = ROOT / "draft-exact" / suffix / "fallback1" / "construction.json"
+        fallback_path = ROOT / construction_root / suffix / "fallback1" / "construction.json"
         write(fallback_path, fallback)
         cases.append({"case_id": case_id,
                       "construction": str(path.relative_to(ROOT)),
                       "construction_sha256": sha(path),
                       "candidate_risk": {"status": "physical",
-                          "reason": "Observed Native stop station can miss the requested 55/40-foot target under model acceleration"},
+                          "reason": "Observed Native stop station can miss the requested stop target under model acceleration"},
                       "candidates": [{"id": "fallback1",
                           "construction": str(fallback_path.relative_to(ROOT)),
                           "construction_sha256": sha(fallback_path),
@@ -108,7 +115,7 @@ def build():
                 "assignment_id": ASSIGNMENT, "status": "draft_not_selected",
                 "cases": cases, "delivery_ready": False,
                 "original_native_observed": False}
-    write(ROOT / "draft-native-manifest.json", manifest)
+    write(ROOT / manifest_name, manifest)
     return manifest
 
 

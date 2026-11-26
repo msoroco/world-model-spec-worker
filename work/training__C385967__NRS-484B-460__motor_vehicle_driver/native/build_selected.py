@@ -54,6 +54,7 @@ def main():
             "limitations": ["No legal angle tolerance inferred from an engineering measurement",
                 "No physical or legal acceptance from CPU fixtures"]}
         config["recording_description"] = description
+        config["case"] = {"case_id": case_id, "recording_description": description}
         files = [{"path": "config.json", "content": json_text(config)}]
         for name in ("selected_runner.py", "capture.py", "cameras.py",
                      "angle-bay-road.xodr", "saved_angle.py", "finalize.py"):
@@ -110,7 +111,7 @@ def main():
             "measurement_procedure": {"entrypoint": "finalize.py"},
             "fixture_recipe": "work/" + ASSIGNMENT + "/native/selected-" + suffix + "-fixture-recipe.json"}
             for item, suffix in zip(entries, ("a", "b"))]}
-    (HERE.parent / "compatibility-draft-manifest.json").write_text(json_text(compatibility))
+    (HERE.parent / "selected-compat-manifest.json").write_text(json_text(compatibility))
     print(json.dumps(manifest, indent=2))
 
 

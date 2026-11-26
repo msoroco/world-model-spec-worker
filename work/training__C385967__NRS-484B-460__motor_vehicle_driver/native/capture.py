@@ -128,8 +128,17 @@ def capture(config, output_dir, host, port):
                 driving.lane_id == parking.lane_id:
             raise RuntimeError("Original driving/parking road identity survey failed")
         native_opendrive = native_map.to_opendrive()
-        if "ANGLE PARKING" not in native_opendrive:
-            raise RuntimeError("Native map did not retain authored angle device")
+        retained = ET.fromstring(native_opendrive)
+        retained_road = next((item for item in retained.findall("./road")
+                              if int(item.get("id", "-1")) == driving.road_id), None)
+        retained_signal = (None if retained_road is None else
+                           retained_road.find("./signals/signal[@id='902']"))
+        retained_space = (None if retained_road is None else
+                          retained_road.find("./objects/object[@id='901']"))
+        if retained_signal is None or retained_signal.get("name") != "ANGLE PARKING" or \
+                retained_signal.get("value") != "45" or retained_space is None or \
+                retained_space.get("type") != "parkingSpace":
+            raise RuntimeError("Native map did not retain exact angle device and highway space")
         shared = {"provenance": "original_native_capture", "native_road_id": driving.road_id}
         write_new(output / "official_device.json", {**shared,
             "device_id": "902", "device_kind": "official_angle_parking_control",

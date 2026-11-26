@@ -18,18 +18,26 @@ FRAMES = 600
 RATE = 20
 CASES = {'reference': {'brake': True, 'steer': -.55},
          'contrast': {'brake': False, 'steer': 0.0}}
-CAMERAS = (('overview', -25, -15, 13, -45), ('curb', 2, -8, 5, -25),
-           ('wheel', 4, -5, 2, -12), ('cabin', -3, 1, 3, -10))
+CAMERAS = (('overview', -25, -15, 13, -45), ('approach', 2, -8, 5, -25),
+           ('reference_corner', 4, -5, 2, -12),
+           ('driver_reference', -3, 1, 3, -10))
 
 
 def check():
     g = grade_check()
     if (FRAMES / RATE != 30 or len(CAMERAS) != 4 or
             len({row[0] for row in CAMERAS}) != 4 or
+            tuple(row[0] for row in CAMERAS) !=
+            ('overview', 'approach', 'reference_corner', 'driver_reference') or
             CASES['reference'] == CASES['contrast']):
         raise ValueError('Graded stand capture design differs')
     return {'passed': True, 'cases': CASES, 'frames': FRAMES, 'rate_hz': RATE,
-            'cameras': [x[0] for x in CAMERAS], 'geometry': g,
+            'cameras': [x[0] for x in CAMERAS],
+            'camera_dimensions': {'overview': [1920, 1080],
+                                  'approach': [1280, 720],
+                                  'reference_corner': [1280, 720],
+                                  'driver_reference': [1280, 720]},
+            'geometry': g,
             'engine_wheel_occupancy_instrumentation': 'external_original_service_required',
             'native_executed': False}
 
@@ -108,10 +116,18 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
         output.mkdir(parents=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         (output / 'grade-readback.json').write_text(json.dumps(survey, indent=2) + '\n')
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'format': 'c276263-original-acquisition-v1',
+            'diagnostic_fixture': False,
+            'native_vehicle_actor_id': vehicle.id,
+            'instrument_endpoint': [instrument_host, instrument_port],
+            'instrument_originality_requires_local_review': True,
+            'engine_or_occupancy_not_inferred_from_controls': True}, indent=2) + '\n')
         for name, x, y, z, pitch in CAMERAS:
             camera_bp = bp.find('sensor.camera.rgb')
-            camera_bp.set_attribute('image_size_x', '1280')
-            camera_bp.set_attribute('image_size_y', '720')
+            size = (1920, 1080) if name == 'overview' else (1280, 720)
+            camera_bp.set_attribute('image_size_x', str(size[0]))
+            camera_bp.set_attribute('image_size_y', str(size[1]))
             camera_bp.set_attribute('fov', '85')
             camera_bp.set_attribute('sensor_tick', str(1 / RATE))
             camera = world.spawn_actor(camera_bp, carla.Transform(
@@ -123,13 +139,16 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
             camera_queues[name] = q
             encoders[name] = subprocess.Popen([
                 'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
-                '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', '1280x720', '-r', str(RATE),
+                '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s',
+                f'{size[0]}x{size[1]}', '-r', str(RATE),
                 '-i', '-', '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (
                 output / 'vehicle-frames.jsonl').open('x') as vehicle_rows, (
-                output / 'occupancy-frames.jsonl').open('x') as occupancy_rows:
+                output / 'occupancy-frames.jsonl').open('x') as occupancy_rows, (
+                output / 'trace.jsonl').open('x') as trace_rows, (
+                output / 'instrument-frames.jsonl').open('x') as instrument_rows:
             first_elapsed = None
             for i in range(FRAMES):
                 controls = CASES[case]
@@ -161,6 +180,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
                 c = vehicle.get_control()
                 wheels = wheel_angles(vehicle, carla)
                 instrument = instruments.sample(native_frame, vehicle.id, wheels)
+                instrument_rows.write(json.dumps(instrument, sort_keys=True) + '\n')
                 common = {'frame': i, 'native_frame': native_frame, 'time_s': time_s}
                 vehicle_rows.write(json.dumps(dict(common, source_kind='native_actor',
                     actor_id=vehicle.id, blueprint=vehicle.type_id,
@@ -175,6 +195,10 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
                     wheel_calibration_id=instrument['wheel_calibration_id'],
                     requested_steer=float(controls['steer']),
                     speed_mps=math.hypot(v.x, v.y), position_x_m=t.location.x)) + '\n')
+                trace_rows.write(json.dumps({
+                    'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': t.location.x, 'y': t.location.y, 'z': t.location.z},
+                    'heading_deg': t.rotation.yaw, 'speed_mps': math.hypot(v.x, v.y)}) + '\n')
                 occupancy_rows.write(json.dumps(dict(common,
                     source_kind='occupancy_sensor',
                     occupant_count=instrument['occupant_count'],

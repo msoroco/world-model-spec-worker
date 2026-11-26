@@ -4,6 +4,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from school_warning_scene import CASE_VARIANTS
+
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -18,11 +20,11 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
-def bind():
-    manifest_path = ROOT / "draft-native-manifest.json"
+def bind(manifest_name="draft-native-manifest.json"):
+    manifest_path = ROOT / manifest_name
     manifest = json.loads(manifest_path.read_text())
     plan = json.loads((ROOT / "case-plan.json").read_text())
-    disposition = plan["requirement_dispositions"][0]
+    dispositions = plan["requirement_dispositions"]
     manifest["runtime_manifest_sha256"] = sha(REPO / "runtime/SOURCE-MANIFEST.json")
     proposals = []
     for entry in manifest["cases"]:
@@ -30,15 +32,21 @@ def bind():
         construction = json.loads((ROOT / entry["construction"]).read_text())
         description = construction["recording_description"]
         contract_path = ROOT / "diagnostic" / suffix / "measurement-contract.json"
-        contract = {"format": "worker-measurement-contract",
-            "case_id": entry["case_id"],
-            "requirements": [{"disposition_index": 0,
+        keys = ("school_warning_stop", "warning_actor_role", "observed_release")
+        types = ("object", "text", "text")
+        requirements = []
+        for index, disposition in enumerate(dispositions):
+            if disposition["status"] != "selected_required" or entry["case_id"] not in disposition.get("case_ids", []):
+                continue
+            requirements.append({"disposition_index": index,
                 "requirement": disposition["requirement"],
                 "source": disposition["source"],
-                "output_key": "school_warning_stop", "method": "derive",
-                "kind": "measured", "value_type": "object",
+                "output_key": keys[index], "method": "derive",
+                "kind": "measured", "value_type": types[index],
                 "inputs": ["road.xodr", "native-rows.jsonl", "video_frames.jsonl",
-                           "original-school-lane-review.json"]}],
+                           "original-school-lane-review.json"]})
+        contract = {"format": "worker-measurement-contract",
+            "case_id": entry["case_id"], "requirements": requirements,
             "negative": {"remove": ["original-school-lane-review.json"],
                          "error_contains": "Missing required source: original-school-lane-review.json"}}
         write(contract_path, contract)
@@ -49,12 +57,18 @@ def bind():
         proposals.append({"case_id": entry["case_id"],
             "target_law_id": "LVMC-11-46-030", "target_type": "controlled_stop_request",
             "cell_id": "C394563", "actor": "motor_vehicle_driver",
-            "rationale": "Sourced school warning with requested centre stop " +
-                         ("55" if suffix == "probe_1" else "40") +
-                         " feet from nearest side; actual physical/legal result unverified",
+            "rationale": "Sourced " + CASE_VARIANTS[suffix][1] +
+                         " school warning with requested centre stop " +
+                         str(CASE_VARIANTS[suffix][0]) +
+                         " feet from nearest side and " + CASE_VARIANTS[suffix][2] +
+                         " release; actual physical/legal result unverified",
             "variable_assignments": {
                 "requested_stop_center_ft": {"kind": "controller",
-                    "value": 55 if suffix == "probe_1" else 40, "unit": "feet"},
+                    "value": CASE_VARIANTS[suffix][0], "unit": "feet"},
+                "requested_release_event": {"kind": "environment",
+                    "value": CASE_VARIANTS[suffix][2]},
+                "warning_role": {"kind": "environment",
+                    "value": CASE_VARIANTS[suffix][1]},
                 "observed_stop_position": {"kind": "subject_behavior",
                     "value": None, "unit": "feet"}},
             "unresolved_judgment_calls": ["school pedestrian lane identity",
@@ -66,10 +80,12 @@ def bind():
     proposal = {"cell_id": "C394563", "actor": "motor_vehicle_driver",
                 "status": "draft", "sweep_specs": [], "sweeps_expanded": True,
                 "cases": proposals}
-    write(ROOT / "proposals/cases.json", proposal)
+    proposal_name = "variant-cases.json" if manifest_name == "draft-variant-manifest.json" else "cases.json"
+    write(ROOT / "proposals" / proposal_name, proposal)
     write(manifest_path, manifest)
     return {"cases": len(proposals), "manifest_sha256": sha(manifest_path)}
 
 
 if __name__ == "__main__":
-    print(json.dumps(bind()))
+    import sys
+    print(json.dumps(bind(sys.argv[1] if len(sys.argv) > 1 else "draft-native-manifest.json")))

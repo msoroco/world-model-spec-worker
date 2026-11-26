@@ -1,0 +1,41 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.460",
+      "output_key": "at_rest_angle_to_curb",
+      "method": "measure_at_rest_angle",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "body_history.jsonl",
+        "video_frames.jsonl",
+        "official_device.json",
+        "road_geometry.json",
+        "parking_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "official_device_angle",
+      "method": "measure_official_device_angle",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "official_device.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "official_device.json"
+    ],
+    "error_contains": "Missing required source: official_device.json"
+  }
+}

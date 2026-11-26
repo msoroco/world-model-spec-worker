@@ -1,35 +1,35 @@
 {
+  "format": "worker-case-proposals",
   "cell_id": "C394563",
   "actor": "motor_vehicle_driver",
+  "law_id": "LVMC-11-46-030",
   "status": "draft",
-  "sweep_specs": [],
-  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1",
-      "target_law_id": "LVMC-11-46-030",
-      "target_type": "controlled_stop_request",
-      "cell_id": "C394563",
-      "actor": "motor_vehicle_driver",
-      "rationale": "Sourced school warning with requested centre stop 55 feet from nearest side; actual physical/legal result unverified",
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral school-lane context without a claimed warning stop.",
       "variable_assignments": {
         "requested_stop_center_ft": {
           "kind": "controller",
-          "value": 55,
+          "value": null,
           "unit": "feet"
         },
-        "observed_stop_position": {
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "signal_device"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "signal_removed"
+        },
+        "observed_stop_distance_ft": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "feet"
         }
       },
-      "unresolved_judgment_calls": [
-        "school pedestrian lane identity",
-        "warning of children about to cross or crossing",
-        "statutory vehicle reference point",
-        "observed release meaning"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -126,36 +126,177 @@
           "Requested stop station does not prove actual stop or legal outcome"
         ]
       },
-      "paired_probe_id": "school_warning_stop_distance",
-      "deliberate_differences": [
-        "requested_stop_center_ft"
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
       ]
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed signal_device warning stop and signal_removed release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "signal_device"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "signal_removed"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; signal_device; signal_removed"
+      }
     },
     {
       "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2",
       "target_law_id": "LVMC-11-46-030",
-      "target_type": "controlled_stop_request",
-      "cell_id": "C394563",
-      "actor": "motor_vehicle_driver",
-      "rationale": "Sourced school warning with requested centre stop 40 feet from nearest side; actual physical/legal result unverified",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed signal_device warning stop and signal_removed release; original conduct and legal status remain open.",
       "variable_assignments": {
         "requested_stop_center_ft": {
           "kind": "controller",
-          "value": 40,
+          "value": 40.0,
           "unit": "feet"
         },
-        "observed_stop_position": {
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "signal_device"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "signal_removed"
+        },
+        "observed_stop_distance_ft": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "feet"
         }
       },
-      "unresolved_judgment_calls": [
-        "school pedestrian lane identity",
-        "warning of children about to cross or crossing",
-        "statutory vehicle reference point",
-        "observed release meaning"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -252,10 +393,888 @@
           "Requested stop station does not prove actual stop or legal outcome"
         ]
       },
-      "paired_probe_id": "school_warning_stop_distance",
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
       "deliberate_differences": [
-        "requested_stop_center_ft"
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "40.0 ft; signal_device; signal_removed"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed signal_device warning stop and signal_stopped release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "signal_device"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "signal_stopped"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; signal_device; signal_stopped"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed signal_device warning stop and signal_raised release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "signal_device"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "signal_raised"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; signal_device; signal_raised"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed flagman warning stop and flagman_go release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "flagman"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "flagman_go"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; flagman; flagman_go"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed flagman warning stop and flagman_left release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "flagman"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "flagman_left"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; flagman; flagman_left"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed other_person warning stop and person_go release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "other_person"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "person_go"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; other_person; person_go"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left",
+      "target_law_id": "LVMC-11-46-030",
+      "target_type": "boundary_probe",
+      "rationale": "Requested source-reviewed other_person warning stop and person_left release; original conduct and legal status remain open.",
+      "variable_assignments": {
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 55.0,
+          "unit": "feet"
+        },
+        "warning_role": {
+          "kind": "world_setup",
+          "value": "other_person"
+        },
+        "requested_release_event": {
+          "kind": "world_setup",
+          "value": "person_left"
+        },
+        "observed_stop_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "school pedestrian lane",
+        "giving warning that children are about to cross or are crossing",
+        "signal to go",
+        "not less than fifty feet"
+      ],
+      "paired_probe_id": "school_warning_source_alternatives",
+      "deliberate_differences": [
+        "requested_stop_center_ft",
+        "warning_role",
+        "requested_release_event"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_center_ft",
+        "comparison_or_standard": "fifty-foot stop and source-observed release clauses",
+        "target_value_or_branch": "55.0 ft; other_person; person_left"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__original_source_review",
+      "target_law_id": "LVMC-11-46-030",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "school pedestrian lane",
+          "note": "Original lane authority and nearest side require independent review."
+        },
+        {
+          "phrase": "giving warning that children are about to cross or are crossing",
+          "note": "Original child context and warning meaning require independent review."
+        },
+        {
+          "phrase": "signal to go",
+          "note": "Original human gesture or signal meaning requires independent pixel review."
+        },
+        {
+          "phrase": "not less than fifty feet",
+          "note": "The statute does not specify the vehicle reference point; retain front, centre and rear distances."
+        }
+      ],
+      "rationale": "CPU requests and fixtures preserve unresolved lane, child, signal and vehicle reference evidence.",
+      "missing_inputs": [
+        "Original four-view Native pixels and source-reviewed school pedestrian lane",
+        "Independent child and warning/release meaning review"
       ]
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

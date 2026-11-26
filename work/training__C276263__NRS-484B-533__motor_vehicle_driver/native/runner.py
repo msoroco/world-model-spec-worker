@@ -15,7 +15,8 @@ def check():
             config['law_id'] != 'NRS-484B-533' or config['cell_id'] != 'C276263' or
             config['actor'] != 'motor_vehicle_driver' or config['rate_hz'] != 20 or
             config['duration_s'] != 30 or
-            set(config['cameras']) != {'overview', 'curb', 'wheel', 'cabin'} or
+            set(config['cameras']) != {'overview', 'approach',
+                                      'reference_corner', 'driver_reference'} or
             set(config['required_saved_sources']) != set(SOURCES) or
             config['requested_controls'] !=
             capture_check()['cases'][config['case_id'].removeprefix(PREFIX)]):

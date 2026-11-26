@@ -13,7 +13,17 @@ ROAD_LENGTH_M = 200
 LANE_WIDTH_M = 3.5
 LANE_NEAR_SIDE_X_M = 0.0
 FEET_PER_METRE = 3.280839895013123
-CASES = {"probe_1": 55.0, "probe_2": 40.0}
+CASE_VARIANTS = {
+    "probe_1": (55.0, "signal_device", "signal_removed"),
+    "probe_2": (40.0, "signal_device", "signal_removed"),
+    "signal_stopped": (55.0, "signal_device", "signal_stopped"),
+    "signal_raised": (55.0, "signal_device", "signal_raised"),
+    "flagman_go": (55.0, "flagman", "flagman_go"),
+    "flagman_left": (55.0, "flagman", "flagman_left"),
+    "person_go": (55.0, "other_person", "person_go"),
+    "person_left": (55.0, "other_person", "person_left"),
+}
+CASES = {name: specification[0] for name, specification in CASE_VARIANTS.items()}
 CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 RELEASES = {"signal_stopped", "signal_raised", "signal_removed",
             "flagman_go", "flagman_left", "person_go", "person_left"}
@@ -58,8 +68,11 @@ def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
         raise ValueError("Unknown school warning comparison case")
     if not vehicle_blueprint.startswith("vehicle."):
         raise ValueError("Invalid vehicle blueprint")
-    if not warning_blueprint.startswith("static.prop."):
+    role = CASE_VARIANTS[case][1]
+    if role == "signal_device" and not warning_blueprint.startswith("static.prop."):
         raise ValueError("Invalid warning device prop blueprint")
+    if role != "signal_device" and not warning_blueprint.startswith("walker.pedestrian."):
+        warning_blueprint = "walker.pedestrian.0001"
     if not child_blueprint.startswith("walker.pedestrian."):
         raise ValueError("Invalid child actor blueprint request")
     return {
@@ -70,9 +83,9 @@ def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
                     "requested_stop_center_x_m": LANE_NEAR_SIDE_X_M - CASES[case] / FEET_PER_METRE},
         "school_pedestrian_lane": {"near_side_x_m": LANE_NEAR_SIDE_X_M,
                                    "far_side_x_m": 4.0, "official_status_verified": False},
-        "warning": {"role": "signal_device", "blueprint": warning_blueprint,
+        "warning": {"role": role, "blueprint": warning_blueprint,
                     "xyz": [-1, -6, 0], "active_from_frame": 0,
-                    "requested_release_event": "signal_removed",
+                    "requested_release_event": CASE_VARIANTS[case][2],
                     "requested_release_frame": 250,
                     "original_warning_state_verified": False},
         "child": {"blueprint": child_blueprint, "start_xyz": [-2, -8, 0.2],

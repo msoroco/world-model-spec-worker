@@ -14,7 +14,7 @@ import shutil
 import subprocess
 
 from prove_school_warning import trace
-from school_warning_scene import open_drive
+from school_warning_scene import CASE_VARIANTS, open_drive
 
 
 ROOT = Path(__file__).resolve().parent
@@ -44,7 +44,7 @@ def body(x, y, z=1):
 
 
 def build(suffix):
-    if suffix not in ("probe_1", "probe_2"):
+    if suffix not in CASE_VARIANTS:
         raise ValueError("Unknown exact school-warning case")
     case_id = ROOT.name + "__" + suffix
     temp = REPO / ".runtime-work" / ("c394563-fixture-build-" + suffix)
@@ -52,16 +52,21 @@ def build(suffix):
         shutil.rmtree(temp)
     temp.mkdir(parents=True)
     dest = ROOT / "diagnostic" / suffix
-    target_ft = 55 if suffix == "probe_1" else 40
-    rows = trace(target_ft, release="signal_removed")
+    target_ft, role, release = CASE_VARIANTS[suffix]
+    rows = trace(target_ft, role=role, release=release)
     frame_map, traces, evidence, native_frames, graphs = [], [], [], [], []
     for index, row in enumerate(rows):
         frame = row["native_frame"]
         t = (index + 1) / 20
         x, speed = row["vehicle_center_x_m"], row["observed_speed_mps"]
+        warning_xyz = [-1, -6, 1]
+        if index >= 250:
+            if release == "signal_removed": warning_xyz[2] = -20
+            elif release == "signal_raised": warning_xyz[2] = 6
+            elif release.endswith("_left"): warning_xyz[0] = -25
         row.update(vehicle_actor_id=12, warning_actor_id=13, child_actor_id=14,
                    vehicle_center_y_m=-1.75, vehicle_length_m=4.0,
-                   warning_xyz_m=[-1, -6, 1 if index < 250 else -20],
+                   warning_xyz_m=warning_xyz,
                    child_xyz_m=[-2, -8, .5],
                    camera_native_frames={name: frame for name in CAMERAS},
                    original_lane_and_child_review_pending=True)
@@ -119,7 +124,7 @@ def build(suffix):
               "municipal_jurisdiction_reviewed": True,
               "nearest_lane_side_x_m": 0.0,
               "lane_marker_blueprint": "static.prop.school_lane",
-              "warning_blueprint": "static.prop.warning",
+              "warning_blueprint": "static.prop.warning" if role == "signal_device" else "walker.pedestrian.0001",
               "child_blueprint": "walker.pedestrian.0001",
               "synthetic_diagnostic": True}
     for name in REVIEW_NAMES:
@@ -175,6 +180,6 @@ def build(suffix):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("suffix", choices=("probe_1", "probe_2"))
+    parser.add_argument("suffix", choices=tuple(CASE_VARIANTS))
     args = parser.parse_args()
     print(json.dumps(build(args.suffix)))

@@ -13,20 +13,24 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def bind(version):
-    path = ROOT / "draft-native-manifest.json"
+def bind(version, manifest_name="draft-native-manifest.json"):
+    path = ROOT / manifest_name
+    variant = manifest_name == "draft-variant-manifest.json"
     manifest = json.loads(path.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[1]
         for candidate in ("primary", "fallback1"):
             target = entry if candidate == "primary" else entry["candidates"][0]
-            source = REPO / ".runtime-work" / f"c394563-compat-{suffix}-{candidate}-{version}"
+            source_prefix = "c394563-variant-compat" if variant else "c394563-compat"
+            source = REPO / ".runtime-work" / f"{source_prefix}-{suffix}-{candidate}-{version}"
+            if not variant and not (source / "compatibility.json").is_file() and candidate == "primary" and suffix == "probe_1":
+                source = REPO / ".runtime-work" / f"c394563-compat-{suffix}-{candidate}-v10"
             receipt = json.loads((source / "compatibility.json").read_text())
             if not receipt.get("passed") or receipt.get("construction_sha256") != target["construction_sha256"]:
                 raise ValueError("Compatibility proof differs from exact construction")
             if receipt.get("negative_error_contains") not in (source / "negative-analysis.log").read_text():
                 raise ValueError("Missing source rejection absent")
-            prefix = suffix + "-" + candidate
+            prefix = ("variant-" if variant else "") + suffix + "-" + candidate
             destinations = {}
             for filename, label in (("compatibility.json", "receipt"),
                                     ("compatibility-analysis.log", "log"),
@@ -48,7 +52,7 @@ def bind(version):
             "method": "original 20 Hz Native actor/camera source readback",
             "evidence": "native-rows.jsonl and video_frames.jsonl"}
             for name in atoms + channels}
-        physical = ROOT / "proofs" / f"{suffix}-physical-preparation.json"
+        physical = ROOT / "proofs" / f"{'variant-' if variant else ''}{suffix}-physical-preparation.json"
         if physical.is_file():
             entry["physical_preparation"] = {"receipt": str(physical.relative_to(ROOT)),
                                              "sha256": sha(physical)}
@@ -58,4 +62,4 @@ def bind(version):
 
 if __name__ == "__main__":
     import sys
-    print(json.dumps(bind(sys.argv[1])))
+    print(json.dumps(bind(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "draft-native-manifest.json")))

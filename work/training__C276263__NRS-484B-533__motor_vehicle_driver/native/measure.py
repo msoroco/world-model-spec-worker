@@ -8,9 +8,10 @@ import math
 from pathlib import Path
 
 SOURCES = ('vehicle-frames.jsonl', 'grade-readback.json',
-           'occupancy-frames.jsonl', 'video_frames.jsonl')
+           'occupancy-frames.jsonl', 'video_frames.jsonl', 'trace.jsonl',
+           'instrument-frames.jsonl')
 FRAMES = 600
-VIEWS = {'overview', 'curb', 'wheel', 'cabin'}
+VIEWS = {'overview', 'approach', 'reference_corner', 'driver_reference'}
 
 
 def sha(path):
@@ -37,20 +38,31 @@ def measure(folder, expected_hashes, diagnostic=False):
     vehicle = [json.loads(s) for s in (folder / SOURCES[0]).read_text().splitlines()]
     occupancy = [json.loads(s) for s in (folder / SOURCES[2]).read_text().splitlines()]
     video = [json.loads(s) for s in (folder / SOURCES[3]).read_text().splitlines()]
-    if not all(len(rows) == FRAMES for rows in (vehicle, occupancy, video)):
+    trace = [json.loads(s) for s in (folder / SOURCES[4]).read_text().splitlines()]
+    instrument = [json.loads(s) for s in (folder / SOURCES[5]).read_text().splitlines()]
+    if not all(len(rows) == FRAMES for rows in (vehicle, occupancy, video, trace, instrument)):
         raise ValueError('Complete 30-second source window required')
     actor_id = None
     instrument_id = None
     responsible_person_id = None
     unattended = []
     engine_states, brake_states, wheel_angles, movement = [], [], [], []
-    for i, (v, o, f) in enumerate(zip(vehicle, occupancy, video)):
+    for i, (v, o, f, t, packet) in enumerate(zip(vehicle, occupancy, video, trace, instrument)):
         if (v.get('frame') != i or o.get('frame') != i or f.get('video_frame') != i or
                 v.get('native_frame') != o.get('native_frame') or
                 v.get('native_frame') != f.get('native_frame') or
                 f.get('carla_frame') != f.get('native_frame') or
                 not all(number(row.get('time_s')) and abs(row['time_s'] - i/20) < .003
-                        for row in (v, o, f))):
+                        for row in (v, o, f, t)) or
+                t.get('frame') != v.get('native_frame') or
+                not isinstance(t.get('position'), dict) or
+                not all(number(t['position'].get(axis)) for axis in 'xyz') or
+                not number(t.get('heading_deg')) or
+                not number(t.get('speed_mps')) or
+                not number(v.get('speed_mps')) or
+                not number(v.get('position_x_m')) or
+                abs(t['speed_mps'] - v['speed_mps']) > 1e-4 or
+                abs(t['position']['x'] - v['position_x_m']) > 1e-4):
             raise ValueError('Original frame/time join differs')
         if v.get('source_kind') != ('synthetic_native_sample' if diagnostic else 'native_actor'):
             raise ValueError('Vehicle provenance differs')
@@ -74,12 +86,25 @@ def measure(folder, expected_hashes, diagnostic=False):
         if v.get('brake_source') != ('synthetic_instrument' if diagnostic else 'native_control_readback'):
             raise ValueError('Parking-brake readback absent')
         if not diagnostic:
+            if (packet.get('native_frame') != v['native_frame'] or
+                    packet.get('actor_id') != v['actor_id'] or
+                    packet.get('source_kind') != 'original_instrumentation' or
+                    packet.get('engine_running') != v.get('engine_running') or
+                    packet.get('engine_method') != v.get('engine_method') or
+                    packet.get('wheel_calibration_id') != v.get('wheel_calibration_id') or
+                    packet.get('attendance_method') != o.get('attendance_method') or
+                    packet.get('responsible_person_id') != o.get('responsible_person_id') or
+                    packet.get('front_wheel_heading_to_curb_deg') != v.get('front_wheel_heading_to_curb_deg') or
+                    packet.get('occupant_count') != o.get('occupant_count') or
+                    packet.get('responsible_person_outside') != o.get('responsible_person_outside')):
+                raise ValueError('Retained original instrument packet differs')
             if instrument_id is None:
                 instrument_id = v.get('instrument_id')
                 responsible_person_id = o.get('responsible_person_id')
             if (not isinstance(instrument_id, str) or not instrument_id or
                     v.get('instrument_id') != instrument_id or
                     o.get('instrument_id') != instrument_id or
+                    packet.get('instrument_id') != instrument_id or
                     not isinstance(responsible_person_id, str) or not responsible_person_id or
                     o.get('responsible_person_id') != responsible_person_id or
                     not isinstance(v.get('engine_method'), str) or

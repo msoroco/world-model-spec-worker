@@ -13,7 +13,7 @@ import shutil
 import subprocess
 
 from school_native_plan import SchoolController, check_pair, plan
-from school_warning_scene import scene_request, validate_request
+from school_warning_scene import CASE_VARIANTS, scene_request, validate_request
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -43,7 +43,8 @@ def check():
             "original_native_observed": False}
 
 
-def _review(output, library):
+def _review(output, library, request=None):
+    request = request or scene_request("probe_1")
     supplied = os.environ.get("SCHOOL_LANE_REVIEW")
     if not supplied:
         raise ValueError("Supply source-reviewed school lane packet in SCHOOL_LANE_REVIEW")
@@ -64,6 +65,9 @@ def _review(output, library):
         if not isinstance(value, str) or not value:
             raise ValueError("Reviewed actor blueprint missing: " + key)
         library.find(value)
+    expected_prefix = "static.prop." if request["warning"]["role"] == "signal_device" else "walker.pedestrian."
+    if not review["warning_blueprint"].startswith(expected_prefix):
+        raise ValueError("Reviewed warning actor role differs from exact case")
     if review.get("municipal_jurisdiction_reviewed") is not True:
         raise ValueError("Municipal jurisdiction source review missing")
     shutil.copyfile(packet, output / "original-school-lane-review.json")
@@ -123,7 +127,7 @@ def capture(output_dir, host, port):
         world.set_weather(carla.WeatherParameters.ClearNoon)
         (output / "road.xodr").write_text(world.get_map().to_opendrive())
         library = world.get_blueprint_library()
-        review = _review(output, library)
+        review = _review(output, library, request)
         lane = world.spawn_actor(library.find(review["lane_marker_blueprint"]),
             carla.Transform(carla.Location(x=0, y=0, z=.05), carla.Rotation()))
         owned.append(lane)
@@ -160,13 +164,29 @@ def capture(output_dir, host, port):
                 pose = ego.get_transform()
                 velocity = ego.get_velocity()
                 speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
+                release_kind = CASE_VARIANTS[suffix][2]
                 if index == 250:
+                    target = {
+                        "signal_removed": (-1, -6, -20, 90),
+                        "signal_raised": (-1, -6, 6, 90),
+                        "signal_stopped": (-1, -6, 1, 0),
+                        "flagman_go": (-1, -6, 1, 0),
+                        "person_go": (-1, -6, 1, 0),
+                        "flagman_left": (-25, -6, 1, 90),
+                        "person_left": (-25, -6, 1, 90),
+                    }[release_kind]
                     warning.set_transform(carla.Transform(
-                        carla.Location(x=-1, y=-6, z=-20), carla.Rotation(yaw=90)))
-                warning_location = warning.get_location()
-                observed_removal = warning_location.z < -10
+                        carla.Location(x=target[0], y=target[1], z=target[2]),
+                        carla.Rotation(yaw=target[3])))
+                warning_pose = warning.get_transform()
+                warning_location = warning_pose.location
+                observed_release = (
+                    warning_location.z < -10 if release_kind == "signal_removed" else
+                    warning_location.z > 4 if release_kind == "signal_raised" else
+                    warning_location.x < -20 if release_kind.endswith("_left") else
+                    abs(warning_pose.rotation.yaw) < 45)
                 command = controller.step(index, pose.location.x, speed,
-                    not observed_removal, "signal_removed" if observed_removal else None)
+                    not observed_release, release_kind if observed_release else None)
                 ego.apply_control(carla.VehicleControl(
                     throttle=command["throttle"] * config["controller_throttle_scale"],
                     brake=command["brake"], steer=command["steer"]))
@@ -195,7 +215,13 @@ def capture(output_dir, host, port):
                 velocity = ego.get_velocity()
                 current_speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
                 child_location = child.get_location()
-                warning_location = warning.get_location()
+                warning_pose = warning.get_transform()
+                warning_location = warning_pose.location
+                observed_release = (
+                    warning_location.z < -10 if release_kind == "signal_removed" else
+                    warning_location.z > 4 if release_kind == "signal_raised" else
+                    warning_location.x < -20 if release_kind.endswith("_left") else
+                    abs(warning_pose.rotation.yaw) < 45)
                 record = {"video_frame": index, "native_frame": native_frame,
                     "time_s": index / 20, "source_cameras": {name: index for name in CAMERAS},
                     "camera_native_frames": camera_native,
@@ -206,14 +232,13 @@ def capture(output_dir, host, port):
                     "warning_actor_id": warning.id,
                     "warning_xyz_m": [warning_location.x, warning_location.y,
                                       warning_location.z],
-                    "warning_role": "signal_device",
-                    "warning_active": warning_location.z >= -10,
+                    "warning_role": request["warning"]["role"],
+                    "warning_active": not observed_release,
                     "child_actor_id": child.id,
                     "child_xyz_m": [child_location.x, child_location.y, child_location.z],
                     "children_about_to_cross_or_crossing":
                         child_location.x <= 4 and child_location.y <= -5,
-                    "release_event": "signal_removed" if index == 250 and
-                        warning_location.z < -10 else None,
+                    "release_event": release_kind if index == 250 and observed_release else None,
                     "requested_target_center_x_m": request_row["target_center_x_m"],
                     "original_lane_and_child_review_pending": True}
                 stream.write(json.dumps(record, allow_nan=False) + "\n")

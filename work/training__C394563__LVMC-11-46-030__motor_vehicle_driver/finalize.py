@@ -133,12 +133,18 @@ def finalize(attempt, output):
         "realized_observables": {}}
     result = physical_result(attempt, result)
     write_result(attempt, result)
+    source_hashes = {name: sha(attempt / name) for name in
+                     ("road.xodr", "native-rows.jsonl", "video_frames.jsonl",
+                      "original-school-lane-review.json")}
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "measurements": {"school_warning_stop": {
                   "method": "derive", "value": measured,
-                  "sources": {name: sha(attempt / name) for name in
-                              ("road.xodr", "native-rows.jsonl", "video_frames.jsonl",
-                               "original-school-lane-review.json")}}},
+                  "sources": source_hashes},
+                  "warning_actor_role": {"method": "derive", "value": measured["warning_role"],
+                                         "sources": source_hashes},
+                  "observed_release": {"method": "derive",
+                                       "value": measured["first_release_event"] or "no_release_observed",
+                                       "sources": source_hashes}},
               "source_complete": True, "physical_or_legal_acceptance": False}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "LVMC-11-46-030",
+      "source": "LVMC 11.46.030",
+      "output_key": "warning_actor_role",
+      "method": "derive",
+      "kind": "measured",
+      "value_type": "text",
+      "inputs": [
+        "road.xodr",
+        "native-rows.jsonl",
+        "video_frames.jsonl",
+        "original-school-lane-review.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "LVMC-11-46-030",
+      "source": "LVMC 11.46.030",
+      "output_key": "observed_release",
+      "method": "derive",
+      "kind": "measured",
+      "value_type": "text",
+      "inputs": [
+        "road.xodr",
+        "native-rows.jsonl",
+        "video_frames.jsonl",
+        "original-school-lane-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-school-lane-review.json"
+    ],
+    "error_contains": "Missing required source: original-school-lane-review.json"
+  }
+}

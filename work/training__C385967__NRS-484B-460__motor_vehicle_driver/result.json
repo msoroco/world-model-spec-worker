@@ -2,69 +2,53 @@
   "applied_update": 16,
   "assignment_id": "training__C385967__NRS-484B-460__motor_vehicle_driver",
   "counts": {
-    "accepted_equivalence_reuses": 0,
+    "source_topics": 2,
     "accepted_membership_rows": 0,
-    "candidates_proven": 0,
-    "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
-    "selected_comparison_cases_planned": 2,
-    "source_topics": 2
+    "accepted_equivalence_reuses": 0,
+    "selected_comparison_cases_planned": 6,
+    "comparisons_planned": 3,
+    "candidates_proven": 6,
+    "delivery_cases_prepared": 0
   },
   "current_cpu_proof": {
-    "duration_s": 30,
-    "exact_unselected_offline_cases_passed": 2,
-    "frames_per_condition": 600,
-    "measurement_contract": "native/measurement-contract.json",
-    "measurement_contract_sha256": "ad151493d574c80bc7a53fe3289b710602b53b471c43f8e4d9ce9aed4a1aab3b",
-    "native_executed": false,
-    "offline": [
-      {
-        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
-        "construction": "native/condition_a-construction.json",
-        "construction_sha256": "dc3d3e7512ec5c0b581b8cbf968d3b4bf11dfa24a261df0e200a36cceae73323",
-        "exit_code": 0,
-        "log": "native/condition-a-offline.log",
-        "log_sha256": "3a819c695519db692c5b7c91efd18ba22a49afee09c685b188ebc4b006528921"
-      },
-      {
-        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
-        "construction": "native/condition_b-construction.json",
-        "construction_sha256": "a245fb0f416c3721ee54128bccdb39c3cf9bf2fed8235956a36c88f406a496f7",
-        "exit_code": 0,
-        "log": "native/condition-b-offline.log",
-        "log_sha256": "8ab737cef4dfbb70a9ee91ea0d89a0b12e7aa01c96a42997f57db42c49e8852c"
-      }
-    ],
-    "offline_manifest": "native/draft-manifest.json",
-    "offline_manifest_sha256": "72470829d4de3b8ca26c1838fec92152adefdc3a0e477295dc85cc1fd058c848",
-    "proof": "native/angle-diagnostic-proof.json",
-    "proof_sha256": "7e562e3c4c322b04e0e3a8bf5c34f6e251414951202ac497ba71fd746f3e5710",
+    "status": "six_explicit_activity_cases_source_offline_semantic_physical_passed_public_compatibility_running",
     "selected_runtime_proofs_passed": false,
-    "source": "native/angle_park_request.py",
-    "source_sha256": "8c9f3baea841e8e1f4c34bb3e97a65a9394132a19b78859d36603bd8eac9f9af",
-    "status": "exact_unselected_drafts_and_at_rest_angle_source_meter_passed"
+    "native_executed": false,
+    "duration_s": 30,
+    "frames_per_condition": 600,
+    "selected_case_ids": [
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a",
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b",
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a",
+      "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b"
+    ],
+    "semantic_index": "proposals/semantic-index.json",
+    "semantic_index_sha256": "7032ad99ffc6710f9952b1df160792e2f1ed2f202a56d24c302d4af1442796ab",
+    "stop_comparison_proof": "native/stop-comparison-proof.json",
+    "stand_comparison_proof": "native/stand-comparison-proof.json",
+    "park_saved_positive_negative_passed": true,
+    "activity_compatibility_status": "running",
+    "activity_saved_processing_status": "running",
+    "physical_preparation_scope": "six synthetic fixture triads; original Native unverified"
   },
   "input_sha256": "c7b42442b83a1c0f3c23652e314571e31d8c551760c3dee1f797da02fcafe939",
   "readiness_kind": "implementation_checkpoint",
-  "reason": "Two exact 30-second/600-frame unselected primary angle-parking bundles pass pinned offline; source-metered at-rest heading diagnostics and missing-source negatives pass. Native capture, selected compatibility, process-saved, fallbacks, proposals and independent audits remain worker-owned CPU work.",
+  "reason": "Six explicit stop, stand and park 45/70-degree angle cases constructed. Source-bound at-rest joins and missing-device negatives pass for all; paired stop/stand audits reject changed action and preserve device/curb. Eight activity offline candidates pass; six semantic cases and physical triads validate. Activity public compatibility, recorded-only positive/negative, independent delivery audits, final manifest and strict gate remain. No original Native or legal acceptance claimed.",
   "status": "partial",
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/angle_park_request.py prove --output .runtime-work/c385967-angle",
+      "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/prove_activity_comparison.py --action stop",
       "exit_code": 0,
-      "result": "two 600-frame source-metered at-rest angle conditions and four negative source rejections"
+      "log": "native/stop-comparison-proof.json",
+      "sha256": "ee52f8e6d089212478d85b39474b79e9ecc8e7504caa2f82f92f0ad8adec777b"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --output .runtime-work/c385967-angle-offline-a",
+      "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/prove_activity_comparison.py --action stand",
       "exit_code": 0,
-      "log": "native/condition-a-offline.log",
-      "log_sha256": "3a819c695519db692c5b7c91efd18ba22a49afee09c685b188ebc4b006528921"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --output .runtime-work/c385967-angle-offline-b",
-      "exit_code": 0,
-      "log": "native/condition-b-offline.log",
-      "log_sha256": "8ab737cef4dfbb70a9ee91ea0d89a0b12e7aa01c96a42997f57db42c49e8852c"
+      "log": "native/stand-comparison-proof.json",
+      "sha256": "c723ac626d509aaa2cf2ce55c2ac2535734dbfd66b3db0481d015b61965aee52"
     }
   ]
 }
