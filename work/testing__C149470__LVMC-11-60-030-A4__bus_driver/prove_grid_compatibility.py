@@ -24,8 +24,8 @@ def run(command, log):
 
 def prove(case):
         cid = HERE.name + '__' + case.name
-        offline = ROOT / '.runtime-work/c149470' / ('grid4-offline-' + case.name)
-        compat = ROOT / '.runtime-work/c149470' / ('grid4-compat-' + case.name)
+        offline = ROOT / '.runtime-work/c149470' / ('grid6-offline-' + case.name)
+        compat = ROOT / '.runtime-work/c149470' / ('grid6-compat-' + case.name)
         run([str(PYTHON), 'runtime.py', 'offline', '--manifest', str(MANIFEST),
              '--case', cid, '--output', str(offline), '--python', str(PYTHON)],
             HERE / ('cpu-grid-offline-' + case.name + '.log'))
@@ -39,8 +39,10 @@ def prove(case):
 def main():
     if not DECODER.is_file():
         raise FileNotFoundError(DECODER)
+    cases = tuple(case for case in CASES if 'source_review' in case.name) + tuple(
+        case for case in CASES if 'source_review' not in case.name)
     with ThreadPoolExecutor(max_workers=3) as pool:
-        list(pool.map(prove, CASES))
+        list(pool.map(prove, cases))
 
 
 if __name__ == '__main__':

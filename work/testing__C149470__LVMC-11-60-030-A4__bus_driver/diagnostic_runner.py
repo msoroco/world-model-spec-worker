@@ -35,14 +35,15 @@ def main():
     if args.check:
         print('diagnostic CPU check passed: ' + scene['case_id'])
         return
-    if not args.site or not args.output_dir:
+    site = args.site or os.environ.get('C149470_REVIEWED_SITE')
+    if not site or not args.output_dir:
         raise ValueError('reviewed original site and output directory required')
     module_name = args.adapter_module or os.environ.get('C149470_NATIVE_ADAPTER_MODULE')
     if not module_name:
         raise ValueError('Native adapter module required')
     adapter = importlib.import_module(module_name).create_adapter(scene['case_id'])
     from native_capture import capture
-    print(json.dumps(capture(adapter, args.site, config['case']['kind'],
+    print(json.dumps(capture(adapter, Path(site), config['case']['kind'],
                              Path(args.output_dir)), sort_keys=True))
 
 

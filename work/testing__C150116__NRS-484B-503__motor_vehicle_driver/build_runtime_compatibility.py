@@ -55,7 +55,7 @@ def build():
                          'regulations_effective': scene['regulations']['effective_at_civil_time'],
                          'ego_id': 'ego', 'passenger_id': 'passenger',
                          'zone_source_sha256': scene['zone']['marking_source_sha256'],
-                         'inside_zone': 280 <= frame < 600,
+                         'inside_zone': 280 <= frame < 600 and (config['case']['zone_boundary_offset_m'] is None or config['case']['zone_boundary_offset_m'] > 0),
                          'speed_mps': 0.0 if 280 <= frame < 600 else 3.0,
                          'passenger_event': event})
         row_path = folder / 'zone-rows.json'

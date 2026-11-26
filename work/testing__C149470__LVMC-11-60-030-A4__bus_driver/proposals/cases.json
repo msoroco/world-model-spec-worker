@@ -2,22 +2,344 @@
   "cell_id": "C149470",
   "actor": "bus_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "judgment_refs": [
+        {
+          "phrase": "approximately parallel to the curb",
+          "note": "Original bus heading, curb tangent and camera views need independent review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "axes": [
+        {
+          "variable": "heading_request_deg",
+          "observable": "bus_curb_angle_deg",
+          "unit": "deg",
+          "min": 0.0,
+          "max": 8.0,
+          "spacing": 4.0,
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "max"
+          },
+          "range_rationale": "Bounded route geometry supported by bus_curb.py and source-gated fixture tests; engineering coverage only.",
+          "spacing_rationale": "Distinct route geometry requests for observable physical variation; no legal judgment boundary.",
+          "feasibility_evidence": "bus_curb.py route construction and synthetic 900-frame measurement fixtures"
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_front_wheel_curb",
+            "unit": "m with uncertainty",
+            "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "wheel localization"
+          },
+          {
+            "name": "stopped_loading",
+            "unit": "structured original observation",
+            "method": "bus speed and actual loading actor state, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "actor activity review"
+          },
+          {
+            "name": "other_traffic",
+            "unit": "m/s",
+            "method": "separate vehicular traffic speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic route review"
+          },
+          {
+            "name": "traffic_speed_mps",
+            "unit": "m/s",
+            "method": "source-sealed separate vehicle speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic actor and route review"
+          },
+          {
+            "name": "bus_curb_angle_deg",
+            "unit": "deg",
+            "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "body and curb geometry review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized cameras, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "pixel visibility review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Approximately parallel and unduly impede remain unresolved judgments.",
+          "Synthetic fixture is software diagnostic only."
+        ]
+      },
+      "production_source_requirements": [
+        "reviewed original public-street location, curb tangent and bus pose",
+        "reviewed separate other-traffic route and movement",
+        "retained original 20 Hz bus, traffic, loading and four camera histories"
+      ],
+      "spec_version": "691794576c31005c28be5723e7b31a56b37c52f31a806b7b9a68a40c46860d9a",
+      "planned_case_count": 3,
+      "selection_order": [
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0000",
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0002"
+      ]
+    },
+    {
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "judgment_refs": [
+        {
+          "phrase": "not to unduly impede the movement of other vehicular traffic",
+          "note": "Original traffic trajectories and available movement need independent review."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "axes": [
+        {
+          "variable": "traffic_lateral_request_m",
+          "observable": "traffic_speed_mps",
+          "unit": "m/s",
+          "min": 2.0,
+          "max": 4.0,
+          "spacing": 1.0,
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "min"
+          },
+          "range_rationale": "Bounded route geometry supported by bus_curb.py and source-gated fixture tests; engineering coverage only.",
+          "spacing_rationale": "Distinct route geometry requests for observable physical variation; no legal judgment boundary.",
+          "feasibility_evidence": "bus_curb.py route construction and synthetic 900-frame measurement fixtures"
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_front_wheel_curb",
+            "unit": "m with uncertainty",
+            "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "wheel localization"
+          },
+          {
+            "name": "stopped_loading",
+            "unit": "structured original observation",
+            "method": "bus speed and actual loading actor state, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "actor activity review"
+          },
+          {
+            "name": "other_traffic",
+            "unit": "m/s",
+            "method": "separate vehicular traffic speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic route review"
+          },
+          {
+            "name": "traffic_speed_mps",
+            "unit": "m/s",
+            "method": "source-sealed separate vehicle speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic actor and route review"
+          },
+          {
+            "name": "bus_curb_angle_deg",
+            "unit": "deg",
+            "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "body and curb geometry review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized cameras, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "pixel visibility review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Approximately parallel and unduly impede remain unresolved judgments.",
+          "Synthetic fixture is software diagnostic only."
+        ]
+      },
+      "production_source_requirements": [
+        "reviewed original public-street location, curb tangent and bus pose",
+        "reviewed separate other-traffic route and movement",
+        "retained original 20 Hz bus, traffic, loading and four camera histories"
+      ],
+      "spec_version": "d5d3d35230b1d0581f98a38b00ea3c58725dad155b08f706820c3b00b5e4921c",
+      "planned_case_count": 3,
+      "selection_order": [
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0000",
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0001",
+        "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0002"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
-      "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Shared source-bound non-tour-bus loading baseline without a legal finding.",
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -81,6 +403,135 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      }
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_front_wheel_curb",
+            "unit": "m with uncertainty",
+            "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "wheel localization"
+          },
+          {
+            "name": "stopped_loading",
+            "unit": "structured original observation",
+            "method": "bus speed and actual loading actor state, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "actor activity review"
+          },
+          {
+            "name": "other_traffic",
+            "unit": "m/s",
+            "method": "separate vehicular traffic speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic route review"
+          },
+          {
+            "name": "traffic_speed_mps",
+            "unit": "m/s",
+            "method": "source-sealed separate vehicle speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic actor and route review"
+          },
+          {
+            "name": "bus_curb_angle_deg",
+            "unit": "deg",
+            "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "body and curb geometry review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized cameras, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "pixel visibility review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Approximately parallel and unduly impede remain unresolved judgments.",
+          "Synthetic fixture is software diagnostic only."
+        ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4472,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4472
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -88,15 +539,51 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4572
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4572,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -160,6 +647,20 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4572,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4572
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -167,15 +668,51 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4672
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4672,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -239,6 +776,20 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4672,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4672
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -246,15 +797,52 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stand",
-        "activity": "baggage_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stand",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "baggage_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -318,6 +906,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "bus_stand"
       }
     },
     {
@@ -325,15 +918,52 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "passenger_zone",
-        "activity": "passenger_unloading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "passenger_zone",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_unloading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -397,6 +1027,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "passenger_zone"
       }
     },
     {
@@ -404,15 +1039,52 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "origin_point",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "origin_point",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -476,6 +1148,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "origin_point"
       }
     },
     {
@@ -483,15 +1160,52 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "destination_point",
-        "activity": "passenger_unloading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "destination_point",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_unloading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -555,23 +1269,73 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "destination_point"
       }
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0000",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "deliberate_differences": [
+        "heading_request_deg"
       ],
+      "probe": {
+        "primary_variable": "heading_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "heading_request_deg": 0.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "sweep_spec_version": "691794576c31005c28be5723e7b31a56b37c52f31a806b7b9a68a40c46860d9a",
+      "sweep_point": {
+        "heading_request_deg": 0.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -634,23 +1398,90 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "approximately parallel to the curb",
+          "note": "Original bus heading, curb tangent and camera views need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "heading_request_deg",
+          "observable": "bus_curb_angle_deg",
+          "unit": "deg",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "deliberate_differences": [
+        "heading_request_deg"
       ],
+      "probe": {
+        "primary_variable": "heading_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "heading_request_deg": 8.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "sweep_spec_version": "691794576c31005c28be5723e7b31a56b37c52f31a806b7b9a68a40c46860d9a",
+      "sweep_point": {
+        "heading_request_deg": 8.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 8.0,
+          "unit": "deg",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -713,23 +1544,90 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "approximately parallel to the curb",
+          "note": "Original bus heading, curb tangent and camera views need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "heading_request_deg",
+          "observable": "bus_curb_angle_deg",
+          "unit": "deg",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0002",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "deliberate_differences": [
+        "heading_request_deg"
       ],
+      "probe": {
+        "primary_variable": "heading_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "heading_request_deg": 4.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "sweep_spec_version": "691794576c31005c28be5723e7b31a56b37c52f31a806b7b9a68a40c46860d9a",
+      "sweep_point": {
+        "heading_request_deg": 4.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 4.0,
+          "unit": "deg",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -792,23 +1690,90 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "approximately parallel to the curb",
+          "note": "Original bus heading, curb tangent and camera views need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "heading_request_deg",
+          "observable": "bus_curb_angle_deg",
+          "unit": "deg",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "max"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0000",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "deliberate_differences": [
+        "traffic_lateral_request_m"
       ],
+      "probe": {
+        "primary_variable": "traffic_lateral_request_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "traffic_lateral_request_m": 2.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "sweep_spec_version": "d5d3d35230b1d0581f98a38b00ea3c58725dad155b08f706820c3b00b5e4921c",
+      "sweep_point": {
+        "traffic_lateral_request_m": 2.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 2.0,
+          "unit": "m",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -871,23 +1836,90 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "not to unduly impede the movement of other vehicular traffic",
+          "note": "Original traffic trajectories and available movement need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "traffic_lateral_request_m",
+          "observable": "traffic_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0001",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "deliberate_differences": [
+        "traffic_lateral_request_m"
       ],
+      "probe": {
+        "primary_variable": "traffic_lateral_request_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "traffic_lateral_request_m": 4.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "sweep_spec_version": "d5d3d35230b1d0581f98a38b00ea3c58725dad155b08f706820c3b00b5e4921c",
+      "sweep_point": {
+        "traffic_lateral_request_m": 4.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 4.0,
+          "unit": "m",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -950,23 +1982,90 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "not to unduly impede the movement of other vehicular traffic",
+          "note": "Original traffic trajectories and available movement need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "traffic_lateral_request_m",
+          "observable": "traffic_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     },
     {
       "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0002",
       "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
-      "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
-      },
-      "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed engineering position requests for original physical coverage; no legal cutoff or verdict is inferred.",
+      "paired_probe_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "deliberate_differences": [
+        "traffic_lateral_request_m"
       ],
+      "probe": {
+        "primary_variable": "traffic_lateral_request_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "traffic_lateral_request_m": 3.0
+        }
+      },
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "sweep_spec_version": "d5d3d35230b1d0581f98a38b00ea3c58725dad155b08f706820c3b00b5e4921c",
+      "sweep_point": {
+        "traffic_lateral_request_m": 3.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        },
+        "heading_request_deg": {
+          "kind": "world_setup",
+          "value": 0.0,
+          "unit": "deg"
+        },
+        "traffic_lateral_request_m": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "m",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "bus_curb_angle_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "deg"
+        },
+        "traffic_speed_mps": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "unit": "m/s"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -1029,7 +2128,29 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
-      }
+      },
+      "judgment_refs": [
+        {
+          "phrase": "not to unduly impede the movement of other vehicular traffic",
+          "note": "Original traffic trajectories and available movement need independent review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "traffic_lateral_request_m",
+          "observable": "traffic_speed_mps",
+          "unit": "m/s",
+          "measurement": {
+            "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+            "time_window": "original 20 Hz stopped loading interval",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ]
     }
   ]
 }

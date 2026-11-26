@@ -108,7 +108,7 @@ def audit_selected(manifest=None, plan=None):
          manifest.get('status') == 'source_gated_draft', 'selected manifest scope changed')
     expected = {PREFIX + case.name for case in CASES}
     need({entry['case_id'] for entry in manifest['cases']} == expected
-         and len(manifest['cases']) == len(expected), 'seven selected cases required')
+         and len(manifest['cases']) == len(expected), 'all selected cases required')
     reports = {entry['case_id']: audit_case(entry) for entry in manifest['cases']}
     need({item['case_id'] for item in plan['cases']} == expected, 'plan and selection differ')
     comparisons = []

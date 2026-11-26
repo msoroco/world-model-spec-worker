@@ -48,8 +48,8 @@ def analyze(attempt):
                                          'active': row['loading_active'],
                                          'activity': row['activity']},
         'other_traffic': lambda row: {'traffic_speed_mps': row['traffic_speed_mps']},
-        'traffic_speed_mps': lambda row: {'traffic_speed_mps': row['traffic_speed_mps']},
-        'bus_curb_angle_deg': lambda row: {'bus_curb_angle_deg': row['bus_curb_angle_deg']},
+        'traffic_speed_mps': lambda row: row['traffic_speed_mps'],
+        'bus_curb_angle_deg': lambda row: row['bus_curb_angle_deg'],
         'camera_frame_identity': lambda row: {'frame': row['original_frame']}}
     for channel in channels:
         name = channel['name']
@@ -61,6 +61,21 @@ def analyze(attempt):
                                 for row in rows))
         evidence.append({'name': name, 'unit': channel['unit'],
                          'reference': path.name})
+    summaries = {}
+    stopped = [row for row in rows if row['bus_speed_mps'] <= .01 and row['loading_active']]
+    if not stopped:
+        raise ValueError('original stopped-loading sweep window missing')
+    for axis in config['case'].get('sweep_measurements', []):
+        name = axis['observable']
+        if name not in ('bus_curb_angle_deg', 'traffic_speed_mps'):
+            raise ValueError('unknown bus engineering sweep observable')
+        values = [row[name] for row in stopped]
+        statistic = axis['measurement']['statistic']
+        result_value = {'min': min, 'max': max}[statistic](values)
+        summaries[name] = {'unit': axis['unit'], **axis['measurement'],
+                           'value': result_value,
+                           'reference': 'channel-' + name + '.jsonl',
+                           'sample_window_s': [stopped[0]['time_s'], stopped[-1]['time_s']]}
     from worker_exchange.native_output import physical_result, write_result
     result = {'case_id': config['selected_case_id'], 'measured_values': measured,
               'target_checks': [{'target': 'right front wheel at stopped loading',
@@ -79,7 +94,7 @@ def analyze(attempt):
                                    ('overview', 'approach', 'reference_corner', 'driver_reference')],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['case']['recording_description'],
-              'recording_evidence': evidence, 'realized_observables': {},
+              'recording_evidence': evidence, 'realized_observables': summaries,
               'diagnostic_fixture': True, 'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False}
     result = physical_result(attempt, result)

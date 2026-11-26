@@ -18,7 +18,7 @@ def main():
     entries = []
     for original in diagnostic['cases']:
         name = original['case_id'].removeprefix(AID + '__')
-        source = ROOT / '.runtime-work' / 'c150116' / ('compat-v2-' + name if name == 'stop_no_passenger' else 'compat-' + name)
+        source = ROOT / '.runtime-work' / 'c150116-new' / ('compat-' + name + '-v4')
         target = HERE / 'proofs' / ('selected-' + name)
         target.mkdir(parents=True, exist_ok=True)
         for src, dst in [('compatibility.json', 'receipt.json'),
@@ -43,7 +43,7 @@ def main():
                                           'log': str((target / 'analysis.log').relative_to(HERE))},
                         'negative': {'log': str((target / 'negative.log').relative_to(HERE))},
                         'offline': {'construction_sha256': original['construction_sha256'],
-                                    'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/execution-manifest.json --case ' + original['case_id'] + ' --output .runtime-work/c150116/selected-offline-' + name,
+                                    'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/execution-manifest.json --case ' + original['case_id'] + ' --output .runtime-work/c150116-new/selected-offline-' + name,
                                     'exit_code': None,
                                     'log': 'cpu-nov25-selected-offline-' + name + '.log',
                                     'log_sha256': None},

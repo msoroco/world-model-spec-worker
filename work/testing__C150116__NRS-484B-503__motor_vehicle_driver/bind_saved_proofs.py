@@ -1,10 +1,10 @@
-"""Bind seven recorded-only synthetic saved processing replays."""
+"""Bind recorded-only synthetic saved processing replays."""
 import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SCRATCH = HERE.parents[1] / '.runtime-work' / 'c150116'
+SCRATCH = HERE.parents[1] / '.runtime-work' / 'c150116-new'
 
 
 def sha(path):

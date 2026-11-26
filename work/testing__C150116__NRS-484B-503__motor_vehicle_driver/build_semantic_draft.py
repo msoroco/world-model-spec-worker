@@ -46,7 +46,10 @@ def main():
         {'name': 'regulations_effective', 'kind': 'world_setup', 'range_or_domain': 'true or false from original authority and clock', 'unit': 'boolean'}]
     params.extend([
         {'name': 'zone_boundary_offset_m', 'kind': 'controller', 'range_or_domain': '-0.5 to 0.5 m engineering pose requests from reviewed marked boundary', 'unit': 'm'},
-        {'name': 'civil_clock_offset_min', 'kind': 'world_setup', 'range_or_domain': '-30 to 30 min engineering clock requests relative to sourced boundary', 'unit': 'min'}])
+        {'name': 'civil_clock_offset_min', 'kind': 'world_setup', 'range_or_domain': '-30 to 30 min engineering clock requests relative to sourced boundary', 'unit': 'min'},
+        {'name': 'zone_boundary_signed_distance_m', 'kind': 'subject_behavior', 'range_or_domain': 'original measured signed polygon distance', 'unit': 'm'},
+        {'name': 'civil_boundary_offset_min', 'kind': 'subject_behavior', 'range_or_domain': 'original source-joined clock offset', 'unit': 'min'},
+        {'name': 'passenger_event_delay_s', 'kind': 'subject_behavior', 'range_or_domain': 'original halt-to-passenger-event delay', 'unit': 's'}])
     template_ref = write('template.json', {'template_id': TEMPLATE, 'law_id': LAW,
         'actor': ACTOR, 'status': 'draft', 'quote': quote,
         'structure': {'law_id': LAW,
@@ -90,7 +93,12 @@ def main():
                 'conduct': {'kind': 'world_setup', 'value': design['conduct'], 'unit': 'category'},
                 'passenger_action': {'kind': 'world_setup', 'value': design['passenger_action'], 'unit': 'category'},
                 'release_delay_s': {'kind': 'world_setup', 'value': design['release_delay_s'], 'unit': 's'},
-                'regulations_effective': {'kind': 'world_setup', 'value': design['hours'] == 'effective', 'unit': 'boolean'}},
+                'regulations_effective': {'kind': 'world_setup', 'value': design['hours'] == 'effective', 'unit': 'boolean'},
+                'zone_boundary_offset_m': {'kind': 'controller', 'value': None, 'unit': 'm', 'note': 'inactive in ordinary case'},
+                'civil_clock_offset_min': {'kind': 'world_setup', 'value': None, 'unit': 'min', 'note': 'inactive in ordinary case'},
+                'zone_boundary_signed_distance_m': {'kind': 'subject_behavior', 'value': None, 'unit': 'm'},
+                'civil_boundary_offset_min': {'kind': 'subject_behavior', 'value': None, 'unit': 'min'},
+                'passenger_event_delay_s': {'kind': 'subject_behavior', 'value': None, 'unit': 's'}},
             'unresolved_judgment_calls': [phrase for phrase, _, _ in judgments],
             'recording_description': construction['recording_description']})
     first = cases[0]
@@ -112,7 +120,10 @@ def main():
         phrase, note, _ = judgments[judgment_index]
         design = next(row for row in cases if row['case_id'] == AID + '__' + anchor)
         assignments = dict(design['variable_assignments'])
-        assignments[variable] = {'kind': 'controller' if variable != 'civil_clock_offset_min' else 'world_setup',
+        if name == 'regulation_hours':
+            assignments['regulations_effective'] = {'kind': 'world_setup', 'value': None,
+                'unit': 'boolean', 'note': 'original authority and civil clock readback required'}
+        assignments[variable] = {'kind': 'controller' if variable == 'zone_boundary_offset_m' else 'world_setup',
                                  'value': 'source-gated engineering request', 'unit': unit}
         sweeps.append({'sweep_id': AID + '__' + name, 'target_law_id': LAW,
             'judgment_refs': [{'phrase': phrase, 'note': note}], 'status': 'complete',

@@ -30,6 +30,7 @@ class SweepAuditTests(unittest.TestCase):
         self.receipt = {
             'format': 'c142510-independent-original-audit-v1',
             'case_id': self.case, 'source_kind': 'original_native_capture',
+            'rider_kind': 'bicycle',
             'source_manifest_sha256': 'a' * 64, 'source_sha256': self.hashes,
             'fixed_site': fixed, 'physical_acceptance': False,
             'legal_status': 'unresolved',
@@ -48,10 +49,16 @@ class SweepAuditTests(unittest.TestCase):
         self.receipt_path.write_text(json.dumps(self.receipt) + '\n')
 
     def save_review(self, kind, sweep):
+        plan = json.loads((HERE / 'case-plan.json').read_text())
+        spec = next(item for item in plan['judgment_range_inventory']
+                    if item['sweep_id'] == sweep)
+        point = next(item for item in spec['sampled_points']
+                     if item['case_id'] == self.case)
         review = {'case_id': self.case, 'sweep_id': sweep, 'kind': kind,
                   'source_receipt_sha256': sha(self.receipt_path),
                   'source_sha256': dict(self.hashes),
                   'source_manifest_sha256': 'a' * 64,
+                  'authored_point': point,
                   'reviewer': 'synthetic independent reviewer',
                   'method': 'synthetic interval review',
                   'independent_of_capture': True,
@@ -109,6 +116,36 @@ class SweepAuditTests(unittest.TestCase):
         review['original_intervals_s'] = [[0, 1]]
         self.review_path.write_text(json.dumps(review) + '\n')
         with self.assertRaisesRegex(ValueError, 'passing interval'):
+            audit(self.case, self.receipt_path, self.review_path, 'c142510-0')
+
+    def test_sparse_points_match_exact_six_selected_constructions(self):
+        plan = json.loads((HERE / 'case-plan.json').read_text())
+        manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+        expected = {item['case_id'] for item in manifest['cases']}
+        for spec in plan['judgment_range_inventory']:
+            points = {item['case_id']: item for item in spec['sampled_points']}
+            self.assertEqual(set(points), expected)
+            for entry in manifest['cases']:
+                construction = json.loads((HERE / entry['construction']).read_text())
+                config = json.loads(next(item['content'] for item in construction['files']
+                                         if item['path'] == 'config.json'))['case']
+                point = points[entry['case_id']]
+                self.assertEqual({key: config[key] for key in
+                                  ('rider_kind', 'signal_frame', 'rider_response')},
+                                 {key: point[key] for key in
+                                  ('rider_kind', 'signal_frame', 'rider_response')})
+        yielded = [p for p in points.values() if p['rider_response'] == 'yield_brake']
+        self.assertEqual({p['rider_kind'] for p in yielded},
+                         {'bicycle', 'electric_bicycle', 'electric_scooter'})
+        self.assertEqual({p['signal_frame'] for p in points.values()
+                          if p['rider_kind'] == 'bicycle' and
+                          p['rider_response'] == 'yield_brake'}, {100, 400, None})
+
+    def test_review_point_mismatch_rejected(self):
+        review = self.save_review('yielding', 'c142510-0')
+        review['authored_point']['signal_frame'] = 400
+        self.review_path.write_text(json.dumps(review) + '\n')
+        with self.assertRaisesRegex(ValueError, 'source binding'):
             audit(self.case, self.receipt_path, self.review_path, 'c142510-0')
 
 

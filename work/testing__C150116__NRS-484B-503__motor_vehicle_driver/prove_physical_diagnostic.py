@@ -7,7 +7,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / '.runtime-work' / 'c150116' / 'physical'
+SCRATCH = ROOT / '.runtime-work' / 'c150116-new' / 'physical'
 output_root = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).resolve()
 if ROOT / '.runtime-work' not in output_root.parents:
     raise ValueError('Pipeline output must remain under .runtime-work')

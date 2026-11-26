@@ -87,14 +87,19 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
             'legal_status': 'unresolved', 'physical_acceptance': False}
 
 
-def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
+def audit_comparisons(reports: dict[str, dict], comparison_id: str | None = None) -> list[dict]:
     """Bind every declared pair to independent original reports."""
     plan = load_json(HERE / 'case-plan.json')
-    expected = {item['case_id'] for item in plan['cases']}
+    selected_comparisons = [item for item in plan['comparisons']
+                            if comparison_id is None or item['comparison_id'] == comparison_id]
+    if comparison_id is not None and len(selected_comparisons) != 1:
+        raise ValueError('unknown exact comparison')
+    expected = ({item['case_id'] for item in plan['cases']} if comparison_id is None
+                else set(selected_comparisons[0]['case_ids']))
     if set(reports) != expected:
         raise ValueError('all exact original reports required')
     output = []
-    for comparison in plan['comparisons']:
+    for comparison in selected_comparisons:
         pair = comparison['case_ids']
         if len(pair) != 2:
             raise ValueError('comparison must bind two exact cases')
@@ -127,7 +132,11 @@ def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
         output.append({'comparison_id': comparison['comparison_id'],
                        'case_ids': pair,
                        'fixed_source_hashes': {name: source_hashes[0][name]
-                                               for name in FIXED_COMPARISON_SOURCES},
+                                               for name in FIXED_COMPARISON_SOURCES
+                                               if name not in allowed_changes},
+                       'changed_source_hashes': {name: [source_hashes[0][name],
+                                                       source_hashes[1][name]]
+                                                 for name in allowed_changes},
                        'measured_wheel_curb_upper_bounds_m': [
                            item['measurement']['right_front_wheel_curb_upper_bound_m']
                            for item in selected],

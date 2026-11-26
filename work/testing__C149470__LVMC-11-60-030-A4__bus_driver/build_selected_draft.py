@@ -20,7 +20,7 @@ def main():
     entries = []
     for name, original in zip(NAMES, diagnostic['cases']):
         assert original['case_id'] == AID + '__' + name
-        source = ROOT / '.runtime-work' / 'c149470' / ('grid4-compat-' + name)
+        source = ROOT / '.runtime-work' / 'c149470' / ('grid6-compat-' + name)
         target = HERE / 'proofs' / ('selected-' + name)
         target.mkdir(parents=True, exist_ok=True)
         for src, dst in [('compatibility.json', 'receipt.json'),

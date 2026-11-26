@@ -20,21 +20,66 @@
       "loading_activity",
       "traffic_route"
     ],
-    "per_binding": ["relative_path", "sha256", "citation", "reviewer"]
+    "per_binding": [
+      "relative_path",
+      "sha256",
+      "citation",
+      "reviewer"
+    ]
   },
   "original_attempt": {
     "frames": 900,
     "rate_hz": 20,
-    "required_files": ["capture-identity.json", "original-bus-frames.jsonl"],
-    "camera_streams": ["overview", "approach", "curb_wheel", "traffic"],
+    "required_files": [
+      "capture-identity.json",
+      "original-bus-frames.jsonl"
+    ],
+    "camera_streams": [
+      "overview",
+      "approach",
+      "curb_wheel",
+      "traffic"
+    ],
     "required_original_frame_sources": [
-      "frame", "bus_motion", "traffic_motion", "right_front_wheel",
-      "curb_geometry", "location_designation", "loading_activity"
+      "frame",
+      "bus_motion",
+      "traffic_motion",
+      "right_front_wheel",
+      "curb_geometry",
+      "location_designation",
+      "loading_activity"
     ],
     "minimum_consecutive_stopped_loading_frames": 20,
     "position_uncertainty_required": true
   },
-  "unresolved_judgments": ["approximately parallel", "unduly impede"],
+  "unresolved_judgments": [
+    "approximately parallel",
+    "unduly impede"
+  ],
   "diagnostic_substitution_allowed": false,
-  "physical_acceptance": false
+  "physical_acceptance": false,
+  "engineering_sweeps": [
+    {
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review",
+      "request_variable": "heading_request_deg",
+      "requested_values": [
+        0.0,
+        4.0,
+        8.0
+      ],
+      "original_observable": "bus_curb_angle_deg",
+      "production_requirement": "reviewed curb tangent and original stopped bus heading in each frame; compare realized angle without legal cutoff"
+    },
+    {
+      "sweep_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review",
+      "request_variable": "traffic_lateral_request_m",
+      "requested_values": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "original_observable": "traffic_speed_mps",
+      "production_requirement": "reviewed separate traffic route and original vehicle movement in each frame; compare realized speed without legal cutoff"
+    }
+  ]
 }

@@ -57,6 +57,8 @@ def dump(path, value, compact=False):
 
 def build():
     donor = json.loads(DONOR_GENERATOR.read_text())
+    semantic_cases = {item['case_id']: item for item in
+        json.loads((HERE / 'proposals/cases.json').read_text())['cases']}
     note = HERE / 'diagnostic-source-note.json'
     source_names = ('trace.jsonl', 'video_frames.jsonl',
                     'capture/native/frames.jsonl', 'capture/evidence.jsonl')
@@ -70,6 +72,7 @@ def build():
         files = {item['path']: item['content'] for item in original['files']}
         config = json.loads(files['config.json'])
         config['case']['recording_description'] = DESC
+        config['case']['sweep_measurements'] = semantic_cases[cid].get('sweep_measurements', [])
         config['cameras'] = list(NAMES)
         files['config.json'] = json.dumps(config, indent=2) + '\n'
         files['analysis.py'] = (HERE / 'analysis.py').read_text()
@@ -162,7 +165,7 @@ def build():
                         'measurement_procedure': {'entrypoint': 'analysis.py'}})
     proposal = {'cell_id': 'C149470', 'actor': 'bus_driver', 'status': 'draft',
                 'sweep_specs': [], 'cases': proposals}
-    dump(HERE / 'proposals/cases.json', proposal)
+    dump(HERE / 'diagnostics/compatibility-proposal.json', proposal)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': AID,
                 'status': 'synthetic_compatibility_only',
                 'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),

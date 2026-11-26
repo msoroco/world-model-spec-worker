@@ -33,3 +33,9 @@ No physical capture or legal acceptance is claimed. Continue from reviewed origi
 - Scoped complete static log: `cpu-nov25-static-final.log`, exit 0.
 - Exact scoped strict log: `cpu-nov25-strict-final.log`, exit 1 on partial status.
 - `result.json` lists 58 successful CPU proof logs with current SHA256 values.
+
+## 2026-11-25 source-gated engineering grid continuation
+
+The two previously incomplete qualitative sweeps now have fixed physical engineering requests: bus approach heading 0, 4 and 8 degrees, and separate traffic route lateral offset 2, 3 and 4 m. These are requested geometry points, not legal cutoffs. `build_semantic_draft.py` uses pinned `expand_sweeps` to create six exact selected cases; `bind_source_sweeps.py` binds them into `case-plan.json`, now 13 selected cases and seven comparisons. Canonical semantic validation passes 13/13. Original stopped-loading bus-curb angle and separate traffic speed remain unmeasured until original Native capture. The revised acquisition contract requires reviewed original curb tangent, bus pose, other-vehicle route and motion.
+
+`native_capture.py` provides a source-sealed 900-frame 20 Hz Native acquisition path, four original camera streams, explicit attestation gate and owned-actor cleanup. `diagnostic_runner.py` requires a reviewed site packet and adapter module for capture; synthetic `--check` remains diagnostic only. A mock adapter positive and non-attested negative test pass, with 11 focused tests overall. The seven-comparison CPU wiring probe passes and rejects synthetic source promotion. `selected_delivery.py` and `selected_comparison.py` are original-only independent audit entrypoints. Current-hash pinned compatibility is running against the final 13 construction hashes under `.runtime-work/c149470/grid5-*`; selected receipt binding, saved processing, physical and delivery refresh, exact scoped strict and queue proposal remain CPU work. `result.json` stays partial.

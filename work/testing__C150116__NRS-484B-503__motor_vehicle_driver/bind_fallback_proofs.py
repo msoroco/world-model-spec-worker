@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SCRATCH = HERE.parents[1] / '.runtime-work' / 'c150116'
+SCRATCH = HERE.parents[1] / '.runtime-work' / 'c150116-new'
 
 
 def sha(path):
@@ -36,7 +36,7 @@ def main():
         candidate['offline'] = {
             'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name +
                        '/execution-manifest.json --case ' + entry['case_id'] +
-                       ' --candidate fallback1 --output .runtime-work/c150116/fallback-offline-' + name,
+                       ' --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-' + name,
             'exit_code': 0,
             'construction_sha256': candidate['construction_sha256'],
             'log': offline_log.name,

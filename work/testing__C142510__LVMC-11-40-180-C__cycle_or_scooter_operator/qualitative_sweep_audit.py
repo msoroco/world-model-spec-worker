@@ -43,9 +43,26 @@ def audit(case_id, receipt_path, review_path, sweep_id):
     kind = spec["kind"]
     require(kind in KINDS and case_id in spec["case_ids"],
             "case not assigned to engineering sweep")
+    points = {point["case_id"]: point for point in spec["sampled_points"]}
+    require(set(points) == set(spec["case_ids"]) and case_id in points,
+            "sparse engineering point missing")
+    manifest = read(HERE / "execution-manifest.json")
+    entry = next((item for item in manifest["cases"]
+                  if item["case_id"] == case_id), None)
+    require(entry is not None and digest(HERE / entry["construction"]) ==
+            entry["construction_sha256"], "selected construction changed")
+    construction = read(HERE / entry["construction"])
+    config = json.loads(next(item["content"] for item in construction["files"]
+                             if item["path"] == "config.json"))
+    point = points[case_id]
+    authored = config["case"]
+    require(all(authored[key] == point[key] for key in
+                ("rider_kind", "signal_frame", "rider_response")),
+            "sparse point differs from selected production construction")
     receipt = read(receipt_path)
     require(receipt.get("format") == "c142510-independent-original-audit-v1" and
             receipt.get("case_id") == case_id and
+            receipt.get("rider_kind") == point["rider_kind"] and
             receipt.get("source_kind") == "original_native_capture" and
             receipt.get("physical_acceptance") is False and
             receipt.get("legal_status") == "unresolved", "original independent receipt required")
@@ -70,7 +87,8 @@ def audit(case_id, receipt_path, review_path, sweep_id):
     require(review.get("case_id") == case_id and review.get("sweep_id") == sweep_id and
             review.get("kind") == kind and review.get("source_receipt_sha256") == digest(receipt_path) and
             review.get("source_sha256") == source and
-            review.get("source_manifest_sha256") == receipt.get("source_manifest_sha256"),
+            review.get("source_manifest_sha256") == receipt.get("source_manifest_sha256") and
+            review.get("authored_point") == point,
             "independent review source binding missing")
     require(review.get("reviewer") and review.get("method") and
             review.get("independent_of_capture") is True and

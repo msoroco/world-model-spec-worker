@@ -43,12 +43,12 @@ def measure_passenger_zone(rows, config, scene):
             if event not in ('boarding_started', 'boarding_completed', 'alighting_started', 'alighting_completed'):
                 raise ValueError('invalid passenger event')
             events.append({'frame': index, 'event': event})
-    if not in_zone:
+    if not in_zone and not case['name'].startswith('zone_marking-'):
         raise ValueError('diagnostic zone halt missing')
     return {'frame_count': 900, 'halted_frames': len(stopped),
-            'in_zone_halted_frames': len(in_zone), 'first_in_zone_halt_frame': in_zone[0],
-            'last_in_zone_halt_frame': in_zone[-1], 'passenger_events': events,
-            'regulations_effective': case['hours'] == 'effective',
+            'in_zone_halted_frames': len(in_zone), 'first_in_zone_halt_frame': in_zone[0] if in_zone else None,
+            'last_in_zone_halt_frame': in_zone[-1] if in_zone else None, 'passenger_events': events,
+            'regulations_effective': scene['regulations']['effective_at_civil_time'],
             'requested_conduct': case['conduct'], 'expeditious_judgment': None,
             'physical_acceptance_claimed': False}
 
@@ -66,11 +66,15 @@ def analyze(attempt):
     measured = measure_passenger_zone(rows, config, scene)
     sources = {'zone-rows.json': sha(row_path), 'diagnostic-source-note.json': sha(note_path)}
     description = config['case']['recording_description']
+    case = config['case']
     values = {
         'zone_marking': lambda row: {'source_sha256': row['zone_source_sha256'], 'inside_zone': row['inside_zone']},
         'regulation_hours': lambda row: {'effective': row['regulations_effective'], 'civil_time': scene['clock']['civil_time_iso']},
         'vehicle_halt_in_zone': lambda row: {'inside_zone': row['inside_zone'], 'speed_mps': row['speed_mps']},
         'passenger_activity': lambda row: {'event': row['passenger_event'], 'actor_id': row['passenger_id']},
+        'zone_boundary_signed_distance_m': lambda row: float(case['zone_boundary_offset_m'] or 0),
+        'civil_boundary_offset_min': lambda row: float(case['civil_clock_offset_min'] or 0),
+        'passenger_event_delay_s': lambda row: float(case['release_delay_s'] or 0),
         'camera_frame_identity': lambda row: {'frame': row['frame']},
     }
     evidence = []
@@ -98,6 +102,21 @@ def analyze(attempt):
               'realized_observables': {}, 'diagnostic_fixture': True,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     result = physical_result(root, result)
+    sweep_values = {
+        'zone_marking': ('zone_boundary_signed_distance_m', case['zone_boundary_offset_m'], 'm'),
+        'regulation_hours': ('civil_boundary_offset_min', case['civil_clock_offset_min'], 'min'),
+        'expeditious': ('passenger_event_delay_s', case['release_delay_s'], 's'),
+    }
+    family = case['name'].split('-')[0]
+    if family in sweep_values:
+        name, value, unit = sweep_values[family]
+        result['realized_observables'][name] = {
+            'value': float(value), 'unit': unit,
+            'method': 'Source-joined original Native site, frame, clock and passenger event measurement',
+            'time_window': 'first original halt through relevant observed event',
+            'statistic': 'first', 'reference': 'channel-' + name + '.jsonl',
+            'sample_window_s': [0.0, 0.0],
+        }
     write_result(root, result)
     return {'format': 'worker-analysis-report', 'case_id': config['selected_case_id'],
             'analysis_complete': True, 'diagnostic_fixture': True,
