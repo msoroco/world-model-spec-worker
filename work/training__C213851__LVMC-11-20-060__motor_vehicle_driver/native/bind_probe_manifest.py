@@ -56,7 +56,7 @@ def bind():
             'compatibility': {
                 'receipt': relative + '/compatibility/compatibility.json',
                 'sha256': sha(receipt),
-                'log': relative + '/compatibility/compatibility-analysis.log',
+                'log': relative + '/compatibility/analysis.log',
                 'negative_log':
                     relative + '/compatibility/negative-analysis.log'},
             'negative': {

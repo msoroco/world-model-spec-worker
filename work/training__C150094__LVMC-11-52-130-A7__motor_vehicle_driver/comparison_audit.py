@@ -50,6 +50,7 @@ def load(attempt):
     value = dict(measured['value'])
     value['strict_front_overlap_frame_count'] = sum(depth > 1e-9 for depth in overlap_depths)
     value['maximum_front_overlap_m'] = max(overlap_depths, default=0.0)
+    value['parking_brake_frame_count'] = sum(row.get('park_brake_engaged') is True for row in trace)
     return {'case_id': config['case_id'], 'config': config, 'context': context,
             'value': value, 'report_sha256': sha(attempt / 'analysis-report.json'),
             'source_hashes': hashes}
@@ -77,6 +78,8 @@ def compare(first, second, comparison):
         excluded.add('driveway_kind')
     if comparison == 'usps_official_business':
         excluded |= {'usps_vehicle', 'usps_official_business'}
+    if comparison in ('action_stop', 'action_stand', 'action_stop_stand'):
+        excluded |= {'vehicle_action', 'vehicle_action_source'}
     require({k:v for k,v in xa.items() if k not in excluded} ==
             {k:v for k,v in xb.items() if k not in excluded},
             'Uncontrolled driveway context differs')
@@ -155,6 +158,21 @@ def compare(first, second, comparison):
                 xb['usps_vehicle'] is True and xb['usps_official_business'] is True and
                 xa['owner_controller_family_invitee'] is xb['owner_controller_family_invitee'] is False,
                 'USPS comparison did not isolate official-business vehicle facts')
+    elif comparison in ('action_stop', 'action_stand', 'action_stop_stand'):
+        expected = {'action_stop': ('02', '11', None, 'stop', 600, 0),
+                    'action_stand': ('02', '12', None, 'stand', 600, 0),
+                    'action_stop_stand': ('11', '12', 'stop', 'stand', 0, 0)}[comparison]
+        pa, pb, aa, ab, ba, bb = expected
+        require(a['case_id'].endswith('__probe_' + pa) and
+                b['case_id'].endswith('__probe_' + pb),
+                'Action comparison case order differs')
+        require(abs(ga-gb) <= 1e-6 and 0 < ga < FIVE_FEET_M and
+                xa.get('vehicle_action') == aa and xb.get('vehicle_action') == ab and
+                a['value']['parking_brake_frame_count'] == ba and
+                b['value']['parking_brake_frame_count'] == bb and
+                (aa is None or xa.get('vehicle_action_source')) and
+                xb.get('vehicle_action_source'),
+                'Action comparison did not isolate source-declared service-brake action')
     else:
         raise ValueError('Unknown controlled driveway comparison')
     return {'format': 'worker-driveway-comparison-audit', 'comparison_id': AID + '__' + comparison,
@@ -166,6 +184,9 @@ def compare(first, second, comparison):
                                             b['value']['strict_front_overlap_frame_count']],
             'driveway_kinds': [xa['driveway_kind'], xb['driveway_kind']],
             'private_authority_roles': [xa['private_driveway_authority_role'], xb['private_driveway_authority_role']],
+            'operator_actions': [xa.get('vehicle_action'), xb.get('vehicle_action')],
+            'parking_brake_frames': [a['value']['parking_brake_frame_count'],
+                                     b['value']['parking_brake_frame_count']],
             'fixed_conditions_checked': ['cell', 'law', 'actor', 'rate', 'duration', 'cameras',
                                          'recording_description', 'road', 'source camera bytes',
                                          'driveway context except declared comparison variable', 'rest interval'],
@@ -180,7 +201,8 @@ def main():
                                                   'private_family', 'private_invitee',
                                                   'five_foot_equality_below', 'five_foot_equality_above',
                                                   'front_overlap', 'public_private_driveway',
-                                                  'usps_official_business'), required=True)
+                                                  'usps_official_business', 'action_stop', 'action_stand',
+                                                  'action_stop_stand'), required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     receipt = compare(load(args.a), load(args.b), args.comparison)

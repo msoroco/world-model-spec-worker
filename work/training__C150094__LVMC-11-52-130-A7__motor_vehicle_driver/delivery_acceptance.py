@@ -63,6 +63,14 @@ def audit(root, case, diagnostic):
             context.get('usps_official_business') is True and
             context.get('usps_official_business_source')):
         raise ValueError('Exact USPS official-business case lacks source declaration')
+    expected_action = {'probe_11': 'stop', 'probe_12': 'stand'}
+    for suffix, required_action in expected_action.items():
+        if case.endswith(suffix) and not (
+                context.get('vehicle_action') == required_action and
+                context.get('vehicle_action_source') and
+                config.get('expected_operator_action') == required_action and
+                all(row.get('park_brake_engaged') is False for row in parking)):
+            raise ValueError('Exact service-brake action lacks source declaration')
     expected = 'synthetic_native_sample' if diagnostic else 'original_native_pose'
     for index, (park, state, frame, event, raw) in enumerate(zip(parking, core, frames, evidence, native)):
         original_frame = frame.get('native_frame')

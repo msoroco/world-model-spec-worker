@@ -77,6 +77,8 @@ def main():
         {'name': 'observed_gap_m', 'kind': 'subject_behavior', 'range_or_domain': 'original Native measured body gap in metres', 'used_by_laws': [LAW]},
         {'name': 'private_authority_role', 'kind': 'world_setup', 'range_or_domain': 'none, owner, controller, family member, invitee; source declaration required', 'used_by_laws': [LAW]},
         {'name': 'driveway_kind', 'kind': 'world_setup', 'range_or_domain': 'public or private; independently reviewed', 'used_by_laws': [LAW]},
+        {'name': 'usps_official_business', 'kind': 'world_setup', 'range_or_domain': 'USPS vehicle identity and official-business purpose are separate source facts', 'used_by_laws': [LAW]},
+        {'name': 'operator_action', 'kind': 'controller', 'range_or_domain': 'park, stop or stand; original operator command and Native brake state require source review', 'used_by_laws': [LAW]},
     ]
     binding = {'status': 'draft', 'cell_id': 'C150094', 'actor': ACTOR,
                'law_refs': [{'template_id': template_id, 'binding_kind': 'direct'}],
@@ -86,11 +88,13 @@ def main():
     recs = {item['case_id']: json.loads((ROOT / item['construction']).read_text())['recording_description'] for item in manifest['cases']}
     common_recording = recs[ids[0]]
     all_phrases = [item[0] for item in judgments]
-    def assignments(gap, role='none', driveway_kind='private'):
+    def assignments(gap, role='none', driveway_kind='private', postal=False, action='park'):
         return {'target_gap_m': {'kind': 'controller', 'value': gap, 'unit': 'm'},
                 'observed_gap_m': {'kind': 'subject_behavior', 'value': None, 'unit': 'm'},
                 'private_authority_role': {'kind': 'world_setup', 'value': role, 'unit': 'categorical'},
-                'driveway_kind': {'kind': 'world_setup', 'value': driveway_kind, 'unit': 'categorical'}}
+                'driveway_kind': {'kind': 'world_setup', 'value': driveway_kind, 'unit': 'categorical'},
+                'usps_official_business': {'kind': 'world_setup', 'value': postal, 'unit': 'boolean'},
+                'operator_action': {'kind': 'controller', 'value': action, 'unit': 'categorical'}}
     baseline = {'case_id': AID + '__baseline', 'target_law_id': None, 'target_type': 'baseline',
                 'rationale': 'Common surveyed one-way route and driveway source context.',
                 'recording_description': common_recording,
@@ -103,7 +107,9 @@ def main():
                                 ('06', 1.2, 'public driveway'),
                                 ('07', 1.2, 'controller'),
                                 ('08', 1.2, 'family member'),
-                                ('09', 1.2, 'invitee')]:
+                                ('09', 1.2, 'invitee'),
+                                ('10', 1.2, 'USPS official business'),
+                                ('11', 1.2, 'stop'), ('12', 1.2, 'stand')]:
         case_id = AID + '__probe_' + number
         role = {'03': 'owner', '07': 'controller', '08': 'family_member',
                 '09': 'invitee'}.get(number, 'none')
@@ -111,27 +117,38 @@ def main():
                       'private_controller' if number == '07' else
                       'private_family' if number == '08' else
                       'private_invitee' if number == '09' else
+                      'usps_official_business' if number == '10' else
+                      'action_stop' if number == '11' else
+                      'action_stand' if number == '12' else
                       'front_overlap' if number == '05' else
                       'public_private_driveway' if number == '06' else 'five_feet_boundary')
         probe = {'primary_variable': ('private_authority_role' if number in ('03', '07', '08', '09') else
+                                      'usps_official_business' if number == '10' else
+                                      'operator_action' if number in ('11', '12') else
                                       'driveway_kind' if number == '06' else
                                       'target_gap_m' if number == '05' else 'observed_gap_m'),
                  'comparison_or_standard': ('private authority source contrast' if number in ('03', '07', '08', '09') else
+                                            'source-declared USPS official-business exception contrast' if number == '10' else
+                                            'source-declared operator action and service-brake contrast' if number in ('11', '12') else
                                             'positive interior driveway mouth overlap versus side band' if number == '05' else
                                             'public versus private driveway source contrast' if number == '06' else
                                             'five-foot body-gap side-band boundary'),
                  'target_value_or_branch': branch}
-        if number not in ('03', '05', '06', '07', '08', '09'):
+        if number not in ('03', '05', '06', '07', '08', '09', '10', '11', '12'):
             probe.update({'threshold_ref': 'activation.side_band', 'operator': '<=',
                           'unit': 'm', 'test_value': gap})
         cases.append({'case_id': case_id, 'target_law_id': LAW, 'target_type': 'boundary_probe',
                       'rationale': 'Exact selected source-measured driveway '+branch+' probe.',
                       'recording_description': recs[case_id],
                       'variable_assignments': assignments(gap, role,
-                                                          'public' if number == '06' else 'private'),
+                                                          'public' if number == '06' else 'private',
+                                                          number == '10',
+                                                          'stop' if number == '11' else 'stand' if number == '12' else 'park'),
                       'unresolved_judgment_calls': all_phrases,
                       'paired_probe_id': comparison,
                       'deliberate_differences': (['private_authority_role'] if number in ('03', '07', '08', '09') else
+                                                ['usps_official_business'] if number == '10' else
+                                                ['operator_action'] if number in ('11', '12') else
                                                 ['driveway_kind'] if number == '06' else ['target_gap_m']),
                       'probe': probe,
                       'epsilon_used': {'value': 0.05, 'unit': 'm',

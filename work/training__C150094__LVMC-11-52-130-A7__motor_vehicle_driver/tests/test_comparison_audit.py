@@ -21,6 +21,7 @@ def case(probe, gap, authority, driveway_kind='private'):
                         'usps_vehicle': False, 'usps_official_business': False,
                         'driveway_curb_interval_m': [50, 53]},
             'value': {'minimum_footprint_gap_m_at_rest': gap, 'rest_frame_count': 600,
+                      'parking_brake_frame_count': 600,
                       'strict_front_overlap_frame_count': 600 if gap == 0 else 0,
                       'maximum_front_overlap_m': 0.5 if gap == 0 else 0.0},
             'report_sha256': 'a' * 64,
@@ -52,6 +53,14 @@ class ComparisonAuditTests(unittest.TestCase):
         postal['context']['usps_vehicle'] = True
         postal['context']['usps_official_business'] = True
         self.assertTrue(compare(near, postal, 'usps_official_business')['passed'])
+        stopped, standing = case('11', 1.2, False), case('12', 1.2, False)
+        for item, action in ((stopped, 'stop'), (standing, 'stand')):
+            item['context']['vehicle_action'] = action
+            item['context']['vehicle_action_source'] = 'test operator command'
+            item['value']['parking_brake_frame_count'] = 0
+        self.assertTrue(compare(near, stopped, 'action_stop')['passed'])
+        self.assertTrue(compare(near, standing, 'action_stand')['passed'])
+        self.assertTrue(compare(stopped, standing, 'action_stop_stand')['passed'])
 
     def test_rejects_uncontrolled_source_change(self):
         far, near = case('01', 2.0, False), case('02', 1.2, False)
@@ -93,6 +102,11 @@ class ComparisonAuditTests(unittest.TestCase):
         false_postal['context']['usps_vehicle'] = True
         with self.assertRaisesRegex(ValueError, 'official-business vehicle facts'):
             compare(near, false_postal, 'usps_official_business')
+        false_stopped = case('11', 1.2, False)
+        false_stopped['context']['vehicle_action'] = 'stop'
+        false_stopped['context']['vehicle_action_source'] = 'test operator command'
+        with self.assertRaisesRegex(ValueError, 'service-brake action'):
+            compare(near, false_stopped, 'action_stop')
 
 
 if __name__ == '__main__':

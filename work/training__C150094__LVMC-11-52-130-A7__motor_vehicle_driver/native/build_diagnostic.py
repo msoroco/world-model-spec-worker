@@ -18,7 +18,13 @@ VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
             '07': {'gap_m': 1.2, 'authority': True, 'authority_role': 'controller'},
             '08': {'gap_m': 1.2, 'authority': True, 'authority_role': 'family_member'},
             '09': {'gap_m': 1.2, 'authority': True, 'authority_role': 'invitee'},
-            '10': {'gap_m': 1.2, 'authority': False, 'usps_official_business': True}}
+            '10': {'gap_m': 1.2, 'authority': False, 'usps_official_business': True},
+            '11': {'gap_m': 1.2, 'authority': False, 'operator_action': 'stop'},
+            '12': {'gap_m': 1.2, 'authority': False, 'operator_action': 'stand'},
+            '13': {'gap_m': 1.2, 'authority': False, 'exception_fact': 'necessary_to_avoid_traffic_conflict'},
+            '14': {'gap_m': 1.2, 'authority': False, 'exception_fact': 'complying_with_law'},
+            '15': {'gap_m': 1.2, 'authority': False, 'exception_fact': 'officer_direction'},
+            '16': {'gap_m': 1.2, 'authority': False, 'exception_fact': 'traffic_device_direction'}}
 
 
 def sha_bytes(value):
@@ -61,13 +67,25 @@ def main(probe):
                'necessary_to_avoid_traffic_conflict': False,
                'complying_with_law': False, 'officer_direction': False,
                'traffic_device_direction': False}
+    if 'operator_action' in variant:
+        context['vehicle_action'] = variant['operator_action']
+        context['vehicle_action_source'] = 'synthetic operator command'
+    if 'exception_fact' in variant:
+        fact = variant['exception_fact']
+        context[fact] = True
+        source = {'necessary_to_avoid_traffic_conflict': 'traffic_conflict_source',
+                  'complying_with_law': 'applicable_law_source',
+                  'officer_direction': 'officer_direction_source',
+                  'traffic_device_direction': 'traffic_device_direction_source'}[fact]
+        context[source] = 'synthetic source declaration for ' + fact
     files['driveway_context.json'] = json.dumps(context, separators=(',', ':')) + '\n'
     files.pop('native_motion.jsonl', None)
     files['native_parking_trace.jsonl'] = lines({
         'video_frame': i, 'native_frame': 100 + i,
         'source_kind': 'synthetic_native_sample',
         'ego_curb_station_m': station, 'ego_half_length_m': 2.0,
-        'ego_speed_mps': 0.0, 'park_brake_engaged': True}
+        'ego_speed_mps': 0.0,
+        'park_brake_engaged': 'operator_action' not in variant}
         for i in range(COUNT))
     core = [json.loads(s) for s in files['trace.jsonl'].splitlines() if s]
     evidence = [json.loads(s) for s in files['capture/evidence.jsonl'].splitlines() if s]
@@ -77,7 +95,8 @@ def main(probe):
         row['speed_mps'] = 0.0
         row['speed_mph'] = 0.0
         row['velocity_mps'] = [0.0, 0.0, 0.0]
-        row['control'] = {'throttle': 0.0, 'brake': 1.0, 'hand_brake': True}
+        row['control'] = {'throttle': 0.0, 'brake': 1.0,
+                          'hand_brake': 'operator_action' not in variant}
         item['ego']['position_m'][1] = station
         item['ego']['speed_mps'] = 0.0
         item['ego']['body_vertices_m'] = [[1.0, station-2, 0], [1.0, station-2, 1.5],

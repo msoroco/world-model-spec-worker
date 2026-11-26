@@ -23,7 +23,7 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
 
 
-def classify(trace, frames, target_gap_m):
+def classify(trace, frames, target_gap_m, operator_action=None):
     if len(trace) != 600 or len(frames) != 600:
         return {'status': 'unverified', 'reason': 'Incomplete original frame inventory'}
     rest = []
@@ -35,7 +35,10 @@ def classify(trace, frames, target_gap_m):
                         for k in ('ego_curb_station_m', 'ego_half_length_m', 'ego_speed_mps')) or
                 row['ego_half_length_m'] <= 0):
             return {'status': 'unverified', 'reason': 'Frame join or sampled body source invalid'}
-        if row['ego_speed_mps'] <= .05 and row.get('park_brake_engaged') is True:
+        brake_matches_action = (row.get('park_brake_engaged') is False
+                                if operator_action in ('stop', 'stand')
+                                else row.get('park_brake_engaged') is True)
+        if row['ego_speed_mps'] <= .05 and brake_matches_action:
             rest.append(row)
     gap = min((max(50.0 - (r['ego_curb_station_m'] + r['ego_half_length_m']),
                    (r['ego_curb_station_m'] - r['ego_half_length_m']) - 53.0, 0.0)
@@ -57,13 +60,19 @@ def fixture(case, kind, output):
     frames = [json.loads(line) for line in files['video_frames.jsonl'].splitlines()]
     config = json.loads((HERE / ('native/selected_primary/config.json' if probe == '02'
                                  else f'native/probe_{probe}/config.json')).read_text())
+    operator_action = config.get('expected_operator_action')
+    if operator_action in ('stop', 'stand'):
+        context = json.loads(files['driveway_context.json'])
+        if (context.get('vehicle_action') != operator_action or
+                not context.get('vehicle_action_source')):
+            raise ValueError('Stop/stand fixture lacks a source-declared operator action')
     if kind == 'incomplete_motion':
         for row in trace[-100:]:
             row['ego_speed_mps'] = 2.0
             row['park_brake_engaged'] = False
     if kind == 'missing_evidence':
         frames.pop()
-    measured = classify(trace, frames, config['target_gap_m'])
+    measured = classify(trace, frames, config['target_gap_m'], operator_action)
     expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
                 'missing_evidence': 'unverified'}[kind]
     if measured['status'] != expected:
@@ -74,7 +83,7 @@ def fixture(case, kind, output):
               'maneuver_completed': expected == 'met',
               'physical_checks': {'maneuver': {
                   'status': measured['status'],
-                  'method': 'same-frame synthetic body footprint, brake and speed, 600-frame completeness',
+                  'method': 'same-frame synthetic body footprint, action-specific brake state and speed, 600-frame completeness',
                   'sources': [str(source.relative_to(HERE)), 'native_parking_trace.jsonl',
                               'video_frames.jsonl']}},
               'realized_observables': measured if expected == 'met' else {},

@@ -13,7 +13,13 @@ VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
             '07': {'gap_m': 1.2, 'authority': True},
             '08': {'gap_m': 1.2, 'authority': True},
             '09': {'gap_m': 1.2, 'authority': True},
-            '10': {'gap_m': 1.2, 'authority': False}}
+            '10': {'gap_m': 1.2, 'authority': False},
+            '11': {'gap_m': 1.2, 'authority': False},
+            '12': {'gap_m': 1.2, 'authority': False},
+            '13': {'gap_m': 1.2, 'authority': False},
+            '14': {'gap_m': 1.2, 'authority': False},
+            '15': {'gap_m': 1.2, 'authority': False},
+            '16': {'gap_m': 1.2, 'authority': False}}
 
 
 def write(path, value):
@@ -59,6 +65,50 @@ def main():
                 raise ValueError('USPS survey insertion point changed')
             point = runner.rfind(marker)
             runner = runner[:point] + addition + runner[point:]
+        if probe in ('11', '12'):
+            action = 'stop' if probe == '11' else 'stand'
+            marker = "    config = json.loads((HERE / 'config.json').read_text())\n"
+            addition = (f"    if survey.get('operator_action') != '{action}' or not survey.get('operator_action_source'):\n"
+                        "        raise ValueError('Exact source-declared operator action required')\n")
+            if marker not in runner:
+                raise ValueError('Action survey insertion point changed')
+            point = runner.rfind(marker)
+            runner = runner[:point] + addition + runner[point:]
+            parked_control = 'hand_brake=braking and speed < .05'
+            if parked_control not in runner:
+                raise ValueError('Park-brake controller insertion point changed')
+            runner = runner.replace(parked_control, 'hand_brake=False')
+            context_marker = "            'traffic_device_direction': None,\n"
+            if context_marker not in runner:
+                raise ValueError('Action context insertion point changed')
+            runner = runner.replace(context_marker,
+                                    context_marker +
+                                    "            'vehicle_action': survey['operator_action'],\n"
+                                    "            'vehicle_action_source': survey['operator_action_source'],\n")
+        exceptions = {'13': ('necessary_to_avoid_traffic_conflict', 'traffic_conflict_source'),
+                      '14': ('complying_with_law', 'applicable_law_source'),
+                      '15': ('officer_direction', 'officer_direction_source'),
+                      '16': ('traffic_device_direction', 'traffic_device_direction_source')}
+        if probe in exceptions:
+            flag, source = exceptions[probe]
+            marker = "    config = json.loads((HERE / 'config.json').read_text())\n"
+            addition = (f"    if survey.get('{flag}') is not True or not survey.get('{source}'):\n"
+                        f"        raise ValueError('Exact source-declared {flag} required')\n")
+            if marker not in runner:
+                raise ValueError('Exception survey insertion point changed')
+            point = runner.rfind(marker)
+            runner = runner[:point] + addition + runner[point:]
+            context_marker = f"'{flag}': None,"
+            if context_marker not in runner:
+                raise ValueError('Exception context insertion point changed')
+            runner = runner.replace(context_marker, f"'{flag}': survey['{flag}'],")
+            source_marker = "            'traffic_device_direction': None,\n"
+            if source_marker not in runner and probe != '16':
+                raise ValueError('Exception source insertion point changed')
+            if probe == '16':
+                source_marker = "            'traffic_device_direction': survey['traffic_device_direction'],\n"
+            runner = runner.replace(source_marker, source_marker +
+                                    f"            '{source}': survey['{source}'],\n")
         (bundle / 'runner.py').write_text(runner)
         (bundle / 'finalize.py').write_text((original / 'finalize.py').read_text())
         config = json.loads((original / 'config.json').read_text())
@@ -73,6 +123,10 @@ def main():
             config['expected_driveway_kind'] = 'public'
         if probe == '10':
             config['expected_usps_official_business'] = True
+        if probe in ('11', '12'):
+            config['expected_operator_action'] = 'stop' if probe == '11' else 'stand'
+        if probe in exceptions:
+            config['expected_exception_fact'] = exceptions[probe][0]
         branch = {'01': 'far-no-exception', '03': 'near-private-authority',
                   '04': 'at-five-feet-no-exception',
                   '05': 'front-overlap-no-exception',
@@ -80,7 +134,13 @@ def main():
                   '07': 'near-private-controller-authority',
                   '08': 'near-private-family-authority',
                   '09': 'near-private-invitee-authority',
-                  '10': 'near-usps-official-business'}[probe]
+                  '10': 'near-usps-official-business',
+                  '11': 'near-stop-no-exception',
+                  '12': 'near-stand-no-exception',
+                  '13': 'near-necessary-traffic-conflict',
+                  '14': 'near-complying-with-law',
+                  '15': 'near-officer-direction',
+                  '16': 'near-traffic-device-direction'}[probe]
         config['case'] = {'case_id': case,
                           'recording_description': config['recording_description'],
                           'branch': branch}
@@ -117,6 +177,27 @@ def main():
                                   "        with self.assertRaisesRegex(ValueError, 'USPS official-business'):\n"
                                   "            survey_check(survey)\n"
                                   "        survey['usps_official_business'] = True\n"
+                                  "        survey['road_axis_xy'] = [2, 0]")
+        if probe in ('11', '12'):
+            action = 'stop' if probe == '11' else 'stand'
+            tests = tests.replace("'road_id': 7}",
+                                  "'road_id': 7, 'operator_action': '" + action +
+                                  "', 'operator_action_source': 'test'}")
+            tests = tests.replace("        survey['road_axis_xy'] = [2, 0]",
+                                  "        survey['operator_action'] = 'park'\n"
+                                  "        with self.assertRaisesRegex(ValueError, 'operator action'):\n"
+                                  "            survey_check(survey)\n"
+                                  "        survey['operator_action'] = '" + action + "'\n"
+                                  "        survey['road_axis_xy'] = [2, 0]")
+        if probe in exceptions:
+            flag, source = exceptions[probe]
+            tests = tests.replace("'road_id': 7}",
+                                  f"'road_id': 7, '{flag}': True, '{source}': 'test source'}}")
+            tests = tests.replace("        survey['road_axis_xy'] = [2, 0]",
+                                  f"        survey['{flag}'] = False\n"
+                                  f"        with self.assertRaisesRegex(ValueError, '{flag}'):\n"
+                                  "            survey_check(survey)\n"
+                                  f"        survey['{flag}'] = True\n"
                                   "        survey['road_axis_xy'] = [2, 0]")
         (bundle / 'tests').mkdir(exist_ok=True)
         (bundle / 'tests/test_bundle.py').write_text(tests)

@@ -42,7 +42,9 @@ def write(path, value):
 
 def build():
     entries = []
-    common = ["runner.py", "capture_runner.py", "observed_speed.py", "compare_speed.py"]
+    common = ["runner.py", "capture_runner.py", "observed_speed.py", "compare_speed.py",
+              "finalize.py"]
+    dispositions = json.loads((HERE.parent / "case-plan.json").read_text())["requirement_dispositions"]
     for suffix in ("a", "b"):
         case = AID + "__selected_d6045110__condition_" + suffix
         draft = json.loads((HERE / ("condition_" + suffix + "-construction.json")).read_text())
@@ -50,7 +52,7 @@ def build():
         config["supported_case_ids"] = [case]
         config["required_atoms"] = []
         config["source_packets"] = []
-        config["case"] = case
+        config["case"] = {"case_id": case}
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
         files.extend({"path": name, "content": (HERE / name).read_text()} for name in common)
         files.append({"path": "tests/test_offline.py", "content": TEST})
@@ -63,17 +65,38 @@ def build():
                                              "capture/evidence.jsonl", "four original camera streams"],
                                  "legal_result": None},
             "recording_description": {
-                "case_id": case, "frames": 600, "rate_hz": 20,
-                "cameras": [view["name"] for view in config["cameras"]],
+                "channels": [{"name": "emergency_speed_and_lamps", "unit": "structured",
+                              "sampling_rate_hz": 20,
+                              "method": "Saved Native actor velocities, lamp readback and frame/time join",
+                              "time_window": "all 600 frames", "reference_frame": "original Native frame",
+                              "uncertainty": "50 ms frame bracket; visual and legal qualification separate"}],
+                "context_inputs": [],
                 "limitations": ["Original site survey and pixels not available to CPU worker",
                                 "Flashing-light qualification and reasonable speed require original review"]},
             "status": "selected_cpu_draft_not_delivery_ready"
         }
         destination = HERE / "selected" / suffix / "construction.json"
         write(destination, construction)
+        source_inputs = ["emergency_observations.jsonl", "video_frames.jsonl", "trace.jsonl",
+                         "capture/manifest.json", "acquisition-provenance.json",
+                         "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv"]
+        contract = {"format": "worker-measurement-contract", "requirements": [
+            {"disposition_index": index, "requirement": dispositions[index]["requirement"],
+             "source": dispositions[index]["source"],
+             "output_key": "approach_setup" if index == 0 else "speed_response",
+             "method": "measure_approach_setup" if index == 0 else "measure_speed_response",
+             "value_type": "object", "kind": "measured", "inputs": source_inputs}
+            for index in (0, 1)],
+            "negative": {"remove": ["emergency_observations.jsonl"],
+                         "error_contains": "Missing required source: emergency_observations.jsonl"}}
+        contract_path = HERE / "selected" / suffix / "measurement-contract.json"
+        write(contract_path, contract)
         entries.append({"case_id": case, "kind": "selected_cpu_draft_not_delivery_ready",
                         "construction": str(destination.relative_to(HERE)),
                         "construction_sha256": sha(destination),
+                        "measurement_procedure": {"entrypoint": "finalize.py",
+                                                  "output_schema": "c405647-saved-speed-analysis-v1"},
+                        "measurement_contract": str(contract_path.relative_to(HERE)),
                         "candidate_risk": {"status": "physical",
                                            "reason": "Emergency actor approach/passing timing and four-view coverage need original Native readback"},
                         "candidates": [], "delivery_readiness": "incomplete"})
