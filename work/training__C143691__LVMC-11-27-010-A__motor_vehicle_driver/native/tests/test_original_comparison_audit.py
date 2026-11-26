@@ -19,6 +19,8 @@ def side(suffix, occupancy=600):
             'camera_plan': [{'name': name} for name in (
                 'overview', 'approach', 'reference_corner', 'driver_reference')],
             'occupancy_frames': occupancy, 'blueprint_id': 'vehicle.base',
+            'candidate_id': 'primary', 'barrier_clear_gap_m': 3.5,
+            'barrier_blueprint_id': 'static.prop.streetbarrier',
             'result_sha256': 'result-' + suffix,
             'delivery_receipt_sha256': 'delivery-' + suffix}
 
@@ -56,6 +58,9 @@ class OriginalComparisonContract(unittest.TestCase):
                 receipt = audit(spec, left, right)
                 self.assertTrue(receipt['passed'])
                 self.assertFalse(receipt['legal_outcome_claimed'])
+                left['candidate_id'] = right['candidate_id'] = 'fallback1'
+                left['barrier_clear_gap_m'] = right['barrier_clear_gap_m'] = 5.5
+                self.assertEqual(audit(spec, left, right)['shared_candidate_id'], 'fallback1')
 
     def test_rejects_extra_change_and_missing_occupancy(self):
         spec, left, right = self.pair('designation')
@@ -81,6 +86,14 @@ class OriginalComparisonContract(unittest.TestCase):
         wrong['blueprint_id'] = 'another-vehicle'
         with self.assertRaisesRegex(ValueError, 'subject blueprint'):
             audit(spec, left, wrong)
+        wrong = copy.deepcopy(right)
+        wrong['candidate_id'] = 'fallback1'
+        with self.assertRaisesRegex(ValueError, 'barrier candidate'):
+            audit(spec, left, wrong)
+        wrong = copy.deepcopy(right)
+        wrong['barrier_clear_gap_m'] = 5.0
+        with self.assertRaisesRegex(ValueError, 'barrier candidate'):
+            audit(spec, left, wrong)
 
     def test_original_sources_and_delivery_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -100,6 +113,11 @@ class OriginalComparisonContract(unittest.TestCase):
                                     'overview', 'approach', 'reference_corner', 'driver_reference')],
                                 'source_context_request': dict(BASE_REQUEST)},
                 'trail-authority-context.json': {'request': dict(BASE_REQUEST)},
+                'candidate-selection.json': {'format': 'worker-candidate-selection',
+                                             'case_id': case_id, 'candidate_id': 'primary',
+                                             'construction_sha256': 'source-bound-construction'},
+                'trail-inventory.json': {'barrier_clear_gap_m': 3.5,
+                                         'barrier_blueprint_id': 'static.prop.streetbarrier'},
             }
             for name, value in values.items():
                 (attempt / name).write_text(json.dumps(value) + '\n')

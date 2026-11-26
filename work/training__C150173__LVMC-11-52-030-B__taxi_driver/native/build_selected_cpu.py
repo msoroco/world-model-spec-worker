@@ -66,7 +66,7 @@ def main():
             raise ValueError('Missing exact taxi CPU diagnostic recipe: ' + suffix)
         receipt_map = {}
         for candidate in ('primary', 'fallback1'):
-            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v13' / 'offline.log'
+            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v14' / 'offline.log'
             if not source.exists() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact offline check: ' + suffix + ' ' + candidate)
             retained = BASE / 'native-selected' / suffix / (candidate + '-offline.log')

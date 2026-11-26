@@ -30,11 +30,15 @@ def original(attempt_path, receipt_path, case_id):
     poses_path = attempt / 'vehicle-poses.jsonl'
     frames_path = attempt / 'video_frames.jsonl'
     cameras_path = attempt / 'camera-frames.jsonl'
+    candidate_path = attempt / 'candidate-selection.json'
+    inventory_path = attempt / 'trail-inventory.json'
     for path in (result_path, config_path, road_path, context_path,
-                 poses_path, frames_path, cameras_path):
+                 poses_path, frames_path, cameras_path, candidate_path,
+                 inventory_path):
         if not path.is_file():
             raise ValueError('Missing original comparison source: ' + path.name)
     result, config, context = read(result_path), read(config_path), read(context_path)
+    candidate, inventory = read(candidate_path), read(inventory_path)
     if (receipt.get('format') != 'worker-delivery-audit' or receipt.get('passed') is not True
             or receipt.get('case_id') != case_id or
             receipt.get('source_result_sha256') != sha(result_path) or
@@ -54,6 +58,15 @@ def original(attempt_path, receipt_path, case_id):
         raise ValueError('Fixed camera and duration plan differs')
     if context.get('request') != config.get('source_context_request'):
         raise ValueError('Original trail request/source mismatch')
+    if (candidate.get('format') != 'worker-candidate-selection'
+            or candidate.get('case_id') != case_id
+            or candidate.get('candidate_id') not in ('primary', 'fallback1')
+            or not candidate.get('construction_sha256')):
+        raise ValueError('Original candidate selection absent')
+    gap = inventory.get('barrier_clear_gap_m')
+    if (type(gap) not in (int, float) or gap <= 0
+            or not inventory.get('barrier_blueprint_id')):
+        raise ValueError('Original barrier readback absent')
     poses, frames, cameras = [path.read_text().splitlines() for path in (
         poses_path, frames_path, cameras_path)]
     if (len(poses), len(frames), len(cameras)) != (600, 600, 2400):
@@ -64,6 +77,9 @@ def original(attempt_path, receipt_path, case_id):
     return {'case_id': case_id, 'request': context['request'],
             'route_case': config['route_case'], 'road_sha256': sha(road_path),
             'camera_plan': config['cameras'], 'occupancy_frames': measured['occupancy_frames'],
+            'candidate_id': candidate['candidate_id'],
+            'barrier_clear_gap_m': gap,
+            'barrier_blueprint_id': inventory['barrier_blueprint_id'],
             'blueprint_id': measured.get('vehicle_blueprint_id'),
             'result_sha256': sha(result_path), 'delivery_receipt_sha256': sha(receipt_path)}
 
@@ -75,6 +91,10 @@ def audit(spec, left, right):
         raise ValueError('Exact comparison identity differs')
     if left['road_sha256'] != right['road_sha256'] or left['camera_plan'] != right['camera_plan']:
         raise ValueError('Fixed road or camera plan differs')
+    if (left['candidate_id'] != right['candidate_id']
+            or left['barrier_blueprint_id'] != right['barrier_blueprint_id']
+            or abs(left['barrier_clear_gap_m'] - right['barrier_clear_gap_m']) > .02):
+        raise ValueError('Fixed barrier candidate and readback differ')
     changed = {key for key in left['request'] if left['request'][key] != right['request'].get(key)}
     expected = set() if name == 'occupancy' else {REQUEST_KEY[name]}
     if changed != expected or set(right['request']) != set(left['request']):
@@ -96,6 +116,7 @@ def audit(spec, left, right):
             'right_result_sha256': right['result_sha256'],
             'delivery_receipt_sha256': [left['delivery_receipt_sha256'],
                                         right['delivery_receipt_sha256']],
+            'shared_candidate_id': left['candidate_id'],
             'original_review_required': True, 'legal_outcome_claimed': False}
 
 

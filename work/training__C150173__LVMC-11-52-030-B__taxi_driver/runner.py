@@ -2,12 +2,59 @@
 import json
 import queue
 import subprocess
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from yellow_plan import check, read_requested
 
 HERE = Path(__file__).resolve().parent
+
+
+def finish_owned_capture(pipeline, encoders, owned, client, prior, changed,
+                         complete, output, config, restore, seal_capture):
+    """Attempt every owned cleanup step, even when an earlier step fails."""
+    first_error = None
+    if pipeline is not None:
+        try:
+            pipeline.close(confirmed=complete)
+        except Exception as error:
+            first_error = error
+            complete = False
+    for encoder in encoders.values():
+        try:
+            if encoder.poll() is None:
+                encoder.kill()
+                encoder.wait()
+        except Exception as error:
+            first_error = first_error or error
+            complete = False
+    for actor in reversed(owned):
+        try:
+            if hasattr(actor, 'stop'):
+                actor.stop()
+            actor.destroy()
+        except Exception as error:
+            first_error = first_error or error
+            complete = False
+    try:
+        restored = restore(client, prior) if changed else {
+            'restored': True, 'world_unchanged': True}
+    except Exception as error:
+        first_error = first_error or error
+        restored = {'restored': False}
+        complete = False
+    if complete and first_error is None:
+        try:
+            seal_capture(output, frames=600, restoration=restored, errors=[],
+                encoder_exit_codes={name: encoder.returncode
+                                    for name, encoder in encoders.items()},
+                context={'case_id': config['case_id'],
+                         'taxicab_sign_passenger_authority': 'pending'})
+        except Exception as error:
+            first_error = error
+    if first_error is not None and sys.exc_info()[0] is None:
+        raise first_error
 
 
 def offline_check(root):
@@ -182,26 +229,8 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 'taxi_sign_and_passenger_verified': False,
                 'physical_completion_claimed': False}
     finally:
-        if pipeline is not None:
-            pipeline.close(confirmed=complete)
-        for encoder in encoders.values():
-            if encoder.poll() is None:
-                encoder.kill()
-                encoder.wait()
-        for actor in reversed(owned):
-            try:
-                if hasattr(actor, 'stop'):
-                    actor.stop()
-                actor.destroy()
-            except Exception:
-                pass
-        restored = restore(client, prior) if changed else {'restored': True,
-            'world_unchanged': True}
-        if complete:
-            seal_capture(output, frames=600, restoration=restored, errors=[],
-                encoder_exit_codes={name: encoder.returncode for name, encoder in encoders.items()},
-                context={'case_id': config['case_id'],
-                         'taxicab_sign_passenger_authority': 'pending'})
+        finish_owned_capture(pipeline, encoders, owned, client, prior, changed,
+                             complete, output, config, restore, seal_capture)
 
 
 if __name__ == '__main__':

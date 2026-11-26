@@ -14,8 +14,9 @@ def write(path, value):
 
 def main():
     bundle = HERE/'selected_primary'
-    names = ('runner.py', 'config.json', 'tests/test_bundle.py')
+    names = ('runner.py', 'config.json', 'tests/test_bundle.py', 'finalize.py')
     files = [{'path': name, 'content': (bundle/name).read_text()} for name in names]
+    files.append({'path': 'measure_school_zone.py', 'content': (HERE/'measure_school_zone.py').read_text()})
     construction = {'format': 'worker-construction', 'assignment_id': AID,
                     'case_id': CASE, 'cell_id': 'C262666', 'law_id': 'NRS-484B-363-1',
                     'actor': 'heavy_vehicle_driver', 'entrypoint': 'runner.py',

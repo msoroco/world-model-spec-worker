@@ -13,19 +13,22 @@ def sha(path):
 
 
 def main():
+    selected = {item['case_id']: item for item in
+                json.loads((BASE / 'selected-draft-manifest.json').read_text())['cases']}
     cases = []
     for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
-        stem = ('saved-output-probe_a-v13' if suffix == 'probe_a'
-                else f'saved-{suffix}-v13-output')
+        stem = f'saved-{suffix}-positive-v15-output'
         source = SCRATCH / stem / 'v0001'
-        negative_stem = ('saved-output-probe_a-v13-negative' if suffix == 'probe_a'
-                         else f'saved-{suffix}-v13-negative-output')
+        negative_stem = f'saved-{suffix}-negative-v15-output'
         negative_source = SCRATCH / negative_stem / 'v0001'
         positive = json.loads((source / 'processing.json').read_text())
         negative = json.loads((negative_source / 'processing.json').read_text())
         feedback = json.loads((negative_source / 'feedback.json').read_text())
         case_id = BASE.name + '__' + suffix
+        current_sha = selected[case_id]['construction_sha256']
         if (positive.get('case_id') != case_id or negative.get('case_id') != case_id or
+                positive.get('analysis_revision', {}).get('construction_sha256') != current_sha or
+                negative.get('analysis_revision', {}).get('construction_sha256') != current_sha or
                 positive.get('passed') is not True or negative.get('passed') is not True or
                 positive.get('recorded_only') is not True or
                 negative.get('recorded_only') is not True or

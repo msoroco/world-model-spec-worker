@@ -6,6 +6,7 @@ itself establish physical completion or a legal outcome.
 
 import json
 from pathlib import Path
+import argparse
 
 from measure_original import CAMERAS, REVIEW_COPIES, measure
 
@@ -62,3 +63,12 @@ def review(attempt, case_id, receipt_path):
             'review_receipt_declares_original_observations': True,
             'original_pixel_reviewed': None, 'physical_completion': None,
             'legal_verdict': None}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--attempt', required=True)
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--receipt', required=True)
+    args = parser.parse_args()
+    print(json.dumps(review(args.attempt, args.case, args.receipt), sort_keys=True))

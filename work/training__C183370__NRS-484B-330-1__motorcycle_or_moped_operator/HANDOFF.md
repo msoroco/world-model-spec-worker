@@ -1,5 +1,17 @@
 # NRS-484B-330-1 at C183370
 
+## 2026-11-26 exact camera profile binding
+
+The combined saved-delivery audit now rejects a changed camera/config profile by comparing the supplied case config with the exact authored construction. Its CPU proof uses the actual four 1920x1080/1280x720 camera dimensions at 20 Hz for 600 frames on both exact case IDs. Four direct/CLI positives and eight changed-source/review/duration/camera negatives pass (`native/saved-delivery-cpu-proof.json` SHA-256 `fe6113dc3f31a7fad1fda817619c24fa6e6df70c05fcbdbc78c9128a78009ddf`). The assignment-scoped partial `--complete` check passes. These are constant-color diagnostic videos; original flagger pixels, authority, zone designation and physical/legal outcome remain unverified. The cases remain unselected and the package partial pending public compatibility and selected semantic/delivery proof.
+
+## 2026-11-26 combined saved-delivery CPU audit
+
+`native/audit_saved_delivery.py` now joins a case's sealed 600 original Native rows, all four fully decoded FFV1 streams, the exact 20 Hz/30-second config, and an independent source-bound review receipt. It rejects a changed camera, altered review hashes and wrong duration. `native/prove_saved_delivery.py` passes four direct/CLI positives and six negatives over the two exact case IDs using synthetic 64x48, 600-frame video (`native/saved-delivery-cpu-proof.json` SHA-256 `39a077690c05807346da3317b79798faf73e754af705cb39a4eefc9a905b7b11`). The assignment-scoped partial `--complete` check passes. This is procedure proof only: original pixels and physical/legal outcomes are unverified, and the two cases are still unselected pending source-reviewed flagger/zone/signal assets, public compatibility, semantic stages and independent selected-delivery acceptance.
+
+## 2026-11-26 executable original-review receipt check
+
+`native/review_original.py` now accepts an exact sealed attempt, case and reviewer receipt through its CLI. Its synthetic source-shaped proof executes that path on both draft cases: six positives and twelve altered or incomplete receipt negatives pass (`native/review-binding-proof.json` SHA-256 `fe906bb8e8c0aea5ef5b97e3685661883c1e673824eb0166a26b5fd865238b79`). The current assignment-scoped partial `--complete` check passes. The receipt remains a structural binding declaration; no original pixels, source-reviewed authority, physical completion or legal outcome is claimed. The package remains partial pending selected public, saved, semantic and independent delivery chains.
+
 ## 2026-11-26 separate location alternative disposition
 
 The exact NRS 484B.330(1) location alternatives are now explicit in the case plan: the current two-case designated temporary-zone witness is selected for construction, while the clearly marked highway construction or maintenance area alternative is `alternative_pending` with no assigned case or invented source review. Updated plan SHA-256 `814d1b1afdd716625652816ddce54b2a685f87fd70360aac3c1036e3e3ca2f56`. Strict readiness remains unavailable until that branch is constructed and selected or source-backed equivalent evidence is established. The current pair and all original flagger/source review claims remain partial.

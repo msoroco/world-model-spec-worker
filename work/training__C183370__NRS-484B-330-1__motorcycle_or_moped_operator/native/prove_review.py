@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 
 from measure_original import CAMERAS, REVIEW_COPIES, sha
 from prove_original import fixture
@@ -40,6 +42,11 @@ def prove():
             checked = review(attempt, case_id, receipt_path)
             assert checked['binding_passed'] and not checked['original_pixel_reviewed']
             assert checked['physical_completion'] is None
+            command = [sys.executable, '-B', str(Path(__file__).with_name('review_original.py')),
+                       '--attempt', str(attempt), '--case', case_id,
+                       '--receipt', str(receipt_path)]
+            cli = subprocess.run(command, check=True, capture_output=True, text=True)
+            assert json.loads(cli.stdout) == checked
             outcomes.append({'case_id': case_id, 'synthetic_binding_passed': True})
             for changed, expected in (
                     ({'source_seal_sha256': '0' * 64}, 'source seal differs'),
@@ -65,6 +72,8 @@ def prove():
                 assert 'observation invalid' in str(error)
             else:
                 raise AssertionError('Boolean video frame accepted')
+            cli = subprocess.run(command, capture_output=True, text=True)
+            assert cli.returncode != 0 and 'observation invalid' in cli.stderr
             declared = dict(receipt, source_kind='original_pixel_review',
                             observations={name: dict(item, observed=True)
                                           for name, item in receipt['observations'].items()})
@@ -76,7 +85,7 @@ def prove():
             receipt_path.write_text(json.dumps(receipt) + '\n')
     return {'format': 'c183370-review-binding-proof',
             'source_kind': 'synthetic_structural_fixture',
-            'positive_count': 4, 'negative_count': 10, 'cases': outcomes,
+            'positive_count': 6, 'negative_count': 12, 'cases': outcomes,
             'original_pixels_reviewed': False,
             'physical_or_legal_outcome_claimed': False}
 

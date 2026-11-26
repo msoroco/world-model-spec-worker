@@ -1,0 +1,45 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
+      "kind": "delivery",
+      "construction": "native/selected-primary-construction.json",
+      "construction_sha256": "e9676af9c2c573c476bd126d7d5c7aba517f69c2029cb95a77fd6a3603f58b62",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native route, camera or target failure yet; retain primary until feedback identifies a failure"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_03.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_03.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03 --output .runtime-work/c262666-test/offline-r12",
+        "exit_code": 0,
+        "construction_sha256": "e9676af9c2c573c476bd126d7d5c7aba517f69c2029cb95a77fd6a3603f58b62",
+        "log": "native/selected-primary-offline.log",
+        "log_sha256": "f9bdcdcc38276b8ed2e7c262c8782b5ab65775ad36f4d38c4cb083ad25e121d8"
+      }
+    }
+  ]
+}
