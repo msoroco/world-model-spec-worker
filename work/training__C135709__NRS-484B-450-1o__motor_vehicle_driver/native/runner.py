@@ -1,4 +1,4 @@
-"""Original Native parking-frontage capture draft; no legal classification is inferred."""
+"""Original Native device-zone capture; official status and legal outcome remain open."""
 import argparse
 import json
 import math
@@ -32,7 +32,7 @@ def check(config):
 
 def survey(carla, mapping):
     points = []
-    for x in (-80, -30, 25, 40, 55):
+    for x in (-80, -20, -10, 0, 12):
         wp = mapping.get_waypoint(carla.Location(x=x, y=-1.75, z=1.4),
                                   project_to_road=True, lane_type=carla.LaneType.Driving)
         if wp is None or wp.road_id != 1 or wp.lane_id != -1 or abs(wp.transform.location.x - x) > 1:
@@ -78,11 +78,12 @@ def execute(config, output_dir, host, port):
         world.apply_settings(settings)
         readback = survey(carla, world.get_map())
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
-        (output / 'frontage-inventory.json').write_text(json.dumps({
+        (output / 'device-inventory.json').write_text(json.dumps({
             'source_kind': 'native_saved_sample', 'cell_id': 'C135709',
             'native_lane_survey': readback,
             'street_bounds_m': geometry_check()['street_bounds_m'],
             'governed_zone_bounds_m': geometry_check()['park_bounds_m'],
+            'authored_device_id': 'authored-no-parking-135709',
             'official_device_status': None, 'device_authority_document_sha256': None,
             'device_instruction_source': None, 'condition_source': None,
             'external_status_review_required': True}, indent=2) + '\n')
@@ -97,8 +98,8 @@ def execute(config, output_dir, host, port):
         (output / 'acquisition-provenance.json').write_text(json.dumps({
             'provenance_kind': 'native', 'diagnostic_fixture': False,
             'physical_acceptance_claimed': False}, indent=2) + '\n')
-        mounts = {'overview': (15, -25, 24, -35), 'approach': (0, -11, 9, -15),
-                  'reference_corner': (40, 8, 10, -20), 'driver_reference': (-45, 8, 10, -20)}
+        mounts = {'overview': (-5, -25, 24, -35), 'approach': (-20, -11, 9, -15),
+                  'reference_corner': (-10, 8, 10, -20), 'driver_reference': (-40, 8, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)

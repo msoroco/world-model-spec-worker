@@ -152,11 +152,20 @@ def report(root):
     config = json.loads(required(root, 'config.json').read_text())
     value, channels = measured(root)
     sources = value['source_sha256']
-    items = {'device_zone_measurement': ('zone_observation', zone_observation(root)),
+    items = {'statutory_scope': ('exception_observation', exception_observation(root)),
+             'prohibited_place': ('zone_observation', zone_observation(root)),
+             'narrow_road_park': ('zone_observation', zone_observation(root)),
              'device_identity_authority': ('device_observation', device_observation(root)),
+             'device_instruction_scope': ('device_observation', device_observation(root)),
              'condition_and_time': ('condition_observation', condition_observation(root)),
              'vehicle_activity': ('activity_observation', activity_observation(root)),
-             'statutory_exceptions': ('exception_observation', exception_observation(root))}
+             'vehicle_footprint_rest': ('zone_observation', zone_observation(root)),
+             'traffic_conflict_necessity': ('exception_observation', exception_observation(root)),
+             'compliance_with_law': ('exception_observation', exception_observation(root)),
+             'police_direction': ('exception_observation', exception_observation(root)),
+             'device_direction': ('exception_observation', exception_observation(root)),
+             'stop_mode_alternative': ('activity_observation', activity_observation(root)),
+             'stand_mode_alternative': ('activity_observation', activity_observation(root))}
     measurements = {key: {'method': method, 'value': observed, 'sources': sources}
                     for key, (method, observed) in items.items()}
     return {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],

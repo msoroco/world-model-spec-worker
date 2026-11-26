@@ -1,0 +1,432 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_device_authority_activity_and_exception_review",
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false",
+      "kind": "delivery",
+      "construction": "draft-exact/false/primary/construction.json",
+      "construction_sha256": "1349b0f52c4a5e8b8e45977d0fad8bb1bca2c5607d036d25faf0950ed287cbb9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stopping gain may place the vehicle short of the requested device-zone station; original rest and body footprint need inspection."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/false/fallback1/construction.json",
+          "construction_sha256": "d0902427272474f44e9f150a2c4e44fc864327149552c4751e758deb38906bf5",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint relative to requested device-zone station",
+            "failure_condition": "five-second rest interval missing or measured zone occupancy disagrees with requested outside/inside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x -80 m to -78 m in both linked cases; controller and comparison variable fixed"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d0902427272474f44e9f150a2c4e44fc864327149552c4751e758deb38906bf5",
+            "command": "runtime.py offline --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --candidate fallback1",
+            "log": "proofs/false/fallback1-offline.log",
+            "log_sha256": "8fc49825e1112cf98a65ee9bb503790b3d465b299aec0e695164a06d722e3a3e"
+          },
+          "compatibility": {
+            "receipt": "proofs/false/fallback1-compatibility.json",
+            "sha256": "0d37373f37b57361bfb5c8b3de0b1f637602c7558a28dee70ac64019b305bd8c",
+            "log": "proofs/false/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/false/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/false/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/diagnostic-false-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "1349b0f52c4a5e8b8e45977d0fad8bb1bca2c5607d036d25faf0950ed287cbb9",
+        "command": "runtime.py offline --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --candidate primary",
+        "log": "proofs/false/primary-offline.log",
+        "log_sha256": "8fc49825e1112cf98a65ee9bb503790b3d465b299aec0e695164a06d722e3a3e"
+      },
+      "compatibility": {
+        "receipt": "proofs/false/primary-compatibility.json",
+        "sha256": "806b1cdd9f67cc3ac041ce15f1f26669433f88d6ec9d99c02ff74cbd98438bbb",
+        "log": "proofs/false/primary-compatibility-analysis.log",
+        "negative_log": "proofs/false/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/false/primary-negative-analysis.log",
+        "log_sha256": "d2aa6eb58a5674a381979faadb232a1966f07ccb207bd7b2259c876b30a10403"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/false/physical-preparation.json",
+        "sha256": "f60e12c3b764eb111e606fcaeb7ebf00da7be10bd61a30e5b5d9c9d23832216a"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for ego_pose",
+          "evidence": [
+            "vehicle-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "device_prohibited_place_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_prohibited_place_occupancy",
+          "evidence": [
+            "road.xodr",
+            "device-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "device_identity": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_identity",
+          "evidence": [
+            "road.xodr",
+            "device-inventory.json",
+            "device-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_authority": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_authority",
+          "evidence": [
+            "device-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_instruction_and_scope": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_instruction_and_scope",
+          "evidence": [
+            "device-review.json",
+            "road.xodr"
+          ]
+        },
+        "device_condition": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_condition",
+          "evidence": [
+            "condition-review.json",
+            "device-review.json"
+          ]
+        },
+        "civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for civil_time",
+          "evidence": [
+            "condition-review.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "vehicle_activity": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for vehicle_activity",
+          "evidence": [
+            "activity-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for traffic_conflict_context",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
+        },
+        "law_compliance_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for law_compliance_context",
+          "evidence": [
+            "exception-review.json"
+          ]
+        },
+        "police_direction_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for police_direction_context",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_direction_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_direction_context",
+          "evidence": [
+            "exception-review.json",
+            "device-review.json"
+          ]
+        },
+        "source_camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for source_camera_frame_join",
+          "evidence": [
+            "video_frames.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false",
+        "test_log": "proofs/false/saved.log",
+        "test_log_sha256": "7f2f1fdf79e1ae1a12372d2e4ab2c354bb1dd15406f5d7a8b8052a8b50a8ed41",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_device_condition_activity_and_exception_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "965d06dc07ffe6b480c62e0f637f72c124730d56c9f174536c8eae232a9a60e9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-compat-false-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-saved-false/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v1-delivery-audit-false-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/false/delivery-positive.log",
+        "test_log_sha256": "f65aba756324a134b27a1937f7e175ece9736839934001d1ddfa442d9352f850",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-compat-false-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-saved-false/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v1-delivery-audit-false-positive.json --diagnostic --omit-source device-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-review.json",
+        "negative_log": "proofs/false/delivery-negative.log",
+        "negative_log_sha256": "7b339209171980efc4c23a9e6b07c5c331917e1570f294729f1ac56768580873"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true",
+      "kind": "delivery",
+      "construction": "draft-exact/true/primary/construction.json",
+      "construction_sha256": "a7c73bcaf7d8a4861bde242dd1f0b2a66297cbc83ceea5ba699bd2090a4bee15",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stopping gain may place the vehicle short of the requested device-zone station; original rest and body footprint need inspection."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/true/fallback1/construction.json",
+          "construction_sha256": "e56cedd9412cac4e414d4deb3375ce2d623aeaf0f585d45eb76fec19e097320c",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint relative to requested device-zone station",
+            "failure_condition": "five-second rest interval missing or measured zone occupancy disagrees with requested outside/inside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x -80 m to -78 m in both linked cases; controller and comparison variable fixed"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "e56cedd9412cac4e414d4deb3375ce2d623aeaf0f585d45eb76fec19e097320c",
+            "command": "runtime.py offline --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true --candidate fallback1",
+            "log": "proofs/true/fallback1-offline.log",
+            "log_sha256": "2b7cee013812be5a7a46c6d62773ffa3504ad45a8a072987bc68c196164c7112"
+          },
+          "compatibility": {
+            "receipt": "proofs/true/fallback1-compatibility.json",
+            "sha256": "2e6f5561dbede13c88fcf6314d416c03f0237b8857386751b5f8f1e181d21915",
+            "log": "proofs/true/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/true/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/true/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/diagnostic-true-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a7c73bcaf7d8a4861bde242dd1f0b2a66297cbc83ceea5ba699bd2090a4bee15",
+        "command": "runtime.py offline --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true --candidate primary",
+        "log": "proofs/true/primary-offline.log",
+        "log_sha256": "8fc49825e1112cf98a65ee9bb503790b3d465b299aec0e695164a06d722e3a3e"
+      },
+      "compatibility": {
+        "receipt": "proofs/true/primary-compatibility.json",
+        "sha256": "f6afb435b51dbccb11bf35dd56c5273d8d44cf8c9941c58e4600fe9212d574fd",
+        "log": "proofs/true/primary-compatibility-analysis.log",
+        "negative_log": "proofs/true/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/true/primary-negative-analysis.log",
+        "log_sha256": "d1fa821e8516571bb734503b6ccf346a34c733e40c0029b50de54204abbefb47"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/true/physical-preparation.json",
+        "sha256": "f464df36f3c648ab56a39e588c2c3d206281af8363fe793a9afb9063ec1bc168"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for ego_pose",
+          "evidence": [
+            "vehicle-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "device_prohibited_place_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_prohibited_place_occupancy",
+          "evidence": [
+            "road.xodr",
+            "device-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "device_identity": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_identity",
+          "evidence": [
+            "road.xodr",
+            "device-inventory.json",
+            "device-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_authority": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_authority",
+          "evidence": [
+            "device-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_instruction_and_scope": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_instruction_and_scope",
+          "evidence": [
+            "device-review.json",
+            "road.xodr"
+          ]
+        },
+        "device_condition": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_condition",
+          "evidence": [
+            "condition-review.json",
+            "device-review.json"
+          ]
+        },
+        "civil_time": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for civil_time",
+          "evidence": [
+            "condition-review.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "vehicle_activity": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for vehicle_activity",
+          "evidence": [
+            "activity-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for traffic_conflict_context",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
+        },
+        "law_compliance_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for law_compliance_context",
+          "evidence": [
+            "exception-review.json"
+          ]
+        },
+        "police_direction_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for police_direction_context",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
+        },
+        "device_direction_context": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for device_direction_context",
+          "evidence": [
+            "exception-review.json",
+            "device-review.json"
+          ]
+        },
+        "source_camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame/source join plus independent review for source_camera_frame_join",
+          "evidence": [
+            "video_frames.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true",
+        "test_log": "proofs/true/saved.log",
+        "test_log_sha256": "7a3117a712808bb68a976f8ed972cb43dc0f7e117a8d9471172457e2e4a68f3a",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_device_condition_activity_and_exception_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "965d06dc07ffe6b480c62e0f637f72c124730d56c9f174536c8eae232a9a60e9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-compat-true-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-saved-true/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v1-delivery-audit-true-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/true/delivery-positive.log",
+        "test_log_sha256": "94bf813bf959d93484e2d49489870a17bbf1a57b0fcf8dab376f6fecfbd98d43",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-compat-true-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v5-saved-true/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-nrs-v1-delivery-audit-true-positive.json --diagnostic --omit-source device-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-review.json",
+        "negative_log": "proofs/true/delivery-negative.log",
+        "negative_log_sha256": "7b339209171980efc4c23a9e6b07c5c331917e1570f294729f1ac56768580873"
+      }
+    }
+  ]
+}

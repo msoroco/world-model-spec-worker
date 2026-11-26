@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from review_context import verified_sources
 
 FRAMES=600
 CAMERAS=('overview','zone_entry','turn_side','child_area')
@@ -36,9 +37,9 @@ def measure(attempt):
     for path in (context_path,motion_path,frames_path):
         if not path.is_file():raise ValueError('Missing required source: '+path.name)
     context=json.loads(context_path.read_text());zone=context.get('zone')
-    if context.get('source_kind')!='original_native' or any(context.get(key) is not True for key in
-        ('zone_designation_reviewed','school_adjacency_reviewed','highway_status_reviewed','child_identity_and_presence_reviewed')):
-        raise ValueError('Original school-zone or child-identity context unreviewed')
+    if context.get('source_kind')!='original_native':
+        raise ValueError('Original school-zone context missing')
+    review=verified_sources(attempt,context)
     if not isinstance(zone,dict) or any(type(zone.get(k)) not in (int,float) for k in ('x_min_m','x_max_m','y_min_m','y_max_m')):
         raise ValueError('Original zone extent missing')
     motions,frames=rows(motion_path),rows(frames_path)
@@ -72,6 +73,7 @@ def measure(attempt):
         'session_operation_civil_time_reviewed':context.get('session_operation_civil_time_reviewed') is True,
         'beacon_and_sign_state_reviewed':context.get('beacon_and_sign_state_reviewed') is True,
         'all_five_exceptions_reviewed':context.get('all_five_exceptions_reviewed') is True,
+        'independent_source_review':review,
         'u_turn_legal_verdict':'unresolved','physical_acceptance_claimed':False,
         'source_sha256':{p.name:sha(p) for p in (context_path,motion_path,frames_path)},
         'camera_video_sha256':{name:sha(attempt/(name+'.mkv')) for name in CAMERAS}}

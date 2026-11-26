@@ -242,6 +242,9 @@ def capture(config, output, host, port, junction_id=None):
         (output / "native-attempt-status.json").write_text(json.dumps({
             "frames": len(frames), "error": error, "physical_completion": None,
             "legal_verdict": None}, indent=2) + "\n")
+        if error is not None:
+            (output / "native-run-status.json").write_text(json.dumps({
+                "errors": [error], "frames": len(frames)}, indent=2) + "\n")
         if error is None:
             seal_capture(output, frames=len(frames), restoration=restoration,
                          errors=[], encoder_exit_codes=encoder_exit_codes,

@@ -13,20 +13,21 @@ def sha(path):
 
 
 def bind(suffix, candidate):
-    source = REPO / ".runtime-work" / f"c24758-{suffix}-{candidate}-final-public-20261125"
+    source = REPO / ".runtime-work" / f"c24758-{suffix}-{candidate}-final2-public-20261125"
     target = ROOT / "proofs" / suffix / candidate
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("compatibility.json", "compatibility-analysis.log", "negative-analysis.log"):
+    for name in ("compatibility.json", "negative-analysis.log"):
         shutil.copyfile(source / name, target / name)
+    shutil.copyfile(source / "compatibility-analysis.log", target / "public-analysis.log")
     receipt = json.loads((target / "compatibility.json").read_text())
     if receipt["case_id"] != ROOT.name + "__" + suffix or receipt["candidate_id"] != candidate:
         raise ValueError("Public receipt selects another exact candidate")
-    if receipt["log_sha256"] != sha(target / "compatibility-analysis.log") or \
+    if receipt["log_sha256"] != sha(target / "public-analysis.log") or \
             receipt["negative_log_sha256"] != sha(target / "negative-analysis.log"):
         raise ValueError("Public log binding changed")
     return {"receipt": str((target / "compatibility.json").relative_to(ROOT)),
             "sha256": sha(target / "compatibility.json"),
-            "log": str((target / "compatibility-analysis.log").relative_to(ROOT)),
+            "log": str((target / "public-analysis.log").relative_to(ROOT)),
             "negative_log": str((target / "negative-analysis.log").relative_to(ROOT))}
 
 

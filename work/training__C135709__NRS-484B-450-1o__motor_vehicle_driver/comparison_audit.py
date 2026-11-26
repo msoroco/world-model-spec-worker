@@ -1,4 +1,4 @@
-"""Independent fixed-condition and parking-frontage contrast audit."""
+"""Independent fixed-condition and device-zone occupancy contrast audit."""
 import argparse
 import hashlib
 import json
@@ -39,9 +39,9 @@ def audit(comparison_id, processing_specs, omit_case=None):
         stage = Path(saved['analysis_directory'])
         config = read(stage / 'config.json')
         report = read(stage / 'analysis-report.json')
-        measured = report.get('measurements', {}).get('parking_adjacency', {})
-        if measured.get('method') != 'measured':
-            raise ValueError('Comparison lacks source-bound parking measurement')
+        measured = report.get('measurements', {}).get('vehicle_footprint_rest', {})
+        if measured.get('method') != 'zone_observation':
+            raise ValueError('Comparison lacks source-bound zone measurement')
         for name, digest in measured.get('sources', {}).items():
             if digest != sha(stage / name):
                 raise ValueError('Comparison source changed: ' + name)
@@ -51,22 +51,28 @@ def audit(comparison_id, processing_specs, omit_case=None):
                   'required_atoms', 'source_packets'):
         if any(config[field] != configs[0][field] for config in configs[1:]):
             raise ValueError('Comparison fixed condition changed: ' + field)
-    if [config['parking_case'] for config in configs] != ['away', 'beside']:
-        raise ValueError('Parking frontage station request contrast changed')
-    overlaps = [row[2]['park_frontage_overlap_at_rest'] for row in observations]
+    if [config['zone_case'] for config in configs] != ['outside', 'inside']:
+        raise ValueError('Device-zone station request contrast changed')
+    overlaps = [row[2]['zone_overlap_during_rest'] for row in observations]
     if overlaps != [False, True]:
-        raise ValueError('Away/beside original source measurement differs')
-    for name in ('road.xodr', 'frontage-inventory.json', 'park-review.json', 'exception-review.json', 'overview.mkv'):
+        raise ValueError('Outside/inside original source measurement differs')
+    for name in ('road.xodr', 'device-inventory.json'):
         if len({sha(row[3] / name) for row in observations}) != 1:
-            raise ValueError('Fixed park frontage or exception source changed: ' + name)
-    vehicles = [read(row[3] / 'vehicle-spec-review.json') for row in observations]
-    for key in ('vehicle_class', 'vehicle_overall_length_m', 'vehicle_unladen_mass_kg'):
-        if vehicles[0][key] != vehicles[1][key]:
-            raise ValueError('Fixed commercial vehicle specification changed: ' + key)
+            raise ValueError('Fixed device or condition source changed: ' + name)
+    for name, keys in [('device-review.json', ('device_code', 'governed_zone_bounds_m', 'official_status',
+                                               'authority_source', 'traffic_purpose', 'legal_consistency')),
+                       ('condition-review.json', ('condition', 'vehicle_class')),
+                       ('activity-review.json', ('activity', 'purpose', 'responsible_person_source', 'actual_service_activity')),
+                       ('exception-review.json', ('traffic_conflict_source', 'law_compliance_source',
+                                                  'police_direction_source', 'device_direction_source'))]:
+        values = [read(row[3] / name) for row in observations]
+        for key in keys:
+            if values[0][key] != values[1][key]:
+                raise ValueError('Fixed activity or exception context changed: ' + key)
     return {'format': 'c135709-independent-comparison-audit-v1',
             'comparison_id': comparison_id, 'case_ids': comparison['case_ids'],
             'fixed_conditions_checked': True, 'differences_checked': True,
-            'park_frontage_overlap_at_rest': overlaps,
+            'device_zone_overlap_during_rest': overlaps,
             'analysis_sha256': {row[0]: row[4] for row in observations},
             'physical_or_legal_acceptance_claimed': False}
 

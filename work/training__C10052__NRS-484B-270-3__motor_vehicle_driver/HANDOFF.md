@@ -240,3 +240,18 @@ All 24 selected delivery-audit positive and negative CPU self-tests pass after t
 ## 2026-11-25 pinned Core atom compatibility correction
 
 The direct ready-path execution manifest validator found unsupported `required_atoms`: `ru.electric_bicycle` and `ru.electric_scooter` have no fresh Core adapter path, and `ru.vehicle` is not a pinned ontology ID. `remove-unsupported-core-atom-demands.py` removed only those acquisition demands from 28 selected primary/fallback construction configs in eight cases. All 88 selected configs now pass the pinned `check_required_atoms` preflight. The source observation mapping, selected electric/vehicle source packets, measurement contracts, and negative-source checks remain in place. All 28 changed constructions are being re-proved offline and through public compatibility; prior receipts for those constructions are stale until refresh.
+
+## 2026-11-25 final selected CPU component reproof
+
+- Removed only unsupported Core atom demands (`ru.electric_bicycle`, `ru.electric_scooter`, `ru.vehicle`) from 28 candidate configs. The electric bicycle/scooter law observations remain in selected source files, measurement contracts, source observation mapping, and missing-source negative tests.
+- Reproved 28 changed offline candidates and retained 60 unchanged by construction hash: 88/88 selected primary/fallback offline checks passed.
+- Reproved 28 changed current-runtime compatibility candidates and retained 60 unchanged by receipt and construction hash: 88/88 positive and missing-source negative compatibility checks passed.
+- Rebuilt the eight changed physical fixtures and reran positive/negative source-bound pair audits for electric bicycle, electric scooter, exception C, and exception F. These are diagnostic CPU findings; original Native physical and legal outcomes remain unclaimed.
+- Added 34 measurable failure conditions to existing fallback trigger metrics, based on the source engineering trigger functions. Added four `ru.vehicle` acquisition bindings for exception C/F channels already emitted by the selected runner.
+- Pinned execution manifest validates 24 cases; semantic delivery validates 22 stages and 24 cases; delivery handoff validates 24 cases; package compatibility receipt validator passes 24 cases.
+- Exact scoped strict delivery gate is running as a diagnostic; status remains partial until a final-file strict run exits zero.
+- Scratch proof logs (all under `.runtime-work/`):
+  - `.runtime-work/c10052-disposition-offline-refresh.log` SHA-256 `6e32c99112181fa7ece9142734b0a9c2a22b4edb80944bf9c245f4c61ddc4be8`
+  - `.runtime-work/c10052-disposition-compat-refresh.log` SHA-256 `a92eaba7ff357103a2f1eff4034e5950d80248e09c2524cce3735667076ce4bc`
+  - `.runtime-work/c10052-final-validate.log` SHA-256 `eb4e4b2572f7107831b6a3723e5bd7352638e41d09fa98ab2e4d3f8f8048eda4`
+  - `.runtime-work/c10052-package-validate.log` SHA-256 `4d19302c18c2ab1a511a9c2c65125d348388b6bc8d92346179d6eed40175c2ed`

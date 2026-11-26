@@ -1,4 +1,4 @@
-"""Bind selected parking proof chain and source acquisition without legal claims."""
+"""Bind selected device-zone proof chain and source acquisition without legal claims."""
 import hashlib
 import json
 from pathlib import Path
@@ -13,29 +13,31 @@ def sha(path):
 
 def main():
     manifest = json.loads((HERE / 'draft-execution-manifest.json').read_text())
-    manifest['status'] = 'cpu_prepared_pending_original_park_vehicle_and_exception_review'
+    manifest['status'] = 'cpu_prepared_pending_original_device_authority_activity_and_exception_review'
+    evidence = {
+        'ego_pose': ['vehicle-poses.jsonl', 'video_frames.jsonl'],
+        'device_prohibited_place_occupancy': ['road.xodr', 'device-review.json', 'vehicle-poses.jsonl'],
+        'device_identity': ['road.xodr', 'device-inventory.json', 'device-review.json', 'overview.mkv'],
+        'device_authority': ['device-review.json', 'overview.mkv'],
+        'device_instruction_and_scope': ['device-review.json', 'road.xodr'],
+        'device_condition': ['condition-review.json', 'device-review.json'],
+        'civil_time': ['condition-review.json', 'video_frames.jsonl'],
+        'vehicle_activity': ['activity-review.json', 'vehicle-poses.jsonl'],
+        'traffic_conflict_context': ['exception-review.json', 'overview.mkv'],
+        'law_compliance_context': ['exception-review.json'],
+        'police_direction_context': ['exception-review.json', 'overview.mkv'],
+        'device_direction_context': ['exception-review.json', 'device-review.json'],
+        'source_camera_frame_join': ['video_frames.jsonl', 'overview.mkv']}
     for entry in manifest['cases']:
         suffix = entry['case_id'].split('__')[-1]
         proof = HERE / 'proofs' / suffix
         entry['physical_preparation'] = {'receipt': str((proof / 'physical-preparation.json').relative_to(HERE)),
                                          'sha256': sha(proof / 'physical-preparation.json')}
-        entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
-                                   'host_env_var': 'CARLA_HOST', 'port_env_var': 'CARLA_PORT'}
-        entry['acquisition'] = {
-            'vehicle_pose_and_speed': {'entrypoint': 'runner.py', 'method': 'original actor pose and speed with Native frame identities', 'evidence': ['vehicle-poses.jsonl']},
-            'park_frontage_geometry': {'entrypoint': 'runner.py', 'method': 'original street and frontage readback with reviewed park status', 'evidence': ['road.xodr', 'frontage-inventory.json', 'park-review.json']},
-            'source_camera_frame_join': {'entrypoint': 'runner.py', 'method': 'four original RGB streams joined to Native frame map', 'evidence': ['video_frames.jsonl', 'overview.mkv']},
-            'st.roadway': {'entrypoint': 'runner.py', 'method': 'original surveyed road and park frontage', 'evidence': ['road.xodr', 'frontage-inventory.json']},
-            'ru.commercial_motor_vehicle': {'entrypoint': 'runner.py', 'method': 'original vehicle identity with independent commercial specification', 'evidence': ['vehicle-poses.jsonl', 'vehicle-spec-review.json']},
-            'kin.extent': {'entrypoint': 'runner.py', 'method': 'original body extent and separately sourced overall length', 'evidence': ['vehicle-poses.jsonl', 'vehicle-spec-review.json']},
-            'drv.standing_or_parked': {'entrypoint': 'runner.py', 'method': 'original 600-frame speed and rest interval', 'evidence': ['vehicle-poses.jsonl', 'video_frames.jsonl']},
-            'dev.regulatory_sign': {'entrypoint': 'runner.py', 'method': 'original overview pixels with independent sign authority and permission review', 'evidence': ['overview.mkv', 'exception-review.json']},
-            'kin.time': {'entrypoint': 'runner.py', 'method': 'original Native frame/time join', 'evidence': ['vehicle-poses.jsonl', 'video_frames.jsonl']},
-            'ru.trailer_or_combination': {'entrypoint': 'runner.py', 'method': 'independent vehicle and trailer classification joined to original actor', 'evidence': ['vehicle-spec-review.json', 'vehicle-poses.jsonl']},
-            'st.driveway_or_alley_entrance': {'entrypoint': 'runner.py', 'method': 'property-frontage review for loading or delivery exception', 'evidence': ['exception-review.json', 'road.xodr']},
-            'sig.door_open': {'entrypoint': 'runner.py', 'method': 'original overview and actual transfer activity review', 'evidence': ['overview.mkv', 'exception-review.json']},
-            'ru.occupant_count': {'entrypoint': 'runner.py', 'method': 'independent occupant and passenger activity source', 'evidence': ['vehicle-spec-review.json', 'exception-review.json']},
-            'dev.temporary_traffic_control': {'entrypoint': 'runner.py', 'method': 'service or construction activity and temporary control review', 'evidence': ['exception-review.json', 'overview.mkv']}}
+        entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON', 'host_env_var': 'CARLA_HOST',
+                                   'port_env_var': 'CARLA_PORT'}
+        entry['acquisition'] = {name: {'entrypoint': 'runner.py',
+            'method': 'original Native frame/source join plus independent review for ' + name,
+            'evidence': sources} for name, sources in evidence.items()}
         entry['post_capture'] = {'recorded_only': True,
             'command': 'runtime.py process-saved --manifest work/' + AID + '/execution-manifest.json --case ' + entry['case_id'] +
                 ' --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER',

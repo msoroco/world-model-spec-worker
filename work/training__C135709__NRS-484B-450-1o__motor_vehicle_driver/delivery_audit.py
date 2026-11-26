@@ -1,12 +1,12 @@
-"""Independent original-source audit for selected heavy-vehicle parking cases."""
+"""Independent original-source audit for selected device-zone parking cases."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SOURCE_NAMES = ('road.xodr', 'frontage-inventory.json', 'park-review.json',
-                'vehicle-spec-review.json', 'exception-review.json',
+SOURCE_NAMES = ('road.xodr', 'device-inventory.json', 'device-review.json',
+                'condition-review.json', 'activity-review.json', 'exception-review.json',
                 'vehicle-poses.jsonl', 'video_frames.jsonl', 'overview.mkv')
 
 
@@ -53,26 +53,25 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
             len((stage / 'trace.jsonl').read_text().splitlines()) != 600 or
             len((stage / 'video_frames.jsonl').read_text().splitlines()) != 600):
         raise ValueError('Original trace or frame map differs')
-    measurement = report.get('measurements', {}).get('parking_adjacency', {})
-    if (measurement.get('method') != 'measured' or
+    measurement = report.get('measurements', {}).get('vehicle_footprint_rest', {})
+    if (measurement.get('method') != 'zone_observation' or
             any(measurement.get('sources', {}).get(name) != hashes[name] for name in SOURCE_NAMES)):
         raise ValueError('Source-bound parking measurement differs')
     value = measurement.get('value', {})
-    if (value.get('frame_count') != 600 or value.get('legal_verdict_claimed') is not False or
-            type(value.get('park_frontage_overlap_at_rest')) is not bool):
-        raise ValueError('Parking frontage measurement differs')
-    park = read(stage / 'park-review.json')
-    vehicle = read(stage / 'vehicle-spec-review.json')
+    if (type(value.get('zone_overlap_during_rest')) is not bool or
+            len(value.get('rest_interval_frames', [])) != 2):
+        raise ValueError('Device-zone measurement differs')
+    device = read(stage / 'device-review.json')
+    condition = read(stage / 'condition-review.json')
+    activity = read(stage / 'activity-review.json')
     exception = read(stage / 'exception-review.json')
-    if (park.get('road_sha256') != hashes['road.xodr'] or
-            vehicle.get('pose_sha256') != hashes['vehicle-poses.jsonl'] or
-            exception.get('road_sha256') != hashes['road.xodr'] or
-            len({park.get('source'), vehicle.get('source'), exception.get('source')}) != 3 or
-            park.get('park_status') != 'public_park' or
-            vehicle.get('vehicle_class') != 'commercial_motor_vehicle' or
-            any(type(exception.get(k)) is not bool for k in
-                ('posted_permission', 'expeditious_loading', 'essential_local_service'))):
-        raise ValueError('Independent park, vehicle or exception source join differs')
+    if (device.get('road_sha256') != hashes['road.xodr'] or
+            condition.get('device_review_sha256') != hashes['device-review.json'] or
+            activity.get('pose_sha256') != hashes['vehicle-poses.jsonl'] or
+            exception.get('pose_sha256') != hashes['vehicle-poses.jsonl'] or
+            len({device.get('source'), condition.get('source'), activity.get('source'), exception.get('source')}) != 4 or
+            device.get('device_code') not in ('no_stopping', 'no_standing', 'no_parking')):
+        raise ValueError('Independent device, condition, activity or exception source join differs')
     if diagnostic:
         receipt = read(Path(attempt) / 'compatibility.json')
         if (receipt.get('passed') is not True or receipt.get('case_id') != case or
@@ -83,11 +82,20 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
         provenance = read(Path(attempt) / 'acquisition-provenance.json')
         if provenance.get('provenance_kind') != 'native' or provenance.get('diagnostic_fixture') is True:
             raise ValueError('Original Native acquisition required')
-        for review in (park, vehicle, exception):
+        for review in (device, condition, activity, exception):
             if review.get('review_status') != 'independently_reviewed' or not review.get('reviewer'):
                 raise ValueError('Independent original review incomplete')
-        if park.get('pixel_sha256') != hashes['overview.mkv'] or exception.get('pixel_sha256') != hashes['overview.mkv']:
-            raise ValueError('Original sign and park pixels differ')
+        if device.get('pixel_sha256') != hashes['overview.mkv']:
+            raise ValueError('Original device pixels differ')
+        if (device.get('official_status') is not True or
+                not device.get('authority_source') or not device.get('traffic_purpose') or
+                not device.get('legal_consistency') or
+                not condition.get('condition') or not condition.get('civil_time') or
+                not condition.get('vehicle_class') or
+                not activity.get('responsible_person_source') or not activity.get('actual_service_activity') or
+                any(not exception.get(key) for key in ('traffic_conflict_source',
+                    'law_compliance_source', 'police_direction_source', 'device_direction_source'))):
+            raise ValueError('Original device authority, conditions, activity or exception source unresolved')
         physical = result.get('physical_checks', {}).get('maneuver', {})
         if physical.get('status') != 'met' or result.get('maneuver_completed') is not True:
             raise ValueError('Original physical parking approach completion unverified')

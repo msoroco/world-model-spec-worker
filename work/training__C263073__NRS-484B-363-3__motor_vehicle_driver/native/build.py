@@ -18,7 +18,7 @@ def build():
             'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,'cameras':CAMERAS,
             'target':'defer U-turn and continue' if suffix=='controlled_1' else 'kinematic U-turn within authored zone'}
         files=[{'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
-        for name in ('layout.py','runner.py','measure_turn.py','tests/test_native.py'):
+        for name in ('layout.py','runner.py','measure_turn.py','review_context.py','tests/test_native.py','tests/test_review_context.py'):
             files.append({'path':name,'content':(HERE/name).read_text()})
         for name in ('assignment.json','witnesses.json'):
             source=Path('inputs')/ASSIGNMENT/name;files.append({'path':name,'content':source.read_text()})

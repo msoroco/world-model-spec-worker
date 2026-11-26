@@ -1,15 +1,29 @@
 {
   "assignment_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver",
   "input_sha256": "019f1d0ae42b584d990e1eef7443003a3f5f70d7032a70761a5db99aecc32207",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Authored source-shaped 600-frame four-camera narrow-road no-parking zone request and parked-body meter; outside-versus-inside-zone synthetic CPU proof and seven rejection tests pass. Exact runtime offline/compatibility, saved processing, stop/stand modes, exception branches and independent audits remain unfinished.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "cases_selected": 2,
+  "candidate_plans_proven": 4,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
-  "cpu_diagnostic_proof": "prohibited-parking-proof.json"
+  "cpu_diagnostic_proof": "prohibited-parking-proof.json",
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD ../../.venv-cpu/bin/python -m unittest discover -s tests -p 'test*.py' -v",
+      "exit_code": 0,
+      "log": "proofs/cpu-tests.log",
+      "sha256": "ca24cb0ab1ddd92effec37a65630deec69489fc17ccac5d065e8279b62063fa0"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Original CARLA parking motion, device-zone geometry, and four-view visibility",
+    "Independent official-device installation authority, traffic purpose and legal consistency, exact instruction, time/class applicability, driver activity, and all exception circumstances",
+    "Original physical completion and legal outcome require independent local review"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C135709__NRS-484B-450-1o__motor_vehicle_driver --case training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

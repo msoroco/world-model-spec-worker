@@ -37,19 +37,13 @@ def run_case(suffix):
     destination = HERE / 'proofs' / suffix
     destination.mkdir(parents=True, exist_ok=True)
     fixtures = []
-    with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c135709-physical-') as temporary:
+    with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c135709-nrs-physical-') as temporary:
         root = Path(temporary)
         (root / 'config.json').write_text(json.dumps(config))
         (root / 'video_frames.jsonl').write_text(diagnostic['files']['video_frames.jsonl'])
         (root / 'trace.jsonl').write_text(diagnostic['files']['trace.jsonl'])
         for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
             source = root / 'trace.jsonl'
-            if kind == 'complete_motion' and suffix == 'probe_1':
-                trace = rows(diagnostic['files']['trace.jsonl'])
-                start = trace[0]['position_m'][0]
-                for i, row in enumerate(trace):
-                    row['position_m'] = [start + 100 * min(i, 120) / 120, -1.75, 0]
-                source.write_text(lines(trace))
             if kind == 'incomplete_motion':
                 trace = rows(diagnostic['files']['trace.jsonl'])
                 start = trace[0]['position_m']
@@ -102,7 +96,7 @@ def run_case(suffix):
                               'native_exit_sha256': sha(lifecycle / 'native-exit.json'),
                               'owner_release_sha256': sha(root / 'owner-release.json')})
     proof_path = destination / 'physical-preparation.json'
-    write(proof_path, {'format': 'c135709-physical-preparation-cpu-proof-v1',
+    write(proof_path, {'format': 'c135709-nrs-physical-preparation-cpu-proof-v1',
                        'case_id': case, 'construction_sha256': sha(construction_path),
                        'fixtures': fixtures, 'lifecycle': {'events': expected_events,
                            'exit_code': 0, 'log': str(lifecycle_log.relative_to(HERE)),
@@ -114,4 +108,4 @@ def run_case(suffix):
 
 if __name__ == '__main__':
     print(json.dumps({'proofs': [run_case(s) for s in
-        ('probe_1', 'probe_2')]}, indent=2))
+        ('false', 'true')]}, indent=2))

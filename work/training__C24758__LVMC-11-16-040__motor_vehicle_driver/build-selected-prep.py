@@ -13,7 +13,7 @@ def sha(path):
 
 
 def log(suffix, candidate):
-    source = REPO / ".runtime-work" / f"c24758-{suffix}-{candidate}-selected-final-offline-20261125/offline.log"
+    source = REPO / ".runtime-work" / f"c24758-{suffix}-{candidate}-final2-offline-20261125/offline.log"
     target = ROOT / "native" / f"{suffix}-{candidate}-selected-prep-offline.log"
     lines = [line.rstrip() for line in source.read_text().splitlines()]
     while lines and not lines[-1]:

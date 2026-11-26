@@ -38,7 +38,9 @@ def main():
         ('condition_observation','condition_and_time'),('activity_observation','vehicle_activity'),
         ('zone_observation','vehicle_footprint_rest'),('exception_observation','traffic_conflict_necessity'),
         ('exception_observation','compliance_with_law'),('exception_observation','police_direction'),
-        ('exception_observation','device_direction')]
+        ('exception_observation','device_direction'),
+        ('activity_observation','stop_mode_alternative'),
+        ('activity_observation','stand_mode_alternative')]
     assert len(method_keys) == len(plan['requirement_dispositions'])
     for suffix, zone_case in CASES:
         case = AID + '__' + suffix
@@ -54,6 +56,8 @@ def main():
             'candidate_id': 'primary', 'law_id': 'NRS-484B-450-1o', 'cell_id': 'C135709',
             'actor': 'motor_vehicle_driver', 'zone_case': zone_case,
             'rate_hz': 20, 'duration_s': 30, 'required_atoms': [], 'source_packets': [],
+            'physical_completion': {'criterion': 'travel_progress', 'minimum_progress_m': 50,
+                'completion_goal_method': 'Engineering approach progress from start to requested rest station; separate from stationary target and legal outcome.'},
             'case': {'case_id': case}, 'statutory_text': plan['source_law']['text'],
             'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                 'height': 1080 if name == 'overview' else 720, 'fov_deg': 90,
