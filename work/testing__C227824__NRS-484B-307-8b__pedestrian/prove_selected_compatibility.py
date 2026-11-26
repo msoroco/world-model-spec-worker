@@ -57,13 +57,15 @@ def prove():
                     receipt['negative_removed'] != 'device-history.jsonl'):
                 raise ValueError('selected compatibility receipt differs')
             target = HERE / 'cases' / suffix
-            prefix = 'compatibility-' + candidate
+            prefix = 'selected-compat-' + candidate
             rec = target / (prefix + '-receipt.json')
             log = target / (prefix + '-analysis.log')
             negative = target / (prefix + '-negative.log')
-            rec.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
             log.write_text((output / 'compatibility-analysis.log').read_text().rstrip() + '\n')
             negative.write_text((output / 'negative-analysis.log').read_text().rstrip() + '\n')
+            receipt['log_sha256'] = sha(log)
+            receipt['negative_log_sha256'] = sha(negative)
+            rec.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
             ref['compatibility'] = {'command': ' '.join(command),
                                     'receipt': str(rec.relative_to(HERE)),
                                     'sha256': sha(rec),

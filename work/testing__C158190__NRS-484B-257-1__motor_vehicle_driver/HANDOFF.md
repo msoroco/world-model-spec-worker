@@ -43,7 +43,8 @@ Controlled comparisons: `slow_vs_stop` changes only ego response; `through_hazar
 | `execution-manifest.json` | `47144b08417e91d752e3cef49af1956832a44b80a6c45da76be05135f3eb63f7` |
 | `gpu-queue-proposal.json` | `b8e1d9b832dafe8ab8550d5b566c96e6dd2010f3693d14f5cc7c441860ad3f0d` |
 | `proposals/semantic-index.json` | `d5c3b7d48368b34781ce2f36939adfc0ec52175700b6dcde1263e7a4400a2769` |
-| `result.json` | `fb65b43074fdfd6d858f7820704b7d5cce7f7c0649e01ab23de7b24c3d2d192b` |
+| `result.json` | `57975a6ede73b5f037c4b3736f1ca0f92a712f046d9a2ec7fd62e9806846f8ea` |
+| `cpu-queue-audit.log` | `33b5de3577b13676bd2627eb557cf69efec68158d430b0a20e98ef060bf7ccbd` |
 | `unittest.log` | `cbbb4bd006b5139e227ad211d798b8a386f6bb08ff2ddc62fb61f4e1a9d095b1` |
 | `cpu-semantic.log` | `787e1ff248118d9e6b61b94b734285b79c82cec275bf5809913fb9b5ca370d65` |
 | `source-audit.log` | `36dc781879cb0fbeb1dfa590e2264e96eb8840fdb96b20f6bf5abadb65eb80fe` |
@@ -65,3 +66,12 @@ export TMPDIR="$PWD/.runtime-work/c158190-owner-nov26/tmp"
 ## Final scoped gate
 
 `worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete` exited 0 (`static.log`). The exact `--complete --require-delivery-ready` command exited 1 (`strict.log`) at the truthful partial-status acceptance check: `Preparation acceptance failed: partial/missing packages remain`. This package is not ready for original delivery.
+
+## November 26 owner recheck
+
+The current pinned runtime verify and preflight both exited 0. The assignment tests passed 21 of 21, the source audit confirmed two accepted metadata rows and zero original source files, and the selected semantic validator passed eight stages for three cases. The selected execution-manifest validator also passed all three selected cases. A separate CPU queue audit checked the exact three case IDs, two comparison IDs, order, and `bash -n` syntax of all 23 command strings; it passed. The queue remains a source-gated proposal. The scoped `--complete` command exited 0. The exact scoped strict command exited 1 because the truthful `partial` status cannot satisfy delivery-ready acceptance. The frozen stop-sign cell and missing reviewed yield-governed original source are the remaining delivery gate.
+## November 26 catalog route review
+
+`catalog_route.py --repo "$PWD"` passed and wrote `catalog-route.log`. It verifies frozen input, catalog, batch identity and role allocation. C158190 has fixed `stop_sign` control. The only exact same-layout, same-maneuver, same-role `yield_sign` cell is C158208, already assigned in this batch to NRS 484B.257(1) with the same yield nearest-view branch. `FULL_BRANCH_CONTRACT.md` directs incompatible controls to a separate catalog cell. A duplicate `additional_bindings` row for C158208 would fail the pinned branch-coverage validator because that ID is already in `batch.json`; the lead must coordinate the existing C158208 package and shared coverage row.
+
+The two accepted C158190 metadata rows are stop/crosswalk response and uninterrupted cases. They contain 900-frame and acceptance metadata, but their trace and video paths point outside this frozen worker export; no source-bound yield nearest-view finding follows. Constructing new stop-sign selected cases in this assignment could contribute a separate statutory stop branch only after source review, but cannot replace its assigned yield nearest-view branch. The three yield cases remain source-gated CPU diagnostics pending a valid allocation and original source review. No original physical or legal acceptance is claimed.

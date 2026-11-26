@@ -76,8 +76,8 @@ class MaterializeTests(unittest.TestCase):
             [sys.executable, str(selected / "runner.py"), "--check",
              "--output-dir", str(selected)], capture_output=True, text=True,
             check=False)
-        self.assertEqual(completed.returncode, 0, completed.stderr)
-        self.assertIn('"cpu_precheck": "passed"', completed.stdout)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn('selected offline diagnostic sources missing', completed.stderr)
         tests = subprocess.run(
             [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
             cwd=selected, capture_output=True, text=True, check=False)

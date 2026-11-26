@@ -65,7 +65,8 @@ class RunnerTests(unittest.TestCase):
 
     def test_cpu_precheck_does_not_start_carla(self):
         with patch("runner.run_native") as native:
-            self.assertEqual(main(["--output-dir", str(self.root), "--check"]), 0)
+            with self.assertRaisesRegex(ValueError, 'selected offline diagnostic sources missing'):
+                main(["--output-dir", str(self.root), "--check"])
             native.assert_not_called()
         self.assertEqual(check(self.root), self.scene)
 
@@ -77,14 +78,15 @@ class RunnerTests(unittest.TestCase):
 
     def test_runtime_offline_check_uses_materialized_cwd(self):
         with patch("runner.Path.cwd", return_value=self.root), patch("runner.run_native") as native:
-            self.assertEqual(main(["--check"]), 0)
+            with self.assertRaisesRegex(ValueError, 'selected offline diagnostic sources missing'):
+                main(["--check"])
             native.assert_not_called()
 
-    def test_acquisition_forwards_checked_scene(self):
+    def test_acquisition_requires_reviewed_original_source(self):
         with patch("runner.run_native", return_value={"native_capture_sealed": True}) as native:
-            self.assertEqual(main(["--output-dir", str(self.root), "--host", "localhost",
-                                   "--port", "2400"]), 0)
-            native.assert_called_once_with(self.scene, self.root, host="localhost", port=2400)
+            with self.assertRaisesRegex(ValueError, 'reviewed original pedestrian source directory required'):
+                main(["--output-dir", str(self.root), "--host", "localhost", "--port", "2400"])
+            native.assert_not_called()
 
     def test_changed_map_and_incomplete_review_rejected(self):
         (self.root / "candidate-corridor.xodr").write_text("changed\n")

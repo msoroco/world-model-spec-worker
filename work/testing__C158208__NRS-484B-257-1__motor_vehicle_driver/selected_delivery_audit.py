@@ -60,12 +60,20 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
     if diagnostic_fixture and case_id.rsplit("__", 1)[-1] not in (
             "nearest_view_response", "nearest_view_uninterrupted"):
         scene = json.loads((stage / "scene.json").read_text())
-        site_name = scene.get("site_source")
-        if (scene.get("source_kind") != "synthetic_reviewed_fixture" or
-                not isinstance(site_name, str) or Path(site_name).name != site_name):
+        if scene.get("source_kind") == "synthetic_reviewed_fixture":
+            site_name = scene.get("site_source")
+        elif scene.get("source_kind") == "local_review_required":
+            # The selected bundle is source-gated; CPU fixtures supply their
+            # synthetic site separately and are never original captures.
+            site_name = "diagnostic-site.json"
+        else:
+            site_name = None
+        if not isinstance(site_name, str) or Path(site_name).name != site_name:
             raise ValueError("selected diagnostic site identity differs")
         site_path = stage / site_name
-        if sha(site_path) != scene.get("site_sha256") or sha(site_path) != identity.get("site_packet_sha256"):
+        if (sha(site_path) != identity.get("site_packet_sha256") or
+                (scene.get("source_kind") == "synthetic_reviewed_fixture" and
+                 sha(site_path) != scene.get("site_sha256"))):
             raise ValueError("selected diagnostic site packet differs")
     if not diagnostic_fixture:
         construction = stage / "construction.json"

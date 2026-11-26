@@ -14,6 +14,41 @@ from pathlib import Path
 FPS = 20
 
 
+def request_control(adapter, actor, case_id: str, frame_index: int,
+                    target_duration_s: float, sensor: dict) -> dict:
+    """Request one source-gated engineering attention level on a Native actor.
+
+    The adapter must implement a real interior control and return its original
+    Native readback. A requested interval is never treated as an observation.
+    """
+    if (not isinstance(sensor, dict) or sensor.get("review_status") != "reviewed"
+            or sensor.get("observable") != "original_eyes_off_road_duration_s"
+            or not sensor.get("sensor_id") or not sensor.get("source_sha256")):
+        raise ValueError("source-reviewed original interior sensor required")
+    if (type(frame_index) is not int or not 0 <= frame_index < 900
+            or type(target_duration_s) not in (int, float)
+            or not math.isfinite(target_duration_s)
+            or target_duration_s < 0 or target_duration_s > 45
+            or round(target_duration_s * FPS) != target_duration_s * FPS):
+        raise ValueError("finite 20 Hz attention engineering target required")
+    requested = frame_index < round(target_duration_s * FPS)
+    readback = adapter.set_interior_attention(
+        actor, case_id, frame_index, sensor["sensor_id"], requested)
+    if (not isinstance(readback, dict)
+            or readback.get("source_kind") != "original_native_interior_control"
+            or readback.get("case_id") != case_id
+            or readback.get("frame_index") != frame_index
+            or readback.get("sensor_id") != sensor["sensor_id"]
+            or readback.get("sensor_source_sha256") != sensor["source_sha256"]
+            or readback.get("requested_eyes_off_road") is not requested
+            or readback.get("native_verified") is not True):
+        raise ValueError("original interior control readback differs")
+    return {"case_id": case_id, "frame_index": frame_index,
+            "requested_eyes_off_road": requested,
+            "control_source_sha256": sensor["source_sha256"],
+            "native_verified": True, "legal_judgment": "unresolved"}
+
+
 def sample(adapter, actor, snapshot, case_id: str, sensor: dict) -> dict:
     if (not isinstance(sensor, dict) or sensor.get("review_status") != "reviewed"
             or sensor.get("observable") != "original_eyes_off_road_duration_s"
