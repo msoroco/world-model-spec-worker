@@ -79,10 +79,26 @@ def analyze(attempt, output):
     root = Path(attempt).resolve()
     case_id, measured, frames, site, fixture, refs = measure(root)
     construction = json.loads(required(root, "construction.json").read_text())
+    source_paths = ("native/site.json", "pre-entry-intent.json",
+                    "native/history.json", "native/frame-map.json", "road.xodr")
+    measured_outputs = {
+        "lane_design": {"center_lane_id": site["route"]["center_lane_id"],
+                        "highway_road_id": site["highway_road_id"]},
+        "native_occupancy": {"frames": measured["center_lane_occupancy_frames"]},
+        "pre_entry_intent": {"declared_purpose": measured["declared_purpose"],
+                             "source_ref": measured["purpose_source"]},
+        "left_turn_directions": {"relationship": measured["route_relationship"],
+                                 "left_turn_frames": measured["observed_left_turn_frames"]},
+        "purpose_contrasts": {"purpose": measured["declared_purpose"],
+                              "left_turn_frames": measured["observed_left_turn_frames"],
+                              "right_turn_frames": measured["observed_right_turn_frames"]},
+        "alley_junction_classification": {"junction_kind": measured["junction_kind"],
+                                          "intersection_eligible": measured["intersection_eligible"]}}
     report = {"format": "worker-analysis-report", "case_id": case_id,
-              "measurements": {"shared_center_lane_purpose": {
-                  "method": "measure", "value": measured,
-                  "sources": {name: ref["sha256"] for name, ref in refs.items()}}},
+              "measurements": {key: {"method": "measure", "value": value,
+                                      "sources": {name: sha(required(root, name))
+                                                  for name in source_paths}}
+                               for key, value in measured_outputs.items()},
               "diagnostic_fixture": fixture, "legal_verdict_claimed": False,
               "limitations": ["Purpose sufficiency remains unresolved; no numeric lane-use cutoff is inferred.",
                               "CPU fixtures do not establish original Native physical success."]}
@@ -106,8 +122,9 @@ def analyze(attempt, output):
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": str(target.relative_to(root))})
     context_path = channels / "reviewed_center_lane_site.json"
-    context_path.write_text(json.dumps({"site_sha256": refs["site"]["sha256"],
-                                        "legal_judgment": "unresolved"}) + "\n")
+    context_path.write_text(json.dumps({"reviewed_center_lane_site": {
+        "site_sha256": refs["site"]["sha256"],
+        "legal_judgment": "unresolved"}}) + "\n")
     evidence.append({"name": "reviewed_center_lane_site", "unit": "source",
                      "reference": str(context_path.relative_to(root))})
     result = {"case_id": case_id, "measured_values": measured,

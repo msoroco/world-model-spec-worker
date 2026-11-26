@@ -1,21 +1,21 @@
 {
   "assignment_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver",
   "input_sha256": "45337737418c28885bb05ac8cc0b8e5310f20c77df61ea97274bc7ff5ecc008c",
-  "status": "partial",
-  "readiness_kind": "partial_cpu_stop_probe",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
-      "sha256": "ca171cb5845c4c9bd7f8080afab15b00e66159dbbcc2623ea477973b1e77f2cf"
+      "sha256": "c3ad4609cc0211e6f014dadbee45d5f8cd8a05948077edd38cffa38797a27da2"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C24751__NRS-484B-310-1__heavy_vehicle_driver -p 'test_*.py' -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C24751__NRS-484B-310-1__heavy_vehicle_driver -p test_*.py -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "57d30880e782825de024d74f46e6080ef0cea486591ad3045b96017d936eea70"
+      "sha256": "15a6c4945fb0cdcee4900449b6a1234af141df10be0d3204b2a8ef392483d2bb"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver",
@@ -25,7 +25,9 @@
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Reviewed official flashing-red signal and physical occluder source",
+    "Original CARLA capture, physical stop and four-view pixels",
+    "Independent original delivery/comparison audits and unresolved post-stop legal judgment"
   ],
-  "reason": "Four exact stop-reference cases and controlled comparisons are planned; source-bound CPU stop/occluder probe passes, but CARLA construction, exact offline/compatibility, saved processing, semantic proposals and independent audits remain CPU work."
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24751-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C24751__NRS-484B-310-1__heavy_vehicle_driver --case testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

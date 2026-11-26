@@ -97,9 +97,11 @@ def construct(adapter, scene: Mapping, case: Case):
         raise
 
 
-def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
+def measure_original(rows: list[Mapping], scene: Mapping, case: Case,
+                     expected_frames: int = 900):
     validate_scene(scene, case)
-    require(len(rows) == 900, 'original 900-frame capture missing')
+    require(type(expected_frames) is int and expected_frames in (9, 900) and
+            len(rows) == expected_frames, 'original capture frame count differs')
     first = rows[0].get('original_frame')
     t0 = rows[0].get('time_s')
     require(type(first) is int and number(t0),
