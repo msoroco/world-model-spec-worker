@@ -13,6 +13,7 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 sys.path.insert(0, str(SOURCE.parent))
 import lamp_controls
+import pair_audit
 
 
 class SourcePacketTests(unittest.TestCase):
@@ -152,6 +153,30 @@ class SourcePacketTests(unittest.TestCase):
         self.save()
         with self.assertRaisesRegex(ValueError, "controlled case request differs"):
             lamp_controls.prepare(Adapter(), self.packet, plan_path, diagnostic_fixture=True)
+
+    def test_comparison_preserves_fixed_original_sources(self):
+        other = json.loads(json.dumps(self.data))
+        other["case_id"] = module.ASSIGNMENT + "__night_moving_head_off"
+        other["scene"]["lit_state_request"] = "head_off"
+        other_path = self.root / "other-packet.json"
+        other_path.write_text(json.dumps(other) + "\n", encoding="utf-8")
+        requests = (*module.REQUESTS, "discernibility_request_ft")
+        plan = {"cases": [
+            {"case_id": packet["case_id"], **{key: packet["scene"][key] for key in requests}}
+            for packet in (self.data, other)],
+            "comparisons": [{"comparison_id": "lamp_state", "case_ids":
+                              [self.data["case_id"], other["case_id"]],
+                              "vary_fields": ["lit_state_request"]}]}
+        plan_path = self.root / "plan.json"
+        plan_path.write_text(json.dumps(plan) + "\n", encoding="utf-8")
+        result = pair_audit.audit(plan_path, "lamp_state", [self.packet, other_path],
+                                  diagnostic_fixture=True)
+        self.assertEqual(result["observed_changed_fields"], ["lit_state_request"])
+        other["scene"]["route"]["waypoints"] = [[0, 0], [20, 0]]
+        other_path.write_text(json.dumps(other) + "\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "undeclared changed scene fields"):
+            pair_audit.audit(plan_path, "lamp_state", [self.packet, other_path],
+                             diagnostic_fixture=True)
 
 
 if __name__ == "__main__":

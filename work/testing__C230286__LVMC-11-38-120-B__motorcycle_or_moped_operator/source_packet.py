@@ -21,7 +21,8 @@ SOURCE_NAMES = (
 REQUESTS = {
     "coverage_request": {"covered_motorcycle", "trail_ride_exclusion_probe",
                          "enclosed_three_wheel_exclusion_probe"},
-    "illumination_request": {"night", "day_clear", "day_lowlight", "day_atmosphere"},
+    "illumination_request": {"night", "day_clear", "day_lowlight", "day_atmosphere",
+                             "clear_atmosphere"},
     "motion_request": {"moving", "stopped"},
     "lit_state_request": {"both_lit", "both_off", "head_off", "tail_off"},
     "calibrated_lamp_request": {

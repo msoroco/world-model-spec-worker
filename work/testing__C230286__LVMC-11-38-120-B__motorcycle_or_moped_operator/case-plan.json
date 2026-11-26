@@ -1,6 +1,33 @@
 {
   "actor": "motorcycle_or_moped_operator",
   "assignment_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all original 600 frames",
+        "subject": "motorcycle lamp face, roadway and separate sidewalk",
+        "view": "overview"
+      },
+      {
+        "interval": "all original 600 frames",
+        "subject": "motorcycle lamp face, roadway and separate sidewalk",
+        "view": "approach"
+      },
+      {
+        "interval": "all original 600 frames",
+        "subject": "motorcycle lamp face, roadway and separate sidewalk",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all original 600 frames",
+        "subject": "motorcycle lamp face, roadway and separate sidewalk",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "actor": "motorcycle_or_moped_operator",
@@ -294,7 +321,7 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
@@ -309,7 +336,7 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
@@ -324,7 +351,7 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
@@ -339,7 +366,7 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
@@ -354,7 +381,7 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
@@ -369,13 +396,28 @@
       "cell_id": "C230286",
       "coverage_request": "covered_motorcycle",
       "discernibility_request_ft": 600,
-      "illumination_request": "day_clear",
+      "illumination_request": "clear_atmosphere",
       "lit_state_request": "both_off",
       "motion_request": "moving",
       "planning_status": "exact_target_unexecuted",
       "recording_description": "Original vehicle coverage/blueprint and sidewalk-road context, local date/time with sunset/sunrise and atmospheric visibility, calibrated head/tail color and range capability, original 20 Hz motion/lamp-control trace and four cameras",
       "target_law_id": "LVMC-11-38-120-B",
       "timing_request": "sunrise_minus_31min"
+    },
+    {
+      "actor": "motorcycle_or_moped_operator",
+      "calibrated_lamp_request": "white_300_red_500",
+      "case_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit",
+      "cell_id": "C230286",
+      "coverage_request": "covered_motorcycle",
+      "discernibility_request_ft": 450,
+      "illumination_request": "night",
+      "lit_state_request": "both_lit",
+      "motion_request": "stopped",
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original vehicle coverage/blueprint and sidewalk-road context, local date/time with sunset/sunrise and atmospheric visibility, calibrated head/tail color and range capability, original 20 Hz motion/lamp-control trace and four cameras",
+      "target_law_id": "LVMC-11-38-120-B",
+      "timing_request": "night"
     }
   ],
   "cell_id": "C230286",
@@ -395,7 +437,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "headlamp burning",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "lit_state_request"
+      ]
     },
     {
       "case_ids": [
@@ -412,24 +457,32 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "tail lamp burning",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "lit_state_request"
+      ]
     },
     {
       "case_ids": [
         "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
-        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off"
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
       ],
       "comparison_id": "c230286_cmp_03",
       "deliberate_differences": [
         "motion trigger"
       ],
       "fixed_conditions": [
-        "same road and sidewalk source geometry except deliberate difference",
-        "same calibrated camera and photometry protocol",
-        "same local date and weather except deliberate difference"
+        "same covered motorcycle and calibrated lamp equipment",
+        "same night and atmosphere",
+        "same roadway and separate sidewalk",
+        "same both-lamps-burning control and four-view camera protocol"
       ],
       "isolated_question": "motion trigger",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "motion_request",
+        "requested_speed_mps"
+      ]
     },
     {
       "case_ids": [
@@ -446,7 +499,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "low-light burning",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "lit_state_request"
+      ]
     },
     {
       "case_ids": [
@@ -463,7 +519,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "headlamp 300-foot capability",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -480,7 +539,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "headlamp above-bound capability",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -497,7 +559,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "tail lamp 500-foot capability",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -514,7 +579,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "tail lamp above-bound capability",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -531,7 +599,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "headlamp white color",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -548,7 +619,10 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "tail lamp red color",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "calibrated_lamp_request"
+      ]
     },
     {
       "case_ids": [
@@ -565,7 +639,11 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "trail-ride coverage exclusion",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "coverage_request",
+        "vehicle_blueprint"
+      ]
     },
     {
       "case_ids": [
@@ -582,7 +660,11 @@
         "same local date and weather except deliberate difference"
       ],
       "isolated_question": "enclosed-three-wheel coverage exclusion",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "coverage_request",
+        "vehicle_blueprint"
+      ]
     },
     {
       "case_ids": [
@@ -599,7 +681,12 @@
         "same camera/photometry protocol and motion"
       ],
       "isolated_question": "insufficient light trigger",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "illumination_request",
+        "discernibility_request_ft",
+        "weather"
+      ]
     },
     {
       "case_ids": [
@@ -616,7 +703,10 @@
         "same camera/photometry protocol and motion"
       ],
       "isolated_question": "both lamps burning in insufficient light",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "lit_state_request"
+      ]
     },
     {
       "case_ids": [
@@ -634,7 +724,11 @@
         "same atmospheric cause except the deliberate measured range change"
       ],
       "isolated_question": "500-foot discernibility boundary",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "discernibility_request_ft",
+        "weather"
+      ]
     },
     {
       "case_ids": [
@@ -652,7 +746,11 @@
         "same atmospheric cause except the deliberate measured range change"
       ],
       "isolated_question": "above-500-foot discernibility control",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "discernibility_request_ft",
+        "weather"
+      ]
     },
     {
       "case_ids": [
@@ -670,7 +768,11 @@
         "same moving/lamps-off control and four-view camera protocol"
       ],
       "isolated_question": "half-hour after sunset onset",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "timing_request",
+        "local_datetime"
+      ]
     },
     {
       "case_ids": [
@@ -688,7 +790,11 @@
         "same moving/lamps-off control and four-view camera protocol"
       ],
       "isolated_question": "after-onset sunset control",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "timing_request",
+        "local_datetime"
+      ]
     },
     {
       "case_ids": [
@@ -706,7 +812,11 @@
         "same moving/lamps-off control and four-view camera protocol"
       ],
       "isolated_question": "half-hour before sunrise cessation",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "timing_request",
+        "local_datetime"
+      ]
     },
     {
       "case_ids": [
@@ -724,7 +834,11 @@
         "same moving/lamps-off control and four-view camera protocol"
       ],
       "isolated_question": "before-sunrise post-cessation control",
-      "status": "unexecuted"
+      "status": "unexecuted",
+      "vary_fields": [
+        "timing_request",
+        "local_datetime"
+      ]
     }
   ],
   "evidence_review": {
@@ -749,6 +863,218 @@
     "measured forward person/vehicle discernibility below, at and above 500 feet"
   ],
   "planning_status": "exact_targets_unexecuted",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "covered motorcycle under Section 11.38.080, with trail-ride and enclosed-three-wheel exclusions retained",
+      "source": "LVMC 11.38.120(B), referencing 11.38.080",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "at least one front headlamp showing white light at least 300 feet ahead",
+      "source": "LVMC 11.38.120(B)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "rear-mounted tail lamp showing plainly visible red light at least 500 feet behind",
+      "source": "LVMC 11.38.120(B)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 3,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "vehicle motion during the interval beginning 30 minutes after sunset and ending 30 minutes before sunrise",
+      "source": "LVMC 11.38.120(B)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 4,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "other-time insufficient light or unfavorable atmosphere with persons and vehicles not clearly discernible at least 500 feet ahead",
+      "source": "LVMC 11.38.120(B)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_clear_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_lit",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_head_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_atmosphere_moving_tail_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_299",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_white_301",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_499",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_red_501",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_head_nonwhite",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_tail_nonred",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__trail_ride_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__enclosed_three_wheel_night",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_moving_both_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_500_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__day_lowlight_discern_501_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_29min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_30min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunset_plus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__sunrise_minus_31min_off",
+        "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator__night_stopped_both_lit"
+      ],
+      "disposition_index": 5,
+      "evidence_or_gap": "Original source and independent Native measurement selected; physical outcome unresolved",
+      "requirement": "the required lamps actually burning when the motion and time or visibility conditions apply",
+      "source": "LVMC 11.38.120(B)",
+      "status": "selected_required"
+    }
+  ],
   "runtime_uncertainties": [
     "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
     "Native original photometry, visibility and astronomical records remain subject to local source review; CPU fixture proves source handling only."
@@ -775,6 +1101,7 @@
       "source_sha256": "494fffd751aeb0b02707a8d7d88cbee0b2136392ef62ce156aa5abb9700ddb88"
     }
   ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator/assignment.json",

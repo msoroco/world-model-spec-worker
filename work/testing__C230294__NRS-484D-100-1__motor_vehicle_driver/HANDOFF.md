@@ -18,7 +18,7 @@ The day-clear cases isolate official direction from the independent nighttime an
 `runner.py` is lazy under `--check`; Native mode requires source-hashed reviewed site and operator modules. `source_packet.py` checks independent source bytes/assertions, including public authority/NRS 484A.145 qualification, operative timing, highway dedication/access, and class-specific lamp citations. `native_acquisition.py` captures 900 original ticks, four source cameras and pinned PipelineCapture through its adapter boundary, and restores owned actors/world. `saved_audit.py` joins copied sources, original lamp ticks, four camera files per frame, measured report and owner release; deletion of an original camera source is rejected. `finalize_original.py` produces four saved-only, source-hashed measurements without a legal verdict.
 Seven focused tests pass, including 900-frame positive saved acquisition, negative missing camera, changed source bytes, comparison fixed-context isolation, missing lamp states and exact numeric endpoints. All five primary and five risk-based exposure fallback constructions pass pinned `runtime.py offline` with source-linked materialized bundles.
 - `case-plan.json` SHA256 `8f9b8f5df7dcc619d8e19179ffd4a91c7d1651b77de367b42de9548eabcfc441`
-- `execution-manifest.json` SHA256 `3e1059538b32132d02a909d5bfb56b6185b9dea4eca6856dec1fc1bff8375b1b`
+- `execution-manifest.json` SHA256 `6ef40307b620d7058afe8646c9f21ea2ce7ec1696c9df1cc276960d235640652`
 - `proposals/cases.json` SHA256 `ba21b1a37e9bf74da407f71b9c6e0d659b967932de75e9ab8a749d62dd71efcb`
 - `lamp_direction.py` SHA256 `a3008cf3103ac746e3658e22dec929ef8323dd9d995e6ce9076085846aef8ef8`
 - `source_packet.py` SHA256 `e3462e366133ae79631de55bd482026c72123d86ef4011421db5ff6bda74d852`

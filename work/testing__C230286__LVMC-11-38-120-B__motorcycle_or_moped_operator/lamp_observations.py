@@ -36,14 +36,16 @@ def finite_nonnegative(value):
     return value
 
 
-def measure(case_id, context_path, trace_path, receipt_path):
+def measure(case_id, context_path, trace_path, receipt_path, *, diagnostic_fixture=False):
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case required")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("original source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture") or receipt.get("source_kind") != "original_native_capture":
-        raise ValueError("original Native capture required")
+    if (receipt.get("diagnostic_fixture") is not diagnostic_fixture or
+            receipt.get("source_kind") != ("diagnostic_fixture" if diagnostic_fixture else
+                                           "original_native_capture")):
+        raise ValueError("original Native capture required unless explicitly diagnostic")
     if receipt.get("context_sha256") != sha(context_path) or receipt.get("trace_sha256") != sha(trace_path):
         raise ValueError("original source bytes changed")
     context = json.loads(Path(context_path).read_text(encoding="utf-8"))
@@ -92,12 +94,25 @@ def measure(case_id, context_path, trace_path, receipt_path):
     for index, row in enumerate(rows):
         if row.get("frame") != index or not isinstance(row.get("time_s"), (int, float)) or abs(row["time_s"] - index / 20) > .002:
             raise ValueError("original frame cadence mismatch")
+        carla_frame = row.get("carla_frame")
+        if carla_frame is not None and (type(carla_frame) is not int or carla_frame < 0):
+            raise ValueError("original CARLA frame identity required")
         speed = finite_nonnegative(row.get("speed_mps"))
         if type(row.get("headlamp_burning")) is not bool or type(row.get("tail_lamp_burning")) is not bool:
             raise ValueError("independent original lamp burning states required")
         observations.append({"frame": index, "time_s": row["time_s"], "speed_mps": speed,
+                             "carla_frame": carla_frame,
                              "headlamp_burning": row["headlamp_burning"],
                              "tail_lamp_burning": row["tail_lamp_burning"]})
+    motion = [row for row in observations if row["speed_mps"] > 0]
+    lamp_summary = {
+        "original_frames": len(observations),
+        "moving_frames": len(motion),
+        "moving_headlamp_burning_frames": sum(row["headlamp_burning"] for row in motion),
+        "moving_taillamp_burning_frames": sum(row["tail_lamp_burning"] for row in motion),
+        "moving_both_burning_frames": sum(row["headlamp_burning"] and row["tail_lamp_burning"]
+                                           for row in motion),
+    }
     return {"assignment_id": ASSIGNMENT_ID, "case_id": case_id,
             "source_bindings": {"context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
                                 "receipt_sha256": sha(receipt_path), "native_map_sha256": context["map_sha256"]},
@@ -107,6 +122,7 @@ def measure(case_id, context_path, trace_path, receipt_path):
                 "before_sunrise": (sunrise - local_time).total_seconds() / 60},
             "calibrated_headlamp": head, "calibrated_tail_lamp": tail,
             "observed_discernibility_ft": discernibility, "observations": observations,
+            "lamp_motion_summary": lamp_summary,
             "headlamp_300ft_reference_only": 300, "tail_lamp_500ft_reference_only": 500,
             "half_hour_offset_minutes_reference_only": 30,
             "covered_vehicle_judgment": "unresolved", "visibility_judgment": "unresolved",

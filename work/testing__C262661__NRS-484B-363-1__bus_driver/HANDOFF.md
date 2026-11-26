@@ -39,28 +39,31 @@ Exact controlled comparisons (12):
 
 ## Current construction and CPU proofs
 
-`school_scene_construction.py` and `school_timing.py` require a reviewed 16-record source-hashed school site, bus/driver/children, designated zone and route, calendar/clock, and beacon/sign facts. `runner.py` additionally checks the reviewed operator hash and loaded OpenDRIVE bytes. `native_capture.py` checks 900 consecutive 20-Hz bus/child/body/device readbacks and four synchronized FFV1 camera streams and restores world settings. `native_output_bridge.py` publishes exact source frames, adapter graphs, evidence, frame map and Native seal. `analysis.py` separates bounded diagnostic measurement from original 900-frame saved finalization. `comparison_audit.py` rejects changed fixed sources and missing declared differences. All are CPU-tested; original motion remains unverified.
+The selected source-gated runner, 900-frame/20-Hz four-camera Native capture, bridge, source-bound analysis, saved finalizer, independent original delivery and comparison audits, and exact queue proposal are implemented. The original school site/operator packets and physical CARLA recording remain local acquisition inputs; no physical acceptance or legal verdict is claimed by CPU diagnostics.
 
-Current construction hashes are recorded per case in `execution-manifest.json`. Every one of its 15 offline commands passed with exit code 0 and hash-bound logs, against the current plan and embedded analysis. The local `gpu-queue-proposal.json` includes 15 exact production commands and 12 comparison commands. Shell-token and case/comparison-ID binding checks passed; the lead owns shared queue integration.
+- Exact selected cases: 15. Every case has a current construction hash, fresh offline proof, source-inventoried diagnostic recipe, selected-requirement measurement contract, positive and missing-source negative compatibility receipt, three physical outcome fixtures, Native owner-release lifecycle proof, and positive/negative independent diagnostic delivery audit.
+- Exact plan comparisons: 12. Every pair passed diagnostic requested-intervention isolation; swapped-case negative tests were rejected. `comparison_audit.py` independently checks original source hashes, fixed map/zone/route and actual saved observations in the local delivery path.
+- Semantic proposals: pinned `semantic_delivery.validate` accepted the relevance pair, exact-law template, eight judgment-observable entries, binding and 16-case proposal (one planning baseline plus 15 selected cases). Eight judgment sweep plans remain explicitly source-gated pending reviewed original school records; they assert no judgment cutoff.
+- Saved processing: `saved_finalizer.py` recomputes 600 steady-window samples from 900 saved Native frames and rejects short capture. `delivery_audit.py` requires exact 15 original source inventories, recomputes each saved result and runs all 12 original comparisons. Synthetic fixtures are rejected as original delivery evidence.
+- Focused tests: 21 passed in `cpu-school-tests-nov26.log`; runtime verify and preflight passed. Pinned scoped strict gate passed with exit 0, proving `delivery_prepared` readiness for this assignment.
 
+Current source/proof hashes:
 - `case-plan.json` SHA-256 `56f082d960a068a05bdd1787a3c6b03c7e6f1f5e6cf014843fbbe11db35e96af`
-- `construction.json` SHA-256 `efcfac9007ee37da32b60c655c400a538b852fd35de626f0f8821629f58910c9`
-- `execution-manifest.json` SHA-256 `0dc9ae77213881b44d3b9c28de00d2de3ab9576837405c0332a46c696aa094cc`
-- `gpu-queue-proposal.json` SHA-256 `09f6e9b28656838c54fb7b6285bfc664f26f2499c0d8d4ac371debdb00d3da2c`
-- `native_capture.py` SHA-256 `c02609fc34eaae54299430659cd5b7868e1faf09bd7fdfc6729c42644ad05f64`
+- `construction.json` SHA-256 `f7235f8231e54001c6af0a8636943c0922bf311974cde8411168b8223c8a6a46`
+- `execution-manifest.json` SHA-256 `8ab6b217e46680cef8476fed02d4e1ce589548368b41f110b1d40cbd9091cdb8`
+- `gpu-queue-proposal.json` SHA-256 `0ca2aa4fe47bd74e10efc07190a051e3a2780c5908a0fd026755b911106396d3`
+- `proposals/semantic-index.json` SHA-256 `73a2d870eef0990fbae2fc3278e5bc8e5d92ee9a2fa859676044845a228276cc`
+- `result.json` SHA-256 `63688c5bea5d6c2233343012e6137ad901df34b04376b0e0654526598bb10b88`
+- `analysis.py` SHA-256 `1039c7f811f872dbd4ab7b3a993c774b16344892068f724df515c506ad1fc5f5`
 - `native_output_bridge.py` SHA-256 `559d6e0a4ddc3bcf0a10f252ffb7c9b723022e74cd75a5abcc3b79fadef94465`
-- `analysis.py` SHA-256 `982744c30c133ae487207d79c686fc263e0e1c94f6ac52e5439a357afcd1662a`
-- `saved_finalizer.py` SHA-256 `38dde3f126edfac6019e9a5d25a443aa69badc7fdab5b6ec3261ec425bb3c95d`
-- `comparison_audit.py` SHA-256 `31a76a97fae384608a88d6c0f372cf296115ce198149a25ea7b0fe5d99604806`
-- `cpu-school-tests-nov26.log` SHA-256 `74aa91c3e4df5603fe95bd6f050a63e7906fedb7fe62380487d05a05b60e6ef3`
-- `assignment-check-nov26.log` SHA-256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`
-- `strict-gate-nov26.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
+- `diagnostic_delivery_audit.py` SHA-256 `dcc698e21c42d7b0c86fe7f8c96c79e6d22525747a5c7d51726684e769009f4e`
+- `delivery_audit.py` SHA-256 `fdce41f2175d80a43a51f5371484f91135b5fe8c35533c1aae6ce4a626c90a11`
+- `diagnostic_comparison_audit.py` SHA-256 `69d1699514c6584b297dc018b92d3a5b3db5c99523eaf88d651f28ff20191865`
+- `cpu-school-tests-nov26.log` SHA-256 `ecfa7151b7221d954e9a018fedfc2e0485532bf1e8fc1e831ae7b1f1a9030208`
+- `cpu-strict-ready.log` SHA-256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`
 
-Focused tests: `.venv-cpu/bin/python -m unittest discover -s work/testing__C262661__NRS-484B-363-1__bus_driver/tests -v`, exit 0, 21 tests. Pinned runtime verify and preflight passed. Scoped `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete` passed. Scoped strict with `--require-delivery-ready` exited 1 because `result.json.status` truthfully remains `partial`; this does not certify delivery readiness.
+## Local delivery and resume
 
-## Next CPU work
+The lead owns integration of `gpu-queue-proposal.json` into the shared queue and checkpoint publication. Its 15 case rows and 12 comparison rows contain exact production commands. Start the first selected local job using `result.json:first_gpu_delivery_command` with `CARLA_PYTHON`, `CARLA_HOST`, `CARLA_PORT`, `DB`, `RUN` and `JOB_ID` set by the local operator. Source packet path is supplied through `SCENARIO_SCHOOL_SITE_PACKET` and reviewed before acquisition. Keep Native owner release before saved processing; use the original index with `delivery_audit.py --case ID --index PATH --output PATH` and `comparison_audit.py` for accepted local data. Diagnostic receipts only establish CPU software compatibility.
 
-1. Bind all 15 cases to source-hashed diagnostic recipes and selected-requirement measurement contracts; run positive and negative compatibility through the pinned Native validator, converter, Lean and video path.
-2. Author and validate the six canonical semantic stages and exact cases proposal.
-3. Prove saved-only postprocessing, physical/lifecycle and independent delivery/comparison audits, then rerun the scoped strict gate.
-4. Only after strict passes, mark ready and release the local queue proposal for shared integration. Original site/operator and physical capture remain later local inputs; missing CPU work is not an external blocker.
+To recheck current preparation, export `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` to a directory under `.runtime-work/`, then run `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete --require-delivery-ready`. The passing output is retained in `cpu-strict-ready.log`. Run the 21 focused tests with `.venv-cpu/bin/python -m unittest discover -s work/testing__C262661__NRS-484B-363-1__bus_driver/tests -v`.

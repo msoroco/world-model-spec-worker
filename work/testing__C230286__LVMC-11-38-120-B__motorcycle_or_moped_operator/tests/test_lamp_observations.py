@@ -60,9 +60,9 @@ class LampTests(unittest.TestCase):
 
     def test_exact_lamp_and_coverage_plan(self):
         plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(plan["cases"]), 25)
+        self.assertEqual(len(plan["cases"]), 26)
         self.assertEqual(len(plan["comparisons"]), 20)
-        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 25)
+        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 26)
 
     def test_original_lamp_states_and_calibration_preserved(self):
         result = self.run_measure()
@@ -73,9 +73,19 @@ class LampTests(unittest.TestCase):
 
     def test_diagnostic_receipt_rejected(self):
         self.receipt["diagnostic_fixture"] = True
+        self.receipt["source_kind"] = "diagnostic_fixture"
         self.receipt_path.write_text(json.dumps(self.receipt) + "\n", encoding="utf-8")
         with self.assertRaises(ValueError):
             self.run_measure()
+
+    def test_explicit_diagnostic_measurement_stays_unverified(self):
+        self.receipt["diagnostic_fixture"] = True
+        self.receipt["source_kind"] = "diagnostic_fixture"
+        self.receipt_path.write_text(json.dumps(self.receipt) + "\n", encoding="utf-8")
+        result = observations.measure(self.case_id, self.context_path, self.trace_path,
+                                      self.receipt_path, diagnostic_fixture=True)
+        self.assertEqual(result["physical_acceptance"], "unverified")
+        self.assertEqual(result["lamp_motion_summary"]["moving_both_burning_frames"], 2)
 
     def test_changed_trace_rejected(self):
         self.rows[0]["speed_mps"] = 2
