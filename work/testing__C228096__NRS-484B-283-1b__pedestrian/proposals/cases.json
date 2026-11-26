@@ -1,0 +1,663 @@
+{
+  "actor": "pedestrian",
+  "cases": [
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__baseline",
+      "rationale": "Shared five-case source observation definition; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "path"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "close"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+      "deliberate_differences": [
+        "action",
+        "vehicle_gap",
+        "route_kind"
+      ],
+      "paired_probe_id": "curb_departure_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "route_kind",
+        "target_value_or_branch": "close_walk_into_path"
+      },
+      "rationale": "Source-gated curb, path, vehicle and driver observation; physical and legal findings require original review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "path"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "close"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_run_into_path",
+      "deliberate_differences": [
+        "action",
+        "vehicle_gap",
+        "route_kind"
+      ],
+      "paired_probe_id": "curb_departure_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "action",
+        "target_value_or_branch": "close_run_into_path"
+      },
+      "rationale": "Source-gated curb, path, vehicle and driver observation; physical and legal findings require original review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "run"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "path"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "close"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__far_walk_into_path",
+      "deliberate_differences": [
+        "action",
+        "vehicle_gap",
+        "route_kind"
+      ],
+      "paired_probe_id": "curb_departure_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "vehicle_gap",
+        "target_value_or_branch": "far_walk_into_path"
+      },
+      "rationale": "Source-gated curb, path, vehicle and driver observation; physical and legal findings require original review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "path"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "far"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_road_only",
+      "deliberate_differences": [
+        "action",
+        "vehicle_gap",
+        "route_kind"
+      ],
+      "paired_probe_id": "curb_departure_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "route_kind",
+        "target_value_or_branch": "close_walk_road_only"
+      },
+      "rationale": "Source-gated curb, path, vehicle and driver observation; physical and legal findings require original review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "road_only"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "close"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_remain_curb",
+      "deliberate_differences": [
+        "action",
+        "vehicle_gap",
+        "route_kind"
+      ],
+      "paired_probe_id": "curb_departure_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "route_kind",
+        "target_value_or_branch": "close_walk_remain_curb"
+      },
+      "rationale": "Source-gated curb, path, vehicle and driver observation; physical and legal findings require original review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian position and reviewed curb geometry",
+            "name": "pedestrian and curb geometry",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original synchronized actor positions and speeds",
+            "name": "pedestrian and vehicle trajectories",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "original driver-controlled vehicle and path readback",
+            "name": "vehicle path and driver",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and actor readback",
+            "name": "reviewed curb, roadway and driver authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Proximity is an observation, not a legal impossibility threshold.",
+          "Walking or running does not alone establish suddenness.",
+          "Introductory exceptions remain unresolved."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "No legal departure-time or gait cutoff is asserted.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        },
+        {
+          "note": "Observed separation and speed do not establish impossibility.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "variable_assignments": {
+        "action": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "route_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "curb"
+        },
+        "vehicle_gap": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "close"
+        }
+      }
+    }
+  ],
+  "cell_id": "C228096",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_run_into_path"
+      ],
+      "comparison_id": "walk_vs_run",
+      "deliberate_differences": [
+        "action"
+      ],
+      "fixed_conditions": [
+        "same curb, roadway, vehicle path/driver and camera/duration except declared variable"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__far_walk_into_path"
+      ],
+      "comparison_id": "close_vs_far",
+      "deliberate_differences": [
+        "vehicle_gap"
+      ],
+      "fixed_conditions": [
+        "same curb, roadway, vehicle path/driver and camera/duration except declared variable"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_road_only"
+      ],
+      "comparison_id": "path_vs_road",
+      "deliberate_differences": [
+        "route_kind"
+      ],
+      "fixed_conditions": [
+        "same curb, roadway, vehicle path/driver and camera/duration except declared variable"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_into_path",
+        "testing__C228096__NRS-484B-283-1b__pedestrian__close_walk_remain_curb"
+      ],
+      "comparison_id": "path_vs_curb",
+      "deliberate_differences": [
+        "route_kind"
+      ],
+      "fixed_conditions": [
+        "same curb, roadway, vehicle path/driver and camera/duration except declared variable"
+      ]
+    }
+  ],
+  "source_assignment": "inputs/testing__C228096__NRS-484B-283-1b__pedestrian/assignment.json",
+  "source_law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: A pedestrian shall not suddenly leave a curb or other place of safety and walk or run into the path of a vehicle which is so close that it is impossible for the driver to yield.",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Original departure timing, curb and path authority require independent review; gait alone is no legal cutoff.",
+          "phrase": "suddenly leave a curb or other place of safety"
+        }
+      ],
+      "missing_inputs": [
+        "reviewed original site, curb/path geometry and Native actor packet",
+        "source-supported feasible physical control range and spacing"
+      ],
+      "rationale": "Frozen sources contain no exact C228096 judgment range or legal numeric cutoff.",
+      "status": "incomplete",
+      "sweep_id": "testing__C228096__NRS-484B-283-1b__pedestrian__sudden_departure",
+      "target_law_id": "NRS-484B-283-1b"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Original vehicle motion, driver opportunity and path geometry require independent review; proximity alone is no legal cutoff.",
+          "phrase": "so close that it is impossible for the driver to yield"
+        }
+      ],
+      "missing_inputs": [
+        "reviewed original site, curb/path geometry and Native actor packet",
+        "source-supported feasible physical control range and spacing"
+      ],
+      "rationale": "Frozen sources contain no exact C228096 judgment range or legal numeric cutoff.",
+      "status": "incomplete",
+      "sweep_id": "testing__C228096__NRS-484B-283-1b__pedestrian__yield_impossibility",
+      "target_law_id": "NRS-484B-283-1b"
+    }
+  ],
+  "sweeps_expanded": false
+}

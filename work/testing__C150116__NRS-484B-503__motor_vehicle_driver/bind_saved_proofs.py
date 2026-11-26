@@ -20,7 +20,9 @@ def main():
         source = SCRATCH / ('saved-v4-' + name) / 'v0001' / 'processing.json'
         receipt = json.loads(source.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True
-                or receipt.get('candidate_id') != 'primary'):
+                or receipt.get('candidate_id') != 'primary' or receipt.get('case_id') != case or
+                receipt.get('native_revision', {}).get('construction_sha256') != entry['construction_sha256'] or
+                receipt.get('analysis_revision', {}).get('construction_sha256') != entry['construction_sha256']):
             raise ValueError(name + ': saved recorded-only replay failed')
         log = HERE / ('cpu-nov26-saved-' + name + '.log')
         log.write_text(json.dumps({key: receipt[key] for key in

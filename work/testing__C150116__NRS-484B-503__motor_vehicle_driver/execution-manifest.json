@@ -71,11 +71,11 @@
         "log": "proofs/selected-stop_no_passenger/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output .runtime-work/c150116-new/selected-offline-stop_no_passenger-v8",
+        "exit_code": 0,
         "construction_sha256": "87a6e2ea2a70961ba89e8c36004c2d0611fa1c668a192656893f25811e8b0cae",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output .runtime-work/c150116-new/selected-offline-stop_no_passenger",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-stop_no_passenger.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-stop_no_passenger.log",
+        "log_sha256": "a8b177ab96d788d5ca79149c981f8f359d4124dde36618fc898fd7a23195398d"
       },
       "candidate_risk": {
         "status": "physical",
@@ -94,10 +94,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-stop_no_passenger-v8",
+            "exit_code": 0,
+            "construction_sha256": "758066dd171c1b2d05c596531d80e849d0ac3593bcb1dde14eca428d4d2f5dad",
+            "log": "cpu-nov26-fallback-offline-stop_no_passenger.log",
+            "log_sha256": "6309a5c3c44d23317d5704eba6a189898349369693ab6a68ed85e56e44e2a2e0"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-stop_no_passenger/receipt.json",
+            "sha256": "80b7214a17be40b314d10be855216da8bfe44711876a67477619baa79c57fcd5",
+            "log": "proofs/fallback1-stop_no_passenger/analysis.log",
+            "negative_log": "proofs/fallback1-stop_no_passenger/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-stop_no_passenger.log",
+        "test_log_sha256": "39440686f48b324b6f7acbff00575c24ca5ab4bf3ae4a5d1d4b0de7de2a4eeed",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stop_no_passenger-receipt.json",
+        "sha256": "c47ce5512da1ed6492002439a9f2117f8ab985de891f593b9049febe69195922"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-stop_no_passenger --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stop_no_passenger --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-stop_no_passenger-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-stop_no_passenger.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger",
@@ -166,11 +216,11 @@
         "log": "proofs/selected-stand_no_passenger/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output .runtime-work/c150116-new/selected-offline-stand_no_passenger-v8",
+        "exit_code": 0,
         "construction_sha256": "9df3483505807430d9af3b51077fd746cd7647824a67f1e43a7a7a60663480dc",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output .runtime-work/c150116-new/selected-offline-stand_no_passenger",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-stand_no_passenger.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-stand_no_passenger.log",
+        "log_sha256": "5ee186a9416e0fb21161eb2cb7494c0acd9ae640191d4d96e4f7dd2e0adee801"
       },
       "candidate_risk": {
         "status": "physical",
@@ -189,10 +239,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-stand_no_passenger-v8",
+            "exit_code": 0,
+            "construction_sha256": "d6f7878df455c05c4ba38c06f7acf87b19563c31a0af9540e0cf533a2f8e060b",
+            "log": "cpu-nov26-fallback-offline-stand_no_passenger.log",
+            "log_sha256": "f4d6e3b2d968f85db2d1aee09547bee121e5af90af5f32020039bfa406111d17"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-stand_no_passenger/receipt.json",
+            "sha256": "5dc0c5235c5863b3bab07cc54a70abd13c5780fa51e063a7e70c4497ce88ff1e",
+            "log": "proofs/fallback1-stand_no_passenger/analysis.log",
+            "negative_log": "proofs/fallback1-stand_no_passenger/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-stand_no_passenger.log",
+        "test_log_sha256": "78d93e1c1840efa9815dedd0efd12af103de7705d81936a2117178b97fa23a3a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stand_no_passenger-receipt.json",
+        "sha256": "bb43e70bf7c7fdf253b02cf0d87aeb86be77423d0cddaff6c496f8476910d2ad"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-stand_no_passenger --case testing__C150116__NRS-484B-503__motor_vehicle_driver__stand_no_passenger --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-stand_no_passenger-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-stand_no_passenger.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger",
@@ -261,11 +361,11 @@
         "log": "proofs/selected-park_no_passenger/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output .runtime-work/c150116-new/selected-offline-park_no_passenger-v8",
+        "exit_code": 0,
         "construction_sha256": "635eb7cda159119983bc9eb466f576aeda8ec74f0fe95720ffe5e6b1978b96ad",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output .runtime-work/c150116-new/selected-offline-park_no_passenger",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-park_no_passenger.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-park_no_passenger.log",
+        "log_sha256": "40ec89725bd589e8ef96ad8f2de68033e420703a408e45d4c646c792fd2cec0a"
       },
       "candidate_risk": {
         "status": "physical",
@@ -284,10 +384,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-park_no_passenger-v8",
+            "exit_code": 0,
+            "construction_sha256": "26d469bdceeecf9a90e92d2689d450aaca971694843cb0e3f9472f4cc588979e",
+            "log": "cpu-nov26-fallback-offline-park_no_passenger.log",
+            "log_sha256": "b46baf9a13adff78e6883f0d6e7df260456d3d088b38cc6af6fc3591f3acc2a6"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-park_no_passenger/receipt.json",
+            "sha256": "023d2632924edd0f6abdea5eb12bf7bafe0ebc450b36a73b68f4d3101227b41c",
+            "log": "proofs/fallback1-park_no_passenger/analysis.log",
+            "negative_log": "proofs/fallback1-park_no_passenger/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-park_no_passenger.log",
+        "test_log_sha256": "f282a2eb8386b9fe5555a9243422ab3644c06e201a1127a616d613d5a89744c6",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-park_no_passenger-receipt.json",
+        "sha256": "887bb9e23acbf81da111ecbef8d38097f89720bc7ad5b3006962db360fa303ab"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-park_no_passenger --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_no_passenger --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-park_no_passenger-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-park_no_passenger.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt",
@@ -356,11 +506,11 @@
         "log": "proofs/selected-load_prompt/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output .runtime-work/c150116-new/selected-offline-load_prompt-v8",
+        "exit_code": 0,
         "construction_sha256": "4dd57e36efa97784d0afc36b40b641fff685d336c576e2d509f832fa8d531c6b",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output .runtime-work/c150116-new/selected-offline-load_prompt",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-load_prompt.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-load_prompt.log",
+        "log_sha256": "0cadf41433bbb180ed9faf08070226144a8604fe157b403ab2ae312cab05e44c"
       },
       "candidate_risk": {
         "status": "physical",
@@ -379,10 +529,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-load_prompt-v8",
+            "exit_code": 0,
+            "construction_sha256": "81ffa36f173346f4e9ceabeeeb84e7851091e5cbf9d481473f5600a772c585c6",
+            "log": "cpu-nov26-fallback-offline-load_prompt.log",
+            "log_sha256": "568a29a8fddc6ce1332e3b88d25bd634571eaa03eeb910bc165e121b13b40142"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-load_prompt/receipt.json",
+            "sha256": "67ee3dda2f4d7fc98df26aac9322fec1982d9e03f792e8f3cf419002923f1291",
+            "log": "proofs/fallback1-load_prompt/analysis.log",
+            "negative_log": "proofs/fallback1-load_prompt/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-load_prompt.log",
+        "test_log_sha256": "8c3a3fac0ac0e4f4b2a90b959ac1f700f76f5be989640513c9d70b108884842f",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-load_prompt-receipt.json",
+        "sha256": "72b89ecc3508ac71012fbd4c387df87ddc85b530c73d58ae29f869f3d6c4ea8e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-load_prompt --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_prompt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-load_prompt-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-load_prompt.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt",
@@ -451,11 +651,11 @@
         "log": "proofs/selected-unload_prompt/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output .runtime-work/c150116-new/selected-offline-unload_prompt-v8",
+        "exit_code": 0,
         "construction_sha256": "18c7afc6c776e9d5f0f669c74535fc0d626f098ba550d5f1ca3adf8b1877fa30",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output .runtime-work/c150116-new/selected-offline-unload_prompt",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-unload_prompt.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-unload_prompt.log",
+        "log_sha256": "dd51df492eac3fdc537d5fcee6f3aa10ae96c007bb59034ce1e4403886614019"
       },
       "candidate_risk": {
         "status": "physical",
@@ -474,10 +674,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-unload_prompt-v8",
+            "exit_code": 0,
+            "construction_sha256": "37306ab18daf06cfb7ca03e408b1116cb63d6bce52ef6fc86e37f8799477e8f6",
+            "log": "cpu-nov26-fallback-offline-unload_prompt.log",
+            "log_sha256": "dfbcfe0d17fb191b0893ac5c5cf10ffdc7dacc72f38b0ca45cd793ada2217189"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-unload_prompt/receipt.json",
+            "sha256": "bcd17c4761cbca2328b274f3c45e3b51fe5ea499288d38b2c373123aa5bc1c77",
+            "log": "proofs/fallback1-unload_prompt/analysis.log",
+            "negative_log": "proofs/fallback1-unload_prompt/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-unload_prompt.log",
+        "test_log_sha256": "3a5851265cfe17a36a6b0c04e425d9ba9bd9557e1fa3029c4842cba1d1aadec1",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-unload_prompt-receipt.json",
+        "sha256": "9fd30469acd1328711c763edb640e256d3d0391da7827946eff1c8770778ee45"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-unload_prompt --case testing__C150116__NRS-484B-503__motor_vehicle_driver__unload_prompt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-unload_prompt-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-unload_prompt.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed",
@@ -546,11 +796,11 @@
         "log": "proofs/selected-load_delayed/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output .runtime-work/c150116-new/selected-offline-load_delayed-v8",
+        "exit_code": 0,
         "construction_sha256": "d03ab6637290aa6a4d325c301d624af94e72d7a87e1166731a16354fdc282e88",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output .runtime-work/c150116-new/selected-offline-load_delayed",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-load_delayed.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-load_delayed.log",
+        "log_sha256": "35d3d9774c1c39cf4a7b653c5eb6b94a4785d6b33e57530576c80decbb541c5b"
       },
       "candidate_risk": {
         "status": "physical",
@@ -569,10 +819,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-load_delayed-v8",
+            "exit_code": 0,
+            "construction_sha256": "13df45b54f95bd5aa30c887d125d5f54e794fd7886a1cd58ac8532bdb9d59c31",
+            "log": "cpu-nov26-fallback-offline-load_delayed.log",
+            "log_sha256": "424eeba4eb220da5cd775c0573643d4c89b07d988e192fa830a6451379c0a565"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-load_delayed/receipt.json",
+            "sha256": "d3ed2e18cb15bd3f6b8feefc0cbc7cd4d72876390a7f3eafd52a6791954309b1",
+            "log": "proofs/fallback1-load_delayed/analysis.log",
+            "negative_log": "proofs/fallback1-load_delayed/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-load_delayed.log",
+        "test_log_sha256": "0b0c10caceb122c5c7f4f19344d4fbaf655fbfbca7be62160bcb2a66252641df",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-load_delayed-receipt.json",
+        "sha256": "139aca01bfb53527b79d7e1cb71a4be3f5386c79be68979b6c0785e038cc320c"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-load_delayed --case testing__C150116__NRS-484B-503__motor_vehicle_driver__load_delayed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-load_delayed-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-load_delayed.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours",
@@ -641,11 +941,11 @@
         "log": "proofs/selected-park_outside_hours/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output .runtime-work/c150116-new/selected-offline-park_outside_hours-v8",
+        "exit_code": 0,
         "construction_sha256": "1e33fdabb7b30ae01fa0697bf0933c7bb55eb0442357e27ab31bc0abf168c0cf",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output .runtime-work/c150116-new/selected-offline-park_outside_hours",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-park_outside_hours.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-park_outside_hours.log",
+        "log_sha256": "50fbf0bb3a2290ce6951797db75ae53f6a3750fbdae4aab4992b1a34e127dfa2"
       },
       "candidate_risk": {
         "status": "physical",
@@ -664,10 +964,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-park_outside_hours-v8",
+            "exit_code": 0,
+            "construction_sha256": "3af26dc492d5b45e2ad542c6cc2001ba409e4c6f48a7058601be3c6a085b947a",
+            "log": "cpu-nov26-fallback-offline-park_outside_hours.log",
+            "log_sha256": "9b614aa19c0d1d822345ce8dc52986acfae944fa091d69af2e100669e269afbc"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-park_outside_hours/receipt.json",
+            "sha256": "ebcea52afd1df840b3f328fa5a6720ddeee23b19e59919ac85063d93a72ccc1c",
+            "log": "proofs/fallback1-park_outside_hours/analysis.log",
+            "negative_log": "proofs/fallback1-park_outside_hours/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-park_outside_hours.log",
+        "test_log_sha256": "4bb40b9659c5f705df3c418fe9a31d7ff3a203815a11f7df6e480be9ce0b6974",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-park_outside_hours-receipt.json",
+        "sha256": "9e99f4ee27e3a0e063cd8eb85092d4e8de02ef48d970facbfd48b33328dee8a7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-park_outside_hours --case testing__C150116__NRS-484B-503__motor_vehicle_driver__park_outside_hours --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-park_outside_hours-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-park_outside_hours.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000",
@@ -736,11 +1086,11 @@
         "log": "proofs/selected-zone_marking-0000/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --output .runtime-work/c150116-new/selected-offline-zone_marking-0000-v8",
+        "exit_code": 0,
         "construction_sha256": "905f936653786b458331154235a5949a9ad667bcd697ba5fd764f431488b2bc8",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --output .runtime-work/c150116-new/selected-offline-zone_marking-0000",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-zone_marking-0000.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-zone_marking-0000.log",
+        "log_sha256": "2d971ed8473360d631dfbd03f8ef028d453c7ea3127780e5c166e6951fbd6e50"
       },
       "candidate_risk": {
         "status": "physical",
@@ -759,10 +1109,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-zone_marking-0000-v8",
+            "exit_code": 0,
+            "construction_sha256": "132d28010af418d20fdab2c8ddddd113dc303374834152eb4bea557aff8d4e81",
+            "log": "cpu-nov26-fallback-offline-zone_marking-0000.log",
+            "log_sha256": "d8e3b11a67ef345e90c4f80e5dcd5ec7b3fb5fa77130805592d946cdfb54dfe7"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-zone_marking-0000/receipt.json",
+            "sha256": "583a3678468ecd131952eb5ecddc2cd386a08337f4ec83b18709fd75e49be8bc",
+            "log": "proofs/fallback1-zone_marking-0000/analysis.log",
+            "negative_log": "proofs/fallback1-zone_marking-0000/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-zone_marking-0000.log",
+        "test_log_sha256": "3e4118120d5852ae17a7a6c1d3adcfe5620744d8a4a017f3f040a9c438ec65a4",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-zone_marking-0000-receipt.json",
+        "sha256": "459730d82d840b4c9addddb80b1bf820c3849a2f02bd54dea130f96d940cc4da"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0000 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0000-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-zone_marking-0000.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001",
@@ -831,11 +1231,11 @@
         "log": "proofs/selected-zone_marking-0001/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --output .runtime-work/c150116-new/selected-offline-zone_marking-0001-v8",
+        "exit_code": 0,
         "construction_sha256": "cda4de16930d9423a70ed7d8f5eb508f73832361f70ec733e0bcabe7e97f426c",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --output .runtime-work/c150116-new/selected-offline-zone_marking-0001",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-zone_marking-0001.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-zone_marking-0001.log",
+        "log_sha256": "3c9809ea763d9c933c4b82c67c3ffa07a2f59d602ca2cefdf2ea617c142a2e48"
       },
       "candidate_risk": {
         "status": "physical",
@@ -854,10 +1254,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-zone_marking-0001-v8",
+            "exit_code": 0,
+            "construction_sha256": "b1d6ff93230cf11c40a4fff7db39ebdd380e17e6edf88a1919b04446deaca319",
+            "log": "cpu-nov26-fallback-offline-zone_marking-0001.log",
+            "log_sha256": "ce191e6bb3a85d46294ea5edc419ac36fd2249ec533f0d1bd35309d685b85f6d"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-zone_marking-0001/receipt.json",
+            "sha256": "50c8e0d5675a87ec472eb78cd0b2516f8a9c7471c5fdb33f51d0e5605604d67a",
+            "log": "proofs/fallback1-zone_marking-0001/analysis.log",
+            "negative_log": "proofs/fallback1-zone_marking-0001/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-zone_marking-0001.log",
+        "test_log_sha256": "de80e31dc0069c6d792a298c97e0a03cedf36a145f8d28c5e85c49e6ca622b58",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-zone_marking-0001-receipt.json",
+        "sha256": "3741662a7d004e6450161b80389b602fc194f612ee06bb23a2592e9c019ce5fe"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0001 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0001-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-zone_marking-0001.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002",
@@ -926,11 +1376,11 @@
         "log": "proofs/selected-zone_marking-0002/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --output .runtime-work/c150116-new/selected-offline-zone_marking-0002-v8",
+        "exit_code": 0,
         "construction_sha256": "aeb9365c138580c1e1b98fb857a47a6a30a8360aa78b817b5d11782eca8996ef",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --output .runtime-work/c150116-new/selected-offline-zone_marking-0002",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-zone_marking-0002.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-zone_marking-0002.log",
+        "log_sha256": "61d2a69150c35d9875c2b0f14490c93769127114e0ef38ad7baf613a32b506b9"
       },
       "candidate_risk": {
         "status": "physical",
@@ -949,10 +1399,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-zone_marking-0002-v8",
+            "exit_code": 0,
+            "construction_sha256": "2ad73b25d8c956e8cccd47e760d4013d7c764edceb033febc3636d2751667ad1",
+            "log": "cpu-nov26-fallback-offline-zone_marking-0002.log",
+            "log_sha256": "dc8ac65f35000da64b483fd47652fcb8d25dad10e32be16545842fde1ef7a1db"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-zone_marking-0002/receipt.json",
+            "sha256": "fb06721a6243603be676285a11b7066cef4840e65ab57055d55a2609a155b169",
+            "log": "proofs/fallback1-zone_marking-0002/analysis.log",
+            "negative_log": "proofs/fallback1-zone_marking-0002/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-zone_marking-0002.log",
+        "test_log_sha256": "0ec481ad3d3d26d988a7046a62daddd8d27d76095b260f8cb4a527579bf63871",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-zone_marking-0002-receipt.json",
+        "sha256": "d0f8b2b9780be64bd352d5813812df77c89125cd4581a6860962f2d8cf119ef5"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0002 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__zone_marking-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-zone_marking-0002-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-zone_marking-0002.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000",
@@ -1021,11 +1521,11 @@
         "log": "proofs/selected-regulation_hours-0000/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0000-v8",
+        "exit_code": 0,
         "construction_sha256": "81006f2de42176843952802fff51b6d19bdf05a772e16ea986c19d6550ed37c5",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0000",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-regulation_hours-0000.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-regulation_hours-0000.log",
+        "log_sha256": "101a6df437b7f72172dbe878bc703f0d3c3a8a54fcfafffa30e9920ba08eb7d7"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1044,10 +1544,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-regulation_hours-0000-v8",
+            "exit_code": 0,
+            "construction_sha256": "1e2f7a820c112c6232c1bb8bb0c201d8374846beec51e86ff09d8b72d252e444",
+            "log": "cpu-nov26-fallback-offline-regulation_hours-0000.log",
+            "log_sha256": "b668196c3e02700fe0ad6e97f04b4dd2ea9f3cffa470fff5b1fd30a7fb00c7ba"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-regulation_hours-0000/receipt.json",
+            "sha256": "4d217dbaca4f0e48be0b9ca077257bca55042af3c3367755e79402bc08c6a828",
+            "log": "proofs/fallback1-regulation_hours-0000/analysis.log",
+            "negative_log": "proofs/fallback1-regulation_hours-0000/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-regulation_hours-0000.log",
+        "test_log_sha256": "351d3fe34e6b3e97181f6742122b0a67b95fc25a92b1ae3de94cf7ea76b1bc1a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-regulation_hours-0000-receipt.json",
+        "sha256": "26f47bcec87749433a7554cce31160687f16b02f8729d1266f96c8ed6b012b87"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0000 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0000-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-regulation_hours-0000.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001",
@@ -1116,11 +1666,11 @@
         "log": "proofs/selected-regulation_hours-0001/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0001-v8",
+        "exit_code": 0,
         "construction_sha256": "2562a0eced110eb27ffd3d927a16c3fa671910da36733114722c3e131db46bf6",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0001",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-regulation_hours-0001.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-regulation_hours-0001.log",
+        "log_sha256": "242b0c87d8d2340390d6f84d6fa5565f82d9d6c90b1c62e31bbbb51486e0299e"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1139,10 +1689,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-regulation_hours-0001-v8",
+            "exit_code": 0,
+            "construction_sha256": "380f5b666df0d7e454451dae0d7472caba66f1267b75f8b19e9db861793a99db",
+            "log": "cpu-nov26-fallback-offline-regulation_hours-0001.log",
+            "log_sha256": "1c0a05b50fde1152c841bc576229310cc83b1672e7f23595e9f88a2bc485b7f2"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-regulation_hours-0001/receipt.json",
+            "sha256": "47a9ad363fb5e392b505abe9684a430348d4954e6f0f7c9e4bd3afc6c04208dc",
+            "log": "proofs/fallback1-regulation_hours-0001/analysis.log",
+            "negative_log": "proofs/fallback1-regulation_hours-0001/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-regulation_hours-0001.log",
+        "test_log_sha256": "a78711dd7045d711eff721ef4d5591ede300b826f0cc3ff3e255b24c989d076c",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-regulation_hours-0001-receipt.json",
+        "sha256": "e277e7f7c7d8f51ee0acbcec1df5840dc3d8d50cd4307b82ef4a6fd3ee1f5e44"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0001 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0001-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-regulation_hours-0001.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002",
@@ -1211,11 +1811,11 @@
         "log": "proofs/selected-regulation_hours-0002/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0002-v8",
+        "exit_code": 0,
         "construction_sha256": "67afc2649e69466185a57fab06c9641d51a80b4be61977dd683b76848314adf5",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --output .runtime-work/c150116-new/selected-offline-regulation_hours-0002",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-regulation_hours-0002.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-regulation_hours-0002.log",
+        "log_sha256": "d679859266171aa9376b3d44d79f6eebb233667b277da058f7902ef1c8c7e1ef"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1234,10 +1834,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-regulation_hours-0002-v8",
+            "exit_code": 0,
+            "construction_sha256": "5fd3d9c52163023b1f05f0907b24d4fb119b72b5d9dbaa25034df7e50ec3b998",
+            "log": "cpu-nov26-fallback-offline-regulation_hours-0002.log",
+            "log_sha256": "978c8c445fd45ead618608534cd27113151abf88040a66e6619c601a8cb59f70"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-regulation_hours-0002/receipt.json",
+            "sha256": "780664bdddd745169f4374e236d7b1617cfbdd8514aa7c6341bb0f17cf239e0f",
+            "log": "proofs/fallback1-regulation_hours-0002/analysis.log",
+            "negative_log": "proofs/fallback1-regulation_hours-0002/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-regulation_hours-0002.log",
+        "test_log_sha256": "e0926591b56c480f9676d3307623657ae18d4131bd65dac6935e5373e7ed636a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-regulation_hours-0002-receipt.json",
+        "sha256": "0b848e826d7514661101ea5524af720ac12f19a1f342ca0104334972391366ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0002 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__regulation_hours-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-regulation_hours-0002-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-regulation_hours-0002.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000",
@@ -1306,11 +1956,11 @@
         "log": "proofs/selected-expeditious-0000/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --output .runtime-work/c150116-new/selected-offline-expeditious-0000-v8",
+        "exit_code": 0,
         "construction_sha256": "aa8138fb8290e8261a3ff232345412dbc6c6dd6239acf8129401278d24883b31",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --output .runtime-work/c150116-new/selected-offline-expeditious-0000",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-expeditious-0000.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-expeditious-0000.log",
+        "log_sha256": "2e72f8092b1ae846678985dddbd2dfd670d2eca1958006eb2efff7dfa02be88b"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1329,10 +1979,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-expeditious-0000-v8",
+            "exit_code": 0,
+            "construction_sha256": "1a9d556b840815e00cce9d16366431c1852f79547863a2781a2d4aec7fbe8244",
+            "log": "cpu-nov26-fallback-offline-expeditious-0000.log",
+            "log_sha256": "a84ee9ee35f661a53682f1208b5a2e22735cb1afd61dcf1caf928304bac5efac"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-expeditious-0000/receipt.json",
+            "sha256": "805f39332f97e88f58ca514132442fe9d03ecd9e5977291ccb74f7ffff57ca10",
+            "log": "proofs/fallback1-expeditious-0000/analysis.log",
+            "negative_log": "proofs/fallback1-expeditious-0000/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-expeditious-0000.log",
+        "test_log_sha256": "f698f2142e3466964f6930e0454c7ef1fcb574be8951e198452a72f991249230",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-expeditious-0000-receipt.json",
+        "sha256": "55901aa868a27fef7a55f161ae8dfd5ec35698428153ad5418403bf76e8ea827"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0000 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0000-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-expeditious-0000.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001",
@@ -1401,11 +2101,11 @@
         "log": "proofs/selected-expeditious-0001/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --output .runtime-work/c150116-new/selected-offline-expeditious-0001-v8",
+        "exit_code": 0,
         "construction_sha256": "70f961958e40e7b71782f18d43559700e3a880e5756ca622d9de0db90f6e049a",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --output .runtime-work/c150116-new/selected-offline-expeditious-0001",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-expeditious-0001.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-expeditious-0001.log",
+        "log_sha256": "48e5f95532427b6451dd9691a8683f852b142e9f209883c9742a01e66c48c2bd"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1424,10 +2124,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-expeditious-0001-v8",
+            "exit_code": 0,
+            "construction_sha256": "e7a975f4cbd03dc2b5b03204157eecea9cdbd32b4622f3c94d5aa75646433d63",
+            "log": "cpu-nov26-fallback-offline-expeditious-0001.log",
+            "log_sha256": "cab4c781f00df896bfa56dd044b389507da48fad5acfea7e6aa0d63a58c2eaf0"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-expeditious-0001/receipt.json",
+            "sha256": "2034f1b5253dfa0da82a5163d679cf2632791fdc99aec816f7eb404e302e886b",
+            "log": "proofs/fallback1-expeditious-0001/analysis.log",
+            "negative_log": "proofs/fallback1-expeditious-0001/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-expeditious-0001.log",
+        "test_log_sha256": "bec9535a882bd9db0064ea993682ccb0834140e133878d8a21bccf2929b4a2a2",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-expeditious-0001-receipt.json",
+        "sha256": "d8b346a11c03be9280eb78eeab6355a7c8c0ef75936ad01959038e8a283bb8fe"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0001 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0001-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-expeditious-0001.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     },
     {
       "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002",
@@ -1496,11 +2246,11 @@
         "log": "proofs/selected-expeditious-0002/negative.log"
       },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --output .runtime-work/c150116-new/selected-offline-expeditious-0002-v8",
+        "exit_code": 0,
         "construction_sha256": "4667a3dfa8bca8f726aaaf86187642c35d79b19236c8cde562adf3650a26f44a",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --output .runtime-work/c150116-new/selected-offline-expeditious-0002",
-        "exit_code": null,
-        "log": "cpu-nov25-selected-offline-expeditious-0002.log",
-        "log_sha256": null
+        "log": "cpu-nov26-selected-offline-expeditious-0002.log",
+        "log_sha256": "d3a5e05690a6a1452519211ca2a473f5a26bfcccea989a50f492c48c33852ff5"
       },
       "candidate_risk": {
         "status": "physical",
@@ -1519,10 +2269,60 @@
           "changed_knobs": [
             "passenger anchor shifted 0.5 m toward the same marked curb pose; zone, ego pose, regulation clock, case conduct, camera profile and duration unchanged"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-expeditious-0002-v8",
+            "exit_code": 0,
+            "construction_sha256": "fd15a7daaaf07ee22e05d125dbc643ef5addc74dc65199093ba87e67a37da61b",
+            "log": "cpu-nov26-fallback-offline-expeditious-0002.log",
+            "log_sha256": "aaddb49cc908b7ef28eb2965de30ec61f945a77aa4e0defda0ab809156595207"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-expeditious-0002/receipt.json",
+            "sha256": "34c09e3c696a6c3f496826763268aa83eb64cc41a26d835c280e2a10ba1f8243",
+            "log": "proofs/fallback1-expeditious-0002/analysis.log",
+            "negative_log": "proofs/fallback1-expeditious-0002/negative.log"
+          }
         }
-      ]
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150116__NRS-484B-503__motor_vehicle_driver/execution-manifest.json --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov26-saved-expeditious-0002.log",
+        "test_log_sha256": "dcf4151699abb5d2fbdbc42ad5a89683e1c2fcad22fb9a4960ec6ff7d0cb8aaa",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original passenger curb zone or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-expeditious-0002-receipt.json",
+        "sha256": "75bbdf4d171aaa701ba6d853b65f1d56e9c0208f604dca72be238b2763bbfe5a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150116__NRS-484B-503__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0002 --case testing__C150116__NRS-484B-503__motor_vehicle_driver__expeditious-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150116-new/missing-original-expeditious-0002-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "ef90eb7e3ef570dbac7b170cd725b342fe6dfe563fcd879f9556e4e490d0b13a",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov26-full-tests.log",
+        "test_log_sha256": "4645c5abf94f854c2cf6c11538990bbde4a50f7f9d564d0fc803f7fef303e530",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov26-original-negative-expeditious-0002.log",
+        "negative_log_sha256": "8813328e1f243eaa2e08c1ea961dd97ab9c24823f37e85e09f848af8e0a2f57a",
+        "scope": "CPU source-hashed audit implementation tests; original capture and physical completion pending"
+      }
     }
   ]
 }

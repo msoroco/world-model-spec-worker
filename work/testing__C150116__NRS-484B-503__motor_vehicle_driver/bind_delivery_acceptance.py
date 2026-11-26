@@ -46,8 +46,8 @@ def main():
             raise ValueError(name + ': original missing-source rejection failed')
         entry['delivery_acceptance'] = {
             'case_id': case, 'sets': ['full-test'], 'checks': CHECKS,
-            'command': f'.venv-cpu/bin/python delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case {case} --output $AUDIT_OUTPUT',
-            'negative_command': f'.venv-cpu/bin/python delivery_audit.py case --attempt {missing} --case {case} --output {output}',
+            'command': f'.venv-cpu/bin/python work/{HERE.name}/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case {case} --output $AUDIT_OUTPUT',
+            'negative_command': f'.venv-cpu/bin/python work/{HERE.name}/delivery_audit.py case --attempt {missing} --case {case} --output {output}',
             'script': script.name, 'script_sha256': sha(script),
             'test_exit_code': 0, 'test_log': test_log.name, 'test_log_sha256': sha(test_log),
             'negative_exit_code': result.returncode, 'negative_expected_error': 'original attempt missing',

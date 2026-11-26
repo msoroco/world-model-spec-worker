@@ -42,6 +42,11 @@ class IndependentAuditTests(unittest.TestCase):
     def test_seven_controlled_comparisons(self):
         self.assertEqual(len(audit_comparisons(self.reports())), 7)
 
+    def test_case_specific_reviewed_site_manifest_hash_allowed(self):
+        reports = self.reports()
+        reports[ASSIGNMENT + '__load_prompt']['comparison_record']['site_sha256'] = 'unique-reviewed-case-packet'
+        self.assertEqual(len(audit_comparisons(reports)), 7)
+
     def test_collapsed_original_sweep_measurement_rejected(self):
         reports = self.reports()
         left = ASSIGNMENT + '__zone_marking-0000'

@@ -1,6 +1,9 @@
 """Independent fixed-condition checks for the four curb-entry comparisons."""
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from curb_entry import CASES
 from delivery_audit import ASSIGNMENT
 
@@ -62,3 +65,26 @@ def audit(comparison_id: str, left_scene: dict, right_scene: dict,
             "compared_variable": variable, "fixed_conditions_checked": list(fixed),
             "requested_difference_isolated": True, "physical_acceptance": False,
             "legal_suddenness_or_impossibility": "unresolved"}
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--comparison", choices=tuple(PAIRS), required=True)
+    parser.add_argument("--authority-root", type=Path, required=True)
+    parser.add_argument("--receipts", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    source = json.loads(args.receipts.read_text(encoding="utf-8"))
+    if set(source) != {"left_audit", "right_audit"}:
+        raise ValueError("exact comparison audit receipt paths required")
+    root = args.authority_root.resolve()
+    site = json.loads((root / "site.json").read_text(encoding="utf-8"))
+    left, right, _ = PAIRS[args.comparison]
+    results = [json.loads((root / source[key]).read_text(encoding="utf-8"))
+               for key in ("left_audit", "right_audit")]
+    result = audit(args.comparison, site["scenes"][left], site["scenes"][right], *results)
+    if args.output.exists():
+        raise ValueError("fresh comparison output required")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

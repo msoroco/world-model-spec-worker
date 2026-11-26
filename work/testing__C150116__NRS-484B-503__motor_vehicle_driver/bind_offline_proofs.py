@@ -20,8 +20,12 @@ def main():
         selected_log = HERE / ('cpu-nov26-selected-offline-' + name + '.log')
         fallback_log = HERE / ('cpu-nov26-fallback-offline-' + name + '.log')
         for log, candidate_id in ((selected_log, 'primary'), (fallback_log, 'fallback1')):
-            if not log.is_file() or '"offline_passed": true' not in log.read_text():
+            if not log.is_file():
                 raise ValueError(name + ': offline proof missing: ' + candidate_id)
+            proof = json.loads(log.read_text())
+            if (proof.get('offline_passed') is not True or proof.get('case_id') != case or
+                    proof.get('candidate_id') != candidate_id):
+                raise ValueError(name + ': wrong exact offline proof: ' + candidate_id)
             construction = (entry if candidate_id == 'primary' else entry['candidates'][0])
             output = ('selected' if candidate_id == 'primary' else 'fallback') + '-offline-' + name + '-v8'
             command = ('.venv-cpu/bin/python runtime.py offline --manifest work/' + AID +
