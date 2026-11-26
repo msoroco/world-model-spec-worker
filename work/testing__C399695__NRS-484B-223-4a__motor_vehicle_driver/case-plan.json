@@ -36,7 +36,12 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Right-turn controller may leave the designated lane or fail to reach a connected exit."
-      }
+      },
+      "declared_maneuver_purpose": "right_turn",
+      "requested_departure_route": "right_turn",
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-223-4a",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -49,7 +54,12 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Through route at a T junction may be impossible; use a purpose record without inventing a completed through route."
-      }
+      },
+      "declared_maneuver_purpose": "through",
+      "requested_departure_route": "right_turn",
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-223-4a",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -62,7 +72,12 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Lane and T-junction geometry may not realize a left turn from this right-only lane."
-      }
+      },
+      "declared_maneuver_purpose": "left_turn",
+      "requested_departure_route": "right_turn",
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-223-4a",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -75,7 +90,12 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Even with right-turn intent, controller may proceed to a different exit."
-      }
+      },
+      "declared_maneuver_purpose": "right_turn",
+      "requested_departure_route": "other",
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-223-4a",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     }
   ],
   "comparisons": [
@@ -116,11 +136,41 @@
     }
   ],
   "observations": [
-    "Source-bound public highway and one exclusive right-turn-lane design",
-    "Connected right-turn route at T intersection, with surveyed entry and exit road IDs",
-    "Original-frame lane occupancy and observed maneuver/exit",
-    "Independently sourced right-turn purpose established before lane entry",
-    "Purpose sufficiency remains unresolved; no numeric lane occupancy deadline or mandatory completion substituted"
+    {
+      "name": "public_highway_and_lane_design",
+      "method": "sealed public-highway and single exclusive right-turn-lane survey",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "vehicle_and_driver_identity",
+      "method": "original Native vehicle and driver identity",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "right_turn_lane_occupancy",
+      "method": "original Native lane and road ID readback at 20 Hz",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "declared_maneuver_purpose",
+      "method": "independent purpose declaration before lane entry",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "connected_right_turn_route",
+      "method": "surveyed T-junction right exit connectivity",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "observed_departure_route",
+      "method": "original Native road ID, pose and maneuver history",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    },
+    {
+      "name": "vehicle_motion",
+      "method": "original speed, position and controller history",
+      "source": "original Native T-junction capture plus sealed purpose packet"
+    }
   ],
   "sources": [
     {
@@ -164,7 +214,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_right_turn_lane_probe",
+  "planning_status": "four_selected_right_turn_purpose_cases_source_gated_cpu_preparation",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -183,5 +233,76 @@
       ],
       "reason": "A terminating-road approach can contain the designated lane serving ego's right turn."
     }
-  ]
+  ],
+  "selected_branch": "T-intersection right-turn approach",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "public highway designed to provide a single right lane to be used only for turning",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch"
+      ],
+      "evidence_or_gap": "source-sealed public-highway and exclusive right-turn lane design"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "vehicle driven in the right turn lane",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch"
+      ],
+      "evidence_or_gap": "original Native lane ID and route position over continuous lane-use interval"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "only for the purpose of making a right turn",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch"
+      ],
+      "evidence_or_gap": "independent purpose declaration before lane entry, retained beside observed exit"
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "T junction, exclusive right-turn lane and vehicle",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "lane entry and turn-only design",
+        "interval": "approach through lane use"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "right exit connection and road markings",
+        "interval": "lane use through departure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle path and right-turn departure",
+        "interval": "first through final original frame"
+      }
+    ],
+    "limitation": "Purpose must be independently sourced before lane entry; video does not infer purpose"
+  }
 }

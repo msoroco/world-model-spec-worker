@@ -62,7 +62,8 @@ def build():
                      "method": "source-sealed original Native readback", "time_window": "all 900 ticks",
                      "reference_frame": "original CARLA map and world",
                      "uncertainty": "physical speed and posting realization pending"}
-                    for source in ("original_ego_speed", "original_route_station",
+                    for source in ("observed_speed_mph", "governing_posting_context",
+                                   "original_ego_speed", "original_route_station",
                                    "original_sign_inventory", "original_four_camera_pixels")]
         description = {"channels": channels,
                        "context_inputs": [{"name": "reviewed_speed_site", "unit": "source",
@@ -109,6 +110,11 @@ def build():
                                                    "reason": "Native speed feedback may overshoot requested speed or fail sign legibility on the governed stretch."},
                                 "measurement_procedure": {"entrypoint": "analysis.py",
                                                           "method": "saved original source measurement"},
+                                "acquisition": {channel["name"]: {
+                                    "entrypoint": "analysis.py",
+                                    "method": "Source-hashed original Native frame and posting projection",
+                                    "evidence": "channels/" + channel["name"] + ".jsonl"}
+                                    for channel in channels},
                                 "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                                    "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
                                 "candidates": []})

@@ -1,31 +1,22 @@
 {
   "assignment_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver",
   "input_sha256": "4a9e941fc83d5b446b4f5a640e01051e65c45d4029e34c2ba479d65316db8440",
-  "status": "partial",
-  "readiness_kind": "partial_cpu_right_turn_lane_probe",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "289a0a4db18b20715a41371005c71229a25653bca08a1d24493c03ff3f59cc55"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver -p 'test_*.py' -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/tests -p 'test*.py' -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "cab12123cc3deaa414eda1c27a1d4a3ecb3af2cbce89ea1dee740989cce65639"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver",
-      "exit_code": 0,
-      "log": "static.log",
-      "sha256": "34ac2ba7b6b800e062a8ec7c1b4212b33156e3e8074a8c71db8fce655c62fa5e"
+      "sha256": "522f4ce9c05f8916fae73d44968df337e1c9816f009761522bc93e19df6e3123"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native lane occupancy, declared purpose and connected exit capture",
+    "Independent four-view pixel and physical completion review",
+    "Human review of purpose and statutory application"
   ],
-  "reason": "Four exact planned cases and two comparisons; source-bound CPU right-turn-lane/purpose probe passes, but exact CARLA construction, offline/compatibility, saved processing, semantic proposals and independent audits remain CPU work."
+  "reason": "Four exact cases, two comparisons and source-gated Native construction have pinned selected/fallback CPU proofs; original CARLA evidence remains required.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver --case testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

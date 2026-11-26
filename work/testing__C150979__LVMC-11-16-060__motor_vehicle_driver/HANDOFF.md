@@ -1,34 +1,13 @@
-# testing__C150979__LVMC-11-16-060__motor_vehicle_driver
+# C150979 speed and posting delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Assignment: `testing__C150979__LVMC-11-16-060__motor_vehicle_driver`.
+Status: `ready` for source-gated delivery preparation. The exact assignment strict CPU gate passed on 2026-11-26 with `static_checks_passed: true`. No physical or legal acceptance is claimed.
 
-Exact law: LVMC 11.16.060 — The prima facie speed limit is twenty-five miles per hour on all streets and highways unless a different speed limit is posted as set forth in this Title.
-Assigned branch(es): Twenty-five-mile-per-hour prima facie default without a different applicable posted limit..
-Cell: C150979 (one_way_road, travel, speed_limit_sign); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The four cases are `same25_below` (20 mph requested), `same25_at` (25), `same25_above` (30), and `different35` (30 with a different 35 mph posting). The two comparisons hold route, map, weather and actor context fixed while testing requested speed boundaries and the different posted value. The frozen cell includes a speed-limit sign, so the same-value 25 mph cases do not claim a sign-free street. The exact Title posting authority, jurisdiction, prima facie effect and rebuttal remain unresolved for local review.
 
-## Next CPU actions
+`runner.py`, `native_capture.py`, and `native_output_bridge.py` implement a source-hashed reviewed site and operator gate, Native one-way lane and sign readback, 900 original 20 Hz actor samples, four synchronized RGB cameras, capture sealing and restoration. `analysis.py` projects only saved original sources into measured speed and posting channels. Eight primary/fallback bundles passed exact offline and positive/negative compatibility proofs. Four selected cases passed saved-only positive and missing-history negative proofs, synthetic physical/lifecycle probes, and independent delivery full-decode positive/negative audits. Both comparisons passed independent positive/negative audits. The focused test suite passed 13 tests.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150979__LVMC-11-16-060__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`execution-manifest.json` SHA-256: `ab1b44e14d8261b8ba07310d90cf46d24d96eb19bc03c6c366a8705507fbc0ba`.
+`gpu-queue-proposal.json` SHA-256: `7d953be3f4c183642b1d28226b9bb7df18cf05edc87e3cb17b3d997ebf51a09a`.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
-
-## 2026-11-23 executable checkpoint
-
-Exact law review kept the 25 mph prima facie rule and different applicable posted limit exception separate. `case-plan.json` now proposes same-value 25 mph sign probes at requested 20/25/30 mph and a 35 mph different-posting control at requested 30 mph, with two controlled comparisons. This cell fixes `speed_limit_sign`; a truly sign-free default would need a compatible different cell and cannot be silently claimed here. Municipal jurisdiction, Title posting rules and rebuttal remain unresolved. No accepted recordings exist.
-
-`speed_delivery.py` validates a source-sealed municipal one-way site, complete sign inventory and governing extent, map identity and Native lane before lazy ego spawn. `control_tick` reads actual velocity to apply bounded throttle/brake. `measure` retains original 20 Hz frame joins, speed, route progress, sign passage/readback; requested speed never substitutes for observation. `compare` rejects missing or changed members, map or route. `delivery_audit.py` rejects stale Native result, posting source seals, measurement-time mismatches and missing four-camera/frame-map source claims, while explicitly leaving full decode/pixels to later independent receipts. The fixture check does not establish physical completion.
-
-Focused command: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150979__LVMC-11-16-060__motor_vehicle_driver/tests -v`; exit 0, 7 tests, log `cpu-tests.log`, SHA-256 `9f318e4a8d80a118d6403227cbc813082fcc162bf809892c163b9579ed4c3106`.
-
-Next CPU steps: source-map/Title packet for chosen site; full executable Native sign and four-camera capture integration; per-case measurement contracts, diagnostic recipes and exact offline/positive/negative compatibility receipts; semantic proposals, manifest, candidate trigger decision and actual saved processing/audits. Retain status partial until exact strict gate passes.
-
-Exact assignment check: `.venv-cpu/bin/python worker_check.py --assignment testing__C150979__LVMC-11-16-060__motor_vehicle_driver --complete` exit 0 (`cpu-static-check.log`). Exact strict check with `--require-delivery-ready` exit 1 at `Preparation acceptance failed: partial/missing packages remain` (`cpu-strict-check.log`), consistent with truthful partial result. Own files pass non-Git UTF-8, 2 MiB and whitespace/conflict-marker checks.
+The local delivery runner requires the exact source packet and operator module with their SHA-256 values in `SCENARIO_SPEED_SITE_PACKET`, `SCENARIO_SPEED_SITE_SHA256`, `SCENARIO_SPEED_OPERATOR_MODULE`, and `SCENARIO_SPEED_OPERATOR_SHA256`. The GPU delivery must verify actual measured speed, sign passage and extent, four-view pixels, physical completion and posting authority before an acceptance claim.

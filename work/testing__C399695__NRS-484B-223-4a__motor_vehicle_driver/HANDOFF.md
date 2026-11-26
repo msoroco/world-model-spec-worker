@@ -1,20 +1,13 @@
-# C399695 NRS 484B.223(4)(a) motor vehicle checkpoint
+# C399695 NRS 484B.223(4)(a) handoff
 
-Status: partial CPU construction. Frozen assignment SHA256 `4a9e941fc83d5b446b4f5a640e01051e65c45d4029e34c2ba479d65316db8440`. Frozen evidence has no accepted recording for this assignment.
+Status: ready for original Native GPU acquisition; exact scoped CPU strict gate passed. Frozen assignment SHA256 `4a9e941fc83d5b446b4f5a640e01051e65c45d4029e34c2ba479d65316db8440`. No accepted original recording exists yet.
 
-## Constructed and tested
+Four exact delivery cases distinguish independently sourced right-turn, through, and left-turn purpose from observed departure route. The right-turn route mismatch case preserves right-turn purpose while requesting a separately sourced alternate exit. Two controlled comparisons cover declared purpose and purpose-route agreement. Purpose is never inferred from lane occupancy or a completed turn.
 
-`right_turn_lane_probe.py` requires source-bound public highway, a single exclusive right-turn lane and a connected distinct right-turn exit at the T junction. It measures original-frame lane occupancy, observed connected right turn and independently sourced purpose recorded before lane entry. It rejects missing source bindings, disconnected route, nonexclusive lane design and late purpose. It keeps purpose sufficiency unresolved rather than inferring it from occupancy duration or turn completion.
+Source-gated `right_turn.py` and `original_runner.py` require a reviewed public highway, single exclusive right-turn lane, connected T-junction exit, separate purpose declaration before lane entry, Native spawn pose and trajectory. `right_turn_carla_adapter.py` and `right_turn_capture.py` specify 900 original 20 Hz frames and four synchronized cameras. `analysis.py` recomputes saved-only lane and route measurements from the original packets. Physical and pixel acceptance remains for GPU capture and independent review.
 
-`case-plan.json` now plans four exact cases and two controlled comparisons for right-turn purpose versus other purpose and purpose-route agreement. Each case has a physical risk assessment. These plans do not claim delivery or capture readiness.
+Selected and source-bound fallback bundles passed pinned offline and positive/negative compatibility checks for all four cases, including actual saved analysis, Lean Core and four-camera full decode diagnostics. Physical, lifecycle and independent delivery CPU proofs passed for all four. Both comparison audits pass positive diagnostic fixtures and reject a changed fixed map. These synthetic diagnostics make no claim of real physical completion or legal verdict.
 
-## Proofs
+Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver --complete --require-delivery-ready` passed with exit 0. `strict.log` SHA256 `34ac2ba7b6b800e062a8ec7c1b4212b33156e3e8074a8c71db8fce655c62fa5e`. `execution-manifest.json` SHA256 `203db390a526902fc621b5299d7e0744ceeaed8eb4e2e1070f36bd49c25a3b75`. `gpu-queue-proposal.json` SHA256 `dd5246ea94b086b84e65443d4c6988933d9d4a6972ec0ca0861dea0374763a85`. `comparison-proposal.json` SHA256 `7079a5288925eaf80885de4dca15b9fcb03cf1f9c9059dd74236194be21a0e7c`.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `289a0a4db18b20715a41371005c71229a25653bca08a1d24493c03ff3f59cc55`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `cab12123cc3deaa414eda1c27a1d4a3ecb3af2cbce89ea1dee740989cce65639`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver`: exit 0, `static.log` SHA256 `34ac2ba7b6b800e062a8ec7c1b4212b33156e3e8074a8c71db8fce655c62fa5e`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
-
-## Next CPU work
-
-Construct the actual single exclusive right-turn lane and connected T-junction route in CARLA; implement vehicle controllers and capture original lane-use, purpose and departure packets. Build exact saved finalizers, offline construction and positive/negative compatibility receipts for all cases, semantic proposals, saved-only processing, independent delivery and comparison audits, manifest and queue entries. Recheck full law and contracts. Actual lane occupation, turn and pixel coverage require later CARLA verification.
+GPU follow-up: acquire separately reviewed original Native evidence for each case; inspect actual lane and route readback, four-view pixels and physical completion; review statutory purpose application. Use the manifest candidate trigger only where original evidence shows a controller lane or exit risk. Do not treat the CPU synthetic fixtures as accepted recordings.

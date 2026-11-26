@@ -24,7 +24,8 @@ class SavedMeasurementTest(unittest.TestCase):
         write(root, "config.json", {"assignment_id": speed.ASSIGNMENT, "selected_case_id": case})
         write(root, "construction.json", {"case_id": case,
             "recording_description": {"channels": [{"name": name, "unit": "structured"}
-                for name in ("original_ego_speed", "original_route_station",
+                for name in ("observed_speed_mph", "governing_posting_context",
+                             "original_ego_speed", "original_route_station",
                              "original_sign_inventory", "original_four_camera_pixels")]}})
         site = packet("same25")
         site_ref = write(root, "site.json", site)

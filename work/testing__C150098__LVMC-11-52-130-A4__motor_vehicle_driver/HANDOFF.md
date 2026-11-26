@@ -31,3 +31,13 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 Pinned `.venv-cpu/bin/python runtime.py preflight` passed. `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/tests -v` now passes 25 focused tests (`cpu-tests.log`; current SHA256 is in `result.json`). Assignment static check passed (`static-check.log`; current SHA256 is in `result.json`). The exact scoped strict gate last exited 1 on truthful partial status. These tests prove software construction, acquisition joins, canonical capture sealing, saved audit, cleanup and source rejection branches; eleven exact pinned runtime offline checks also passed. CARLA is needed after CPU package preparation for actual motion and video verification. No external blocker has been demonstrated for remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-26 exact CPU proof chain
+
+- Eleven exact primary cases passed pinned offline, compatibility (Native/Core/Lean, actual analysis and four-camera full decode), negative missing-history rejection and recorded-only saved replay. Receipts are bound in `execution-manifest.json`.
+- Eleven source-gated low-speed recovery candidates passed exact offline and compatibility, each bound to a measurable original gap or visibility trigger. These are CPU protocol proofs, not observed original outcomes.
+- Eleven synthetic physical/lifecycle checks each exercised complete motion, incomplete motion and missing evidence; none asserts physical or legal acceptance.
+- Independent `delivery_audit.py` and `comparison_audit.py` require original sealed sources and leave legal distance convention, municipal authority, physical visibility and exception necessity unresolved. Missing-original negative checks passed. The current 34-test suite passed.
+- `gpu-queue-proposal.json` covers eleven exact case jobs, fallback preparation and four comparison audit commands. Lead owns shared queue integration.
+- The exact scoped strict gate was started after binding these receipts. Final outcome is recorded below when complete.
+- Exact scoped strict gate passed on 2026-11-26: `.venv-cpu/bin/python worker_check.py --assignment testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver --complete --require-delivery-ready` returned exit 0 and `static_checks_passed: true`. The ready result and manifest are stable for lead independent rerun and shared queue integration.

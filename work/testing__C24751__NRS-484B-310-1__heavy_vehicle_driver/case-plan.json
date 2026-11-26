@@ -36,7 +36,9 @@
         "status": "physical",
         "reason": "A long heavy vehicle may stop with its front ahead of the surveyed crosswalk while its center remains behind."
       },
-      "construction_probe": "flashing_red_probe.py"
+      "construction_probe": "flashing_red_probe.py",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_late_stop",
@@ -49,7 +51,9 @@
         "status": "physical",
         "reason": "Stopping position may vary with heavy-vehicle braking and reveal only a downstream complete cessation."
       },
-      "construction_probe": "flashing_red_probe.py"
+      "construction_probe": "flashing_red_probe.py",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__limit_line_stop",
@@ -62,7 +66,9 @@
         "status": "physical",
         "reason": "Marked line may be poorly visible from capture cameras."
       },
-      "construction_probe": "flashing_red_probe.py"
+      "construction_probe": "flashing_red_probe.py",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     },
     {
       "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__intersection_stop",
@@ -75,7 +81,9 @@
         "status": "physical",
         "reason": "Unmarked intersection entry may require map survey for a stable reference."
       },
-      "construction_probe": "flashing_red_probe.py"
+      "construction_probe": "flashing_red_probe.py",
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
     }
   ],
   "comparisons": [
@@ -116,11 +124,30 @@
     }
   ],
   "observations": [
-    "Official signal identity, approach governance and red illumination history from saved signal packets",
-    "Original-frame front bumper position and complete cessation from saved motion packets",
-    "Surveyed crosswalk, limit line or intersection entry geometry",
-    "Constructed occluder segment and heavy vehicle lane fit",
-    "Post-stop rules remain unresolved pending separate applicable-rule analysis"
+    {
+      "name": "signal_flash",
+      "mandatory": true
+    },
+    {
+      "name": "front_position",
+      "mandatory": true
+    },
+    {
+      "name": "complete_cessation",
+      "mandatory": true
+    },
+    {
+      "name": "stop_reference",
+      "mandatory": true
+    },
+    {
+      "name": "occluder_source",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_identity",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -186,5 +213,49 @@
       ],
       "reason": "Obstructed sight lines are compatible with an active flashing-red stopping encounter for a heavy vehicle."
     }
-  ]
+  ],
+  "selected_branch": "Flashing red on a blind-intersection approach",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-310-1",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_stop",
+        "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_late_stop",
+        "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__limit_line_stop",
+        "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__intersection_stop"
+      ],
+      "evidence_or_gap": "No accepted original flashing-red recording in frozen inventory.",
+      "reason": "Official signal, obstruction, heavy-vehicle motion and stop geometry need original capture."
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "signal, intersection and heavy vehicle",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "blind approach and vehicle",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "signal_reference",
+        "subject": "physical flashing lens and stop reference",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver approach and occluder",
+        "interval": "all original 900 frames"
+      }
+    ]
+  }
 }

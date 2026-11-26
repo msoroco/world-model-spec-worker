@@ -102,7 +102,8 @@ class CrosswalkTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'original source changed'):
             mod.measure_original(original, scene(case), case)
         original = rows(case)
-        original[200]['vehicle_front_xy'] = [1., 10.]
+        for row in original:
+            row['vehicle_front_xy'] = [1., 10.]
         with self.assertRaises(ValueError):
             mod.measure_original(original, scene(case), case)
 
@@ -112,6 +113,28 @@ class CrosswalkTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             mod.construct(a, scene(case), case)
         self.assertEqual(a.destroyed, ['vehicle'])
+
+    def test_near_side_and_sidewalk_geometry_is_real(self):
+        case = mod.CASES[2]
+        shifted = scene(case)
+        shifted['near_crosswalk_rect_m'] = [31., 0., 33., 20.]
+        with self.assertRaisesRegex(ValueError, 'near-side'):
+            mod.validate_scene(shifted, case)
+        disconnected = scene(case)
+        disconnected['opposing_sidewalk_left_xy'] = [8., 3.]
+        with self.assertRaisesRegex(ValueError, 'sidewalks'):
+            mod.validate_scene(disconnected, case)
+
+    def test_spawn_stationary_is_not_a_stop_and_entry_timing_is_observed(self):
+        case = mod.CASES[1]
+        original = rows(case)
+        original[0]['speed_mps'] = 0.
+        measured = mod.measure_original(original, scene(case), case)
+        self.assertFalse(measured['stopped_before_entry'])
+        changed = rows(case)
+        changed[200]['vehicle_front_xy'] = [1., 10.]
+        changed[201]['vehicle_front_xy'] = [9., 10.]
+        self.assertEqual(mod.measure_original(changed, scene(case), case)['crosswalk_entry_frame'], 201)
 
 
 if __name__ == '__main__':

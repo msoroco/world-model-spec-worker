@@ -1,6 +1,6 @@
 """Source-bound near-side crosswalk stop probes for NRS 484A.450(2)."""
 from dataclasses import dataclass
-from math import isfinite
+from math import hypot, isfinite
 from typing import Mapping
 
 
@@ -49,6 +49,32 @@ def inside(p, box):
     return box[0] <= p[0] <= box[2] and box[1] <= p[1] <= box[3]
 
 
+def _approach_geometry(scene):
+    """Check that the measured near-side boundary precedes this approach.
+
+    This checks source packet geometry, not whether a crossing is legally a
+    crosswalk. The reviewed site must supply that latter authority separately.
+    """
+    intersection = scene['intersection_rect_m']
+    crosswalk = scene['near_crosswalk_rect_m']
+    route = scene['vehicle_route_xy']
+    start, end = route[0], route[-1]
+    left, right = (scene['opposing_sidewalk_left_xy'],
+                   scene['opposing_sidewalk_right_xy'])
+    require(start[0] < crosswalk[0] < crosswalk[2] <= intersection[0] and
+            end[0] > intersection[0] and
+            crosswalk[1] <= start[1] <= crosswalk[3] and
+            crosswalk[1] <= end[1] <= crosswalk[3],
+            'near-side crosswalk is not before this approach')
+    require(abs(left[0] - crosswalk[0]) < .01 and
+            abs(right[0] - crosswalk[0]) < .01 and
+            abs(left[1] - crosswalk[1]) < .01 and
+            abs(right[1] - crosswalk[3]) < .01,
+            'crosswalk does not join the reviewed opposing sidewalks')
+    require(hypot(end[0] - start[0], end[1] - start[1]) > 1,
+            'approach route degenerate')
+
+
 def validate_scene(scene: Mapping, case: Case):
     require(case in CASES, 'unknown near-side crosswalk case')
     require(scene.get('cell_id') == 'C331230' and
@@ -75,6 +101,7 @@ def validate_scene(scene: Mapping, case: Case):
     require(type(scene.get('crosswalk_entry_frame')) is int and
             0 < scene['crosswalk_entry_frame'] < 900,
             'crosswalk entry timing missing')
+    _approach_geometry(scene)
     return {'case_id': case.name, 'stop_before_crosswalk_judgment': None}
 
 
@@ -103,6 +130,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     entry = None
     stopped_before = False
     crossed = False
+    moving_seen = False
     for i, row in enumerate(rows):
         frame = first + i
         require(row.get('original_frame') == frame and
@@ -128,11 +156,13 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             require(not in_crosswalk, 'vehicle starts inside near crosswalk')
         if in_crosswalk and entry is None:
             entry = frame
-        if entry is None and row['speed_mps'] <= .1:
+        if entry is None and moving_seen and row['speed_mps'] <= .1:
             stopped_before = True
+        if row['speed_mps'] > .1:
+            moving_seen = True
         if entry is not None and not in_crosswalk:
             crossed = True
-    require(entry == scene['crosswalk_entry_frame'] and crossed,
+    require(entry is not None and crossed,
             'original approach/crossing not realized')
     require(stopped_before is case.halt,
             'stop-versus-rolling physical response changed')

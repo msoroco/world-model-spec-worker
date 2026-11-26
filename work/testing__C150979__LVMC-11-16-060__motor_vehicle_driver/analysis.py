@@ -79,6 +79,11 @@ def analyze(attempt, output):
     channels.mkdir(exist_ok=False)
     evidence = []
     values = {
+        "observed_speed_mph": {"source_sha256": hashes["history.json"],
+                               "range_mph": [observed["observed_speed_mph_min"], observed["observed_speed_mph_max"]]},
+        "governing_posting_context": {"source_sha256": hashes["site.json"],
+                                       "posting_context": observed["posting_context"],
+                                       "legal_applicability": "unresolved"},
         "original_ego_speed": {"source_sha256": hashes["history.json"],
                                "range_mph": [observed["observed_speed_mph_min"], observed["observed_speed_mph_max"]]},
         "original_route_station": {"source_sha256": hashes["history.json"],

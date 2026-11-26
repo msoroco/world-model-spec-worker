@@ -42,7 +42,13 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Ramp geometry and official sign placement may not align with vehicle route."
-      }
+      },
+      "requested_direction": "entry",
+      "requested_indicated": true,
+      "requested_notice_visible": true,
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-587-1",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -55,7 +61,13 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Non-designated boundary crossing may not have a drivable physical route."
-      }
+      },
+      "requested_direction": "entry",
+      "requested_indicated": false,
+      "requested_notice_visible": true,
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-587-1",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -68,7 +80,13 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Sign may be erected but occluded from approaching driver view."
-      }
+      },
+      "requested_direction": "entry",
+      "requested_indicated": true,
+      "requested_notice_visible": false,
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-587-1",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -81,7 +99,13 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Exit route requires distinct direction and device notice."
-      }
+      },
+      "requested_direction": "exit",
+      "requested_indicated": true,
+      "requested_notice_visible": true,
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-587-1",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     },
     {
       "kind": "delivery",
@@ -94,7 +118,13 @@
       "candidate_risk": {
         "status": "physical",
         "reason": "Undesignated exit boundary may be physically inaccessible."
-      }
+      },
+      "requested_direction": "exit",
+      "requested_indicated": false,
+      "requested_notice_visible": true,
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-587-1",
+      "construction_status": "source_gated_native_bundle_cpu_preparation"
     }
   ],
   "comparisons": [
@@ -150,11 +180,41 @@
     }
   ],
   "observations": [
-    "Public-authority determination of controlled-access highway and designated entrances/exits",
-    "Public highway extent and surveyed boundary crossing from original vehicle route",
-    "Official erected device identity, notice content, authority and visibility",
-    "Entry versus exit direction and precise crossing coordinates",
-    "Vehicle driver identity and actual route; map road type alone does not prove legal controlled-access status"
+    {
+      "name": "controlled_access_authority",
+      "method": "separate public-authority controlled-access determination",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "public_highway_boundary",
+      "method": "surveyed public highway extent and boundary",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "official_erected_devices",
+      "method": "authority-designated erected official device inventory",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "designated_access_points",
+      "method": "officially indicated entrance and exit windows",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "notice_visibility",
+      "method": "original driver-view pixels plus independent notice source",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "vehicle_boundary_crossing",
+      "method": "original Native vehicle pose and boundary crossing at 20 Hz",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    },
+    {
+      "name": "vehicle_motion",
+      "method": "original Native position, speed and controller history",
+      "source": "original Native access-route capture plus separately sealed authority and official device packet"
+    }
   ],
   "sources": [
     {
@@ -199,7 +259,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_access_crossing_probe",
+  "planning_status": "five_selected_access_cases_source_gated_cpu_preparation",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-587-1.json",
@@ -216,5 +276,79 @@
       ],
       "reason": "The fixed controlled-access layout, entry intent and device directly support the entry restriction, conditional on legal access status and actual notice."
     }
-  ]
+  ],
+  "selected_branch": "Entry onto a controlled-access highway.",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "public-authority controlled-access highway determination and public highway boundary",
+      "source": "inputs/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit"
+      ],
+      "evidence_or_gap": "independent authority determination and surveyed public highway extent"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "official traffic-control devices erected giving notice of indicated entrances and exits",
+      "source": "inputs/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit"
+      ],
+      "evidence_or_gap": "source-sealed official device authority, erection, indication and driver-view visibility"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "person driving a vehicle onto or from highway at indicated entrance or exit",
+      "source": "inputs/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit"
+      ],
+      "evidence_or_gap": "original Native vehicle identity, boundary crossing direction and coordinate"
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "public highway boundary, official device and vehicle",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach to entry or exit boundary",
+        "interval": "approach through crossing"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "erected official device placement and content",
+        "interval": "approach through crossing"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-view notice visibility and route",
+        "interval": "first through final original frame"
+      }
+    ],
+    "limitation": "Original pixels cannot establish legal designation without public-authority source"
+  }
 }

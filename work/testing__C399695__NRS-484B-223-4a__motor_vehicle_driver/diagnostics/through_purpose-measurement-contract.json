@@ -1,0 +1,54 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "public highway designed to provide a single right lane to be used only for turning",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "output_key": "public_highway_and_lane_design",
+      "method": "source_sealed_right_turn_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-turn-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "vehicle driven in the right turn lane",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "output_key": "right_turn_lane_occupancy",
+      "method": "source_sealed_right_turn_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-turn-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "only for the purpose of making a right turn",
+      "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
+      "output_key": "declared_maneuver_purpose",
+      "method": "source_sealed_right_turn_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-turn-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "right-turn-history.json"
+    ],
+    "error_contains": "Missing required source: right-turn-history.json"
+  }
+}

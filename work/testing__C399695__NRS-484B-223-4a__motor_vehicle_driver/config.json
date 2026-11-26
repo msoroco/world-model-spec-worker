@@ -1,0 +1,145 @@
+{
+  "assignment_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver",
+  "law_id": "NRS-484B-223-4a",
+  "cell_id": "C399695",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed T intersection, exclusive right-turn lane and vehicle route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed T intersection, exclusive right-turn lane and vehicle route"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed T intersection, exclusive right-turn lane and vehicle route"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed T intersection, exclusive right-turn lane and vehicle route"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+    "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+    "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose",
+    "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch"
+  ],
+  "case": {
+    "kind": "delivery",
+    "branch": "T-intersection right-turn approach",
+    "gap_ids": [
+      "no-accepted-recording"
+    ],
+    "construction_probe": "right_turn_lane_probe.py",
+    "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Right-turn controller may leave the designated lane or fail to reach a connected exit."
+    },
+    "declared_maneuver_purpose": "right_turn",
+    "requested_departure_route": "right_turn",
+    "new_capture_selected": true,
+    "target_law_id": "NRS-484B-223-4a",
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "public_highway_and_lane_design",
+          "unit": "source record",
+          "method": "sealed public-highway and single exclusive right-turn-lane survey",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "vehicle_and_driver_identity",
+          "unit": "source record",
+          "method": "original Native vehicle and driver identity",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "right_turn_lane_occupancy",
+          "unit": "lane/frame",
+          "method": "original Native lane and road ID readback at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "declared_maneuver_purpose",
+          "unit": "source record",
+          "method": "independent purpose declaration before lane entry",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "connected_right_turn_route",
+          "unit": "source record",
+          "method": "surveyed T-junction right exit connectivity",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "observed_departure_route",
+          "unit": "road/frame",
+          "method": "original Native road ID, pose and maneuver history",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        },
+        {
+          "name": "vehicle_motion",
+          "unit": "world meters/frame",
+          "method": "original speed, position and controller history",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-turn-lane approach and departure",
+          "reference_frame": "source-surveyed Native T junction and lane IDs",
+          "uncertainty": "Lane use or eventual turn does not prove purpose at lane entry"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_t_junction_site",
+          "unit": "source record",
+          "method": "sealed public highway, lane design, route connectivity and purpose packet"
+        }
+      ],
+      "limitations": [
+        "No numeric lane-occupancy deadline appears in the exact law.",
+        "A completed right turn alone does not prove prior purpose.",
+        "Synthetic diagnostics prove software behavior only."
+      ]
+    }
+  }
+}
