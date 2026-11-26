@@ -1,6 +1,6 @@
 import unittest
 from geometry import SIGN_NAME, check as geometry_check, open_drive
-from runner import behavior_plan, check as runner_check, survey
+from runner import behavior_plan, bicycle_blueprint, check as runner_check, survey
 
 
 class FakeCarla:
@@ -64,3 +64,10 @@ class NativeDraft(unittest.TestCase):
         self.assertIsNone(ride['operator_start_xy_m'])
         with self.assertRaisesRegex(ValueError, 'unknown controlled behavior'):
             behavior_plan('wrong')
+
+    def test_source_listed_bicycle_fallback(self):
+        self.assertEqual(bicycle_blueprint({}), 'vehicle.bh.crossbike')
+        self.assertEqual(bicycle_blueprint({'bicycle_blueprint_id': 'vehicle.diamondback.century'}),
+                         'vehicle.diamondback.century')
+        with self.assertRaisesRegex(ValueError, 'source-listed ordinary bicycle'):
+            bicycle_blueprint({'bicycle_blueprint_id': 'vehicle.unknown.electric_scooter'})

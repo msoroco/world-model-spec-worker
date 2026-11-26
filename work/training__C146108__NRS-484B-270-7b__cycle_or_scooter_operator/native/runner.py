@@ -135,7 +135,7 @@ def execute(output, host, port, case_id=None):
                 capture.capture(native_frame, elapsed)
                 original_bicycle = actor_row(bicycle)
                 original_motor = actor_row(motor)
-                pose_stream.write(json.dumps({'native_frame': native_frame, 'video_frame': index,
+                pose_stream.write(json.dumps({'frame': native_frame, 'native_frame': native_frame, 'video_frame': index,
                     'time_s': elapsed, 'rider_xy_m': original_bicycle['center_xy_m'],
                     'motor_xy_m': original_motor['center_xy_m'],
                     'rider_body_xy_m': original_bicycle['body_xy_m'],
@@ -151,6 +151,7 @@ def execute(output, host, port, case_id=None):
                                  'z': bicycle.get_transform().location.z},
                     'heading_deg': bicycle.get_transform().rotation.yaw,
                     'speed_mps': original_bicycle['speed_mps'],
+                    'speed_mph': original_bicycle['speed_mps'] / .44704,
                     'control': {'bicycle_target_speed_mps': 5}}) + '\n')
                 mapped = {}
                 for name, _, _, _, _, _ in CAMERAS:
@@ -209,8 +210,10 @@ if __name__ == '__main__':
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
-    if args.check == args.execute:
+    if args.check and args.execute:
         raise SystemExit('Choose exactly one of --check or --execute')
+    if not args.check and not args.execute and not args.output_dir:
+        raise SystemExit('Provide --check or an execution output directory')
     if args.check:
         print(json.dumps(check()))
     else:

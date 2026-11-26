@@ -79,11 +79,13 @@ def build(suffix):
                 'pedal_cadence_rpm': 70, 'assist_power_watts': 500,
                 'speed_mps': 3.2, 'assist_cutoff_mps': 20 * .44704,
                 'power_source': 'authored generated diagnostic controller'}
+        pose['frame'] = frame
         poses.append(pose)
         trace.append({'frame': frame, 'time_s': t,
             'position': {'x': rider_x, 'y': rider_y, 'z': 1},
             'position_m': [rider_x, rider_y, 1], 'heading_deg': 0,
-            'speed_mps': 3.2, 'velocity_mps': [3.2, 0, 0],
+            'speed_mps': 3.2, 'speed_mph': 3.2 / .44704,
+            'velocity_mps': [3.2, 0, 0],
             'control': {'diagnostic': True}})
         mapped.append({'video_frame': index, 'carla_frame': frame,
             'native_frame': frame, 'time_s': t,
@@ -123,7 +125,7 @@ def build(suffix):
     spec = {'files': {'capture/native/frames.jsonl': '\n'.join(
         json.dumps(row, separators=(',', ':')) for row in frames) + '\n',
         'capture/recorder_info.txt':
-            'Synthetic diagnostic; no Native recording.\nCreate 101: cycle geometry carrier (0)\n'},
+            'Synthetic diagnostic; no Native recording.\nCreate 101: vehicle.bh.crossbike (0)\n'},
         'graphs': graphs,
         'videos': [{'path': name + '.mkv', 'frames': 600,
             'width': width, 'height': height, 'fps': 20, 'color': 'black'}

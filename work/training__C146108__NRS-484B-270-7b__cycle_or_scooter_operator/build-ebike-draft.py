@@ -29,6 +29,10 @@ def build():
         'rate_hz': 20, 'duration_s': 30, 'required_atoms': ['ru.electric_bicycle', 'ru.motor_vehicle',
             'kin.position', 'kin.heading', 'kin.speed', 'rel.occupies'],
         'source_packets': [], 'case': {'case_id': CASE},
+        'physical_completion': {'criterion': 'overtake_pass',
+            'motion_source': 'participant-poses.jsonl',
+            'body_key': 'rider_body_xy_m', 'other_body_key': 'motor_body_xy_m',
+            'lateral_transition_m': 0, 'minimum_progress_m': 1},
         'cameras': [{'name': name, 'width': width, 'height': height,
                      'pose_strategy': 'survey-gated fixed view along complete pass corridor',
                      'fov_deg': 85}

@@ -2,7 +2,7 @@
   "assignment_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver",
   "input_sha256": "46173f4e6e85990fb6aa52ff2ae0250533666c2e124a87c129040b47ec0fef9c",
   "status": "partial",
-  "reason": "Selected onto-highway entry pair is CPU prepared with Native capture/finalizer, four current-runtime offline/public primary/fallback proofs, two recorded-only saved proofs, eight semantic stages, physical triads/lifecycle and independent delivery/comparison audits. Full-law delivery readiness remains partial because NRS 484B.587(1) separately covers driving from a controlled-access highway: frozen C228131 maneuver is enter_road and the only exported exit_road cells C62472/C62507 have no motor_vehicle_driver candidate. An eligible frozen exit assignment is needed to plan and prove the indicated/outside exit comparison. Original public-authority access designation, highway dedication/use/boundaries, installed official device authority/content and physical entry remain unverified.",
+  "reason": "The selected onto-highway entry pair and its primary/fallback current-runtime CPU proofs remain prepared. A separate exit_road candidate now has a 600-frame mirrored route, outbound paved-ramp geometry and source-bound original footprint leave-event meter with positive and negative CPU tests. It is unselected: frozen C228131 maneuver is enter_road, while unallocated C62507 exit_road/traffic_control_device lists no eligible candidate ego parties; no same-role motor_vehicle_driver binding has been source-validated. An exact C62507 assignment and selected indicated/outside exit proof chains are still required for the from-highway statutory alternative. Original authority, physical motion and legal outcome remain unverified.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 2,
   "comparison_count": 1,
@@ -45,6 +45,12 @@
       "exit_code": 0,
       "log": "cpu-native-tests.log",
       "sha256": "e9fff4dc53c9fafad329c17e1b1f712e0f5207149f54616d9261452a65f2d20b"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c228131-exit-temp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c228131-exit-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B -m unittest discover -s tests -p test*.py -v (cwd=work/training__C228131__NRS-484B-587-1__motor_vehicle_driver)",
+      "exit_code": 0,
+      "log": "exit-candidate-tests.log",
+      "sha256": "7971df6858740157e2613d5575b24e2afa21094d50801109ec8a7bf599f7b815"
     }
   ],
   "remaining_gpu_checks": [
@@ -53,5 +59,21 @@
     "Original installed official device authority, content, erection, indication and source pixels",
     "Original motor-vehicle path, body crossing and physical completion; legal outcome remains for local review"
   ],
-  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C228131__NRS-484B-587-1__motor_vehicle_driver --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C228131__NRS-484B-587-1__motor_vehicle_driver --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "exit_candidate_checkpoint": {
+    "status": "unselected_candidate",
+    "catalog_cell_id": "C62507",
+    "proposal": "exit-candidate-proposal.json",
+    "proposal_sha256": "f97a35a83f984b32bd03869dd6014ffc51aa1c672bd6e61e325502fab4b81a2a",
+    "route_and_meter": "native/exit_candidate.py",
+    "route_and_meter_sha256": "7c401f787fa338992f62cde5c97d3623c459f64544cb0b8808d119f9f3b566d4",
+    "geometry": "native/exit_geometry.py",
+    "geometry_sha256": "4bfdb42bc5b4a8c27eda18b2f5b8eb989d214713ae0f94fbd7e32f8ee2de7318",
+    "tests": "exit-candidate-tests.log",
+    "tests_sha256": "7971df6858740157e2613d5575b24e2afa21094d50801109ec8a7bf599f7b815",
+    "test_exit_code": 0,
+    "proposed_exact_cases": 2,
+    "actor_eligibility_reviewed": false,
+    "original_native_observed": false
+  }
 }

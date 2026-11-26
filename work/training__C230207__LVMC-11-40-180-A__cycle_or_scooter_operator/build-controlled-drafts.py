@@ -25,7 +25,9 @@ def build():
         config = dict(old_config)
         config.update(case_id=case_id, selected_case_id=case_id,
                       supported_case_ids=[case_id], case={'case_id': case_id},
-                      controlled_behavior=behavior, status='partial_cpu_draft')
+                      controlled_behavior=behavior,
+                      bicycle_blueprint_id='vehicle.bh.crossbike',
+                      status='partial_cpu_draft')
         config['recording_description'] = dict(config['recording_description'], context_inputs=[])
         config['cameras'] = [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                               'height': 1080 if name == 'overview' else 720}
@@ -71,6 +73,16 @@ def build():
         path = HERE / f'draft-mounted-sidewalk/{stem}/primary/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(proposal, indent=2) + '\n')
+        alternate_config = dict(config, bicycle_blueprint_id='vehicle.diamondback.century',
+                                candidate_id='fallback1')
+        alternate = json.loads(json.dumps(proposal))
+        alternate['candidate_id'] = 'fallback1'
+        for item in alternate['files']:
+            if item['path'] == 'config.json':
+                item['content'] = json.dumps(alternate_config, indent=2) + '\n'
+        alternate_path = HERE / f'draft-mounted-sidewalk/{stem}/fallback1/construction.json'
+        alternate_path.parent.mkdir(parents=True, exist_ok=True)
+        alternate_path.write_text(json.dumps(alternate, indent=2) + '\n')
         cases.append({'case_id': case_id, 'kind': 'delivery',
                       'construction': str(path.relative_to(HERE)),
                       'construction_sha256': digest(path),
@@ -79,7 +91,16 @@ def build():
                       'candidate_risk': {
                           'status': 'physical',
                           'reason': 'Rider posture, cycle model, sidewalk, sign pixels and named geography need local Native review'},
-                      'candidates': [], 'measurement_procedure': {'entrypoint': 'finalize.py'},
+                      'candidates': [{
+                          'id': 'fallback1',
+                          'construction': str(alternate_path.relative_to(HERE)),
+                          'construction_sha256': digest(alternate_path),
+                          'trigger': {'source': 'fremont-original-review.json',
+                                      'metric': 'integral rider or unreadable cycle posture',
+                                      'failure_condition': 'primary bicycle model prevents independent rider posture review'},
+                          'changed_knobs': ['bicycle_blueprint_id: vehicle.diamondback.century'],
+                          'status': 'cpu_draft_unverified_physical'}],
+                      'measurement_procedure': {'entrypoint': 'finalize.py'},
                       'delivery_readiness': 'incomplete'})
     manifest = {'format': 'worker-selected-cpu-draft-manifest-v1',
                 'assignment_id': PREFIX, 'runtime_manifest_sha256': runtime,

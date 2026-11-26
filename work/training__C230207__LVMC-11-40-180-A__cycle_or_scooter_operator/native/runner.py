@@ -1,7 +1,6 @@
 """Survey-gated original Native bicycle capture for Fremont sidewalk restriction."""
 import argparse
 import json
-import math
 from pathlib import Path
 import queue
 import subprocess
@@ -37,6 +36,13 @@ def check():
             'physical_acceptance_claimed': False}
 
 
+def bicycle_blueprint(config):
+    choice = config.get('bicycle_blueprint_id', 'vehicle.bh.crossbike')
+    if choice not in ('vehicle.bh.crossbike', 'vehicle.diamondback.century'):
+        raise ValueError('selected bicycle blueprint is not a source-listed ordinary bicycle')
+    return choice
+
+
 def survey(world, carla):
     mapping = world.get_map()
     root = ET.fromstring(mapping.to_opendrive())
@@ -60,13 +66,18 @@ def survey(world, carla):
 
 def execute(output_dir, host, port, behavior):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
     check()
     plan = behavior_plan(behavior)
     output = Path(output_dir).resolve()
-    if output.exists():
-        raise ValueError('choose a fresh original Native attempt directory')
+    if not output.is_dir() or (output / 'bicycle-poses.jsonl').exists():
+        raise ValueError('new materialized original Native attempt required')
+    config = json.loads((output / 'config.json').read_text())
+    if config.get('controlled_behavior') != behavior:
+        raise ValueError('selected construction behavior differs')
+    blueprint_id = bicycle_blueprint(config)
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -75,7 +86,10 @@ def execute(output_dir, host, port, behavior):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned, encoders, queues = [], {}, {}
+    encoder_exits = {}
+    capture = None
     changed = False
+    completed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
@@ -90,10 +104,9 @@ def execute(output_dir, host, port, behavior):
         settings.max_substeps = 10
         world.apply_settings(settings)
         readback = survey(world, carla)
-        output.mkdir(parents=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         blueprints = world.get_blueprint_library()
-        bicycle_bp = blueprints.find('vehicle.bh.crossbike')
+        bicycle_bp = blueprints.find(blueprint_id)
         bicycle_bp.set_attribute('role_name', 'c230207_human_bicycle_subject')
         bicycle = world.spawn_actor(bicycle_bp, carla.Transform(
             carla.Location(x=plan['cycle_start_xy_m'][0], y=plan['cycle_start_xy_m'][1], z=1),
@@ -140,9 +153,10 @@ def execute(output_dir, host, port, behavior):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        capture = PipelineCapture(client, bicycle, output, config['case_id'],
+                                  required_observations=[])
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'bicycle-poses.jsonl').open('x') as poses, \
-                (output / 'trace.jsonl').open('x') as trace:
+                (output / 'bicycle-poses.jsonl').open('x') as poses:
             first_elapsed = None
             for index in range(FRAMES):
                 bicycle.set_target_velocity(carla.Vector3D(x=plan['target_speed_mps'], y=0, z=0))
@@ -185,24 +199,28 @@ def execute(output_dir, host, port, behavior):
                     if operator_transform is not None else None,
                     'operator_velocity_xy_mps': [operator_velocity.x, operator_velocity.y]
                     if operator_velocity is not None else None}) + '\n')
-                trace.write(json.dumps({'frame': native_frame, 'time_s': relative_time,
-                    'position': {'x': transform.location.x, 'y': transform.location.y,
-                                 'z': transform.location.z},
-                    'position_m': [transform.location.x, transform.location.y, transform.location.z],
-                    'heading_deg': transform.rotation.yaw,
-                    'velocity_mps': [velocity.x, velocity.y, velocity.z],
-                    'speed_mps': math.hypot(velocity.x, velocity.y),
-                    'speed_mph': math.hypot(velocity.x, velocity.y) * 2.2369362921,
-                    'control': {'throttle': 0, 'brake': 0, 'hand_brake': False},
-                    'cycle_actor_id': bicycle.id, 'source': 'original_native_actor'}) + '\n')
+                capture.capture(native_frame, relative_time, extra={
+                    'c230207_sidewalk': {'cycle_actor_id': bicycle.id,
+                                         'operator_actor_id': operator.id if operator else None,
+                                         'camera_native_frames': mapped}})
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_exits[name] = process.wait(timeout=180)
+            if encoder_exits[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError(f'Original camera encoding failed: {name}: {stderr.decode()[-400:]}')
+        capture.close(confirmed=True)
+        capture = None
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'case_id': config['case_id'], 'controlled_behavior': behavior,
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
+        completed = True
         return {'frames': FRAMES, 'camera_names': list(queues),
                 'native_survey': readback, 'physical_acceptance_claimed': False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -215,7 +233,12 @@ def execute(output_dir, host, port, behavior):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restored = restore(client, saved)
+            if completed and capture is None and len(encoder_exits) == len(CAMERAS):
+                seal_capture(output, frames=FRAMES, restoration=restored, errors=[],
+                             encoder_exit_codes=encoder_exits,
+                             context={'case_id': config['case_id'],
+                                      'controlled_behavior': behavior})
 
 
 if __name__ == '__main__':
@@ -227,8 +250,13 @@ if __name__ == '__main__':
     p.add_argument('--port', type=int, default=2000)
     p.add_argument('--behavior', choices=('mounted_sidewalk', 'walk_cycle'), default='mounted_sidewalk')
     a = p.parse_args()
-    if a.check == a.execute:
-        raise SystemExit('choose --check or --execute')
-    if a.execute and not a.output_dir:
-        raise SystemExit('--output-dir required for Native execution')
-    print(json.dumps(check() if a.check else execute(a.output_dir, a.host, a.port, a.behavior)))
+    if a.check:
+        print(json.dumps(check()))
+    else:
+        if not a.output_dir:
+            raise SystemExit('--output-dir required for Native execution')
+        config = json.loads((Path(a.output_dir) / 'config.json').read_text())
+        behavior = config['controlled_behavior']
+        if a.execute and a.behavior != 'mounted_sidewalk' and a.behavior != behavior:
+            raise SystemExit('explicit behavior differs from selected construction')
+        print(json.dumps(execute(a.output_dir, a.host, a.port, behavior)))

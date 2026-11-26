@@ -3,7 +3,7 @@
   "input_sha256": "026784d352a035c2d43ac4d8566ef0b73decfd059dac8d6bb25d416292bc0229",
   "applied_update": 16,
   "status": "partial",
-  "reason": "Three exact bicycle sidewalk cases and their fallbacks have current-runtime offline, positive/missing-audio negative compatibility, recorded-only saved processing, semantic, physical/lifecycle, source-bound delivery and original-comparison audit CPU proofs. The exact law also covers electric bicycles and electric scooters; pinned CARLA actor taxonomy and the supplied runtime contain no source-bound Native asset for either class. A bicycle or gasoline Vespa cannot be relabeled. Exact electric-case constructions and proofs still require a source-verified spawnable asset inventory; original physical/acoustic/legal review remains a later local step. Status stays partial.",
+  "reason": "Selected bicycle cases retain current-runtime CPU proofs. Source-bound electric bicycle and electric scooter assets are still absent. The conditional electric runner and six-case config factory now enforce exact local source hashes, blueprint ID and class separation, and their CPU tests pass. They remain unselected: real asset inventory, Native spawnability and original physical/acoustic/legal review are required before exact electric cases and strict readiness.",
   "readiness_kind": null,
   "planned_case_count": 3,
   "candidate_count": 3,
@@ -24,18 +24,23 @@
     "comparison_audit_specs": "comparison-audit-specs.json",
     "comparison_audit_specs_sha256": "6bd2c4b3eb19c2761d3428aaf45a17401a8c5fe1a07dd1505384cf15d783be64",
     "exact_scoped_strict_exit_code": 1,
-    "exact_scoped_strict_reason": "partial/missing packages remain; result status intentionally partial",
+    "exact_scoped_strict_reason": "Preparation acceptance failed: partial/missing packages remain; electric alternatives pending source-backed assets",
     "electric_asset_preflight": "electric-asset-preflight.json",
     "electric_asset_preflight_sha256": "688299da997e6b027d7c246d0bfeb17673bd31c455bc269ee7bd0501286c1e43",
     "original_comparison_audit_script": "original_comparison_audit.py",
-    "original_comparison_audit_script_sha256": "357b727a50a33a36a255d5e4e7a6e6521fa543669cd2add74b78853df4346725"
+    "original_comparison_audit_script_sha256": "357b727a50a33a36a255d5e4e7a6e6521fa543669cd2add74b78853df4346725",
+    "electric_asset_preflight_script_sha256": "9063d0f5db0f5cf1c80bb1a66203f12f68b72656efec11ea4063b7257cdf43f8",
+    "electric_case_factory": "electric_case_factory.py",
+    "electric_case_factory_sha256": "6a5a91413cbf6fb558d2f581ce15b66bbd10cd780b64e15f27002847e14833cf",
+    "conditional_electric_runner": "native/electric_runner.py",
+    "conditional_electric_runner_sha256": "04c39dbf36ea4ca139a7ce67a910c5e15dd81ad902b3e8c5c0b15146d9c73ab9"
   },
   "tests": [
     {
       "command": "PYTHONPATH=$PWD/work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator .venv-cpu/bin/python -B -m unittest discover -s work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/tests",
       "exit_code": 0,
       "log": "cpu-root-tests.log",
-      "sha256": "9c19df9f1bd2c0f286d09454679f4a25c53748d2921f77116dc4d9c0c22fe1c4"
+      "sha256": "0684bde58beeb4684f99b06c9340c9091866da3f3d1a56a88467408678720989"
     },
     {
       "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/original_comparison_audit.py --pair signal --selftest positive",
@@ -53,7 +58,19 @@
       "command": ".venv-cpu/bin/python -B work/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/device_asset_preflight.py --selftest",
       "exit_code": 0,
       "log": "device-asset-selftest.log",
-      "sha256": "ebf204b89e08d066d12d1e640d42fa52b0218e377847d2a124c1220351c8b076"
+      "sha256": "58105d2ab84f1b0fe990dcf153cb141768c7a75385e6ac01375f3af04b09df56"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator --complete",
+      "exit_code": 0,
+      "log": "scoped-partial-current.log",
+      "sha256": "2ed513b0c2a73611a3e654d0dc03f2371338bef4bc3647b2eef3889ac6fd5c74"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "scoped-strict-current.log",
+      "sha256": "d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba"
     }
   ],
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator --case training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",

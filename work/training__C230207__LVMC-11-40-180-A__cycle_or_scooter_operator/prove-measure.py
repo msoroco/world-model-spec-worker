@@ -45,7 +45,7 @@ def fixture(label, posture, y=-5, behavior='mounted_sidewalk'):
                    'operator_xy_m': [-65 + i * .115, y + .8] if behavior == 'walk_cycle' else None,
                    'operator_velocity_xy_mps': [2.3, 0] if behavior == 'walk_cycle' else None,
                    'provenance': 'synthetic_native_sample'}
-            frame = {'video_frame': i, 'native_frame': native, 'time_s': t,
+            frame = {'video_frame': i, 'native_frame': native, 'carla_frame': native, 'time_s': t,
                      'camera_native_frames': {name: native for name in
                         ('overview', 'approach', 'reference_corner', 'driver_reference')}}
             p.write(json.dumps(row) + '\n')

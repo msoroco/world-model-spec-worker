@@ -3,6 +3,7 @@ import argparse
 import ast
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,11 +34,21 @@ def validate_supplied_asset(entry):
             not entry.get('native_asset_source') or
             not entry.get('native_asset_sha256') or
             not entry.get('legal_class_source') or
+            not entry.get('legal_class_sha256') or
             not entry.get('original_class_review_required')):
         raise ValueError('Exact electric device asset source/class contract missing')
     if entry['blueprint_id'] in ('vehicle.bh.crossbike', 'vehicle.diamondback.century',
                                  'vehicle.gazelle.omafiets', 'vehicle.vespa.zx125'):
         raise ValueError('Ordinary bicycle or gasoline Vespa cannot be relabeled electric')
+    if not re.fullmatch(r'vehicle\.[a-zA-Z0-9_.-]+', entry['blueprint_id']):
+        raise ValueError('Exact Native vehicle blueprint ID required')
+    for prefix in ('native_asset', 'legal_class'):
+        path = Path(entry[prefix + '_source'])
+        digest = entry[prefix + '_sha256']
+        if not path.is_file() or not re.fullmatch(r'[0-9a-f]{64}', digest):
+            raise ValueError('Readable source and SHA-256 required for ' + prefix)
+        if sha(path) != digest:
+            raise ValueError('Source SHA-256 mismatch for ' + prefix)
     return entry['device_class']
 
 
@@ -48,36 +59,47 @@ def audit(inventory=None):
     electric = {name for name, kind in maps['special_type_map'].items()
                 if kind == 'electric'}
     supplied = [] if inventory is None else json.loads(Path(inventory).read_text())['assets']
-    classes = {validate_supplied_asset(entry) for entry in supplied}
+    classes = [validate_supplied_asset(entry) for entry in supplied]
+    if len(classes) != len(set(classes)):
+        raise ValueError('Ambiguous duplicate electric device class')
     return {'format': 'c230266-electric-device-asset-preflight-v1',
             'runtime_taxonomy_sha256': sha(TAXONOMY),
             'pinned_bicycle_blueprints': sorted(name for name, kind in known.items()
                                                 if kind == 'bicycle'),
             'pinned_electric_blueprints': sorted(electric),
             'source_bound_electric_device_classes': sorted(classes),
-            'missing_device_classes': sorted(set(REQUIRED) - classes),
-            'ready_for_exact_electric_cases': set(REQUIRED) <= classes,
+            'missing_device_classes': sorted(set(REQUIRED) - set(classes)),
+            'ready_for_exact_electric_cases': set(REQUIRED) <= set(classes),
             'physical_and_legal_class_verified': False}
 
 
 def selftest():
-    candidate = {'device_class': 'electric_bicycle',
-                 'blueprint_id': 'vehicle.custom.verified_ebike',
-                 'native_asset_source': 'source inventory required',
-                 'native_asset_sha256': 'source hash required',
-                 'legal_class_source': 'manufacturer and local classification review required',
-                 'original_class_review_required': True}
-    if validate_supplied_asset(candidate) != 'electric_bicycle':
-        raise AssertionError('Exact electric bicycle asset contract rejected')
-    for blueprint in ('vehicle.diamondback.century', 'vehicle.vespa.zx125'):
-        try:
-            validate_supplied_asset({**candidate, 'blueprint_id': blueprint})
-        except ValueError as error:
-            if 'cannot be relabeled electric' not in str(error):
-                raise
-        else:
-            raise AssertionError('Ordinary device relabel accepted')
-    print(json.dumps({'selftest': 'passed', 'relabel_rejections': 2}))
+    import tempfile
+    with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as folder:
+        source = Path(folder)/'native-asset.uasset'
+        law = Path(folder)/'class-source.txt'
+        source.write_bytes(b'diagnostic only')
+        law.write_text('diagnostic only')
+        candidate = {'device_class': 'electric_bicycle',
+                     'blueprint_id': 'vehicle.custom.verified_ebike',
+                     'native_asset_source': str(source),
+                     'native_asset_sha256': sha(source),
+                     'legal_class_source': str(law),
+                     'legal_class_sha256': sha(law),
+                     'original_class_review_required': True}
+        if validate_supplied_asset(candidate) != 'electric_bicycle':
+            raise AssertionError('Exact electric bicycle asset contract rejected')
+        for modified in ({**candidate, 'blueprint_id': 'vehicle.diamondback.century'},
+                         {**candidate, 'blueprint_id': 'vehicle.vespa.zx125'},
+                         {**candidate, 'native_asset_sha256': '0' * 64},
+                         {**candidate, 'legal_class_source': 'not-a-real-source'}):
+            try:
+                validate_supplied_asset(modified)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('Invalid electric device evidence accepted')
+    print(json.dumps({'selftest': 'passed', 'invalid_evidence_rejections': 4}))
 
 
 if __name__ == '__main__':
