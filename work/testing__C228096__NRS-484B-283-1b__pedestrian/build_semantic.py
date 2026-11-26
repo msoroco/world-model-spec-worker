@@ -31,7 +31,9 @@ def main() -> None:
                    ("vehicle_gap", "world_setup", "categorical", "close or far engineering probe; no legal threshold"),
                    ("route_kind", "world_setup", "categorical", "into vehicle path, roadway only, or remain curb"),
                    ("departure_hold_s", "controller", "s", "4 to 8 seconds physical sampling only"),
-                   ("vehicle_start_gap_m", "controller", "m", "10 to 30 meters physical sampling only"))]
+                   ("vehicle_start_gap_m", "controller", "m", "10 to 30 meters physical sampling only"),
+                   ("actual_departure_time_s", "subject_behavior", "s", "measured original departure time"),
+                   ("vehicle_distance_at_road_entry_m", "subject_behavior", "m", "measured original separation"))]
     judgments = [
         {"phrase": "suddenly leave a curb or other place of safety",
          "note": "Original departure timing, curb and path authority require independent review; gait alone is no legal cutoff."},
@@ -53,7 +55,9 @@ def main() -> None:
                         "landmarks": [], "limitations": ["Original motion and exception context require independent review; engineering probes do not establish the legal judgment."],
                         "observables": [{"name": topic, "description": "20 Hz original Native actor readback and four-camera review", "unit": "source observation"}],
                         "recording_needs": [{"name": topic, "description": "Original saved source and camera review", "unit": "source observation"}],
-                        "sweep_dimensions": []}
+                        "sweep_dimensions": [{"name": "actual_departure_time_s" if i == 0 else "vehicle_distance_at_road_entry_m",
+                                              "unit": "s" if i == 0 else "m",
+                                              "description": "Source-bound actual original motion, retained as a coverage sample without a legal cutoff"}]}
         write("judgment-" + str(i), {"note": item["note"], "phrase": item["phrase"],
                                     "observable_requirements": requirements, "status": "draft",
                                     "template_id": TEMPLATE_ID})

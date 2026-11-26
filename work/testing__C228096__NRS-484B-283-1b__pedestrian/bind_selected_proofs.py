@@ -1,4 +1,4 @@
-"""Bind current diagnostic CPU receipts to five source-gated delivery intents."""
+"""Bind current diagnostic CPU receipts to exact source-gated delivery intents."""
 from __future__ import annotations
 
 import hashlib
@@ -31,9 +31,9 @@ def main() -> None:
         if suffix not in {item.name for item in CASES}:
             raise ValueError("nonselected case")
         folder = ROOT / "cases" / suffix
-        compat = SCRATCH / ("compat-close-walk" if suffix == "close_walk_into_path" else "compat-" + suffix)
-        offline = SCRATCH / ("offline-close-walk" if suffix == "close_walk_into_path" else "offline-" + suffix)
-        saved = SCRATCH / ("saved2-" + suffix + ".log")
+        compat = SCRATCH / ("compat-new2-" + suffix)
+        offline = SCRATCH / ("offline-new2-" + suffix)
+        saved = SCRATCH / ("saved-new2-" + suffix + ".stdout")
         for name, origin in (("compatibility.json", compat / "compatibility.json"),
                              ("cpu-compat-analysis.log", compat / "compatibility-analysis.log"),
                              ("negative-analysis.log", compat / "negative-analysis.log"),
@@ -87,7 +87,7 @@ def main() -> None:
                      negative={"log": f"cases/{suffix}/negative-analysis.log"},
                      native_handoff={"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
                      pending_original_sources=["reviewed original curb/path site and OpenDRIVE",
-                                               "reviewed physical ranges for both judgment sweeps",
+                                               "original realized behavior for both engineering judgment sweeps",
                                                "released Native four-camera original attempts"],
                      delivery_acceptance={"case_id": case_id, "sets": ["full-test"],
                                           "checks": ["native_source", "all_participants", "time_join", "full_video_decode", "actual_pixels", "physical_completion"],
@@ -113,7 +113,7 @@ def main() -> None:
                                              "runtime_manifest_sha256": diagnostic["runtime_manifest_sha256"],
                                              "status": "source_gated_cpu_preparation", "original_delivery_claimed": False,
                                              "cases": entries})
-    print("Bound five exact source-gated selected cases to current CPU proofs")
+    print(f"Bound {len(entries)} exact source-gated selected cases to current CPU proofs")
 
 
 if __name__ == "__main__":

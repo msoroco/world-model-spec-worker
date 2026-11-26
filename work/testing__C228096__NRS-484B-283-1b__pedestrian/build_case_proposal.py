@@ -16,6 +16,8 @@ def main():
     plan = json.loads((HERE / "case-plan.json").read_text(encoding="utf-8"))
     rows = []
     for source in plan["cases"]:
+        if source.get("sweep_id"):
+            continue
         suffix = source["case_id"].removeprefix(ASSIGNMENT + "__")
         values = {name: {"kind": "world_setup", "unit": "categorical",
                          "value": source["vehicle_gap_probe" if name == "vehicle_gap" else name]}
@@ -46,6 +48,8 @@ def main():
     baseline["rationale"] = "Shared five-case source observation definition; no separate recording."
     comparisons = []
     for source in plan["comparisons"]:
+        if source["comparison_id"].startswith("sweep_"):
+            continue
         comparisons.append({"comparison_id": source["comparison_id"],
                             "case_ids": source["case_ids"],
                             "fixed_conditions": [source["fixed_conditions"]],

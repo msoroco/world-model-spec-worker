@@ -6,7 +6,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from reviewed_scene import ASSIGNMENT, CAMERAS, execute_native
+from reviewed_scene import ASSIGNMENT, CAMERAS, execute_native, plan
+from build_engineering_sweep_preview import preview
+from engineering_sweep_station import engineering_station, plan_engineering
+from engineering_sweep_runner import run as run_engineering
+from engineering_sweep_audit import audit as audit_engineering
 from source_gated_sweeps import prepare
 from sweep_native_adapter import SweepNativeAdapter
 from sweep_runner import run
@@ -99,6 +103,82 @@ class SweepTests(unittest.TestCase):
     def save_ranges(self):
         self.write_json("ranges.json", self.ranges)
         self.ranges_ref = self.ref("ranges.json")
+
+    def test_bounded_engineering_expansion_requests_only_one_speed_axis(self):
+        value = preview()
+        self.assertTrue(value["engineering_preview_only"])
+        self.assertFalse(value["sweeps_expanded"])
+        self.assertEqual(len(value["sweep_specs"]), 2)
+        self.assertEqual([spec["axes"][0]["min"] for spec in value["sweep_specs"]],
+                         [4.0, 2.0])
+        baseline = plan(self.root, self.site_ref, ASSIGNMENT + "__slow_middle_follower")
+        for axis, role, values in (("impediment", "ego", (4.0, 6.0, 5.0)),
+                                   ("passing_necessity", "slower_vehicle", (2.0, 4.0, 3.0))):
+            for rank, requested in enumerate(values):
+                case_id = ASSIGNMENT + f"__{axis}-{rank:04d}"
+                self.assertEqual(engineering_station(case_id),
+                                 ("slow_middle_follower" if axis == "impediment" else
+                                  "slow_middle_passing", role, requested))
+                scene = plan_engineering(self.root, self.site_ref, case_id)
+                self.assertFalse(scene["physical_acceptance"])
+                self.assertIsNone(scene["legal_verdict"])
+                self.assertEqual(scene["engineering_setpoint"]["requested_speed_mps"], requested)
+                target = next(actor for actor in scene["actors"] if actor["role"] == role)
+                self.assertEqual(target["target_speed_mps"], requested)
+                if axis == "impediment":
+                    for actor in baseline["actors"]:
+                        if actor["role"] != role:
+                            self.assertEqual(next(a for a in scene["actors"] if a["role"] == actor["role"]), actor)
+        with self.assertRaisesRegex(ValueError, "unassigned exact"):
+            plan_engineering(self.root, self.site_ref, ASSIGNMENT + "__impediment-0003")
+
+    def test_engineering_runner_binds_reviewed_site_and_exact_speed(self):
+        output = self.root.parent / (self.root.name + "-engineering")
+        self.addCleanup(lambda: __import__("shutil").rmtree(output, ignore_errors=True))
+        case_id = ASSIGNMENT + "__passing_necessity-0001"
+        with patch("sweep_native_adapter.SweepNativeAdapter") as adapter_class, \
+                patch("engineering_sweep_runner.execute_native") as execute:
+            run_engineering(self.root, self.site_ref, case_id, output, "localhost", 2000)
+        scene = json.loads((output / "requested-scene.json").read_text())
+        self.assertEqual(scene["case_id"], case_id)
+        self.assertEqual(scene["engineering_setpoint"]["requested_speed_mps"], 4.0)
+        self.assertEqual(adapter_class.call_args.args[2], output)
+        execute.assert_called_once()
+        adapter_class.return_value.close.assert_called_once()
+        with self.assertRaisesRegex(ValueError, "fresh sweep attempt"):
+            run_engineering(self.root, self.site_ref, case_id, output, "localhost", 2000)
+
+    def test_engineering_audit_requires_six_distinct_original_traces(self):
+        receipts = []
+        for axis in ("impediment", "passing_necessity"):
+            for rank in range(3):
+                case_id = ASSIGNMENT + f"__{axis}-{rank:04d}"
+                trace_id = axis + str(rank)
+                trace = {"case_id": case_id, "original_trace_id": trace_id,
+                         "diagnostic_fixture": False,
+                         "frames": [{"frame": i, "time_s": i / 20,
+                                     "ego_speed_mps": 4.0 + rank,
+                                     "slower_vehicle_speed_mps": 2.0 + rank}
+                                    for i in range(900)]}
+                name = trace_id + ".json"
+                self.write_json(name, trace)
+                receipts.append({"case_id": case_id,
+                                 "source_kind": "original_native_attempt",
+                                 "owner_released": True, "diagnostic_fixture": False,
+                                 "native_process_exit_code": 0,
+                                 "site_sha256": self.site_ref["sha256"],
+                                 "original_trace_id": trace_id, "trace_ref": self.ref(name)})
+        value = audit_engineering(self.root, self.site_ref, receipts)
+        self.assertEqual(len(value["comparisons"]), 2)
+        self.assertFalse(value["physical_acceptance"])
+        self.assertIsNone(value["legal_verdict"])
+        receipts[0]["owner_released"] = False
+        with self.assertRaisesRegex(ValueError, "released original"):
+            audit_engineering(self.root, self.site_ref, receipts)
+        receipts[0]["owner_released"] = True
+        receipts[0]["original_trace_id"] = receipts[1]["original_trace_id"]
+        with self.assertRaisesRegex(ValueError, "complete original 20 Hz sweep trace"):
+            audit_engineering(self.root, self.site_ref, receipts)
 
     def test_six_one_variable_scenes_execute_through_native_contract(self):
         packet = prepare(self.root, self.site_ref, self.ranges_ref)

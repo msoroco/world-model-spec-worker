@@ -86,7 +86,7 @@ class AuditTests(unittest.TestCase):
         return {"nb_read_frames": "900", "r_frame_rate": "20/1",
                 "width": 960, "height": 540}
 
-    def test_source_bound_deliveries_and_four_comparisons(self):
+    def test_source_bound_deliveries_and_eight_comparisons(self):
         results = {case.name: deliver(self.root, self.attempt(case), self.video_probe)
                    for case in CASES}
         self.assertEqual(len(results), len(CASES))
@@ -126,6 +126,25 @@ class AuditTests(unittest.TestCase):
             compare("walk_vs_run", self.site["scenes"][left.name],
                     changed, left_result, right_result)
 
+    def test_sweep_comparisons_reject_unrealized_requested_station(self):
+        for comparison_id in ("sweep_sudden_departure_0",
+                              "sweep_yield_impossibility_0"):
+            left_name, right_name, _ = PAIRS[comparison_id]
+            left = next(case for case in CASES if case.name == left_name)
+            right = next(case for case in CASES if case.name == right_name)
+            left_result = deliver(self.root, self.attempt(left), self.video_probe)
+            right_result = deliver(self.root, self.attempt(right), self.video_probe)
+            changed = dict(self.site["scenes"][right.name])
+            if comparison_id == "sweep_sudden_departure_0":
+                changed["departure_frame"] = self.site["scenes"][left.name]["departure_frame"]
+                expected = "selected departure hold"
+            else:
+                changed["vehicle_route_xy"] = self.site["scenes"][left.name]["vehicle_route_xy"]
+                expected = "selected vehicle station"
+            with self.assertRaisesRegex(ValueError, expected):
+                compare(comparison_id, self.site["scenes"][left.name], changed,
+                        left_result, right_result)
+
     def test_saved_only_processing_preserves_original_bytes(self):
         case = CASES[0]
         receipt = self.attempt(case)
@@ -156,10 +175,8 @@ class AuditTests(unittest.TestCase):
         scene_plan = plan(self.root, self.site_ref, case_id)
         self.assertEqual(scene_plan["frames"], 900)
         self.assertFalse(scene_plan["physical_acceptance"])
-        config = {"law_id": "NRS-484B-283-1b", "cell_id": "C228096",
-                  "actor": "pedestrian", "selected_case_id": case_id,
-                  "diagnostic_only": True, "rate_hz": 20, "duration_s": 45,
-                  "cameras": list(CAMERAS)}
+        config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+        config["selected_case_id"] = case_id
         self.assertTrue(check_config(config))
         self.site["camera_profiles"].pop("overview")
         self.write_json("site.json", self.site)

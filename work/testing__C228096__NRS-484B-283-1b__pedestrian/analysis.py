@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from math import hypot
 from pathlib import Path
 
 from curb_entry import CASES, measure_original
@@ -58,6 +59,7 @@ def saved_result(attempt: Path, report: dict) -> dict:
     description = construction["recording_description"]
     trace = json.loads((attempt / "trace.json").read_text(encoding="utf-8"))
     rows = trace["frames"]
+    observed = report["measurements"]["pedestrian_path_entry_observation"]["value"]
     channel_values = {
         "pedestrian and curb geometry": [
             {"pedestrian_id": row["pedestrian_id"],
@@ -75,6 +77,12 @@ def saved_result(attempt: Path, report: dict) -> dict:
             {"camera_sources": ["overview.mkv", "approach.mkv",
                                 "reference_corner.mkv", "driver_reference.mkv"],
              "video_frame": index} for index in range(900)],
+        "actual_departure_time_s": [
+            row["time_s"] - rows[0]["time_s"] if row["pedestrian_speed_mps"] > 0.1
+            else 0.0 for row in rows],
+        "vehicle_distance_at_road_entry_m": [
+            hypot(row["pedestrian_xy"][0] - row["vehicle_xy"][0],
+                  row["pedestrian_xy"][1] - row["vehicle_xy"][1]) for row in rows],
     }
     channels = attempt / "channels"
     channels.mkdir(exist_ok=True)
@@ -99,8 +107,8 @@ def saved_result(attempt: Path, report: dict) -> dict:
             raise ValueError("unsupported pedestrian context input")
         evidence.append({"name": item["name"], "unit": item["unit"],
                          "reference": "channels/context.json"})
-    observed = report["measurements"]["pedestrian_path_entry_observation"]["value"]
-    requested_path = case_id.endswith("_into_path")
+    selected_case = next(item for item in CASES if case_id == ASSIGNMENT + "__" + item.name)
+    requested_path = selected_case.route_kind == "path"
     measured_path = observed["vehicle_path_entry_frame"] is not None
     result = {"case_id": case_id, "measured_values": observed,
         "target_checks": [{"target": "entry into vehicle path", "requested": requested_path,
@@ -117,8 +125,26 @@ def saved_result(attempt: Path, report: dict) -> dict:
                              "reference_corner.mkv", "driver_reference.mkv"],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description, "recording_evidence": evidence,
-        "realized_observables": {"pedestrian_path_entry": observed}}
+        "realized_observables": {"pedestrian_path_entry": observed,
+            "actual_departure_time_s": {"value": observed["actual_departure_time_s"], "unit": "s"},
+            "vehicle_distance_at_road_entry_m": {"value": observed["vehicle_distance_at_road_entry_m"], "unit": "m"}}}
     result = physical_result(attempt, result)
+    summaries = (
+        ("actual_departure_time_s", "s", "first original post-hold pedestrian motion frame divided by 20 Hz",
+         observed["actual_departure_time_s"], observed["actual_departure_time_s"]),
+        ("vehicle_distance_at_road_entry_m", "m",
+         "original synchronized pedestrian and vehicle positions at first road-entry frame",
+         observed["vehicle_distance_at_road_entry_m"],
+         (observed["road_entry_frame"] - rows[0]["original_frame"]) / 20
+         if observed["road_entry_frame"] is not None else None),
+    )
+    for name, unit, method, value, sample_time in summaries:
+        if value is not None and sample_time is not None:
+            result["realized_observables"][name] = {
+                "value": value, "unit": unit, "method": method,
+                "time_window": "all 900 original 20 Hz frames", "statistic": "first",
+                "reference": "channels/" + name + ".jsonl",
+                "sample_window_s": [sample_time, sample_time]}
     validate_result(result)
     return result
 

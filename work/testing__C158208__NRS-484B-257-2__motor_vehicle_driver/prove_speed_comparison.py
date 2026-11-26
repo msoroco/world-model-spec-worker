@@ -41,8 +41,8 @@ def main() -> None:
             raise
     else:
         raise ValueError("changed fixed condition accepted")
-    attempts = [HERE.parents[1] / ".runtime-work/c158208-2572-final" /
-                ("speed-saved-proof-" + row["case_id"].removeprefix(HERE.name + "__") + "-v1/v0001/analysis")
+    attempts = [HERE.parents[1] / ".runtime-work" /
+                ("c158208-saved-proof-" + row["case_id"].removeprefix(HERE.name + "__") + "-v8/v0001/analysis")
                 for row in extension["cases"]]
     try:
         audit_attempts(attempts)

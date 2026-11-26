@@ -1,4 +1,4 @@
-"""Validate source-pending canonical proposals with pinned CPU stage contracts."""
+"""Validate expanded physical sampling proposals with pinned CPU stage contracts."""
 from __future__ import annotations
 
 import hashlib
@@ -61,13 +61,14 @@ def check() -> dict:
                     {"request": request, "dependencies": [binding],
                      "templates": [template], "canonical_parameter_rules": rules,
                      "judgment_completion_policy": {}})
-    if cases.get("sweeps_expanded") is not False or len(cases["sweep_specs"]) != 2 or any(
-            spec.get("status") != "incomplete" for spec in cases["sweep_specs"]):
-        raise ValueError("source-dependent judgment sweeps must remain incomplete")
+    if cases.get("sweeps_expanded") is not True or len(cases["sweep_specs"]) != 2 or any(
+            spec.get("status") != "complete" or spec.get("planned_case_count") != 3
+            for spec in cases["sweep_specs"]):
+        raise ValueError("both bounded three-point judgment sampling grids required")
     return {"assignment_id": ROOT.name, "stage_contracts_passed": True,
             "selected_cases_planned": len(cases["cases"]) - 1,
             "comparisons_planned": len(cases["comparisons"]),
-            "judgment_sweeps_pending_source": len(cases["sweep_specs"]),
+            "judgment_sweeps_cpu_planned": len(cases["sweep_specs"]),
             "delivery_ready": False}
 
 

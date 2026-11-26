@@ -17,6 +17,9 @@ ROOT = Path(__file__).resolve().parent
 
 def preview() -> dict:
     proposal = json.loads((ROOT / "proposals/cases.json").read_text(encoding="utf-8"))
+    proposal["cases"] = [case for case in proposal["cases"] if not case.get("sweep_id")]
+    proposal["comparisons"] = [comparison for comparison in proposal["comparisons"]
+                               if not comparison["comparison_id"].startswith("sweep_")]
     source = next(c for c in proposal["cases"] if c.get("target_type") == "boundary_probe")
     grids = []
     for item in proposal["sweep_specs"]:

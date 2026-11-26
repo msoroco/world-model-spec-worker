@@ -21,7 +21,7 @@ def main() -> None:
     case = next((item for item in CASES if args.case == ASSIGNMENT + "__" + item.name), None)
     if case is None:
         raise ValueError("exact selected case required")
-    fixture = AuditTests("test_five_source_bound_deliveries_and_four_comparisons")
+    fixture = AuditTests("test_source_bound_deliveries_and_eight_comparisons")
     fixture.setUp()
     try:
         receipt = fixture.attempt(case)

@@ -1,7 +1,7 @@
-"""Independent fixed-condition checks for the four curb-entry comparisons."""
+"""Independent fixed-condition checks for curb entry and judgment sampling."""
 from __future__ import annotations
 
-from curb_entry import CASES
+from curb_entry import CASES, validate_scene
 from delivery_audit import ASSIGNMENT
 
 
@@ -10,6 +10,10 @@ PAIRS = {
     "close_vs_far": ("close_walk_into_path", "far_walk_into_path", "vehicle_gap"),
     "path_vs_road": ("close_walk_into_path", "close_walk_road_only", "route_kind"),
     "path_vs_curb": ("close_walk_into_path", "close_walk_remain_curb", "route_kind"),
+    "sweep_sudden_departure_0": ("sudden_departure-0000", "sudden_departure-0001", "departure_hold_s"),
+    "sweep_sudden_departure_1": ("sudden_departure-0001", "sudden_departure-0002", "departure_hold_s"),
+    "sweep_yield_impossibility_0": ("yield_impossibility-0000", "yield_impossibility-0001", "vehicle_start_gap_m"),
+    "sweep_yield_impossibility_1": ("yield_impossibility-0001", "yield_impossibility-0002", "vehicle_start_gap_m"),
 }
 
 
@@ -22,6 +26,7 @@ def audit(comparison_id: str, left_scene: dict, right_scene: dict,
              for name in (left_name, right_name)]
     for scene, result, case in ((left_scene, left_result, cases[0]),
                                 (right_scene, right_result, cases[1])):
+        validate_scene(scene, case)
         if (result.get("format") != "c228096-original-delivery-audit-v1" or
                 result.get("source_kind") != "original_native_attempt" or
                 result.get("case_id") != ASSIGNMENT + "__" + case.name or
@@ -39,19 +44,21 @@ def audit(comparison_id: str, left_scene: dict, right_scene: dict,
              "pedestrian_identity_source_sha256", "curb_safety_source_sha256",
              "road_boundary_source_sha256", "vehicle_path_source_sha256",
              "driver_control_source_sha256",
-             "introductory_exceptions_source_sha256", "departure_frame")
+             "introductory_exceptions_source_sha256")
     if any(left_scene.get(key) != right_scene.get(key) for key in fixed):
         raise ValueError("fixed curb, driver, path or source differs")
+    if (left_scene.get("departure_frame") != right_scene.get("departure_frame")) != (variable == "departure_hold_s"):
+        raise ValueError("departure hold comparison variable not isolated")
     for field in ("action", "vehicle_gap", "route_kind"):
         if (left_scene.get(field) != right_scene.get(field)) != (field == variable):
             raise ValueError("declared comparison variable not isolated")
-    if variable != "vehicle_gap" and left_scene.get("vehicle_route_xy") != right_scene.get("vehicle_route_xy"):
+    if variable not in ("vehicle_gap", "vehicle_start_gap_m") and left_scene.get("vehicle_route_xy") != right_scene.get("vehicle_route_xy"):
         raise ValueError("fixed vehicle route differs")
     if variable != "route_kind" and left_scene.get("pedestrian_route_xy") != right_scene.get("pedestrian_route_xy"):
         raise ValueError("fixed pedestrian route differs")
     if variable == "action" and left_scene.get("pedestrian_route_xy") != right_scene.get("pedestrian_route_xy"):
         raise ValueError("walk/run route differs")
-    if variable == "vehicle_gap" and left_scene.get("vehicle_route_xy") == right_scene.get("vehicle_route_xy"):
+    if variable in ("vehicle_gap", "vehicle_start_gap_m") and left_scene.get("vehicle_route_xy") == right_scene.get("vehicle_route_xy"):
         raise ValueError("vehicle-gap construction did not vary")
     if variable == "route_kind" and left_scene.get("pedestrian_route_xy") == right_scene.get("pedestrian_route_xy"):
         raise ValueError("pedestrian route construction did not vary")

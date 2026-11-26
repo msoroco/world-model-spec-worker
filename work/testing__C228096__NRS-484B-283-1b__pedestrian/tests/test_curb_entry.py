@@ -43,7 +43,7 @@ def rows(case,s):
                  pedestrian_xy=[0,y],
                  vehicle_xy=[case.vehicle_start_gap_m if case.vehicle_start_gap_m is not None
                              else 1 if case.vehicle_gap=='close' else 20,0],
-                 pedestrian_speed_mps=2 if case.action=='run' else 1,
+                 pedestrian_speed_mps=0 if i<depart else 2 if case.action=='run' else 1,
                  vehicle_speed_mps=5,
                  vehicle_path_source_sha256=s['vehicle_path_source_sha256'])
         for field in ('frame','pedestrian_motion','vehicle_motion',

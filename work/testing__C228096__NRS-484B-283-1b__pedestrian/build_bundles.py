@@ -64,6 +64,18 @@ def recording_description() -> dict:
                  "sampling_rate_hz": 20, "time_window": "45-second original episode",
                  "uncertainty": "Suddenness, impossibility to yield and exceptions require independent review"}
                 for name, method in names]
+    channels.extend([
+        {"name": "actual_departure_time_s", "unit": "s",
+         "method": "first original post-hold pedestrian motion frame divided by 20 Hz",
+         "reference_frame": "original Native frame clock", "sampling_rate_hz": 20,
+         "time_window": "45-second original episode",
+         "uncertainty": "realized departure and suddenness need independent review"},
+        {"name": "vehicle_distance_at_road_entry_m", "unit": "m",
+         "method": "synchronized original pedestrian and vehicle positions at road entry",
+         "reference_frame": "original Native world coordinates", "sampling_rate_hz": 20,
+         "time_window": "45-second original episode",
+         "uncertainty": "actual separation and ability to yield need independent review"},
+    ])
     context = [{"name": "reviewed curb, roadway and driver authority",
                 "unit": "source record", "method": "SHA-256-sealed original site and actor readback"}]
     return {"channels": channels, "context_inputs": context,

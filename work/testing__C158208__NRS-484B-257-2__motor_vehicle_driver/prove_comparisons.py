@@ -23,9 +23,11 @@ def main() -> None:
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work/c158208-nov25/output'))
     receipts = []
     for pair in plan['comparisons']:
+        if pair['comparison_id'] == 'approaching_near_crossing_speed_sweep':
+            continue
         ident = pair['comparison_id']
         paths = [REPO / '.runtime-work' / ('c158208-saved-proof-' +
-                 case.removeprefix(ROOT.name + '__') + '-v5') / 'v0001/analysis'
+                 case.removeprefix(ROOT.name + '__') + '-v8') / 'v0001/analysis'
                  for case in pair['case_ids']]
         command = [str(REPO / '.venv-cpu/bin/python'), str(SCRIPT), '--comparison', ident,
                    '--left', str(paths[0]), '--right', str(paths[1])]

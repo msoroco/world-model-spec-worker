@@ -38,6 +38,16 @@ def main() -> None:
         subprocess.run(command, cwd=REPO, env=env, check=True, capture_output=True, text=True)
         expanded = json.loads(expanded_path.read_text())
     expanded.pop("engineering_preview_only", None)
+    for case in expanded["cases"]:
+        assignments = case["variable_assignments"]
+        for name, unit in (("departure_hold_s", "s"), ("vehicle_start_gap_m", "m")):
+            assignments.setdefault(name, {"kind": "controller", "value": None,
+                                          "unit": unit,
+                                          "note": "inactive in this selected physical comparison"})
+        for name, unit in (("actual_departure_time_s", "s"),
+                           ("vehicle_distance_at_road_entry_m", "m")):
+            assignments.setdefault(name, {"kind": "subject_behavior", "value": None,
+                                          "unit": unit})
     extras = [case for case in expanded["cases"] if case.get("sweep_id")]
     if len(extras) != 6:
         raise ValueError("exact six-case expansion required")

@@ -1,0 +1,791 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__baseline",
+      "rationale": "Shared four-case source observation definition; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Retain original follower forward movement and contextual review; no legal speed cutoff is asserted.",
+          "phrase": "so slow as to impede"
+        },
+        {
+          "note": "Observed pass alone does not prove necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower",
+      "deliberate_differences": [
+        "ego_lane_role"
+      ],
+      "paired_probe_id": "right_lane_duty_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "ego_lane_role",
+        "target_value_or_branch": "middle"
+      },
+      "rationale": "Source-gated four-case request; realized lane relation, follower movement, passing state and legal applicability require original capture and review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Retain original follower forward movement and contextual review; no legal speed cutoff is asserted.",
+          "phrase": "so slow as to impede"
+        },
+        {
+          "note": "Observed pass alone does not prove necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_right_follower",
+      "deliberate_differences": [
+        "ego_lane_role"
+      ],
+      "paired_probe_id": "right_lane_duty_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "ego_lane_role",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Source-gated four-case request; realized lane relation, follower movement, passing state and legal applicability require original capture and review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Retain original follower forward movement and contextual review; no legal speed cutoff is asserted.",
+          "phrase": "so slow as to impede"
+        },
+        {
+          "note": "Observed pass alone does not prove necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "right"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_passing",
+      "deliberate_differences": [
+        "slower_vehicle_pass"
+      ],
+      "paired_probe_id": "right_lane_duty_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "slower_vehicle_pass",
+        "target_value_or_branch": "present"
+      },
+      "rationale": "Source-gated four-case request; realized lane relation, follower movement, passing state and legal applicability require original capture and review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Retain original follower forward movement and contextual review; no legal speed cutoff is asserted.",
+          "phrase": "so slow as to impede"
+        },
+        {
+          "note": "Observed pass alone does not prove necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "present"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_no_immediate_follower",
+      "deliberate_differences": [
+        "follower_relation"
+      ],
+      "paired_probe_id": "right_lane_duty_controlled_cases",
+      "probe": {
+        "comparison_or_standard": "Original source observations; no legal verdict",
+        "primary_variable": "follower_relation",
+        "target_value_or_branch": "non_immediate"
+      },
+      "rationale": "Source-gated four-case request; realized lane relation, follower movement, passing state and legal applicability require original capture and review.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        {
+          "note": "Retain original follower forward movement and contextual review; no legal speed cutoff is asserted.",
+          "phrase": "so slow as to impede"
+        },
+        {
+          "note": "Observed pass alone does not prove necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "non_immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "absent"
+        }
+      }
+    }
+  ],
+  "cell_id": "C147344",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower",
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_right_follower"
+      ],
+      "comparison_id": "extreme_right_position",
+      "deliberate_differences": [
+        "ego in middle versus extreme-right lane"
+      ],
+      "fixed_conditions": [
+        "same marked same-direction highway lanes and destination",
+        "same ego vehicle, driver, speed profile, route and capture",
+        "same follower speed and relative state except named difference"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower",
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_passing"
+      ],
+      "comparison_id": "passing_exception",
+      "deliberate_differences": [
+        "slower vehicle being passed and related passing state"
+      ],
+      "fixed_conditions": [
+        "same marked same-direction highway lanes and destination",
+        "same ego vehicle, driver, speed profile, route and capture",
+        "same follower speed and relative state except named difference"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower",
+        "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_no_immediate_follower"
+      ],
+      "comparison_id": "immediate_follower_condition",
+      "deliberate_differences": [
+        "following traffic immediately behind ego versus absent"
+      ],
+      "fixed_conditions": [
+        "same marked same-direction highway lanes and destination",
+        "same ego vehicle, driver, speed profile, route and capture",
+        "same follower speed and relative state except named difference"
+      ]
+    }
+  ],
+  "engineering_preview_only": true,
+  "source_assignment": "inputs/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/assignment.json",
+  "source_law_text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway has two or more clearly marked lanes for traffic traveling in the direction in which the driver or operator is traveling, drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles.",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "axes": [
+        {
+          "feasibility_evidence": "source_gated_sweeps.py and its CPU fake-adapter tests exercise the requested controller values; original highway and physical feasibility remain unverified.",
+          "max": 6.0,
+          "measurement": {
+            "method": "original 20 Hz Native actor speed readback, with full trace retained",
+            "statistic": "mean",
+            "time_window": "entire original 45-second episode"
+          },
+          "min": 4.0,
+          "observable": "ego_speed_mps",
+          "range_rationale": "Authored low-speed controller requests for the 45-second route; not a training bound, legal cutoff, or claimed physical outcome.",
+          "spacing": 1.0,
+          "spacing_rationale": "Three distinguishable controller requests; realized spacing needs original trace review.",
+          "unit": "m/s",
+          "variable": "ego_speed_mps"
+        }
+      ],
+      "judgment_refs": [
+        {
+          "note": "Original follower movement and traffic context must be independently reviewed; closing speed is not a legal cutoff.",
+          "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind"
+        }
+      ],
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "rationale": "Bounded physical speed sampling; impediment and passing necessity remain legal review questions.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "status": "complete",
+      "sweep_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__impediment",
+      "target_law_id": "NRS-484B-627-1b",
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "ego_speed_mps": {
+          "kind": "controller",
+          "note": "Authored speed request; retain all original measured speeds separately",
+          "unit": "m/s",
+          "value": 4.0
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "axes": [
+        {
+          "feasibility_evidence": "source_gated_sweeps.py and its CPU fake-adapter tests exercise the requested controller values; original highway and physical feasibility remain unverified.",
+          "max": 4.0,
+          "measurement": {
+            "method": "original 20 Hz Native actor speed readback, with full trace retained",
+            "statistic": "mean",
+            "time_window": "entire original 45-second episode"
+          },
+          "min": 2.0,
+          "observable": "slower_vehicle_speed_mps",
+          "range_rationale": "Authored low-speed controller requests for the 45-second route; not a training bound, legal cutoff, or claimed physical outcome.",
+          "spacing": 1.0,
+          "spacing_rationale": "Three distinguishable controller requests; realized spacing needs original trace review.",
+          "unit": "m/s",
+          "variable": "slower_speed_mps"
+        }
+      ],
+      "judgment_refs": [
+        {
+          "note": "Original slower-vehicle behavior and passing context must be reviewed; an observed pass is not necessity.",
+          "phrase": "necessary to pass other slowly moving vehicles"
+        }
+      ],
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "rationale": "Bounded physical speed sampling; impediment and passing necessity remain legal review questions.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original reviewed map and lane readback",
+            "name": "marked highway lane identities",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native transform, lane and speed",
+            "name": "ego lane and motor-vehicle motion",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original following actor and independently sealed ordering readback",
+            "name": "following traffic and immediate relation",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original slower-vehicle and passing-state readback",
+            "name": "passing and slower vehicle",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB streams",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Actual impediment and passing necessity require independent original-source review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site and Native readback",
+            "name": "reviewed original highway and marked-lane authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Gap and closing speed do not independently establish legal impediment.",
+          "An observed passing state does not independently establish necessity."
+        ]
+      },
+      "status": "complete",
+      "sweep_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__passing_necessity",
+      "target_law_id": "NRS-484B-627-1b",
+      "variable_assignments": {
+        "ego_lane_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "middle"
+        },
+        "follower_relation": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "immediate"
+        },
+        "slower_speed_mps": {
+          "kind": "controller",
+          "note": "Authored speed request; retain all original measured speeds separately",
+          "unit": "m/s",
+          "value": 2.0
+        },
+        "slower_vehicle_pass": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "present"
+        }
+      }
+    }
+  ],
+  "sweeps_expanded": false
+}

@@ -137,7 +137,7 @@ def measure_original(rows:list[Mapping],scene:Mapping,case:Case):
     require(type(first) is int and number(rows[0].get('time_s')),
             'original frame/time identity missing')
     ped_id=vehicle_id=None
-    road_frame=path_frame=None
+    road_frame=path_frame=motion_frame=None
     departure_distance=None
     speed_pairs=[]
     for i,row in enumerate(rows):
@@ -163,6 +163,8 @@ def measure_original(rows:list[Mapping],scene:Mapping,case:Case):
                 number(row.get('pedestrian_speed_mps')) and
                 number(row.get('vehicle_speed_mps')),
                 'original synchronized motion missing')
+        if motion_frame is None and row['pedestrian_speed_mps'] > 0.1:
+            motion_frame=first+i
         in_road=inside(row['pedestrian_xy'],scene['road_rect_m'])
         in_path=inside(row['pedestrian_xy'],scene['vehicle_path_rect_m'])
         if i==0:require(not in_road and not in_path,'pedestrian not initially safe')
@@ -183,6 +185,7 @@ def measure_original(rows:list[Mapping],scene:Mapping,case:Case):
                 'curb-stay control left safety')
     return {'case_id':case.name,'road_entry_frame':road_frame,
             'vehicle_path_entry_frame':path_frame,
+            'actual_departure_time_s': (motion_frame-first)/20 if motion_frame is not None else None,
             'vehicle_distance_at_road_entry_m':departure_distance,
             'maximum_pedestrian_speed_mps':max(x for x,_ in speed_pairs),
             'maximum_vehicle_speed_mps':max(y for _,y in speed_pairs),
