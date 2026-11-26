@@ -41,3 +41,11 @@ Command: `.venv-cpu/bin/python work/training__C228817__NRS-484B-153-3__motor_veh
 Hashes: `native/audit_comparison.py` 4493ca4a7e514217c3a1ac8e5ab6b7ac1e5c796fea7076d973f60be61efeb0e8; `native/comparison-proof.json` bc3010782f9fedb1aea2e62c45c393710e19ac5bfbe00d4a7754766359c65913; `native/comparison-proof.log` 6180978d15d828c153b23bfff5e32749d7da9de79d0e3e11d3d50fe27647ad45.
 
 Next CPU work: wire an exact CARLA/OpenDRIVE scene and door actuator with source-camera capture into the frozen runtime, then test one primary through offline, compatibility and process-saved before expanding to distinct fallbacks and independent delivery audits. Preserve the four historical accepted recording IDs as membership context until source-hashed equivalence is available. Status remains partial.
+
+## 2026-11-26 exact door actuation checkpoint
+
+`native/door_actuation.py` now applies exact CARLA door transitions at frames 100 and 212/400, while retaining `observed_door_open=None` until independent original source review. It validates SHA-bound Native map, road and transfer records, the frozen cell, selected driver operator, complete passing-vehicle side trajectory, and passenger or identified cargo transfer at frame 200. `native/prove_actuation.py` passed both exact schedules, the cargo source form, and seven negative source/geometry guards. `runtime.py preflight` passed on the pinned CPU environment.
+
+Proof command: `TMPDIR=$PWD/.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c228817 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/native/prove_actuation.py`. Hashes: `native/door_actuation.py` 3a0e05adcb06ffc0fde8fb86e687c90f407051d0956196e920cf7f99ee53cc30, `native/prove_actuation.py` 1969530e22a781841e59612e0b7d76b0e088e7d914b01edbffdce9d86a1cb92a, `native/actuation-proof.log` 2295909d941099179133e7b75129b4b01649e4e0b1d686e0677d060150003d29.
+
+Status remains partial. Next CPU work: bundle this actuator in a four-camera Native runner with source-bound actor and transfer capture, then run exact offline/public positive and missing-source negative, recorded-only, semantic, physical/lifecycle and independent delivery/comparison proofs. Accepted membership is not source-hashed equivalence. No legal necessity threshold or physical completion is inferred.

@@ -96,6 +96,8 @@ def build():
             'measurement_procedure':{'entrypoint':'finalize.py',
                 'output_schema':'c230247-lane-arrow-saved-analysis-v1'},
             'fixture_recipe':f'work/{ASSIGNMENT}/diagnostic-{tag}-recipe.json',
+            'native_handoff':{'python_env_var':'CARLA_PYTHON',
+                'host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT'},
             'acquisition':{channel['name']:{'entrypoint':'capture.py',
                 'method':'original Native post-tick actor, lane signal and four camera join',
                 'evidence':'Source-gated prospective capture; physical proof pending'}
@@ -105,10 +107,27 @@ def build():
             'candidates':[]}
         offline_log=ROOT/f'selected-{tag}-offline.log'
         if offline_log.is_file() and json.loads(offline_log.read_text()).get('offline_passed') is True:
-            entry['offline']={'command':f'TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --output .runtime-work/c230247-selected-{tag}-20261126e',
+            entry['offline']={'command':f'TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --output .runtime-work/c230247-selected-{tag}-20261126g',
                 'exit_code':0,'construction_sha256':entry['construction_sha256'],
                 'log':offline_log.name,
                 'log_sha256':hashlib.sha256(offline_log.read_bytes()).hexdigest()}
+        compatibility=ROOT/f'{tag}-compatibility.json'
+        compatibility_log=ROOT/f'{tag}-compatibility-analysis.log'
+        negative_log=ROOT/f'{tag}-negative-analysis.log'
+        if all(p.is_file() for p in (compatibility,compatibility_log,negative_log)):
+            receipt=json.loads(compatibility.read_text())
+            if (receipt.get('passed') is True and
+                receipt.get('construction_sha256')==entry['construction_sha256'] and
+                receipt.get('log_sha256')==hashlib.sha256(compatibility_log.read_bytes()).hexdigest() and
+                receipt.get('negative_log_sha256')==hashlib.sha256(negative_log.read_bytes()).hexdigest()):
+                entry['compatibility']={'receipt':compatibility.name,
+                    'sha256':hashlib.sha256(compatibility.read_bytes()).hexdigest(),
+                    'log':compatibility_log.name}
+                entry['negative']={'log':negative_log.name}
+        physical=ROOT/f'physical-{tag}-preparation.json'
+        if physical.is_file() and json.loads(physical.read_text()).get('construction_sha256')==entry['construction_sha256']:
+            entry['physical_preparation']={'receipt':physical.name,
+                'sha256':hashlib.sha256(physical.read_bytes()).hexdigest()}
         constructions.append(entry)
     manifest={'format':'worker-execution-manifest','assignment_id':ASSIGNMENT,
         'runtime_manifest_sha256':hashlib.sha256((HERE.parents[2]/'runtime/SOURCE-MANIFEST.json').read_bytes()).hexdigest(),

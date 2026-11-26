@@ -53,7 +53,7 @@ class NativeDraft(unittest.TestCase):
             config['case_id'].rsplit('__',1)[0]+'__probe_02'])
         self.assertEqual(config['duration_s'],30)
         self.assertEqual(config['rate_hz'],20)
-        self.assertEqual(config['cameras'][0]['name'],'bridge_overview')
+        self.assertEqual(config['cameras'][0]['name'],'overview')
 
     def test_materialized_destination_and_replay_rejection(self):
         with tempfile.TemporaryDirectory() as tmp:

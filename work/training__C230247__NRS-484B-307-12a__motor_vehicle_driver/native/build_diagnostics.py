@@ -73,9 +73,10 @@ def build(tag,lane):
                    'capture/native/frames.jsonl':lines(native_frames),
                    'capture/manifest.json':encoded({'frames':600,'extraction_confirmed':True,
                        'synthetic_diagnostic':True,'case_id':case_id,'required_observations':[],
-                       'sources':{'native-map-readback.xodr':sha(HERE/'road.xodr'),
+                       'sources':{'road.xodr':sha(HERE/'road.xodr'),
+                                  'native-map-readback.xodr':sha(HERE/'road.xodr'),
                                   'trace.jsonl':hashlib.sha256(lines(trace).encode()).hexdigest()}})+'\n',
-                   'capture/recorder_info.txt':'Synthetic CPU diagnostic; no CARLA recording.\n'}
+                   'capture/recorder_info.txt':'Synthetic CPU diagnostic; no CARLA recording.\nCreate 71: vehicle.tesla.model3\n'}
     spec_path=ROOT/f'diagnostic-{tag}.json';save(spec_path,spec)
     source_files=[('native-signal-rows.jsonl',signal_path),
                   ('native-map-readback.xodr',HERE/'road.xodr')]

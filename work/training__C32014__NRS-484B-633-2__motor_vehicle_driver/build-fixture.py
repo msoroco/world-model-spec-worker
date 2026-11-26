@@ -38,7 +38,7 @@ def build(suffix, speed):
     context_file.write_text(json.dumps(context, separators=(',', ':')) + '\n')
     road = open_drive()
     history, trace, frames, evidence, native_frames, graphs = [], [], [], [], [], []
-    names = ('bridge_overview', 'near_posting', 'far_posting', 'subject_chase')
+    names = ('overview', 'approach', 'reference_corner', 'driver_reference')
     for i in range(600):
         time = i / 20
         x = -70 + speed * time
@@ -94,8 +94,8 @@ def build(suffix, speed):
              'capture/manifest.json': json.dumps(capture_manifest) + '\n',
              'capture/native/frames.jsonl': encoded(native_frames),
              'capture/recorder_info.txt': 'Synthetic bridge CPU diagnostic; no Native recording or Department evidence.\nCreate 10: vehicle.audi.tt (0)\n'}
-    videos = [{'path': name+'.mkv', 'frames': 600, 'width': 1280,
-               'height': 720, 'fps': 20, 'color': 'black'} for name in names]
+    videos = [{'path': name+'.mkv', 'frames': 600, 'width': 1920 if name == 'overview' else 1280,
+               'height': 1080 if name == 'overview' else 720, 'fps': 20, 'color': 'black'} for name in names]
     spec_file = source_dir / 'fixture-spec.json'
     spec_file.write_text(json.dumps({'files': files, 'graphs': graphs, 'videos': videos},
                                     separators=(',', ':')) + '\n')

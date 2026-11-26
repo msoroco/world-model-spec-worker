@@ -8,12 +8,16 @@ from measure import measure
 
 SOURCES = ('bridge-speed-history.jsonl', 'bridge-context.json',
            'video_frames.jsonl', 'trace.jsonl', 'capture/evidence.jsonl', 'road.xodr')
-VIDEOS = ('bridge_overview.mkv', 'near_posting.mkv',
-          'far_posting.mkv', 'subject_chase.mkv')
+VIDEOS = ('overview.mkv', 'approach.mkv',
+          'reference_corner.mkv', 'driver_reference.mkv')
 
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def measure_bridge(history, context):
+    return measure(history, context)
 
 
 def finalize(attempt, output):
@@ -28,7 +32,7 @@ def finalize(attempt, output):
     case = config.get('selected_case_id')
     if case != construction.get('case_id') or case not in config.get('supported_case_ids', []):
         raise ValueError('Saved bridge finalizer exact-case identity differs')
-    observed = measure(attempt / SOURCES[0], attempt / SOURCES[1])
+    observed = measure_bridge(attempt / SOURCES[0], attempt / SOURCES[1])
     frame_map = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()]
     trace = [json.loads(line) for line in (attempt / 'trace.jsonl').read_text().splitlines()]
     history = [json.loads(line) for line in (attempt / SOURCES[0]).read_text().splitlines()]
@@ -61,16 +65,18 @@ def finalize(attempt, output):
     source_hashes = {name: sha(attempt / name) for name in SOURCES}
     report = {'format': 'worker-analysis-report', 'case_id': case,
               'measurements': {'bridge_speed_observation': {
-                  'method': 'measure', 'value': observed, 'sources': source_hashes}},
+                  'method': 'measure_bridge', 'value': observed, 'sources': source_hashes}},
               'source_complete': True, 'diagnostic_fixture': bool(config.get('diagnostic_fixture')),
               'physical_or_legal_acceptance': False}
     measured = observed['maximum_on_structure_mph']
     requested = config['requested_speed_mps'] * 2.2369362921
+    tolerance = 0.5
     result = {'case_id': case, 'measured_values': observed,
               'target_checks': [{'target': 'original on-deck speed near requested diagnostic target',
                                  'requested': requested, 'measured': measured,
-                                 'method': 'measure', 'tolerance': 0,
-                                 'matched': False, 'physical_cause_confirmed': False,
+                                 'method': 'measure_bridge', 'tolerance': tolerance,
+                                 'matched': abs(requested - measured) <= tolerance,
+                                 'physical_cause_confirmed': False,
                                  'cause_evidence': list(SOURCES)}],
               'setup_confirmed': False, 'behavior_attempted': False,
               'maneuver_completed': False,

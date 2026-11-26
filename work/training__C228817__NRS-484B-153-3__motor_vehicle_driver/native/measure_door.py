@@ -51,8 +51,14 @@ def measure(packet: dict) -> dict:
     passing_side = "left" if signs == {1} else "right"
     if door["side"] != passing_side:
         raise ValueError("observed door is not on passing-traffic side")
+    first_tick = frames[0].get("native_frame")
+    first_time = frames[0].get("native_time_s")
+    if type(first_tick) is not int or type(first_time) not in (int, float) or not math.isfinite(first_time):
+        raise ValueError("original Native frame/time origin required")
     for i, row in enumerate(frames):
-        if row.get("native_frame") != i or abs(row.get("native_time_s", -1) - i / FPS) > 1e-6:
+        if row.get("native_frame") != first_tick + i or row.get("video_frame", i) != i or \
+                type(row.get("native_time_s")) not in (int, float) or \
+                abs(row["native_time_s"] - first_time - i / FPS) > 1e-5:
             raise ValueError("contiguous original Native frame/time join required")
         if not isinstance(row.get("door_open"), bool) or not row.get("door_state_source_ref"):
             raise ValueError("sourced door-open state required for every frame")
@@ -81,18 +87,20 @@ def measure(packet: dict) -> dict:
     for event in events:
         if event.get("kind") not in ("passenger", "cargo") or not event.get("source_ref"):
             raise ValueError("sourced passenger or cargo event required")
-        if not isinstance(event.get("native_frame"), int) or not opening <= event["native_frame"] < closing:
+        event_frame = event.get("video_frame", event.get("native_frame"))
+        if type(event_frame) is not int or not opening <= event_frame < closing:
             raise ValueError("transfer event must join observed open interval")
         if event["kind"] == "passenger" and not (event.get("occupancy_delta") and event.get("pedestrian_actor_id")):
             raise ValueError("passenger transfer needs occupancy and pedestrian sources")
         if event["kind"] == "cargo" and not event.get("cargo_actor_id"):
             raise ValueError("cargo transfer needs identified cargo")
-    last_transfer = max(e["native_frame"] for e in events)
+    last_transfer = max(e.get("video_frame", e.get("native_frame")) for e in events)
     return {
         "source_kind": packet["source_kind"], "source_sha256": packet["source_sha256"],
         "frame_count": FRAME_COUNT, "fps": FPS, "door_side": door["side"],
         "passing_side": passing_side, "driver_operated_door": True,
         "open_frame": opening, "close_frame": closing,
+        "first_native_tick": first_tick,
         "open_duration_s": (closing - opening) / FPS,
         "last_transfer_frame": last_transfer,
         "post_transfer_open_s": (closing - last_transfer) / FPS,

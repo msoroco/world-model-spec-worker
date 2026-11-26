@@ -35,6 +35,16 @@ def main():
     near = measure(fixture())
     extended = measure(fixture(400))
     cargo = measure(fixture(260, "cargo"))
+    shifted = fixture()
+    for i, row in enumerate(shifted["frames"]):
+        row["native_frame"] = i + 5480
+        row["native_time_s"] = 274.0 + i / 20
+        row["video_frame"] = i
+    shifted["transfer_events"][0]["native_frame"] = 5680
+    shifted["transfer_events"][0]["video_frame"] = 200
+    shifted_measure = measure(shifted)
+    assert shifted_measure["first_native_tick"] == 5480
+    assert shifted_measure["last_transfer_frame"] == 200
     assert near["post_transfer_open_s"] == 0.6
     assert extended["post_transfer_open_s"] == 10.0
     assert cargo["transfer_kinds"] == ["cargo"]
@@ -44,6 +54,7 @@ def main():
         "missing_camera": lambda p: p["cameras"].pop("approach"),
         "missing_frame": lambda p: p["frames"].pop(),
         "nonmonotone_frame": lambda p: p["frames"][300].update(native_frame=299),
+        "wrong_video_join": lambda p: p["frames"][300].update(video_frame=299),
         "unsourced_door": lambda p: p["frames"][150].update(door_state_source_ref=""),
         "wrong_side": lambda p: p["door"].update(side="right"),
         "ambiguous_path": lambda p: p["passing_vehicle"]["lateral_offsets_m"].__setitem__(150, -3.4),
@@ -66,14 +77,15 @@ def main():
     proof = {
         "format": "synthetic-native-door-diagnostic-proof", "passed": True,
         "source_code_sha256": hashlib.sha256((root / "measure_door.py").read_bytes()).hexdigest(),
-        "positive": {"close_after_transfer": near, "extended_open": extended, "cargo": cargo},
+        "positive": {"close_after_transfer": near, "extended_open": extended,
+                     "cargo": cargo, "nonzero_original_tick": shifted_measure},
         "negative_rejections": negatives,
         "limitations": ["Synthetic trace only; no CARLA original frame map or camera pixels",
                         "necessity and immediacy are unresolved legal judgments",
                         "fixture source refs are deliberately not original Native hashes"],
     }
     (root / "door-proof.json").write_text(json.dumps(proof, indent=2, sort_keys=True) + "\n")
-    print(f"3 positives, {len(negatives)} source and geometry negatives passed")
+    print(f"4 positives, {len(negatives)} source and geometry negatives passed")
 
 
 if __name__ == "__main__":

@@ -12,10 +12,10 @@ from geometry import check as geometry_check, open_drive
 FRAMES=600
 RATE=20
 CAMERAS=(
- ('bridge_overview',1280,720,50,-25,24,-40,False),
- ('near_posting',1280,720,-40,-13,9,-22,False),
- ('far_posting',1280,720,140,13,9,-22,False),
- ('subject_chase',1280,720,-10,0,6,-12,True),
+ ('overview',1920,1080,50,-25,24,-40,False),
+ ('approach',1280,720,-40,-13,9,-22,False),
+ ('reference_corner',1280,720,140,13,9,-22,False),
+ ('driver_reference',1280,720,-10,0,6,-12,True),
 )
 TARGET_MPS={'probe_01':9.0,'probe_02':13.0}
 

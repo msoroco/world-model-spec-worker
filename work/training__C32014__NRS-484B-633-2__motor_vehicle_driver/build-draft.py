@@ -19,8 +19,9 @@ def main():
       'candidate_id':'primary','law_id':'NRS-484B-633-2','cell_id':'C32014',
       'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,'required_atoms':[],
       'source_packets':[],'case':{'case_id':case},
-      'cameras':[{'name':name,'width':1280,'height':720} for name in
-        ('bridge_overview','near_posting','far_posting','subject_chase')],
+      'cameras':[{'name':name,'width':1920 if name == 'overview' else 1280,
+                 'height':1080 if name == 'overview' else 720} for name in
+        ('overview','approach','reference_corner','driver_reference')],
       'recording_description':{'channels':[
         {'name':'original_velocity_position','unit':'structured','sampling_rate_hz':20,
          'method':'Native post-tick actor velocity and transform','time_window':'600 frames',
@@ -28,6 +29,7 @@ def main():
         {'name':'structure_sign_survey','unit':'structured','sampling_rate_hz':20,
          'method':'Native map/sign/elevation readback','time_window':'600 frames',
          'reference_frame':'bridge road 1','uncertainty':'physical pixels unverified'}],
+        'context_inputs':[],
         'limitations':['Department structural-safety investigation/determination absent',
                        'Original sign pixels and bridge mesh unverified']},
       'status':'partial_cpu_draft','requested_speed_mps':target_mps}
@@ -51,6 +53,8 @@ def main():
       path.write_text(json.dumps(proposal,indent=2)+'\n')
       manifest_cases.append({'case_id':case,'kind':'delivery',
         'construction':str(path.relative_to(HERE)),'construction_sha256':sha(path),
+        'fixture_recipe':str((HERE/'diagnostic'/suffix/'fixture-recipe.json').relative_to(ROOT)),
+        'measurement_contract':f'diagnostic/{suffix}/measurement-contract.json',
         'candidate_risk':{'status':'physical',
           'reason':'Native bridge mesh, sign pixels and actual speed require inspection'},
         'candidates':[],'measurement_procedure':{'entrypoint':'finalize.py'},

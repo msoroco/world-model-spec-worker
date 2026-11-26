@@ -182,7 +182,8 @@ def execute(case_id, output_dir, host='127.0.0.1', port=2000):
             if encoder_codes[name] or not (output/(name+'.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed '+name+': '+error.decode()[-400:])
         _write(capture/'manifest.json',{'frames':FRAMES,'extraction_confirmed':True,
-            'synthetic_diagnostic':False,'sources':{'native-map-readback.xodr':_sha(output/'native-map-readback.xodr'),
+            'synthetic_diagnostic':False,'sources':{'road.xodr':_sha(output/'road.xodr'),
+                'native-map-readback.xodr':_sha(output/'native-map-readback.xodr'),
             'trace.jsonl':_sha(output/'trace.jsonl')},'required_observations':[]})
         (capture/'recorder_info.txt').write_text('Original Native lane-control attempt; independent pixel and authority review pending.\n')
         completed=True
