@@ -11,7 +11,7 @@ from geometry import check as geometry_check, open_drive
 
 FRAMES = 600
 RATE = 20
-CAMERAS = ('overview', 'ego_front', 'curb', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -97,8 +97,8 @@ def execute(config, output_dir, host, port):
         (output / 'acquisition-provenance.json').write_text(json.dumps({
             'provenance_kind': 'native', 'diagnostic_fixture': False,
             'physical_acceptance_claimed': False}, indent=2) + '\n')
-        mounts = {'overview': (15, -25, 24, -35), 'ego_front': (0, -11, 9, -15),
-                  'curb': (40, 8, 10, -20), 'rear': (-45, 8, 10, -20)}
+        mounts = {'overview': (15, -25, 24, -35), 'approach': (0, -11, 9, -15),
+                  'reference_corner': (40, 8, 10, -20), 'driver_reference': (-45, 8, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -106,6 +106,7 @@ def execute(config, output_dir, host, port):
             cbp.set_attribute('image_size_x', str(spec['width']))
             cbp.set_attribute('image_size_y', str(spec['height']))
             cbp.set_attribute('sensor_tick', str(1 / RATE))
+            cbp.set_attribute('fov', str(spec['fov_deg']))
             camera = world.spawn_actor(cbp, carla.Transform(
                 carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch)))
             owned.append(camera)

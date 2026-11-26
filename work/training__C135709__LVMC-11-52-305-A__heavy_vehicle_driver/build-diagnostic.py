@@ -8,7 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 BASE = ROOT / 'work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/diagnostic-probe_01.json'
 AID = HERE.name
-CAMERAS = ('overview', 'ego_front', 'curb', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 sys.path.insert(0, str(HERE / 'native'))
 from geometry import PARK_BOUNDS, STREET_BOUNDS, open_drive
 
@@ -82,19 +82,32 @@ for suffix, target_x in (('probe_1', -30.0), ('probe_2', 40.0)):
         'reviewer': 'synthetic fixture generator', 'source': 'synthetic park status inventory',
         'road_sha256': road_hash, 'pixel_sha256': 'synthetic_rgb_source',
         'park_status': 'public_park', 'park_bounds_m': PARK_BOUNDS,
-        'residence_district_300ft': False, 'public_school': False}) + '\n'
+        'residence_district_300ft': False, 'public_school': False,
+        'public_access': True, 'jurisdiction_reviewed': True,
+        'designation_source': 'synthetic external public park status record'}) + '\n'
     spec['files']['vehicle-spec-review.json'] = json.dumps({'review_status': 'synthetic_diagnostic',
         'reviewer': 'synthetic fixture generator', 'source': 'synthetic commercial vehicle specification',
         'pose_sha256': sha(spec['files']['vehicle-poses.jsonl']),
-        'vehicle_class': 'commercial_motor_vehicle', 'vehicle_overall_length_m': 8.0,
-        'vehicle_unladen_mass_kg': 4000.0}) + '\n'
+        'vehicle_class': 'commercial_motor_vehicle', 'trailer_present': False, 'occupant_count': 1, 'vehicle_overall_length_m': 8.0,
+        'vehicle_unladen_mass_kg': 4000.0,
+        'commercial_enterprise_basis': 'synthetic enterprise design and use record',
+        'design_maintenance_or_use': 'synthetic commercial maintenance and use'}) + '\n'
     spec['files']['exception-review.json'] = json.dumps({'review_status': 'synthetic_diagnostic',
         'reviewer': 'synthetic fixture generator', 'source': 'synthetic exception activity inventory',
         'road_sha256': road_hash, 'pixel_sha256': 'synthetic_rgb_source',
         'posted_permission': False, 'expeditious_loading': False,
-        'essential_local_service': False,
+        'essential_local_service': False, 'property_frontage': 'synthetic park frontage',
+        'door_open_observed': False, 'service_ttc_observed': False,
         'loading_activity_source': 'synthetic no loading record',
-        'service_activity_source': 'synthetic no essential local service record'}) + '\n'
+        'service_activity_source': 'synthetic no essential local service record',
+        'device_wording': 'synthetic parking restriction device; no permission wording',
+        'device_authority': 'synthetic diagnostic authority record only',
+        'governed_area': 'synthetic surveyed narrow-road frontage',
+        'parking_purpose': 'synthetic stopped parking activity',
+        'actual_transfer_activity': 'synthetic no goods or passenger transfer',
+        'section_wide_exceptions_review': 'reserved for independent legal review',
+        'storage_meaning_review': 'reserved for independent legal review',
+        'modifier_scope_review': 'reserved for independent legal review'}) + '\n'
     spec['files']['fixture-provenance.json'] = json.dumps({'diagnostic_fixture': True,
         'source': 'synthetic parking source shape', 'physical_acceptance_claimed': False}) + '\n'
     manifest = json.loads(spec['files']['capture/manifest.json'])

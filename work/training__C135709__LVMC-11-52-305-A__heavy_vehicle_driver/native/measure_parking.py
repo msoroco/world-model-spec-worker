@@ -9,7 +9,7 @@ from pathlib import Path
 
 RATE_HZ = 20
 FRAMES = 600
-CAMERAS = ("overview", "ego_front", "curb", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 FEET_TO_METRES = 0.3048
 POUNDS_TO_KG = 0.45359237
 

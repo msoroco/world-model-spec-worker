@@ -32,9 +32,22 @@ def main():
                      'finalize.py', 'tests/test_native.py'):
             files[name] = {'path': name, 'content': (HERE / 'native' / name).read_text()}
         config = json.loads(files['config.json']['content'])
-        config['cameras'][0].update(width=1920, height=1080)
+        for row, name in zip(config['cameras'], ('overview', 'approach', 'reference_corner', 'driver_reference')):
+            row['name'] = name
+        for row in config['cameras']:
+            row['width'], row['height'] = (1920, 1080) if row['name'] == 'overview' else (1280, 720)
+            row['pose_strategy'] = 'static surveyed frontage and parking body view'
+            row['fov_deg'] = 90
         description = construction['recording_description']
         description['context_inputs'] = []
+        terms = [term['term'] for term in plan['mandatory_observation_terms']]
+        present = {channel['name'] for channel in description['channels']}
+        for name in terms:
+            if name not in present:
+                description['channels'].append({'name': name, 'unit': 'structured',
+                    'sampling_rate_hz': 20, 'method': 'original frame joined with independent park, vehicle or exception source review',
+                    'time_window': '600 original frames', 'reference_frame': 'surveyed narrow road and original Native frame',
+                    'uncertainty': '50 ms sampling; external classification requires independent review'})
         for channel in description['channels']:
             channel['source'] = 'channels/' + channel['name'] + '.jsonl'
         config['recording_description'] = description
@@ -53,11 +66,16 @@ def main():
             'error_contains': 'Missing required source: park-review.json'}}
         methods = ('measured', 'sign_observation', 'alternative_place_observation',
                    'alternative_place_observation', 'loading_observation',
-                   'service_observation', 'vehicle_observation')
+                   'service_observation', 'vehicle_observation',
+                   'park_context_observation', 'commercial_basis_observation',
+                   'parking_purpose_observation', 'device_observation',
+                   'interpretive_reservations_observation')
         keys = ('parking_adjacency', 'posted_sign_permission',
                 'residence_district_definition', 'public_school',
                 'loading_delivery_exception', 'essential_local_service_exception',
-                'size_weight_scope')
+                'size_weight_scope', 'public_park_access_jurisdiction',
+                'commercial_enterprise_basis', 'parking_purpose_storage',
+                'device_authority_area', 'modifier_scope_exceptions')
         inputs = ['road.xodr', 'frontage-inventory.json', 'park-review.json',
                   'vehicle-spec-review.json', 'exception-review.json',
                   'vehicle-poses.jsonl', 'video_frames.jsonl', 'overview.mkv']

@@ -9,16 +9,18 @@ from sight_speed_measure import EXPECTED_ID, require
 
 def check():
     config = json.loads(Path(__file__).with_name("config.json").read_text())
-    require(config.get("case_id") in (EXPECTED_ID + "__reference", EXPECTED_ID + "__contrast"), "case mismatch")
+    require(config.get("case_id") in (EXPECTED_ID + "__reference", EXPECTED_ID + "__at_15",
+                                      EXPECTED_ID + "__contrast"), "case mismatch")
     require((config.get("law_id"), config.get("cell_id"), config.get("actor")) ==
             ("LVMC-11-16-040", "C24758", "motor_vehicle_driver"),
             "law/cell/actor mismatch")
     require(config.get("duration_s") == 30 and config.get("rate_hz") == 20,
             "capture timing mismatch")
-    require(config.get("target_speed_mps") in (6.2, 7.2), "unsupported target speed")
-    require((config["case_id"].endswith("__reference") and config["target_speed_mps"] == 6.2)
-            or (config["case_id"].endswith("__contrast") and config["target_speed_mps"] == 7.2),
-            "case speed mismatch")
+    require(config.get("target_speed_mps") == {
+                "reference": 6.2, "at_15": 6.7056, "contrast": 7.2
+            }[config["case_id"].rsplit("__", 1)[-1]], "case speed mismatch")
+    require((config.get("throttle_gain"), config.get("brake_gain"))
+            in ((0.12, 0.18), (0.16, 0.22)), "unreviewed controller tuning")
     require([c.get("name") for c in config.get("cameras", [])] == list(CAMERAS),
             "camera plan mismatch")
     require(all(c.get("width", 0) >= 64 and c.get("height", 0) >= 64

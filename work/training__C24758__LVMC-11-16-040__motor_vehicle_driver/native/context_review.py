@@ -21,7 +21,7 @@ def assemble(attempt, review_path, output):
     review = json.loads(review_path.read_text())
     require(review.get("assignment_id") == EXPECTED_ID, "review assignment mismatch")
     case = review.get("case_id", "")
-    require(case in (EXPECTED_ID + "__reference", EXPECTED_ID + "__contrast"),
+    require(case in (EXPECTED_ID + "__reference", EXPECTED_ID + "__at_15", EXPECTED_ID + "__contrast"),
             "review case mismatch")
     sources = review.get("source_sha256", {})
     names = ("frame-map.json", "native-ego-readback.jsonl",
@@ -53,6 +53,7 @@ def assemble(attempt, review_path, output):
                 and item.get("reviewed_by") == reviewer["id"],
                 "unresolved exception: " + key)
     rows = []
+    boundary_crossed = False
     for i, (raw, mapped, marked) in enumerate(zip(original, frame_map, reviewed)):
         require(raw.get("video_frame") == mapped.get("video_frame") == marked.get("frame") == i
                 and raw.get("native_frame") == mapped.get("native_frame") == marked.get("native_frame"),
@@ -69,9 +70,10 @@ def assemble(attempt, review_path, output):
                 "review camera-pixel binding mismatch")
         distance = marked.get("distance_to_boundary_m")
         in_junction = raw.get("ego_native_junction_id") == context["junction_id"]
-        require(finite(distance) and (in_junction or distance >= 0),
+        boundary_crossed = boundary_crossed or in_junction
+        require(finite(distance) and (boundary_crossed or distance >= 0),
                 "reviewed signed route distance missing")
-        if not in_junction:
+        if not boundary_crossed:
             require(distance + 0.5 >= raw.get("distance_to_boundary_euclidean_m", float("inf")),
                     "reviewed approach distance geometrically impossible")
         views = marked.get("entering_approach_views")

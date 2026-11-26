@@ -53,6 +53,8 @@ def camera_specs(carla, ego, target):
 def capture(config, output, host, port, junction_id=None):
     import carla
     import numpy as np
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     output = Path(output).resolve()
@@ -72,6 +74,10 @@ def capture(config, output, host, port, junction_id=None):
     frames = []
     raw = []
     error = None
+    pipeline_capture = None
+    native_frame_map = None
+    restoration = {"restored": False}
+    encoder_exit_codes = {}
     try:
         mapping = world.get_map()
         chosen_id, road_id, lane_id, before, junction, after = choose_route(mapping, junction_id)
@@ -117,6 +123,13 @@ def capture(config, output, host, port, junction_id=None):
         vehicle_bp.set_attribute("role_name", "c24758_lvmc_11_16_040_" + config["case_id"].rsplit("__", 1)[-1] + "_ego")
         ego = world.spawn_actor(vehicle_bp, spawn)
         owned.append(ego)
+        (output / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "physical_acceptance_claimed": False}, indent=2) + "\n")
+        pipeline_capture = PipelineCapture(client, ego, output, config["case_id"],
+                                           visibility=False,
+                                           required_observations=config.get("required_atoms", []))
+        native_frame_map = FrameMap(output / "video_frames.jsonl")
         specs = camera_specs(carla, ego, junction)
         for name in CAMERAS:
             plan = next(c for c in config["cameras"] if c["name"] == name)
@@ -144,11 +157,16 @@ def capture(config, output, host, port, junction_id=None):
         for i in range(600):
             speed = ego.get_velocity().length()
             error_speed = target_speed - speed
-            ego.apply_control(carla.VehicleControl(throttle=max(0.0, min(0.55, 0.12 * error_speed)),
-                                                    brake=max(0.0, min(0.8, -0.18 * error_speed)),
+            ego.apply_control(carla.VehicleControl(throttle=max(0.0, min(0.55, config["throttle_gain"] * error_speed)),
+                                                    brake=max(0.0, min(0.8, -config["brake_gain"] * error_speed)),
                                                     steer=0))
             frame = world.tick()
             stamp = world.get_snapshot().timestamp.elapsed_seconds - initial
+            if i == 0:
+                first_stamp = stamp
+            time_s = stamp - first_stamp
+            pipeline_capture.capture(frame, time_s)
+            native_frame_map.append(frame, time_s)
             pose = ego.get_transform()
             velocity = ego.get_velocity()
             current_lane = mapping.get_waypoint(pose.location, project_to_road=True,
@@ -172,7 +190,7 @@ def capture(config, output, host, port, junction_id=None):
                     image.height, image.width, 4)[:, :, :3][:, :, ::-1].tobytes()
                 camera_hashes[name] = hashlib.sha256(pixels).hexdigest()
                 encoders[name].stdin.write(pixels)
-            frames.append({"video_frame": i, "native_frame": frame, "time_s": i / 20,
+            frames.append({"video_frame": i, "native_frame": frame, "time_s": time_s,
                            "native_elapsed_s": stamp, "original_rgb_sha256": camera_hashes})
             raw.append({"video_frame": i, "native_frame": frame, "native_elapsed_s": stamp,
                         "ego_xyz_m": [pose.location.x, pose.location.y, pose.location.z],
@@ -195,10 +213,18 @@ def capture(config, output, host, port, junction_id=None):
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc)}
     finally:
+        if native_frame_map is not None:
+            native_frame_map.close()
+        if pipeline_capture is not None:
+            try:
+                pipeline_capture.close(confirmed=error is None)
+            except BaseException as exc:
+                error = error or {"capture_close_error": str(exc)}
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                require(encoder.wait(timeout=180) == 0, f"encoder failed: {name}")
+                encoder_exit_codes[name] = encoder.wait(timeout=180)
+                require(encoder_exit_codes[name] == 0, f"encoder failed: {name}")
             except BaseException as exc:
                 error = error or {"encoder_error": str(exc)}
             logs[name].close()
@@ -210,12 +236,17 @@ def capture(config, output, host, port, junction_id=None):
             except BaseException as exc:
                 error = error or {"cleanup_error": str(exc)}
         try:
-            restore(client, original)
+            restoration = restore(client, original)
         except BaseException as exc:
             error = error or {"restore_error": str(exc)}
         (output / "native-attempt-status.json").write_text(json.dumps({
             "frames": len(frames), "error": error, "physical_completion": None,
             "legal_verdict": None}, indent=2) + "\n")
+        if error is None:
+            seal_capture(output, frames=len(frames), restoration=restoration,
+                         errors=[], encoder_exit_codes=encoder_exit_codes,
+                         context={"junction_id": chosen_id, "sight_review_complete": False,
+                                  "exception_review_complete": False})
     require(error is None, f"Native capture failed: {error}")
     return {"frames": len(frames), "physical_completion": None,
             "legal_verdict": None}

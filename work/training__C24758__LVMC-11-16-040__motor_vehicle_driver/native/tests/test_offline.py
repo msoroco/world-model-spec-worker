@@ -11,6 +11,7 @@ from types import SimpleNamespace
 
 from ray_inventory import sample_approaches, original_rays
 from context_review import assemble, sha
+from finalize import run as finalize_saved
 
 
 class ExactPrimaryOffline(unittest.TestCase):
@@ -77,6 +78,7 @@ class ExactPrimaryOffline(unittest.TestCase):
                                "time_s": i / 20, "original_rgb_sha256": rgb})
                 raw.append({"video_frame": i, "native_frame": 1000 + i,
                             "ego_speed_mps": 6.2, "distance_to_boundary_euclidean_m": max(0, distance),
+                            "ego_xyz_m": [i * 0.15, 0, 0], "ego_yaw_deg": 0,
                             "ego_native_junction_id": 1 if i >= 300 else None,
                             "original_native_sight_rays": rays})
                 reviewed.append({"frame": i, "native_frame": 1000 + i,
@@ -103,6 +105,20 @@ class ExactPrimaryOffline(unittest.TestCase):
             result = assemble(attempt, path, attempt / "observation.json")
             assert result["frame_count"] == 600
             assert result["sight_limited_frame_count"] > 0
+            config = json.loads(Path("config.json").read_text())
+            (attempt / "config.json").write_text(json.dumps(config))
+            (attempt / "video_frames.jsonl").write_text("\n".join(json.dumps({
+                "video_frame": i, "carla_frame": 1000 + i, "time_s": i / 20})
+                for i in range(600)) + "\n")
+            (attempt / "trace.jsonl").write_text("\n".join(json.dumps({
+                "frame": 1000 + i, "time_s": i / 20,
+                "position_m": [i * 0.15, 0, 0]})
+                for i in range(600)) + "\n")
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
+                (attempt / (name + ".mkv")).write_bytes(b"diagnostic-placeholder-not-media")
+            report = finalize_saved(attempt, attempt / "analysis-report.json")
+            assert report["measurements"]["blind_intersection_speed_mph"]["value"] > 13
+            assert (attempt / "result.json").is_file()
             review["frames"][300]["sight_ray_sha256"] = "0" * 64
             path.write_text(json.dumps(review))
             with self.assertRaisesRegex(ValueError, "review sight-ray binding mismatch"):

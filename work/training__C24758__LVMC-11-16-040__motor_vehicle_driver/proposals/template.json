@@ -1,0 +1,84 @@
+{
+  "template_id": "LVMC-11-16-040@motor_vehicle_driver",
+  "law_id": "LVMC-11-16-040",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The prima facie speed limit shall be fifteen miles per hour when traversing any intersection or street or highway if during the last one hundred feet of his approach to such intersection the driver does not have a clear and unobstructed view of such intersection and of any traffic upon all of the streets or highways entering such intersection for a distance of one hundred feet along all such streets or highways, except on a through street or highway or at a traffic-controlled intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Sight-limited intersection traversal after the last 100 feet of approach.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Measure traversal speed against the 15 mph prima facie reference; reserve legal status.",
+      "type": "must",
+      "source_clause": "The prima facie speed limit shall be fifteen miles per hour",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": 15,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "except on a through street or highway",
+        "trigger": "Source-reviewed through street or highway applies.",
+        "effect": "This section's 15 mph reference does not apply.",
+        "replacement_obligation": "Review the applicable original speed authority separately."
+      },
+      {
+        "source_clause": "or at a traffic-controlled intersection",
+        "trigger": "Source-reviewed traffic-controlled intersection applies.",
+        "effect": "This section's 15 mph reference does not apply.",
+        "replacement_obligation": "Review the applicable original speed authority separately."
+      }
+    ],
+    "timing": {
+      "description": "Retain every sampled frame across the last 100 feet and intersection traversal.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "prima facie",
+        "note": "Rebuttable legal status remains for independent review."
+      },
+      {
+        "phrase": "clear and unobstructed view",
+        "note": "Review original intersection and all entering-road sight sources."
+      },
+      {
+        "phrase": "through street or highway",
+        "note": "Review original roadway priority and applicability."
+      },
+      {
+        "phrase": "traffic-controlled intersection",
+        "note": "Review original controls and applicability."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original Native speed in mph"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "requested m/s, distinct from observation"
+    },
+    {
+      "name": "through_street_context",
+      "kind": "world_setup",
+      "range_or_domain": "independently reviewed roadway priority"
+    },
+    {
+      "name": "traffic_control_context",
+      "kind": "world_setup",
+      "range_or_domain": "independently reviewed applicable controls"
+    }
+  ]
+}

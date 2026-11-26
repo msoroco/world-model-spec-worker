@@ -6,12 +6,27 @@
       "case_id": "training__C24758__LVMC-11-16-040__motor_vehicle_driver__reference",
       "kind": "draft",
       "construction": "primary-construction.json",
-      "construction_sha256": "5757b830ba7cef2d6dfa78fdda0cde0ec67f3f18678f6b0dfeb954c929fbc43f",
+      "construction_sha256": "5173af4e1244975afa27a7c342c7e025c8dbc491a6d4f337c62509c8735c35d4",
       "candidate_risk": {
         "status": "physical",
         "reason": "Blind-corner occlusion and driver-view framing require original Native tuning"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "reference-fallback1-construction.json",
+          "construction_sha256": "1509b164ce9e44c0f9340d4b4461575f1d5d928f3f5a299958dfab921071d359",
+          "trigger": {
+            "source": "original Native ego velocity and controller readback",
+            "metric": "observed speed tracking after first 100 frames",
+            "failure_condition": "fewer than 400 of the next 500 frames within 1 mph of the unchanged requested speed, after source integrity review"
+          },
+          "changed_knobs": [
+            "throttle proportional gain 0.12 to 0.16",
+            "brake proportional gain 0.18 to 0.22"
+          ]
+        }
+      ]
     }
   ]
 }
