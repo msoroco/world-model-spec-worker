@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "A person, except a police officer in the performance of his or her duty, shall not drive a motorcycle or moped between moving or stationary vehicles occupying adjacent traffic lanes.",
+      "source": "inputs/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/assignment.json",
+      "output_key": "adjacent_lane_passage",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lane-split-history.jsonl",
+        "lane-split-scene.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane-split-scene.json"
+    ],
+    "error_contains": "Missing required source: lane-split-scene.json"
+  }
+}

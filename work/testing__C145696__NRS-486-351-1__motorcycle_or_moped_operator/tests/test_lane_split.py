@@ -1,6 +1,7 @@
 import importlib.util
 import pathlib
 import hashlib
+import os
 import tempfile
 import unittest
 
@@ -97,7 +98,7 @@ class LaneSplitTests(unittest.TestCase):
         self.assertEqual(backend.destroyed, [3, 2, 1])
 
     def test_saved_source_audit_rejects_tamper_and_missing_review(self):
-        with tempfile.TemporaryDirectory(dir=".runtime-work") as temporary:
+        with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_TEST_TEMP_ROOT"]) as temporary:
             root = pathlib.Path(temporary)
             sources = {}
             for name in ("native_result", "frame_map", "original_actor_history"):

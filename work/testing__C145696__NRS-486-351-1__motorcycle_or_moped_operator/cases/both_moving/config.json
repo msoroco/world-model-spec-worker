@@ -1,0 +1,167 @@
+{
+  "assignment_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator",
+  "selected_case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_moving",
+  "supported_case_ids": [
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_stationary",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__left_moving",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__right_moving",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_moving",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__within_left",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__police_on_duty",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__police_off_duty",
+    "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__moped_between"
+  ],
+  "law_id": "NRS-486-351-1",
+  "cell_id": "C145696",
+  "actor": "motorcycle_or_moped_operator",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed view of both adjacent lanes and passage",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego entry and surveyed drivable split route",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "body-box relation across lane boundary",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego-mounted forward participant view",
+      "fov_deg": 90
+    }
+  ],
+  "engineering": {
+    "ego_start_shift_m": 0
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 3,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  },
+  "case": {
+    "left_motion": "moving",
+    "right_motion": "moving",
+    "maneuver": "between",
+    "vehicle_class": "motorcycle",
+    "operator_status": "civilian",
+    "performance_of_duty": "not_applicable",
+    "target_speed_mps": 4.0,
+    "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_moving",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "adjacent_lane_occupancy",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        },
+        {
+          "name": "between_vehicle_passage",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        },
+        {
+          "name": "vehicle_motion",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        },
+        {
+          "name": "ego_vehicle_class",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        },
+        {
+          "name": "police_duty_exception",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        },
+        {
+          "name": "four_camera_visibility",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s passage episode",
+          "reference_frame": "original CARLA frame, elapsed time and surveyed road axis",
+          "uncertainty": "20 Hz sampling; legal between/adjacent interpretation and pixels need independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "jurisdiction",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "lane_geometry_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "operator_identity_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "police_status_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "performance_of_duty_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "chapter_vehicle_classification_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        }
+      ],
+      "limitations": [
+        "Between-vehicle and adjacent-lane interpretation has no invented geometric cutoff.",
+        "Original police duty and chapter vehicle class require independent source review.",
+        "Actual pixels and passage require local Native recording and audit."
+      ]
+    }
+  }
+}

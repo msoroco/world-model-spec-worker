@@ -52,6 +52,8 @@ def build(case):
     first = first_trace[0]["frame"]
     site_sha = sha_bytes(("synthetic reviewed site " + suffix).encode())
     rows, mapping, trace = [], [], []
+    evidence, frame_index, graphs = [], [], []
+    base_manifest = json.loads(spec["files"]["capture/manifest.json"])
     for index in range(900):
         frame = first + index
         time_s = first_trace[index]["time_s"] if index < len(first_trace) else .05 + index / 20
@@ -73,10 +75,47 @@ def build(case):
                       "position_m": [x, y, 0],
                       "position": {"x": x, "y": y, "z": 0},
                       "heading_deg": 0, "speed_mps": 1,
+                      "velocity_mps": [1, 0, 0], "control": {},
                       "speed_mph": 1 / .44704})
+        t = trace[-1]
+        px, py, pz = t["position_m"]
+        speed = t["speed_mph"] * .44704
+        body = [[px + dx, py + dy, pz + dz]
+                for dx in (-2, 2) for dy in (-1, 1) for dz in (0, 1.5)]
+        obs = {"frame": frame, "time_s": time_s,
+               "participants": [],
+               "devices": [],
+               "world_settings": {"no_rendering_mode": False},
+               "rgb_sensors": [{"actor_id": 209,
+                                "blueprint": "sensor.camera.rgb"}],
+               "map_context": {"declared_public_way_road_ids": []}}
+        sim_time = time_s + 13.517531131161377
+        evidence.append({"original_frame": frame, "replay_frame": frame,
+                         "actor_id": 205, "recording_time_s": time_s,
+                         "replay_simulation_time_s": sim_time,
+                         "ego": {"position_m": [px, py, pz],
+                                 "heading_deg": 0, "speed_mps": speed,
+                                 "speed_provenance": "synthetic_native_sample",
+                                 "body_vertices_m": body},
+                         "world": {"weather": {}},
+                         "original_observations": obs})
+        graph_name = f"graphs/base/{frame:08d}.adapter.json"
+        frame_index.append({"frame": frame, "simulation_time": sim_time,
+                            "adapter_graph": graph_name})
+        graphs.append({"path": "capture/native/" + graph_name,
+                       "attributes": {"frame": frame,
+                                      "observed_evidence": obs},
+                       "nodes": [], "edges": []})
     measured = measure_original(rows, scene, case)
     files = spec["files"]
+    spec["graphs"] = graphs
+    files["capture/evidence.jsonl"] = "\n".join(compact(e) for e in evidence) + "\n"
+    files["capture/native/frames.jsonl"] = "\n".join(compact(e) for e in frame_index) + "\n"
     files["trace.jsonl"] = "\n".join(compact(row) for row in trace) + "\n"
+    base_manifest["frames"] = 900
+    base_manifest["case_id"] = case_id
+    base_manifest["sources"]["trace.jsonl"] = sha_bytes(files["trace.jsonl"].encode())
+    files["capture/manifest.json"] = compact(base_manifest) + "\n"
     files["video_frames.jsonl"] = "\n".join(compact(row) for row in mapping) + "\n"
     files["pavement-packet.json"] = compact({"assignment_id": AID,
                                              "case_id": case_id,
@@ -96,9 +135,10 @@ def build(case):
         video["frames"] = 900
     generator_path = HERE / "diagnostics" / (suffix + "-generator.json")
     generator_path.parent.mkdir(exist_ok=True)
-    generator_path.write_text(compact(spec) + "\n")
-    if generator_path.stat().st_size > 2 * 1024 * 1024:
+    payload = compact(spec) + "\n"
+    if len(payload.encode()) > 2 * 1024 * 1024:
         raise ValueError("diagnostic generator exceeds 2 MiB")
+    generator_path.write_text(payload)
     recipe = {"format": "worker-fixture-recipe",
               "sources": [{"path": "diagnostic-input.json",
                            "source": "runtime/fixtures/example.json",

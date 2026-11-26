@@ -1,0 +1,552 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_stationary",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "dcc4b708dc50266d922bc3283bfebb775595e0038535bd4f0447115532ef4b4e",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-both_stationary-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/both_stationary/fallback1/construction.json",
+          "construction_sha256": "227646913cf91c641cb50930fbd31351a0e9933fe3e1bfa7cd18d3478e229136",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__left_moving",
+      "kind": "delivery",
+      "construction": "cases/left_moving/construction.json",
+      "construction_sha256": "75eaafd3e4cabf70c8cb0fd47c372d5e518b43adce031b6760126c713dce202f",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-left_moving-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_moving/fallback1/construction.json",
+          "construction_sha256": "2fc73eeaa2f15d304a49a2040eaf7e4f0bc90445f63f848412907930b9fdfcad",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__right_moving",
+      "kind": "delivery",
+      "construction": "cases/right_moving/construction.json",
+      "construction_sha256": "b11f0a3c82f4efb9f1d981fb4742ef45c6082f9b87cd119d45cbb13bbf5c1868",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-right_moving-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/right_moving/fallback1/construction.json",
+          "construction_sha256": "849cebf8cfd4ebb2c7495324dec15a9972e45198204eef6bacca90d876988092",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__both_moving",
+      "kind": "delivery",
+      "construction": "cases/both_moving/construction.json",
+      "construction_sha256": "f885d13ecd7410f45393ef4463b7d4599e9d0ba484ad0760dd49712abcd235d8",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-both_moving-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/both_moving/fallback1/construction.json",
+          "construction_sha256": "d02e4ffa08046ed2447a6d949d97cf949c0b707207570574008da2f6b228ca68",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__within_left",
+      "kind": "delivery",
+      "construction": "cases/within_left/construction.json",
+      "construction_sha256": "9b5ae7aaa611ccf26f319fa44f3e25e123fde3d25b3f0f521cc3695be1d1437e",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-within_left-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/within_left/fallback1/construction.json",
+          "construction_sha256": "d91328ec9b903f3a7743a9fc71b92c8b6859fd7a46c31ac95cd0244a5759f559",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__police_on_duty",
+      "kind": "delivery",
+      "construction": "cases/police_on_duty/construction.json",
+      "construction_sha256": "e54fd0f985ed9407b95627c47b0ba22803551eba238a2dd37275cafb142ed560",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-police_on_duty-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/police_on_duty/fallback1/construction.json",
+          "construction_sha256": "35cf456300318295e15fa498ba22a91a71aacb76cb323614851b2e8866322e89",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__police_off_duty",
+      "kind": "delivery",
+      "construction": "cases/police_off_duty/construction.json",
+      "construction_sha256": "65a59224f609e92622213b6dd14e5433070ef608e74b6d24f50380aa13dcd09b",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-police_off_duty-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/police_off_duty/fallback1/construction.json",
+          "construction_sha256": "fa18c2ed7463da7e2da64c32f5616cbd62f1336381219c863f800c912ba5e1b5",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator__moped_between",
+      "kind": "delivery",
+      "construction": "cases/moped_between/construction.json",
+      "construction_sha256": "03f847c281728aaed77c1ae2e620ae4dead3af71c383d96d844468065af2218f",
+      "fixture_recipe": "work/testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-moped_between-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed one-way map, adjacent lane pair, body clearance, participant blueprints, chapter vehicle class and independent operator-duty sources required",
+      "acquisition": {
+        "adjacent_lane_occupancy": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-adjacent_lane_occupancy.jsonl"
+        },
+        "between_vehicle_passage": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-between_vehicle_passage.jsonl"
+        },
+        "vehicle_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-vehicle_motion.jsonl"
+        },
+        "ego_vehicle_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-ego_vehicle_class.jsonl"
+        },
+        "police_duty_exception": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-police_duty_exception.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame map and three actor readback",
+          "evidence": "lane-split-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow between-body passage or ego spawn collision can prevent a complete original 45s trajectory even after surveyed static clearance; upstream staging may give the controller room to settle."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/moped_between/fallback1/construction.json",
+          "construction_sha256": "0ab79611aef00e14ac910c13c8b4f450032a692f9a6bcf966db7ca2b2a2b4171",
+          "trigger": {
+            "source": "native-run-status.json and original lane-split-history.jsonl",
+            "metric": "ego spawn collision or observed longitudinal/lateral body-clearance and incomplete passage",
+            "failure_condition": "Original source reports ego spawn failure or collision/incomplete passage after a reviewed primary attempt"
+          },
+          "changed_knobs": [
+            "ego_start_shift_m: 0 to -3 metres upstream"
+          ]
+        }
+      ]
+    }
+  ]
+}

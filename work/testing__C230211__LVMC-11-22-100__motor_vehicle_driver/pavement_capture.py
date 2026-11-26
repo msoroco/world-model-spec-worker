@@ -27,11 +27,12 @@ def write(path, value):
 
 def capture(adapter, site, scene, case, case_id, destination):
     destination = Path(destination).resolve()
-    need(not destination.exists() and ".runtime-work" in destination.parts,
-         "new original attempt belongs under .runtime-work")
+    need(destination.is_dir() and ".runtime-work" in destination.parts and
+         (destination / "config.json").is_file() and
+         (destination / "construction.json").is_file(),
+         "materialized original attempt belongs under .runtime-work")
     need(getattr(adapter, "native_attested", False) is True,
          "attested Native CARLA adapter required")
-    destination.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix="pavement-original-", dir=destination.parent))
     try:
         adapter.configure(scene)
@@ -113,7 +114,11 @@ def capture(adapter, site, scene, case, case_id, destination):
             "measurement_sha256": sha(stage / "pavement-measurement.json"),
             "cameras": videos, "physical_acceptance": False,
             "legal_verdict": None})
-        os.replace(stage, destination)
+        for source in stage.iterdir():
+            target = destination / source.name
+            need(not target.exists(), "retain prior original source: " + source.name)
+            os.replace(source, target)
+        stage.rmdir()
         return destination
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)

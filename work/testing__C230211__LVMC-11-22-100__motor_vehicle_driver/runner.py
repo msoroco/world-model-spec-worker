@@ -80,7 +80,21 @@ def main():
     from pavement_capture import capture
     adapter = CarlaPavementAdapter(args.host, args.port, site,
                                    config.get("control_profile", {}))
-    capture(adapter, site, scene, exact, case_id, args.output_dir)
+    attempt = capture(adapter, site, scene, exact, case_id, args.output_dir)
+    private = next((parent for parent in attempt.parents
+                    if parent.name == ".runtime-work"), None)
+    if private is None:
+        raise ValueError("Native attempt must remain under .runtime-work")
+    os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT",
+                          str(private / "pipeline-output"))
+    output_root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "")).resolve()
+    if output_root != private and private not in output_root.parents:
+        raise ValueError("Native analysis requires private runtime output root")
+    from analysis import analyze
+    report = attempt / "analysis-report.json"
+    if report.exists():
+        raise ValueError("retain prior Native analysis report")
+    report.write_text(json.dumps(analyze(attempt), indent=2) + "\n")
 
 
 if __name__ == "__main__":

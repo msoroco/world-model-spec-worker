@@ -1,37 +1,25 @@
 {
   "assignment_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver",
   "input_sha256": "ddd673be3650e2dbb2adda60deb4f92d9c245dc96c7770e387e1435c28141021",
-  "status": "partial",
-  "readiness_kind": "partial_exact_rail_approach_cpu_probes",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "path": "rail_left.py",
-      "sha256": "cb0de54ccd6cb754bb065aa35bb10a120dda67022d24a5947fbbb7aefeb1737e"
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-nov26.log",
+      "sha256": "08dc3fffcc2c2c8e97982e1abf67a3cab2818f6b99c9d95a562f4e9a573dff0b"
     },
     {
-      "path": "tests/test_rail_left.py",
-      "sha256": "8dca5b29bacb76974134b0b751d68362e45644ac00892ba795ccd2dc6a6c8282"
-    },
-    {
-      "path": "cpu-tests.log",
-      "sha256": "3b44372fab70e2fbf5fabe45a2e0ca5e1711ec12e86da949211a4c644c7ab171"
-    },
-    {
-      "path": "cpu-preflight.log",
-      "sha256": "4dc3b3e0ca19ce4ee9610f271105b424992e04c016a864b076d846c5231a5fa7"
-    },
-    {
-      "path": "cpu-static-check.log",
-      "sha256": "c21bd9102992827343d826e9169bf9caadc9c3f5b34d1f0d9451ddcff1be8f30"
-    },
-    {
-      "path": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-nov26.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six source-gated railroad grade-crossing approach/traversal probes and original-frame measurement pass CPU fixture tests; physical rail qualification, full branch coverage, canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work. No accepted recording is available."
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C204980__NRS-484B-213-2b__motor_vehicle_driver --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

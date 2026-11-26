@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 AID = ROOT.name
 LAW = "NRS-486-351-1"
-SOURCE_FILES = ("runner.py", "original_capture.py", "scene_review.py", "lane_split.py", "analysis.py")
+SOURCE_FILES = ("runner.py", "original_capture.py", "scene_review.py", "lane_split.py",
+                "analysis.py", "tests/test_lane_split.py", "tests/test_scene_review.py")
 CAMERAS = [{"name": name, "width": width, "height": height,
             "pose_strategy": strategy, "fov_deg": 90}
            for name, width, height, strategy in (
@@ -35,7 +36,8 @@ def bundle(case, ids, shift_m):
               "physical_completion": {"criterion": "travel_progress", "motion_source": "trace.jsonl",
                                       "position_key": "position_m", "minimum_progress_m": 3,
                                       "minimum_samples": 2, "engineering_tolerances_not_legal": True},
-              "case": {**case["scenario_parameters"], "case_id": cid,
+              "case": {**{key: value for key, value in case["scenario_parameters"].items()
+                          if key != "legal_verdict"}, "case_id": cid,
                        "recording_description": RECORDING}}
     files = [{"path": name, "source": str((ROOT / name).relative_to(REPO)),
               "content": (ROOT / name).read_text(encoding="utf-8")}

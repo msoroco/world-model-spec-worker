@@ -76,7 +76,6 @@ def analyze(attempt):
     measured["police_status_source_sha256"] = scene["police_status_source_sha256"]
     measured["performance_of_duty_source_sha256"] = scene["performance_of_duty_source_sha256"]
     measured["diagnostic_fixture"] = not original
-    measured["legal_verdict"] = None
     source_hashes = {name: sha(root / name) for name in
                      ("lane-split-history.jsonl", "lane-split-scene.json", "trace.jsonl", "video_frames.jsonl")}
     channels = {
@@ -105,7 +104,14 @@ def analyze(attempt):
         evidence.append({"name": name, "unit": channel["unit"], "reference": path.name})
     context = root / "channel-source-context.json"
     context.write_text(json.dumps({"source_hashes": source_hashes,
-                                   "original_native": original, "independent_review_pending": True}) + "\n")
+                                   "original_native": original,
+                                   "independent_review_pending": True,
+                                   "jurisdiction": {"source": "NRS-486-351-1", "review_pending": True},
+                                   "lane_geometry_source": source_hashes["lane-split-scene.json"],
+                                   "operator_identity_source": scene["operator_identity_source_sha256"],
+                                   "police_status_source": scene["police_status_source_sha256"],
+                                   "performance_of_duty_source": scene["performance_of_duty_source_sha256"],
+                                   "chapter_vehicle_classification_source": scene["classification_source_sha256"]}) + "\n")
     for item in description["context_inputs"]:
         evidence.append({"name": item["name"], "unit": item["unit"], "reference": context.name})
     from worker_exchange.native_output import physical_result, write_result

@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 import pathlib
 import tempfile
 import unittest
@@ -16,7 +17,7 @@ spec.loader.exec_module(scene_review)
 
 class ReviewedSceneTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(dir=".runtime-work")
+        self.temp = tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_TEST_TEMP_ROOT"])
         self.addCleanup(self.temp.cleanup)
         self.root = pathlib.Path(self.temp.name)
         self.parameters = {"left_motion": "stationary", "right_motion": "stationary",
