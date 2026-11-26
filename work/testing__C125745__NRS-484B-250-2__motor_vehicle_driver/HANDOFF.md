@@ -1,3 +1,15 @@
+# C125745 exact entry-timing CPU handoff (2026-11-25)
+
+Status is **ready / delivery_prepared**. Exact scoped `.venv-cpu/bin/python worker_check.py --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` passed (`cpu-nov25-ready-strict.log`, SHA-256 `8493df8194df8549b72fe19248c427f32779152be93b417fcf660fb3eb318a24`). The three selected case constructions and their three `fallback1` timing-control alternatives retain passing offline and positive/negative compatibility proofs. Recorded-only saved processing, independent selected delivery positive/negative checks, physical fixture outcomes, lifecycle ordering, semantic stages and two original-only comparison audits are bound in `execution-manifest.json`. Nine focused tests and the materialized bundle test pass (`cpu-tests-v2.log` and `cpu-nov25-bundle-tests.log`).
+
+The ready contract repairs are: accepted evidence facts now cite only their frozen recording metadata sources; each selected delivery entry names both target sets (`demo-test`, `full-test`); the declared `tests/test_entry_timing.py` file is materialized; and `case-plan.json` carries the exact four-camera 45-second profile and three observation dispositions. The intersection entry timing channel is mandatory. Official device authority and different-highway/right-side priority are source context requiring independent review, so their plan observations are marked contextual rather than fabricated captured measurements.
+
+`queue-proposal.json` contains three exact selected cases, two comparison rows and three `fallback1` prepare commands, matching the selected manifest and plan. Proposal SHA-256 `c9ec1863259346e6442d6e45229df3adcc1f382cb1fa345f4d1bf0c5eb6d8608`. It is assignment-local for lead integration, not an executed local delivery queue.
+
+Original delivery still requires a reviewed median-opening intersection polygon, two distinct highway identities and priority geometry, official traffic-control device authority and operation, three original 900-frame two-actor/four-camera Native attempts, and independent source, pixel and physical review. The frozen accepted `precedence` and `advance` entries provide metadata only; original traces/video are absent here. Whether subsection 5 excludes this stop-sign cell and whether entries are approximately simultaneous remain legal/source judgments. No diagnostic receipt establishes physical success or a legal verdict.
+
+## Historical checkpoints
+
 # testing__C125745__NRS-484B-250-2__motor_vehicle_driver
 
 Status: partial source-gated CPU package. Three exact timing cases and two comparisons are selected; original authority and capture sources remain absent.

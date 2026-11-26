@@ -22,7 +22,8 @@ def _sha(path: Path) -> str:
 
 
 def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
-            body_length_m: float, attempt: Path) -> dict:
+            body_length_m: float, attempt: Path,
+            camera_lateral_offset_m: float = 0.0) -> dict:
     packet = verify(packet_path, source_root)
     prefix = packet['assignment_id'] + '__'
     if not case_id.startswith(prefix):
@@ -61,7 +62,13 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
             from pipeline_capture import PipelineCapture
             pipeline = PipelineCapture(adapter.pipeline_client(), built['ego'], attempt, case_id,
                                        required_observations=tuple(json.loads((attempt / 'config.json').read_text()).get('required_atoms', [])))
-        adapter.start_cameras(attempt, site['camera_plan_sha256'], CAMERAS)
+        if camera_lateral_offset_m:
+            if not math.isfinite(camera_lateral_offset_m) or not 0 < camera_lateral_offset_m <= 1.0:
+                raise ValueError('fallback camera lateral offset outside engineering range')
+            adapter.start_cameras(attempt, site['camera_plan_sha256'], CAMERAS,
+                                  lateral_offset_m=camera_lateral_offset_m)
+        else:
+            adapter.start_cameras(attempt, site['camera_plan_sha256'], CAMERAS)
         started = True
         mapping = []
         trace = []

@@ -106,10 +106,6 @@
           {
             "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/accepted/a8d8705a852040573f779fb1934704ba2f548a490a4a05e623f7537faaf76886/metadata.json",
             "sha256": "0384e36eb3ac637250545bd4fc376906f118173a1d303e0f3aa265fa2e7d88b6"
-          },
-          {
-            "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "a8164f2dd181ddddd7564b464da63d68498a38f43aafb61499b5a491bc2894e7"
           }
         ]
       },
@@ -121,10 +117,6 @@
           {
             "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/accepted/1fbf5432fcacc8030bc41778c1f9576d44e66e7b49ca036d81c22751c1191908/metadata.json",
             "sha256": "8e2354fd5abf70aad70ad77435ff94dad4063874853d48257c1193a84489bc63"
-          },
-          {
-            "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "a8164f2dd181ddddd7564b464da63d68498a38f43aafb61499b5a491bc2894e7"
           }
         ]
       }
@@ -168,17 +160,20 @@
       "measurement": "first footprint-polygon transition upper timestamps and consecutive sample brackets; ego minus other without interpolation",
       "name": "intersection_entry_time_difference",
       "source": "source-sealed original 20 Hz ego/other body footprints and intersection polygon",
-      "status": "CPU method tested; actual source traces absent"
+      "status": "CPU method tested; actual source traces absent",
+      "mandatory": true
     },
     {
       "measurement": "independent review pending; stop_sign cell does not itself prove official status",
       "name": "official_control_exception",
-      "source": "source-bound placement, authority and operation record"
+      "source": "source-bound placement, authority and operation record",
+      "mandatory": false
     },
     {
       "measurement": "different-highway readback checked by analyzer; left/right priority requires separate source review",
       "name": "different_highways_and_priority",
-      "source": "source-bound roadway identities and approach directions"
+      "source": "source-bound roadway identities and approach directions",
+      "mandatory": false
     }
   ],
   "planning_status": "three_exact_timing_probe_cases_and_cpu_saved_measurement_method",
@@ -272,5 +267,33 @@
       "source_index": null,
       "source_sha256": "eaff3e049296a2678792c773c2e23ddbce9fcf22ea4e6c9ac39635a86967a658"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "intersection polygon, both highway approaches and both vehicles",
+        "interval": "entire 45-second entry sequence"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, stop sign and entry boundary",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other approach, official device and entry boundary",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego path, approach and intersection entry",
+        "interval": "entire 45-second sequence"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

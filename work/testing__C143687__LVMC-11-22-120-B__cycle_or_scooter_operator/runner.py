@@ -25,7 +25,7 @@ def check_config(config: dict) -> bool:
             config.get('actor') != 'cycle_or_scooter_operator'):
         raise ValueError('exact bicycle assignment or case mismatch')
     if (config.get('rate_hz') != 20 or config.get('duration_s') != 45 or
-            tuple(config.get('cameras', [])) != CAMERAS or
+            tuple(c.get('name') for c in config.get('cameras', [])) != CAMERAS or
             config.get('diagnostic_only') is not True):
         raise ValueError('bicycle recording contract mismatch')
     suffix = case_id.removeprefix(ASSIGNMENT + '__')

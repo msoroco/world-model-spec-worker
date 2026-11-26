@@ -9,7 +9,12 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 SOURCE_FILES = ('runner.py', 'native_adapter.py', 'native_site.py',
                 'reviewed_site.py', 'native_measurement.py', 'analysis.py')
-CAMERAS = ['overview', 'approach', 'reference_corner', 'driver_reference']
+CAMERAS = [
+    {'name': 'overview', 'width': 1920, 'height': 1080, 'fov_deg': 95, 'pose_strategy': 'rear_high', 'pose': [-7, 0, 3, -12, 0, 0]},
+    {'name': 'approach', 'width': 1280, 'height': 720, 'fov_deg': 85, 'pose_strategy': 'front_sign', 'pose': [1, 0, 2, -4, 0, 0]},
+    {'name': 'reference_corner', 'width': 1280, 'height': 720, 'fov_deg': 95, 'pose_strategy': 'side_junction', 'pose': [-1, 3, 2, -8, -35, 0]},
+    {'name': 'driver_reference', 'width': 1280, 'height': 720, 'fov_deg': 85, 'pose_strategy': 'rider_forward', 'pose': [0, 0, 1.7, -2, 0, 0]},
+]
 TEST = '''import json
 import unittest
 from pathlib import Path

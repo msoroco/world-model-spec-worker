@@ -69,13 +69,17 @@ def execute(reviewed: dict, config: dict, output: Path, host: str, port: int) ->
             carla.Location(x=start[0], y=start[1], z=start[2])), site)
         owned.append(bike)
         sensors = {}
-        for name in CAMERAS:
+        for camera in config['cameras']:
+            name = camera['name']
             bp = world.get_blueprint_library().find('sensor.camera.rgb')
-            bp.set_attribute('image_size_x', '1920' if name == 'overview' else '1280')
-            bp.set_attribute('image_size_y', '1080' if name == 'overview' else '720')
+            bp.set_attribute('image_size_x', str(camera['width']))
+            bp.set_attribute('image_size_y', str(camera['height']))
+            bp.set_attribute('fov', str(camera['fov_deg']))
             bp.set_attribute('sensor_tick', '.05')
+            x, y, z, pitch, yaw, roll = camera['pose']
             sensor = world.spawn_actor(bp, carla.Transform(
-                carla.Location(x=-7, y=0, z=3), carla.Rotation(pitch=-12)), attach_to=bike)
+                carla.Location(x=x, y=y, z=z),
+                carla.Rotation(pitch=pitch, yaw=yaw, roll=roll)), attach_to=bike)
             q = Queue(maxsize=4)
             sensor.listen(q.put)
             sensors[name] = q

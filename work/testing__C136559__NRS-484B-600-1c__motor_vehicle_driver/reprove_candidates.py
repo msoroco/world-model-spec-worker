@@ -39,8 +39,8 @@ def main():
         for candidate_id, holder in [("primary", entry),
                                      ("fallback1", entry["candidates"][0])]:
             label = suffix + "-" + candidate_id
-            offline_dir = SCRATCH / ("offline-" + label + "-v5")
-            offline_log = ROOT / ("cpu-offline-" + label + "-v5.log")
+            offline_dir = SCRATCH / ("offline-" + label + "-v6")
+            offline_log = ROOT / ("cpu-offline-" + label + "-v6.log")
             args = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "offline",
                     "--manifest", str(MANIFEST), "--case", entry["case_id"],
                     "--candidate", candidate_id, "--output", str(offline_dir)]
@@ -48,8 +48,8 @@ def main():
             holder["offline"] = {"command": " ".join(args), "exit_code": 0,
                                  "construction_sha256": holder["construction_sha256"],
                                  "log": offline_log.name, "log_sha256": sha(offline_log)}
-            compat_dir = SCRATCH / ("compat-" + label + "-v4")
-            compat_log = ROOT / ("cpu-compat-analysis-" + label + "-v4.log")
+            compat_dir = SCRATCH / ("compat-" + label + "-v5")
+            compat_log = ROOT / ("cpu-compat-analysis-" + label + "-v5.log")
             args = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "compatibility",
                     "--manifest", str(MANIFEST), "--case", entry["case_id"],
                     "--candidate", candidate_id, "--output", str(compat_dir),
@@ -57,10 +57,10 @@ def main():
                     "--validator", str(VALIDATOR)]
             run(args, compat_log, env)
             receipt = json.loads((compat_dir / "compatibility.json").read_text())
-            receipt_path = ROOT / ("cpu-compat-" + label + "-v4.json")
+            receipt_path = ROOT / ("cpu-compat-" + label + "-v5.json")
             # The runtime receipt references its own positive and negative log hashes.
             shutil.copy2(compat_dir / "compatibility-analysis.log", compat_log)
-            negative_log = ROOT / ("cpu-compat-negative-" + label + "-v4.log")
+            negative_log = ROOT / ("cpu-compat-negative-" + label + "-v5.log")
             shutil.copy2(compat_dir / "negative-analysis.log", negative_log)
             receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
             holder["compatibility"] = {"receipt": receipt_path.name,

@@ -51,21 +51,29 @@ def select(packet_path: Path, source_root: Path, body_length_m: float) -> dict:
             case_dir = HERE / 'cases' / kind
             construction = case_dir / 'construction.original.json'
             contract = case_dir / 'measurement-original.json'
-            if construction.exists() or contract.exists():
+            fallback = case_dir / 'construction.original.fallback1.json'
+            if construction.exists() or contract.exists() or fallback.exists():
                 raise ValueError('refusing to overwrite original case construction: ' + kind)
             source = draft_dir / item['construction']
             measurement = draft_dir / item['measurement_contract']
+            fallback_source = draft_dir / item['candidates'][0]['construction']
             if sha(source) != item['construction_sha256'] or sha(measurement) != item['measurement_contract_sha256']:
                 raise ValueError('generated original source construction changed: ' + kind)
+            if sha(fallback_source) != item['candidates'][0]['construction_sha256']:
+                raise ValueError('generated original fallback construction changed: ' + kind)
             selected = dict(item, construction=str(construction.relative_to(HERE)),
                             measurement_contract=str(contract.relative_to(HERE)))
-            selected['candidate_risk'] = {
-                'status': 'physical',
-                'reason': 'Original fixture visibility and curb placement require measured Native review'}
+            selected['candidates'] = [dict(item['candidates'][0],
+                                           construction=str(fallback.relative_to(HERE)))]
             selected['source_selection_status'] = 'original_sources_selected_capture_pending'
+            selected['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
+                                          'host_env_var': 'CARLA_HOST',
+                                          'port_env_var': 'CARLA_PORT'}
             entries.append(selected)
-            staged.extend(((source, construction), (measurement, contract)))
-        manifest = {'assignment_id': HERE.name,
+            staged.extend(((source, construction), (measurement, contract),
+                           (fallback_source, fallback)))
+        manifest = {'format': 'worker-execution-manifest',
+                    'assignment_id': HERE.name,
                     'status': 'original_sources_selected_capture_pending',
                     'runtime_manifest_sha256': sha(RUNTIME_MANIFEST),
                     'reviewed_site_packet_sha256': sha(packet_path),

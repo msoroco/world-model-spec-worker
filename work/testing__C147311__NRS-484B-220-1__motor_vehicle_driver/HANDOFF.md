@@ -1,3 +1,13 @@
+# C147311 exact one-way direction ready handoff (2026-11-25)
+
+Status is **ready / delivery_prepared** for CPU construction. The exact scoped `worker_check.py --assignment testing__C147311__NRS-484B-220-1__motor_vehicle_driver --complete --require-delivery-ready` passed after all four selected constructions, source-gated original capture code, semantic delivery, offline, compatibility, 900-frame recorded-only saved processing, physical preparation, four source-shaped delivery positive/negative protocols, and four comparison receipts were validated. The focused assignment suite passed 20 tests from the assignment directory. Strict log: `cpu-nov25-ready-strict.log` SHA-256 `44477c53eaa70167331894dacb9d2162ec93757b9c05d35170548a95bffe475a`. Focused log: `cpu-nov25-full-decode-tests.log` SHA-256 `9c0fe4d3b9be9abf8b2f5ee9ff8d10f643723cd9fb24856ecff57fda86b6cb80`.
+
+`queue-proposal.json` contains four selected case rows and four comparison rows, exactly matching `execution-manifest.json` and `case-plan.json`. It has canonical prepare/execute/accept/capture/process/owner-release commands and independent source audit commands. There are no approved fallback candidates. Proposal SHA-256 `3df533ed963b38045b5bd11eed0d871f41f7f53ed853cc1511a41f7604699c3e`. The proposal is assignment-local for lead integration; it is not an executed delivery queue.
+
+Original source custody and physical acceptance remain local delivery work: provide a reviewed original public one-way highway/sign/lane/route packet with its 11 source hashes, acquire four original CARLA camera streams and 900 motion frames for each selected job, and independently review source, pixel visibility, sign governance and physical completion. The two accepted lane-one entries in the frozen export are metadata only; their original traces and video are absent. Diagnostic fixtures and CPU receipts do not claim an original recording or legal verdict.
+
+## Historical checkpoints
+
 # C147311 one-way direction checkpoint
 
 ## 2026-11-25 original camera decode hardening

@@ -61,6 +61,34 @@ class CameraAdapter(CombinedAdapter):
 
 
 class NativeCameraCaptureTests(unittest.TestCase):
+    def test_source_bound_fallback_changes_only_camera_offset(self):
+        scratch = Path('.runtime-work/c150153-native-camera-tests')
+        scratch.mkdir(parents=True, exist_ok=True)
+        with TemporaryDirectory(dir=scratch) as temp:
+            packet, sources, source_packet = ReviewedSiteTests().make_packet(Path(temp))
+            site = dict(source_packet['site'], site_sha256=sha(packet))
+            class OffsetCameraAdapter(CameraAdapter):
+                def start_cameras(self, attempt, plan_sha, names, lateral_offset_m=0.0):
+                    self.lateral_offset_m = lateral_offset_m
+                    super().start_cameras(attempt, plan_sha, names)
+            adapter = OffsetCameraAdapter(site, CASES[0])
+            attempt = Path(temp) / 'fallback-attempt'
+            attempt.mkdir()
+            for name in ('construction.json', 'runner.py', 'config.json'):
+                (attempt / name).write_text('synthetic materialized source\n')
+            proof = capture(adapter, packet, sources, HERE.name + '__' + CASES[0].id,
+                            4.0, attempt, camera_lateral_offset_m=0.4)
+            self.assertEqual(proof['frame_count'], 900)
+            self.assertEqual(adapter.lateral_offset_m, 0.4)
+            invalid = Path(temp) / 'invalid-fallback'
+            invalid.mkdir()
+            for name in ('construction.json', 'runner.py', 'config.json'):
+                (invalid / name).write_text('synthetic materialized source\n')
+            with self.assertRaisesRegex(ValueError, 'outside engineering range'):
+                capture(adapter, packet, sources, HERE.name + '__' + CASES[0].id,
+                        4.0, invalid, camera_lateral_offset_m=1.4)
+            self.assertFalse((invalid / 'history.jsonl').exists())
+
     def test_original_adapter_uses_same_tick_pipeline_capture(self):
         scratch = Path('.runtime-work/c150153-native-camera-tests')
         scratch.mkdir(parents=True, exist_ok=True)

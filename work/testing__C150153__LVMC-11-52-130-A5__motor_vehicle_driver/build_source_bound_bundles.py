@@ -38,6 +38,7 @@ from reviewed_site import verify
 CASE_ID = {case_id!r}
 SITE_SHA256 = {site_sha256!r}
 BODY_LENGTH_M = {body_length_m!r}
+CAMERA_LATERAL_OFFSET_M = {camera_lateral_offset_m!r}
 
 def run(adapter, packet, source_root, output):
     if hashlib.sha256(Path(packet).read_bytes()).hexdigest() != SITE_SHA256:
@@ -55,7 +56,8 @@ def run_original_capture(adapter, packet, source_root, output_dir):
     if not hasattr(adapter, 'provenance') or adapter.provenance() != 'original_native':
         raise ValueError('original Native adapter provenance required')
     return capture_with_cameras(adapter, Path(packet), Path(source_root), CASE_ID,
-                                BODY_LENGTH_M, Path(output_dir))
+                                BODY_LENGTH_M, Path(output_dir),
+                                camera_lateral_offset_m=CAMERA_LATERAL_OFFSET_M)
 
 def check():
     root = Path(__file__).resolve().parent
@@ -149,7 +151,7 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
         if contract.get('negative', {}).get('remove') != ['reviewed-site/packet.json']:
             raise ValueError('reviewed-site negative source contract differs: ' + case_id)
         runner = RUNNER.format(case_id=case_id, site_sha256=site_sha,
-                               body_length_m=body_length_m)
+                               body_length_m=body_length_m, camera_lateral_offset_m=0.0)
         planned_description = next(c['recording_description'] for c in PLAN['cases']
                                    if c['case_id'] == case_id)
         recording_description = {key: planned_description[key]
@@ -195,6 +197,16 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
             raise ValueError('source-bound bundle exceeds returned-file limit')
         target = output_dir / ('construction-' + kind + '.json')
         target.write_bytes(raw)
+        fallback_runner = RUNNER.format(case_id=case_id, site_sha256=site_sha,
+                                        body_length_m=body_length_m,
+                                        camera_lateral_offset_m=0.4)
+        fallback = json.loads(raw)
+        next(file for file in fallback['files'] if file['path'] == 'runner.py')['content'] = fallback_runner
+        fallback_raw = (json.dumps(fallback, indent=2, sort_keys=True) + '\n').encode()
+        if len(fallback_raw) > 2 * 1024 * 1024 or fallback_raw == raw:
+            raise ValueError('source-bound fallback construction invalid')
+        fallback_target = output_dir / ('construction-' + kind + '-fallback1.json')
+        fallback_target.write_bytes(fallback_raw)
         staged_contract = output_dir / ('measurement-' + kind + '.json')
         staged_contract.write_bytes(contract_bytes)
         description = config['recording_description']
@@ -216,7 +228,16 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                         'measurement_contract_sha256': _sha(contract_bytes),
                         'measurement_procedure': {'entrypoint': 'analysis.py'},
                         'acquisition': acquisition,
-                        'physical_risk': item['physical_risk']})
+                        'physical_risk': item['physical_risk'],
+                        'candidate_risk': {'status': 'physical',
+                                           'reason': 'Original elevator visibility may fail in reference-corner camera'},
+                        'candidates': [{'id': 'fallback1',
+                                        'construction': fallback_target.name,
+                                        'construction_sha256': _sha(fallback_raw),
+                                        'trigger': {'source': 'original four-view pixel review',
+                                                    'metric': 'sidewalk elevator reference corner visibility',
+                                                    'failure_condition': 'reference corner occluded in original overview or detail view'},
+                                        'changed_knobs': ['camera_lateral_offset_m=0.4']} ]})
     index = {'format': 'sidewalk-elevator-source-bound-draft',
              'status': 'unselected_original_capture_pending',
              'assignment_id': HERE.name, 'reviewed_site_packet_sha256': site_sha,

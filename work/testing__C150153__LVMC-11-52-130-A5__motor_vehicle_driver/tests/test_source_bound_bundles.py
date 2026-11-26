@@ -51,6 +51,19 @@ class SourceBoundBundleTests(unittest.TestCase):
                 self.assertEqual(set(entry['acquisition']), expected)
                 self.assertIn('original_native', files['runner.py'])
                 compile(files['runner.py'], 'runner.py', 'exec')
+                self.assertEqual(entry['candidate_risk']['status'], 'physical')
+                self.assertEqual(len(entry['candidates']), 1)
+                fallback = entry['candidates'][0]
+                self.assertEqual(fallback['id'], 'fallback1')
+                fallback_raw = (output / fallback['construction']).read_bytes()
+                self.assertEqual(hashlib.sha256(fallback_raw).hexdigest(),
+                                 fallback['construction_sha256'])
+                self.assertNotEqual(fallback_raw, raw)
+                fallback_files = {item['path']: item['content']
+                                  for item in json.loads(fallback_raw)['files']}
+                self.assertEqual(set(fallback_files), set(files))
+                self.assertIn('CAMERA_LATERAL_OFFSET_M = 0.4', fallback_files['runner.py'])
+                compile(fallback_files['runner.py'], 'fallback-runner.py', 'exec')
             with self.assertRaisesRegex(ValueError, 'already exists'):
                 generate(packet, sources, 4.0, output)
             source = next(Path(sources).iterdir())
@@ -98,14 +111,16 @@ class SourceBoundBundleTests(unittest.TestCase):
             index = generate(packet, sources, 4.0, output)
             manifest = output / 'manifest.draft.json'
             for entry in index['cases']:
-                with self.subTest(case=entry['case_id']):
-                    command = [str(HERE.parents[1] / '.venv-cpu/bin/python'), 'runtime.py', 'offline',
-                               '--manifest', str(manifest), '--case', entry['case_id'],
-                               '--output', str(Path(temp) / ('offline-' + entry['case_id'].rsplit('__', 1)[-1]))]
-                    result = subprocess.run(command, capture_output=True, text=True,
-                                            cwd=HERE.parents[1], timeout=90)
-                    self.assertEqual(result.returncode, 0, result.stderr)
-                    self.assertIn('offline_passed', result.stdout)
+                for candidate in ('primary', 'fallback1'):
+                    with self.subTest(case=entry['case_id'], candidate=candidate):
+                        command = [str(HERE.parents[1] / '.venv-cpu/bin/python'), 'runtime.py', 'offline',
+                                   '--manifest', str(manifest), '--case', entry['case_id'],
+                                   '--candidate', candidate,
+                                   '--output', str(Path(temp) / ('offline-' + entry['case_id'].rsplit('__', 1)[-1] + '-' + candidate))]
+                        result = subprocess.run(command, capture_output=True, text=True,
+                                                cwd=HERE.parents[1], timeout=90)
+                        self.assertEqual(result.returncode, 0, result.stderr)
+                        self.assertIn('offline_passed', result.stdout)
 
 
 if __name__ == '__main__':

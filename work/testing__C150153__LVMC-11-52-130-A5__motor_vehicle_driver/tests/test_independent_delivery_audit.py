@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+import shutil
 from subprocess import CompletedProcess
 import sys
 from tempfile import TemporaryDirectory
@@ -84,6 +85,34 @@ class DeliveryAuditTests(unittest.TestCase):
             forged = dict(seal, provenance_kind='original_native')
             (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
             with self.assertRaisesRegex(ValueError, 'reviewed site packet copy missing'):
+                audit(attempt, packet, sources)
+            reviewed = attempt / 'reviewed-site'
+            reviewed.mkdir()
+            shutil.copy2(packet, reviewed / 'packet.json')
+            shutil.copytree(sources, reviewed / 'sources')
+            source_hashes = dict(seal['sources'])
+            for path in reviewed.rglob('*'):
+                if path.is_file():
+                    source_hashes[str(path.relative_to(attempt))] = sha(path)
+            forged['sources'] = source_hashes
+            (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
+            with self.assertRaisesRegex(ValueError, 'Native acquisition and exit receipts missing'):
+                audit(attempt, packet, sources)
+            (attempt / 'construction.json').write_text('{}\n')
+            (attempt / 'runner.py').write_text('pass\n')
+            revision = {'construction_sha256': sha(attempt / 'construction.json'),
+                        'runner_sha256': sha(attempt / 'runner.py')}
+            acquisition = dict(forged, format='sidewalk-elevator-native-acquisition-seal',
+                               provenance_kind='native', diagnostic_fixture=False,
+                               events=['capture_finished', 'encoders_closed', 'restoration_verified'],
+                               native_revision=revision)
+            (attempt / 'capture-seal.json').write_text(json.dumps(acquisition) + '\n')
+            forged['owner_receipt_sha256'] = '0' * 64
+            (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
+            (attempt / 'native-exit.json').write_text(json.dumps({
+                'event': 'native_exit', 'capture_seal_sha256': '0' * 64,
+                'native_revision': revision, 'native_process_exit_code': 0}) + '\n')
+            with self.assertRaisesRegex(ValueError, 'Native acquisition/exit binding differs'):
                 audit(attempt, packet, sources)
 
     def test_sealed_frame_join_and_changed_original_rejection(self):

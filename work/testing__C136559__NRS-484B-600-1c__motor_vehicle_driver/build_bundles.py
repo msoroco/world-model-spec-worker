@@ -31,10 +31,10 @@ def main() -> None:
                                            ("approach", 1280, 720),
                                            ("reference_corner", 1280, 720),
                                            ("driver_reference", 1280, 720))]
-    common = ["runner.py", "posted_site.py", "posted_control.py", "native_capture.py", "analysis.py",
+    common = ["runner.py", "posted_site.py", "posted_control.py", "native_capture.py", "native_adapter.py", "analysis.py",
               "speed_source_review.py", "original_source_audit.py",
               "tests/test_posted_site.py", "tests/test_posted_control.py",
-              "tests/test_native_capture.py"]
+              "tests/test_native_capture.py", "tests/test_native_adapter.py"]
     entries = []
     for suffix in CASES:
         exact = ID + "__" + suffix

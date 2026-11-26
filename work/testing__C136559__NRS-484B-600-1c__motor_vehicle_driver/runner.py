@@ -48,15 +48,15 @@ def main() -> None:
         return
     site = args.site or (Path(os.environ["C136559_POSTED_SITE"]) if os.environ.get("C136559_POSTED_SITE") else None)
     site_sha = args.site_sha256 or os.environ.get("C136559_POSTED_SITE_SHA256")
-    module = args.adapter_module or os.environ.get("C136559_NATIVE_ADAPTER_MODULE")
-    if site is None or not site_sha or args.output_dir is None or not module:
-        raise ValueError("reviewed posted-speed site, hash, Native adapter and output directory required")
+    module = args.adapter_module or os.environ.get("C136559_NATIVE_ADAPTER_MODULE") or "native_adapter"
+    if site is None or not site_sha or args.output_dir is None:
+        raise ValueError("reviewed posted-speed site, hash and output directory required")
     packet = load(site, site_sha, config["selected_case_id"])
     variables = config["case"]["draft_variables"]
     if variables["travel_direction"] not in packet["travel_lanes"]:
         raise ValueError("selected direction lacks reviewed lane")
     from native_capture import capture
-    adapter = importlib.import_module(module).create_adapter(config, args.host, args.port)
+    adapter = importlib.import_module(module).create_adapter(config, args.host, args.port, args.output_dir)
     print(json.dumps(capture(adapter, config, site, site_sha, args.output_dir), sort_keys=True))
 
 

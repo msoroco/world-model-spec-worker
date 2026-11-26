@@ -37,11 +37,11 @@ def main():
     for entry in manifest["cases"]:
         case = entry["case_id"]
         suffix = case.removeprefix(ROOT.name + "__")
-        attempt = SCRATCH / ("saved-attempt-" + suffix + "-v2")
-        saved = SCRATCH / ("saved-" + suffix + "-v2")
+        attempt = SCRATCH / ("saved-attempt-" + suffix + "-v4")
+        saved = SCRATCH / ("saved-" + suffix + "-v4")
         run([PYTHON, "runtime.py", "materialize", "--manifest", str(MANIFEST),
              "--case", case, "--output", str(attempt)], env,
-            ROOT / ("cpu-materialize-" + suffix + "-v2.log"))
+            ROOT / ("cpu-materialize-" + suffix + "-v4.log"))
         source = SCRATCH / ("saved-source-" + suffix)
         for path in source.iterdir():
             target = attempt / path.name
@@ -51,17 +51,17 @@ def main():
                 shutil.copytree(path, target)
             else:
                 shutil.copy2(path, target)
-        saved_log = ROOT / ("cpu-saved-" + suffix + "-v2.log")
+        saved_log = ROOT / ("cpu-saved-" + suffix + "-v4.log")
         args = [PYTHON, "runtime.py", "process-saved", "--manifest", str(MANIFEST),
                 "--case", case, "--attempt", str(attempt), "--output", str(saved),
                 "--library", str(REPO / "runtime/library"),
                 "--validator", str(VALIDATOR)]
         run(args, env, saved_log)
-        receipt_path = ROOT / ("cpu-saved-" + suffix + "-v2.json")
+        receipt_path = ROOT / ("cpu-saved-" + suffix + "-v4.json")
         shutil.copy2(saved / "v0001/processing.json", receipt_path)
         analysis = saved / "v0001/analysis"
-        selected_log = ROOT / ("cpu-selected-" + suffix + "-v2.log")
-        negative_log = ROOT / ("cpu-selected-negative-" + suffix + "-v2.log")
+        selected_log = ROOT / ("cpu-selected-" + suffix + "-v4.log")
+        negative_log = ROOT / ("cpu-selected-negative-" + suffix + "-v4.log")
         positive = [PYTHON, str(ROOT / "selected_delivery.py"), "--attempt", str(analysis),
                     "--case", case, "--allow-diagnostic"]
         negative = positive[:-1]
