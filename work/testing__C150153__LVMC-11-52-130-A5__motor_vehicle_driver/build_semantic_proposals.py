@@ -19,10 +19,10 @@ LAW = "LVMC-11-52-130-A5"
 ACTOR = "motor_vehicle_driver"
 TEMPLATE = LAW + "@" + ACTOR
 JUDGMENTS = (
-    ("sidewalk elevator or chute", "Original fixture identity, frontage and side extent require review.", "fixture_geometry"),
-    ("when necessary to avoid conflict with other traffic in compliance with law", "Original traffic and lawful necessity require review.", "traffic_conflict"),
-    ("directions of a police officer", "Original officer direction and its applicability require review.", "police_direction"),
-    ("directions of a traffic control device", "Original governing device and direction require review.", "traffic_device_direction"),
+    ("sidewalk elevator or chute", "Original fixture identity, frontage and side extent require review.", "fixture_frontage_and_side_extents"),
+    ("when necessary to avoid conflict with other traffic in compliance with law", "Original traffic and lawful necessity require review.", "exception_circumstances"),
+    ("directions of a police officer", "Original officer direction and its applicability require review.", "exception_circumstances"),
+    ("directions of a traffic control device", "Original governing device and direction require review.", "exception_circumstances"),
 )
 
 
@@ -75,16 +75,20 @@ def build() -> dict:
                                                         for phrase, note, _ in JUDGMENTS]},
                 "parameter_refs": parameters}
     stages["template"] = _write(directory, "template.json", template)
-    description = plan['cases'][0]['recording_description']
-    if any(case['recording_description'] != description for case in plan['cases']):
+    planned_description = plan['cases'][0]['recording_description']
+    description = {key: planned_description[key]
+                   for key in ('channels', 'context_inputs', 'limitations')}
+    if any(case['recording_description'] != planned_description for case in plan['cases']):
         raise ValueError('linked exact cases changed the recording description')
+    recording_units = {item['name']: item['unit']
+                       for item in description['channels'] + description['context_inputs']}
     judgment_refs = []
     for index, (phrase, note, observable) in enumerate(JUDGMENTS, 1):
-        requirement = {"name": observable, "unit": "structured",
+        requirement = {"name": observable, "unit": recording_units[observable],
                        "description": "Original source and observation for " + phrase + "."}
         proposal = {"status": "draft", "template_id": TEMPLATE, "phrase": phrase, "note": note,
                     "observable_requirements": {"observables": [requirement],
-                                                "context_inputs": [{"name": "reviewed_site", "unit": "structured",
+                                                "context_inputs": [{"name": "reviewed_sidewalk_elevator_site", "unit": recording_units['reviewed_sidewalk_elevator_site'],
                                                                     "description": "Original reviewed fixture and jurisdiction."}],
                                                 "sweep_dimensions": [], "landmarks": [],
                                                 "recording_needs": [requirement],

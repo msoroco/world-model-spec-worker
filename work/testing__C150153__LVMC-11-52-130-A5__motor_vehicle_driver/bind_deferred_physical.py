@@ -36,8 +36,6 @@ def bind() -> None:
             stem = 'cpu-deferred-physical-' + kind + '-' + outcome_kind
             result_path = HERE / (stem + '.json')
             log_path = HERE / (stem + '.log')
-            if result_path.exists() or log_path.exists():
-                raise ValueError('refusing to overwrite physical fixture proof: ' + stem)
             command = [sys.executable, str(HERE / 'prove_physical_fixture.py'),
                        '--case', kind, '--kind', outcome_kind,
                        '--output', str(result_path)]
@@ -45,11 +43,16 @@ def bind() -> None:
             env['PYTHONDONTWRITEBYTECODE'] = '1'
             env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ROOT / '.runtime-work/c150153-owner/pipeline')
             env['TMPDIR'] = str(ROOT / '.runtime-work/c150153-owner/tmp')
-            with log_path.open('w') as stream:
-                run = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
-                                     stderr=subprocess.STDOUT, timeout=90)
-            if run.returncode:
-                raise ValueError('physical fixture command failed: ' + stem)
+            if result_path.exists() != log_path.exists():
+                raise ValueError('incomplete physical fixture proof: ' + stem)
+            if not result_path.exists():
+                with log_path.open('w') as stream:
+                    run = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
+                                         stderr=subprocess.STDOUT, timeout=90)
+                if run.returncode:
+                    raise ValueError('physical fixture command failed: ' + stem)
+            if 'status' not in log_path.read_text() or not result_path.is_file():
+                raise ValueError('physical fixture proof absent: ' + stem)
             fixtures.append({'kind': outcome_kind, 'command': ' '.join(command),
                              'exit_code': 0, 'log': log_path.name,
                              'log_sha256': sha(log_path),

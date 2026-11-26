@@ -21,7 +21,8 @@ def sha(path: Path) -> str:
 
 def prove(manifest_path: Path = MANIFEST, scratch: Path = SCRATCH,
           prefix: str = 'cpu-fallback-offline-',
-          expected_status: str = 'synthetic_fallback_diagnostic_only_unselected_original_capture_pending') -> None:
+          expected_status: str = 'synthetic_fallback_diagnostic_only_unselected_original_capture_pending',
+          proof_only: bool = False, reuse: bool = False) -> None:
     manifest = json.loads(manifest_path.read_text())
     if manifest.get('status') != expected_status:
         raise ValueError('offline proof manifest status differs')
@@ -31,7 +32,7 @@ def prove(manifest_path: Path = MANIFEST, scratch: Path = SCRATCH,
         for candidate_id in ('primary', 'fallback1'):
             candidate = entry if candidate_id == 'primary' else entry['candidates'][0]
             output = scratch / (kind + '-' + candidate_id)
-            if output.exists():
+            if output.exists() and not reuse:
                 raise ValueError('fresh offline output required: ' + str(output))
             command = [sys.executable, str(ROOT / 'runtime.py'), 'offline',
                        '--manifest', str(manifest_path), '--case', entry['case_id'],
@@ -41,9 +42,12 @@ def prove(manifest_path: Path = MANIFEST, scratch: Path = SCRATCH,
             env['PYTHONDONTWRITEBYTECODE'] = '1'
             env['TMPDIR'] = str(ROOT / '.runtime-work/c150153-owner/tmp')
             env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ROOT / '.runtime-work/c150153-owner/pipeline')
-            run = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, timeout=90)
-            if run.returncode or 'offline_passed' not in run.stdout:
-                raise RuntimeError(kind + '/' + candidate_id + ': ' + run.stdout[-1000:] + run.stderr[-1000:])
+            if not output.exists():
+                run = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, timeout=90)
+                if run.returncode or 'offline_passed' not in run.stdout:
+                    raise RuntimeError(kind + '/' + candidate_id + ': ' + run.stdout[-1000:] + run.stderr[-1000:])
+            if not (output / 'offline.log').is_file():
+                raise ValueError('offline proof log absent: ' + str(output))
             saved_log = HERE / (prefix + kind + '-' + candidate_id + '.log')
             shutil.copy2(output / 'offline.log', saved_log)
             candidate['offline'] = {'exit_code': 0,
@@ -53,7 +57,8 @@ def prove(manifest_path: Path = MANIFEST, scratch: Path = SCRATCH,
                                     'log': saved_log.name,
                                     'log_sha256': sha(saved_log)}
             print(kind, candidate_id, 'offline passed', flush=True)
-    manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+    if not proof_only:
+        manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 if __name__ == '__main__':

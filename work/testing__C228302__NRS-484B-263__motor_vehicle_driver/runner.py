@@ -58,7 +58,7 @@ def validate_config():
     case = next((item for item in CASES if item.name == spec['name']), None)
     if case is None or (case.policy, case.approaching_count, case.approach_headway_s) != (spec['policy'], spec['approaching_count'], spec['approach_headway_s']):
         raise ValueError('case design changed')
-    if spec.get('ego_start_variant') not in ('primary', 'fallback1'):
+    if config.get('ego_start_variant') not in ('primary', 'fallback1'):
         raise ValueError('exact reviewed-route ego start variant missing')
     if not config['selected_case_id'].endswith('__' + case.name):
         raise ValueError('exact case identity changed')

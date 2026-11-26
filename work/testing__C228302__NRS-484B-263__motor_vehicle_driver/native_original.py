@@ -118,7 +118,7 @@ def run(config, case, packet_path, output, host, port):
     client = carla.Client(host, port)
     client.set_timeout(30)
     world = client.get_world()
-    adapter = Adapter(world, carla, site, config['case']['ego_start_variant'])
+    adapter = Adapter(world, carla, site, config['ego_start_variant'])
     if adapter.read_map_hash() != site['road']['map_sha256']:
         raise ValueError('original Native map differs from reviewed OpenDRIVE source')
     output = Path(output)

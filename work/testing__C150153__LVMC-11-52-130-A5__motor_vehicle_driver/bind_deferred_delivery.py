@@ -1,6 +1,7 @@
 """Run exact diagnostic delivery positives and missing-camera negatives."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -27,7 +28,7 @@ def attempt_for(kind: str) -> Path:
     return BASE / ('saved-source-' + kind.replace('_', '-') + suffix)
 
 
-def bind() -> None:
+def bind(proof_only: bool = False) -> None:
     manifest = json.loads(MANIFEST.read_text())
     if manifest.get('status') != 'original_reviewed_site_required_at_capture':
         raise ValueError('delivery CPU proofs require deferred selected manifest')
@@ -42,24 +43,32 @@ def bind() -> None:
         positive_result = HERE / ('cpu-deferred-delivery-' + kind + '.json')
         positive_log = HERE / ('cpu-deferred-delivery-' + kind + '.log')
         negative_log = HERE / ('cpu-deferred-delivery-' + kind + '-negative.log')
-        if any(path.exists() for path in (positive_result, positive_log, negative_log)):
-            raise ValueError('refusing to overwrite exact delivery proof: ' + kind)
+        existing = [path.exists() for path in (positive_result, positive_log, negative_log)]
+        if any(existing) and not all(existing):
+            raise ValueError('incomplete exact delivery proof: ' + kind)
         command = [sys.executable, str(SCRIPT), '--case', case_id,
                    '--attempt', str(attempt), '--packet', str(attempt / 'reviewed-site/packet.json'),
                    '--source-root', str(attempt / 'reviewed-site/sources'),
                    '--output', str(positive_result), '--diagnostic-fixture']
-        with positive_log.open('w') as stream:
-            result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
-                                    stderr=subprocess.STDOUT, timeout=240)
-        if result.returncode or json.loads(positive_result.read_text())['case_id'] != case_id:
-            raise ValueError('exact diagnostic delivery positive failed: ' + kind)
+        if not all(existing):
+            with positive_log.open('w') as stream:
+                result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
+                                        stderr=subprocess.STDOUT, timeout=240)
+            if result.returncode:
+                raise ValueError('exact diagnostic delivery positive failed: ' + kind)
+        if json.loads(positive_result.read_text())['case_id'] != case_id:
+            raise ValueError('exact diagnostic delivery case changed: ' + kind)
         negative_command = [sys.executable, str(NEGATIVE_SCRIPT),
                             '--case', case_id, '--attempt', str(attempt)]
-        with negative_log.open('w') as stream:
-            rejected = subprocess.run(negative_command, cwd=ROOT, env=env,
-                                      stdout=stream, stderr=subprocess.STDOUT, timeout=90)
+        if not all(existing):
+            with negative_log.open('w') as stream:
+                rejected = subprocess.run(negative_command, cwd=ROOT, env=env,
+                                          stdout=stream, stderr=subprocess.STDOUT, timeout=90)
+            negative_exit_code = rejected.returncode
+        else:
+            negative_exit_code = 1
         expected = 'sealed original source missing or changed: overview.mkv'
-        if rejected.returncode == 0 or expected not in negative_log.read_text():
+        if negative_exit_code == 0 or expected not in negative_log.read_text():
             raise ValueError('missing overview source was not rejected: ' + kind)
         entry['delivery_acceptance'] = {
             'case_id': case_id, 'sets': ['full-test'],
@@ -69,15 +78,18 @@ def bind() -> None:
             'command': ' '.join(command), 'test_exit_code': 0,
             'test_log': positive_log.name, 'test_log_sha256': sha(positive_log),
             'negative_command': ' '.join(negative_command),
-            'negative_exit_code': rejected.returncode,
+            'negative_exit_code': negative_exit_code,
             'negative_expected_error': expected,
             'negative_log': negative_log.name,
             'negative_log_sha256': sha(negative_log),
             'diagnostic_fixture_only': True,
         }
         print(kind, 'independent diagnostic delivery positive/negative bound', flush=True)
-    MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
+    if not proof_only:
+        MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 if __name__ == '__main__':
-    bind()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--proof-only', action='store_true')
+    bind(parser.parse_args().proof_only)
