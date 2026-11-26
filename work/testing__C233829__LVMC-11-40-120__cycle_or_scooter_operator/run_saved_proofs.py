@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -22,6 +23,10 @@ def run(entry):
         None)
     if attempt is None:
         return name, 1, 'current compatibility attempt missing'
+    replay_attempt = SCRATCH / ('saved-input-' + name)
+    if not replay_attempt.exists():
+        shutil.copytree(attempt, replay_attempt, copy_function=os.link)
+        (replay_attempt / 'candidate-selection.json').unlink(missing_ok=True)
     output = SCRATCH / ('saved-' + name)
     for prior in sorted(output.glob('v*/processing.json'), reverse=True):
         receipt = json.loads(prior.read_text())
@@ -32,7 +37,7 @@ def run(entry):
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / ('pipeline-saved-' + name)))
     command = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py'),
                'process-saved', '--manifest', str(HERE / 'execution-manifest.json'),
-               '--case', case, '--attempt', str(attempt), '--output', str(output),
+               '--case', case, '--attempt', str(replay_attempt), '--output', str(output),
                '--library', str(ROOT / 'runtime/library'), '--validator', str(VALIDATOR)]
     result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
     (SCRATCH / ('saved-command-' + name + '.log')).write_text(

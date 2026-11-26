@@ -71,6 +71,16 @@ class SignalMeasurementTest(unittest.TestCase):
         p = packet(5)
         self.assertEqual(signal.measure(p, 8)["entry_observation"], "transition_bracket_unresolved")
 
+    def test_other_route_red_requires_selected_nonred_entry(self):
+        p = packet(4)
+        self.assertIn(4, signal.measure(p, 8, case_profile="red_other_route")
+                      ["other_route_red_frames"])
+        with self.assertRaisesRegex(signal.EvidenceError, "did not contrast"):
+            signal.measure(packet(6), 8, case_profile="red_other_route")
+        p["frames"][4]["signals"][1]["state"] = "green"
+        with self.assertRaisesRegex(signal.EvidenceError, "did not contrast"):
+            signal.measure(p, 8, case_profile="red_other_route")
+
     def test_rejects_non_steady_yellow_and_wrong_route(self):
         p = packet()
         p["frames"][2]["signals"][0]["flashing"] = True
@@ -151,6 +161,8 @@ def scene():
             "official_device_sha256": "d" * 64, "signal_route_binding_sha256": "e" * 64,
             "companion_signal_id": "head-companion", "companion_device_sha256": "f" * 64,
             "companion_route_binding_sha256": "g" * 64,
+            "other_route_signal_id": "head-other", "other_route_id": "cross_route",
+            "other_route_device_sha256": "h" * 64,
             "approach_spawn": [0, 0, 0], "route_waypoints": [[0, 0], [10, 0], [20, 0]],
             "layout": "one_way_to_two_way_intersection", "signal_kind": "vehicular",
             "signal_facing_route_id": "ego_route",
@@ -183,6 +195,14 @@ class FakeAdapter:
 
     def program_companion_signal(self, *args, **kwargs):
         self.calls.append(("program_companion_signal", args, kwargs))
+
+    def bind_other_route_signal(self, signal_id, route_id):
+        self.calls.append(("bind_other_route_signal", (signal_id, route_id), {}))
+        return {"official": True, "facing_route_id": route_id,
+                "source_sha256": "h" * 64}
+
+    def program_other_route_signal(self, *args, **kwargs):
+        self.calls.append(("program_other_route_signal", args, kwargs))
 
     def set_route_controller(self, *args, **kwargs):
         self.calls.append(("set_route_controller", args, kwargs))
@@ -223,6 +243,16 @@ class ConstructionTest(unittest.TestCase):
         s.pop("companion_device_sha256")
         with self.assertRaisesRegex(construction.ConstructionError, "companion indication source missing"):
             construction.construct(FakeAdapter(), s, "yellow_non_alone")
+
+    def test_other_route_red_constructs_separate_official_head(self):
+        adapter = FakeAdapter()
+        construction.construct(adapter, scene(), "red_other_route")
+        self.assertIn("bind_other_route_signal", [call[0] for call in adapter.calls])
+        self.assertIn("program_other_route_signal", [call[0] for call in adapter.calls])
+        s = scene()
+        s.pop("other_route_device_sha256")
+        with self.assertRaisesRegex(construction.ConstructionError, "other-route official"):
+            construction.construct(FakeAdapter(), s, "red_other_route")
 
 class FullLengthMeasurementTest(unittest.TestCase):
     def test_900_frame_capture_contract(self):

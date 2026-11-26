@@ -43,12 +43,24 @@ def construct(adapter, scene: dict, case: str) -> dict:
                                        not scene.get("companion_device_sha256") or
                                        not scene.get("companion_route_binding_sha256")):
         raise ConstructionError("companion indication source missing")
+    if case == "red_other_route" and (not scene.get("other_route_signal_id") or
+                                      not scene.get("other_route_id") or
+                                      not scene.get("other_route_device_sha256")):
+        raise ConstructionError("other-route official signal source missing")
     adapter.configure_world(scene["map_sha256"], fixed_delta_seconds=0.05)
     ego = adapter.spawn_ego(scene["ego_blueprint"], scene["approach_spawn"])
     signal = adapter.bind_official_signal(scene["selected_signal_id"], scene["selected_route_id"])
     if not signal or signal.get("kind") != "vehicular" or signal.get("facing_route_id") != scene["selected_route_id"]:
         raise ConstructionError("Native official signal readback failed")
     adapter.program_signal(signal, sequence=("green", "yellow", "red"), profile=profile["entry_phase"])
+    if case == "red_other_route":
+        other = adapter.bind_other_route_signal(scene["other_route_signal_id"],
+                                                scene["other_route_id"])
+        if (not other or other.get("official") is not True or
+            other.get("facing_route_id") != scene["other_route_id"] or
+            other.get("source_sha256") != scene["other_route_device_sha256"]):
+            raise ConstructionError("other-route Native signal readback failed")
+        adapter.program_other_route_signal(other, state="red")
     if case == "yellow_non_alone":
         companion = adapter.bind_companion_signal(scene["companion_signal_id"],
                                                   scene["selected_route_id"])

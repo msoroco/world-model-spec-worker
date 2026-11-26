@@ -22,7 +22,7 @@ def check() -> str:
     case_id = config["selected_case_id"]
     if case_id not in {row["case_id"] for row in plan["cases"]}:
         raise ValueError("selected case absent from exact plan")
-    if config["assignment_id"] != HERE.name or config["cell_id"] != "C135087" or config["law_id"] != "NRS-484B-153-3":
+    if config["assignment_id"] != "testing__C135087__NRS-484B-153-3__motor_vehicle_driver" or config["cell_id"] != "C135087" or config["law_id"] != "NRS-484B-153-3":
         raise ValueError("bundle scope mismatch")
     return case_id
 
@@ -73,8 +73,10 @@ def main():
              "original_observer", "camera_factory")
     if not isinstance(hooks, dict) or any(not callable(hooks.get(name)) for name in names):
         raise ValueError("reviewed operator missing required Native hooks")
+    config = json.loads((HERE / "config.json").read_text())
     result = capture(world, case_id=case_id, survey_path=survey,
                      survey_sha256=survey_sha256, output=args.output_dir,
+                     door_open_tick=config.get("door_open_tick", 120),
                      **{name: hooks[name] for name in names})
     print(json.dumps(result, sort_keys=True))
 

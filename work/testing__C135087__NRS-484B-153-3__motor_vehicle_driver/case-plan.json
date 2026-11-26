@@ -266,11 +266,30 @@
     }
   ],
   "observations": [
-    "original door articulation and side",
-    "separate passing vehicle body/path",
-    "original passenger or cargo activity and inactivity",
-    "door opening and closing timestamps",
-    "supported loading position and narrow-road geometry"
+    {
+      "name": "original_door_articulation",
+      "mandatory": true
+    },
+    {
+      "name": "original_loading_activity",
+      "mandatory": true
+    },
+    {
+      "name": "original_passing_body_path",
+      "mandatory": true
+    },
+    {
+      "name": "original_narrow_road_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "original_frame_map",
+      "mandatory": true
+    },
+    {
+      "name": "original_four_camera_pixels",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -313,7 +332,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_exact_case_and_measurement_construction",
+  "planning_status": "source_gated_native_construction_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-153-3.json",
@@ -330,5 +349,64 @@
       ],
       "reason": "A narrow-road loading task can expose the duration and loading relationship of a door closest to passing traffic."
     }
-  ]
+  ],
+  "selected_branch": "Door-open duration during narrow-road loading",
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "A vehicle door is left open on the side closest to passing traffic",
+      "source": "inputs/testing__C135087__NRS-484B-153-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Original door articulation and separate passing body/path must be measured; opposite-side control isolates applicability.",
+      "case_ids": [
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_active",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_inactive",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_active",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_inactive",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__opposite_side_control"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "The open interval relates to immediate loading or unloading of passengers or cargo; legal necessity remains unresolved",
+      "source": "inputs/testing__C135087__NRS-484B-153-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Original cargo/passenger activity, inactivity, opening and closure must be measured without a legal duration threshold.",
+      "case_ids": [
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_active",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_inactive",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_active",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_inactive",
+        "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__opposite_side_control"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "selected door, load actor and passing vehicle",
+        "interval": "all 900 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "passing vehicle approach and selected vehicle",
+        "interval": "all 900 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "door articulation, loading actor and body clearance",
+        "interval": "all 900 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver door side and loading motion",
+        "interval": "all 900 frames"
+      }
+    ]
+  }
 }

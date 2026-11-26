@@ -68,11 +68,12 @@ def measure(packet: dict, expected_frames: int = 900,
     frames = packet.get("frames")
     if not isinstance(frames, list) or len(frames) != expected_frames:
         raise EvidenceError("incomplete original frame history")
-    if case_profile not in ("steady_yellow_alone", "yellow_non_alone"):
+    if case_profile not in ("steady_yellow_alone", "yellow_non_alone", "red_other_route"):
         raise EvidenceError("unknown signal case profile")
     states = []
     distances = []
     companion_frames = []
+    other_route_red_frames = []
     for i, frame in enumerate(frames):
         if frame.get("frame") != i or abs(frame.get("time_s", -999) - i / 20.0) > 0.001:
             raise EvidenceError("broken original 20 Hz frame/time join")
@@ -88,8 +89,19 @@ def measure(packet: dict, expected_frames: int = 900,
         states.append(selected["state"])
         if selected["state"] == "yellow" and selected["companion_lamps_on"]:
             companion_frames.append(i)
+        if case_profile == "red_other_route":
+            other = [lamp for lamp in frame["signals"]
+                     if lamp.get("route_id") != route_id and lamp.get("signal_id") != signal_id
+                     and lamp.get("kind") == "vehicular" and lamp.get("official") is True
+                     and lamp.get("state") == "red"]
+            for lamp in other:
+                _required_source(lamp.get("source"), "other-route signal")
+            if other:
+                other_route_red_frames.append(i)
     if case_profile == "yellow_non_alone" and not companion_frames:
         raise EvidenceError("companion indication not observed")
+    if case_profile == "red_other_route" and not other_route_red_frames:
+        raise EvidenceError("other-route red indication not observed")
     transitions = [(i, states[i - 1], states[i]) for i in range(1, len(states)) if states[i] != states[i - 1]]
     allowed = {("green", "yellow"), ("yellow", "red")}
     if any((a, b) not in allowed for _, a, b in transitions):
@@ -103,6 +115,10 @@ def measure(packet: dict, expected_frames: int = 900,
     if len(crossings) > 1:
         raise EvidenceError("multiple intersection entries require separate review")
     crossing = crossings[0].__dict__ if crossings else None
+    if case_profile == "red_other_route" and (crossing is None or
+        crossing["after_frame"] not in other_route_red_frames or
+        crossing["signal_after"] == "red"):
+        raise EvidenceError("other-route red did not contrast with selected entry")
     initially_inside = distances[0] >= 0
     return {
         "format": "original-signal-entry-measurement",
@@ -115,6 +131,7 @@ def measure(packet: dict, expected_frames: int = 900,
         "yellow_alone_observed": bool(any(state == "yellow" for state in states) and
                                       not companion_frames),
         "companion_indication_frames": companion_frames,
+        "other_route_red_frames": other_route_red_frames,
         "entry_bracket": crossing,
         "entry_observation": ("already_inside_at_capture_start" if initially_inside else "no_entry")
         if crossing is None else (

@@ -1,0 +1,65 @@
+{
+  "template_id": "NRS-484B-307-6a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-6a",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+  "structure": {
+    "law_id": "NRS-484B-307-6a",
+    "activation": {
+      "condition": "Vehicular traffic faces a steady yellow signal alone on its governed route.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Warning of related green termination or immediately following red; no entry when red is exhibited.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "steady yellow signal alone",
+        "disposition": "companion indication changes applicability; original readback required"
+      }
+    ],
+    "timing": {
+      "description": "Original selected route signal state at surveyed body entry.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "enter the intersection",
+        "note": "20 Hz front/polygon bracket is evidence, not a legal boundary."
+      },
+      {
+        "phrase": "immediately thereafter",
+        "note": "Observed phase delay is not a statutory numeric cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "entry_phase",
+      "kind": "world_setup",
+      "range_or_domain": "green, steady yellow or red source observation",
+      "unit": "source request"
+    },
+    {
+      "name": "ego_behavior",
+      "kind": "world_setup",
+      "range_or_domain": "traverse or stop before surveyed entry",
+      "unit": "source request"
+    },
+    {
+      "name": "companion_indication",
+      "kind": "world_setup",
+      "range_or_domain": "source-bound absent or observed",
+      "unit": "source request"
+    },
+    {
+      "name": "other_route_red",
+      "kind": "world_setup",
+      "range_or_domain": "separate route red source observation",
+      "unit": "source request"
+    }
+  ]
+}

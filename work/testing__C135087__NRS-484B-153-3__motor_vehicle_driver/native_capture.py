@@ -88,13 +88,15 @@ def _save_packet(output: Path, name: str, value: dict) -> dict:
 
 def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
             output: Path, map_reader, actor_factory, door_controller,
-            loading_controller, original_observer, camera_factory):
+            loading_controller, original_observer, camera_factory, door_open_tick=120):
     """Capture one exact case from a reviewed source-bound Native operator.
 
     Operator callbacks are mandatory. `original_observer` must read door
     articulation, loading actor body/motion and passing body after each tick.
     CARLA world settings and owned actors/sensors are restored in `finally`.
     """
+    if type(door_open_tick) is not int or not 80 <= door_open_tick <= 120:
+        raise ValueError("bounded door engineering tick invalid")
     packet = validate_survey(_read_hashed(survey_path, survey_sha256), case_id)
     if not all(callable(fn) for fn in (map_reader, actor_factory, door_controller,
                                        loading_controller, original_observer, camera_factory)):
@@ -141,11 +143,11 @@ def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
         first_time = None
         last_frame = None
         for index in range(FRAME_COUNT):
-            if index == 120 and not door_controller(selected, "open", side):
+            if index == door_open_tick and not door_controller(selected, "open", side):
                 raise ValueError("Native door controller refused open")
             if index == 720 and not door_controller(selected, "close", side):
                 raise ValueError("Native door controller refused close")
-            active_command = 120 <= index < (720 if active_case else 360)
+            active_command = door_open_tick <= index < (720 if active_case else 360)
             if not loading_controller(loading_actor, selected, load_kind, active_command, index):
                 raise ValueError("Native loading controller refused")
             frame = world.tick()
@@ -177,7 +179,7 @@ def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
             if observed.get("door_observation_source") != "native_articulation_readback":
                 raise ValueError("door command is not an articulation observation")
             open_readback = door_angle >= 15
-            if index < 120 or index >= 720:
+            if index < door_open_tick or index >= 720:
                 if open_readback:
                     raise ValueError("door did not close in original observation")
             elif not open_readback:
@@ -193,7 +195,7 @@ def capture(world, *, case_id: str, survey_path: Path, survey_sha256: str,
             if observed.get("loading_observation_source") != "native_actor_body_motion":
                 raise ValueError("loading command is not an activity observation")
             active_readback = bool(observed.get("loading_contact_with_vehicle")) and motion > .05
-            if 120 <= index < 720 and active_readback != active_command:
+            if door_open_tick <= index < 720 and active_readback != active_command:
                 raise ValueError("original loading activity differs from controlled phase")
             passing_body = observed.get("passing_vehicle_body_xy_m")
             if not isinstance(passing_body, list) or len(passing_body) < 4:
