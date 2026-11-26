@@ -1,6 +1,6 @@
 # C394563 school-crossing CPU construction checkpoint
 
-Status: **partial**. Exact selected-case Native realization, four original camera streams, source-saved processing, compatibility and independent audit have not passed. No delivery-ready claim.
+Status: **ready for local delivery preparation** after exact assignment-scoped strict CPU gate. Actual Native capture and original sign, authority, person-intent and legal review remain for local execution.
 
 Law branch: LVMC 11.18.020 prohibits vehicle entry into a displayed School-Xing crosswalk while a person attempting to cross is in the crosswalk on the approach side. The City Traffic Engineer marking authority is contextual; the source says person, not only schoolchild. The authored construction places a yellow 3.6576 m crossing at x=0 and a School-Xing sign at x=-35 m, beyond the 100 ft advance threshold. Original source must verify the marking, sign, person intent and entry.
 
@@ -48,3 +48,15 @@ The final selected Native constructions passed exact current-runtime offline che
 ## 2026-11-26 selected CPU compatibility and semantic checkpoint
 
 Both exact final selected constructions passed offline and full current-runtime package compatibility. The bound receipts under `selected-compatibility/` include original four-view source decode, Native validation, Core/Lean conversion, final render/decode, source-joined selected measurements, and missing-source rejection. Three source-bound synthetic physical outcomes per case and the capture/closure lifecycle test pass under `proofs/physical-{a,b}/`; these do not claim actual physical completion. The canonical relevance, template, judgment observables, bindings and cases stage chain passes CPU validation and preserves official authority, displayed sign, 12-foot crossing, 100-foot advance location, person intent and original timing as source review inputs. Recorded-only processing, independent delivery/comparison audit, selected execution manifest and strict assignment gate remain. Status is partial.
+
+## 2026-11-26 corrected selected pair and audit checkpoint
+
+The corrected synthetic fixture holds the same 600-frame person trajectory, school crossing geometry, School-Xing sign position, four-camera plan and frame map across both cases. The controlled ego entry timing produces measured original-frame front entry at frame 10240 with approach-side person occupation and frame 10420 after the person clears. Both exact final constructions pass offline, full compatibility and recorded-only saved processing. Independent delivery audits verify complete participant/frame histories, all four original video streams, source hashes and school crossing geometry; missing road source negatives reject. An independent pairwise audit passes the fixed-condition and changed-occupancy check and rejects a missing member. All these receipts are CPU diagnostic evidence, not physical or legal acceptance. Final static validators and scoped strict gate remain pending.
+
+## 2026-11-26 final scoped acceptance
+
+The exact command `.venv-cpu/bin/python worker_check.py --assignment training__C394563__LVMC-11-18-020__motor_vehicle_driver --complete --require-delivery-ready` passed on the selected package. Both exact cases are bound in `execution-manifest.json`, with current-runtime offline, package compatibility, corrected shared-person-trajectory recorded-only saved processing, canonical semantic proposals, source-bound synthetic physical/lifecycle fixtures and independent positive/negative delivery and comparison audits. The CPU fixtures contain synthetic source and explicitly make no physical or legal acceptance claim. Local Native execution must independently verify City Traffic Engineer authorization, the approximately 12-foot marked crossing, the displayed School-Xing sign at least 100 feet in advance, original sign pixels, the person attempting to cross on the vehicle approach side, and actual vehicle front-entry timing.
+
+## Candidate disposition and local visibility gate
+
+Both exact cases have `candidate_risk.status=none` because the fixed four-view plan already requires original sign and person visibility and source-bound timing checks. The diagnostic fixture verifies that these checks reject missing sources; it does not prove physical legibility or person intent. If actual Native capture occludes the person, fails to display the School-Xing words, or lacks City authorization, local adoption stops for independent review. No distinct same-case fallback has a measured trigger and CPU proof. A change to sign, person or camera placement would alter the comparison controls, so it cannot be silently substituted for the selected cases. The only controlled comparison difference is ego entry timing.

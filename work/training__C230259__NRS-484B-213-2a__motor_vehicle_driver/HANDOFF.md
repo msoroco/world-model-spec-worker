@@ -1,3 +1,15 @@
+# Current CPU checkpoint: six exact draft branches
+
+Status remains **partial**. The exact NRS 484B.213(2)(a) text is decomposed into a two-way crest right/left contrast, a flat two-way curve right/left contrast, and one-way crest/curve applicability contexts. The one-way pairs change roadway directionality, lane geometry and participant direction together; they are exception context, not a violation claim. The scope remains frozen C230259 / motor_vehicle_driver / road travel. Hazard-creating sight distance has no invented legal cutoff.
+
+`case-plan.json` names six exact case IDs and four controlled comparisons. `draft-manifest.json` binds six primary inline OpenDRIVE/controller bundles under `draft-cases/`; all six passed `.venv-cpu/bin/python runtime.py offline` with four tests each, source receipt hashes retained in `native/draft-proof.json`. The curve uses a flat arc so grade does not confound the curve alternative. The one-way road uses two same-direction lanes; the ego starts in the right lane and requests the left lane, with a same-direction peer. These are authored requests, not original road-authority evidence.
+
+`native/measure_feature.py` measures all 600 ordered source frames, exact four-camera joins, original ego body relative to the road centerline, feature interval, sight brackets and opposite-route observation, leaving physical completion and legal judgment null. `native/prove_feature.py` passed six source-shaped positives and rejected missing frame, missing camera, missing sight, missing curve and contradictory one-way/opposing-route packets; receipt `native/feature-source-proof.json`. All packets are synthetic CPU fixtures under `.runtime-work/c230259-nrs213/`.
+
+`.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-213-2a__motor_vehicle_driver --complete` passed. The exact strict command with `--require-delivery-ready` rejected truthful partial status, as expected. Next CPU work is selected source-owned Native capture and saved finalization for all six cases, exact current-runtime positive/negative compatibility and recorded-only checks, semantic proposals, physical/lifecycle fixtures, fallback candidates and independent delivery/comparison audits. Original highway designation, actual crest/curve obstruction, body trajectory, camera pixels and legal hazard interpretation remain local review.
+
+---
+
 # NRS-484B-213-2a at C230259
 
 Actor `motor_vehicle_driver`; frozen cell `road` / `travel` / `other_vehicle`. Status **partial**.

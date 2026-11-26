@@ -21,11 +21,16 @@ class CrestRequest(unittest.TestCase):
         bad=copy.deepcopy(self.c);bad['control_phases'][-1]['last_frame']=598
         with self.assertRaisesRegex(ValueError,'uncovered'):check(bad,self.road)
 
-    def test_reject_one_way_and_missing_crest(self):
-        bad=copy.deepcopy(self.c);bad['road_directionality']='one_way'
-        with self.assertRaisesRegex(ValueError,'two-way'):check(bad,self.road)
-        with self.assertRaisesRegex(ValueError,'crest'):
-            check(self.c,self.road.replace('c="-0.0002"','c="0.0002"'))
+    def test_reject_wrong_directionality_and_missing_feature(self):
+        bad=copy.deepcopy(self.c)
+        bad['road_directionality']='two_way' if bad['road_directionality']=='one_way' else 'one_way'
+        with self.assertRaisesRegex(ValueError,'directionality'):check(bad,self.road)
+        if self.c['case_id'].endswith('curve') or self.c['case_id'].split('__')[-1].startswith('curve'):
+            damaged=self.road.replace('<arc curvature="0.0015"/>','<line/>')
+            with self.assertRaisesRegex(ValueError,'curve'):check(self.c,damaged)
+        else:
+            with self.assertRaisesRegex(ValueError,'crest'):
+                check(self.c,self.road.replace('c="-0.0002"','c="0.0002"'))
 
     def test_no_legal_threshold(self):
         bad=copy.deepcopy(self.c);bad['hazard_distance_legal_judgment']=50

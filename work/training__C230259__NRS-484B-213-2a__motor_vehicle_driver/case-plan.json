@@ -12,9 +12,13 @@
       "status": "selected_required",
       "case_ids": [
         "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
-        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b"
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve"
       ],
-      "evidence_or_gap": "Two exact unselected OpenDRIVE/controller drafts and a 600-frame source-shaped meter pass CPU diagnostics. Curve alternative, one-way exception, original sightline, selected saved processing, candidate and independent audits remain."
+      "evidence_or_gap": "Six exact unselected offline constructions cover crest, curve, and one-way exception requests. Selected Native acquisition, source-bound compatibility, independent audits, and original physical/legal review remain pending."
     }
   ],
   "cases": [
@@ -22,31 +26,114 @@
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-213-2a",
       "kind": "planned_only",
-      "target_type": "compliant_attempt",
-      "physical_target": "stay right while approaching obstructed crest",
-      "comparison_variable": "left_of_center_at_crest"
+      "target_type": "physical_contrast_request",
+      "physical_target": "crest right-side reference",
+      "comparison_variable": "left_of_center_during_obstructed_feature",
+      "construction": "draft-cases/probe_a/primary/construction.json"
     },
     {
       "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-213-2a",
       "kind": "planned_only",
-      "target_type": "violating_attempt",
-      "physical_target": "drive left of center at same crest",
-      "comparison_variable": "left_of_center_at_crest"
+      "target_type": "physical_contrast_request",
+      "physical_target": "crest left-side contrast",
+      "comparison_variable": "left_of_center_during_obstructed_feature",
+      "construction": "draft-cases/probe_b/primary/construction.json"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+      "target_law_id": "NRS-484B-213-2a",
+      "kind": "planned_only",
+      "target_type": "physical_contrast_request",
+      "physical_target": "curve right-side reference",
+      "comparison_variable": "left_of_center_during_obstructed_feature",
+      "construction": "draft-cases/curve_right/primary/construction.json"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+      "target_law_id": "NRS-484B-213-2a",
+      "kind": "planned_only",
+      "target_type": "physical_contrast_request",
+      "physical_target": "curve left-side contrast",
+      "comparison_variable": "left_of_center_during_obstructed_feature",
+      "construction": "draft-cases/curve_left/primary/construction.json"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+      "target_law_id": "NRS-484B-213-2a",
+      "kind": "planned_only",
+      "target_type": "applicability_negative",
+      "physical_target": "one-way crest exception context",
+      "comparison_variable": "road_directionality",
+      "construction": "draft-cases/one_way_crest/primary/construction.json"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
+      "target_law_id": "NRS-484B-213-2a",
+      "kind": "planned_only",
+      "target_type": "applicability_negative",
+      "physical_target": "one-way curve exception context",
+      "comparison_variable": "road_directionality",
+      "construction": "draft-cases/one_way_curve/primary/construction.json"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_left_side",
       "case_ids": [
         "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
         "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b"
       ],
+      "fixed_conditions": [
+        "frozen cell, actor, law, 600 frames at 20 Hz, four-camera policy, controller schedule, weather, participant identity policy",
+        "two-way crest road geometry and opposing participant"
+      ],
       "deliberate_differences": [
-        "left_of_center_at_crest"
+        "requested left-of-center occupancy during crest approach"
+      ]
+    },
+    {
+      "comparison_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left_side",
+      "case_ids": [
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+        "frozen cell, actor, law, 600 frames at 20 Hz, four-camera policy, controller schedule, weather, participant identity policy",
+        "two-way curve road geometry and opposing participant"
+      ],
+      "deliberate_differences": [
+        "requested left-of-center occupancy during curve"
+      ]
+    },
+    {
+      "comparison_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__crest_one_way_exception",
+      "case_ids": [
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, law, 600 frames at 20 Hz, four-camera policy, controller schedule, weather, participant identity policy",
+        "crest profile and leftward trajectory request"
+      ],
+      "deliberate_differences": [
+        "two-way versus one-way road authority and lane geometry",
+        "opposing versus same-direction participant"
+      ]
+    },
+    {
+      "comparison_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_one_way_exception",
+      "case_ids": [
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+        "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, law, 600 frames at 20 Hz, four-camera policy, controller schedule, weather, participant identity policy",
+        "curve profile and leftward trajectory request"
+      ],
+      "deliberate_differences": [
+        "two-way versus one-way road authority and lane geometry",
+        "opposing versus same-direction participant"
       ]
     }
   ],
@@ -105,9 +192,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No original Native crest or driver-eye sightline observed; draft road geometry is a construction request only.",
-    "No selected delivery execution manifest, capture, compatibility, process-saved, candidate or independent acceptance/comparison audit.",
-    "Full law also says upon a curve and exempts one-way highway; these alternatives and governing roadway authority remain to be planned and measured."
+    "No original Native crest/curve sightline, one-way authority, exact footprint or four-camera pixels observed.",
+    "Unselected drafts do not prove source-bound selected capture, finalization, compatibility, recorded-only processing, semantic proposals, physical completion or independent audits.",
+    "Hazard-creating distance remains an unquantified legal judgment."
   ],
   "statutory_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.",
   "activation_conditions_from_unreviewed_summary": [

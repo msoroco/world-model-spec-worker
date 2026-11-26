@@ -1,0 +1,247 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+      "kind": "delivery",
+      "construction": "selected-condition-a-construction.json",
+      "construction_sha256": "bfa6849f2c5476a59d4b8547b04a1f81deff0272c39921dac86be4828eb4196a",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The fixed four-view camera plan has source-bound checks for original School-Xing sign pixels and the same-side person at ego entry. If either is occluded or the sign does not display, delivery must stop for independent source review; there is no measured trigger and CPU proof for a distinct same-case physical fallback. Moving the sign, person or camera now would change the fixed comparison conditions. The controlled variable remains ego entry timing, and no alternate is selected."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "measurement_contract": "measurement-contract-condition-a.json",
+      "fixture_recipe": "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/recipe-condition-a.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "bfa6849f2c5476a59d4b8547b04a1f81deff0272c39921dac86be4828eb4196a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/native-draft-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a --output .runtime-work/c394563-native-a9",
+        "log": "native/condition-a-native-offline.log",
+        "log_sha256": "8cc6642a3ac52300756afb433faef6626cb70731337a4a031b6b65cffc914eac"
+      },
+      "compatibility": {
+        "receipt": "selected-compatibility/condition-a/compatibility.json",
+        "sha256": "062a3ea36df6de9495b3c544f009041f981f9c792e1132fe61a0d80b0aafa8f4",
+        "log": "selected-compatibility/condition-a/analysis.log",
+        "negative_log": "selected-compatibility/condition-a/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-compatibility/condition-a/negative-analysis.log",
+        "log_sha256": "0f426d98c0a4a8d4e5e2069a12c4473894b0acec15a32f71e8adf78977189afc"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical-a/receipt.json",
+        "sha256": "bcee9bfcf4391cbb1f1334b68aba17a85783dab7bfbc855b79c3ad2473cce785"
+      },
+      "acquisition": {
+        "four_camera_video": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "person_crosswalk_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_front_entry": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+        "test_log": "proofs/saved-a.log",
+        "test_log_sha256": "f661fd1756add18b7f5d0947efbf2c7a4c0b12b52d9f056181bbdae37d963c71",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "school_crossing_authority_and_sign_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "94bc1aecc51827053c59e9d14430390af001638608e28dec7b53a24513fb9a29",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/delivery_audit.py --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a --attempt .runtime-work/c394563-probe/compat-a9 --processing .runtime-work/c394563-probe/saved-a9/v0001/processing.json --output .runtime-work/c394563-probe/delivery-audit-a9.json --diagnostic",
+        "test_log": "proofs/delivery-a-positive.log",
+        "test_log_sha256": "160443245dceb09faf0c40c9722ac65cc7d5052bd2807cc3e31077d874d6514a",
+        "test_exit_code": 0,
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/delivery_audit.py --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a --attempt .runtime-work/c394563-probe/compat-a9 --processing .runtime-work/c394563-probe/saved-a9/v0001/processing.json --output .runtime-work/c394563-probe/delivery-audit-a9.json --diagnostic --omit-source road_geometry.json",
+        "negative_log": "proofs/delivery-a-negative.log",
+        "negative_log_sha256": "1eac47c0bb9950edf102e94534eb3f6edf28a5e9f578a1e62428fb46a1174c56",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: road_geometry.json",
+        "diagnostic_receipt": "proofs/delivery-a-positive.json",
+        "diagnostic_receipt_sha256": "2af23e0ce21895b7333227bfb3cdf90dc52dc608884b160491bfd714ebdf03e9"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b",
+      "kind": "delivery",
+      "construction": "selected-condition-b-construction.json",
+      "construction_sha256": "bc29241550ac535d8ed1c7e200838f924c6895ab306b3f043d65281d1ec17aa9",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The fixed four-view camera plan has source-bound checks for original School-Xing sign pixels and the same-side person at ego entry. If either is occluded or the sign does not display, delivery must stop for independent source review; there is no measured trigger and CPU proof for a distinct same-case physical fallback. Moving the sign, person or camera now would change the fixed comparison conditions. The controlled variable remains ego entry timing, and no alternate is selected."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "preparation_status": "incomplete",
+      "measurement_contract": "measurement-contract-condition-b.json",
+      "fixture_recipe": "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/recipe-condition-b.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "bc29241550ac535d8ed1c7e200838f924c6895ab306b3f043d65281d1ec17aa9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/native-draft-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b --output .runtime-work/c394563-native-b9",
+        "log": "native/condition-b-native-offline.log",
+        "log_sha256": "a08507c2fd7e38d3031cb68f1f4447a5b1b037c9a310f292a1307eae66b4f5e5"
+      },
+      "compatibility": {
+        "receipt": "selected-compatibility/condition-b/compatibility.json",
+        "sha256": "d952b2ac35038ff0d65f82d112cc2065ee5571e7621a698d04b620c62eead687",
+        "log": "selected-compatibility/condition-b/analysis.log",
+        "negative_log": "selected-compatibility/condition-b/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-compatibility/condition-b/negative-analysis.log",
+        "log_sha256": "ac33bdcf154ec314bdbde9a463cfae89fe12d8b8efa349d904d2afb0515bc0b1"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical-b/receipt.json",
+        "sha256": "17415d4fd7c15d30c31e95fd1952fa995c6a0989e1d69c558fe40249451a43bf"
+      },
+      "acquisition": {
+        "four_camera_video": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "person_crosswalk_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_front_entry": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native actor/map/frame readback and four original camera streams",
+          "evidence": [
+            "native_samples.jsonl",
+            "road_geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b",
+        "test_log": "proofs/saved-b.log",
+        "test_log_sha256": "19dc467e6e458416a5f334fcf5432d5b6a9ea9a07c0f18acc28bcd73bc4f01b2",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "school_crossing_authority_and_sign_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "94bc1aecc51827053c59e9d14430390af001638608e28dec7b53a24513fb9a29",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/delivery_audit.py --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b --attempt .runtime-work/c394563-probe/compat-b9 --processing .runtime-work/c394563-probe/saved-b9/v0001/processing.json --output .runtime-work/c394563-probe/delivery-audit-b9.json --diagnostic",
+        "test_log": "proofs/delivery-b-positive.log",
+        "test_log_sha256": "91bc8910d9e7a6a29db5ef64e4be8a438f885307e8402d2983f27f98247e5b50",
+        "test_exit_code": 0,
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/delivery_audit.py --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b --attempt .runtime-work/c394563-probe/compat-b9 --processing .runtime-work/c394563-probe/saved-b9/v0001/processing.json --output .runtime-work/c394563-probe/delivery-audit-b9.json --diagnostic --omit-source road_geometry.json",
+        "negative_log": "proofs/delivery-b-negative.log",
+        "negative_log_sha256": "1eac47c0bb9950edf102e94534eb3f6edf28a5e9f578a1e62428fb46a1174c56",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: road_geometry.json",
+        "diagnostic_receipt": "proofs/delivery-b-positive.json",
+        "diagnostic_receipt_sha256": "d8529b0fbf8f2112d8f9766c6c8de520bf614ecf6fc04c824a46ca6f5ea08f7f"
+      }
+    }
+  ]
+}

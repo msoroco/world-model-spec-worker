@@ -27,7 +27,13 @@ class DraftContract(unittest.TestCase):
     def test_changed_speed(self):
         changed = copy.deepcopy(self.config)
         changed["speed_request_mph"] += 1
-        with self.assertRaisesRegex(ValueError, "speed request"):
+        with self.assertRaisesRegex(ValueError, "speed or exception context"):
+            check(changed)
+
+    def test_changed_exception_context(self):
+        changed = copy.deepcopy(self.config)
+        changed["planned_context"] = "unknown"
+        with self.assertRaisesRegex(ValueError, "speed or exception context"):
             check(changed)
 
     def test_fabricated_context(self):

@@ -1,4 +1,4 @@
-"""Build two exact unselected school-crossing speed constructions."""
+"""Build exact unselected school-crossing speed and exception constructions."""
 import hashlib
 import json
 from pathlib import Path
@@ -6,7 +6,16 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent.name
-CASES = {"condition_a": 20, "condition_b": 30}
+CASES = {
+    "condition_a": (20, "beacon_active"),
+    "condition_b": (30, "beacon_active"),
+    "at_limit": (25, "beacon_active"),
+    "no_school_day": (30, "no_school_day"),
+    "half_hour_window": (30, "half_hour_window"),
+    "beacon_not_flashing": (30, "beacon_not_flashing"),
+    "nonbeacon_sign_active": (30, "nonbeacon_sign_active"),
+    "nonbeacon_sign_inactive": (30, "nonbeacon_sign_inactive"),
+}
 
 
 def sha(path):
@@ -15,7 +24,7 @@ def sha(path):
 
 def build():
     entries = []
-    for condition, speed in CASES.items():
+    for condition, (speed, context) in CASES.items():
         case = ASSIGNMENT + "__selected_d08892c9__" + condition
         config = {"case_id": case, "selected_case_id": case,
                   "law_id": "NRS-484B-363-2", "cell_id": "C255451",
@@ -27,10 +36,16 @@ def build():
                                    ("approach", 1280, 720),
                                    ("reference_corner", 1280, 720),
                                    ("driver_reference", 1280, 720))],
-                  "speed_request_mph": speed, "zone_start_x_m": 100,
+                  "speed_request_mph": speed, "planned_context": context,
+                  "zone_start_x_m": 100,
                   "zone_end_x_m": 200,
                   "source_actor_ids": ["bus", "child_left", "child_right"],
                   "calendar_verified": False, "beacon_verified": False,
+                  "source_review_required": [
+                      "official_zone_designation", "installed_sign", "school_calendar",
+                      "school_operation_hours", "civil_clock", "operational_beacon_status",
+                      "beacon_alternating_yellow_pixels", "nonbeacon_sign_schedule",
+                      "original_bus_class_and_velocity", "original_child_actors"],
                   "physical_verified": False, "legal_verdict": None}
         construction = {"format": "worker-inline-construction", "case_id": case,
                         "cell_id": "C255451", "actor": "bus_driver",

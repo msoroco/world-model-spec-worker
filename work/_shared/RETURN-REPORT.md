@@ -1,6 +1,39 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 C394563 newly ready on current runtime
+
+`training__C394563__LVMC-11-18-020__motor_vehicle_driver` is newly ready. The owner and lead independently passed the exact assignment-scoped strict CPU gate on the final stable package (`static_checks_passed: true`). Selected cases `training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a` and `__condition_b` hold the school-crossing sign, crosswalk and person trajectory fixed while changing requested ego entry frame; `__selected_1290826d__comparison` checks that isolation. Offline/public missing-source negatives, recorded-only, canonical semantic, physical/lifecycle and independent delivery/comparison CPU proofs are bound. The sign/person visibility fallback policy stops local adoption on failed original evidence; it does not silently substitute an unproved candidate. Original City Traffic Engineer authorization, sign and person pixels, actual movement and legal outcome remain local review. Final execution-manifest SHA-256 `6aacfdf5855fa21e81f41a6b2ceff65cc5cd98b9b213de3d5110eed8144c4455`; result SHA-256 `93f60ec14ce2de6c13ac038a2165e6c2c38e434998101a3224b8210db47f292d`.
+
+The lead mapped all three frozen source topics to a runnable branch, removed LVMC 11.18.020 from missing branches and bound branch-coverage SHA-256 `5fdaea0e52cf5e63b4e33ea02aef22741b1c048b5c2e0b8cdb026692f988eadc`; 164 laws remain listed. Rebuilt ordered queue builder `--check`, independent queue audit and return audit pass: **168 ready / 85 partial** of 253, 995 planned cases, 793 selected delivery cases, 516 comparisons, 1,143 proven candidates and zero dispatchable. Queue SHA-256 `be97e84d3f05f6ea10b244d24997a810edcce7589af86954d1314e710fe47abc`. NRS 484B.627(1)(c) and NRS 484B.213(2)(a) retain disjoint owners. Newly assigned `training__C255451__NRS-484B-363-2__bus_driver` has two current-runtime unselected offline drafts and source-shaped speed-zone diagnostics; selected source-bound proofs and strict gate remain CPU work. Whole-batch strict readiness remains unpassed while partial packages remain.
+
+## 2026-11-26 C228817 newly ready on current runtime
+
+C230259/627(1)(c) has seven of eight recorded-only candidate replays passing; only exception_1_2 fallback1 replay and stable-byte scoped strict remain after its offline/public, physical/lifecycle, semantic, comparison and delivery-audit CPU checks. Its result reason is refreshed and remains partial. C394563 owner reports a scoped strict pass after repairing plan observation channel names and is rerunning on final bytes; the lead has not yet independently certified it or integrated its shared rows.
+
+
+After C228817 integration, the lead scanned 1,126 files across shared, that newly ready package and all three active-owner directories for the 2 MiB limit (5 MiB queue exception), UTF-8, trailing whitespace, blank EOF, exact conflict markers and temporary directories under work; all passed. Queue builder `--check` remains current while the active owners continue their partial packages.
+
+
+C230259/627(1)(c) owner confirmed the authored OpenDRIVE road name and commanded speed do not establish controlled-access designation or legally impeding traffic. Its reducer/finalizer leave independent designation false, and delivery audit requires separate original-source review. The package remains partial while saved-only candidate replays and final strict are completed.
+
+
+The lead independently reread NRS 484B.213(2)(a) and subsection (3) for the new full-train-02 owner: crest and curve are distinct obstructed-view/hazard alternatives, and the one-way-highway exception must be dispositioned. No numeric sight-distance threshold is supplied by the statute. The owner was directed to measure source facts without turning an engineering distance into a legal cutoff.
+
+
+After C228817's independent scoped pass and shared integration, a disjoint owner started `training__C230259__NRS-484B-213-2a__motor_vehicle_driver` (full-train-02). It retains two exact unselected crest/left-side/sightline offline drafts and a 600-frame source-shaped meter; selected cases, source-bound delivery proofs and strict gate remain CPU work. It is partial. C230259/627(1)(c) in full-train-08 and C394563 school crossing in full-train-03 continue with their existing owners. No more than three assignment owners run alongside the lead.
+
+
+`training__C228817__NRS-484B-153-3__motor_vehicle_driver` is newly ready after both its owner and the lead independently passed the final exact scoped `.venv-cpu/bin/python -B worker_check.py --assignment training__C228817__NRS-484B-153-3__motor_vehicle_driver --complete --require-delivery-ready` gate with `static_checks_passed: true`. Four selected passenger/cargo traffic-side-door schedule cases (`__probe_1` through `__probe_4`) and two comparisons (`__comparison`, `__cargo_comparison`) bind primary and same-case physical-fallback offline/public positive/missing-source negative, recorded-only positive/missing-source, eight semantic stages, physical/lifecycle, and independent delivery/comparison CPU proofs. Door close frames are controlled engineering targets, not legal duration cutoffs. Actual door state, traffic-side orientation, passenger/cargo transfer, physical duration and legal necessity require original Native source review. Final execution-manifest SHA-256 `772f46a08ed5a99190027f6e1bf13e5acb9f78a4017d003c1625da9b2649983d`; result SHA-256 `82cd6bb26a34b3a69d8bd755fa7b98acb82531e8843af39eba8fefc35b540b1c`.
+
+The lead mapped the four exact cases and two controlled comparisons to a runnable branch, removed NRS 484B.153(3) from the missing-branch list and bound branch-coverage SHA-256 `f12857484c9870f39d7593a81de3d352ed070112d26782be47750ce8be393193`; 165 laws remain listed there. The ordered queue was rebuilt; builder `--check`, independent queue audit and return audit pass at **167 ready / 86 partial** of 253, 991 planned cases, 793 selected delivery cases, 513 comparisons, 1,143 proven candidates and zero dispatchable. Queue SHA-256 `9213caf7a91a59199fcc3b9ec92b22ef4b736388cd592cc6f5a6fc772af26c1b`. The whole-batch strict gate remains unpassed while partial packages remain.
+
+C394563 owner found that its B diagnostic had a static and different synthetic pedestrian, which would not isolate ego timing. It corrected the recipe to hold the pedestrian trajectory fixed, refreshed its truthful partial checkpoint and is rerunning public compatibility. Prior receipts are historical checkpoints until the corrected construction-bound replacements pass. C230259 continues its seven remaining saved-only candidate replays and remains partial.
+
+
 ## 2026-11-26 C32014 and C230247 newly ready on current runtime
+
+C230259's four-case execution-manifest validator and direct primary receipt checker now pass, with all eight primary/fallback public compatibility receipts and four physical-preparation receipts present. Its scoped partial complete check passes. Seven recorded-only replays continue before final binding and exact strict; result/HANDOFF are current and partial. The lead rescanned 1,081 shared and active-owner files for return-size and text hygiene and found no issue.
+
 
 C228817 now has four selected primary and four same-case physical fallback constructions passing current-runtime offline/public positive and missing-source negative compatibility. All four recorded-only positive/missing-source checks pass. Eight-stage semantic, physical/lifecycle, independent delivery selftest, canonical four-camera root package, root CPU tests and direct evidence/manifest/semantic/delivery/identity validators pass. The owner refreshed its partial reason and is running complete receipt recheck and the exact scoped strict gate; it is not marked ready yet.
 

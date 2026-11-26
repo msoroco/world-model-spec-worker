@@ -11,10 +11,20 @@ from pathlib import Path
 
 
 ASSIGNMENT = Path(__file__).resolve().parent.parent.name
-CASE_IDS = {"lower_speed": ASSIGNMENT + "__selected_d08892c9__condition_a",
-            "higher_speed": ASSIGNMENT + "__selected_d08892c9__condition_b"}
-SPEEDS_MPS = {"lower_speed": 20 * 0.44704,
-              "higher_speed": 30 * 0.44704}
+CONDITIONS = {
+    "condition_a": (20, "beacon_active"),
+    "condition_b": (30, "beacon_active"),
+    "at_limit": (25, "beacon_active"),
+    "no_school_day": (30, "no_school_day"),
+    "half_hour_window": (30, "half_hour_window"),
+    "beacon_not_flashing": (30, "beacon_not_flashing"),
+    "nonbeacon_sign_active": (30, "nonbeacon_sign_active"),
+    "nonbeacon_sign_inactive": (30, "nonbeacon_sign_inactive"),
+}
+CASE_IDS = {name: ASSIGNMENT + "__selected_d08892c9__" + name
+            for name in CONDITIONS}
+SPEEDS_MPS = {name: speed * 0.44704
+              for name, (speed, _) in CONDITIONS.items()}
 FRAMES = 600
 RATE_HZ = 20
 ZONE_START_M = 100.0
@@ -35,6 +45,7 @@ def request_row(frame, condition):
     speed = SPEEDS_MPS[condition]
     x = -50 + speed * t
     return {"case_id": CASE_IDS[condition], "condition": condition,
+            "planned_context": CONDITIONS[condition][1],
             "frame": frame, "time_s": t, "source_kind": "authored_native_request",
             "bus": {"actor_class": "motor_bus", "x_m": round(x, 6),
                     "y_m": 0.0, "speed_mps": speed},
@@ -79,6 +90,10 @@ def meter(source):
     for i, row in enumerate(data):
         if row.get("frame") != i or abs(row.get("time_s", -1) - i / RATE_HZ) > 1e-6:
             raise ValueError("Source frame/time join differs")
+        condition = row.get("condition")
+        if (condition not in CONDITIONS or row.get("case_id") != CASE_IDS[condition]
+                or row.get("planned_context") != CONDITIONS[condition][1]):
+            raise ValueError("Authored exception context and exact case differ")
         bus = row.get("bus", {})
         zone = row.get("zone", {})
         if bus.get("actor_class") != "motor_bus":
@@ -114,10 +129,12 @@ def prove(output):
     output = Path(output)
     meters = {entry["condition"]: meter(output / entry["path"])
               for entry in manifest["entries"]}
-    if meters["lower_speed"]["frames_above_statutory_25_mph"] != 0:
+    if meters["condition_a"]["frames_above_statutory_25_mph"] != 0:
         raise AssertionError("Lower-speed diagnostic exceeds stated limit")
-    if meters["higher_speed"]["frames_above_statutory_25_mph"] != (
-            meters["higher_speed"]["zone_frames"]):
+    if meters["at_limit"]["frames_above_statutory_25_mph"] != 0:
+        raise AssertionError("At-limit diagnostic exceeds stated limit")
+    if meters["condition_b"]["frames_above_statutory_25_mph"] != (
+            meters["condition_b"]["zone_frames"]):
         raise AssertionError("Higher-speed diagnostic does not separate speed")
     negatives = {}
     for label, mutate, expected in (
@@ -125,8 +142,10 @@ def prove(output):
         ("missing_zone", lambda r: r[0]["zone"].clear(), "Signed school crossing zone source absent"),
         ("missing_bus", lambda r: r[0]["bus"].clear(), "Motor bus source absent"),
         ("forged_original", lambda r: r[0].update(source_kind="original_native"),
-         "Unknown or unsealed source provenance")):
-        changed = rows(output / "lower_speed.jsonl")
+         "Unknown or unsealed source provenance"),
+        ("missing_context", lambda r: r[0].pop("planned_context"),
+         "Authored exception context and exact case differ")):
+        changed = rows(output / "condition_a.jsonl")
         mutate(changed)
         path = output / (label + ".jsonl")
         path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in changed))

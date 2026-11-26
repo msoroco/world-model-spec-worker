@@ -1,0 +1,53 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active",
+  "cell_id": "C255451",
+  "actor": "bus_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active\",\n  \"selected_case_id\": \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active\",\n  \"law_id\": \"NRS-484B-363-2\",\n  \"cell_id\": \"C255451\",\n  \"actor\": \"bus_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"speed_request_mph\": 30,\n  \"planned_context\": \"nonbeacon_sign_active\",\n  \"zone_start_x_m\": 100,\n  \"zone_end_x_m\": 200,\n  \"source_actor_ids\": [\n    \"bus\",\n    \"child_left\",\n    \"child_right\"\n  ],\n  \"calendar_verified\": false,\n  \"beacon_verified\": false,\n  \"source_review_required\": [\n    \"official_zone_designation\",\n    \"installed_sign\",\n    \"school_calendar\",\n    \"school_operation_hours\",\n    \"civil_clock\",\n    \"operational_beacon_status\",\n    \"beacon_alternating_yellow_pixels\",\n    \"nonbeacon_sign_schedule\",\n    \"original_bus_class_and_velocity\",\n    \"original_child_actors\"\n  ],\n  \"physical_verified\": false,\n  \"legal_verdict\": null\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Offline contract check for an unselected exact school-zone bus draft.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\n\ndef check(config):\n    assignment = \"training__C255451__NRS-484B-363-2__bus_driver\"\n    cases = {\n        \"condition_a\": (20, \"beacon_active\"),\n        \"condition_b\": (30, \"beacon_active\"),\n        \"at_limit\": (25, \"beacon_active\"),\n        \"no_school_day\": (30, \"no_school_day\"),\n        \"half_hour_window\": (30, \"half_hour_window\"),\n        \"beacon_not_flashing\": (30, \"beacon_not_flashing\"),\n        \"nonbeacon_sign_active\": (30, \"nonbeacon_sign_active\"),\n        \"nonbeacon_sign_inactive\": (30, \"nonbeacon_sign_inactive\"),\n    }\n    cases = {assignment + \"__selected_d08892c9__\" + name: values\n             for name, values in cases.items()}\n    case = config.get(\"case_id\")\n    if case not in cases or config.get(\"selected_case_id\") != case:\n        raise ValueError(\"Exact case identity differs\")\n    if (config.get(\"law_id\"), config.get(\"cell_id\"), config.get(\"actor\")) != (\n            \"NRS-484B-363-2\", \"C255451\", \"bus_driver\"):\n        raise ValueError(\"Law/cell/actor identity differs\")\n    if (config.get(\"rate_hz\"), config.get(\"duration_s\"),\n            config.get(\"duration_frames\")) != (20, 30, 600):\n        raise ValueError(\"Full 30-second source window required\")\n    if [c.get(\"name\") for c in config.get(\"cameras\", [])] != [\n            \"overview\", \"approach\", \"reference_corner\", \"driver_reference\"]:\n        raise ValueError(\"Four source cameras required\")\n    if any(c.get(\"fps\") != 20 or c.get(\"width\", 0) < 16 or\n           c.get(\"height\", 0) < 16 for c in config[\"cameras\"]):\n        raise ValueError(\"Camera cadence or dimensions differ\")\n    if (config.get(\"speed_request_mph\"), config.get(\"planned_context\")) != cases[case]:\n        raise ValueError(\"Controlled speed or exception context differs\")\n    if config.get(\"zone_start_x_m\") != 100 or config.get(\"zone_end_x_m\") != 200:\n        raise ValueError(\"School crossing zone geometry differs\")\n    if config.get(\"source_actor_ids\") != [\"bus\", \"child_left\", \"child_right\"]:\n        raise ValueError(\"Bus/child source actors differ\")\n    if config.get(\"calendar_verified\") is not False or config.get(\"beacon_verified\") is not False:\n        raise ValueError(\"Unverified exception context claimed\")\n    if config.get(\"physical_verified\") is not False or config.get(\"legal_verdict\") is not None:\n        raise ValueError(\"Physical or legal result claimed\")\n    return {\"case_id\": case, \"frames\": 600, \"simulation_started\": False,\n            \"selected_for_delivery\": False}\n\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    args = parser.parse_args()\n    if not args.check:\n        raise SystemExit(\"Native capture and saved processing are not yet implemented\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text())), sort_keys=True))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\n\nclass DraftContract(unittest.TestCase):\n    def setUp(self):\n        self.config = json.loads(Path(\"config.json\").read_text())\n\n    def test_full_window(self):\n        self.assertEqual(check(self.config)[\"frames\"], 600)\n\n    def test_missing_camera(self):\n        changed = copy.deepcopy(self.config)\n        changed[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError, \"Four source cameras\"):\n            check(changed)\n\n    def test_short_window(self):\n        changed = copy.deepcopy(self.config)\n        changed[\"duration_frames\"] = 599\n        with self.assertRaisesRegex(ValueError, \"30-second\"):\n            check(changed)\n\n    def test_changed_speed(self):\n        changed = copy.deepcopy(self.config)\n        changed[\"speed_request_mph\"] += 1\n        with self.assertRaisesRegex(ValueError, \"speed or exception context\"):\n            check(changed)\n\n    def test_changed_exception_context(self):\n        changed = copy.deepcopy(self.config)\n        changed[\"planned_context\"] = \"unknown\"\n        with self.assertRaisesRegex(ValueError, \"speed or exception context\"):\n            check(changed)\n\n    def test_fabricated_context(self):\n        changed = copy.deepcopy(self.config)\n        changed[\"calendar_verified\"] = True\n        with self.assertRaisesRegex(ValueError, \"exception context\"):\n            check(changed)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "raw_bus_motion",
+        "method": "original bus actor readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "signed_zone_context",
+        "method": "source-hashed sign and road-zone boundaries",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "child_actor_context",
+        "method": "original child actor readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named source streams",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Native zone, original pixels and exception timing unverified"
+    ]
+  },
+  "status": "exact_unselected_offline_draft"
+}

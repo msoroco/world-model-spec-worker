@@ -6,8 +6,18 @@ from pathlib import Path
 
 def check(config):
     assignment = "training__C255451__NRS-484B-363-2__bus_driver"
-    cases = {assignment + "__selected_d08892c9__condition_a": 20,
-             assignment + "__selected_d08892c9__condition_b": 30}
+    cases = {
+        "condition_a": (20, "beacon_active"),
+        "condition_b": (30, "beacon_active"),
+        "at_limit": (25, "beacon_active"),
+        "no_school_day": (30, "no_school_day"),
+        "half_hour_window": (30, "half_hour_window"),
+        "beacon_not_flashing": (30, "beacon_not_flashing"),
+        "nonbeacon_sign_active": (30, "nonbeacon_sign_active"),
+        "nonbeacon_sign_inactive": (30, "nonbeacon_sign_inactive"),
+    }
+    cases = {assignment + "__selected_d08892c9__" + name: values
+             for name, values in cases.items()}
     case = config.get("case_id")
     if case not in cases or config.get("selected_case_id") != case:
         raise ValueError("Exact case identity differs")
@@ -23,8 +33,8 @@ def check(config):
     if any(c.get("fps") != 20 or c.get("width", 0) < 16 or
            c.get("height", 0) < 16 for c in config["cameras"]):
         raise ValueError("Camera cadence or dimensions differ")
-    if config.get("speed_request_mph") != cases[case]:
-        raise ValueError("Controlled speed request differs")
+    if (config.get("speed_request_mph"), config.get("planned_context")) != cases[case]:
+        raise ValueError("Controlled speed or exception context differs")
     if config.get("zone_start_x_m") != 100 or config.get("zone_end_x_m") != 200:
         raise ValueError("School crossing zone geometry differs")
     if config.get("source_actor_ids") != ["bus", "child_left", "child_right"]:

@@ -47,14 +47,17 @@ def build(suffix: str) -> dict:
             front = -12 + index * .05
         else:
             front = -12 + min(index, 160) * .05 + max(0, index - 340) * .05
-        ped_y = -1.0 if suffix == "a" else -4.0
+        # Both cases share the same person source trajectory. Only the ego
+        # entry schedule changes, so occupancy at the entry frame differs.
+        ped_y = min(4.4, -1.3 + max(0, index - 230) * .03)
+        ped_v = .6 if 230 <= index < 420 else 0.0
         corners = [[front, -3], [front, -.5], [front - 4, -.5], [front - 4, -3]]
         native.append({"native_frame": frame, "time_s": t,
                        "source_kind": "synthetic_native_sample",
                        "ego_body_xy_m": corners,
                        "person": {"actor_id": 11, "actor_kind": "walker",
                                   "center_x_m": 1.0, "center_y_m": ped_y,
-                                  "velocity_y_mps": .5 if suffix == "a" else 0.0}})
+                                  "velocity_y_mps": ped_v}})
         mapping.append({"video_frame": index, "carla_frame": frame,
                         "native_frame": frame, "time_s": t,
                         "camera_frames": {name: frame for name in
@@ -74,8 +77,8 @@ def build(suffix: str) -> dict:
                    "body_vertices_m": [[x, y, 0] for x, y in corners]}
         walker = {"actor_id": 11, "blueprint": "walker.pedestrian.0001",
                   "position_m": [1, ped_y, 0], "heading_deg": 90,
-                  "velocity_mps": [0, .5 if suffix == "a" else 0, 0],
-                  "speed_mps": .5 if suffix == "a" else 0,
+                  "velocity_mps": [0, ped_v, 0],
+                  "speed_mps": ped_v,
                   "body_vertices_m": [[1, ped_y, 0]]}
         original = {"frame": frame, "time_s": t, "participants": [vehicle, walker],
                     "relations": [], "devices": [],
