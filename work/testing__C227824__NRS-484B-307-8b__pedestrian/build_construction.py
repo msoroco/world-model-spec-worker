@@ -19,6 +19,7 @@ MODULES = ("runner.py", "case-plan.json", "materialize_cases.py", "build_selecte
            "native_world.py", "native_attempt.py",
            "native_packets.py", "native_signal.py", "native_cameras.py",
            "source_authority.py",
+           "selected_source_gate.py",
            "native_recorder.py", "walker_control.py", "saved_entry.py",
            "entry_measurement.py", "analysis.py", "delivery_audit.py",
            "comparison_audit.py", "comparison_delivery.py", "physical_entry.py")
@@ -46,6 +47,7 @@ def build(case_id=CASE):
         "supported_case_ids": ids, "case": selected[case_id],
         "duration_s": 12, "rate_hz": 20,
         "capture_provenance": "original Native samples required",
+        "source_variant": "primary",
         "required_atoms": [], "source_packets": [],
         "cameras": [{"name": name, "width": width, "height": height,
                      "pose_strategy": "source-reviewed original world location and target",

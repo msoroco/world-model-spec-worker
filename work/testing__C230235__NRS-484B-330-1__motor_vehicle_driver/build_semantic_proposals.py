@@ -37,7 +37,7 @@ def write(folder: Path, name: str, value: dict) -> dict:
 
 def build() -> dict:
     plan = json.loads((HERE / "case-plan.json").read_text())
-    manifest = json.loads((HERE / "execution-manifest.diagnostic.json").read_text())
+    manifest = json.loads((HERE / "execution-manifest.json").read_text())
     assignment = json.loads((ROOT / "inputs" / ASSIGNMENT / "assignment.json").read_text())
     quote = assignment["law"]["text"]
     if quote != plan["law_text"]:
@@ -85,7 +85,7 @@ def build() -> dict:
     refs["template"] = write(folder, "template.json", template)
     judgment_refs = []
     for index, (phrase, note, source_name) in enumerate(JUDGMENTS, 1):
-        need = {"name": source_name, "unit": "structured",
+        need = {"name": source_name, "unit": "source",
                 "description": "Original source-bound finding for " + phrase}
         proposal = {"status": "draft", "template_id": TEMPLATE,
                     "phrase": phrase, "note": note,
@@ -146,7 +146,7 @@ def build() -> dict:
               for index, (phrase, note, _) in enumerate(JUDGMENTS, 1)]
     refs["cases"] = write(folder, "cases.json", {
         "status": "draft", "cell_id": "C230235", "actor": ACTOR,
-        "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": False})
+        "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": True})
     index = {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT,
              "stages": refs}
     (folder / "semantic-index.json").write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")

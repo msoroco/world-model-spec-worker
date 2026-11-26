@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 
 from entry_measurement import _polygon
@@ -16,6 +17,7 @@ from native_attempt import _validate as validate_attempt
 from native_cameras import placements
 from native_signal import _review as review_devices
 from native_world import _materialized, _sha, run_native
+from selected_source_gate import stage_diagnostic, stage_original
 from walker_control import _xy
 
 
@@ -85,7 +87,13 @@ def main(argv=None):
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args(argv)
-    scene = check(args.output_dir)
+    root = args.output_dir.resolve()
+    config = json.loads((root / "config.json").read_text())
+    if args.check and not os.environ.get("C227824_REVIEWED_SOURCE_DIR"):
+        stage_diagnostic(root)
+    else:
+        stage_original(root, config)
+    scene = check(root)
     result = ({"case_id": scene["case_id"], "cpu_precheck": "passed",
                "physical_acceptance_claimed": False} if args.check else
               run_native(scene, args.output_dir, host=args.host, port=args.port))

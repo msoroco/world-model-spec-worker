@@ -63,7 +63,8 @@ def build():
                                        'method': 'independently reviewed original source'}
                                       for name in ('zone_designation', 'construction_marking',
                                                    'flagger_authorization', 'traffic_control_role',
-                                                   'signal_content', 'intended_recipient')],
+                                                   'signal_content', 'intended_recipient',
+                                                   'vehicle_motion')],
                    'limitations': ['Neither synthetic fixtures nor signal appearance establish authorization or designation.',
                                    'Original physical response and legal failure/refusal remain unresolved.']}
     entries = []
@@ -81,6 +82,7 @@ def build():
                   'case': dict(row, recording_description=description)}
         files = dict(source)
         files['config.json'] = json.dumps(config, indent=2, sort_keys=True, ensure_ascii=False) + '\n'
+        files['candidate-tuning.json'] = json.dumps({'camera_mount_offset_m': 0}, sort_keys=True) + '\n'
         files['tests/test_bundle.py'] = BUNDLE_TEST
         construction = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
                         'actor': plan['actor'], 'case_id': case_id,
@@ -103,11 +105,25 @@ def build():
         if not entries:
             write(HERE / 'construction.json', construction)
             write(HERE / 'config.json', config)
+            (HERE / 'candidate-tuning.json').write_text(files['candidate-tuning.json'])
+        alternate = json.loads(json.dumps(construction))
+        for item in alternate['files']:
+            if item['path'] == 'candidate-tuning.json':
+                item['content'] = json.dumps({'camera_mount_offset_m': 1.5}, sort_keys=True) + '\n'
+        fallback = Path('cases') / name / 'fallback1' / 'construction.json'
+        write(HERE / fallback, alternate)
         entries.append({'case_id': case_id, 'kind': 'delivery',
                         'construction': str(relative), 'construction_sha256': sha(HERE / relative),
+                        'measurement_contract': str(Path('cases') / name / 'measurement-contract.json'),
+                        'fixture_recipe': str(Path('work') / AID / 'cases' / name / 'fixture-recipe.json'),
                         'candidate_risk': {'status': 'physical',
                                            'reason': 'Flagger signal and intended recipient may not be visible or physically realized in original four-camera capture.'},
-                        'candidates': [],
+                        'candidates': [{'id': 'fallback1', 'construction': str(fallback),
+                                        'construction_sha256': sha(HERE / fallback),
+                                        'trigger': {'source': 'original four-camera visibility audit',
+                                                    'metric': 'flagger signal and recipient simultaneously visible',
+                                                    'failure_condition': 'either is outside the primary synchronized views'},
+                                        'changed_knobs': ['camera_mount_offset_m: 0 to 1.5 m; Native operator must read back applied mount offset']}],
                         'measurement_procedure': {'entrypoint': 'analysis.py',
                                                   'method': 'saved original flagger/zone/signal/response measurement'},
                         'native_handoff': {'python_env_var': 'CARLA_PYTHON',

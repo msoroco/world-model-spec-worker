@@ -61,6 +61,10 @@ def main():
     if verified['case_id'] != case['case_id']:
         raise ValueError('reviewed source packet selects another exact case')
     packet = json.loads(packet_path.read_text())
+    tuning = json.loads((HERE / 'candidate-tuning.json').read_text())
+    camera_offset = tuning.get('camera_mount_offset_m')
+    if type(camera_offset) not in (int, float) or camera_offset not in (0, 1.5):
+        raise ValueError('reviewed camera mount offset differs from selected candidate')
     operator_module = _load('reviewed_flagger_operator', operator_path)
     if not callable(getattr(operator_module, 'make_operator', None)):
         raise ValueError('reviewed Native operator factory missing')
@@ -68,13 +72,17 @@ def main():
     client = carla.Client(args.host, args.port)
     client.set_timeout(30)
     world = client.get_world()
-    operator = operator_module.make_operator(world, packet['scene'], case['case_id'])
+    scene = dict(packet['scene'], camera_mount_offset_m=camera_offset)
+    operator = operator_module.make_operator(world, scene, case['case_id'])
     for method in ('map_bytes', 'snapshot_settings', 'configure_sync', 'readback_sync',
                    'spawn_flagger', 'spawn_vehicle', 'set_signal', 'set_route',
                    'spawn_cameras', 'tick_capture', 'destroy', 'actor_id',
                    'restore_settings', 'readback_restored'):
         if not callable(getattr(operator, method, None)):
             raise ValueError('reviewed Native operator callback missing: ' + method)
+    if not callable(getattr(operator, 'camera_mount_offset_m', None)) or \
+            operator.camera_mount_offset_m() != camera_offset:
+        raise ValueError('selected camera mount offset not applied by Native operator')
     map_bytes = operator.map_bytes()
     if type(map_bytes) is not bytes or hashlib.sha256(map_bytes).hexdigest() != verified['source_hashes']['map_opendrive']:
         raise ValueError('loaded CARLA OpenDRIVE differs from reviewed source')

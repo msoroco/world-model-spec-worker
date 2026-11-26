@@ -81,11 +81,15 @@ if __name__ == "__main__":
     parser.add_argument("--plan", required=True, type=Path)
     parser.add_argument("--stages", required=True, type=Path)
     parser.add_argument("--diagnostic-fixture", action="store_true")
+    parser.add_argument("--comparison")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("comparison output already exists")
     stages = json.loads(args.stages.read_text())
     receipt = audit(args.plan, stages, diagnostic_fixture=args.diagnostic_fixture)
+    if args.comparison and args.comparison not in {
+            row["comparison_id"] for row in receipt["comparisons"]}:
+        raise ValueError("requested comparison absent from exact source audit")
     args.output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     print(len(receipt["comparisons"]))

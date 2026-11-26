@@ -41,7 +41,7 @@ def analyze(attempt, output):
     if verified['case_id'] != case_id:
         raise ValueError('exact original flagger source case differs')
     packet = json.loads(packet_path.read_text())
-    ticks_path = required(source_dir, 'original-ticks.jsonl')
+    ticks_path = required(root, 'original-flagger-source/original-ticks.jsonl')
     ticks = load_rows(ticks_path)
     expected = 9 if diagnostic else 900
     if len(ticks) != expected:
@@ -94,9 +94,40 @@ def analyze(attempt, output):
         'original_driver_response': {'maximum_active_speed_mps': measured['maximum_active_speed_mps'],
                                      'active_signal_frames': measured['active_signal_frames'],
                                      'legal_failure_or_refusal': None}}
+    source_inputs = {
+        'original-flagger-source/source-packet.json': hashes['source-packet.json'],
+        'original-flagger-source/original-ticks.jsonl': hashes['original-ticks.jsonl'],
+        'trace.jsonl': hashes['trace.jsonl'],
+        'video_frames.jsonl': hashes['video_frames.jsonl'],
+    }
+    for name in SOURCES:
+        source_inputs['original-flagger-source/' + packet['source_refs'][name]['path']] = hashes['source:' + name]
+    inputs_by_key = {
+        'qualifying_driver_highway': ('source-packet.json', 'original-ticks.jsonl',
+                                      'driver_identity.txt', 'vehicle_class.txt', 'highway_status.txt'),
+        'flagger_authority_and_role': ('source-packet.json', 'original-ticks.jsonl',
+                                       'flagger_identity.txt', 'flagger_authorization.txt',
+                                       'traffic_control_role.txt'),
+        'clearly_marked_construction': ('source-packet.json', 'construction_or_maintenance.txt',
+                                        'construction_marking.txt'),
+        'designated_temporary_zone': ('source-packet.json', 'zone_designation.txt',
+                                      'zone_boundaries.txt'),
+        'applicable_flagger_signal': ('source-packet.json', 'original-ticks.jsonl',
+                                      'signal_content.txt', 'signal_orientation.txt',
+                                      'signal_visibility.txt', 'intended_recipient.txt',
+                                      'release_event.txt'),
+        'original_driver_response': ('source-packet.json', 'original-ticks.jsonl',
+                                     'trace.jsonl', 'video_frames.jsonl', 'vehicle_motion.txt'),
+    }
+    def measurement_sources(key):
+        return {('' if name in ('trace.jsonl', 'video_frames.jsonl') else
+                 'original-flagger-source/') + name:
+                source_inputs[('' if name in ('trace.jsonl', 'video_frames.jsonl') else
+                               'original-flagger-source/') + name]
+                for name in inputs_by_key[key]}
     report = {'format': 'worker-analysis-report', 'case_id': case_id,
-              'measurements': {name: {'method': 'measure', 'value': value,
-                                      'sources': hashes}
+              'measurements': {name: {'method': 'analyze', 'value': value,
+                                      'sources': measurement_sources(name)}
                                for name, value in measurements.items()},
               'diagnostic_fixture': diagnostic,
               'legal_verdict_claimed': False,
@@ -121,6 +152,31 @@ def analyze(attempt, output):
                                                'value': channel_values[name]}, sort_keys=True) + '\n'
                                   for row in trace))
         evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': str(target.relative_to(root))})
+    context_source = {
+        'zone_designation': 'zone_designation',
+        'construction_marking': 'construction_marking',
+        'flagger_authorization': 'flagger_authorization',
+        'traffic_control_role': 'traffic_control_role',
+        'signal_content': 'signal_content',
+        'intended_recipient': 'intended_recipient',
+        'vehicle_motion': 'vehicle_motion',
+    }
+    context_values = {'zone_designation': case.designated,
+                      'construction_marking': case.marked_construction,
+                      'flagger_authorization': case.authorized,
+                      'traffic_control_role': True,
+                      'signal_content': case.signal,
+                      'intended_recipient': packet['scene']['vehicle_id'],
+                      'vehicle_motion': measured['maximum_active_speed_mps']}
+    for context in construction['recording_description']['context_inputs']:
+        name = context['name']
+        source_name = context_source[name]
+        target = channels / (name + '.json')
+        target.write_text(json.dumps({name: {'value': context_values[name],
+                                              'source_sha256': hashes['source:' + source_name]}},
+                                     sort_keys=True) + '\n')
+        evidence.append({'name': name, 'unit': context['unit'],
                          'reference': str(target.relative_to(root))})
     result = {'case_id': case_id, 'measured_values': values,
               'target_checks': [{'target': 'source-bound flagger authority, area, signal and response',

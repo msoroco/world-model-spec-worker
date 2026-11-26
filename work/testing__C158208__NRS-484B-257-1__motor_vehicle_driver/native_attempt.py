@@ -56,7 +56,8 @@ def verify_review_sources(site: dict, site_path: Path, *, diagnostic_fixture: bo
 
 def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
                        construction: Path, reviewed_site_packet: Path,
-                       attempt: Path, diagnostic_fixture: bool = False) -> dict:
+                       attempt: Path, diagnostic_fixture: bool = False,
+                       target_speed_mps: float = 4.0) -> dict:
     """Acquire one exact case, then destroy actors and verify world restore.
 
     The adapter must implement ``configure(world, site)``, ``spawn(world, site)``,
@@ -138,7 +139,7 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
                     derived["through_vehicle_within_intersection"],
                 "yield_sign_governs_approach": raw["sign_present"],
                 "viewpoint_source_verified": context.get("viewpoint_reviewed", True),
-            })
+            }, target_speed_mps=target_speed_mps)
             if motion_plan is not None:
                 velocity = raw["through_vehicle"].get("velocity_xy_mps")
                 if not isinstance(velocity, list) or len(velocity) != 2:

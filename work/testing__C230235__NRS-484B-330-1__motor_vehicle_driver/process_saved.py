@@ -93,8 +93,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--case", required=True)
     parser.add_argument("--diagnostic-fixture", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(process_saved(args.stage, args.output,
-                                   diagnostic_fixture=args.diagnostic_fixture),
-                     sort_keys=True))
+    report = process_saved(args.stage, args.output,
+                           diagnostic_fixture=args.diagnostic_fixture)
+    if report["case_id"] != args.case:
+        raise ValueError("saved processing selected another exact case")
+    print(json.dumps(report, sort_keys=True))

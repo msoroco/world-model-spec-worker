@@ -1,9 +1,30 @@
 # C229398 NRS 484B.473(2) handoff
 
-Status: partial. Six exact cases retain the displayed-light branch and controls: undimmed versus dimmed displayed lights with neither cowl nor parking lamps, cowl-lamp use, parking-lamp use, daytime, and unlawful parking. Five comparisons isolate those dimensions. The law has no numeric beam cutoff here; beam aim is retained as a source-measured engineering observation, with legal judgment unset.
+Status: `ready`, with `delivery_prepared` CPU scope. The selected original Native run remains source gated and has not occurred. This package makes no physical or legal acceptance claim.
 
-`parked_lamps.py` builds the vehicle parking route and lamp settings, then measures a 900-frame 20 Hz original parked interval relative to capture start. It requires stable vehicle identity, frame/time and original source hashes, observed lamp modes and beam aim, and physically stationary motion after parking starts. `source_packet.py` requires adjacent hashed, reviewed original findings for vehicle, highway, parking lawfulness, night, displayed and auxiliary lamps, beam, curb and other parking-context facts plus OpenDRIVE. `native_acquisition.py` owns vehicle/four cameras, synchronous world settings, 20 Hz original ticks and PNG bytes, reverse cleanup and restored-world readback. `capture_seal.py` verifies source, frame/time, camera pixels and lifecycle joins. `process_saved.py` renders FFV1 camera videos without changing original sources; `delivery_audit.py` fully decodes the saved media and `comparison_audit.py` reopens both source stages while checking fixed conditions and declared differences.
+## Coverage and source review
 
-Six diagnostic bundles passed pinned `runtime.py offline`. Six synthetic original-shaped saved stages and five independent comparison audits pass; missing source-camera negatives are rejected. Ten canonical semantic proposal stages passed pinned validation. Sixteen focused tests, pinned preflight, and assignment-scoped `worker_check.py --complete` pass. Current receipt hashes are in `result.json` and `diagnostic-offline-index.json`, `saved-diagnostic-index.json`, and `proposals/semantic-index.json`. Synthetic fixtures prove software behavior only.
+The exact law requires depressed or dimmed displayed lights for a lawfully parked vehicle at nighttime upon a highway when neither cowl nor parking lamps are used. The law supplies no numeric beam cutoff. The frozen `evidence.json` lists no accepted recordings, so no branch is reused. The six exact cases all start with `testing__C229398__NRS-484B-473-2__motor_vehicle_driver__`:
 
-Exact scoped `worker_check.py --complete --require-delivery-ready` exits 1 solely because result status is truthful partial; see `cpu-strict-check.log`. Frozen `evidence.json` has an empty recordings inventory. There is no reviewed original highway/OpenDRIVE site, lawful-parking and nighttime finding, actual vehicle lamp hardware/readback and beam telemetry, or original 900-frame capture. A production selected manifest and physical/lifecycle/delivery/comparison receipts require those original sources. Do not promote the diagnostic manifest or infer physical lamp capability from the fake adapter.
+- `night_undimmed_no_aux` and `night_dimmed_no_aux` isolate displayed-light dimming.
+- `night_undimmed_cowl` and `night_undimmed_parking` isolate the two auxiliary-lamp alternatives against `night_undimmed_no_aux`.
+- `day_undimmed_no_aux` isolates nighttime; `unlawful_park_undimmed` isolates lawful parking.
+
+The five controlled comparisons in `case-plan.json` hold the vehicle, original highway and curb geometry, capture profile and other declared conditions fixed. `comparison_acceptance.py` reopens each source and rejects a changed fixed condition. Curb, standing purpose, loading, traffic direction, safety zone, double parking and grade remain separate reviewed context; they are not inferred from the lamp setting. The supplied judgment-range file has no NRS-484B-473-2 key, so no numeric training bound is claimed for the light judgment.
+
+## Executable preparation
+
+`source_packet.py` requires a source-hashed, reviewed original packet with adjacent OpenDRIVE, highway, parking-lawfulness, nighttime, vehicle and lamp findings. `runner.py` checks that packet and the reviewed operator hash before importing CARLA. `parked_lamps.py` builds the route and lamp commands, then measures 900 original 20 Hz frames with observed speed and lamp readback. `native_acquisition.py`, `capture_seal.py` and `native_output_bridge.py` acquire and seal four synchronized original RGB streams, actor pose/body, original frame joins, restoration and owner release. `process_saved.py` finalizes without replay. `delivery_acceptance.py` and `comparison_acceptance.py` are independent saved-source audits. Beam aim stays an engineering measurement; legal judgment remains unresolved.
+
+`execution-manifest.json` selects all six delivery cases. Every case has a primary and one tested fallback that changes only the source-gated approach offset from 12 m to 18 m. Its trigger is a failed measured parking approach or lamp-visibility target, never a desired legal outcome. Each exact construction is inline and SHA bound. The manifest includes 12 current-runtime offline receipts, 12 positive and missing-source compatibility receipts, six recorded-only saved-processing and feedback receipts, three physical protocol outcomes per case, six positive and negative delivery audits, and five comparison audits. `proposals/semantic-index.json` binds the six canonical proposal stages and five judgment observables. `queue-proposal.json` contains exact local dispatch commands for lead integration.
+
+## Proofs and local execution
+
+Run from the repository root with `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` under `.runtime-work/`:
+
+```sh
+.venv-cpu/bin/python -m unittest discover -s work/testing__C229398__NRS-484B-473-2__motor_vehicle_driver/tests -v
+.venv-cpu/bin/python worker_check.py --assignment testing__C229398__NRS-484B-473-2__motor_vehicle_driver --complete --require-delivery-ready
+```
+
+The current focused run passes 21 tests in `cpu-tests-final.log`; the exact scoped strict gate passes in `.runtime-work/c229398-output/strict-final.log`. Original local execution requires a reviewed source packet and operator module with hashes supplied through the four `SCENARIO_PARKED_LIGHT_*` environment variables in `queue-proposal.json`, plus the local CARLA Python, host, port and canonical job fields. Then independently review the actual parked motion, 900 frames, original lamp hardware/readback, four camera pixels, full video, physical completion and legal judgment before acceptance into `full-test`.

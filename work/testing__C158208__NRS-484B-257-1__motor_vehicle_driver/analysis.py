@@ -125,14 +125,20 @@ def measure_nearest_view(stage: Path) -> dict:
           ("nearest_view_response", "nearest_view_uninterrupted") and
           (root / "scene.json").is_file()):
         scene = json.loads((root / "scene.json").read_text())
-        if scene.get("source_kind") != "synthetic_reviewed_fixture":
+        if scene.get("source_kind") == "synthetic_reviewed_fixture":
+            site_name = scene.get("site_source")
+        elif scene.get("source_kind") == "local_review_required":
+            # Compatibility supplies a sealed synthetic packet. This path is
+            # diagnostic only; original_capture still requires reviewed bytes.
+            site_name = "diagnostic-site.json"
+        else:
             raise ValueError("diagnostic branch scene provenance differs")
-        site_name = scene.get("site_source")
         if not isinstance(site_name, str) or Path(site_name).name != site_name:
             raise ValueError("diagnostic fixture site path differs")
         site_path = root / site_name
-        if (_sha(site_path) != scene.get("site_sha256") or
-                _sha(site_path) != identity.get("site_packet_sha256")):
+        if (_sha(site_path) != identity.get("site_packet_sha256") or
+                (scene.get("source_kind") == "synthetic_reviewed_fixture" and
+                 _sha(site_path) != scene.get("site_sha256"))):
             raise ValueError("diagnostic fixture site differs from capture identity")
         site = json.loads(site_path.read_text())
         if site.get("capture_geometry") != packet["geometry"] or site.get("reviewed_context") != packet["reviewed_context"]:

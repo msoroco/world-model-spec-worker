@@ -9,7 +9,7 @@
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
       "kind": "delivery",
       "construction": "cases/red_no_device_entry/construction.json",
-      "construction_sha256": "65c5be078b10ef703e6c9cb0ff4f4c26f42b97c29b02a81f8f05430b81411878",
+      "construction_sha256": "bef5e8def03bd8a947105fe6649c92acea3a43761c3097b68464f8fbd80e4cd7",
       "measurement_contract": "cases/red_no_device_entry/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -17,12 +17,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_no_device_entry/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_no_device_entry/compatibility.json",
-        "sha256": "2979e3335f0a3656c29248032f0f41226081c5ab611f17f292398720b74d206c",
-        "log": "cases/red_no_device_entry/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_no_device_entry/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_no_device_entry/compatibility-primary-receipt.json",
+        "sha256": "b35fffdfbec4424dc20a245c52624816f8ab2e39a4114cf6b53bb04cc9d8a575",
+        "log": "cases/red_no_device_entry/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_no_device_entry/compatibility-primary-negative.log",
+        "negative_log_sha256": "61978568b72e6ed813c1566002a203f481e111e62a373eef0eec6fdbf1a5737c"
       },
       "negative": {
-        "log": "cases/red_no_device_entry/negative-analysis.log"
+        "log": "cases/red_no_device_entry/compatibility-primary-negative.log",
+        "log_sha256": "61978568b72e6ed813c1566002a203f481e111e62a373eef0eec6fdbf1a5737c"
       },
       "acquisition": {
         "walker_body_history": {
@@ -66,13 +70,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_no_device_entry/fallback1/construction.json",
+          "construction_sha256": "44834e09eb79818696bf82ac787b912b40ee981c06162eb2b1c9278dd916ea93",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_no_device_entry/fallback1 --candidate fallback1",
+            "construction_sha256": "44834e09eb79818696bf82ac787b912b40ee981c06162eb2b1c9278dd916ea93",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_no_device_entry-fallback1.log",
+            "log_sha256": "91f2a0215965520245e088ca1849ff4a709a60af7baa920bcce60bda66c5ef17"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_no_device_entry/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_no_device_entry/compatibility-fallback1-receipt.json",
+            "sha256": "5c401f5c169e6a6dc06c96764f706781c6caa502ac6419ce49c41f8b227d0210",
+            "log": "cases/red_no_device_entry/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_no_device_entry/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "5a85d1b5b7fea322d73132aa070dd319e3028a8c62c4d591b4697e937f3ec58d"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_no_device_entry/primary",
+        "construction_sha256": "bef5e8def03bd8a947105fe6649c92acea3a43761c3097b68464f8fbd80e4cd7",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_no_device_entry-primary.log",
+        "log_sha256": "96378bc0f1cfcf87a4610e9e826d197dbfec427802acc02bfea1dfda0efeea73"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
       "kind": "delivery",
       "construction": "cases/red_no_device_wait/construction.json",
-      "construction_sha256": "0ec63f2d30c41001a89d2abbb6d4b62fea4c8fb7414290e39e5e2a90ec98875d",
+      "construction_sha256": "57e0a3aa06b23faf7381def0d86104550c03e0359fa7e7f512cef273a73c9329",
       "measurement_contract": "cases/red_no_device_wait/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -80,12 +125,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_no_device_wait/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_no_device_wait/compatibility.json",
-        "sha256": "f9048f1dfcb19a3fec8998cc272f253f08e3a68a51d8ded253f1655d29bdf364",
-        "log": "cases/red_no_device_wait/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_no_device_wait/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_no_device_wait/compatibility-primary-receipt.json",
+        "sha256": "e43dc49cc9863da81be955f60a26fabc465f1ae19b48f6d2a3be772adcdbb2c2",
+        "log": "cases/red_no_device_wait/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_no_device_wait/compatibility-primary-negative.log",
+        "negative_log_sha256": "f55fab1416bc6230e1ad9d0917316747585cffaac6d329b1fb24c2009df42f8a"
       },
       "negative": {
-        "log": "cases/red_no_device_wait/negative-analysis.log"
+        "log": "cases/red_no_device_wait/compatibility-primary-negative.log",
+        "log_sha256": "f55fab1416bc6230e1ad9d0917316747585cffaac6d329b1fb24c2009df42f8a"
       },
       "acquisition": {
         "walker_body_history": {
@@ -129,13 +178,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_no_device_wait/fallback1/construction.json",
+          "construction_sha256": "c303599de956a4629cf6f8085257b3a4572541afc073b72a391142adf78fec81",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_no_device_wait/fallback1 --candidate fallback1",
+            "construction_sha256": "c303599de956a4629cf6f8085257b3a4572541afc073b72a391142adf78fec81",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_no_device_wait-fallback1.log",
+            "log_sha256": "0871bbefe1393f7770cf1424f92126ee201456b82bc35910dbfe1c4dd968d2ed"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_no_device_wait/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_no_device_wait/compatibility-fallback1-receipt.json",
+            "sha256": "24ed6a82b58d67c353eb2c1d0d044ba79c4a86d20768272aee306dcc65d15dfc",
+            "log": "cases/red_no_device_wait/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_no_device_wait/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "1990493bd881172a68250af65924f53e38aae430a48d3303091a36edcb8c9037"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_no_device_wait/primary",
+        "construction_sha256": "57e0a3aa06b23faf7381def0d86104550c03e0359fa7e7f512cef273a73c9329",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_no_device_wait-primary.log",
+        "log_sha256": "1482218e475e114c1e663aeae301d130a888041a6bc336ee33c3766a5914e623"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
       "kind": "delivery",
       "construction": "cases/red_walk_entry/construction.json",
-      "construction_sha256": "f96c5f011252269996993c6a3d014eade8c7f7736a569901d1cfc09d398066d8",
+      "construction_sha256": "d41d03c8925545fc24bc76a971503c0acdfbbf9b190f82a62f34adb4b7643bbd",
       "measurement_contract": "cases/red_walk_entry/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -143,12 +233,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_walk_entry/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_walk_entry/compatibility.json",
-        "sha256": "2a462cc3e3edf78c7fad2203ea8953d4036806c803554eb4eb4b12352bd078e7",
-        "log": "cases/red_walk_entry/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_walk_entry/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_walk_entry/compatibility-primary-receipt.json",
+        "sha256": "9144fc75329c315fb31798ff58d599843c490c45a6fd3d4cb9298a9b7cc5c097",
+        "log": "cases/red_walk_entry/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_walk_entry/compatibility-primary-negative.log",
+        "negative_log_sha256": "efea84656e4ccd42ac222440b8720bedc1cabcc4116265ecfc74ee505e372432"
       },
       "negative": {
-        "log": "cases/red_walk_entry/negative-analysis.log"
+        "log": "cases/red_walk_entry/compatibility-primary-negative.log",
+        "log_sha256": "efea84656e4ccd42ac222440b8720bedc1cabcc4116265ecfc74ee505e372432"
       },
       "acquisition": {
         "walker_body_history": {
@@ -192,13 +286,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_walk_entry/fallback1/construction.json",
+          "construction_sha256": "afed0cddf8aa734bacbe9d19cada35dae5083dd2ddc7c38e17e4eba3d3159992",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_walk_entry/fallback1 --candidate fallback1",
+            "construction_sha256": "afed0cddf8aa734bacbe9d19cada35dae5083dd2ddc7c38e17e4eba3d3159992",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_walk_entry-fallback1.log",
+            "log_sha256": "4e19bbd8f1210d2fd560a75cd4a9f718fa8b0c1564583fae267d3fe6cb088a2f"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_walk_entry/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_walk_entry/compatibility-fallback1-receipt.json",
+            "sha256": "a9a1774135b4a6064b381ff816a96284f3f2758486e69919f374dde53edf414d",
+            "log": "cases/red_walk_entry/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_walk_entry/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "d9ba40cc40cd9ba89bd996ea5121160c6425d6d0df73e2a6038df2cd64418042"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_walk_entry/primary",
+        "construction_sha256": "d41d03c8925545fc24bc76a971503c0acdfbbf9b190f82a62f34adb4b7643bbd",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_walk_entry-primary.log",
+        "log_sha256": "b971ad01b24936ec6efd52f7f050aa1591d31fc191dba40994bbe558066cd4a8"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
       "kind": "delivery",
       "construction": "cases/red_countdown_entry/construction.json",
-      "construction_sha256": "d2b4f66b27229ec220cadacae736195b419fb425b801a6f9bf8057f435302de6",
+      "construction_sha256": "843758d61c0e25ba457b264ccc36d95fe2a0e1d9e378640f1ecfa70dfc617476",
       "measurement_contract": "cases/red_countdown_entry/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -206,12 +341,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_countdown_entry/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_countdown_entry/compatibility.json",
-        "sha256": "0ba73fba62aadcb494cf36cf3c55193df94e053405952482b02b4840aa060bd3",
-        "log": "cases/red_countdown_entry/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_countdown_entry/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_countdown_entry/compatibility-primary-receipt.json",
+        "sha256": "c54fba64f54c2f3159a3ff7cf4918c04e3577d390d7ef142a91eff32e0704629",
+        "log": "cases/red_countdown_entry/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_countdown_entry/compatibility-primary-negative.log",
+        "negative_log_sha256": "828058a22f8d89a69eea6ecca143ac4ff327a98b0d700a656d43f09f2c8353fa"
       },
       "negative": {
-        "log": "cases/red_countdown_entry/negative-analysis.log"
+        "log": "cases/red_countdown_entry/compatibility-primary-negative.log",
+        "log_sha256": "828058a22f8d89a69eea6ecca143ac4ff327a98b0d700a656d43f09f2c8353fa"
       },
       "acquisition": {
         "walker_body_history": {
@@ -255,13 +394,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_countdown_entry/fallback1/construction.json",
+          "construction_sha256": "413664d99fe34a3e8c67e45a91be044f83f68a3325358494b43b21874331374c",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_countdown_entry/fallback1 --candidate fallback1",
+            "construction_sha256": "413664d99fe34a3e8c67e45a91be044f83f68a3325358494b43b21874331374c",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_countdown_entry-fallback1.log",
+            "log_sha256": "e57f63fd8c796aa131ee4d45705312eb33e9a6922b6309abbe8260cf3565e552"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_countdown_entry/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_countdown_entry/compatibility-fallback1-receipt.json",
+            "sha256": "1b3418363f32e3d562434d15424bfc53b76f5f829b20912bc25fc8c4751950a2",
+            "log": "cases/red_countdown_entry/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_countdown_entry/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "87db01a92e62847eebd7c7259b87a626c73f3d4f7edf4a8af72b4f9fc955cc51"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_countdown_entry/primary",
+        "construction_sha256": "843758d61c0e25ba457b264ccc36d95fe2a0e1d9e378640f1ecfa70dfc617476",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_countdown_entry-primary.log",
+        "log_sha256": "ec116e9c013f9ab9f44778dafb15574321f00fcb07c9e575b6e42394054fac74"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
       "kind": "delivery",
       "construction": "cases/red_flashing_no_countdown_entry/construction.json",
-      "construction_sha256": "8318b5ac7a19c20d82444fb4539f86675181586682b96ca14643bc8b46dd62b4",
+      "construction_sha256": "8db7ab05889d01bcd4a5e184684e2bd31856f8337d39f23d1a0600e11f4a051a",
       "measurement_contract": "cases/red_flashing_no_countdown_entry/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -269,12 +449,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_flashing_no_countdown_entry/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_flashing_no_countdown_entry/compatibility.json",
-        "sha256": "5d048a9c349cf5f74ee672fc31d0b5d0f9a4e9f8e03a998502bd928f5205824c",
-        "log": "cases/red_flashing_no_countdown_entry/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_flashing_no_countdown_entry/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_flashing_no_countdown_entry/compatibility-primary-receipt.json",
+        "sha256": "713dbb0bbab733b30784b1222809022e9b813e7982767e32db2d2b2a6543acd6",
+        "log": "cases/red_flashing_no_countdown_entry/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_flashing_no_countdown_entry/compatibility-primary-negative.log",
+        "negative_log_sha256": "4c1cc17f5751d04c8341ffb422b135ec4a3bb0e8c2661130ca2cfaead214875b"
       },
       "negative": {
-        "log": "cases/red_flashing_no_countdown_entry/negative-analysis.log"
+        "log": "cases/red_flashing_no_countdown_entry/compatibility-primary-negative.log",
+        "log_sha256": "4c1cc17f5751d04c8341ffb422b135ec4a3bb0e8c2661130ca2cfaead214875b"
       },
       "acquisition": {
         "walker_body_history": {
@@ -318,13 +502,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_flashing_no_countdown_entry/fallback1/construction.json",
+          "construction_sha256": "0beba395379bb20afc4d3ce5b1d0de7a2a1b35ef4fc75bd4352b368b87286877",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_flashing_no_countdown_entry/fallback1 --candidate fallback1",
+            "construction_sha256": "0beba395379bb20afc4d3ce5b1d0de7a2a1b35ef4fc75bd4352b368b87286877",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_flashing_no_countdown_entry-fallback1.log",
+            "log_sha256": "730943164d7ece5aa0eca4cb0cbbf426b086e0e8215ad51ac1c055b2f19e00c8"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_flashing_no_countdown_entry/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_flashing_no_countdown_entry/compatibility-fallback1-receipt.json",
+            "sha256": "ceffccbb04e26d43e874907e6f211bef9720a88c76b52c5b398392c656c01cf0",
+            "log": "cases/red_flashing_no_countdown_entry/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_flashing_no_countdown_entry/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "987e6c40dd37958e9644e67bb175b1cbb3b7ae0f5d7eba350a8a9762c3f5024c"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_flashing_no_countdown_entry/primary",
+        "construction_sha256": "8db7ab05889d01bcd4a5e184684e2bd31856f8337d39f23d1a0600e11f4a051a",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_flashing_no_countdown_entry-primary.log",
+        "log_sha256": "ca48de9e65a8266edfe60a0f98c90c1b9db58a788cfafc8f61f378fd5d224ce5"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry",
       "kind": "delivery",
       "construction": "cases/red_steady_hand_entry/construction.json",
-      "construction_sha256": "e7f256255d02142add8ec95be02918d0ed85d33b3eca551761a42206530fed24",
+      "construction_sha256": "7b53a8aa5db9cc7ed3ba01c2f410b80557e3968b80e87546c68ab0a31cf9466a",
       "measurement_contract": "cases/red_steady_hand_entry/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -332,12 +557,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/red_steady_hand_entry/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/red_steady_hand_entry/compatibility.json",
-        "sha256": "c5cf896c0315265be27710afd618f41bfd58c5c7943ddcf042539430b54b899b",
-        "log": "cases/red_steady_hand_entry/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_steady_hand_entry/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/red_steady_hand_entry/compatibility-primary-receipt.json",
+        "sha256": "f0f5dbe2d42ca8653394321baab74c70bb95102bbbf31cd9ff3d728f1b5ab7ab",
+        "log": "cases/red_steady_hand_entry/compatibility-primary-analysis.log",
+        "negative_log": "cases/red_steady_hand_entry/compatibility-primary-negative.log",
+        "negative_log_sha256": "b2ed61bbff5e8496764f46d6e1c8c2122ad0cfe1e74581534444333dd6f09483"
       },
       "negative": {
-        "log": "cases/red_steady_hand_entry/negative-analysis.log"
+        "log": "cases/red_steady_hand_entry/compatibility-primary-negative.log",
+        "log_sha256": "b2ed61bbff5e8496764f46d6e1c8c2122ad0cfe1e74581534444333dd6f09483"
       },
       "acquisition": {
         "walker_body_history": {
@@ -381,13 +610,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_steady_hand_entry/fallback1/construction.json",
+          "construction_sha256": "b2f07e349a8b1fdaad583925794e17076895710930c05d1781f099260e7d54e6",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_steady_hand_entry/fallback1 --candidate fallback1",
+            "construction_sha256": "b2f07e349a8b1fdaad583925794e17076895710930c05d1781f099260e7d54e6",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-red_steady_hand_entry-fallback1.log",
+            "log_sha256": "ae33d1ccb76e4b950fcde1b5b8c0e22e346b5728ceaf25a08eb5857e01f67471"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/red_steady_hand_entry/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/red_steady_hand_entry/compatibility-fallback1-receipt.json",
+            "sha256": "3b8e8063e4e32cd98777153d4ee70e346bf302c0a1e33d88e502d82589999a99",
+            "log": "cases/red_steady_hand_entry/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/red_steady_hand_entry/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "f46f6bfce6ab336d2e7486285f4c83e5bfdd3f306f082eaea5829a7fdad83404"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/red_steady_hand_entry/primary",
+        "construction_sha256": "7b53a8aa5db9cc7ed3ba01c2f410b80557e3968b80e87546c68ab0a31cf9466a",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-red_steady_hand_entry-primary.log",
+        "log_sha256": "94812ee808ad37eb89290a72896247f07558a591d81534e72c9c5e88ba2e6f8c"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000",
       "kind": "delivery",
       "construction": "cases/other_device_permission-0000/construction.json",
-      "construction_sha256": "a49a15018d44f73ca2186a5f4ef9d7ea630157834fd3e5df3cf5a3219adf68ba",
+      "construction_sha256": "528dfe3e568e470f1e28b5caa48f2a06fabe068afb4d657682eabb3ad5edf490",
       "measurement_contract": "cases/other_device_permission-0000/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -395,12 +665,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/other_device_permission-0000/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/other_device_permission-0000/compatibility.json",
-        "sha256": "3b3d0133a314e0957a109a94a7a8244219bde2b542c521eb025d9a13b3f4cdfd",
-        "log": "cases/other_device_permission-0000/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0000/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/other_device_permission-0000/compatibility-primary-receipt.json",
+        "sha256": "c959dd4347253c8af51b3a3e57c5ef43aa01598717eb622b82c736c38330c25d",
+        "log": "cases/other_device_permission-0000/compatibility-primary-analysis.log",
+        "negative_log": "cases/other_device_permission-0000/compatibility-primary-negative.log",
+        "negative_log_sha256": "66811a3f76dbdab29a76b669eb4f1383b59de51a9551395031288ff4b79d4ddd"
       },
       "negative": {
-        "log": "cases/other_device_permission-0000/negative-analysis.log"
+        "log": "cases/other_device_permission-0000/compatibility-primary-negative.log",
+        "log_sha256": "66811a3f76dbdab29a76b669eb4f1383b59de51a9551395031288ff4b79d4ddd"
       },
       "acquisition": {
         "walker_body_history": {
@@ -449,13 +723,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_device_permission-0000/fallback1/construction.json",
+          "construction_sha256": "0fb2eccdd9458b89fa030698c0c4a69bbef00646c86dab1d86fd4803afff7e4b",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0000/fallback1 --candidate fallback1",
+            "construction_sha256": "0fb2eccdd9458b89fa030698c0c4a69bbef00646c86dab1d86fd4803afff7e4b",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-other_device_permission-0000-fallback1.log",
+            "log_sha256": "3f0c28b0b3f62f58dfe0cf3a3537a825cd94abf2211eb1b9c290089880e8397c"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0000/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/other_device_permission-0000/compatibility-fallback1-receipt.json",
+            "sha256": "033d70c78a62863eb6b97d3be22fdecbbc68377ffff8050a8e5d8f150b3ccc17",
+            "log": "cases/other_device_permission-0000/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/other_device_permission-0000/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "1cd03eb721fdb267c8260a54d049b0ebe233bfc363ca9535835e18372505521a"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0000/primary",
+        "construction_sha256": "528dfe3e568e470f1e28b5caa48f2a06fabe068afb4d657682eabb3ad5edf490",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-other_device_permission-0000-primary.log",
+        "log_sha256": "ec86bd7987ff92933af7b33003c92bf23ff80257a09c16bcb7bb49e5c3c0c0c5"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001",
       "kind": "delivery",
       "construction": "cases/other_device_permission-0001/construction.json",
-      "construction_sha256": "a21a51dbcbbdf8842ee6c93fd55ea72c900b7e7f7c1a94ffaaea1df2f2ad9fac",
+      "construction_sha256": "1701c42a02da5dbb86c708b0ac5f7504e912a7f654b7614eb8659eb159b1b097",
       "measurement_contract": "cases/other_device_permission-0001/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -463,12 +778,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/other_device_permission-0001/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/other_device_permission-0001/compatibility.json",
-        "sha256": "36ce590ec948b8ca42c6928ac6e09cf9ae40a904935068802f4fed769181a6b5",
-        "log": "cases/other_device_permission-0001/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0001/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/other_device_permission-0001/compatibility-primary-receipt.json",
+        "sha256": "4861987850f060d86b8a67b77d5a9f49abf1f51ec0b92e2829c6acab1d36a7c5",
+        "log": "cases/other_device_permission-0001/compatibility-primary-analysis.log",
+        "negative_log": "cases/other_device_permission-0001/compatibility-primary-negative.log",
+        "negative_log_sha256": "ffa195d3fcfeddcdfc3185cbb3d32889c87b65b9b37a938c3967dffd8aa57e94"
       },
       "negative": {
-        "log": "cases/other_device_permission-0001/negative-analysis.log"
+        "log": "cases/other_device_permission-0001/compatibility-primary-negative.log",
+        "log_sha256": "ffa195d3fcfeddcdfc3185cbb3d32889c87b65b9b37a938c3967dffd8aa57e94"
       },
       "acquisition": {
         "walker_body_history": {
@@ -517,13 +836,54 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_device_permission-0001/fallback1/construction.json",
+          "construction_sha256": "8ad28ede38deea2b4caf99bb24e24165abde47097180604ebcf9603297813016",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0001/fallback1 --candidate fallback1",
+            "construction_sha256": "8ad28ede38deea2b4caf99bb24e24165abde47097180604ebcf9603297813016",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-other_device_permission-0001-fallback1.log",
+            "log_sha256": "e932ad3d6111cc94e03360b896ef006db02a0d3b0ca9f2edbdb6eeb46a52c145"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0001/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/other_device_permission-0001/compatibility-fallback1-receipt.json",
+            "sha256": "9317d4ab8c13fb1fdb22bcb317ee595c4eddad232e79a5973fa2162eb0415132",
+            "log": "cases/other_device_permission-0001/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/other_device_permission-0001/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "0efa45b3a32af455420bfa805c346a84b8b4f930d9a0583a8b6f97f110ab6b08"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0001/primary",
+        "construction_sha256": "1701c42a02da5dbb86c708b0ac5f7504e912a7f654b7614eb8659eb159b1b097",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-other_device_permission-0001-primary.log",
+        "log_sha256": "644a3469d814716e2f10d3c09c2d8a184ec01679cb3ea9bafa91e4f8f7a2e809"
+      }
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002",
       "kind": "delivery",
       "construction": "cases/other_device_permission-0002/construction.json",
-      "construction_sha256": "b1fe81cc4944aee3d92b697e2270dd8f995b5d4da9531e3c59c006bc5b9bec1a",
+      "construction_sha256": "a6922278571fa8c468ee701f9345d8e63848e65f33e5653fe525d464c4f46756",
       "measurement_contract": "cases/other_device_permission-0002/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -531,12 +891,16 @@
       "fixture_recipe": "work/testing__C227824__NRS-484B-307-8b__pedestrian/cases/other_device_permission-0002/fixture-recipe.json",
       "proof_status": "diagnostic_cpu_only_source_review_pending",
       "compatibility": {
-        "receipt": "cases/other_device_permission-0002/compatibility.json",
-        "sha256": "92870438bf527212169e197755a5ba9747b421028c138d2487fc1067dc7ddd0c",
-        "log": "cases/other_device_permission-0002/cpu-compatibility-analysis.log"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0002/primary --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck",
+        "receipt": "cases/other_device_permission-0002/compatibility-primary-receipt.json",
+        "sha256": "053742cc7efa3461eab56ded953a93cdedd1f2c4a9f6414282ffff83fe51d43c",
+        "log": "cases/other_device_permission-0002/compatibility-primary-analysis.log",
+        "negative_log": "cases/other_device_permission-0002/compatibility-primary-negative.log",
+        "negative_log_sha256": "4311e02c16b2b9de9036d85412e1dce6509c3a638ec1d33f959a895310f1932a"
       },
       "negative": {
-        "log": "cases/other_device_permission-0002/negative-analysis.log"
+        "log": "cases/other_device_permission-0002/compatibility-primary-negative.log",
+        "log_sha256": "4311e02c16b2b9de9036d85412e1dce6509c3a638ec1d33f959a895310f1932a"
       },
       "acquisition": {
         "walker_body_history": {
@@ -585,7 +949,48 @@
         "reviewed official route-facing signal/controller and pedestrian device driver",
         "reviewed full highway boundary and camera placement sources",
         "original Native acquisition and independent delivery audit"
-      ]
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original pedestrian body entry and four-view signal or device visibility may miss reviewed geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_device_permission-0002/fallback1/construction.json",
+          "construction_sha256": "62070983e36266968ba5f3603fdd3b640e8b95920b4ac3773dd8049ee4430396",
+          "changed_knobs": [
+            "source-reviewed alternate walker spawn offset 0.2 m"
+          ],
+          "trigger": {
+            "source": "original walker body path and four-view pixels",
+            "metric": "body entry and signal visibility",
+            "failure_condition": "primary source-reviewed spawn misses intended body-entry or camera visibility target"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0002/fallback1 --candidate fallback1",
+            "construction_sha256": "62070983e36266968ba5f3603fdd3b640e8b95920b4ac3773dd8049ee4430396",
+            "exit_code": 0,
+            "log": "cpu-selected-offline-other_device_permission-0002-fallback1.log",
+            "log_sha256": "fd06af19272aebb10954b8f4e6907956f6727e26ee60c66c66fb59876308786c"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-compat/other_device_permission-0002/fallback1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229439-validator/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/other_device_permission-0002/compatibility-fallback1-receipt.json",
+            "sha256": "41c841a4a3f34fe9f8ac8198ca9a34ad4983aa5244620ba8ab56019060124ab4",
+            "log": "cases/other_device_permission-0002/compatibility-fallback1-analysis.log",
+            "negative_log": "cases/other_device_permission-0002/compatibility-fallback1-negative.log",
+            "negative_log_sha256": "3fb4dbc01f43d18657a97b2dd4336d1e1b630e5fd4070045edc3eef6914a6819"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227824__NRS-484B-307-8b__pedestrian/execution-manifest.json --case testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227824-selected-offline/other_device_permission-0002/primary",
+        "construction_sha256": "a6922278571fa8c468ee701f9345d8e63848e65f33e5653fe525d464c4f46756",
+        "exit_code": 0,
+        "log": "cpu-selected-offline-other_device_permission-0002-primary.log",
+        "log_sha256": "557a1c95a62708c5faebf48da92af514808a35443f5d916978a0622cb03c0efa"
+      }
     }
   ],
   "comparisons": [
