@@ -14,6 +14,7 @@ from instrument_producer import (SourceProducer, audit_packet, audit_stream,
                                  serve_connection)
 from delivery_audit import audit_attempt
 from comparison_delivery_audit import audit_pair
+from instrumentation import InstrumentClient
 
 
 def sources(frame, actor=8):
@@ -59,6 +60,37 @@ class FakeCarlaActor:
 
 
 class InstrumentProducerTest(unittest.TestCase):
+    def test_engine_actuator_preparation_is_separate_from_observation(self):
+        producer = SourceProducer(
+            lambda frame, actor: sources(frame, actor)[0],
+            lambda frame, actor: sources(frame, actor)[1],
+            lambda frame, actor: sources(frame, actor)[2], calibration(),
+            engine_actuator=lambda actor, target: {
+                'source_kind': 'original_actuator', 'actor_id': actor,
+                'requested_engine_running': target, 'actuator_accepted': True,
+                'actuator_id': 'vehicle-ignition-adapter'})
+        request = {'format': 'c276263-engine-preparation-v1', 'actor_id': 8,
+                   'case_id': 'engine_on', 'requested_engine_running': True}
+        sample_request = {'format': 'c276263-instrument-request-v1',
+                          'native_frame': 900, 'actor_id': 8,
+                          'native_front_wheel_angles_deg': FakeCarlaActor.native_wheels,
+                          'actor_heading_world_deg': 0.0}
+        reader = io.StringIO(json.dumps(request) + '\n' +
+                             json.dumps(sample_request) + '\n')
+        writer = io.StringIO()
+        self.assertTrue(serve_connection(reader, writer, producer, frames=1,
+                                         diagnostic=True)['passed'])
+        receipt, packet = map(json.loads, writer.getvalue().splitlines())
+        self.assertTrue(receipt['requested_engine_running'])
+        self.assertFalse(packet['engine_running'])
+        client = InstrumentClient.__new__(InstrumentClient)
+        client.reader = io.StringIO(json.dumps(receipt) + '\n')
+        client.writer = io.StringIO()
+        self.assertEqual(client.prepare_engine(8, 'engine_on', True), receipt)
+        with self.assertRaisesRegex(ValueError, 'actuator callback required'):
+            SourceProducer(None, None, None, calibration()).prepare_engine(
+                8, 'engine_on', True)
+
     def packet(self, frame=900, diagnostic=True):
         actor = FakeCarlaActor()
         return build_packet(frame, actor.id, actor.native_wheels,

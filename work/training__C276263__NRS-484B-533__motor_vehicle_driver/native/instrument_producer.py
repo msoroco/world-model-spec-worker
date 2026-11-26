@@ -213,11 +213,28 @@ def audit_stream(packets, expected_frames=600, allow_diagnostic=False):
 class SourceProducer:
     """Callbacks are physical source adapters, not CARLA commands or labels."""
 
-    def __init__(self, engine, wheels, attendance, calibration):
+    def __init__(self, engine, wheels, attendance, calibration,
+                 engine_actuator=None):
         self.engine = engine
         self.wheels = wheels
         self.attendance = attendance
         self.calibration = calibration
+        self.engine_actuator = engine_actuator
+
+    def prepare_engine(self, actor_id, case_id, engine_running):
+        if self.engine_actuator is None:
+            raise ValueError('Original engine actuator callback required')
+        receipt = self.engine_actuator(actor_id, engine_running)
+        if (not isinstance(receipt, dict) or
+                receipt.get('source_kind') != 'original_actuator' or
+                receipt.get('actor_id') != actor_id or
+                receipt.get('requested_engine_running') is not engine_running or
+                receipt.get('actuator_accepted') is not True or
+                not isinstance(receipt.get('actuator_id'), str) or
+                not receipt['actuator_id']):
+            raise ValueError('Original engine actuator callback failed')
+        return dict(receipt, format='c276263-engine-preparation-receipt-v1',
+                    case_id=case_id)
 
     def sample(self, frame, actor_id, native_wheels, actor_heading, diagnostic=False):
         return build_packet(frame, actor_id, native_wheels, actor_heading,
@@ -233,11 +250,26 @@ def serve_connection(reader, writer, producer, frames=600, diagnostic=False):
     actor_id = None
     prior_frame = None
     packets = []
-    for _ in range(frames):
+    for index in range(frames):
         line = reader.readline()
         if not line:
             raise ValueError('Source service request window incomplete')
         request = json.loads(line)
+        if index == 0 and request.get('format') == 'c276263-engine-preparation-v1':
+            actor = request.get('actor_id')
+            target = request.get('requested_engine_running')
+            case = request.get('case_id')
+            if (type(actor) is not int or type(target) is not bool or
+                    not isinstance(case, str) or not case):
+                raise ValueError('Original engine preparation request differs')
+            writer.write(json.dumps(producer.prepare_engine(actor, case, target),
+                                    sort_keys=True) + '\n')
+            writer.flush()
+            line = reader.readline()
+            if not line:
+                raise ValueError('Source service request window incomplete')
+            request = json.loads(line)
+            actor_id = actor
         if request.get('format') != 'c276263-instrument-request-v1':
             raise ValueError('Source service request format differs')
         frame, actor = request.get('native_frame'), request.get('actor_id')

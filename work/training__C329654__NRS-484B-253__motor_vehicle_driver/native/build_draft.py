@@ -11,6 +11,8 @@ CASES = {"condition_a": ("yield_then_turn", 15.0),
 RUNNER = '''import argparse
 import json
 from pathlib import Path
+from capture import check as capture_check, execute as capture_execute
+from saved_measure import analyze as analyze_saved
 
 def check(config):
     base = "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_"
@@ -35,13 +37,24 @@ def check(config):
         raise ValueError("Opposing source or turn signal differs")
     if config.get("physical_verified") is not False or config.get("legal_verdict") is not None:
         raise ValueError("Physical or legal result claimed")
+    capture_check(config)
     return {"case_id":case,"frames":600,"simulation_started":False,"selected_for_delivery":False}
 
 if __name__ == "__main__":
     parser=argparse.ArgumentParser();parser.add_argument("--check",action="store_true")
+    parser.add_argument("--output-dir");parser.add_argument("--process-saved")
+    parser.add_argument("--host",default="127.0.0.1");parser.add_argument("--port",type=int,default=2000)
     args=parser.parse_args()
-    if not args.check: raise SystemExit("Native capture and saved processing are not implemented")
-    print(json.dumps(check(json.loads(Path("config.json").read_text())),sort_keys=True))
+    if sum((args.check,bool(args.output_dir),bool(args.process_saved))) != 1:
+        raise SystemExit("Choose exactly one check, Native capture or saved analysis")
+    config=json.loads(Path("config.json").read_text())
+    check(config)
+    if args.check:
+        print(json.dumps(check(config),sort_keys=True))
+    elif args.output_dir:
+        print(json.dumps(capture_execute(config,args.output_dir,args.host,args.port),sort_keys=True))
+    else:
+        print(json.dumps(analyze_saved(args.process_saved),sort_keys=True))
 '''
 TESTS = '''import copy
 import json
@@ -112,7 +125,34 @@ def build():
                              "content": (HERE / "left_turn_controller.py").read_text()},
                             {"path": "tests/test_left_turn_controller.py",
                              "source": str(HERE / "test_left_turn_controller.py"),
-                             "content": (HERE / "test_left_turn_controller.py").read_text()}],
+                             "content": (HERE / "test_left_turn_controller.py").read_text()},
+                            {"path": "source_capture.py",
+                             "source": str(HERE / "source_capture.py"),
+                             "content": (HERE / "source_capture.py").read_text()},
+                            {"path": "tests/test_source_capture.py",
+                             "source": str(HERE / "test_source_capture.py"),
+                             "content": (HERE / "test_source_capture.py").read_text()},
+                            {"path": "comparison_audit.py",
+                             "source": str(HERE / "comparison_audit.py"),
+                             "content": (HERE / "comparison_audit.py").read_text()},
+                            {"path": "tests/test_comparison_audit.py",
+                             "source": str(HERE / "test_comparison_audit.py"),
+                             "content": (HERE / "test_comparison_audit.py").read_text()},
+                            {"path": "tests/test_comparison_sources.py",
+                             "source": str(HERE / "test_comparison_sources.py"),
+                             "content": (HERE / "test_comparison_sources.py").read_text()},
+                            {"path": "intersection_survey.py",
+                             "source": str(HERE / "intersection_survey.py"),
+                             "content": (HERE / "intersection_survey.py").read_text()},
+                            {"path": "tests/test_intersection_survey.py",
+                             "source": str(HERE / "test_intersection_survey.py"),
+                             "content": (HERE / "test_intersection_survey.py").read_text()},
+                            {"path": "capture.py",
+                             "source": str(HERE / "capture.py"),
+                             "content": (HERE / "capture.py").read_text()},
+                            {"path": "tests/test_capture_check.py",
+                             "source": str(HERE / "test_capture_check.py"),
+                             "content": (HERE / "test_capture_check.py").read_text()}],
                         "recording_description": {"channels": [
                             {"name":"raw_ego_motion","method":"original ego actor readback",
                              "sampling_rate_hz":20,"time_window":"600 frames"},

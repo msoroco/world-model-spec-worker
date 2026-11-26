@@ -101,6 +101,8 @@ def measure(path):
         "subsequent_opponent_min_speed_after_turn_mps": later_second_speed,
         "subsequent_opponent_decelerated_after_turn": later_second_speed < second_speed_at_turn,
         "preturn_wait_observed": stopped_before_turn,
+        "turn_signal_observed_before_and_at_turn": True,
+        "subsequent_yield_response_observed": later_second_speed < second_speed_at_turn,
         "legal_immediate_hazard_threshold_asserted": False,
         "legal_priority_verdict": None,
         "physical_acceptance_claimed": False,

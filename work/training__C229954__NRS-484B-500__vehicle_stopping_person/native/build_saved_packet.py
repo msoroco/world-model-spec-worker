@@ -30,18 +30,18 @@ def _ref(path):
 
 def packet_from_attempt(attempt):
     attempt = Path(attempt)
-    review = _read(attempt / 'source-review.json')
+    review = _read(attempt / 'original-review.json')
     if review.get('source_kind') != 'original_official_device_review' or \
             not {'device', 'designation', 'map', 'route'} <= set(review.get('sources', {})):
         raise ValueError('Original official device source inventory missing')
     for name in ('device', 'designation', 'map', 'route'):
         expected = review['sources'][name]
-        source = _required(attempt / ('source-' + name + '.json'))
+        source = _required(attempt / ('original-' + name + '.json'))
         if hashlib.sha256(source.read_bytes()).hexdigest() != expected.get('sha256'):
             raise ValueError('Changed original review source: ' + name)
-    device = _read(attempt / 'source-device.json')
-    designation = _read(attempt / 'source-designation.json')
-    map_record = _read(attempt / 'source-map.json')
+    device = _read(attempt / 'original-device.json')
+    designation = _read(attempt / 'original-designation.json')
+    map_record = _read(attempt / 'original-map.json')
     activity = _read(attempt / 'person-activity.json')
     directions = _read(attempt / 'traffic-direction.json')
     rows = _read(attempt / 'native-stop-trace.jsonl')
@@ -55,9 +55,9 @@ def packet_from_attempt(attempt):
               'device': packet_device, 'person_activity': activity,
               'traffic_direction': directions, 'rows': rows,
               'sources': {name: _ref(attempt / path) for name, path in {
-                  'device': 'source-device.json',
-                  'designation': 'source-designation.json',
-                  'map': 'source-map.json',
+                  'device': 'original-device.json',
+                  'designation': 'original-designation.json',
+                  'map': 'original-map.json',
                   'person_activity': 'person-activity.json',
                   'traffic_direction': 'traffic-direction.json',
                   'native_trace': 'native-stop-trace.jsonl',
@@ -68,5 +68,5 @@ def packet_from_attempt(attempt):
 
 def build(attempt):
     outcome = measure(packet_from_attempt(attempt))
-    outcome['source_review_sha256'] = _ref(attempt / 'source-review.json')['sha256']
+    outcome['source_review_sha256'] = _ref(attempt / 'original-review.json')['sha256']
     return outcome

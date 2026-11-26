@@ -26,16 +26,16 @@ def make_attempt(folder, inside):
         'case_id': case, 'activity_mode': 'stop'}) + '\n')
     copies = {}
     for name in ('device', 'designation', 'map'):
-        target = folder / ('source-' + name + '.json')
+        target = folder / ('original-' + name + '.json')
         shutil.copyfile(source['sources'][name]['path'], target)
         copies[name] = {'path': str(target), 'sha256': sha(target)}
-    route = folder / 'source-route.json'
+    route = folder / 'original-route.json'
     route.write_text(json.dumps({'source_kind': 'synthetic_route_for_cpu_test'}) + '\n')
     copies['route'] = {'path': str(route), 'sha256': sha(route)}
     review = {'source_kind': 'original_official_device_review',
               'map_name': 'synthetic-map', 'device_id': 'synthetic-device-1',
               'sources': copies}
-    (folder / 'source-review.json').write_text(json.dumps(review) + '\n')
+    (folder / 'original-review.json').write_text(json.dumps(review) + '\n')
     for name, target in (('person_activity', 'person-activity.json'),
                          ('traffic_direction', 'traffic-direction.json')):
         shutil.copyfile(source['sources'][name]['path'], folder / target)
@@ -85,7 +85,7 @@ def main():
         negatives = {
             name: reject(a, name, 'Missing required source: ' + name)
             for name in ('person-activity.json', 'traffic-direction.json',
-                         'source-designation.json', 'native-stop-trace.jsonl',
+                         'original-designation.json', 'native-stop-trace.jsonl',
                          'video_frames.jsonl')
         }
         print(json.dumps({'format': 'worker-designated-stop-saved-packet-cpu-proof',

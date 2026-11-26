@@ -31,9 +31,12 @@ def finalize(attempt, output):
     provenance = json.loads((attempt / 'acquisition-provenance.json').read_text())
     diagnostic = provenance.get('diagnostic_fixture') is True
     case = config.get('case_id')
+    supported = {config.get('assignment_id', '') + '__' + suffix for suffix in
+                 ('reference', 'contrast', 'engine_on', 'brake_unset',
+                  'wheel_straight')}
     if (case != construction.get('case_id') or
-            case not in {config.get('assignment_id', '') + '__reference',
-                         config.get('assignment_id', '') + '__contrast'}):
+            case not in supported or
+            set(config.get('supported_case_ids', [])) != supported):
         raise ValueError('Exact saved case identity differs')
     if config.get('recording_description') != construction.get('recording_description'):
         raise ValueError('Saved recording description differs')

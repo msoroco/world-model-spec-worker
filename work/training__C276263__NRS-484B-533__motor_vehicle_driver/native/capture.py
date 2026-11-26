@@ -122,6 +122,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
         if vehicle.type_id != 'vehicle.lincoln.mkz_2020':
             raise RuntimeError('Original motor vehicle blueprint differs')
         instruments = InstrumentClient(instrument_host, instrument_port)
+        engine_preparation = instruments.prepare_engine(
+            vehicle.id, case, ENGINE_TARGET[case])
         output.mkdir(parents=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         (output / 'grade-readback.json').write_text(json.dumps(survey, indent=2) + '\n')
@@ -132,6 +134,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
             'instrument_endpoint': [instrument_host, instrument_port],
             'instrument_originality_requires_local_review': True,
             'engine_or_occupancy_not_inferred_from_controls': True}, indent=2) + '\n')
+        (output / 'engine-preparation.json').write_text(
+            json.dumps(engine_preparation, indent=2) + '\n')
         for name, x, y, z, pitch in CAMERAS:
             camera_bp = bp.find('sensor.camera.rgb')
             size = (1920, 1080) if name == 'overview' else (1280, 720)

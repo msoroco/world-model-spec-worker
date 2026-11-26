@@ -27,7 +27,11 @@ class FinalizerTest(unittest.TestCase):
                                        ('front_wheel_heading_to_curb_deg', 'deg'),
                                        ('unattended_interval', 'categorical'))]
         description = {'channels': channels, 'context_inputs': [], 'limitations': []}
+        supported = [assignment + '__' + suffix for suffix in
+                     ('reference', 'contrast', 'engine_on', 'brake_unset',
+                      'wheel_straight')]
         self.write('config.json', {'assignment_id': assignment, 'case_id': case,
+                                   'supported_case_ids': supported,
                                    'recording_description': description})
         self.write('construction.json', {'case_id': case,
                                          'recording_description': description})

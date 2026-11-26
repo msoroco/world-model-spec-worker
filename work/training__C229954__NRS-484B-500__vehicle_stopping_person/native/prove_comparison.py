@@ -57,11 +57,11 @@ def main():
                 'cannot assert', base, 'legal-claim', a, b),
         }
         changed = make_attempt(base / 'different-device', False)
-        device = changed / 'source-device.json'
+        device = changed / 'original-device.json'
         content = json.loads(device.read_text())
         content['content'] = 'different synthetic device content'
         device.write_text(json.dumps(content) + '\n')
-        review = changed / 'source-review.json'
+        review = changed / 'original-review.json'
         inventory = json.loads(review.read_text())
         inventory['sources']['device']['sha256'] = sha(device)
         review.write_text(json.dumps(inventory) + '\n')

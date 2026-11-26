@@ -59,6 +59,30 @@ class InstrumentClient:
         self.reader = self.connection.makefile('r', encoding='utf-8')
         self.writer = self.connection.makefile('w', encoding='utf-8')
 
+    def prepare_engine(self, actor_id, case_id, engine_running):
+        """Request a source actuator; subsequent sensor packets must prove operation."""
+        if type(actor_id) is not int or type(engine_running) is not bool:
+            raise ValueError('Original engine actuator target missing')
+        request = {'format': 'c276263-engine-preparation-v1',
+                   'actor_id': actor_id, 'case_id': case_id,
+                   'requested_engine_running': engine_running}
+        self.writer.write(json.dumps(request, sort_keys=True) + '\n')
+        self.writer.flush()
+        line = self.reader.readline()
+        if not line:
+            raise ValueError('Original engine actuator service closed')
+        receipt = json.loads(line)
+        if (receipt.get('format') != 'c276263-engine-preparation-receipt-v1' or
+                receipt.get('actor_id') != actor_id or
+                receipt.get('case_id') != case_id or
+                receipt.get('requested_engine_running') is not engine_running or
+                receipt.get('source_kind') != 'original_actuator' or
+                receipt.get('actuator_accepted') is not True or
+                not isinstance(receipt.get('actuator_id'), str) or
+                not receipt['actuator_id']):
+            raise ValueError('Original engine actuator preparation absent')
+        return receipt
+
     def sample(self, native_frame, actor_id, wheel_angles_deg,
                actor_heading_world_deg=None):
         request = {'format': 'c276263-instrument-request-v1',

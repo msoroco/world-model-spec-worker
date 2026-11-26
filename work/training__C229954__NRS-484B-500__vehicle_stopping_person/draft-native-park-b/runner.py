@@ -82,8 +82,8 @@ def _persist_source(source, output):
     output = Path(output)
     for name in ('device', 'designation', 'map', 'route'):
         ref = source['sources'][name]
-        shutil.copyfile(ref['path'], output / ('source-' + name + '.json'))
-    (output / 'source-review.json').write_text(
+        shutil.copyfile(ref['path'], output / ('original-' + name + '.json'))
+    (output / 'original-review.json').write_text(
         json.dumps(source, indent=2, allow_nan=False) + '\n')
 
 

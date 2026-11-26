@@ -58,3 +58,9 @@ The saved processor now recomputes source-bound physical approach and continuous
 - `native/physical-proof.json` SHA-256 `419d75e7d07df92aa7e8b0038f421f7b8446be4799ca11dd3fdfee7927eb6e8f`; synthetic CPU proof passed.
 
 Selected construction, exact compatibility, process-saved, semantic and independent delivery proofs remain CPU work. The six draft cases and case plan were unchanged at this checkpoint.
+
+## 2026-11-26 saved processing integration
+
+The pinned saved processor excludes top-level names beginning `source-` when it stages acquisition. The first selected `runtime.py compatibility` run failed in `build_saved_packet.py` because the original device review was named `source-review.json`. I renamed the assignment-owned official device, designation, map, route and review sidecars to `original-*.json` in the Native runners and selected diagnostic source recipe; the same original authority, erection interval, polygon and route hashes remain required before CARLA contact and in saved measurement. This is a source staging correction, not a new physical claim.
+
+All six exact selected constructions have current SHA-bound `runtime.py offline` checks in `native/*-selected-offline.log`. The six focused route, geometry, saved packet, comparison, physical and controller CPU proof scripts passed after the rename; their JSON proof files and `result.json` hashes were refreshed. Full selected compatibility and process-saved still need completion. Status remains partial.

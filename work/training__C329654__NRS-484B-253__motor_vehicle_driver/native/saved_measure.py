@@ -27,7 +27,7 @@ def read_rows(path):
     return records
 
 
-def analyze(attempt, output):
+def analyze(attempt, output=None):
     attempt = Path(attempt)
     config_path = attempt / "config.json"
     if not config_path.is_file():
@@ -73,9 +73,10 @@ def analyze(attempt, output):
               "requested_turn_policy": config.get("yield_policy"),
               "actual_pixels_reviewed": False, "legal_priority_verdict": None,
               "physical_acceptance_claimed": False}
-    output = Path(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    if output is not None:
+        output = Path(output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     return report
 
 
