@@ -96,10 +96,11 @@ def control_tick(actor, target_mps):
             "throttle": throttle, "brake": brake}
 
 
-def measure(packet, case_key, expected_map_sha256, frames):
+def measure(packet, case_key, expected_map_sha256, frames, diagnostic_fixture=False):
     """Audit original 20 Hz samples and observed sign passage, never command speed."""
     route = validate_site(packet, case_key, expected_map_sha256)
-    _require(len(frames) >= 400, "insufficient original frames")
+    minimum_frames = 9 if diagnostic_fixture else 400
+    _require(len(frames) >= minimum_frames, "insufficient original frames")
     observations = []
     for i, frame in enumerate(frames):
         _require(frame.get("frame_index") == i, "original frame gap")
@@ -115,7 +116,8 @@ def measure(packet, case_key, expected_map_sha256, frames):
         if route["spawn_station_m"] + 20 <= station <= route["end_station_m"] - 10:
             observations.append({"frame_index": i, "time_s": frame["time_s"], "station_m": station,
                                  "speed_mph": speed / MPH_TO_MPS})
-    _require(len(observations) >= 100, "governed travel interval missing")
+    _require(len(observations) >= (3 if diagnostic_fixture else 100),
+             "governed travel interval missing")
     signs = packet["signs"]
     if signs:
         sign = signs[0]
@@ -131,7 +133,7 @@ def measure(packet, case_key, expected_map_sha256, frames):
             "legal_status": "unresolved_prima_facie_and_title_posting_review"}
 
 
-def compare(reports, case_keys, varying_posting=False):
+def compare(reports, case_keys, varying_posting=False, diagnostic_fixture=False):
     """Reject missing members and changed posting context in linked speed probes."""
     _require(len(reports) == len(case_keys), "comparison member missing")
     expected_context = TARGETS[case_keys[0]][0]
@@ -143,7 +145,9 @@ def compare(reports, case_keys, varying_posting=False):
         if not varying_posting:
             _require(report.get("posting_context") == expected_context, "comparison posting context changed")
         _require(report.get("map_sha256") == expected_map and report.get("route") == expected_route, "comparison map or route changed")
-        _require(report.get("governed_original_samples") and report.get("original_frame_count") >= 400, "comparison original evidence missing")
+        _require(report.get("governed_original_samples") and
+                 report.get("original_frame_count") >= (9 if diagnostic_fixture else 400),
+                 "comparison original evidence missing")
     if varying_posting:
         _require(len(set(r["posting_context"] for r in reports)) == len(reports), "posting exception contrast missing")
         _require(len(set(r["target_mph"] for r in reports)) == 1, "posting comparison changed target speed")

@@ -24,7 +24,7 @@ def measure(site, frames, purpose):
     validate_site(site)
     if set(("declared_purpose", "source_ref", "declared_before_frame")) - purpose.keys() or not purpose["source_ref"]:
         raise ValueError("missing independently sourced purpose")
-    if purpose["declared_purpose"] not in ("right_turn", "other"):
+    if purpose["declared_purpose"] not in ("right_turn", "through", "left_turn", "other"):
         raise ValueError("unknown purpose")
     required = {"original_frame", "time_s", "lane_id", "road_id", "maneuver",
                 "source_ref", "driver_id"}

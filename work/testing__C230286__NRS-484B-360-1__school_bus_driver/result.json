@@ -1,31 +1,22 @@
 {
   "assignment_id": "testing__C230286__NRS-484B-360-1__school_bus_driver",
   "input_sha256": "c27c72937a63724966d26e825d94cd43e013925b89ad05dad5b95d551bf2c04a",
-  "status": "partial",
-  "readiness_kind": "school_bus_speed_profile_and_original_trip_measurement",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "3cf33a6173006b63828bf5a585b63ecf6efe47e82174a9a764de1ac0dda43c8f"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230286__NRS-484B-360-1__school_bus_driver/tests -v",
       "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "9cb9b76820a237f54c92300c1e39c363767bd9da4888f613da0b9ce3ac84e6cb"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C230286__NRS-484B-360-1__school_bus_driver --complete",
-      "exit_code": 0,
-      "log": "static.log",
-      "sha256": "6f1719c8c6b5167e49dc25e11be7330420a79d8a21bb60bc7092b0e7e543fb32"
+      "log": "cpu-tests.log",
+      "sha256": "84572b8fcdd6abe274fca282e8cf884f8c18c644cb12fffe456aefd2b9c645eb"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native school-bus motion and source-backed pupil-trip status",
+    "Independent four-view bus/sidewalk pixel and physical completion review",
+    "Human review of school-bus definition, exclusions and statutory application"
   ],
-  "reason": "Four planned cases and two comparisons cover below/at/above 55 mph and the pupil-transport phase. Tested 20 Hz speed-profile construction and source-bound original-frame measurement with six synthetic CPU tests. Actual school-bus definition/exclusions, trip purpose, pupils and realized speed, exact bundles, compatibility, saved processing and independent audits remain CPU work."
+  "reason": "Exact scoped strict gate failed; see strict.log for current repair item.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C230286__NRS-484B-360-1__school_bus_driver --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -1,0 +1,54 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "A school bus",
+      "source": "inputs/testing__C230286__NRS-484B-360-1__school_bus_driver/assignment.json",
+      "output_key": "school_bus_classification",
+      "method": "source_sealed_school_bus_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "school-bus-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "shall not exceed a speed of 55 miles per hour",
+      "source": "inputs/testing__C230286__NRS-484B-360-1__school_bus_driver/assignment.json",
+      "output_key": "bus_speed",
+      "method": "source_sealed_school_bus_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "school-bus-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "when transporting pupils to and from school",
+      "source": "inputs/testing__C230286__NRS-484B-360-1__school_bus_driver/assignment.json",
+      "output_key": "pupil_transport_phase",
+      "method": "source_sealed_school_bus_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "school-bus-history.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "school-bus-history.json"
+    ],
+    "error_contains": "Missing required source: school-bus-history.json"
+  }
+}

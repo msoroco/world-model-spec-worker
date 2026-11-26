@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 spec = importlib.util.spec_from_file_location("speed_delivery", ROOT / "speed_delivery.py")
 speed = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(speed)
@@ -175,7 +176,7 @@ class SpeedDeliveryTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "measurement time join"):
                 audit.audit_saved(bad, bad_measurement)
             bad = copy.deepcopy(source)
-            bad["cameras"].pop("left")
+            bad["cameras"].pop("reference_corner")
             with self.assertRaisesRegex(ValueError, "four camera"):
                 audit.audit_saved(bad, measured)
             native.write_text("changed", encoding="utf-8")

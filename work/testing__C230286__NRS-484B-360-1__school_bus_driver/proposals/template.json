@@ -1,0 +1,46 @@
+{
+  "template_id": "NRS-484B-360-1@school_bus_driver",
+  "law_id": "NRS-484B-360-1",
+  "actor": "school_bus_driver",
+  "status": "draft",
+  "quote": "A school bus shall not exceed: A speed of 55 miles per hour when transporting pupils to and from school.",
+  "structure": {
+    "law_id": "NRS-484B-360-1",
+    "activation": {
+      "condition": "Source-confirmed school bus transporting pupils to or from school during measured speed interval.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "School bus shall not exceed 55 miles per hour during that interval.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "school bus speed",
+          "operator": ">",
+          "value": 55,
+          "unit": "miles/hour"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Only source-confirmed active pupil transportation frames.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "target_speed_mph",
+      "kind": "world_setup",
+      "range_or_domain": "54, 55 or 56 mph",
+      "unit": "miles/hour request"
+    },
+    {
+      "name": "requested_active_transport_phase",
+      "kind": "world_setup",
+      "range_or_domain": "source-verified active or inactive pupil-trip speed interval",
+      "unit": "boolean request"
+    }
+  ]
+}

@@ -1,0 +1,592 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C230286__NRS-484B-360-1__school_bus_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph",
+      "kind": "delivery",
+      "construction": "construction-selected-pupil_trip_54_mph.json",
+      "construction_sha256": "d7c3bfcdf22af4f507288e69920ef984b4768348290c34c1b2900d653b073faa",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original school bus may not attain its requested speed during the source-verified 900-metre route; controller gain adjustment can improve acceleration while preserving exact target, trip status and geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-pupil_trip_54_mph.json",
+          "construction_sha256": "f9f70a58575a89221be1d708000a1c3fd7cb5fa14a382640ca4ce01aa11cb308",
+          "trigger": {
+            "source": "original 900-frame Native bus velocity and surveyed route readback",
+            "metric": "realized target speed during source-confirmed transport interval and route containment",
+            "failure_condition": "actual bus fails to reach requested speed within tolerance or remain on reviewed route"
+          },
+          "changed_knobs": [
+            "controller acceleration gain: 0.30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-fallback-offline-v2/pupil_trip_54_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-pupil_trip_54_mph.log",
+            "log_sha256": "1b7037120352f31dd0702fcd3aca40a3277de46ca43507f264add651bf0c7c69",
+            "construction_sha256": "f9f70a58575a89221be1d708000a1c3fd7cb5fa14a382640ca4ce01aa11cb308"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-pupil_trip_54_mph.json",
+            "sha256": "ff5c50c62a38876a8899303701fc31b64e1f884ea71d0482c01cdbfe162f13af",
+            "log": "proof-fallback-analysis-pupil_trip_54_mph.log",
+            "negative_log": "proof-fallback-negative-pupil_trip_54_mph.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230286__NRS-484B-360-1__school_bus_driver/diagnostics/pupil_trip_54_mph-recipe.json",
+      "measurement_contract": "diagnostics/pupil_trip_54_mph-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native bus speed and pupil trip readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/selected-v2/offline/pupil_trip_54_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-pupil_trip_54_mph.log",
+        "log_sha256": "b3f7aff51aceac5ba3a7d3fe17a62b94b8cb8b3268de9d1f1bc35623dd44092e",
+        "construction_sha256": "d7c3bfcdf22af4f507288e69920ef984b4768348290c34c1b2900d653b073faa"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-pupil_trip_54_mph.json",
+        "sha256": "629a95781a748b052e640366127c98431c51def5ae90c3003e3755433cffd094",
+        "log": "proof-compat-analysis-pupil_trip_54_mph.log",
+        "negative_log": "proof-compat-negative-pupil_trip_54_mph.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-pupil_trip_54_mph.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-pupil_trip_54_mph-receipt.json",
+        "sha256": "53dc93c735c42dea6e05c76ac234bca126ca6fcd1c549ad73a156701a4e4d913"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-pupil_trip_54_mph.log",
+        "sha256": "c98107aeb94e21263dcdf3ec824f810f3b1938c978b4651f8d90e94b3e0a6a61"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-pupil_trip_54_mph.log",
+        "test_log_sha256": "c98107aeb94e21263dcdf3ec824f810f3b1938c978b4651f8d90e94b3e0a6a61"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_54_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_54_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_54_mph/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_54_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_54_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_54_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_54_mph/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "2f9a0fc570b6b924d372d0ab12ff96842b9f30b77dd3ef454a403e95dd9eb203",
+        "test_log": "proof-delivery-positive-pupil_trip_54_mph.log",
+        "test_log_sha256": "f0f21314649fe4d33d409b99ce0dfcc2d99f7fd3268519f3ffea7c1f352d0ab6",
+        "negative_log": "proof-delivery-negative-pupil_trip_54_mph.log",
+        "negative_log_sha256": "5c8491f524a5eebb974a2891ae2fdbf692c3721584a1f843ca821ca5f8853055",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230286_REVIEWED_SITE",
+        "adapter_module_env_var": "C230286_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "school_bus_classification": {
+          "entrypoint": "school_bus.py",
+          "method": "sealed definition branch, exclusion dispositions and Native bus identity",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "driver_and_bus_identity": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-sealed driver and Native bus ID",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_transport_phase": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-joined active pupil-trip interval at original 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_presence_count": {
+          "entrypoint": "school_bus.py",
+          "method": "separate source-backed pupil presence and count",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_speed": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus velocity norm at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_route_position": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus pose at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "sidewalk_relation": {
+          "entrypoint": "school_bus.py",
+          "method": "surveyed sidewalk access relation",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph",
+      "kind": "delivery",
+      "construction": "construction-selected-pupil_trip_55_mph.json",
+      "construction_sha256": "e9666f702ba5d8b445ac9b367b67e5550463d85cadc28fba23e11498bcac4c90",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original school bus may not attain its requested speed during the source-verified 900-metre route; controller gain adjustment can improve acceleration while preserving exact target, trip status and geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-pupil_trip_55_mph.json",
+          "construction_sha256": "51f9a49b09be8b49edbe2b45060ce645c8161d08be05fbe2e85b02fdc6a1914f",
+          "trigger": {
+            "source": "original 900-frame Native bus velocity and surveyed route readback",
+            "metric": "realized target speed during source-confirmed transport interval and route containment",
+            "failure_condition": "actual bus fails to reach requested speed within tolerance or remain on reviewed route"
+          },
+          "changed_knobs": [
+            "controller acceleration gain: 0.30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-fallback-offline-v2/pupil_trip_55_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-pupil_trip_55_mph.log",
+            "log_sha256": "c1518139102ab52ec8b8dbc9d9057790af15ff02522490f4c06523ba50cfd9f7",
+            "construction_sha256": "51f9a49b09be8b49edbe2b45060ce645c8161d08be05fbe2e85b02fdc6a1914f"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-pupil_trip_55_mph.json",
+            "sha256": "a94127751ee94241c3150c47bd47ae73d65628eaafbf592176e54a780ba5918d",
+            "log": "proof-fallback-analysis-pupil_trip_55_mph.log",
+            "negative_log": "proof-fallback-negative-pupil_trip_55_mph.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230286__NRS-484B-360-1__school_bus_driver/diagnostics/pupil_trip_55_mph-recipe.json",
+      "measurement_contract": "diagnostics/pupil_trip_55_mph-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native bus speed and pupil trip readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/selected-v2/offline/pupil_trip_55_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-pupil_trip_55_mph.log",
+        "log_sha256": "77a55f3747d337113d89e866d68a0d3baf83064078dce1fcb2732f21a2434b5b",
+        "construction_sha256": "e9666f702ba5d8b445ac9b367b67e5550463d85cadc28fba23e11498bcac4c90"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-pupil_trip_55_mph.json",
+        "sha256": "b17130f44f78c152a30381bfbc57cc66b55ff4e56d6429e90405bf6a97abbf33",
+        "log": "proof-compat-analysis-pupil_trip_55_mph.log",
+        "negative_log": "proof-compat-negative-pupil_trip_55_mph.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-pupil_trip_55_mph.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-pupil_trip_55_mph-receipt.json",
+        "sha256": "9d965d486525646d4b05c5a15d600c2f7a861c75db3dbe0af674d8929b545d29"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-pupil_trip_55_mph.log",
+        "sha256": "31f0eb183e74ffbde11fab85dc1865e5566948fe9f71b8d699134a205156e6fd"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-pupil_trip_55_mph.log",
+        "test_log_sha256": "31f0eb183e74ffbde11fab85dc1865e5566948fe9f71b8d699134a205156e6fd"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_55_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_55_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_55_mph/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_55_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_55_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_55_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_55_mph/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "2f9a0fc570b6b924d372d0ab12ff96842b9f30b77dd3ef454a403e95dd9eb203",
+        "test_log": "proof-delivery-positive-pupil_trip_55_mph.log",
+        "test_log_sha256": "0f47fb6661611cc70336b321dc39f22808e0d23bd446ea95e517e57fb9c29f65",
+        "negative_log": "proof-delivery-negative-pupil_trip_55_mph.log",
+        "negative_log_sha256": "5c8491f524a5eebb974a2891ae2fdbf692c3721584a1f843ca821ca5f8853055",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230286_REVIEWED_SITE",
+        "adapter_module_env_var": "C230286_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "school_bus_classification": {
+          "entrypoint": "school_bus.py",
+          "method": "sealed definition branch, exclusion dispositions and Native bus identity",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "driver_and_bus_identity": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-sealed driver and Native bus ID",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_transport_phase": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-joined active pupil-trip interval at original 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_presence_count": {
+          "entrypoint": "school_bus.py",
+          "method": "separate source-backed pupil presence and count",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_speed": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus velocity norm at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_route_position": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus pose at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "sidewalk_relation": {
+          "entrypoint": "school_bus.py",
+          "method": "surveyed sidewalk access relation",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph",
+      "kind": "delivery",
+      "construction": "construction-selected-pupil_trip_56_mph.json",
+      "construction_sha256": "cbbfc34dcb3393ee7cd2d0c3a1390fcda1474bb3a9d4cb414cd42d97e64ff45a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original school bus may not attain its requested speed during the source-verified 900-metre route; controller gain adjustment can improve acceleration while preserving exact target, trip status and geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-pupil_trip_56_mph.json",
+          "construction_sha256": "8f875fb247ff0cb1bbc8d6bc2a8bfe8f1e937fe546e8389cda4b852bca3dc583",
+          "trigger": {
+            "source": "original 900-frame Native bus velocity and surveyed route readback",
+            "metric": "realized target speed during source-confirmed transport interval and route containment",
+            "failure_condition": "actual bus fails to reach requested speed within tolerance or remain on reviewed route"
+          },
+          "changed_knobs": [
+            "controller acceleration gain: 0.30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-fallback-offline-v2/pupil_trip_56_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-pupil_trip_56_mph.log",
+            "log_sha256": "de4e271f13c361c14dc062a33af1bf57aa82e7d365200470c05bb00ebba4c35a",
+            "construction_sha256": "8f875fb247ff0cb1bbc8d6bc2a8bfe8f1e937fe546e8389cda4b852bca3dc583"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-pupil_trip_56_mph.json",
+            "sha256": "155f86a953c504b77570ec1876fd8b5afc3a177a5391882717d4884d148b17e9",
+            "log": "proof-fallback-analysis-pupil_trip_56_mph.log",
+            "negative_log": "proof-fallback-negative-pupil_trip_56_mph.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230286__NRS-484B-360-1__school_bus_driver/diagnostics/pupil_trip_56_mph-recipe.json",
+      "measurement_contract": "diagnostics/pupil_trip_56_mph-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native bus speed and pupil trip readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/selected-v2/offline/pupil_trip_56_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-pupil_trip_56_mph.log",
+        "log_sha256": "d5fb0c9cd8dd9b458f70ad5d62f06675d0050eb877b182804294f8ac29a8c798",
+        "construction_sha256": "cbbfc34dcb3393ee7cd2d0c3a1390fcda1474bb3a9d4cb414cd42d97e64ff45a"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-pupil_trip_56_mph.json",
+        "sha256": "a8ecc0a3f41a718c4fd15d957e6e2ec81977cb677b2e009d27d7a8a3fc464738",
+        "log": "proof-compat-analysis-pupil_trip_56_mph.log",
+        "negative_log": "proof-compat-negative-pupil_trip_56_mph.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-pupil_trip_56_mph.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-pupil_trip_56_mph-receipt.json",
+        "sha256": "71da44919b5c75bc21fdcdb31d4ecbce4c13fd463a27854027f0066a94792028"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-pupil_trip_56_mph.log",
+        "sha256": "39be1b934edebc1cabf25fbf0251f2d5176c4bb2e80873ec0a2687999c7f66ed"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-pupil_trip_56_mph.log",
+        "test_log_sha256": "39be1b934edebc1cabf25fbf0251f2d5176c4bb2e80873ec0a2687999c7f66ed"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_56_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_56_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_56_mph/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__pupil_trip_56_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_56_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/pupil_trip_56_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/pupil_trip_56_mph/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "2f9a0fc570b6b924d372d0ab12ff96842b9f30b77dd3ef454a403e95dd9eb203",
+        "test_log": "proof-delivery-positive-pupil_trip_56_mph.log",
+        "test_log_sha256": "536c8a44cfdbb44535c962f163852fe082e415c453af3c35184bd271f713f19b",
+        "negative_log": "proof-delivery-negative-pupil_trip_56_mph.log",
+        "negative_log_sha256": "5c8491f524a5eebb974a2891ae2fdbf692c3721584a1f843ca821ca5f8853055",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230286_REVIEWED_SITE",
+        "adapter_module_env_var": "C230286_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "school_bus_classification": {
+          "entrypoint": "school_bus.py",
+          "method": "sealed definition branch, exclusion dispositions and Native bus identity",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "driver_and_bus_identity": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-sealed driver and Native bus ID",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_transport_phase": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-joined active pupil-trip interval at original 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_presence_count": {
+          "entrypoint": "school_bus.py",
+          "method": "separate source-backed pupil presence and count",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_speed": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus velocity norm at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_route_position": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus pose at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "sidewalk_relation": {
+          "entrypoint": "school_bus.py",
+          "method": "surveyed sidewalk access relation",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph",
+      "kind": "delivery",
+      "construction": "construction-selected-nontransport_56_mph.json",
+      "construction_sha256": "09277110eb857043bb644e1b03efa085400a848162f25ff7248484516b84cd97",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original school bus may not attain its requested speed during the source-verified 900-metre route; controller gain adjustment can improve acceleration while preserving exact target, trip status and geometry."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-nontransport_56_mph.json",
+          "construction_sha256": "648f643e4f88d27950d8c84a849b6b3b4bd34cae393dfea6f10f51f7f7b7f77a",
+          "trigger": {
+            "source": "original 900-frame Native bus velocity and surveyed route readback",
+            "metric": "realized target speed during source-confirmed transport interval and route containment",
+            "failure_condition": "actual bus fails to reach requested speed within tolerance or remain on reviewed route"
+          },
+          "changed_knobs": [
+            "controller acceleration gain: 0.30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-fallback-offline-v2/nontransport_56_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-nontransport_56_mph.log",
+            "log_sha256": "394f8fb3e3bae1e301bb3cfa9de9615936b07a3b7dfc41ae364dfa3586cc7038",
+            "construction_sha256": "648f643e4f88d27950d8c84a849b6b3b4bd34cae393dfea6f10f51f7f7b7f77a"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-nontransport_56_mph.json",
+            "sha256": "30ef0ee6c21af38fcb99199d5de6efb8190dd7b234197e181a03c78bee2ce0a4",
+            "log": "proof-fallback-analysis-nontransport_56_mph.log",
+            "negative_log": "proof-fallback-negative-nontransport_56_mph.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230286__NRS-484B-360-1__school_bus_driver/diagnostics/nontransport_56_mph-recipe.json",
+      "measurement_contract": "diagnostics/nontransport_56_mph-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native bus speed and pupil trip readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.selected-draft.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/selected-v2/offline/nontransport_56_mph --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-nontransport_56_mph.log",
+        "log_sha256": "983565caaca525846b70a2a56127527fdde18465d9aaac65f15b2a7b0e26cdfa",
+        "construction_sha256": "09277110eb857043bb644e1b03efa085400a848162f25ff7248484516b84cd97"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-nontransport_56_mph.json",
+        "sha256": "41f9e7f79e8fb289135caa8152258f32c3672a04b4587701f1ebf1962727b7d3",
+        "log": "proof-compat-analysis-nontransport_56_mph.log",
+        "negative_log": "proof-compat-negative-nontransport_56_mph.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-nontransport_56_mph.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-nontransport_56_mph-receipt.json",
+        "sha256": "6cb78837245de549170507cfa015f7128c3af60b575c02e383fff54be8716c93"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-nontransport_56_mph.log",
+        "sha256": "6efff0e46c9da815b13f1ffaee140bb27882162a81acf0513fe8ae9d0b705a62"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230286__NRS-484B-360-1__school_bus_driver/execution-manifest.json --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-nontransport_56_mph.log",
+        "test_log_sha256": "6efff0e46c9da815b13f1ffaee140bb27882162a81acf0513fe8ae9d0b705a62"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/nontransport_56_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/nontransport_56_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/nontransport_56_mph/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/delivery_audit.py --case testing__C230286__NRS-484B-360-1__school_bus_driver__nontransport_56_mph --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/nontransport_56_mph --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230286__NRS-484B-360-1__school_bus_driver/proofs/physical/nontransport_56_mph/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230286-owner-nov26/school-bus-delivery-diagnostic-v3/nontransport_56_mph/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "2f9a0fc570b6b924d372d0ab12ff96842b9f30b77dd3ef454a403e95dd9eb203",
+        "test_log": "proof-delivery-positive-nontransport_56_mph.log",
+        "test_log_sha256": "61665ec099b7d799aa1866045a39af2f3e38e38fb1d00c2502837b1103c3e2cb",
+        "negative_log": "proof-delivery-negative-nontransport_56_mph.log",
+        "negative_log_sha256": "5c8491f524a5eebb974a2891ae2fdbf692c3721584a1f843ca821ca5f8853055",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230286_REVIEWED_SITE",
+        "adapter_module_env_var": "C230286_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "school_bus_classification": {
+          "entrypoint": "school_bus.py",
+          "method": "sealed definition branch, exclusion dispositions and Native bus identity",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "driver_and_bus_identity": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-sealed driver and Native bus ID",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_transport_phase": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "source-joined active pupil-trip interval at original 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "pupil_presence_count": {
+          "entrypoint": "school_bus.py",
+          "method": "separate source-backed pupil presence and count",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_speed": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus velocity norm at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "bus_route_position": {
+          "entrypoint": "school_bus_capture.py",
+          "method": "original Native bus pose at 20 Hz",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        },
+        "sidewalk_relation": {
+          "entrypoint": "school_bus.py",
+          "method": "surveyed sidewalk access relation",
+          "evidence": "original-source-receipt.json, school-bus-history.json and synchronized 900-frame cameras"
+        }
+      }
+    }
+  ]
+}

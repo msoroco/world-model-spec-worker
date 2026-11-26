@@ -51,7 +51,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_inside-fallback1.json",
+          "construction_sha256": "83adb7c97eb56b8429a00ba0bf068c71ca5de3c4b7858135eec7cdf0735514d1",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "83adb7c97eb56b8429a00ba0bf068c71ca5de3c4b7858135eec7cdf0735514d1",
+            "log": "cpu-offline-upstream_inside-fallback1.log",
+            "log_sha256": "17cda233dd1d7ff15e10a5e3119afbd6649d511244d7fa57f3b84228f13635c2"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_inside-fallback1-receipt.json",
+            "sha256": "e694d888984c50f73ff3d77e66918efbe79197f5cc6e08db29f65f7d7218210e",
+            "log": "cpu-compat-upstream_inside-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_inside-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -70,6 +99,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_inside-receipt.json",
         "sha256": "1a87749be3816c505f44b2a5c4ab655176b5fe67875fdab957819ccef828d0d4"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_inside.log",
+        "test_log_sha256": "8503309ab61ecd4f6ace217022fd8bec4ea644eb8b86e90e4764b7dbd83b248e",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_inside --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_inside-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_inside-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_inside.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -119,7 +183,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_at-fallback1.json",
+          "construction_sha256": "94bfa0977739e5796bf0bdb58afefac8a8ad40e8517afd60cff48c414fb5f9d4",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "94bfa0977739e5796bf0bdb58afefac8a8ad40e8517afd60cff48c414fb5f9d4",
+            "log": "cpu-offline-upstream_at-fallback1.log",
+            "log_sha256": "b30eb313bc1ab3a2078c278f644a724f7082a6581333c2a25f2d02c65a1f3f40"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_at-fallback1-receipt.json",
+            "sha256": "33cf06b4a530aa3b8fa131e9b962d4f0b09e6384643f9f3dc256848667aa0e08",
+            "log": "cpu-compat-upstream_at-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_at-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -138,6 +231,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_at-receipt.json",
         "sha256": "c9f38db94761af4c3ef2a71b6b7998fd6023b2edf24c016d6aa6d2ca5289a32f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_at.log",
+        "test_log_sha256": "9d51e18a32c5132f055116f9fb71b8c959c87b135f3aec35a36234b94c1e0414",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_at --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_at-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_at-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_at.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -187,7 +315,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_outside-fallback1.json",
+          "construction_sha256": "9f3e6f7dae3fa7ad8ae366db56bedd563ad73b70feb4653a27924348ae565b78",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "9f3e6f7dae3fa7ad8ae366db56bedd563ad73b70feb4653a27924348ae565b78",
+            "log": "cpu-offline-upstream_outside-fallback1.log",
+            "log_sha256": "11d32c22c25dbc4008af71dba0eb7318e4eff7e2f384cda1e1ab522e3922fd1b"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_outside-fallback1-receipt.json",
+            "sha256": "3a41011b7b777dc136e15aa11fc6eac109db141a020f543ad62b53ff7bed0515",
+            "log": "cpu-compat-upstream_outside-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_outside-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -206,6 +363,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_outside-receipt.json",
         "sha256": "fe47e471cd30f568abe26959b70ece629bd0a632e76f6ca086a8fd808299926f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_outside.log",
+        "test_log_sha256": "fd728180d8a171dd1a669d979cbedddc49c6c1295825caf4a6d75c9a61a41875",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_outside --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_outside-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_outside-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_outside.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -255,7 +447,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-downstream_inside-fallback1.json",
+          "construction_sha256": "3a126ab78cdd64dbf828e9fcd77149698b5866c92c06539ed7434da62f64a449",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "3a126ab78cdd64dbf828e9fcd77149698b5866c92c06539ed7434da62f64a449",
+            "log": "cpu-offline-downstream_inside-fallback1.log",
+            "log_sha256": "282687b26cfe17f409561fbfb52361f64927a9b80ec0512e2cc504636e8f9b9c"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-downstream_inside-fallback1-receipt.json",
+            "sha256": "35563b28d249f7246aea3da9ae85b05bd4c8dd396c1efbcc79c2ae3d25617af8",
+            "log": "cpu-compat-downstream_inside-fallback1-analysis.log",
+            "negative_log": "cpu-compat-downstream_inside-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -274,6 +495,41 @@
       "physical_preparation": {
         "receipt": "physical-downstream_inside-receipt.json",
         "sha256": "37fe625f9c064066f9800f2ca03a52f0e63d6947f82317a752a6deff9cc6336c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-downstream_inside.log",
+        "test_log_sha256": "7916ca94ffa15591145e66973633a89c16eaa0af716b21a8301780f88c5fd080",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_inside --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_inside-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_inside-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-downstream_inside.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -323,7 +579,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-downstream_at-fallback1.json",
+          "construction_sha256": "81082f4e58885bba1710f1642a1cb5381f015eb8e5cc4d1336c2fc71dcd4dc51",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "81082f4e58885bba1710f1642a1cb5381f015eb8e5cc4d1336c2fc71dcd4dc51",
+            "log": "cpu-offline-downstream_at-fallback1.log",
+            "log_sha256": "4df8359e16d72402c834da1c968919474e3c1481e3d92295f8d10594e046fa47"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-downstream_at-fallback1-receipt.json",
+            "sha256": "86656ad552d5588196adaa744df3c0da141c8905544fff5377d99457c790575f",
+            "log": "cpu-compat-downstream_at-fallback1-analysis.log",
+            "negative_log": "cpu-compat-downstream_at-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -342,6 +627,41 @@
       "physical_preparation": {
         "receipt": "physical-downstream_at-receipt.json",
         "sha256": "5983b8b2d5ae28579bd83feee51a69ea21bde658b197e1c8ec5e9814730d4f08"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-downstream_at.log",
+        "test_log_sha256": "0cb21920bcd68b0e30f94142e22589a3bade9c99b3a0dc2d9f10a1ddb7936147",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_at --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_at-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_at-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-downstream_at.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -391,7 +711,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-downstream_outside-fallback1.json",
+          "construction_sha256": "f0568aa01175cc3baa053bcb0ccd8ef1a794cc6bd9edd2f03b33b02285bee298",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "f0568aa01175cc3baa053bcb0ccd8ef1a794cc6bd9edd2f03b33b02285bee298",
+            "log": "cpu-offline-downstream_outside-fallback1.log",
+            "log_sha256": "ff8e41312fefb8f0cc7816fd05c85f1ed398b3aa7c22906de9681027662cec8e"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-downstream_outside-fallback1-receipt.json",
+            "sha256": "919b5df380563ce06250e7c2e3461283f70db393024c40c09457041566d0a356",
+            "log": "cpu-compat-downstream_outside-fallback1-analysis.log",
+            "negative_log": "cpu-compat-downstream_outside-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -410,6 +759,41 @@
       "physical_preparation": {
         "receipt": "physical-downstream_outside-receipt.json",
         "sha256": "996f75514f1e122d3efa32de0c7d79ba2a0e79d3f5d481e0f26855e1aaf840ea"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-downstream_outside.log",
+        "test_log_sha256": "0d893e9d43be35510b8094127c70c2e6aa9b2be83a038d301139e0f2793aaa83",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_outside --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_outside-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-downstream_outside-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-downstream_outside.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -459,7 +843,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_stop-fallback1.json",
+          "construction_sha256": "16efe4c13fc0e12292c3ae301340dc2d34b0f39182f5cc150bd3c09bd93c119f",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "16efe4c13fc0e12292c3ae301340dc2d34b0f39182f5cc150bd3c09bd93c119f",
+            "log": "cpu-offline-upstream_stop-fallback1.log",
+            "log_sha256": "6fe528e092a5df51301f52629665e9e179871d75d0d316ae99dbd8a0ef7b98fb"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_stop-fallback1-receipt.json",
+            "sha256": "7b6089a98096efe26cbdc46d7ad3eb16ba34b881b9c107d3770e22694ef5526c",
+            "log": "cpu-compat-upstream_stop-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_stop-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -478,6 +891,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_stop-receipt.json",
         "sha256": "d685937f959d9c582557fcc83c54f4c8a9fb8483b2eeda455f1de262c1615279"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_stop.log",
+        "test_log_sha256": "82a85d13811b075d7878f75e0b4733a6329967d0e4c0103954ddea3379879cda",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stop --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stop-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stop-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_stop.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -527,7 +975,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_stand-fallback1.json",
+          "construction_sha256": "e36a18aad98823bfc771b00ab40cf8c30f8ef21673444ae466048c72421c3013",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "e36a18aad98823bfc771b00ab40cf8c30f8ef21673444ae466048c72421c3013",
+            "log": "cpu-offline-upstream_stand-fallback1.log",
+            "log_sha256": "a55f472d75b940d18546195acd20704299d35449348df0fa3f86b7262653f3ea"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_stand-fallback1-receipt.json",
+            "sha256": "07d103ef1acdd76da286d805adac1fa1d295db0ad6821b0549353bc3e5b32311",
+            "log": "cpu-compat-upstream_stand-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_stand-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -546,6 +1023,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_stand-receipt.json",
         "sha256": "0b902cee8617b54ba6ce086beeca7f9cf83a11ed26c1cca7f876a13b863467c3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_stand.log",
+        "test_log_sha256": "f19559be5d8d8f52cfb3678063d20cd82c91741a63ae282b2c53da13011c9ac7",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stand --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stand-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_stand-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_stand.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -595,7 +1107,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_traffic_exception-fallback1.json",
+          "construction_sha256": "c92e290df32f8d5894bdadb29b0e75a0419559bf2528d16bbffd9466097e5b3c",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "c92e290df32f8d5894bdadb29b0e75a0419559bf2528d16bbffd9466097e5b3c",
+            "log": "cpu-offline-upstream_traffic_exception-fallback1.log",
+            "log_sha256": "1f0387c8e403368b0867a32a755749dbc916f5bac9a5bed418ca2ae7a18734ea"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_traffic_exception-fallback1-receipt.json",
+            "sha256": "c834e8c0d56bc56ada7bf6620cf78f5e9da6b62b83bdffeb5377037186ceef9d",
+            "log": "cpu-compat-upstream_traffic_exception-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_traffic_exception-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -614,6 +1155,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_traffic_exception-receipt.json",
         "sha256": "0441dc0e73d18da73b31c595d9ef5dc2467129635c2307df95c09f79573071fb"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_traffic_exception.log",
+        "test_log_sha256": "0b1ab9c5f1f3f501585f65e597f39f844aac4a968bc4990cae69c75bdea111bd",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_traffic_exception --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_traffic_exception-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_traffic_exception-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_traffic_exception.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -663,7 +1239,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_police_exception-fallback1.json",
+          "construction_sha256": "d91e8f05108a6243fb83431083ae1542d5cfd51ac6f7d1eaba0b1d6f005b5e0f",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "d91e8f05108a6243fb83431083ae1542d5cfd51ac6f7d1eaba0b1d6f005b5e0f",
+            "log": "cpu-offline-upstream_police_exception-fallback1.log",
+            "log_sha256": "09536b9e73a35024bd801fe3d360e73b16a91db617cc45d19726d5e5b9ce2d72"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_police_exception-fallback1-receipt.json",
+            "sha256": "0da7bda46d64778738af7b624efd8507aa30417e8feba3840296c5bcdaab4fd9",
+            "log": "cpu-compat-upstream_police_exception-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_police_exception-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -682,6 +1287,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_police_exception-receipt.json",
         "sha256": "b441f2214dcbea9bac074ab5369cd841f1231aba22958073a9675ab6bf256171"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_police_exception.log",
+        "test_log_sha256": "f134149a2c9889d34d44a984c4ccda7d05c8575ceacac3d2ed02468877c58684",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_police_exception --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_police_exception-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_police_exception-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_police_exception.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     },
     {
@@ -731,7 +1371,36 @@
         "status": "physical",
         "reason": "Hydrant placement and camera visibility require measured local fallback assessment."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-upstream_device_exception-fallback1.json",
+          "construction_sha256": "f8d738e72dab46a387917b5187dad305f81e2c8ed83afc8cc9ddb7875d3fda0a",
+          "trigger": {
+            "source": "original Native body-hydrant history and four original camera decodes",
+            "metric": "target activity body-edge longitudinal gap or hydrant/body pixel visibility",
+            "failure_condition": "target gap outside 0.15 m tolerance or hydrant and vehicle edge not visible throughout target activity"
+          },
+          "changed_knobs": [
+            "approach speed 1.0 m/s",
+            "braking buffer 2.0 m",
+            "source-reviewed camera sightline sweep"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "f8d738e72dab46a387917b5187dad305f81e2c8ed83afc8cc9ddb7875d3fda0a",
+            "log": "cpu-offline-upstream_device_exception-fallback1.log",
+            "log_sha256": "5dff262225173d5b0b75dfcbb99dc01ee6ecf84c896b7af7d5a3721d73cf38fa"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-upstream_device_exception-fallback1-receipt.json",
+            "sha256": "7b5849478ed4dd22d5b63a168c9cf6dd8e7b6fdeec67c4e24927d0be868eb681",
+            "log": "cpu-compat-upstream_device_exception-fallback1-analysis.log",
+            "negative_log": "cpu-compat-upstream_device_exception-fallback1-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --output $OUTPUT --python $CPU_PYTHON",
         "exit_code": 0,
@@ -750,6 +1419,41 @@
       "physical_preparation": {
         "receipt": "physical-upstream_device_exception-receipt.json",
         "sha256": "7622a3e334507ec44aca9e3cd9a627324e904c385c03951dfaa298f78d4994f4"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/execution-manifest.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-upstream_device_exception.log",
+        "test_log_sha256": "a5b7ba48ff35a1cff9896146f02f40c1838ac98049ba45e58ff592ff13fa3e4a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original adjacent path site, physical usability and legal judgment pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_device_exception --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_device_exception-result.json --case testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c150098/missing-original-upstream_device_exception-audit.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "509b36c8caa984f792e8023fb02d09aa85cd3a0ef1b61a81c2665be71e17db3d",
+        "test_exit_code": 0,
+        "test_log": "cpu-tests.log",
+        "test_log_sha256": "2328be8f726c5b62fb3042fb9bdba13d6296c34f0a1755663fae0d62a9a0a73b",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-original-negative-upstream_device_exception.log",
+        "negative_log_sha256": "d63448a459cd9de1e063128b687bade1776c2687f4f5e972e78cbf29a4cbbe11",
+        "scope": "CPU audit implementation and missing-original rejection; original pixels and legal judgment pending"
       }
     }
   ],

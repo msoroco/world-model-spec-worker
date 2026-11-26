@@ -77,7 +77,8 @@ def capture(adapter, site, case, destination):
                    "transport_source": site["trip"]["source"],
                    "pupil_count": site["trip"]["pupil_count"],
                    "pupil_presence_source": site["trip"]["pupil_presence_source"],
-                   "sidewalk_source": site["sidewalk"]["source_id"], "samples": rows}
+                   "sidewalk_source": site["sidewalk"]["source_id"],
+                   "actor_ids": rows[0]["actor_ids"], "samples": rows}
         put(stage / "school-bus-history.json", history)
         active = [row["bus_speed_mps"] * 2.2369362920544 for row in rows if row["transporting_pupils_to_or_from_school"]]
         put(stage / "school-bus-measurement.json", {
