@@ -75,13 +75,16 @@ def footprint_to_mouth_distance(vertices, a, b):
                + [segment_distance(p, u, v) for p in (a, b) for u, v in edges])
 
 
-def measure(case_id, context_path, trace_path, receipt_path, map_path):
+def measure(case_id, context_path, trace_path, receipt_path, map_path, *, diagnostic=False):
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case ID required")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture") or receipt.get("source_kind") != "original_native_capture":
+    if diagnostic:
+        if receipt.get("diagnostic_fixture") is not True or receipt.get("source_kind") != "synthetic_fixture":
+            raise ValueError("explicit synthetic diagnostic receipt required")
+    elif receipt.get("diagnostic_fixture") or receipt.get("source_kind") != "original_native_capture":
         raise ValueError("original Native capture required")
     if receipt.get("context_sha256") != sha(context_path) or receipt.get("trace_sha256") != sha(trace_path):
         raise ValueError("original source bytes changed")
@@ -130,19 +133,22 @@ def measure(case_id, context_path, trace_path, receipt_path, map_path):
     # position. Use only a continuous, settled window for spatial evidence.
     settled = []
     windows = []
+    minimum_window = 3 if diagnostic else 20
     for row in observations:
         if row["control_state"] == activity and row["speed_mps"] <= 0.1:
             settled.append(row)
         else:
-            if len(settled) >= 20:
+            if len(settled) >= minimum_window:
                 windows.append(settled)
             settled = []
-    if len(settled) >= 20:
+    if len(settled) >= minimum_window:
         windows.append(settled)
     if not windows:
-        raise ValueError("no sustained stationary exact-activity window (20 frames)")
+        raise ValueError("no sustained stationary exact-activity window (20 frames)" if not diagnostic
+                         else "no synthetic diagnostic activity window")
     witness = max(windows, key=lambda rows: (len(rows), -rows[0]["frame"]))
     return {"assignment_id": ASSIGNMENT_ID, "case_id": case_id,
+            "diagnostic_fixture": diagnostic,
             "source_bindings": {"context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
                                 "receipt_sha256": sha(receipt_path), "native_map_sha256": sha(map_path)},
             "driveway_kind": context["driveway_kind"], "observations": observations,

@@ -38,7 +38,9 @@ def load_reviewed_site(manifest_path, site_path, case_id):
         if relative.is_absolute() or '..' in relative.parts or not str(relative) or str(relative) == '.':
             raise ValueError('unsafe reviewed original source path: ' + name)
         path = manifest_path.parent / relative
-        if (not path.is_file() or path.is_symlink() or path.stat().st_size == 0 or
+        if (not path.is_file() or path.is_symlink() or
+                not path.resolve().is_relative_to(manifest_path.parent.resolve()) or
+                path.stat().st_size == 0 or
                 sha(path) != item.get('sha256')):
             raise ValueError('reviewed original source seal changed: ' + name)
     if site.get('map_sha256') != sources['road.xodr']['sha256']:

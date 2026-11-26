@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 
 from finalize_saved import finalize
+from original_runner import REQUIRED
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -109,7 +110,11 @@ def audit_attempt(attempt, processed, case_id):
                 and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == digest,
                 'original sealed source changed: ' + relative)
     reviewed_manifest = json.loads((attempt / 'reviewed-site/source-manifest.json').read_text())
-    fixed_sources = {name: record['sha256'] for name, record in reviewed_manifest['sources'].items()}
+    require(reviewed_manifest.get('native_adapter_sha256') == hashlib.sha256(
+        (attempt / 'reviewed-site/native-adapter.py').read_bytes()).hexdigest(),
+        'original Native adapter source changed')
+    fixed_sources = {name: reviewed_manifest['sources'][name]['sha256'] for name in REQUIRED}
+    fixed_sources['native_adapter.py'] = reviewed_manifest['native_adapter_sha256']
     config = json.loads((attempt / 'config.json').read_text())
     with tempfile.TemporaryDirectory() as temporary:
         measured = finalize(attempt, case_id, Path(temporary) / 'measurement.json')['measurement']

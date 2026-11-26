@@ -40,10 +40,17 @@ def check(root=None):
     return case_id, name
 
 
-def capture_original(adapter, manifest_path, site_path, output_dir, root=None, pipeline_factory=None):
+def capture_original(adapter, manifest_path, site_path, output_dir, root=None,
+                     pipeline_factory=None, adapter_module_path=None):
     root = Path(root or Path(__file__).resolve().parent)
     case_id, name = check(root)
     site = load_reviewed_site(manifest_path, site_path, case_id)
+    adapter_module_path = Path(adapter_module_path) if adapter_module_path is not None else None
+    source_manifest = json.loads(Path(manifest_path).read_text())
+    if (adapter_module_path is None or not adapter_module_path.is_file() or
+            adapter_module_path.is_symlink() or
+            sha(adapter_module_path) != source_manifest.get('native_adapter_sha256')):
+        raise ValueError('reviewed original Native adapter source hash missing or changed')
     if not callable(getattr(adapter, 'provenance', None)) or adapter.provenance() != 'original_native':
         raise ValueError('original Native adapter provenance required')
     output = Path(output_dir)
@@ -57,7 +64,6 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
     reviewed.mkdir()
     shutil.copy2(manifest_path, reviewed / 'source-manifest.json')
     shutil.copy2(site_path, reviewed / 'site-context.json')
-    source_manifest = json.loads(Path(manifest_path).read_text())
     for source_name in REQUIRED:
         item = source_manifest['sources'][source_name]
         relative = Path(item['path'])
@@ -65,6 +71,7 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
         target = reviewed / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    shutil.copy2(adapter_module_path, reviewed / 'native-adapter.py')
     world = adapter.world()
     built = pipeline = None
     started = finished = False
@@ -159,6 +166,7 @@ def capture_original(adapter, manifest_path, site_path, output_dir, root=None, p
     names = ['history.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
              'two-actor-measurement.json', 'acquisition-provenance.json',
              'reviewed-site/source-manifest.json', 'reviewed-site/site-context.json',
+             'reviewed-site/native-adapter.py',
              *['reviewed-site/' + source_manifest['sources'][source_name]['path'] for source_name in REQUIRED],
              *[camera + '.mkv' for camera in CAMERAS], *native_sources]
     seal = {'format': 'through-highway-original-native-capture-seal', 'case_id': case_id,
@@ -205,7 +213,8 @@ def main():
     spec.loader.exec_module(module)
     adapter = module.open_native_adapter(args.host, args.port)
     try:
-        print(capture_original(adapter, args.reviewed_manifest, args.reviewed_site, args.output_dir))
+        print(capture_original(adapter, args.reviewed_manifest, args.reviewed_site,
+                               args.output_dir, adapter_module_path=module_path))
     finally:
         adapter.close()
 

@@ -1,0 +1,87 @@
+{
+  "template_id": "LVMC-11-52-130-A7@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A7",
+  "actor": "motor_vehicle_driver",
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of or within five feet of a public or private driveway; provided, however, that this provision does not apply to the parking of a vehicle in or near a private driveway by a person who owns or is in control of that driveway, or who is a family member or invitee of the person so owning or controlling the driveway. The provisions of Paragraphs (1) and (7) of Subsection (A) of this Section do not apply to a United States Postal Service vehicle while it is being operated on official business.",
+  "structure": {
+    "law_id": "LVMC-11-52-130-A7",
+    "activation": {
+      "condition": "Vehicle stops, stands or parks at a source-reviewed public or private driveway mouth.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park in front of or within five feet of the driveway, subject to the exact source exceptions.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Necessary to avoid traffic conflict in compliance with law or police/device direction",
+        "effect": "The stop, stand or park prohibition does not apply in the supported necessity context",
+        "replacement_obligation": "No blanket parking permission inferred",
+        "source_clause": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device"
+      },
+      {
+        "trigger": "Parking in or near a private driveway by its owner/controller, family member or invitee",
+        "effect": "The driveway provision does not apply to that parking",
+        "replacement_obligation": "The exception does not extend to stopping or standing",
+        "source_clause": "this provision does not apply to the parking of a vehicle in or near a private driveway by a person who owns or is in control of that driveway, or who is a family member or invitee"
+      },
+      {
+        "trigger": "USPS vehicle operated on official business",
+        "effect": "Paragraph (7) does not apply",
+        "replacement_obligation": "No personal postal exception inferred",
+        "source_clause": "do not apply to a United States Postal Service vehicle while it is being operated on official business"
+      }
+    ],
+    "timing": {
+      "description": "Original 45-second stop, stand or park episode and settled activity window.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "in front of or within five feet of a public or private driveway",
+        "note": "The statute supplies five feet; frontage and measurement convention require source review."
+      },
+      {
+        "phrase": "necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
+        "note": "Necessity and governing direction require retained original event and authority sources."
+      },
+      {
+        "phrase": "owns or is in control of that driveway, or who is a family member or invitee",
+        "note": "Private driveway relationship is an exception for parking only."
+      },
+      {
+        "phrase": "United States Postal Service vehicle while it is being operated on official business",
+        "note": "Postal status and official business require independent original records."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "driveway_kind",
+      "kind": "world_setup",
+      "range_or_domain": "private, public"
+    },
+    {
+      "name": "activity",
+      "kind": "controller",
+      "range_or_domain": "park, stand, stop"
+    },
+    {
+      "name": "position_target",
+      "kind": "controller",
+      "range_or_domain": "front, outside_5ft, within_5ft"
+    },
+    {
+      "name": "driver_relationship",
+      "kind": "world_setup",
+      "range_or_domain": "family, invitee, ordinary, owner, postal"
+    },
+    {
+      "name": "necessity_or_postal_context",
+      "kind": "world_setup",
+      "range_or_domain": "law_compliance, none, official_business, police_direction, traffic_conflict, traffic_device"
+    }
+  ]
+}

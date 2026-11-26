@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from through_highway import measure
+from original_runner import load_reviewed_site
 
 
 def required(root, name):
@@ -25,19 +26,60 @@ def measure_through_highway(site, case_key, rows):
 def analyze(root):
     root = Path(root)
     config = json.loads(required(root, 'config.json').read_text())
-    site = json.loads(required(root, 'scene.json').read_text())
-    note_path = required(root, 'diagnostic-source-note.json')
-    note = json.loads(note_path.read_text())
-    if note.get('source_kind') != 'synthetic_diagnostic_fixture' or note.get('accepted_original_source') is not False:
-        raise ValueError('synthetic diagnostic provenance required')
-    rows_path = required(root, 'two-actor-rows.json')
-    rows = json.loads(rows_path.read_text())
     case_id = config['selected_case_id']
     case_key = case_id.removeprefix(config['assignment_id'] + '__')
+    provenance = json.loads(required(root, 'acquisition-provenance.json').read_text())
+    native = provenance.get('provenance_kind') == 'native' and provenance.get('diagnostic_fixture') is False
+    if native:
+        seal_path = required(root, 'capture-seal.json')
+        seal = json.loads(seal_path.read_text())
+        if (seal.get('case_id') != case_id or seal.get('provenance_kind') != 'native' or
+                seal.get('diagnostic_fixture') is not False or seal.get('frames') != 900 or
+                seal.get('events') != ['capture_finished', 'encoders_closed', 'restoration_verified'] or
+                seal.get('restoration', {}).get('restored') is not True or
+                not seal.get('native_revision')):
+            raise ValueError('sealed original Native case or frame count changed')
+        sealed_sources = seal.get('sources', {})
+        required_seals = {'history.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
+                          'reviewed-site/source-manifest.json', 'reviewed-site/site-context.json',
+                          'reviewed-site/native-adapter.py',
+                          *[name + '.mkv' for name in
+                            ('overview', 'approach', 'reference_corner', 'driver_reference')]}
+        if not isinstance(sealed_sources, dict) or not required_seals <= set(sealed_sources):
+            raise ValueError('sealed original Native source inventory incomplete')
+        for relative, digest in sealed_sources.items():
+            path = Path(relative)
+            if path.is_absolute() or '..' in path.parts or sha(required(root, relative)) != digest:
+                raise ValueError('sealed original Native source changed: ' + relative)
+        revision = seal['native_revision']
+        if (revision.get('construction_sha256') != sha(required(root, 'construction.json')) or
+                revision.get('runner_sha256') != sha(required(root, 'runner.py'))):
+            raise ValueError('sealed original Native implementation changed')
+        manifest_path = required(root, 'reviewed-site/source-manifest.json')
+        site_path = required(root, 'reviewed-site/site-context.json')
+        if sha(manifest_path) != seal.get('reviewed_manifest_sha256') or sha(site_path) != seal.get('reviewed_site_sha256'):
+            raise ValueError('reviewed original site source changed')
+        site = load_reviewed_site(manifest_path, site_path, case_id)
+        rows_path = required(root, 'history.jsonl')
+        rows = [json.loads(line) for line in rows_path.read_text().splitlines()]
+        sources = {'history.jsonl': sha(rows_path), 'capture-seal.json': sha(seal_path),
+                   'reviewed-site/source-manifest.json': sha(manifest_path),
+                   'reviewed-site/site-context.json': sha(site_path)}
+    else:
+        site = json.loads(required(root, 'scene.json').read_text())
+        note_path = required(root, 'diagnostic-source-note.json')
+        note = json.loads(note_path.read_text())
+        if (provenance.get('provenance_kind') != 'synthetic_fixture' or
+                provenance.get('diagnostic_fixture') is not True or
+                note.get('source_kind') != 'synthetic_diagnostic_fixture' or
+                note.get('accepted_original_source') is not False):
+            raise ValueError('synthetic diagnostic provenance required')
+        rows_path = required(root, 'two-actor-rows.json')
+        rows = json.loads(rows_path.read_text())
+        sources = {'two-actor-rows.json': sha(rows_path), 'diagnostic-source-note.json': sha(note_path)}
     if case_id != site['case_id'] or len(rows) != 900:
         raise ValueError('exact two-actor case or frame count changed')
     measured = measure_through_highway(site, case_key, rows)
-    sources = {'two-actor-rows.json': sha(rows_path), 'diagnostic-source-note.json': sha(note_path)}
     description = config['case']['recording_description']
     extract = {
         'through_highway_designation': lambda row: {'map_sha256': row['map_sha256'], 'intersection_id': row['intersection_id']},
@@ -59,20 +101,22 @@ def analyze(root):
     from worker_exchange.native_output import physical_result, write_result
     result = {'case_id': case_id, 'measured_values': {'first_conflict_frame': measured['first_conflict_frame'],
               'through_preentry_min_speed_mps': measured['through_preentry_min_speed_mps']},
-              'target_checks': [{'target': 'synthetic two-actor protocol', 'requested': config['case']['response'],
+              'target_checks': [{'target': 'original two-actor response review' if native else 'synthetic two-actor protocol',
+                                 'requested': config['case']['response'],
                                  'measured': measured['through_preentry_min_speed_mps'],
-                                 'method': '900 source-specific synthetic joined rows', 'tolerance': 0,
-                                 'matched': True, 'physical_cause_confirmed': False,
+                                 'method': '900 sealed original joined rows' if native else '900 source-specific synthetic joined rows',
+                                 'tolerance': 0, 'matched': False if native else True,
+                                 'physical_cause_confirmed': False,
                                  'cause_evidence': sources}],
               'setup_confirmed': False, 'behavior_attempted': False,
-              'maneuver_completed': False, 'termination_reason': 'synthetic compatibility only',
-              'physical_failure_flags': ['original_antecedent_and_native_motion_absent'],
+              'maneuver_completed': False, 'termination_reason': 'closed original source analysis' if native else 'synthetic compatibility only',
+              'physical_failure_flags': [] if native else ['original_antecedent_and_native_motion_absent'],
               'trace_reference': 'trace.jsonl',
               'video_references': [name + '.mkv' for name in
                                    ('overview', 'approach', 'reference_corner', 'driver_reference')],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': description, 'recording_evidence': evidence,
-              'realized_observables': {}, 'diagnostic_fixture': True,
+              'realized_observables': {}, 'diagnostic_fixture': not native,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     result = physical_result(root, result)
     if case_key.startswith('antecedent_pause-'):
@@ -89,7 +133,7 @@ def analyze(root):
             'reference': 'channel-through_preentry_min_speed_mps.jsonl', 'sample_window_s': [0.0, 0.0]}
     write_result(root, result)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
-            'analysis_complete': True, 'diagnostic_fixture': True,
+            'analysis_complete': True, 'diagnostic_fixture': not native,
             'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
             'measurements': {'through_highway_interaction': {'method': 'measure_through_highway',
                 'value': {'first_conflict_frame': measured['first_conflict_frame'],
@@ -100,7 +144,8 @@ def analyze(root):
                 'sources': sources}},
             'physical_checks': result['physical_checks'],
             'realized_observables': result['realized_observables'],
-            'limitations': ['Synthetic fixture tests software only; original through-highway designation, antecedent and physical yielding remain unverified.']}
+            'limitations': ['Original source requires independent antecedent, right-of-way and pixel review.' if native else
+                            'Synthetic fixture tests software only; original through-highway designation, antecedent and physical yielding remain unverified.']}
 
 
 if __name__ == '__main__':

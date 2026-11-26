@@ -24,8 +24,8 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        offline = SCRATCH / ('offline-' + name + '-current') / 'offline.log'
-        compatible = SCRATCH / ('compat-' + name + '-current')
+        offline = SCRATCH / ('offline-' + name + '-final') / 'offline.log'
+        compatible = SCRATCH / ('compat-' + name + '-final')
         proof = json.loads((compatible / 'compatibility.json').read_text())
         if proof.get('passed') is not True or proof.get('case_id') != case or proof.get('construction_sha256') != entry['construction_sha256']:
             raise ValueError('current compatibility proof missing: ' + name)

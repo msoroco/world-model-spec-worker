@@ -79,14 +79,17 @@ def validate_context(context, case_id):
     return origin, axis, len(same_direction), immediate_left, {lane["lane_id"] for lane in same_direction}
 
 
-def measure(*, case_id, context_path, trace_path, receipt_path):
+def measure(*, case_id, context_path, trace_path, receipt_path,
+            allow_diagnostic=False):
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case ID required")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("original source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture"):
+    if receipt.get("diagnostic_fixture") and not allow_diagnostic:
         raise ValueError("diagnostic fixture is not delivery evidence")
+    if allow_diagnostic and receipt.get("diagnostic_fixture") is not True:
+        raise ValueError("diagnostic processing requires marked synthetic fixture")
     if _sha(context_path) != receipt.get("context_sha256") or _sha(trace_path) != receipt.get("trace_sha256"):
         raise ValueError("original source bytes changed")
     context = json.loads(Path(context_path).read_text(encoding="utf-8"))

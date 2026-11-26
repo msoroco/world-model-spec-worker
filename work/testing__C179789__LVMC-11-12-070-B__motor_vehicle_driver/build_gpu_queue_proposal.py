@@ -38,7 +38,7 @@ def build():
                  ' --library runtime/library --validator "$LEAN_VALIDATOR"'
                  ' --owner-release-receipt "$OWNER_RELEASE_RECEIPT"')
         source_audit = (f'PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/{AID}/delivery_audit.py'
-                        f' --attempt "$ATTEMPT" --processed "$PROCESSED/v0001/analysis/result.json"'
+                        f' --attempt "$ATTEMPT" --processed "$PROCESSED_RESULT"'
                         f' --case {case} --output "$SOURCE_AUDIT"')
         cases.append({'order': order, 'assignment_id': AID, 'case_id': case,
                       'prepare_command': prepare, 'execute_command': execute,

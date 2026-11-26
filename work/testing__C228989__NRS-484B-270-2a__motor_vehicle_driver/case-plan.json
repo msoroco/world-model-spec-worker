@@ -279,24 +279,28 @@
   ],
   "observations": [
     {
-      "name": "qualifying same-direction pass",
+      "name": "ego_control_body",
       "source": "original actor identity, heading/lane source, eight-vertex bodies and 20 Hz trajectories",
-      "measurement": "initial cyclist/scooter full body ahead of motor vehicle; first sampled full pass when ego rear is beyond control front"
+      "measurement": "initial cyclist/scooter full body ahead of motor vehicle; first sampled full pass when ego rear is beyond control front",
+      "law_observation": "qualifying same-direction pass"
     },
     {
-      "name": "multiple same-direction lanes and immediate-left lane",
+      "name": "lane_topology",
       "source": "original lane inventory, headings, adjacency and restriction source",
-      "measurement": "count same-direction lanes, verify exact immediately adjacent left lane, retain lane IDs through pass"
+      "measurement": "count same-direction lanes, verify exact immediately adjacent left lane, retain lane IDs through pass",
+      "law_observation": "multiple same-direction lanes and immediate-left lane"
     },
     {
-      "name": "left-lane availability and reasonable safety",
+      "name": "left_lane_traffic",
       "source": "original 20 Hz actor occupancy, obstructions, restriction and surrounding trajectory sources",
-      "measurement": "inventory left-lane occupants at pass and retain full trajectories; legal availability/safety remains unresolved"
+      "measurement": "inventory left-lane occupants at pass and retain full trajectories; legal availability/safety remains unresolved",
+      "law_observation": "left-lane availability and reasonable safety"
     },
     {
-      "name": "due care",
+      "name": "relative_motion",
       "source": "original relative motion, actor bodies, applied controls, four cameras",
-      "measurement": "retain physical motion and clearance histories; due-care judgment unresolved"
+      "measurement": "retain physical motion and clearance histories; due-care judgment unresolved",
+      "law_observation": "due care"
     }
   ],
   "sources": [
@@ -357,5 +361,98 @@
       ],
       "reason": "The broad road layout permits an active same-direction bicycle pass; lane count determines whether the additional lane-movement branch is implicated."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "qualifying same-direction cycle or scooter being overtaken or passed",
+      "source": "NRS 484B.270(2)(a) activation",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_pass",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_follow"
+      ],
+      "observation": "original actor/rider identities, headings, lanes and eight-vertex relative pass",
+      "evidence_or_gap": "Original Native map, 20 Hz actor/body trace and four cameras are required at local capture; synthetic CPU fixture establishes only software behavior."
+    },
+    {
+      "requirement": "driver of motor vehicle exercises due care",
+      "source": "NRS 484B.270(2)(a) due-care clause",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_pass",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_follow"
+      ],
+      "observation": "original relative motion, actor bodies, controls and camera visibility; judgment unresolved",
+      "evidence_or_gap": "Original Native map, 20 Hz actor/body trace and four cameras are required at local capture; synthetic CPU fixture establishes only software behavior."
+    },
+    {
+      "requirement": "more than one same-direction lane and immediate-left lane",
+      "source": "NRS 484B.270(2)(a) lane condition",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_pass",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_one_lane_follow"
+      ],
+      "observation": "source-hashed lane direction, count and adjacency, including one-lane contrast",
+      "evidence_or_gap": "Original Native map, 20 Hz actor/body trace and four cameras are required at local capture; synthetic CPU fixture establishes only software behavior."
+    },
+    {
+      "requirement": "move to immediate-left lane if available and reasonably safe",
+      "source": "NRS 484B.270(2)(a) conditional lane-movement clause",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_bicycle_occupied_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_move_left",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_open_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_stay",
+        "testing__C228989__NRS-484B-270-2a__motor_vehicle_driver__electric_scooter_occupied_move_left"
+      ],
+      "observation": "original ego lane, left-lane traffic/restrictions/obstructions and trajectories; legal availability and safety unresolved",
+      "evidence_or_gap": "Original Native map, 20 Hz actor/body trace and four cameras are required at local capture; synthetic CPU fixture establishes only software behavior."
+    }
+  ],
+  "source_observation_mapping": {}
 }
