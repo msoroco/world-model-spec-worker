@@ -40,6 +40,8 @@ def main():
                           'branch': 'far-no-exception' if probe == '01' else 'near-private-authority'}
         write(bundle / 'config.json', config)
         tests = (original / 'tests/test_bundle.py').read_text()
+        if probe == '01':
+            tests = tests.replace('[14.2, 0, 0]', '[15.0, 0, 0]')
         (bundle / 'tests').mkdir(exist_ok=True)
         (bundle / 'tests/test_bundle.py').write_text(tests)
         names = ('runner.py', 'config.json', 'finalize.py', 'measure_driveway.py', 'tests/test_bundle.py')

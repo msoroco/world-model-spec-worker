@@ -4,6 +4,7 @@
 surveyed, source-reviewed straight one-way road with a real driveway opening.
 """
 import argparse
+import hashlib
 import json
 import math
 import queue
@@ -55,6 +56,14 @@ def survey_check(survey):
         raise ValueError('Invalid surveyed driveway opening')
     if survey['ego_half_length_m'] <= 0:
         raise ValueError('Invalid surveyed ego extent')
+    config = json.loads((HERE / 'config.json').read_text())
+    station = (survey['stop_centre_xyz_m'][0] * axis[0] +
+               survey['stop_centre_xyz_m'][1] * axis[1])
+    low, high = station - survey['ego_half_length_m'], station + survey['ego_half_length_m']
+    opening = survey['driveway_curb_interval_m']
+    planned_gap = max(opening[0] - high, low - opening[1], 0.0)
+    if abs(planned_gap - config['target_gap_m']) > .25:
+        raise ValueError('Surveyed stop point does not target this exact driveway gap')
     return survey
 
 
@@ -65,6 +74,7 @@ def transform(carla, xyz, rotation):
 
 def capture(survey, output, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     survey_check(survey)
     output.mkdir(parents=True, exist_ok=True)
     if (output/'video_frames.jsonl').exists() or (output/'native_parking_trace.jsonl').exists():
@@ -77,6 +87,7 @@ def capture(survey, output, host, port):
     settings = world.get_settings()
     old_sync, old_step = settings.synchronous_mode, settings.fixed_delta_seconds
     actors, encoders = [], {}
+    core_capture = None
     try:
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
@@ -107,6 +118,7 @@ def capture(survey, output, host, port):
                                      '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
                                      str(output / (spec['name']+'.mkv'))], stdin=subprocess.PIPE)
             encoders[spec['name']] = proc
+        core_capture = PipelineCapture(client, ego, output, CASE, required_observations=[])
         axis = survey['road_axis_xy']
         target = survey['stop_centre_xyz_m']
         first_elapsed = None
@@ -136,7 +148,13 @@ def capture(survey, output, host, port):
                 half_extent = (max(stations)-min(stations))/2
                 if half_extent <= 0:
                     raise RuntimeError('Native body footprint has zero road extent')
+                core_capture.capture(native_frame, i/20,
+                                     extra={'driveway_source': {
+                                         'road_id': waypoint.road_id,
+                                         'driveway_boundary_source': survey['driveway_boundary_source'],
+                                         'curb_station_interval_m': survey['driveway_curb_interval_m']}})
                 frame_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
+                                             'carla_frame': native_frame,
                                              'time_s': snapshot.timestamp.elapsed_seconds-first_elapsed})+'\n')
                 trace_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
                                              'source_kind': 'original_native_pose',
@@ -153,15 +171,31 @@ def capture(survey, output, host, port):
             proc.stdin.close()
             if proc.wait(timeout=120) != 0:
                 raise RuntimeError('Source camera encoding failed')
+        core_capture.close(confirmed=True)
+        core_capture = None
+        camera_hashes = {name + '.mkv': hashlib.sha256((output/(name+'.mkv')).read_bytes()).hexdigest()
+                         for name in CAMERAS}
         (output/'driveway_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
+            'assignment_id': AID, 'case_id': CASE,
+            'review_kind': 'original_source_review', 'reviewer': None,
             'driveway_curb_interval_m': survey['driveway_curb_interval_m'],
             'driveway_boundary_source': survey['driveway_boundary_source'],
             'vehicle_extent_source': 'native_parking_trace.jsonl',
             'parking_state_source': 'native_parking_trace.jsonl',
-            'camera_sha256': {}, 'review_required': True}, indent=2)+'\n')
+            'camera_sha256': camera_hashes, 'review_required': True,
+            'driveway_kind': None, 'owner_controller_family_invitee': None,
+            'usps_vehicle': None, 'usps_official_business': None,
+            'necessary_to_avoid_traffic_conflict': None,
+            'complying_with_law': None, 'officer_direction': None,
+            'traffic_device_direction': None,
+            'private_driveway_authority_source': None,
+            'usps_official_business_source': None,
+            'traffic_conflict_source': None,
+            'lawful_direction_source': None}, indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT, 'physical_acceptance_claimed': False}
     finally:
+        if core_capture is not None:
+            core_capture.close(confirmed=False)
         for actor in reversed(actors):
             try:
                 actor.destroy()

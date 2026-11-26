@@ -1,5 +1,12 @@
 # NRS-484B-270-2a at C247014
 
+## Current delivery preparation (2026-11-26)
+
+The exact scoped strict CPU gate passed: `.venv-cpu/bin/python worker_check.py --assignment training__C247014__NRS-484B-270-2a__motor_vehicle_driver --complete --require-delivery-ready`. It returned `static_checks_passed: true` for this assignment. Five selected cases are `witness_1`, `witness_2`, `exception_1_1`, `exception_1_2`, and `exception_unsafe_available`; all are source-bound in `execution-manifest.json` (SHA-256 `5ed5fdc4f38141ed6c49707c9f306de36952e858e2377a04e728b3a4ead64c18`). Three paired comparison receipts passed. The fifth case isolates an available immediate-left lane with an approaching left-lane vehicle; its 8 m rear gap at frame 180 and 35 m initial rear gap were checked from the authored motion trace. Its current-runtime offline, primary/fallback compatibility, recorded-only saved processing, physical fixture and independent delivery proofs passed.
+
+The canonical judgment sweep remains explicitly `incomplete`: original Native lane-change feasibility and source-grounded physical ranges for due care and reasonable safety are absent. The validator accepts this disclosed gap for delivery preparation; it is not a legal or physical outcome claim. Original Native capture, actual traffic context review and legal judgment remain for downstream delivery.
+
+
 Actor: `motor_vehicle_driver`. Frozen cell: `same_direction_multilane` / `overtake` / `cyclist`.
 
 Exact statutory source: NRS 484B.270(2)(a). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.

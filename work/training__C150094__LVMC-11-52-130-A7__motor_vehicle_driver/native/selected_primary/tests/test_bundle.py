@@ -24,10 +24,14 @@ class BundleTest(unittest.TestCase):
                   'driveway_boundary_source': 'test', 'ego_blueprint': 'vehicle.test',
                   'spawn_xyz_m': [0, 0, 0], 'spawn_yaw_deg': 0,
                   'camera_world_transforms': {k: {'xyz_m': [0, 0, 0], 'rotation_deg': [0, 0, 0]} for k in CAMERAS},
-                  'road_axis_xy': [1, 0], 'stop_centre_xyz_m': [10, 0, 0],
+                  'road_axis_xy': [1, 0], 'stop_centre_xyz_m': [14.2, 0, 0],
                   'driveway_curb_interval_m': [8, 11], 'ego_half_length_m': 2.0,
                   'road_id': 7}
         self.assertEqual(survey_check(survey), survey)
+        survey['stop_centre_xyz_m'] = [10, 0, 0]
+        with self.assertRaisesRegex(ValueError, 'exact driveway gap'):
+            survey_check(survey)
+        survey['stop_centre_xyz_m'] = [14.2, 0, 0]
         survey['road_axis_xy'] = [2, 0]
         with self.assertRaisesRegex(ValueError, 'unit length'):
             survey_check(survey)

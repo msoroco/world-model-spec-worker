@@ -4,7 +4,10 @@ These are planning artifacts. They intentionally assert no legal cutoff,
 physical realization, or accepted recording equivalence.
 """
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = Path(__file__).resolve().parent
@@ -127,3 +130,18 @@ case_stage = {"cell_id": cell_id, "actor": actor, "status": "draft", "cases": ca
                                "judgment_refs": [judgment], "rationale": "Actual speed versus contemporaneous conditions, source-bound and without legal cutoff.",
                                "status": "incomplete", "missing_inputs": ["Original Native feasibility and controller-to-measured-speed mapping for the full proposed range", "Source review of accepted recording equivalence and unmet full traffic/weather branches", "Four-camera original capture and independent legal judgment protocol"]}]}
 write("cases.json", case_stage)
+
+# Use the pinned main implementation to normalize the incomplete sweep. Its
+# status remains incomplete; this step creates no claimed extra sweep points.
+scratch = ROOT / ".runtime-work" / "c230259-semantic-expand"
+scratch.mkdir(parents=True, exist_ok=True)
+(scratch / "templates.json").write_text(json.dumps([template]) + "\n")
+env = dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(scratch / "pipeline"),
+           TMPDIR=str(ROOT / ".runtime-work"), PYTHONDONTWRITEBYTECODE="1")
+subprocess.run([sys.executable, "-B", str(ROOT / "runtime.py"), "expand",
+                "--proposal", str(OUT / "cases.json"),
+                "--templates", str(scratch / "templates.json"),
+                "--bindings", str(OUT / "bindings.json"),
+                "--output", str(scratch / "cases-expanded.json")],
+               check=True, cwd=ROOT, env=env, capture_output=True, text=True)
+(OUT / "cases.json").write_bytes((scratch / "cases-expanded.json").read_bytes())
