@@ -58,10 +58,34 @@
       "exit_code": 1,
       "log": "cpu-nov25-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov26-tests.log",
+      "sha256": "00d99e295511eed97cadb74e5818b7dbfb3e1cd2245f05dd5af8c826adb171bc"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-nov26-preflight.log",
+      "sha256": "1ebfc710eb3e4696bc72381d6716109c9d67c5462c03c0f6327a6a9a4ece41ed"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov26-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov26-static.log",
+      "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
     }
   ],
   "remaining_gpu_checks": [
     "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
   ],
-  "reason": "Original-source signal-distance auditor now rejects resealed left-to-right turn relabeling by binding turn direction to sealed result and independent onset source; 18 focused tests pass. Selected business right-turn branch cannot be constructed under frozen C178244 left_turn cell. Compatible C378304 business_district/right_turn assignment already has a ready CPU package; lead/shared branch-binding reconciliation is required before this assignment could claim selected-branch readiness. Six historical C178244 accepted memberships provide metadata only, with original traces/videos absent. No legal or physical acceptance is claimed."
+  "reason": "Immutable selected-branch mismatch remains: frozen C178244 catalog maneuver is left_turn, while its only selected branch is business-district right_turn. Six historical accepted memberships are left-turn metadata only and original traces/videos are absent. The compatible C378304 business_district/right_turn assignment has a ready CPU package; resolving the shared additional binding is lead-owned. Fresh pinned preflight and 18 source-bound measurement tests pass, but exact strict must remain partial."
 }

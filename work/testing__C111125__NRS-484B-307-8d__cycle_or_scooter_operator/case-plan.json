@@ -1,223 +1,375 @@
 {
-  "assignment_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator",
   "actor": "cycle_or_scooter_operator",
-  "cell_id": "C111125",
-  "law_id": "NRS-484B-307-8d",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-307-8d",
-      "cell_id": "C111125",
-      "actor": "cycle_or_scooter_operator",
-      "requirement": "NRS-484B-307-8d",
-      "branch": "bicycle_straight_failed_detection",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 410,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
-  "law_source": "NRS 484B.307(8)(d)",
-  "topic_inventory": {
-    "exact-text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection."
+  "assignment_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s original capture",
+        "subject": "bicycle with rider, official subject signal, stop boundary and directed crossing participants",
+        "view": "overview"
+      },
+      {
+        "interval": "full 45 s original capture",
+        "subject": "bicycle and rider approach, detector zone and antecedent stop",
+        "view": "approach"
+      },
+      {
+        "interval": "full 45 s original capture",
+        "subject": "official device phases, stop boundary and intersection entry",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 45 s original capture",
+        "subject": "directed pedestrians and traffic at conflict zone during bicycle entry",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "A bicycle stops before the sourced stop boundary, occupies the source-bound detection zone without a detector output, observes two complete applicable-device cycles while facing steady red alone, yields to signal-directed traffic, then proceeds straight.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "A bicycle stops before the sourced stop boundary, occupies the source-bound detection zone without a detector output, observes two complete applicable-device cycles while facing steady red alone, yields to signal-directed traffic, then proceeds straight.",
+      "target_law_id": "NRS-484B-307-8d"
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "Same bicycle, device and detector failure, but proceeds after only one complete observed applicable-device cycle.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same bicycle, device and detector failure, but proceeds after only one complete observed applicable-device cycle.",
+      "target_law_id": "NRS-484B-307-8d"
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "Same sourced bicycle, stop, failed detection, official device and yield as the two-cycle case, but proceeds straight only after three complete observed applicable-device cycles; provides the above-threshold measurement.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same sourced bicycle, stop, failed detection, official device and yield as the two-cycle case, but proceeds straight only after three complete observed applicable-device cycles; provides the above-threshold measurement.",
+      "target_law_id": "NRS-484B-307-8d"
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "Same bicycle and intersection with working detection and a changed subject signal after two complete applicable-device cycles.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same bicycle and intersection with working detection and a changed subject signal after two complete applicable-device cycles.",
+      "target_law_id": "NRS-484B-307-8d"
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "Same failure and two complete observed cycles, but the bicycle creeps without a stationary sample before the sourced stop boundary.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same failure and two complete observed cycles, but the bicycle creeps without a stationary sample before the sourced stop boundary.",
+      "target_law_id": "NRS-484B-307-8d"
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield",
-      "target_law_id": "NRS-484B-307-8d",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "purpose": "Same stop, failed detection and two complete cycles, but enters while a signal-directed participant occupies the conflict area.",
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration.",
         "risk": "A CARLA bicycle blueprint may not provide a rider and sensor loop; map/device packet and readback must prove the cycle, detector link and camera visibility.",
-        "fallback_policy": "No source-bound alternate bicycle or detector installation is available yet; any fallback must preserve actor, signal, cycles, four cameras and duration."
-      }
+        "status": "physical"
+      },
+      "purpose": "Same stop, failed detection and two complete cycles, but enters while a signal-directed participant occupies the conflict area.",
+      "target_law_id": "NRS-484B-307-8d"
     }
   ],
+  "cell_id": "C111125",
   "comparisons": [
     {
-      "comparison_id": "two_vs_one_complete_cycles",
       "case_ids": [
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle"
       ],
+      "comparison_id": "two_vs_one_complete_cycles",
+      "deliberate_differences": [
+        "number of complete observed applicable-device cycles before straight entry"
+      ],
       "fixed_conditions": [
         "same C111125 intersection and sourced map/device/detector/blueprint identities",
         "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
         "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
-      ],
-      "deliberate_differences": [
-        "number of complete observed applicable-device cycles before straight entry"
       ]
     },
     {
-      "comparison_id": "failed_detection_vs_signal_change",
       "case_ids": [
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes"
       ],
+      "comparison_id": "failed_detection_vs_signal_change",
+      "deliberate_differences": [
+        "detector output and causally linked subject-signal change"
+      ],
       "fixed_conditions": [
         "same C111125 intersection and sourced map/device/detector/blueprint identities",
         "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
         "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
-      ],
-      "deliberate_differences": [
-        "detector output and causally linked subject-signal change"
       ]
     },
     {
-      "comparison_id": "stop_antecedent",
       "case_ids": [
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop"
       ],
+      "comparison_id": "stop_antecedent",
+      "deliberate_differences": [
+        "stationary behavior before applicable stop boundary"
+      ],
       "fixed_conditions": [
         "same C111125 intersection and sourced map/device/detector/blueprint identities",
         "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
         "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
-      ],
-      "deliberate_differences": [
-        "stationary behavior before applicable stop boundary"
       ]
     },
     {
-      "comparison_id": "yield_to_directed_participant",
       "case_ids": [
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
       ],
+      "comparison_id": "yield_to_directed_participant",
+      "deliberate_differences": [
+        "signal-directed participant conflict at straight entry"
+      ],
       "fixed_conditions": [
         "same C111125 intersection and sourced map/device/detector/blueprint identities",
         "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
         "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
-      ],
-      "deliberate_differences": [
-        "signal-directed participant conflict at straight entry"
       ]
     },
     {
-      "comparison_id": "two_vs_three_complete_cycles",
       "case_ids": [
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
         "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles"
       ],
+      "comparison_id": "two_vs_three_complete_cycles",
+      "deliberate_differences": [
+        "number of complete observed applicable-device cycles before straight entry"
+      ],
       "fixed_conditions": [
         "same C111125 intersection and sourced map/device/detector/blueprint identities",
         "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
         "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
-      ],
-      "deliberate_differences": [
-        "number of complete observed applicable-device cycles before straight entry"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Source-bound bicycle straight attempt with two complete device cycles, failed detection, antecedent stop and yielding",
+        "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory lists zero recordings."
+      }
+    ],
+    "method": "Reviewed frozen evidence inventory: zero accepted recordings. Assigned witness 410 is conditional and supplies requirements rather than observed Native proof. No source-backed reuse exists.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-307-8d",
+  "law_source": "NRS 484B.307(8)(d)",
+  "law_text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
   "observations": [
     {
-      "name": "bicycle_class",
-      "source": "original actor blueprint and rider packet",
-      "measurement": "readback blueprint/class with source hash"
+      "measurement": "readback blueprint/class with source hash",
+      "name": "bicycle and rider identity",
+      "source": "original actor blueprint and rider packet"
     },
     {
-      "name": "official_subject_signal",
-      "source": "original device and per-frame signal trace",
-      "measurement": "steady red alone before straight entry; retain raw states"
+      "measurement": "steady red alone before straight entry; retain raw states",
+      "name": "official facing red signal",
+      "source": "original device and per-frame signal trace"
     },
     {
-      "name": "antecedent_stop",
-      "source": "original actor body station and velocity plus stop-boundary map geometry",
-      "measurement": "stationary sample before applicable stop boundary"
+      "measurement": "stationary sample before applicable stop boundary",
+      "name": "stop boundary and bicycle motion",
+      "source": "original actor body station and velocity plus stop-boundary map geometry"
     },
     {
-      "name": "complete_device_cycles",
-      "source": "original applicable-device phase readbacks",
-      "measurement": "count complete green-yellow-red rotations before entry; retain every phase transition and unresolved device-cycle interpretation"
+      "measurement": "count complete green-yellow-red rotations before entry; retain every phase transition and unresolved device-cycle interpretation",
+      "name": "applicable device cycles",
+      "source": "original applicable-device phase readbacks"
     },
     {
-      "name": "failed_detection",
-      "source": "original sensor-zone occupancy and detector output plus source-bound signal link",
-      "measurement": "occupied zone with suppressed output and unchanged subject red"
+      "measurement": "occupied zone with suppressed output and unchanged subject red",
+      "name": "detector zone and output",
+      "source": "original sensor-zone occupancy and detector output plus source-bound signal link"
     },
     {
-      "name": "directed_participants",
-      "source": "original signal-directed pedestrian and traffic trajectories",
-      "measurement": "measured conflict occupancy at entry; preserve all participants and right-of-way uncertainty"
+      "measurement": "measured conflict occupancy at entry; preserve all participants and right-of-way uncertainty",
+      "name": "signal-directed pedestrians and traffic",
+      "source": "original signal-directed pedestrian and traffic trajectories"
     },
     {
+      "mandatory": false,
+      "measurement": "first frame crossing source-bound entry station",
       "name": "straight_entry",
-      "source": "original bicycle route and intersection boundary",
-      "measurement": "first frame crossing source-bound entry station"
+      "recording_channel": "stop boundary and bicycle motion",
+      "source": "original bicycle route and intersection boundary"
     }
   ],
+  "planning_status": "partial_constructed_cases_and_cpu_measurements",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Bicycle with a rider and original blueprint identity",
+      "requirement": "bicycle actor",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "riding a bicycle",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Official facing device and observed red through entry",
+      "requirement": "official steady red alone",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "Where the signal is a steady red signal alone",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Stationary event before source-bound stop boundary",
+      "requirement": "antecedent stop",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "After complying with the requirement to stop",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 3,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Observed complete applicable device cycles before entry",
+      "requirement": "two complete cycles",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 4,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Source-bound detector occupancy/output and unchanged subject signal; causal authority separately reviewed",
+      "requirement": "detector failure",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "disposition_index": 5,
+      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending.",
+      "measurement": "Original signal-directed participant conflict at straight entry",
+      "requirement": "yield and straight entry",
+      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
+      "source_quote": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Exact Native site/device/detector packet and rider-visible bicycle blueprint remain to be sourced; source-gated construction fails closed until supplied.",
+    "Physical motion, actual detector causation, camera visibility and directed-participant interaction require original recording review.",
+    "Six source-hashed diagnostic contracts, recipes and canonical semantic proposals are prepared; selected delivery manifest, pinned end-to-end compatibility, saved-only process and independent audit receipts remain CPU work."
+  ],
+  "selected_branches": [
+    {
+      "actor": "cycle_or_scooter_operator",
+      "branch": "bicycle_straight_failed_detection",
+      "cell_id": "C111125",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-307-8d",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-307-8d",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 410,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json",
@@ -240,35 +392,15 @@
       "sha256": "f4b52bb744e53559f22392dd0e16bde931711b6fe7c244440254b4b9daf81650"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Exact Native site/device/detector packet and rider-visible bicycle blueprint remain to be sourced; source-gated construction fails closed until supplied.",
-    "Physical motion, actual detector causation, camera visibility and directed-participant interaction require original recording review.",
-    "Six source-hashed diagnostic contracts, recipes and canonical semantic proposals are prepared; selected delivery manifest, pinned end-to-end compatibility, saved-only process and independent audit receipts remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed frozen evidence inventory: zero accepted recordings. Assigned witness 410 is conditional and supplies requirements rather than observed Native proof. No source-backed reuse exists.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_evidence",
-        "requirement": "Source-bound bicycle straight attempt with two complete device cycles, failed detection, antecedent stop and yielding",
-        "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/evidence.json",
-        "why_existing_insufficient": "Frozen evidence inventory lists zero recordings."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_cases_and_cpu_measurements",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 410,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "bicycle_straight_failed_detection",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "The fixed straight movement supports a bicycle proceeding after a documented detection failure and two cycles.",
       "required_context": [
         "Connect physical detection-zone occupancy and failed detection causally to the unchanged subject signal.",
         "Establish a physical detection zone and instrument a detection fault connected to the unchanged subject signal.",
@@ -279,139 +411,9 @@
         "Record signal-directed pedestrians and other traffic and subsequent straight movement.",
         "Substantiate bicycle classification; express bicycle coverage must not be removed using the general vehicle-definition exclusions."
       ],
-      "reason": "The fixed straight movement supports a bicycle proceeding after a documented detection failure and two cycles."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 410,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "requirement_dispositions": [
-    {
-      "disposition_index": 0,
-      "requirement": "bicycle actor",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "riding a bicycle",
-      "measurement": "Bicycle with a rider and original blueprint identity",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    },
-    {
-      "disposition_index": 1,
-      "requirement": "official steady red alone",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "Where the signal is a steady red signal alone",
-      "measurement": "Official facing device and observed red through entry",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    },
-    {
-      "disposition_index": 2,
-      "requirement": "antecedent stop",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "After complying with the requirement to stop",
-      "measurement": "Stationary event before source-bound stop boundary",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    },
-    {
-      "disposition_index": 3,
-      "requirement": "two complete cycles",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device",
-      "measurement": "Observed complete applicable device cycles before entry",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    },
-    {
-      "disposition_index": 4,
-      "requirement": "detector failure",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
-      "measurement": "Source-bound detector occupancy/output and unchanged subject signal; causal authority separately reviewed",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    },
-    {
-      "disposition_index": 5,
-      "requirement": "yield and straight entry",
-      "source": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json#law.text",
-      "source_quote": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
-      "measurement": "Original signal-directed participant conflict at straight entry",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
-        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
-      ],
-      "evidence_or_gap": "No accepted original recording; source-bound diagnostic packet and measurement contract prepared, original C111125 Native site/device/detector/rider and physical review pending."
-    }
-  ],
-  "source_observation_mapping": {},
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 45,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "bicycle with rider, official subject signal, stop boundary and directed crossing participants",
-        "interval": "full 45 s original capture"
-      },
-      {
-        "view": "approach",
-        "subject": "bicycle and rider approach, detector zone and antecedent stop",
-        "interval": "full 45 s original capture"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "official device phases, stop boundary and intersection entry",
-        "interval": "full 45 s original capture"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "directed pedestrians and traffic at conflict zone during bicycle entry",
-        "interval": "full 45 s original capture"
-      }
-    ]
-  }
+  ]
 }

@@ -155,7 +155,7 @@ class AuditTests(unittest.TestCase):
         config = {"law_id": "NRS-484B-307-9c", "cell_id": "C227824",
                   "actor": "pedestrian", "selected_case_id": case_id,
                   "diagnostic_only": True, "rate_hz": 20, "duration_s": 45,
-                  "cameras": list(CAMERAS)}
+                  "cameras": [{"name": name} for name in sorted(CAMERAS)]}
         self.assertTrue(check_config(config))
         self.site["native_signal_assets"]["green_arrow_actor_id"] = 10
         self.write_json("site.json", self.site)
