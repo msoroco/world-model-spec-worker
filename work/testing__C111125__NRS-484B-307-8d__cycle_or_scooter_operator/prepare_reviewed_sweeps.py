@@ -125,6 +125,9 @@ def prepare(proposal_path, authority_root, site_ref, ranges_ref):
                                              "control_sha256": digest(control_path)}
         expanded_specs.append(spec)
     proposal["sweep_specs"] = expanded_specs
+    # The canonical draft may already have normalized its incomplete placeholders.
+    # A reviewed source packet supplies new complete specs, so expand those anew.
+    proposal.pop("sweeps_expanded", None)
     repo = Path(__file__).resolve().parents[2]
     output_root = repo / ".runtime-work" / "c111125-reviewed-sweep-expansion"
     output_root.mkdir(parents=True, exist_ok=True)

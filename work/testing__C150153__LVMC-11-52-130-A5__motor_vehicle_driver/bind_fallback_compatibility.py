@@ -15,10 +15,13 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def bind() -> None:
-    manifest = json.loads(MANIFEST.read_text())
-    if manifest.get('status') != 'synthetic_fallback_diagnostic_only_unselected_original_capture_pending':
-        raise ValueError('fallback receipts require an unselected diagnostic manifest')
+def bind(manifest_path: Path = MANIFEST,
+         expected_status: str = 'synthetic_fallback_diagnostic_only_unselected_original_capture_pending',
+         output_prefix: str = 'fallback-compat-',
+         saved_prefix: str = 'cpu-fallback-') -> None:
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get('status') != expected_status:
+        raise ValueError('compatibility manifest status differs')
     for entry in manifest['cases']:
         case_id = entry['case_id']
         kind = case_id.removeprefix(HERE.name + '__')
@@ -27,7 +30,7 @@ def bind() -> None:
             if candidate_id != 'primary' and candidate['id'] != candidate_id:
                 raise ValueError('unexpected fallback candidate: ' + kind)
             output = ROOT / '.runtime-work/c150153-owner' / (
-                'fallback-compat-' + kind + '-' + candidate_id)
+                output_prefix + kind + '-' + candidate_id)
             source = output / 'compatibility.json'
             receipt = json.loads(source.read_text())
             required = {'selected_measurements', 'negative_case_source',
@@ -40,7 +43,7 @@ def bind() -> None:
                     receipt.get('negative_removed') != 'reviewed-site/packet.json' or
                     not required.issubset(receipt.get('checks', []))):
                 raise ValueError('incomplete exact fallback compatibility: ' + kind + '/' + candidate_id)
-            prefix = 'cpu-fallback-' + kind + '-' + candidate_id
+            prefix = saved_prefix + kind + '-' + candidate_id
             saved_receipt = HERE / (prefix + '.json')
             saved_analysis = HERE / (prefix + '-analysis.log')
             saved_negative = HERE / (prefix + '-negative.log')
@@ -58,7 +61,7 @@ def bind() -> None:
             if candidate_id == 'primary':
                 entry['negative'] = {'log': saved_negative.name}
             print(kind, candidate_id, 'compatibility bound', flush=True)
-    MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
+    manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 if __name__ == '__main__':

@@ -26,8 +26,9 @@ def write(path, value):
 class Adapter:
     """Small CARLA implementation of the source-checked construction API."""
 
-    def __init__(self, world, carla, site):
+    def __init__(self, world, carla, site, ego_start_variant):
         self.world, self.carla, self.site = world, carla, site
+        self.ego_start_variant = ego_start_variant
         self.owned = []
         self.routes = {}
         self.headways = {}
@@ -43,6 +44,12 @@ class Adapter:
         return road['exit_connection_readback']
 
     def spawn_vehicle(self, point, blueprint, role):
+        if role == 'ego':
+            route = self.site['road']['exit_waypoints']
+            gap = math.dist(route[0][:2], route[1][:2])
+            if abs(gap - 2.0) > 0.05:
+                raise ValueError('reviewed exit route lacks the two-meter primary/fallback start pair')
+            point = route[0] if self.ego_start_variant == 'fallback1' else route[1]
         location = self.carla.Location(x=point[0], y=point[1], z=point[2] + 0.4)
         waypoint = self.world.get_map().get_waypoint(location, project_to_road=False)
         if waypoint is None:
@@ -67,11 +74,21 @@ class Adapter:
         actor.destroy()
 
     def target_velocity(self, actor, speed, route):
-        start, end = route[0], route[-1]
-        dx, dy = end[0] - start[0], end[1] - start[1]
+        location = actor.get_location()
+        segments = []
+        for start, end in zip(route, route[1:]):
+            dx, dy = end[0] - start[0], end[1] - start[1]
+            length_sq = dx * dx + dy * dy
+            if length_sq <= 0:
+                continue
+            t = max(0.0, min(1.0, ((location.x - start[0]) * dx +
+                                     (location.y - start[1]) * dy) / length_sq))
+            distance_sq = (location.x - start[0] - t * dx) ** 2 + (location.y - start[1] - t * dy) ** 2
+            segments.append((distance_sq, dx, dy))
+        if not segments:
+            raise ValueError('reviewed Native route has no valid segment')
+        _, dx, dy = min(segments)
         norm = math.hypot(dx, dy)
-        if norm <= 0:
-            raise ValueError('reviewed Native route has zero length')
         actor.set_target_velocity(self.carla.Vector3D(speed * dx / norm, speed * dy / norm, 0.0))
 
 
@@ -101,7 +118,7 @@ def run(config, case, packet_path, output, host, port):
     client = carla.Client(host, port)
     client.set_timeout(30)
     world = client.get_world()
-    adapter = Adapter(world, carla, site)
+    adapter = Adapter(world, carla, site, config['case']['ego_start_variant'])
     if adapter.read_map_hash() != site['road']['map_sha256']:
         raise ValueError('original Native map differs from reviewed OpenDRIVE source')
     output = Path(output)
@@ -141,19 +158,35 @@ def run(config, case, packet_path, output, host, port):
         site_path = output / 'site-context.json'
         write(site_path, site)
         rows, trace, frame_map, native_index, evidence = [], [], [], [], []
+        seen_near = {vehicle.id: False for vehicle in made['approaching']}
+        released = False
+        approach_route = site['road']['highway_approach_waypoints']
+        approach_dx = approach_route[-1][0] - approach_route[0][0]
+        approach_dy = approach_route[-1][1] - approach_route[0][1]
+        if math.hypot(approach_dx, approach_dy) <= 0:
+            raise ValueError('reviewed highway approach has no travel direction')
         for i in range(900):
             for other in made['approaching']:
-                adapter.target_velocity(other, 9.0, adapter.routes[other.id])
+                speed = 9.0 if i * .05 >= adapter.headways[other.id] else 0.0
+                adapter.target_velocity(other, speed, adapter.routes[other.id])
             distances = [math.hypot(vehicle.get_location().x - center[0],
                                     vehicle.get_location().y - center[1])
                          for vehicle in made['approaching']]
+            passed = []
+            for vehicle, distance in zip(made['approaching'], distances):
+                seen_near[vehicle.id] |= distance <= 12.0
+                location = vehicle.get_location()
+                beyond = ((location.x - center[0]) * approach_dx +
+                          (location.y - center[1]) * approach_dy) > 0
+                passed.append(seen_near[vehicle.id] and beyond and distance > 16.0)
             if case.policy == 'yield_until_clear':
-                release = i >= 20 and all(distance > 16 for distance in distances)
+                release = i >= 20 and all(passed)
             elif case.policy == 'proceed_between_vehicles':
-                release = i >= 45 and distances[0] > 12
+                release = i >= 45 and passed[0] and not passed[1]
             else:
                 release = i >= 40
-            adapter.target_velocity(ego, 6.0 if release else 0.0, adapter.routes[ego.id])
+            released |= release
+            adapter.target_velocity(ego, 6.0 if released else 0.0, adapter.routes[ego.id])
             frame = world.tick()
             for name, sensor_queue in queues.items():
                 image = sensor_queue.get(timeout=20)

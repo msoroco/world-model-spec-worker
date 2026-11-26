@@ -75,17 +75,9 @@ def build() -> dict:
                                                         for phrase, note, _ in JUDGMENTS]},
                 "parameter_refs": parameters}
     stages["template"] = _write(directory, "template.json", template)
-    requirement_names = ("vehicle_body_footprint", "fixture_geometry", "activity_observation",
-                         "traffic_conflict", "police_direction", "traffic_device_direction")
-    channels = [{"name": name, "unit": "structured",
-                 "method": "Original source-hashed observation joined to each Native frame",
-                 "time_window": "all 900 original world ticks", "reference_frame": "reviewed C150153 Native map",
-                 "sampling_rate_hz": 20, "uncertainty": "original realization and legal interpretation pending"}
-                for name in requirement_names]
-    description = {"channels": channels,
-                   "context_inputs": [{"name": "reviewed_site", "unit": "structured",
-                                       "method": "retained original municipal, sidewalk and elevator source inventory"}],
-                   "limitations": ["Commanded gap and synthetic fixture do not establish original geometry or a legal result."]}
+    description = plan['cases'][0]['recording_description']
+    if any(case['recording_description'] != description for case in plan['cases']):
+        raise ValueError('linked exact cases changed the recording description')
     judgment_refs = []
     for index, (phrase, note, observable) in enumerate(JUDGMENTS, 1):
         requirement = {"name": observable, "unit": "structured",
@@ -144,7 +136,7 @@ def build() -> dict:
               for index, (phrase, note, _) in enumerate(JUDGMENTS, 1)]
     stages["cases"] = _write(directory, "cases.json",
                               {"status": "draft", "cell_id": "C150153", "actor": ACTOR,
-                               "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": False})
+                               "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": True})
     index = {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT,
              "stages": stages}
     (directory / "semantic-index.json").write_text(json.dumps(index, indent=2) + "\n")

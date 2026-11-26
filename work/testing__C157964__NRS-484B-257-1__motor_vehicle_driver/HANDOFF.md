@@ -1,3 +1,9 @@
+## 2026-11-26 03:42 UTC CPU delivery preparation ready
+
+The current selected four-case source-gated Native package passes exact `.venv-cpu/bin/python worker_check.py --assignment testing__C157964__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready` (lead rerun `.runtime-work/c157964-post-queue-strict.log`, exit 0). The direct execution-manifest, canonical semantic and compatibility validators pass. Four current construction-bound physical outcome/lifecycle receipt sets were refreshed from sealed diagnostic attempts, with three outcomes and one owner-release/saved-processing check per exact case. Empty compatibility analysis logs were preserved byte-for-byte so their receipts match. The 35-test full assignment suite remains SHA-bound in result.json.
+
+`production_comparison.py` supplies an original-only exact comparison CLI; a diagnostic attempt was rejected with `diagnostic attempt cannot be original delivery` in `cpu-production-comparison-negative.log`. Four exact cases and three comparison audit commands are in `queue-proposal.json` and integrated into `work/_shared/gpu-queue.json`. Actual reviewed site, CARLA motion, camera pixels, judgment-range witnesses and hazard/right-of-way review remain first-GPU/local checks, not CPU proof claims. No original evidence was fabricated.
+
 # testing__C157964__NRS-484B-257-1__motor_vehicle_driver
 
 ## 2026-11-25 reviewed-site custody and original capture producer
