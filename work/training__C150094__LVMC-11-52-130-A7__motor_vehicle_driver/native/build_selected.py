@@ -14,8 +14,8 @@ def write(path, value):
 
 def main():
     bundle = HERE / 'selected_primary'
-    names = ('runner.py', 'config.json', 'tests/test_bundle.py')
-    files = [{'path': name, 'content': (bundle / name).read_text()} for name in names]
+    names = ('runner.py', 'config.json', 'finalize.py', 'measure_driveway.py', 'tests/test_bundle.py')
+    files = [{'path': name, 'content': ((HERE / name) if name == 'measure_driveway.py' else (bundle / name)).read_text()} for name in names]
     construction = {
         'format': 'worker-construction', 'assignment_id': AID,
         'case_id': CASE, 'cell_id': 'C150094', 'law_id': 'LVMC-11-52-130-A7',

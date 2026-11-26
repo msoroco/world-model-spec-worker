@@ -13,7 +13,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver'
 CASE = AID + '__probe_02'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 
 
@@ -105,7 +105,7 @@ def capture(survey, output, host, port):
             proc = subprocess.Popen(['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                                      '-video_size', f"{spec['width']}x{spec['height']}", '-framerate', '20',
                                      '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                                     str(output / ('camera_'+spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+                                     str(output / (spec['name']+'.mkv'))], stdin=subprocess.PIPE)
             encoders[spec['name']] = proc
         axis = survey['road_axis_xy']
         target = survey['stop_centre_xyz_m']

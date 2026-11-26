@@ -60,6 +60,7 @@ def main():
         "parameter_refs": [
             {"name": "requested_lane_move", "kind": "controller", "range_or_domain": "move to immediate left before pass or remain in right lane"},
             {"name": "left_lane_occupant_plan", "kind": "world_setup", "range_or_domain": "occupied or empty in authored scene"},
+            {"name": "closing_left_vehicle_context", "kind": "world_setup", "range_or_domain": "closing vehicle present or absent in authored scene"},
             {"name": "measured_lane_position", "kind": "subject_behavior", "range_or_domain": "original per-frame lane readback"},
             {"name": "measured_pass", "kind": "subject_behavior", "range_or_domain": "original per-frame body-overlap pass"},
         ],
@@ -93,6 +94,7 @@ def main():
             for name, kind, domain in (
                 ("requested_lane_move", "controller", "left-before-pass or hold-right request"),
                 ("left_lane_occupant_plan", "world_setup", "authored occupant present or absent"),
+                ("closing_left_vehicle_context", "world_setup", "authored closing left-lane actor present or absent"),
                 ("measured_lane_position", "subject_behavior", "original per-frame lane readback"),
                 ("measured_pass", "subject_behavior", "original measured passing interval"),
             )
@@ -101,6 +103,7 @@ def main():
     shared = {
         "requested_lane_move": variable("controller", "hold_right", "Native controller plan; observed motion separate"),
         "left_lane_occupant_plan": variable("world_setup", "absent", "Native scene plan; observed occupancy separate"),
+        "closing_left_vehicle_context": variable("world_setup", "absent", "Native scene plan; observed closing motion separate"),
         "measured_lane_position": variable("subject_behavior", None, "Original Native lane readback"),
         "measured_pass": variable("subject_behavior", None, "Original Native participant poses"),
     }
@@ -116,8 +119,11 @@ def main():
         values = json.loads(json.dumps(shared))
         values["requested_lane_move"]["value"] = "left_before_pass" if suffix == "witness_1" else "hold_right"
         values["left_lane_occupant_plan"]["value"] = "present" if suffix == "exception_1_2" else "absent"
-        primary = "left_lane_occupant_plan" if suffix.startswith("exception") else "requested_lane_move"
-        group = "exception" if suffix.startswith("exception") else "witness"
+        values["closing_left_vehicle_context"]["value"] = "approaching" if suffix == "exception_unsafe_available" else "absent"
+        primary = ("closing_left_vehicle_context" if suffix == "exception_unsafe_available" else
+                   ("left_lane_occupant_plan" if suffix.startswith("exception") else "requested_lane_move"))
+        group = ("unsafe_available" if suffix == "exception_unsafe_available" else
+                 ("exception" if suffix.startswith("exception") else "witness"))
         cases.append({
             "case_id": entry["case_id"], "target_law_id": LAW,
             "target_type": "boundary_probe",

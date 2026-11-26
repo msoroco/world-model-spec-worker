@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 ASSIGNMENT = 'training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 COUNT = 600
 FIVE_FEET_M = 1.524
 
@@ -38,7 +38,7 @@ def measure(root):
         raise ValueError('Assignment or source provenance mismatch')
     hashes = {}
     for camera in CAMERAS:
-        n = 'camera_' + camera + '.mkv'
+        n = camera + '.mkv'
         p = root / n
         if not p.is_file() or not p.stat().st_size:
             raise ValueError('Missing source camera: ' + camera)
@@ -50,7 +50,7 @@ def measure(root):
         streams = json.loads(proc.stdout).get('streams', [])
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(COUNT) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: ' + camera)
-        if context['review_kind'] == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != (1920, 1080):
+        if context['review_kind'] == 'original_source_review' and (streams[0].get('width'), streams[0].get('height')) != ((1920, 1080) if camera == 'overview' else (1280, 720)):
             raise ValueError('Original camera resolution mismatch: ' + camera)
         hashes[n] = sha(p)
     if context.get('camera_sha256') != hashes:

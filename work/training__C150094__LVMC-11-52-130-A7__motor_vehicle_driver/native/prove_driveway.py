@@ -32,7 +32,7 @@ def main():
     assert assignment.is_file()
     with tempfile.TemporaryDirectory(prefix='driveway-', dir=os.environ['TMPDIR']) as name:
         root = Path(name)
-        for camera in ('forward', 'rear', 'left', 'right'):
+        for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=32x24:r=20',
                             '-frames:v', str(COUNT), '-c:v', 'ffv1', '-y', str(root / ('camera_'+camera+'.mkv'))], check=True)
         frames = [{'video_frame': i, 'native_frame': i+1000, 'time_s': round(i*.05, 3)} for i in range(COUNT)]
@@ -97,7 +97,7 @@ def main():
         assert directed['law_or_officer_or_device_direction_context']
         failures = {}
         bad = copy.deepcopy(context)
-        bad['camera_sha256']['camera_forward.mkv'] = '0'*64
+        bad['camera_sha256']['camera_overview.mkv'] = '0'*64
         cp.write_text(json.dumps(bad))
         failures['unbound_camera'] = rejects(root, 'camera bytes')
         bad = copy.deepcopy(context)

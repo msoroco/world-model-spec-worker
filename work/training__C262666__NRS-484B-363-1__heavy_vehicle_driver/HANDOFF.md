@@ -1,5 +1,9 @@
 # training__C262666__NRS-484B-363-1__heavy_vehicle_driver
 
+## 2026-11-26 current-runtime strict delivery checkpoint
+
+Status: **ready**, `delivery_prepared`. The eight selected exact school-zone cases `__probe_01` through `__probe_08` now cover the below/at/above 15 mph condition and four statutory exception contrasts; the saved source join, public/Core positive and negative checks, physical-preparation fixtures, six canonical semantic proposals, independent delivery and comparison audits are bound to the current runtime. The owner and lead independently ran `.venv-cpu/bin/python -B worker_check.py --assignment training__C262666__NRS-484B-363-1__heavy_vehicle_driver --complete --require-delivery-ready`; both returned exit 0 and `static_checks_passed: true`. Execution manifest SHA-256 `4abe8471bc71e40ac4620fe72825a00a0391a2aebf5014b99e461e312c301517`; result SHA-256 `2bcfbc6c3b714f16d372a4b1900b92aa17e38567126da411334a7caef03d05e0`. Original CARLA motion, zone authority, civil schedule, signs/beacon pixels and camera visibility remain local physical review; no acceptance or legal verdict is claimed. Historical partial sections below describe earlier checkpoints and are superseded by this entry.
+
 Status: **partial**. Eight exact primary Native bundles pass pinned offline, six unit tests each. Only `probe_03` is selected. The saved-only source checker and independent comparator now have synthetic proofs across all eight cases. Neither the selected case nor the other seven cases has full pinned compatibility and independent delivery acceptance proofs; the strict gate has not passed.
 
 ## Exact law and finite branch plan

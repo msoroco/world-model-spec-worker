@@ -265,104 +265,128 @@
   "source_observation_mapping": {
     "dev.human_direction": {
       "measurement": "Requested stop/release per Native frame plus original flagger identity and independent signal-pixel interpretation; requested signal alone does not establish the visible indication",
-      "evidence": "native-rows.jsonl; original-flagger-review.json; flagger.mkv; original pixel review",
-      "channels": [
+      "evidence": "native-rows.jsonl; original-flagger-review.json; reference_corner.mkv; original pixel review",
+      "source_refs": [
+        "NRS 484B.330(1)"
+      ],
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
         "native-rows.requested_signal",
         "native-rows.flagger_actor_id",
         "pixel-review.signal_indication"
       ],
-      "source_refs": [
-        "NRS 484B.330(1)"
-      ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "channels": [
+        "dev.human_direction"
+      ]
     },
     "dev.governs": {
       "measurement": "Reviewed flagger orientation and signal direction relative to motorcycle approach, joined to original subject and signal frames",
-      "evidence": "original-flagger-review.json; native-rows.jsonl; flagger.mkv; original pixel review",
-      "channels": [
+      "evidence": "original-flagger-review.json; native-rows.jsonl; reference_corner.mkv; original pixel review",
+      "source_refs": [
+        "NRS 484B.330(1)"
+      ],
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
         "review.governs_approach",
         "native-rows.motorcycle_xyz_m",
         "pixel-review.signal_direction"
       ],
-      "source_refs": [
-        "NRS 484B.330(1)"
-      ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "channels": [
+        "dev.governs"
+      ]
     },
     "dev.temporary_traffic_control": {
       "measurement": "Source-reviewed temporary-zone designation and original road/zone geometry; road layout alone does not establish designation",
       "evidence": "original-zone-source; original-flagger-review.json; road.xodr; original pixel review",
-      "channels": [
+      "source_refs": [
+        "NRS 484B.330(1)"
+      ],
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
         "review.zone_designation_source_sha256",
         "road.zone_geometry",
         "pixel-review.zone_markings"
       ],
-      "source_refs": [
-        "NRS 484B.330(1)"
-      ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "channels": [
+        "dev.temporary_traffic_control"
+      ]
     },
     "drv.within_signed_zone": {
       "measurement": "Original motorcycle body position per joined frame against reviewed marked-zone limits and sign pixels",
       "evidence": "native-rows.jsonl; road.xodr; overview.mkv; original pixel review",
-      "channels": [
+      "source_refs": [
+        "NRS 484B.330(1)"
+      ],
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
         "native-rows.motorcycle_body_vertices_m",
         "road.zone_geometry",
         "pixel-review.zone_signs"
       ],
-      "source_refs": [
-        "NRS 484B.330(1)"
-      ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "channels": [
+        "drv.within_signed_zone"
+      ]
     },
     "dev.zone_sign": {
       "measurement": "Original camera pixels and independent sign-content review, bound to source-reviewed temporary-zone record",
       "evidence": "overview.mkv; approach.mkv; original-zone-source; original pixel review",
-      "channels": [
-        "pixel-review.zone_signs",
-        "review.zone_designation_source_sha256"
-      ],
       "source_refs": [
         "NRS 484B.330(1)"
       ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
+        "pixel-review.zone_signs",
+        "review.zone_designation_source_sha256"
+      ],
+      "channels": [
+        "dev.zone_sign"
+      ]
     },
     "kin.velocity": {
       "measurement": "Original motorcycle velocity from PipelineCapture trace and observed Native speed over 600 joined frames",
       "evidence": "trace.jsonl; native-rows.jsonl",
-      "channels": [
-        "trace.kin.velocity",
-        "native-rows.motorcycle_speed_mps"
-      ],
       "source_refs": [
         "NRS 484B.330(1)"
       ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
+        "trace.kin.velocity",
+        "native-rows.motorcycle_speed_mps"
+      ],
+      "channels": [
+        "kin.velocity"
+      ]
     },
     "drv.stopped": {
       "measurement": "Observed low-speed interval during requested stop, with body position relative to stop line; no legal stopping threshold inferred",
       "evidence": "native-rows.jsonl; road.xodr",
-      "channels": [
-        "native-rows.motorcycle_speed_mps",
-        "native-rows.motorcycle_body_vertices_m"
-      ],
       "source_refs": [
         "NRS 484B.330(1)"
       ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
+        "native-rows.motorcycle_speed_mps",
+        "native-rows.motorcycle_body_vertices_m"
+      ],
+      "channels": [
+        "drv.stopped"
+      ]
     },
     "drv.officer_directed": {
       "measurement": "Derived direction only after source-reviewed flagger authorization, governance and original signal pixels; unresolved until independent review",
-      "evidence": "original-authority-source; original-flagger-review.json; flagger.mkv; original pixel review",
-      "channels": [
+      "evidence": "original-authority-source; original-flagger-review.json; reference_corner.mkv; original pixel review",
+      "source_refs": [
+        "NRS 484B.330(1)"
+      ],
+      "physical_status": "requires_original_source_and_pixel_review",
+      "source_channels": [
         "review.authority_source_sha256",
         "review.governs_approach",
         "pixel-review.signal_indication"
       ],
-      "source_refs": [
-        "NRS 484B.330(1)"
-      ],
-      "physical_status": "requires_original_source_and_pixel_review"
+      "channels": [
+        "drv.officer_directed"
+      ]
     }
   },
   "camera_plan": {

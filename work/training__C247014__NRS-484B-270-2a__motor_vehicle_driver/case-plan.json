@@ -1,232 +1,253 @@
 {
-  "assignment_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver",
-  "law_id": "NRS-484B-270-2a",
-  "cell_id": "C247014",
-  "actor": "motor_vehicle_driver",
-  "frozen_cell": {
-    "layout": "same_direction_multilane",
-    "maneuver": "overtake",
-    "control": "cyclist"
-  },
-  "selection_targets": [
-    "full-train"
-  ],
-  "source_law": {
-    "source": "NRS 484B.270(2)(a)",
-    "text": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is more than one lane for traffic proceeding in the same direction, move the vehicle to the lane to the immediate left, if the lane is available and moving into the lane is reasonably safe.",
-    "sha256": "52e95a1aab1b4d623be17ab8fd56a2823dc2d934414de623e33c69f016d5efcd"
-  },
-  "summary_status": "recovered_requires_source_review",
-  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
-  "witness_branches": [
-    "Due care and conditional immediate-left-lane movement"
-  ],
-  "selected_branch": null,
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-270-2a",
-      "source": "NRS 484B.270(2)(a)",
-      "branch": "Due care and conditional immediate-left-lane movement",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_1",
-        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_2"
-      ],
-      "evidence_or_gap": "Exact CPU offline, public compatibility, saved processing, semantic draft, fallback and physical fixtures pass; original Native occupancy, safety and due-care review and independent delivery audits remain.",
-      "disposition_index": 0
-    },
-    {
-      "requirement": "NRS-484B-270-2a",
-      "source": "NRS 484B.270(2)(a)",
-      "branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
-        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2"
-      ],
-      "evidence_or_gap": "Exact CPU offline, public compatibility, saved processing, semantic draft, fallback and physical fixtures pass; original Native occupancy, safety and due-care review and independent delivery audits remain.",
-      "disposition_index": 1
-    }
-  ],
   "activation_conditions": [
     "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
     "there is more than one lane for traffic in that direction",
     "the lane to the immediate left is available"
   ],
-  "timing_requirements": [
-    {
-      "kind": "ordering",
-      "requirement": "the lane change precedes the abreast phase — the subject must already be in the left lane when it passes"
-    },
-    {
-      "kind": "continuous",
-      "requirement": "the left lane is held for the whole of the pass"
-    }
+  "actor": "motor_vehicle_driver",
+  "assignment_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver",
+  "blockers": [
+    "Reasonable-safety context is newly planned but unjudged; original Native closing-vehicle motion and independent comparison still require proof."
   ],
-  "unresolved_judgment_calls": [
-    "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
-  ],
-  "neutral_baseline": {
-    "kind": "unselected_baseline",
-    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "0-30 s",
+        "subject": "ego, rider, immediate-left lane and whole passing corridor",
+        "view": "overview"
+      },
+      {
+        "interval": "0-20 s",
+        "subject": "ego/rider approach and lane transition before abreast",
+        "view": "approach"
+      },
+      {
+        "interval": "0-30 s",
+        "subject": "immediate-left adjacency and occupant context",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "0-30 s",
+        "subject": "subject-side rider and lane overlap",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
   },
+  "candidate_plans": [],
+  "candidate_review_method": "Compared each primary and fallback1 exact construction, 20 Hz camera and recording invariants, measurable saved-lane trigger, changed physical controller targets, and exact offline plus positive/missing-context compatibility receipts. Original Native realization remains to be observed.",
   "cases": [
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_1",
-      "target_law_id": "NRS-484B-270-2a",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "driver changes to available immediate left lane before cyclist pass",
       "comparison_variable": "immediate_left_lane_for_cycle_pass",
-      "source_branch": "Due care and conditional immediate-left-lane movement",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "same_direction_multilane",
-          "maneuver": "overtake",
-          "control": "cyclist"
-        },
-        "activation_conditions_to_verify": [
-          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
-          "there is more than one lane for traffic in that direction",
-          "the lane to the immediate left is available"
-        ]
-      },
       "controller": {
         "requested_behavior": "driver changes to available immediate left lane before cyclist pass"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
+      "delivery_readiness": "selected_cpu_draft_incomplete",
       "expected_scenario_outcome": null,
+      "gap_ids": [
+        "uncovered-exact-cycle-pass"
+      ],
+      "kind": "delivery",
+      "physical_target": "driver changes to available immediate left lane before cyclist pass",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Due care and conditional immediate-left-lane movement",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
         "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
       ],
-      "delivery_readiness": "selected_cpu_draft_incomplete"
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
+          "there is more than one lane for traffic in that direction",
+          "the lane to the immediate left is available"
+        ],
+        "frozen_cell": {
+          "control": "cyclist",
+          "layout": "same_direction_multilane",
+          "maneuver": "overtake"
+        }
+      }
     },
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_2",
-      "target_law_id": "NRS-484B-270-2a",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "driver passes cyclist without moving into available immediate left lane",
       "comparison_variable": "immediate_left_lane_for_cycle_pass",
-      "source_branch": "Due care and conditional immediate-left-lane movement",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "same_direction_multilane",
-          "maneuver": "overtake",
-          "control": "cyclist"
-        },
-        "activation_conditions_to_verify": [
-          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
-          "there is more than one lane for traffic in that direction",
-          "the lane to the immediate left is available"
-        ]
-      },
       "controller": {
         "requested_behavior": "driver passes cyclist without moving into available immediate left lane"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
+      "delivery_readiness": "selected_cpu_draft_incomplete",
       "expected_scenario_outcome": null,
+      "gap_ids": [
+        "uncovered-exact-cycle-pass"
+      ],
+      "kind": "delivery",
+      "physical_target": "driver passes cyclist without moving into available immediate left lane",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Due care and conditional immediate-left-lane movement",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
         "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
       ],
-      "delivery_readiness": "selected_cpu_draft_incomplete"
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
+          "there is more than one lane for traffic in that direction",
+          "the lane to the immediate left is available"
+        ],
+        "frozen_cell": {
+          "control": "cyclist",
+          "layout": "same_direction_multilane",
+          "maneuver": "overtake"
+        }
+      }
     },
     {
       "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
-      "target_law_id": "NRS-484B-270-2a",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe absent",
       "comparison_variable": "exception_1_applicability",
-      "source_branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "same_direction_multilane",
-          "maneuver": "overtake",
-          "control": "cyclist"
-        },
-        "activation_conditions_to_verify": [
-          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
-          "there is more than one lane for traffic in that direction",
-          "the lane to the immediate left is available"
-        ]
-      },
       "controller": {
         "requested_behavior": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe absent"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
+      "delivery_readiness": "selected_cpu_draft_incomplete",
       "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": [
-        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      "gap_ids": [
+        "uncovered-exact-cycle-pass"
       ],
-      "delivery_readiness": "selected_cpu_draft_incomplete"
-    },
-    {
-      "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2",
-      "target_law_id": "NRS-484B-270-2a",
       "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe present",
-      "comparison_variable": "exception_1_applicability",
-      "source_branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
+      "physical_target": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe absent",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
+      "source_branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "controlled_attempt",
+      "unresolved_judgment_calls": [
+        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      ],
       "world_setup": {
-        "frozen_cell": {
-          "layout": "same_direction_multilane",
-          "maneuver": "overtake",
-          "control": "cyclist"
-        },
         "activation_conditions_to_verify": [
           "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
           "there is more than one lane for traffic in that direction",
           "the lane to the immediate left is available"
-        ]
-      },
+        ],
+        "frozen_cell": {
+          "control": "cyclist",
+          "layout": "same_direction_multilane",
+          "maneuver": "overtake"
+        }
+      }
+    },
+    {
+      "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2",
+      "comparison_variable": "exception_1_applicability",
       "controller": {
         "requested_behavior": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe present"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
+      "delivery_readiness": "selected_cpu_draft_incomplete",
       "expected_scenario_outcome": null,
+      "gap_ids": [
+        "uncovered-exact-cycle-pass"
+      ],
+      "kind": "delivery",
+      "physical_target": "hold selected activation with the lane to the immediate left is not available, or moving into it would not be reasonably safe present",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
         "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
       ],
-      "delivery_readiness": "selected_cpu_draft_incomplete"
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
+          "there is more than one lane for traffic in that direction",
+          "the lane to the immediate left is available"
+        ],
+        "frozen_cell": {
+          "control": "cyclist",
+          "layout": "same_direction_multilane",
+          "maneuver": "overtake"
+        }
+      }
+    },
+    {
+      "case_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_unsafe_available",
+      "comparison_variable": "closing_left_vehicle_context",
+      "controller": {
+        "requested_behavior": "hold right lane; measure closing left-lane vehicle separately from lane availability"
+      },
+      "delivery_readiness": "selected_cpu_draft_incomplete",
+      "expected_scenario_outcome": null,
+      "gap_ids": [
+        "uncovered-exact-cycle-pass"
+      ],
+      "kind": "delivery",
+      "physical_target": "Driver passes rider while immediate-left lane is nominally open but an original closing left-lane vehicle raises a separate reasonable-safety context for review",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "moving into the available immediate-left lane would not be reasonably safe",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "NRS-484B-270-2a",
+      "target_type": "controlled_attempt",
+      "unresolved_judgment_calls": [
+        "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+      ],
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "the subject overtakes or passes a bicycle, electric bicycle or electric scooter going the same way",
+          "there is more than one lane for traffic in that direction",
+          "the lane to the immediate left is available"
+        ],
+        "frozen_cell": {
+          "control": "cyclist",
+          "layout": "same_direction_multilane",
+          "maneuver": "overtake"
+        }
+      }
     }
   ],
+  "cell_id": "C247014",
   "comparisons": [
     {
-      "comparison_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_comparison",
       "case_ids": [
         "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_1",
         "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_2"
       ],
+      "comparison_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_comparison",
       "deliberate_differences": [
         "immediate_left_lane_for_cycle_pass"
       ],
@@ -237,11 +258,11 @@
       ]
     },
     {
-      "comparison_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_comparison",
       "case_ids": [
         "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
         "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2"
       ],
+      "comparison_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_comparison",
       "deliberate_differences": [
         "exception_1_applicability"
       ],
@@ -250,236 +271,298 @@
         "same map geometry except named comparison variable",
         "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
       ]
+    },
+    {
+      "case_ids": [
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_unsafe_available"
+      ],
+      "comparison_id": "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__unsafe_available_comparison",
+      "deliberate_differences": [
+        "closing_left_vehicle_context"
+      ],
+      "fixed_conditions": [
+        "same original two-lane road and bicycle pass target",
+        "same ego and cyclist longitudinal and lateral controller targets",
+        "same cameras and duration; left-lane approaching vehicle differs"
+      ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "uncovered-exact-cycle-pass",
+        "requirement": "NRS-484B-270-2a conditional immediate-left movement and due care",
+        "source": "NRS 484B.270(2)(a)",
+        "why_existing_insufficient": "No accepted exact-scope recording is exported."
+      }
+    ],
+    "method": "Frozen assignment lists no accepted membership or evidence inventory for this exact scope; no original replay performed.",
+    "reviewer": "worker CPU source review"
+  },
+  "existing_evidence": [],
+  "frozen_cell": {
+    "control": "cyclist",
+    "layout": "same_direction_multilane",
+    "maneuver": "overtake"
+  },
+  "law_id": "NRS-484B-270-2a",
   "mandatory_observation_terms": [
     {
-      "term": "drv.overtaking",
       "purpose": "the subject overtakes or passes the rider",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.overtaking"
     },
     {
-      "term": "ru.bicycle",
       "purpose": "the overtaken rider",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "ru.bicycle"
     },
     {
-      "term": "ru.electric_bicycle",
       "purpose": "or an electric bicycle",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "ru.electric_bicycle"
     },
     {
-      "term": "ru.electric_scooter",
       "purpose": "or an electric scooter",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "ru.electric_scooter"
     },
     {
-      "term": "rel.same_direction",
       "purpose": "proceeding in the same direction",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "rel.same_direction"
     },
     {
-      "term": "drv.laned_roadway",
       "purpose": "more than one lane in that direction",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.laned_roadway"
     },
     {
-      "term": "st.lane_adjacency",
       "purpose": "the lane to the immediate left",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "st.lane_adjacency"
     },
     {
-      "term": "drv.lane_change",
       "purpose": "the move into it",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.lane_change"
     },
     {
-      "term": "drv.lane_change_feasible",
       "purpose": "operationalizes 'available' and 'reasonably safe'",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.lane_change_feasible"
     },
     {
-      "term": "rel.occupies",
       "purpose": "the lane the subject is in during the pass",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "rel.occupies"
     }
   ],
+  "neutral_baseline": {
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording.",
+    "kind": "unselected_baseline"
+  },
   "observations": [
     {
-      "name": "drv.overtaking",
       "mandatory": true,
+      "name": "drv.overtaking",
       "reason": "the subject overtakes or passes the rider"
     },
     {
+      "mandatory": false,
       "name": "ru.bicycle",
-      "mandatory": true,
-      "reason": "the overtaken rider"
+      "reason": "Selected bicycle blueprint class is sourced from original actor evidence, with per-frame geometry in cyclist_pose; it is not a time-varying channel."
     },
     {
-      "name": "ru.electric_bicycle",
       "mandatory": false,
+      "name": "ru.electric_bicycle",
       "reason": "or an electric bicycle; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "ru.electric_scooter",
       "mandatory": false,
+      "name": "ru.electric_scooter",
       "reason": "or an electric scooter; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "rel.same_direction",
       "mandatory": false,
+      "name": "rel.same_direction",
       "reason": "proceeding in the same direction; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "drv.laned_roadway",
       "mandatory": false,
+      "name": "drv.laned_roadway",
       "reason": "more than one lane in that direction; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "st.lane_adjacency",
       "mandatory": false,
+      "name": "st.lane_adjacency",
       "reason": "the lane to the immediate left; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "drv.lane_change",
       "mandatory": true,
+      "name": "drv.lane_change",
       "reason": "the move into it"
     },
     {
-      "name": "drv.lane_change_feasible",
       "mandatory": false,
+      "name": "drv.lane_change_feasible",
       "reason": "operationalizes 'available' and 'reasonably safe'; mapped as alternative or context rather than a selected time-varying channel"
     },
     {
-      "name": "rel.occupies",
       "mandatory": true,
+      "name": "rel.occupies",
       "reason": "the lane the subject is in during the pass"
     }
   ],
-  "candidate_plans": [],
-  "existing_evidence": [],
+  "readiness_limitation": "Selected CPU drafts only; original Native, independent delivery audit and legal judgments remain unverified.",
+  "requirement_dispositions": [
+    {
+      "branch": "Due care and conditional immediate-left-lane movement",
+      "case_ids": [
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_1",
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__witness_2"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "Exact CPU offline, public compatibility, saved processing, semantic draft, fallback and physical fixtures pass; original Native occupancy, safety and due-care review and independent delivery audits remain.",
+      "requirement": "NRS-484B-270-2a",
+      "source": "NRS 484B.270(2)(a)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "the lane to the immediate left is not available, or moving into it would not be reasonably safe",
+      "case_ids": [
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_1",
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_1_2",
+        "training__C247014__NRS-484B-270-2a__motor_vehicle_driver__exception_unsafe_available"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "Exact CPU offline, public compatibility, saved processing, semantic draft, fallback and physical fixtures pass; original Native occupancy, safety and due-care review and independent delivery audits remain.",
+      "requirement": "NRS-484B-270-2a",
+      "source": "NRS 484B.270(2)(a)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original Native actor, lane and closing-vehicle motion are unobserved.",
+    "Reasonably safe movement and due care require source-grounded independent judgment; engineering gap is not a legal threshold."
+  ],
+  "selected_branch": null,
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "sha256": "52e95a1aab1b4d623be17ab8fd56a2823dc2d934414de623e33c69f016d5efcd",
+    "source": "NRS 484B.270(2)(a)",
+    "text": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is more than one lane for traffic proceeding in the same direction, move the vehicle to the lane to the immediate left, if the lane is available and moving into the lane is reasonably safe."
+  },
+  "source_observation_mapping": {
+    "drv.lane_change": {
+      "channels": [
+        "drv.lane_change",
+        "ego_pose"
+      ],
+      "evidence": "Measured original per-frame lane transition and pose",
+      "source_refs": []
+    },
+    "drv.lane_change_feasible": {
+      "channels": [
+        "left_lane_occupancy"
+      ],
+      "evidence": "Original adjacent-lane occupancy and source context; reasonable safety remains unjudged",
+      "source_refs": []
+    },
+    "drv.laned_roadway": {
+      "channels": [],
+      "evidence": "Original road.xodr readback; two same-direction lane identities require physical review",
+      "source_refs": [
+        "selected-native-draft/witness_1/construction.json"
+      ]
+    },
+    "drv.overtaking": {
+      "channels": [
+        "drv.overtaking",
+        "ego_pose",
+        "cyclist_pose"
+      ],
+      "evidence": "Original subject/rider body-overlap ordering from saved participant poses",
+      "source_refs": []
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies",
+        "ego_pose"
+      ],
+      "evidence": "Measured original lane identity during body-overlap passing interval",
+      "source_refs": []
+    },
+    "rel.same_direction": {
+      "channels": [
+        "ego_pose",
+        "cyclist_pose"
+      ],
+      "evidence": "Original subject and rider heading/trajectory history",
+      "source_refs": []
+    },
+    "ru.bicycle": {
+      "channels": [
+        "cyclist_pose"
+      ],
+      "evidence": "Original cyclist actor blueprint and pose; selected rider class is bicycle",
+      "source_refs": []
+    },
+    "ru.electric_bicycle": {
+      "channels": [],
+      "evidence": "Alternative source class not selected for this bicycle recording",
+      "source_refs": [
+        "inputs/training__C247014__NRS-484B-270-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "channels": [],
+      "evidence": "Alternative source class not selected for this bicycle recording",
+      "source_refs": [
+        "inputs/training__C247014__NRS-484B-270-2a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "channels": [],
+      "evidence": "Original road lane adjacency readback; design alone is insufficient",
+      "source_refs": [
+        "selected-native-draft/witness_1/construction.json"
+      ]
+    }
+  },
   "sources": [
     {
       "path": "inputs/training__C247014__NRS-484B-270-2a__motor_vehicle_driver/assignment.json",
       "sha256": "94360cca44d80bf21258f62e813b72855c1fbbd5c5a8bc3c9720be8cec641941"
     }
   ],
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "summary_status": "recovered_requires_source_review",
+  "timing_requirements": [
+    {
+      "kind": "ordering",
+      "requirement": "the lane change precedes the abreast phase \u2014 the subject must already be in the left lane when it passes"
+    },
+    {
+      "kind": "continuous",
+      "requirement": "the left lane is held for the whole of the pass"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "'due care' and 'reasonably safe' are judgement elements needing declared bounds"
+  ],
+  "unreviewed_candidates": [],
   "unverified_physical_assumptions": [
     "Native map realizes frozen layout, maneuver and control",
     "Actor blueprints and controllers can produce proposed behavior",
     "Four camera views and saved channels can establish every decisive relation",
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
-  "blockers": [
-    "Original Native actor/lane motion and availability/safety context are unobserved; judgment sweep, independent delivery/comparison audits and root execution package are unfinished."
-  ],
-  "runtime_uncertainties": [
-    "Original Native motion and camera composition have not been witnessed; CPU synthetic proofs do not establish physical outcome.",
-    "Reasonable safety and due care lack source-grounded judgment bounds; selected semantic physical sweep is incomplete."
-  ],
-  "readiness_limitation": "Selected CPU drafts only; original Native, independent delivery audit and legal judgments remain unverified.",
-  "source_observation_mapping": {
-    "drv.overtaking": {
-      "evidence": "Original subject/rider body-overlap ordering from saved participant poses",
-      "channels": [
-        "drv.overtaking",
-        "ego_pose",
-        "cyclist_pose"
-      ],
-      "source_refs": []
-    },
-    "ru.bicycle": {
-      "evidence": "Original cyclist actor blueprint and pose; selected rider class is bicycle",
-      "channels": [
-        "cyclist_pose"
-      ],
-      "source_refs": []
-    },
-    "ru.electric_bicycle": {
-      "evidence": "Alternative source class not selected for this bicycle recording",
-      "channels": [],
-      "source_refs": [
-        "inputs/training__C247014__NRS-484B-270-2a__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "ru.electric_scooter": {
-      "evidence": "Alternative source class not selected for this bicycle recording",
-      "channels": [],
-      "source_refs": [
-        "inputs/training__C247014__NRS-484B-270-2a__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "rel.same_direction": {
-      "evidence": "Original subject and rider heading/trajectory history",
-      "channels": [
-        "ego_pose",
-        "cyclist_pose"
-      ],
-      "source_refs": []
-    },
-    "drv.laned_roadway": {
-      "evidence": "Original road.xodr readback; two same-direction lane identities require physical review",
-      "channels": [],
-      "source_refs": [
-        "selected-native-draft/witness_1/construction.json"
-      ]
-    },
-    "st.lane_adjacency": {
-      "evidence": "Original road lane adjacency readback; design alone is insufficient",
-      "channels": [],
-      "source_refs": [
-        "selected-native-draft/witness_1/construction.json"
-      ]
-    },
-    "drv.lane_change": {
-      "evidence": "Measured original per-frame lane transition and pose",
-      "channels": [
-        "drv.lane_change",
-        "ego_pose"
-      ],
-      "source_refs": []
-    },
-    "drv.lane_change_feasible": {
-      "evidence": "Original adjacent-lane occupancy and source context; reasonable safety remains unjudged",
-      "channels": [
-        "left_lane_occupancy"
-      ],
-      "source_refs": []
-    },
-    "rel.occupies": {
-      "evidence": "Measured original lane identity during body-overlap passing interval",
-      "channels": [
-        "rel.occupies",
-        "ego_pose"
-      ],
-      "source_refs": []
-    }
-  },
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 30,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "ego, rider, immediate-left lane and whole passing corridor",
-        "interval": "0-30 s"
-      },
-      {
-        "view": "approach",
-        "subject": "ego/rider approach and lane transition before abreast",
-        "interval": "0-20 s"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "immediate-left adjacency and occupant context",
-        "interval": "0-30 s"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "subject-side rider and lane overlap",
-        "interval": "0-30 s"
-      }
-    ]
-  }
+  "witness_branches": [
+    "Due care and conditional immediate-left-lane movement"
+  ]
 }

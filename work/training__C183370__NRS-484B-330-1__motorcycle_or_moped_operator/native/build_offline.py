@@ -22,6 +22,20 @@ def write(path, data):
 
 def build(repo=Path('.')):
     repo = Path(repo).resolve()
+    plan = json.loads((ROOT / 'case-plan.json').read_text())
+    observation_channels = [
+        {
+            'name': term,
+            'unit': 'structured',
+            'sampling_rate_hz': 20,
+            'method': 'Same-frame source join: ' + item['measurement'],
+            'time_window': '600 frames over 30 seconds',
+            'reference_frame': 'Native frame joined to source and review identifiers',
+            'uncertainty': 'Prospective channel; ' + item['physical_status'] +
+                           '; missing original source or review remains unknown',
+        }
+        for term, item in plan['source_observation_mapping'].items()
+    ]
     common_files = []
     for local, path in [('runner.py', NATIVE / 'runner.py'),
                         ('check_requests.py', NATIVE / 'check_requests.py'),
@@ -73,7 +87,7 @@ def build(repo=Path('.')):
                      'time_window': '600 frames over 30 seconds',
                      'reference_frame': 'scene and motorcycle-mounted reference cameras',
                      'uncertainty': 'Original signal, zone and subject visibility require review'},
-                ],
+                ] + observation_channels,
                 'context_inputs': [
                     {'name': 'flagger_authority_and_governance', 'unit': 'structured',
                      'method': 'independent reviewed and sealed authority/signal source packet'},

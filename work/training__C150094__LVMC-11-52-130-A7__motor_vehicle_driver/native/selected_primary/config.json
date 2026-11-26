@@ -13,12 +13,74 @@
   "duration_s": 30,
   "frames": 600,
   "cameras": [
-    {"name": "forward", "width": 1920, "height": 1080},
-    {"name": "rear", "width": 1280, "height": 720},
-    {"name": "left", "width": 1280, "height": 720},
-    {"name": "right", "width": 1280, "height": 720}
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "surveyed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed_world_transform",
+      "fov_deg": 80
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "surveyed_world_transform",
+      "fov_deg": 80
+    }
   ],
-  "recording_description": "30-second source-bound driveway approach, stop, and full vehicle footprint against the surveyed opening; four original source cameras",
+  "recording_description": {
+    "summary": "30-second source-bound driveway approach, stop, and full vehicle footprint against the surveyed opening; four original source cameras",
+    "channels": [
+      {
+        "name": "st.driveway_or_alley_entrance",
+        "method": "reviewed original driveway curb-boundary survey"
+      },
+      {
+        "name": "rel.centre_distance",
+        "method": "same-frame Native body footprint projected to surveyed opening"
+      },
+      {
+        "name": "drv.standing_or_parked",
+        "method": "same-frame Native speed and parking-brake trace"
+      },
+      {
+        "name": "rel.occupies",
+        "method": "original Native body footprint overlap with reviewed opening"
+      },
+      {
+        "name": "kin.extent",
+        "method": "Native bounding-box world vertices projected to reviewed road axis"
+      },
+      {
+        "name": "ru.official_vehicle",
+        "method": "independently reviewed USPS identity and official-business source"
+      },
+      {
+        "name": "dev.regulatory_sign",
+        "method": "independent original driveway sign and direction review"
+      }
+    ],
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary"
+  },
   "physical_acceptance_claimed": false,
-  "legal_verdict": null
+  "legal_verdict": null,
+  "supported_case_ids": [
+    "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02"
+  ],
+  "target_gap_m": 1.2
 }

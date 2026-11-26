@@ -4,6 +4,8 @@ import json
 import hashlib
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -31,6 +33,14 @@ class ConstructionTests(unittest.TestCase):
         proof = check_pair(base=self.base)
         self.assertTrue(proof['passed'])
         self.assertEqual(proof['crossing_frames'], [1350, 1200])
+
+    def test_runner_accepts_both_work_area_case_ids(self):
+        for suffix in ('probe_c', 'probe_d'):
+            process = subprocess.run(
+                [sys.executable, '-B', str(HERE / 'runner.py'), '--check',
+                 '--case', suffix], capture_output=True, text=True, check=True)
+            self.assertEqual(json.loads(process.stdout)['crossing_frames'],
+                             [1350, 1200])
 
     def test_clearly_marked_work_area_pair(self):
         proof = check_pair(base=self.base, pair=('probe_c', 'probe_d'))

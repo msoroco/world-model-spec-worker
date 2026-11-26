@@ -344,7 +344,7 @@ def capture(output_dir, suffix, host, port):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--case', choices=('probe_a', 'probe_b'))
+    parser.add_argument('--case', choices=('probe_a', 'probe_b', 'probe_c', 'probe_d'))
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
