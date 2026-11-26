@@ -1,3 +1,13 @@
+# C136559 signed speed-zone CPU handoff (2026-11-25)
+
+Status is **ready / delivery_prepared**. Exact scoped `.venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-620-2__motor_vehicle_driver --complete --require-delivery-ready` passed (`cpu-nov25-ready-strict.log`, SHA-256 `9112e4915f42ba668e9d968766763324124a16eecb929c74e2f539d6ca3d74c9`). The six exact selected cases and six risk-specific `fallback1` constructions have refreshed offline and positive/negative compatibility proofs bound to the new construction hashes. Six physical/lifecycle fixture receipts were refreshed; the selected saved-only, delivery and five comparison audits remain valid source-gated CPU checks. The focused suite passed 16 tests (`cpu-nov25-ready-tests.log`, SHA-256 `650998c65726dde0b48629d7d0abf9e358be1beb7f580390c8c8bc860c975760`).
+
+The ready contract repair added a four-camera, 45-second synchronized capture plan to `case-plan.json`. Because that plan is embedded in every construction, all 12 constructions and their source-bound offline/compatibility receipts were refreshed. `queue-proposal.json` contains six selected case rows, five comparison rows and six `fallback1` prepare commands, matching the selected manifest and case plan. Proposal SHA-256 `6b2d640b80d81b8f943406ba63687663d88170a7de5357d9bc17228c0b8ff70b`. The proposal is assignment-local for lead integration.
+
+Original delivery still requires a reviewed road, speed-zone establishment order, directional sign placement/authority and vehicle-classification packet; all six original Native 900-frame attempts; independent camera pixel, speed/zone/sign and physical review. The authored 25 mph site sign is not a statutory numeric threshold. Whether an installed sign is legally appropriate remains source-gated judgment; diagnostic software checks do not claim original physical success or a legal verdict.
+
+## Historical checkpoint
+
 # C136559 NRS 484B.620(2) signed speed zone handoff
 
 Status: partial. Six exact delivery constructions and five controlled comparisons are selected. No original reviewed C136559 road, speed-zone order, governing-sign, directional-lane, or vehicle-classification packet is supplied by the frozen assignment. The 25 mph sign is an authored site instruction for these probes, not a statutory threshold. No diagnostic result is represented as a physical or legal outcome.

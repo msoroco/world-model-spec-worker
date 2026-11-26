@@ -8,7 +8,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / '.runtime-work/c143687-nov25a'
+SCRATCH = REPO / '.runtime-work/c143687-reproof'
 ASSIGNMENT = HERE.name
 NAMES = ('posted_enter', 'posted_stop', 'posted_remain_trail')
 
@@ -31,23 +31,23 @@ def main() -> None:
         if suffix not in NAMES:
             raise ValueError('nonselected bicycle case')
         folder = HERE / 'cases' / suffix
-        origin = SCRATCH / ('v2-compat-' + suffix)
+        origin = SCRATCH / ('compat-' + suffix)
         for name, path in {
             'compatibility.json': origin / 'compatibility.json',
             'cpu-compat-analysis.log': origin / 'compatibility-analysis.log',
             'negative-analysis.log': origin / 'negative-analysis.log',
-            'offline.log': SCRATCH / ('v2-offline-' + suffix) / 'offline.log',
+            'offline.log': SCRATCH / ('offline-' + suffix) / 'offline.log',
         }.items():
             copy(path, folder / name)
         saved = HERE / ('cpu-pinned-saved-' + suffix + '.json')
-        copy(SCRATCH / ('v2-saved-' + suffix + '.json'), saved)
+        copy(SCRATCH / ('saved-' + suffix + '/v0001/processing.json'), saved)
         entry = json.loads(json.dumps(source))
         construction_sha = entry['construction_sha256']
         physics = folder / 'physical-preparation.json'
         script = HERE / 'prove_delivery_contract.py'
         command = f'.venv-cpu/bin/python work/{ASSIGNMENT}/prove_delivery_contract.py --case {case_id}'
         entry.update(kind='delivery', status='source_gated_cpu_preparation',
-                     offline={'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --output .runtime-work/c143687-nov25a/v2-offline-{suffix} --python $PWD/.venv-cpu/bin/python',
+                     offline={'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --output .runtime-work/c143687-reproof/offline-{suffix} --python $PWD/.venv-cpu/bin/python',
                               'exit_code': 0, 'log': f'cases/{suffix}/offline.log',
                               'log_sha256': sha(folder / 'offline.log'),
                               'construction_sha256': construction_sha},
@@ -94,15 +94,15 @@ def main() -> None:
         for candidate in entry['candidates']:
             if candidate['id'] != 'fallback1' or suffix != 'posted_enter':
                 raise ValueError('unexpected bicycle fallback')
-            other = SCRATCH / 'v2-compat-fallback1'
+            other = SCRATCH / 'compat-fallback1'
             for name, path in {
                 'fallback1-compatibility.json': other / 'compatibility.json',
                 'fallback1-cpu-compat-analysis.log': other / 'compatibility-analysis.log',
                 'fallback1-negative-analysis.log': other / 'negative-analysis.log',
-                'fallback1-offline.log': SCRATCH / 'v2-offline-fallback1/offline.log',
+                'fallback1-offline.log': SCRATCH / 'offline-fallback1/offline.log',
             }.items():
                 copy(path, folder / name)
-            candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --candidate fallback1 --output .runtime-work/c143687-nov25a/v2-offline-fallback1 --python $PWD/.venv-cpu/bin/python',
+            candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --candidate fallback1 --output .runtime-work/c143687-reproof/offline-fallback1 --python $PWD/.venv-cpu/bin/python',
                                     'exit_code': 0, 'construction_sha256': candidate['construction_sha256'],
                                     'log': f'cases/{suffix}/fallback1-offline.log',
                                     'log_sha256': sha(folder / 'fallback1-offline.log')}

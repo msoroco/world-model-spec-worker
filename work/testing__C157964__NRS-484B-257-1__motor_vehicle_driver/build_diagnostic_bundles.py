@@ -10,7 +10,8 @@ from yield_view import CASES
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
-SOURCES = ("yield_view.py", "reviewed_site.py", "native_capture.py",
+SOURCES = ("yield_view.py", "reviewed_site.py", "preflight_native_site.py",
+           "native_adapter.py", "native_capture.py",
            "saved_audit.py", "saved_finalizer.py", "comparison_audit.py",
            "delivery_audit.py", "judgment_sweep.py", "analysis.py")
 CHANNELS = (
@@ -41,9 +42,11 @@ RUNNER = '''"""Exact yield-sign Native entrypoint; a reviewed site and adapter a
 import argparse
 import importlib
 import json
+import os
 from pathlib import Path
 
 from native_capture import capture
+from preflight_native_site import preflight
 from yield_view import CASES
 
 
@@ -71,15 +74,20 @@ def main():
     parser.add_argument("--site", type=Path)
     parser.add_argument("--source-root", type=Path)
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--adapter-module")
+    parser.add_argument("--adapter-module", default=os.getenv("C157964_ADAPTER_MODULE", "native_adapter"))
+    parser.add_argument("--host", default=os.getenv("CARLA_HOST"))
+    parser.add_argument("--port", default=os.getenv("CARLA_PORT"))
     args = parser.parse_args()
     config, case = check(Path(__file__).resolve().parent)
     if args.check:
         print(config["selected_case_id"])
         return
-    if not all((args.site, args.source_root, args.output_dir, args.adapter_module)):
-        raise ValueError("reviewed original site, source root, Native adapter and output are required")
-    adapter = importlib.import_module(args.adapter_module).create_adapter(config)
+    if not all((args.site, args.source_root, args.output_dir, args.adapter_module,
+                args.host, args.port)):
+        raise ValueError("reviewed original site, source root, Native adapter, CARLA host/port and output are required")
+    preflight(args.site, args.source_root, case.case_id)
+    adapter = importlib.import_module(args.adapter_module).create_adapter(
+        config, args.host, int(args.port))
     print(json.dumps(capture(adapter, args.site, args.source_root, args.output_dir, case), sort_keys=True))
 
 
@@ -140,7 +148,11 @@ def build():
                  "original-attempt" / "reviewed-site-packet.json").read_bytes()
             ).hexdigest(),
             "required_atoms": [], "source_packets": [],
-            "cameras": [{"name": view} for view in CAMERAS],
+            "cameras": [{"name": view, "width": 1920 if view == "overview" else 1280,
+                         "height": 1080 if view == "overview" else 720,
+                         "fov_deg": 90,
+                         "pose_strategy": "reviewed site and original actor readback"}
+                        for view in CAMERAS],
             "case": {"case_id": case_id, "recording_description": RECORDING},
         }
         files = [{"path": "config.json", "content": json.dumps(config, sort_keys=True) + "\n"},
@@ -195,7 +207,8 @@ def build():
             "missing_proofs": ["selected compatibility and negative source",
                                "recorded-only processing and original physical review",
                                "independent selected delivery and comparison receipts"]})
-    write_json(ROOT / "execution-manifest.json", selected)
+    if not (ROOT / "execution-manifest.json").exists():
+        write_json(ROOT / "execution-manifest.json", selected)
     print(json.dumps({"cases": len(cases), "manifest": str(ROOT / "diagnostic-execution-manifest.json")}, sort_keys=True))
 
 

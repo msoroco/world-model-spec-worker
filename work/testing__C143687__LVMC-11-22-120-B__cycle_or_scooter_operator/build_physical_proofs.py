@@ -12,7 +12,7 @@ from runner import MOTIONS
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / '.runtime-work/c143687-nov25a'
+SCRATCH = REPO / '.runtime-work/c143687-reproof'
 ASSIGNMENT = HERE.name
 
 
@@ -33,8 +33,8 @@ def main() -> None:
         raise ValueError('export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work first')
     for name in MOTIONS:
         case_id = ASSIGNMENT + '__' + name
-        attempt = SCRATCH / ('v2-compat-' + name)
-        saved = SCRATCH / ('v2-saved-' + name + '.json')
+        attempt = SCRATCH / ('compat-' + name)
+        saved = SCRATCH / ('saved-' + name + '/v0001/processing.json')
         if not saved.is_file() or not attempt.is_dir():
             raise ValueError('pinned selected compatibility/saved source absent: ' + name)
         folder = HERE / 'cases' / name

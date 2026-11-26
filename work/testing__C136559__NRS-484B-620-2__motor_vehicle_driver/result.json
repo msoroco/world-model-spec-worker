@@ -11,13 +11,13 @@
     "selected_comparison_positive_negative": 5,
     "selected_delivery_positive_negative": 6
   },
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C136559__NRS-484B-620-2__motor_vehicle_driver --case testing__C136559__NRS-484B-620-2__motor_vehicle_driver__signed_below --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "a87c3eb7bfb42cd9b760466e45beafe03d59edea0c8287dd09a379af0bbcb801",
-  "readiness_kind": "executable_cpu_checkpoint",
-  "reason": "Six exact primary/fallback bundles pass pinned offline and positive/negative diagnostic compatibility. Six recorded-only saved processing proofs, six physical/lifecycle fixture receipts, six independent selected delivery positive/negative audits, and five comparison positive/negative audits are bound. Direct execution, semantic, compatibility and delivery validators pass. No reviewed original C136559 road/zone/sign source packet exists in frozen input, and appropriate-sign judgment sweep remains source-gated; strict ready acceptance rejects truthful partial status.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
     "Acquire reviewed original C136559 road/zone/sign sources and Native CARLA capture for each selected case; verify original motion, cameras, weather, sign suitability and legal interpretation."
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C136559__NRS-484B-620-2__motor_vehicle_driver/tests -v",
@@ -32,10 +32,10 @@
       "sha256": "9112e4915f42ba668e9d968766763324124a16eecb929c74e2f539d6ca3d74c9"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-620-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-check.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C136559__NRS-484B-620-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-ready-tests.log",
+      "sha256": "650998c65726dde0b48629d7d0abf9e358be1beb7f580390c8c8bc860c975760"
     }
   ]
 }
