@@ -171,3 +171,22 @@ Pinned `runtime.py preflight` passed with the installed CPU dependencies, ffmpeg
 The deeper pinned fallback validator found that the first binding used `four-view-receipt.json` in the compatibility receipt slot. All eighteen fallback bindings were corrected to the exact `compatibility.json` produced by each passing command, with SHA-256 recomputed. With `SCENARIO_PIPELINE_OUTPUT_ROOT` set under `.runtime-work/`, direct `package_compatibility.check_receipts` passed for all eleven cases; `candidate_constructions.validate(required=True, require_alternate=True, candidate_count=4)` and `physical_preparation.validate` passed for all six width cases. The assignment-scoped `worker_check.py --complete` passed again. A returned-text scan found no trailing whitespace or conflict markers in C149752 and the edited shared files; all 8,577 returned files are under the 2 MiB per-file cap.
 
 All six width manifest entries now bind the canonical `CARLA_PYTHON`, `CARLA_HOST` and `CARLA_PORT` native handoff variables. Direct pinned `execution_manifest.validate` passes for all eleven selected cases. The canonical cases proposal now includes the same-law `truck_follow_qualitative_review` judgment sweep, with its semantic-index SHA-256 rebound; direct `semantic_delivery.validate` passes with seven stages and eleven selected cases. The sweep remains incomplete pending original Native sources. Independent delivery and comparison audits, root executable materialization and ordered GPU queue bindings are the next CPU steps before a ready claim.
+
+## 2026-11-26 current-runtime renewal
+
+The eleven selected exact cases are:
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_over_500_ft`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__two_lanes`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in`
+- `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in`
+
+All eleven cases and their thirty-three justified fallback candidates passed fresh `runtime.py offline` and positive/missing-source `runtime.py compatibility` CPU proofs against current runtime SOURCE-MANIFEST SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. Current receipts and logs are bound under `current-runtime-proof/`; the previous runtime manifest and receipts are retained under `prior-runtime-20261125/`. The construction source bindings and diagnostic recipes required no change.
+
+Scoped strict proof: `.venv-cpu/bin/python worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. CPU preparation does not establish actual Native motion, source camera visibility, physical clearance or legal acceptance.

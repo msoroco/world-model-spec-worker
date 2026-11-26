@@ -399,3 +399,25 @@ Eight historical command logs are preserved byte-for-byte in `command-log-archiv
 ## 2026-11-23 historical result-only log archival
 
 Six historical result-only proof logs and their exact result test rows were preserved byte-for-byte in `work/_shared/c149237-result-only-logs-20261123.tar.xz` (SHA256 `bc86cea5e442eabd5f262c5b3137d5fe3b87965191d2b184ff944a5128bbcdba`). Its index includes each original path, size and SHA256; every archived member was decompressed and rehashed. Their redundant `result.json.tests` rows were removed. The current C149237 assignment-scoped strict ready gate still passes. This freed five returned-file slots for C215286 root construction without changing the ready status.
+
+## 2026-11-26 current-runtime renewal
+
+The fourteen selected exact cases are:
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_above_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_at_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_above_80in`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m`
+- `testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft`
+
+All fourteen cases and their forty-two justified fallback candidates passed fresh `runtime.py offline` and positive/missing-source `runtime.py compatibility` CPU proofs against current runtime SOURCE-MANIFEST SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. Current receipts and logs are bound under `current-runtime-proof/`; the previous runtime manifest and receipts are retained under `prior-runtime-20261125/`. The construction source bindings and diagnostic recipes required no change.
+
+Scoped strict proof: `.venv-cpu/bin/python worker_check.py --assignment testing__C149237__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. CPU preparation does not establish actual Native motion, source camera visibility, physical clearance or legal acceptance.

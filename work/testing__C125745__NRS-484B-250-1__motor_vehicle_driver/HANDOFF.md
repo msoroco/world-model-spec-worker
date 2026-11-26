@@ -240,3 +240,17 @@ The first scoped ready gate after all 16 saved paths passed reached a case-plan 
 
 ## 2026-11-22 scoped strict delivery gate passed
 All four exact cases and three fallbacks each now pass current offline and positive/missing-source compatibility proofs. The final manifest SHA-256 is `8a1b17e385fec5c8c7a149af5df8c57588aa2866cffd08e4846c5994ee238114`. All 16 recorded-only saved paths were rerun against that hash and independently checked for 900 joined frames, exact candidate selection, receipt digest and unchanged original source. The three source-only comparisons pass; six changed sign/camera sources are rejected. Fifteen unit tests, preflight, and four positive plus four expected-negative delivery boundary fixtures pass. `result.json` is now `ready` / `delivery_prepared` with 201 passing command entries, and `.venv-cpu/bin/python worker_check.py --assignment testing__C125745__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready` exits 0. Native physical and legal outcomes remain for the later delivery run; no acceptance is claimed here.
+
+## 2026-11-26 current-runtime renewal
+
+The four selected cases are:
+- `testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first`
+- `testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first`
+- `testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside`
+- `testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left`
+
+All four exact cases and all three justified fallback candidates per case passed fresh current-runtime `runtime.py offline` and positive/negative `runtime.py compatibility` proofs. The current runtime SOURCE-MANIFEST SHA-256 is `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. The generated CPU proof receipts and analysis logs are bound under `current-runtime-proof/`; the prior execution manifest and its receipts are preserved under `prior-runtime-20261125/`.
+
+The original synthetic traces lacked `velocity_mps` at their top level. Each trace row now copies the matching frame and actor velocity from its existing `capture/evidence.jsonl` original observation; all four diagnostic recipes and capture source hashes were rebound. The selected constructions now embed the current same-package case plan, including its three comparison IDs, and their construction hashes were rebound. Four synthetic physical preparation receipts were rerun for complete motion, incomplete motion, missing evidence and lifecycle closure against the renewed constructions. These fixtures establish CPU software behavior only.
+
+Scoped strict proof: `.venv-cpu/bin/python worker_check.py --assignment testing__C125745__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. The current execution manifest is `execution-manifest.json`; future CPU replay can run the same scoped command. Actual Native motion, camera pixels and legal acceptance remain for later physical delivery.
