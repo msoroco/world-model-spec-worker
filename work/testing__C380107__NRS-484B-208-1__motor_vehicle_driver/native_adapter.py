@@ -6,7 +6,7 @@ import math
 import queue
 from pathlib import Path
 
-from package_contract import CAMERAS
+from package_contract import ASSIGNMENT, CAMERAS
 
 
 def finite(value):
@@ -167,6 +167,48 @@ class NativeAdapter:
                 json.dumps({"source_kind": "reviewed_original_site", "case_id": self.scene["case_id"],
                             "site_path": self.scene["site_path"], "site_sha256": self.scene["site_sha256"],
                             "source_refs": self.scene["source_refs"]}, sort_keys=True) + "\n", encoding="utf-8")
+            if len(self.rows) == 900 and len(self.frame_map) == 900:
+                refs = self.scene["source_refs"]
+                context = {"assignment_id": ASSIGNMENT, "case_id": self.scene["case_id"],
+                           "diagnostic_fixture": False,
+                           "same_direction_lane_ids": [str(x) for x in self.scene["same_direction_lane_ids"]],
+                           "extreme_left_lane_id": str(self.scene["extreme_left_lane_id"]),
+                           "posted_limit_mps": self.scene["posted_limit_mps"],
+                           "hov_designation_state": self.scene["schedule"]["hov_designation_request"],
+                           "hov_compliance_state": self.scene["schedule"]["hov_compliance_request"],
+                           "original_hov_occupancy_count":
+                               self.scene["actor_poses"]["reviewed_original_occupant_count"]}
+                source_keys = {"controlled_access_source": "lane_geometry",
+                               "lane_marking_source": "lane_geometry",
+                               "extreme_left_lane_source": "lane_geometry",
+                               "posted_limit_source": "posted_limit",
+                               "geographical_boundary_source": "geographical_boundary",
+                               "driver_identity_source": "actor_poses",
+                               "motor_vehicle_source": "actor_poses",
+                               "hov_designation_source": "hov_designation",
+                               "hov_hours_source": "hov_hours",
+                               "hov_occupancy_rule_source": "hov_occupancy_rule",
+                               "hov_access_source": "hov_access",
+                               "hov_sign_source": "hov_sign",
+                               "hov_vehicle_category_source": "hov_vehicle_category",
+                               "hov_compliance_source": "hov_compliance",
+                               "knowledge_circumstances_source": "knowledge_circumstances",
+                               "other_exceptions_source": "other_exceptions"}
+                context.update({field: refs[key] for field, key in source_keys.items()})
+                context_path = self.output_dir / "context.json"
+                trace_path = self.output_dir / "original-motion.jsonl"
+                context_path.write_text(json.dumps(context, sort_keys=True) + "\n", encoding="utf-8")
+                (self.output_dir / "trace.json").write_text(
+                    json.dumps({"assignment_id": ASSIGNMENT, "case_id": self.scene["case_id"],
+                                "diagnostic_fixture": False, "frames": self.rows}, sort_keys=True) + "\n",
+                    encoding="utf-8")
+                (self.output_dir / "original-receipt.json").write_text(
+                    json.dumps({"source_kind": "original_native_capture", "assignment_id": ASSIGNMENT,
+                                "case_id": self.scene["case_id"], "diagnostic_fixture": False,
+                                "fps": 20, "frame_count": 900,
+                                "context_sha256": hashlib.sha256(context_path.read_bytes()).hexdigest(),
+                                "trace_sha256": hashlib.sha256(trace_path.read_bytes()).hexdigest()},
+                               sort_keys=True) + "\n", encoding="utf-8")
         for actor in reversed(self.owned):
             try:
                 if hasattr(actor, "stop"):

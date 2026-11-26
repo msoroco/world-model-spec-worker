@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-route-motion.json",
+    "remove": [
+      "original-route-motion.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-site.json"
+      ],
+      "kind": "sourced_context",
+      "method": "build_report",
+      "output_key": "highway_vehicle_context",
+      "requirement": "Qualifying motor vehicle and driver or operator on a source-reviewed highway",
+      "source": "NRS 484B.627(1)(c)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-route-motion.json"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "following_motion_measurement",
+      "requirement": "Speed so slow as to impede traffic proceeding immediately behind",
+      "source": "NRS 484B.627(1)(c)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-site.json",
+        "original-route-motion.json"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "alternate_route_measurement",
+      "requirement": "Controlled-access highway and alternate routes whenever possible",
+      "source": "NRS 484B.627(1)(c)",
+      "value_type": "object"
+    }
+  ]
+}

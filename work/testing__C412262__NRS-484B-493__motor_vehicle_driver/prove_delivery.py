@@ -25,7 +25,9 @@ def output_of(command: str) -> Path:
 
 
 def write_log(path: Path, run: subprocess.CompletedProcess) -> None:
-    path.write_text((run.stdout + run.stderr).rstrip() + "\n", encoding="utf-8")
+    message = (run.stdout + run.stderr).rstrip() or (
+        "diagnostic source audit exited " + str(run.returncode))
+    path.write_text(message + "\n", encoding="utf-8")
 
 
 def main() -> None:

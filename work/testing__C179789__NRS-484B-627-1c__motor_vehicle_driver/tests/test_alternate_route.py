@@ -13,7 +13,9 @@ def scene(case):
          'alternate_restriction_state': 'open' if case.alternate_declared else 'restricted',
          'main_route_xy': [[0, 0], [10, 0], [30, 0]],
          'alternate_route_xy': [[0, 0], [10, 0], [20, 10]],
-         'follower_route_xy': [[0, 0], [10, 0], [30, 0]]}
+         'follower_route_xy': [[0, 0], [10, 0], [30, 0]],
+         'follower_spawn_xy': [-10, 0],
+         'follower_spawn_source_sha256': 'fixture-follower-spawn'}
     for field in ('jurisdiction', 'highway_classification', 'controlled_access_classification',
                   'ego_vehicle', 'ego_driver_control', 'main_route', 'alternate_route',
                   'alternate_restrictions', 'journey_destination', 'follower_route',

@@ -72,9 +72,18 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
     if any(not isinstance(view, dict) or not view.get("pose") or not view.get("fov_deg")
            for view in cameras.values()):
         raise ValueError("reviewed camera pose or field of view missing")
+    expected_sizes = {"overview": (1920, 1080), "approach": (1280, 720),
+                      "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+    if any((view.get("width"), view.get("height")) != expected_sizes[name] or
+           not all(key in view["pose"] for key in ("x", "y", "z", "pitch", "yaw", "roll"))
+           for name, view in cameras.items()):
+        raise ValueError("reviewed four-view capture profile differs")
+    if not isinstance(scene.get("reviewed_alternate_road_ids"), list) or not scene["reviewed_alternate_road_ids"]:
+        raise ValueError("reviewed alternate road identities missing")
     return {"format": "c179789-source-gated-route-plan-v1", "case_id": case_id,
             "site_sha256": site_ref["sha256"], "map_sha256": _sha(map_path),
             "restriction_sha256": _sha(restriction_path), "map_path": str(map_path),
             "scene": scene, "cameras": cameras, "hz": 20, "frames": 900,
+            "requested_route": case.route_choice,
             "physical_acceptance": False, "legal_judgment": None,
             "possible_route_judgment": None}

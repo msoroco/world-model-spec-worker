@@ -36,8 +36,8 @@ def build() -> dict:
                                                 "--validator \"$LEAN_VALIDATOR\" "
                                                 "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
                      "additional_source_audit_command": (f".venv-cpu/bin/python work/{ASSIGNMENT}/"
-                                                         "source_audit.py --repo \"$PWD\" "
-                                                         "--output \"$SOURCE_AUDIT_RECEIPT\""),
+                                                         "diagnostic_delivery_audit.py --index \"$DELIVERY_INDEX\" "
+                                                         f"--case {case_id} --output \"$SOURCE_AUDIT_RECEIPT\""),
                      "accept_command": (common + "accept-delivery " + dispatch +
                                         " --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" "
                                         "--audit \"$AUDIT\" --review-archive /external/archive"),
@@ -51,9 +51,9 @@ def build() -> dict:
                                 "--output \"$COMPARISON_AUDIT_RECEIPT\"")}
                    for comparison in plan["comparisons"]]
     return {"format": "worker-ordered-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
-            "status": "partial_unbound_street_sources_and_manifest", "source": "case-plan.json",
+            "status": "source_gated_cpu_prepared", "source": "case-plan.json",
             "cases": rows, "comparison_audit_commands": comparisons,
-            "dispatch_limit": "Do not dispatch until source-bound selected manifest and CPU proofs pass."}
+            "dispatch_limit": "Original reviewed street, notice, halt purpose and Native capture sources must be supplied and audited before physical or legal acceptance."}
 
 
 if __name__ == "__main__":

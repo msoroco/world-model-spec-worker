@@ -61,6 +61,12 @@ def validate_scene(scene: Mapping, case: Case):
             'routes do not share relevant approach segment')
     require(scene['main_route_xy'] != scene['alternate_route_xy'],
             'alternate does not differ from main route')
+    follower_spawn = scene.get('follower_spawn_xy')
+    require(isinstance(follower_spawn, list) and len(follower_spawn) == 2 and
+            all(number(value) for value in follower_spawn) and
+            follower_spawn != scene['main_route_xy'][0] and
+            scene.get('follower_spawn_source_sha256'),
+            'source-reviewed separated follower spawn missing')
     require(scene.get('alternate_restriction_state') in ('open', 'restricted'),
             'alternate restriction state missing')
     require((scene['alternate_restriction_state'] == 'open') is case.alternate_declared,
@@ -77,7 +83,7 @@ def construct(adapter, scene: Mapping, case: Case):
         ego = adapter.spawn_vehicle(scene['main_route_xy'][0], 'ego')
         require(ego is not None, 'ego spawn failed')
         owned.append(ego)
-        follower = adapter.spawn_vehicle(scene['follower_route_xy'][0], 'follower')
+        follower = adapter.spawn_vehicle(scene['follower_spawn_xy'], 'follower')
         require(follower is not None, 'follower spawn failed')
         owned.append(follower)
         adapter.set_route(ego, scene[case.route_choice + '_route_xy'])

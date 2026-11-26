@@ -6,15 +6,15 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from alternate_route import CASES
 from source_gated_sweeps import prepare
-from test_reviewed_route_scene import ReviewedRouteSceneTest, write
+import test_reviewed_route_scene as reviewed
 
 
 class SourceGatedSweepTest(unittest.TestCase):
     def setUp(self):
-        ReviewedRouteSceneTest.setUp(self)
+        reviewed.ReviewedRouteSceneTest.setUp(self)
 
     def sweep_packet(self):
-        ref = ReviewedRouteSceneTest.packet(self, CASES[0])
+        ref = reviewed.ReviewedRouteSceneTest.packet(self, CASES[0])
         site_path = self.root / "site.json"
         site = json.loads(site_path.read_text())
         site["reviewed_control_feasibility"] = {
@@ -25,7 +25,7 @@ class SourceGatedSweepTest(unittest.TestCase):
             "restriction_source": "diagnostic fake restriction source",
             "alternate_route_xy": [[0, 0], [10, 0], [20, lead]]}
             for lead in (40.0, 60.0, 80.0)]
-        return write(site_path, site)
+        return reviewed.write(site_path, site)
 
     def test_six_exact_source_gated_engineering_plans(self):
         ref = self.sweep_packet()
@@ -42,11 +42,11 @@ class SourceGatedSweepTest(unittest.TestCase):
         site_path = self.root / "site.json"
         site = json.loads(site_path.read_text())
         site["reviewed_control_feasibility"].pop("source")
-        ref = write(site_path, site)
+        ref = reviewed.write(site_path, site)
         with self.assertRaisesRegex(ValueError, "physical speed range missing"):
             prepare(self.root, ref)
         site["reviewed_control_feasibility"]["source"] = "fake"
         site["reviewed_alternate_opportunities"].pop()
-        ref = write(site_path, site)
+        ref = reviewed.write(site_path, site)
         with self.assertRaisesRegex(ValueError, "entry geometry and spacing missing"):
             prepare(self.root, ref)

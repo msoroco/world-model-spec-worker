@@ -1,9 +1,65 @@
 {
-  "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
-  "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
-  "status": "partial",
-  "readiness_kind": "diagnostic_only",
   "applied_update": 0,
+  "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
+  "failed_gates": [
+    {
+      "command": "direct pinned execution_manifest.validate for testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
+      "exit_code": 1,
+      "log": "cpu-nov25-selected-validator.log",
+      "sha256": "1558178d7e8afe3ac96f45b92cb8dfbf2fb66898b4879e76b5ac7a0d2261f847"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25-reviewed-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c10301-nov25b-runtime .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25b-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "direct pinned execution_manifest.validate",
+      "exit_code": 1,
+      "log": "cpu-nov26-selected-validator.log",
+      "sha256": "8d18ea7d05a940bbe0ee209a170627739c569e0563e91274462dcb69a5faaf7c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov26-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    }
+  ],
+  "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
+  "queue_proposal": {
+    "cases": 2,
+    "comparisons": 1,
+    "path": "gpu-queue-proposal.json",
+    "sha256": "2ec5266da913a7efc3782d1efb5770e9c93337298c03282d0919e6128fc46993",
+    "status": "partial_attention_sweep_source_pending"
+  },
+  "readiness_kind": "source_gated_attention_sweep_partial",
+  "reason": "Two exterior selected cases retain current CPU proofs. A source-gated original-frame interior gaze readback and measurement seam is CPU-tested; a finite 0/5/10-second engineering probe proposal is staged without feasibility or legal cutoff claim. The canonical full-time-and-attention sweep remains incomplete because no reviewed municipal/site source, original interior sensor or Native-verified attention-control feasibility was supplied. New interior cases cannot receive source-bound construction, original offline, compatibility, delivery or comparison receipts until those inputs exist. No physical or legal acceptance is claimed.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
+  "strict_gate": {
+    "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+    "exit_code": 1,
+    "log": "cpu-interior-strict-nov26.log",
+    "reason": "truthful partial while reviewed interior sensor, feasible attention control and municipal site sources are absent",
+    "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+  },
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
@@ -550,55 +606,24 @@
       "exit_code": 0,
       "log": "cpu-nov26-static.log",
       "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-interior-tests-nov26.log",
+      "sha256": "f259f6c5528178386ff1999333b249d86944e9101ee79ed459468f4557a2cb4a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-interior-preflight-nov26.log",
+      "sha256": "96285fab1c3294ea4a472fa5fd86694bb33954dd9659273a6a861555512dbd06"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-interior-static-nov26.log",
+      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "The two exterior alley cases have current-hash selected construction, semantic proposal, 900-frame synthetic compatibility and saved-processing, physical fixture and independent source-audit proofs. The provisional exact-case queue now includes both cases and one comparison, but cannot become the shared dispatch queue while the full-time-and-attention sweep is incomplete. Pinned selected validation rejects `Expand sweeps with the main implementation before manifest generation`. The frozen input contains no reviewed interior sensor or original-frame eyes-off-road measurement, control-feasibility range, municipal applicability source, or reviewed original alley site packet. Exterior steering is not an interior attention observation or a legal verdict. The source-gated intake rejects synthetic packets for production. Keep partial pending these original sources, expanded exact cases and their source-bound CPU proofs.",
-  "failed_gates": [
-    {
-      "command": "direct pinned execution_manifest.validate for testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
-      "exit_code": 1,
-      "log": "cpu-nov25-selected-validator.log",
-      "sha256": "1558178d7e8afe3ac96f45b92cb8dfbf2fb66898b4879e76b5ac7a0d2261f847"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25-reviewed-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c10301-nov25b-runtime .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25b-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "direct pinned execution_manifest.validate",
-      "exit_code": 1,
-      "log": "cpu-nov26-selected-validator.log",
-      "sha256": "8d18ea7d05a940bbe0ee209a170627739c569e0563e91274462dcb69a5faaf7c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov26-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    }
-  ],
-  "queue_proposal": {
-    "path": "gpu-queue-proposal.json",
-    "sha256": "2ec5266da913a7efc3782d1efb5770e9c93337298c03282d0919e6128fc46993",
-    "status": "partial_attention_sweep_source_pending",
-    "cases": 2,
-    "comparisons": 1
-  }
+  ]
 }

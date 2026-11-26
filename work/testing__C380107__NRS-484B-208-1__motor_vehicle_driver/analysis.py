@@ -30,7 +30,14 @@ def measured_source(attempt, case_id):
         receipt = attempt / "original-receipt.json"
         if not receipt.is_file():
             raise ValueError("Missing required source: original-receipt.json")
-        return observe(case_id, context_path, trace_path, receipt)
+        original_trace = attempt / "original-motion.jsonl"
+        if not original_trace.is_file():
+            raise ValueError("Missing required source: original-motion.jsonl")
+        measured = observe(case_id, context_path, original_trace, receipt)
+        if trace.get("frames") != [json.loads(line) for line in original_trace.read_text(encoding="utf-8").splitlines()]:
+            raise ValueError("original wrapper differs from SHA-bound motion trace")
+        measured["original_hov_occupancy_count"] = context["original_hov_occupancy_count"]
+        return measured
     rows = trace.get("frames")
     if not isinstance(rows, list) or len(rows) != 900:
         raise ValueError("diagnostic 900-frame trace required")

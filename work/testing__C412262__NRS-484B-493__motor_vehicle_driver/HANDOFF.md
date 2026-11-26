@@ -1,22 +1,22 @@
 # C412262 NRS 484B.493 handoff
 
-Status: partial, source gated. Nine selected cases and eight declared comparisons. Diagnostic CPU proofs do not establish original physical capture or statutory outcome.
+Status: delivery prepared, with original street, notice, purpose and Native capture source gates retained. Nine exact selected cases and eight comparisons. Exact scoped `worker_check.py --assignment testing__C412262__NRS-484B-493__motor_vehicle_driver --complete --require-delivery-ready` exited 0 on 2026-11-26; output is in `strict-gate.log`.
 
-## Current CPU work
+## Completed CPU work
 
-- Current exact case plan, nine materialized source-gated constructions, nine case configs and measurement contracts, selected manifest, canonical draft proposals and ordered queue proposal are present.
-- Street scene constructor, 900-frame 20 Hz Native four-camera capture and source-sealing bridge, saved finalizer, selected analyzer, comparison isolation audit and delivery audit are implemented.
-- 25 focused unit tests, pinned runtime verify and preflight pass. Nine current-hash offline checks pass. Nine bounded synthetic diagnostic compatibility checks pass, including selected measurements, negative missing-source checks, Native validation, Lean decode and final decode. Nine diagnostic recorded-only revisions pass and preserve original fixture sources.
-- Diagnostic fixtures use nine frames and carry explicit synthetic provenance; none is an original physical witness. The full saved finalizer requires 900 original frames and four decoded FFV1 camera streams.
+- Nine materialized source-gated Native constructions, current-hash offline and compatibility checks, nine diagnostic recorded-only revisions, nine synthetic physical and lifecycle receipts, and the full eight-stage semantic proposal chain pass.
+- Nine independent positive diagnostic delivery audits and nine negative missing-context checks pass. Eight diagnostic comparisons check exact case identity, fixed camera protocol and the declared intervention difference. All diagnostic receipts explicitly deny original physical or legal acceptance.
+- Source-bound original capture, original-preserving saved measurement, independent original delivery audit and comparison audit are implemented. The selected original path requires 900 frames at 20 Hz and four FFV1 streams. The 25 focused unit tests, runtime verify and preflight pass.
+- The ordered queue proposal lists nine exact canonical jobs and eight comparison commands. Its additional source audit selects each exact case. GPU execution must wait for the reviewed original sources and Native operator.
 
-## Source boundary and next execution
+## Source gates and limitations
 
-- `source_audit.py --repo "$PWD"` reports zero accepted metadata packets and five missing source classes: street status/boundaries, one-way order/direction, official notice erection/content/extent, halt purpose/activity, and original Native capture. No legal threshold, site or device authority was inferred.
-- When source-reviewed original street/order/device and operator packets become available, bind their byte hashes in `source_records`, run the nine exact Native jobs and owner-release handoff, process the 900-frame original captures, then run the eight source-isolated comparison audits and physical/delivery acceptance.
-- Exact scoped `worker_check.py --assignment testing__C412262__NRS-484B-493__motor_vehicle_driver --complete` passed static checks. Exact scoped `--require-delivery-ready` exited 1 solely at the all-ready condition while `result.json` remains truthful partial; `strict-gate.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`.
+`source_audit.py` reports zero accepted original metadata packets and five missing classes: reviewed street status and boundaries; one-way order and direction; official notice erection, content, authority and extent; actual halt purpose and activity; original Native capture. These are required for original physical and statutory conclusions. Synthetic nine-frame diagnostics are CPU checks only. Generic travel-progress physical receipts establish fixture lifecycle coverage, not completion of a parking or standing act. No source fact or numeric legal cutoff was inferred.
 
-## Stable proof index
+## Stable proof hashes
 
-- `execution-manifest.json` SHA256 `1900d01adf077ce4515721b7a10b348447125d1282f35e97f273e59f4687f7cf`; nine offline, nine compatibility and nine diagnostic recorded-only receipts are referenced per case.
-- `cpu-runtime-verify.log`, `cpu-preflight.log`, `cpu-side-tests.log`, `cpu-source-audit.log` are current CPU proof logs.
-- `gpu-queue-proposal.json` lists nine exact jobs and eight comparison commands and remains explicitly unbound to unavailable source packets.
+- `execution-manifest.json`: `4d35460a4b804352b7b9d646814b0844a9f5965914b205caf4f6aff512a078a9`
+- `gpu-queue-proposal.json`: `7101850605dc660d0e7b8df126a16711f5e1dd1434898cdc4005eb547517c436`
+- `result.json`: `ecee797c9ef784f5b81a730daf54d455c003d1f65a0c02e3f6b6f950fffb0283`
+- `cpu-delivery-proofs.json`: `4662e11e610f13e6c19efc0b5860023b15f5c574d38886076c395cf6f3b3a4d2`
+- `comparison-proof-index.json`: `994dd0a04cc25310212e81b6899b18b5f31a3f16467bb25aec1cf8896081d7ed`

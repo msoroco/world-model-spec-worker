@@ -1,3 +1,13 @@
+# 2026-11-26 interior observation continuation
+
+`interior_attention.py` now supplies a source-gated Native interior readback seam and an original-frame measurement. It requires a reviewed sensor ID/source hash, exact case and 20 Hz frame joins, verifies sensor continuity, and reports measured eyes-off-road duration without an attention-state or legal verdict. Three new focused tests prove a four-frame synthetic readback, rejection of an unreviewed or changed sensor, and missing-frame rejection. The full focused suite passes 50 tests (`cpu-interior-tests-nov26.log`); pinned preflight and assignment-scoped partial checker pass (`cpu-interior-preflight-nov26.log`, `cpu-interior-static-nov26.log`).
+
+`attention-engineering-sweep.json` stages finite 0, 5 and 10 second requested interior control levels solely as coverage probes. Their physical feasibility and legal significance are explicitly unverified. The canonical `alley_attention_observation` sweep remains incomplete because no reviewed original interior sensor, Native-verified control-feasibility packet, municipal applicability source or original alley site packet was supplied. The new observation seam is not yet bound into a selected Native case construction; doing so and producing source-bound offline, compatibility, delivery and comparison proofs requires those reviewed inputs. The two exterior cases retain their existing proofs and do not establish interior attention.
+
+The exact scoped strict gate exits 1 on truthful partial status (`cpu-interior-strict-nov26.log`). `result.json` remains partial with SHA-256 `0167a48a924eed6d94b539e937f9ad326bc27fe427511fc09efd9743e6ae2a1c`. No physical or legal acceptance is claimed.
+
+---
+
 # testing__C10301__LVMC-11-22-010__motor_vehicle_driver
 
 ## 2026-11-26 provisional queue and independent source-audit CLI

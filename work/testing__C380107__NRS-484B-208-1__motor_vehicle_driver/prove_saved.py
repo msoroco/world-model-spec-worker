@@ -65,7 +65,7 @@ def main():
     entries = json.loads((HERE / "diagnostic-execution-manifest.json").read_text())["cases"]
     if len(entries) != 18:
         raise ValueError("all selected exact cases required")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         results = list(pool.map(one, entries))
     (HERE / "saved-proof-summary.json").write_text(
         json.dumps({"format": "c380107-saved-proof-summary-v1", "cases": results},

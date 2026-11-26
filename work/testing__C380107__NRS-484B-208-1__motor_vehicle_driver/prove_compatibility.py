@@ -63,7 +63,7 @@ def main():
     entries = json.loads(MANIFEST.read_text())["cases"]
     if len(entries) != 18:
         raise ValueError("exact eighteen selected cases required")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         results = list(executor.map(one, entries))
     (HERE / "cpu-compatibility-summary.json").write_text(
         json.dumps({"format": "worker-compatibility-proof-summary", "cases": results},

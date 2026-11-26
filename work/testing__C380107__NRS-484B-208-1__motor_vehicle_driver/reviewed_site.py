@@ -11,7 +11,8 @@ from package_contract import ASSIGNMENT, CELL
 
 SOURCES = ("opendrive", "lane_geometry", "posted_limit", "geographical_boundary",
            "hov_designation", "hov_hours", "hov_occupancy_rule", "hov_access",
-           "hov_sign", "hov_vehicle_category", "other_exceptions", "actor_poses")
+           "hov_sign", "hov_vehicle_category", "hov_compliance",
+           "knowledge_circumstances", "other_exceptions", "actor_poses")
 
 
 def source(root, ref):
@@ -58,12 +59,18 @@ def plan(root, site_ref, case_id):
         raise ValueError("four reviewed original camera poses required")
     schedule = selected_schedule(case_id, float(limit))
     designation = json.loads(paths["hov_designation"].read_text(encoding="utf-8"))
-    if designation.get("state") != schedule["hov_designation_request"]:
+    if (designation.get("source_kind") != "original_authority" or
+            designation.get("state") != schedule["hov_designation_request"]):
         raise ValueError("reviewed HOV designation does not realize selected request")
-    for key in ("hov_hours", "hov_occupancy_rule", "hov_access", "hov_sign", "hov_vehicle_category"):
+    for key in ("geographical_boundary", "hov_hours", "hov_occupancy_rule", "hov_access",
+                "hov_sign", "hov_vehicle_category", "knowledge_circumstances", "other_exceptions"):
         packet = json.loads(paths[key].read_text(encoding="utf-8"))
         if packet.get("source_kind") != "original_authority":
             raise ValueError("original HOV authority missing: " + key)
+    compliance = json.loads(paths["hov_compliance"].read_text(encoding="utf-8"))
+    if (compliance.get("source_kind") != "original_authority" or
+            compliance.get("state") != schedule["hov_compliance_request"]):
+        raise ValueError("reviewed HOV compliance does not realize selected request")
     return {"assignment_id": ASSIGNMENT, "case_id": case_id,
             "authority_root": str(Path(root).resolve()), "site_path": str(site_path),
             "site_sha256": site_ref["sha256"], "source_refs": {k: site[k] for k in SOURCES},

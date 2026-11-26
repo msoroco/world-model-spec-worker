@@ -38,8 +38,10 @@ class ReviewedRouteSceneTest(unittest.TestCase):
              "highway_legal_review": {"source": "fixture review"},
              "controlled_access_legal_review": {"source": "fixture review",
                                                   "declared": case.controlled_access},
-             "scene": scene(case), "camera_profiles": {name: {
-                 "pose": {"x": 0, "y": 0, "z": 3}, "fov_deg": 90}
+             "scene": dict(scene(case), reviewed_alternate_road_ids=[7]), "camera_profiles": {name: {
+                 "pose": {"x": 0, "y": 0, "z": 3, "pitch": 0, "yaw": 0, "roll": 0},
+                 "width": 1920 if name == "overview" else 1280,
+                 "height": 1080 if name == "overview" else 720, "fov_deg": 90}
                  for name in ("overview", "approach", "reference_corner", "driver_reference")}}
         return write(self.root / "site.json", x)
 

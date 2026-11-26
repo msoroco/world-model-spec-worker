@@ -1,3 +1,11 @@
+# 2026-11-26 current owner continuation
+
+Nine source-gated selected cases and seven comparisons remain partial. Current focused tests pass, pinned preflight passes, and all nine synthetic exact offline diagnostics pass again (`cpu-tests-nov26.log`, `cpu-preflight-nov26.log`, `cpu-offline-nov26.log`). The scoped partial checker passes (`cpu-static-nov26.log`). The exact scoped strict checker exits 1 at its all-ready condition because `result.json` truthfully remains partial (`cpu-strict-nov26.log`). Fresh canonical execution validation stops at `Exact-case offline check missing` for `red_no_device_entry` (`cpu-production-preflight-nov26.log`).
+
+The candidate OpenDRIVE still has zero signal and controller elements; supplied inputs contain no pedestrian indication setter/readback driver. A source-reviewed official route-facing signal and controlling controller, device inventory and executable readback, full public-highway boundary and camera placement are necessary before a production offline bundle or original Native receipt can be constructed. Existing Native acquisition and independent delivery/comparison audit code and negative source-seal proofs are present; diagnostic receipts do not satisfy original physical or legal acceptance. No unsupported source was invented. Current `result.json` SHA-256 `8dc555600278bc702793f855172c55e42c014a18f1e685b5684887a9212e9507`.
+
+---
+
 # testing__C227824__NRS-484B-307-8b__pedestrian
 
 ## 2026-11-26 nine-case source-gated CPU sweep and proof checkpoint
