@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -10,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from delivery_audit import ASSIGNMENT, CAMERAS, audit
+from delivery_audit import ASSIGNMENT, CAMERAS, audit, probe_video
 from reviewed_source import FIELDS
 from test_one_way_direction import probe, rows, scene
 
@@ -21,7 +22,9 @@ def sha(path):
 
 class DeliveryAuditTest(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = ROOT.parents[1] / '.runtime-work'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.case = probe.CASES[0]
@@ -71,7 +74,8 @@ class DeliveryAuditTest(unittest.TestCase):
                         'recording_id': 'test-recording',
                         'capture_seal_ref': ref('seal.json'), **refs}
         self.probe = lambda path: {'nb_read_frames': '900', 'r_frame_rate': '20/1',
-                                   'width': 1280, 'height': 720}
+                                   'width': 1920 if path.name == 'overview.mkv' else 1280,
+                                   'height': 1080 if path.name == 'overview.mkv' else 720}
 
     def test_positive_receipt_and_negative_tamper(self):
         result = audit(self.root, self.receipt, self.probe)
@@ -90,3 +94,19 @@ class DeliveryAuditTest(unittest.TestCase):
         self.receipt['video_refs'].pop('overview')
         with self.assertRaisesRegex(ValueError, 'sealed original source inventory differs|four original camera'):
             audit(self.root, self.receipt, self.probe)
+
+    def test_rejects_wrong_original_camera_profile(self):
+        def wrong_size(path):
+            item = self.probe(path)
+            if path.name == 'overview.mkv':
+                item['width'] = 1280
+            return item
+        with self.assertRaisesRegex(ValueError, 'camera size differs'):
+            audit(self.root, self.receipt, wrong_size)
+
+    def test_ffmpeg_probe_decodes_actual_video(self):
+        path = self.root / 'decode-probe.mkv'
+        subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                        'color=c=blue:s=64x64:r=20', '-frames:v', '4',
+                        '-c:v', 'ffv1', str(path)], check=True, capture_output=True)
+        self.assertEqual(probe_video(path)['nb_read_frames'], '4')

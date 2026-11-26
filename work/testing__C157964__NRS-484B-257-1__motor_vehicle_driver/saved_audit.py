@@ -29,7 +29,8 @@ def _contained(root, relative):
     return target
 
 
-def audit_saved(attempt, case, *, allow_diagnostic=False):
+def audit_saved(attempt, case, *, allow_diagnostic=False,
+                expected_site_packet_sha256=None):
     """Reopen all copied source bytes and 3,600 camera packets.
 
     Success is a CPU source-integrity result. It does not assert physical
@@ -43,9 +44,14 @@ def audit_saved(attempt, case, *, allow_diagnostic=False):
             seal.get("views") == list(VIEWS), "Native attempt seal differs")
     require(allow_diagnostic or seal.get("diagnostic_fixture") is False,
             "diagnostic attempt cannot be original delivery")
+    require(allow_diagnostic or expected_site_packet_sha256,
+            "independent reviewed site hash missing")
     packet_bytes = (root / "reviewed-site-packet.json").read_bytes()
     require(_sha(packet_bytes) == seal.get("site_packet_sha256"),
             "reviewed site packet changed")
+    if expected_site_packet_sha256 is not None:
+        require(_sha(packet_bytes) == expected_site_packet_sha256,
+                "independent reviewed site hash differs")
     packet = json.loads(packet_bytes)
     require(packet.get("format") == "c157964-reviewed-yield-site-v1" and
             packet.get("case_id") == case.case_id and

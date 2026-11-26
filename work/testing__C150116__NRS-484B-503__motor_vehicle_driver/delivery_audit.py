@@ -171,7 +171,9 @@ def main():
     case.add_argument('--case', required=True)
     case.add_argument('--output', type=Path, required=True)
     comparisons = sub.add_parser('comparisons')
-    comparisons.add_argument('--reports', type=Path, required=True)
+    comparisons.add_argument('--attempts', type=Path, required=True,
+                             help='JSON mapping each exact case ID to a closed original attempt directory')
+    comparisons.add_argument('--comparison', required=True)
     comparisons.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
@@ -179,10 +181,16 @@ def main():
     if args.command == 'case':
         result = audit_attempt(args.attempt, args.case)
     else:
-        report_index = read(args.reports)
-        need(isinstance(report_index, dict), 'exact original audit report index required')
+        attempt_index = read(args.attempts)
+        need(isinstance(attempt_index, dict), 'exact original attempt index required')
+        expected = {item['case_id'] for item in read(HERE / 'case-plan.json')['cases']}
+        need(set(attempt_index) == expected, 'seven exact original attempts required')
+        report_index = {cid: audit_attempt(attempt_index[cid], cid) for cid in sorted(expected)}
+        matched = [item for item in audit_comparisons(report_index)
+                   if item['comparison_id'] == args.comparison]
+        need(len(matched) == 1, 'unknown comparison ID')
         result = {'format': 'c150116-independent-comparison-audit-v1',
-                  'comparisons': audit_comparisons(report_index),
+                  'comparisons': matched,
                   'legal_status': 'unresolved', 'physical_acceptance': False}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + '\n')

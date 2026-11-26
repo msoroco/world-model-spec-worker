@@ -14,6 +14,7 @@ from native_capture import VIEWS, capture
 from comparison_audit import audit_pair
 from reviewed_site import SITE_ROLES
 from saved_audit import audit_saved
+from saved_finalizer import finalize
 from yield_view import CASES
 
 
@@ -157,6 +158,9 @@ class CaptureTests(unittest.TestCase):
                 self.assertEqual(audit["physical_completion"], "unverified")
                 with self.assertRaisesRegex(ValueError, "diagnostic attempt cannot be original delivery"):
                     audit_saved(out, case)
+                with self.assertRaisesRegex(ValueError, "independent reviewed site hash differs"):
+                    audit_saved(out, case, allow_diagnostic=True,
+                                expected_site_packet_sha256="0" * 64)
         for comparison_id, right_case in (("slow_vs_stop", CASES[1]),
                                           ("through_phase", CASES[2]),
                                           ("officer_exception", CASES[3])):
@@ -165,6 +169,14 @@ class CaptureTests(unittest.TestCase):
                                     attempts[right_case.case_id], allow_diagnostic=True)
                 self.assertEqual(report["decoded_camera_frames"], 7200)
                 self.assertEqual(report["physical_difference"], "unverified")
+        saved_output = self.root / "saved-finalization.json"
+        final = finalize(attempts[CASES[0].case_id], saved_output,
+                         CASES[0], allow_diagnostic=True)
+        self.assertFalse(final["original_attempt_modified"])
+        self.assertEqual(final["source_audit"]["decoded_camera_frames"], 3600)
+        with self.assertRaisesRegex(ValueError, "output already exists"):
+            finalize(attempts[CASES[0].case_id], saved_output,
+                     CASES[0], allow_diagnostic=True)
         camera = attempts[CASES[0].case_id] / "cameras/overview/0000.png"
         camera.write_bytes(camera.read_bytes() + b"changed")
         with self.assertRaisesRegex(ValueError, "saved camera bytes changed"):

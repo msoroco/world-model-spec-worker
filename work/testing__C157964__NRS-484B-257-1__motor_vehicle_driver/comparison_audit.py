@@ -14,11 +14,19 @@ PAIRS = {
 }
 
 
-def audit_pair(comparison_id, left_attempt, right_attempt, *, allow_diagnostic=False):
+def audit_pair(comparison_id, left_attempt, right_attempt, *, allow_diagnostic=False,
+               expected_site_hashes=None):
     require(comparison_id in PAIRS, "unknown exact comparison")
     left_case, right_case, varied = PAIRS[comparison_id]
-    left = audit_saved(left_attempt, left_case, allow_diagnostic=allow_diagnostic)
-    right = audit_saved(right_attempt, right_case, allow_diagnostic=allow_diagnostic)
+    require(allow_diagnostic or
+            (isinstance(expected_site_hashes, (list, tuple)) and
+             len(expected_site_hashes) == 2),
+            "independent reviewed site hash pair missing")
+    expected = expected_site_hashes or (None, None)
+    left = audit_saved(left_attempt, left_case, allow_diagnostic=allow_diagnostic,
+                       expected_site_packet_sha256=expected[0])
+    right = audit_saved(right_attempt, right_case, allow_diagnostic=allow_diagnostic,
+                        expected_site_packet_sha256=expected[1])
     require(left["diagnostic_fixture"] == right["diagnostic_fixture"],
             "comparison mixes original and diagnostic attempts")
     require(left["native_seal_sha256"] != right["native_seal_sha256"],

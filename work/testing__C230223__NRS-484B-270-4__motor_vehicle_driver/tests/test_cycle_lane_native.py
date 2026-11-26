@@ -6,6 +6,7 @@ import unittest
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from cycle_lane_native import control, prepare
+from native_adapter import _hull
 from cycle_lane_intersection import ASSIGNMENT
 import test_cycle_lane_original as fixture_module
 
@@ -50,3 +51,8 @@ class NativePlanTests(unittest.TestCase):
     def test_controller_tracks_lateral_target(self):
         turning = control((0, 0), 0.0, 2.0, [[0, 0], [5, 2], [10, 4]])
         self.assertGreater(turning["steer"], 0)
+
+    def test_native_bbox_vertices_form_convex_footprint(self):
+        body = _hull([(0, 0), (2, 0), (2, 1), (0, 1),
+                      (0, 0), (2, 0), (2, 1), (0, 1)])
+        self.assertEqual(len(body), 4)

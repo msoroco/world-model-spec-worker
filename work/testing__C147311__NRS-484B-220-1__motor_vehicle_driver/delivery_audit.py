@@ -38,6 +38,8 @@ def probe_video(path: Path) -> dict:
     streams = json.loads(result.stdout).get('streams', [])
     if len(streams) != 1:
         raise ValueError('one original video stream required')
+    subprocess.run(['ffmpeg', '-v', 'error', '-xerror', '-i', str(path),
+                    '-f', 'null', '-'], capture_output=True, check=True, timeout=180)
     return streams[0]
 
 
@@ -91,8 +93,9 @@ def audit(root: Path, receipt: dict, probe=probe_video) -> dict:
         stream = probe(path)
         if stream.get('nb_read_frames') != '900' or stream.get('r_frame_rate') != '20/1':
             raise ValueError('original camera full decode failed: ' + name)
-        if int(stream.get('width', 0)) < 640 or int(stream.get('height', 0)) < 360:
-            raise ValueError('original camera resolution below review floor')
+        expected_size = (1920, 1080) if name == 'overview' else (1280, 720)
+        if (stream.get('width'), stream.get('height')) != expected_size:
+            raise ValueError('original camera size differs from capture profile: ' + name)
         video_hashes[name] = sha(path)
     trace_path = linked(root, receipt.get('trace_ref'))
     rows = [json.loads(line) for line in trace_path.read_text(encoding='utf-8').splitlines()]
