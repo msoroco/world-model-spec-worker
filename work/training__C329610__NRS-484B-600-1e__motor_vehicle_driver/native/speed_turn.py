@@ -12,7 +12,7 @@ CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 def check_config(config,road_text):
  prefix='training__C329610__NRS-484B-600-1e__motor_vehicle_driver__'
- if (config.get('case_id') not in (prefix+'probe_a',prefix+'probe_b')
+ if (config.get('case_id') not in (prefix+'probe_a',prefix+'probe_at',prefix+'probe_b')
      or config.get('law_id')!='NRS-484B-600-1e'
      or config.get('cell_id')!='C329610'
      or config.get('actor')!='motor_vehicle_driver'

@@ -5,9 +5,145 @@
   "sweep_specs": [],
   "cases": [
     {
+      "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source-measurement baseline with no legal verdict",
+      "variable_assignments": {
+        "requested_continuous_signal_distance_m": {
+          "kind": "controller",
+          "value": 40,
+          "unit": "m"
+        },
+        "observed_continuous_signal_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "area_classification": {
+          "kind": "world_setup",
+          "value": "business_district",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Original Native district identity and flashing right-lamp pixels require independent review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_classification",
+            "unit": "categorical",
+            "method": "authored business-district context joined to surveyed Native map; review pending"
+          }
+        ],
+        "limitations": [
+          "No legal conclusion from offline or synthetic data",
+          "Original district, body, lamp pixels and four cameras require review"
+        ]
+      },
+      "epsilon_used": {
+        "value": 10.48,
+        "unit": "m",
+        "purpose": "source-grounded below/at/above probe spacing"
+      }
+    },
+    {
       "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_a",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Isolate the continuous right-indicator distance in the fixed business-district right-turn scene",
       "variable_assignments": {
         "requested_continuous_signal_distance_m": {
@@ -133,12 +269,30 @@
           "No legal conclusion from offline or synthetic data",
           "Original district, body, lamp pixels and four cameras require review"
         ]
+      },
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:business_signal_distance",
+      "deliberate_differences": [
+        "requested_continuous_signal_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observed_continuous_signal_distance_m",
+        "comparison_or_standard": "NRS 484B.413(2) business-district 100 ft clause",
+        "target_value_or_branch": 40,
+        "test_value": 40,
+        "operator": ">=",
+        "unit": "m",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10.48,
+        "unit": "m",
+        "purpose": "source-grounded below/at/above probe spacing"
       }
     },
     {
       "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Isolate the continuous right-indicator distance in the fixed business-district right-turn scene",
       "variable_assignments": {
         "requested_continuous_signal_distance_m": {
@@ -264,6 +418,173 @@
           "No legal conclusion from offline or synthetic data",
           "Original district, body, lamp pixels and four cameras require review"
         ]
+      },
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:business_signal_distance",
+      "deliberate_differences": [
+        "requested_continuous_signal_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observed_continuous_signal_distance_m",
+        "comparison_or_standard": "NRS 484B.413(2) business-district 100 ft clause",
+        "target_value_or_branch": 20,
+        "test_value": 20,
+        "operator": ">=",
+        "unit": "m",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10.48,
+        "unit": "m",
+        "purpose": "source-grounded below/at/above probe spacing"
+      }
+    },
+    {
+      "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_c",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Isolate the continuous right-indicator distance in the fixed business-district right-turn scene",
+      "variable_assignments": {
+        "requested_continuous_signal_distance_m": {
+          "kind": "controller",
+          "value": 30.48,
+          "unit": "m"
+        },
+        "observed_continuous_signal_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "area_classification": {
+          "kind": "world_setup",
+          "value": "business_district",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Original Native district identity and flashing right-lamp pixels require independent review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native source and synchronized frame for saved verification",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; district and lamp pixels require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_classification",
+            "unit": "categorical",
+            "method": "authored business-district context joined to surveyed Native map; review pending"
+          }
+        ],
+        "limitations": [
+          "No legal conclusion from offline or synthetic data",
+          "Original district, body, lamp pixels and four cameras require review"
+        ]
+      },
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:business_signal_distance",
+      "deliberate_differences": [
+        "requested_continuous_signal_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "observed_continuous_signal_distance_m",
+        "comparison_or_standard": "NRS 484B.413(2) business-district 100 ft clause",
+        "target_value_or_branch": 30.48,
+        "test_value": 30.48,
+        "operator": ">=",
+        "unit": "m",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10.48,
+        "unit": "m",
+        "purpose": "source-grounded below/at/above probe spacing"
       }
     }
   ]

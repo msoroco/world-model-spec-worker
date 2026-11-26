@@ -26,7 +26,7 @@ def audit():
      or float(extended.get('length'))!=423):
   raise ValueError('Approach endpoint changed or extension absent')
  proof={};routes=[]
- for suffix,mph in (('probe_a',75),('probe_b',85)):
+ for suffix,mph in (('probe_a',75),('probe_at',80),('probe_b',85)):
   path=BASE/'draft-native'/suffix/'construction.json'
   c=json.loads(path.read_text());files={x['path']:x['content'] for x in c['files']}
   config=json.loads(files['config.json'])
@@ -41,8 +41,8 @@ def audit():
   proof[suffix]={'construction_sha256':sha(path),'maximum_requested_speed_mph':m['maximum_speed_mph'],
                  'requested_frames_greater_than_80_mph':m['frames_greater_than_80_mph'],
                  'route_road_ids':m['route_road_ids']}
- if [1,13,4]!=proof['probe_a']['route_road_ids'] or [1,13,4]!=proof['probe_b']['route_road_ids']:
-  raise ValueError('Both request routes must complete left turn')
+ if any([1,13,4]!=proof[suffix]['route_road_ids'] for suffix in ('probe_a','probe_at','probe_b')):
+  raise ValueError('All request routes must complete left turn')
  return {'format':'c329610-left-turn-speed-request-comparison-v1',
          'road_sha256':sha(road),'source_road_sha256':sha(source),'probes':proof,
          'fixed_conditions':['same-cell two-way intersection and left-turn arc',

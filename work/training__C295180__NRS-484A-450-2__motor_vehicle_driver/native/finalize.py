@@ -21,6 +21,15 @@ def measure_marked_line_stop(observed, root):
                         'road.xodr': sha(root / 'road.xodr')}}
 
 
+def measure_crosswalk_absence(observed, root):
+    geometry = json.loads((root / 'crosswalk_geometry.json').read_text())
+    return {'value': {'near_side_crosswalk_present': False, 'marked_line_branch': True,
+                      'source_geometry': geometry, 'physical_visibility': 'unverified'},
+            'method': 'measure_crosswalk_absence',
+            'sources': {'road.xodr': sha(root / 'road.xodr'),
+                        'crosswalk_geometry.json': sha(root / 'crosswalk_geometry.json')}}
+
+
 def frames(path):
     if not path.is_file():
         raise ValueError('Missing original source camera: ' + path.name)
@@ -121,7 +130,10 @@ def finalize(attempt, output):
     result = physical_result(attempt, result)
     validate_result(result)
     report = {'format': 'c295180-saved-analysis-v1', 'case_id': case,
-              'measurements': {'marked_line_stop': measure_marked_line_stop(observed, attempt)},
+              'measurements': {'marked_line_stop': measure_marked_line_stop(observed, attempt),
+                               'reviewed_crosswalk_absence_0': measure_crosswalk_absence(observed, attempt),
+                               'reviewed_crosswalk_absence_1': measure_crosswalk_absence(observed, attempt),
+                               'reviewed_crosswalk_absence_2': measure_crosswalk_absence(observed, attempt)},
               'observed': observed, 'video_frame_counts': camera_counts,
               'derived_channel_sha256': {name: sha(channels / (name + '.jsonl')) for name in values},
               'original_source_sha256': {name: sha(attempt / name) for name in

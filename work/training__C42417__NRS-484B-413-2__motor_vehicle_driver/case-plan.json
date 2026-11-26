@@ -46,7 +46,8 @@
       "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
       "case_ids": [
         "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_a",
-        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b"
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b",
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_c"
       ]
     },
     {
@@ -57,7 +58,8 @@
       "evidence_or_gap": "This clause contains the selected draft scope or a rule applying to it; it is not an independent optional alternative. Its physical predicate and saved evidence remain unverified.",
       "case_ids": [
         "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_a",
-        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b"
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b",
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_c"
       ]
     },
     {
@@ -123,6 +125,29 @@
       },
       "source_text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
       "claim": "No legal outcome or physical execution is asserted."
+    },
+    {
+      "case_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_c",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Business-district signaling regardless of weather",
+      "comparison_variable": "continuous_signal_distance_before_course_change",
+      "condition_index": 2,
+      "fixed_conditions": {
+        "cell_id": "C42417",
+        "layout": "business_district",
+        "maneuver": "right_turn",
+        "control": "speed_limit_sign",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484B-413-2",
+        "selection_targets": [
+          "demo-train",
+          "full-train"
+        ]
+      },
+      "source_text": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+      "claim": "No legal outcome or physical execution is asserted."
     }
   ],
   "comparisons": [
@@ -130,7 +155,8 @@
       "comparison_id": "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__comparison",
       "case_ids": [
         "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_a",
-        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b"
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_b",
+        "training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_c"
       ],
       "deliberate_differences": [
         "continuous_signal_distance_before_course_change"
@@ -311,5 +337,37 @@
   "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
   "readiness": "implementation_checkpoint",
   "physical_prerequisites": "Measure continuous physical indicator/hand-signal activity along actual traveled distance before course-change onset; distinguish 100-foot business/residential from 300-foot other-area branch.",
-  "legal_interpretation_limit": "Weather cannot waive the distance rule; command station is not observed onset or visible flashing."
+  "legal_interpretation_limit": "Weather cannot waive the distance rule; command station is not observed onset or visible flashing.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full business-district intersection and ego vehicle",
+        "interval": "full 30 s / 600-frame attempt",
+        "source": "original camera feed; pixels pending"
+      },
+      {
+        "view": "approach",
+        "subject": "continuous right indicator onset and approach",
+        "interval": "full 30 s / 600-frame attempt",
+        "source": "original camera feed; pixels pending"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "intersection reference and completed turn",
+        "interval": "full 30 s / 600-frame attempt",
+        "source": "original camera feed; pixels pending"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver sight line and right-turn signal context",
+        "interval": "full 30 s / 600-frame attempt",
+        "source": "original camera feed; pixels pending"
+      }
+    ]
+  }
 }

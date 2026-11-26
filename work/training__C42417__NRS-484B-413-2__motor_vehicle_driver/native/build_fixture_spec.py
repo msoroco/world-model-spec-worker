@@ -25,8 +25,8 @@ def lines(rows):
 
 def create(suffix):
     case = CASE_PREFIX + suffix
-    target = 40 if suffix == 'a' else 20
-    signal_frame = 200 if suffix == 'a' else 250
+    target = {'a':40,'b':20,'c':30.48}[suffix]
+    signal_frame = {'a':200,'b':250,'c':224}[suffix]
     samples, mapping, bodies, trace, evidence, frames, graphs = [], [], [], [], [], [], []
     for index in range(600):
         frame, time = 1000 + index, index / 20
@@ -113,6 +113,6 @@ def create(suffix):
 
 
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--condition',choices=('a','b'),required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--condition',choices=('a','b','c'),required=True)
     args=parser.parse_args()
     print(json.dumps(create(args.condition),sort_keys=True))

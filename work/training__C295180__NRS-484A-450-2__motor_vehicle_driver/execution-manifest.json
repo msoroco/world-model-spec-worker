@@ -1,0 +1,730 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_prepared_pending_strict",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a",
+      "kind": "delivery",
+      "construction": "selected-condition-a-primary-construction.json",
+      "construction_sha256": "a87de40a6004ae66105db36c62c20fc4d2a37d1dacfb4c2dc8f3d6e569bb5261",
+      "fixture_recipe": "work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-condition-a-fixture-recipe.json",
+      "measurement_contract": "selected-condition-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Subject can cross the line before intended stop window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-condition-a-fallback1-construction.json",
+          "construction_sha256": "57ccc37896038516616d1e010da4a459428ad843b59f81f5757e6e303568f985",
+          "changed_knobs": [
+            "move subject spawn 5 m farther from marked line"
+          ],
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "first_front_stop_line_crossing_frame",
+            "failure_condition": "front body crosses line before requested stop window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --candidate fallback1 --output .runtime-work/c295180-selected-offline-a-fallback1-v5 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "57ccc37896038516616d1e010da4a459428ad843b59f81f5757e6e303568f985",
+            "exit_code": 0,
+            "log": "selected-offline-proofs/a-fallback1.log",
+            "log_sha256": "ce4d8687023264154889f1a01b8d1bf5a4854627cc82c516453ba63a11385d3f"
+          },
+          "compatibility": {
+            "receipt": "selected-compatibility/a-fallback1/compatibility.json",
+            "sha256": "4f721e0a11fe7958587662eded5085bc3d9449badb165183db182cd0cb4bfa5e",
+            "log": "selected-compatibility/a-fallback1/analysis.log",
+            "negative_log": "selected-compatibility/a-fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-saved/a-fallback1/processing.json",
+            "sha256": "e63f9129bf6d317faa970d3f40c90d9f94f5b36e61e063e7c869e392479250cf",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-saved/a-fallback1/analysis.log",
+            "log_sha256": "4cd3ca747e28950b5dd0d115e42d3ea0de6f9019a0b8992cd7bc5258f4b7b52f"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --candidate primary --output .runtime-work/c295180-selected-offline-a-primary-v5 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "a87de40a6004ae66105db36c62c20fc4d2a37d1dacfb4c2dc8f3d6e569bb5261",
+        "exit_code": 0,
+        "log": "selected-offline-proofs/a-primary.log",
+        "log_sha256": "0533df67f131e951c8a01f03577e9959a343d416a7662ba4e952022e3c8dbb31"
+      },
+      "compatibility": {
+        "receipt": "selected-compatibility/a-primary/compatibility.json",
+        "sha256": "2ba08547174a92362cfd53fd7628d9061069dca00415b2e00a17af48f4a69515",
+        "log": "selected-compatibility/a-primary/analysis.log",
+        "negative_log": "selected-compatibility/a-primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-compatibility/a-primary/negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-saved/a-primary/processing.json",
+        "sha256": "eac8ecc8c82d894b6708b2d0c72c3843832360b50915e3b244f019e3e3e396e1",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-saved/a-primary/analysis.log",
+        "log_sha256": "4cd3ca747e28950b5dd0d115e42d3ea0de6f9019a0b8992cd7bc5258f4b7b52f"
+      },
+      "acquisition": {
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "rel.visible": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.crosswalk": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.lane_enters": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.sight_distance": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.stop_line": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "vehicle_speed": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/a/receipt.json",
+        "sha256": "b974fbd20abb7ac0355c470bfa06c52c8f89348017fd46d951686bb227c9aa9a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --attempt $ATTEMPT --output $SAVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --attempt $ATTEMPT --output $SAVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-saved/a-primary/analysis.log",
+        "test_log_sha256": "4cd3ca747e28950b5dd0d115e42d3ea0de6f9019a0b8992cd7bc5258f4b7b52f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "296b3d3a4e770a1ae8565dbf99841d783f85c1943ef005afbc4d4a412e9deb74",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c295180-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance/a/positive.log",
+        "test_log_sha256": "7763678e3a21d3421ca98d51f524bfb13f0f69fa2cfe5261644990a17951aaeb",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c295180-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "delivery-acceptance/a/negative.log",
+        "negative_log_sha256": "6adab4196f75631b0e397258d2c82fd27fba9a96d884f6de6e39316e00812a4e"
+      }
+    },
+    {
+      "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b",
+      "kind": "delivery",
+      "construction": "selected-condition-b-primary-construction.json",
+      "construction_sha256": "61a5d00b39717e47563a229c3403f8d07645eab72e8f7a38dd79021c1e1dd7dd",
+      "fixture_recipe": "work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-condition-b-fixture-recipe.json",
+      "measurement_contract": "selected-condition-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Subject can cross the line before intended stop window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-condition-b-fallback1-construction.json",
+          "construction_sha256": "2085750ac60b63c7c43a09168e19b4ac69e10f7d6612da4032baed36300c80b1",
+          "changed_knobs": [
+            "move subject spawn 5 m farther from marked line"
+          ],
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "first_front_stop_line_crossing_frame",
+            "failure_condition": "front body crosses line before requested stop window"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --candidate fallback1 --output .runtime-work/c295180-selected-offline-b-fallback1-v5 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "2085750ac60b63c7c43a09168e19b4ac69e10f7d6612da4032baed36300c80b1",
+            "exit_code": 0,
+            "log": "selected-offline-proofs/b-fallback1.log",
+            "log_sha256": "e834aefced07fa20c33b111a187d52750e64ccd54ae47271c09564a082ed8b12"
+          },
+          "compatibility": {
+            "receipt": "selected-compatibility/b-fallback1/compatibility.json",
+            "sha256": "ccb48bed70227d63d1cd02f56fef980592418d1f91d23fea294ddde62115d5a1",
+            "log": "selected-compatibility/b-fallback1/analysis.log",
+            "negative_log": "selected-compatibility/b-fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-saved/b-fallback1/processing.json",
+            "sha256": "138c0259fea79cf1c632e453f7254e68a58ae11e7ff63a1c9c67461d6c58cf28",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-saved/b-fallback1/analysis.log",
+            "log_sha256": "6a850c3728c414cbc20e0ef98bf35ba2201fe2e7738b2e33f627c84d16018ae1"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --candidate primary --output .runtime-work/c295180-selected-offline-b-primary-v5 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "61a5d00b39717e47563a229c3403f8d07645eab72e8f7a38dd79021c1e1dd7dd",
+        "exit_code": 0,
+        "log": "selected-offline-proofs/b-primary.log",
+        "log_sha256": "8fd614d91947da2c817d048f2bdfd5e21497fdd6d5213ef9e947f968325be605"
+      },
+      "compatibility": {
+        "receipt": "selected-compatibility/b-primary/compatibility.json",
+        "sha256": "6d3b618c8b06b6819ab160c3f42e403cf68a6321849b5c73a4d107e3ec75c8a3",
+        "log": "selected-compatibility/b-primary/analysis.log",
+        "negative_log": "selected-compatibility/b-primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-compatibility/b-primary/negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-saved/b-primary/processing.json",
+        "sha256": "cdb11463241412886282fd0165f6d69f2fbf0adbf24398a18a5c0e0ba0a3b4e1",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-saved/b-primary/analysis.log",
+        "log_sha256": "6a850c3728c414cbc20e0ef98bf35ba2201fe2e7738b2e33f627c84d16018ae1"
+      },
+      "acquisition": {
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "rel.visible": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.crosswalk": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.intersection": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.lane_enters": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.sight_distance": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "st.stop_line": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        },
+        "vehicle_speed": {
+          "entrypoint": "finalize.py",
+          "evidence": [
+            "native_samples.jsonl",
+            "road.xodr",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "crosswalk_geometry.json",
+            "stop_reference.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ],
+          "method": "source-joined original Native body, road, frame and camera review"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/b/receipt.json",
+        "sha256": "f484a310de4718c2bc05f6ed0c2da537b986160d00b2e5fd684019a0b7b7692c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --attempt $ATTEMPT --output $SAVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --attempt $ATTEMPT --output $SAVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-saved/b-primary/analysis.log",
+        "test_log_sha256": "6a850c3728c414cbc20e0ef98bf35ba2201fe2e7738b2e33f627c84d16018ae1"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "296b3d3a4e770a1ae8565dbf99841d783f85c1943ef005afbc4d4a412e9deb74",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c295180-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-acceptance/b/positive.log",
+        "test_log_sha256": "7763678e3a21d3421ca98d51f524bfb13f0f69fa2cfe5261644990a17951aaeb",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c295180-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/delivery_audit.py --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "delivery-acceptance/b/negative.log",
+        "negative_log_sha256": "6adab4196f75631b0e397258d2c82fd27fba9a96d884f6de6e39316e00812a4e"
+      }
+    }
+  ]
+}

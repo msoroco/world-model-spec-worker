@@ -49,7 +49,7 @@ def request(target_mph):
 def main():
  road=(SOURCE/'road.xodr').read_text();runner=(SOURCE/'runner.py').read_text()
  meter=(SOURCE/'speed_turn.py').read_text();cases=[]
- for suffix,mph in (('probe_a',75),('probe_b',85)):
+ for suffix,mph in (('probe_a',75),('probe_at',80),('probe_b',85)):
   case=PREFIX+'__'+suffix;rows=request(mph)
   proof=measure(rows,'authored_native_request')
   if (proof['frames_greater_than_80_mph']>0)!=(mph>80):

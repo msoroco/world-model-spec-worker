@@ -11,7 +11,7 @@ from capture import check as capture_check, capture
 
 def check(c):
     base="training__C42417__NRS-484B-413-2__motor_vehicle_driver__selected_c8ca9085__condition_"
-    expected={base+"a":40,base+"b":20}
+    expected={base+"a":40,base+"b":20,base+"c":30.48}
     case=c.get("case_id")
     if case not in expected or c.get("selected_case_id")!=case:raise ValueError("Exact case differs")
     if (c.get("law_id"),c.get("cell_id"),c.get("actor"))!=("NRS-484B-413-2","C42417","motor_vehicle_driver"):raise ValueError("Assignment differs")
@@ -69,8 +69,9 @@ def description():
         'limitations':['No legal conclusion from offline or synthetic data',
                        'Original district, body, lamp pixels and four cameras require review']}
 def build():
-    entries=[]
-    for suffix,distance in (('a',40),('b',20)):
+    prior=json.loads((HERE/'draft-manifest.json').read_text())
+    entries=[entry for entry in prior['cases'] if entry['case_id'] in (BASE+'a',BASE+'b')]
+    for suffix,distance in (('c',30.48),):
         case=BASE+suffix
         c={'case_id':case,'selected_case_id':case,'law_id':'NRS-484B-413-2','cell_id':'C42417',
            'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,'duration_frames':600,
@@ -82,7 +83,7 @@ def build():
            'observed_indicator_required':True,'physical_verified':False,'legal_verdict':None,
            'required_atoms':['sig.turn_indicator','kin.heading','kin.speed'],
            'source_packets':[], 'recording_description':description(),
-           'supported_case_ids':[BASE+'a',BASE+'b'],
+           'supported_case_ids':[BASE+'a',BASE+'b',BASE+'c'],
            'case':{'case_id':case}}
         construction={'format':'worker-inline-construction','case_id':case,'cell_id':'C42417','actor':'motor_vehicle_driver',
                       'entrypoint':'runner.py','files':[{'path':'config.json','content':json.dumps(c,indent=2)+'\n'},

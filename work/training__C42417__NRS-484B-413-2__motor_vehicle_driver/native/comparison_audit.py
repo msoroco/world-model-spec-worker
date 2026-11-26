@@ -1,4 +1,4 @@
-"""Independent two-case source-hash and fixed-condition comparison audit."""
+"""Independent source-hash and fixed-condition distance comparison audit."""
 from __future__ import annotations
 
 import argparse
@@ -18,10 +18,17 @@ def sha(path: Path) -> str:
 
 
 def audit(left_attempt: Path, right_attempt: Path, left_receipt: Path,
-          right_receipt: Path, *, allow_fixture: bool = False) -> dict:
-    cases = (CASE_PREFIX + 'a', CASE_PREFIX + 'b')
-    attempts = (Path(left_attempt), Path(right_attempt))
-    receipts = (Path(left_receipt), Path(right_receipt))
+          right_receipt: Path, *, middle_attempt=None, middle_receipt=None,
+          allow_fixture: bool = False) -> dict:
+    if (middle_attempt is None) != (middle_receipt is None):
+        raise ValueError('At-threshold case needs its source and receipt')
+    cases = [CASE_PREFIX + 'a', CASE_PREFIX + 'b']
+    attempts = [Path(left_attempt), Path(right_attempt)]
+    receipts = [Path(left_receipt), Path(right_receipt)]
+    if middle_attempt is not None:
+        cases.insert(1, CASE_PREFIX + 'c')
+        attempts.insert(1, Path(middle_attempt))
+        receipts.insert(1, Path(middle_receipt))
     measured = []
     for case, attempt, receipt_path in zip(cases, attempts, receipts):
         if not receipt_path.is_file():
@@ -29,7 +36,7 @@ def audit(left_attempt: Path, right_attempt: Path, left_receipt: Path,
         receipt = json.loads(receipt_path.read_text())
         if receipt.get('case_id') != case or receipt.get('format') != 'c42417-source-joined-saved-distance-v1':
             raise ValueError('Comparison case/receipt identity differs')
-        if receipt.get('requested_signal_distance_m') != (40 if case.endswith('_a') else 20):
+        if receipt.get('requested_signal_distance_m') != {'a':40,'b':20,'c':30.48}[case[-1]]:
             raise ValueError('Deliberate signal-distance request differs')
         for name in SOURCES:
             source = attempt / name
@@ -61,9 +68,9 @@ def audit(left_attempt: Path, right_attempt: Path, left_receipt: Path,
             raise ValueError('Comparison fixed camera plan changed')
         measured.append((fixed, recomputed['continuous_observed_signal_distance_m'],
                          {name: sha(attempt / name) for name in SOURCES}))
-    if measured[0][0] != measured[1][0]:
+    if any(row[0] != measured[0][0] for row in measured[1:]):
         raise ValueError('Comparison fixed conditions changed')
-    if not measured[0][1] > measured[1][1]:
+    if not all(measured[i][1] > measured[i+1][1] for i in range(len(measured)-1)):
         raise ValueError('Measured signal-distance ordering absent')
     return {'format': 'c42417-independent-comparison-audit-v1',
             'comparison_id': CASE_PREFIX[:-len('condition_')] + 'comparison',
@@ -80,8 +87,12 @@ if __name__ == '__main__':
     parser.add_argument('--right-attempt', type=Path, required=True)
     parser.add_argument('--left-receipt', type=Path, required=True)
     parser.add_argument('--right-receipt', type=Path, required=True)
+    parser.add_argument('--middle-attempt', type=Path)
+    parser.add_argument('--middle-receipt', type=Path)
     parser.add_argument('--allow-fixture', action='store_true')
     args = parser.parse_args()
     print(json.dumps(audit(args.left_attempt, args.right_attempt,
                            args.left_receipt, args.right_receipt,
+                           middle_attempt=args.middle_attempt,
+                           middle_receipt=args.middle_receipt,
                            allow_fixture=args.allow_fixture), indent=2))

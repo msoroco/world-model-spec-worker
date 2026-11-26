@@ -1,3 +1,17 @@
+# Current 2026-11-25 selected delivery preparation
+
+Status: ready, `delivery_prepared` on the current pinned runtime. The exact scoped strict gate passed: `.venv-cpu/bin/python worker_check.py --assignment training__C295180__NRS-484A-450-2__motor_vehicle_driver --complete --require-delivery-ready` (exit 0; `exact-strict-check.json`, SHA-256 `dfbbc1e81b614686a9aa6b18e1f4244ac799e43382c0dd55c28a91b406d30c5e`). The global batch gate remains separate.
+
+Exact cases: `training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a` requests a full halt before the marked stop line; `training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b` requests rolling passage. Both use the same no-crosswalk governed T-intersection and 600 frames at 20 Hz. Primary and 5 m earlier-spawn fallback for each passed pinned offline, public selected compatibility with missing-road negative, and recorded-only saved processing. Original Native physical and legal acceptance remain unclaimed.
+
+Canonical `execution-manifest.json`: `7c4f36b1cf2831adb9076ac5d88c2f6cda1544fa8ac574f90f023a989004e198`. Canonical `proposals/semantic-index.json`: `9fb08708172d1e1eec630caf892e3c7c00e223ae4b45fa55eeb1905705e21a5d`. Independent source comparison proof: `d232a9abdc15e0cdf131e14f07f1901095a5038483bc75ef29a9295e0e957852`; negative comparison proof: `ec75f5b6b7dc3a2f15f34ce75b699e03d75b9f0a581f4b3ff0b4068ea01975e8`. Physical fixture/lifecycle receipts: condition A `b974fbd20abb7ac0355c470bfa06c52c8f89348017fd46d951686bb227c9aa9a`, condition B `f484a310de4718c2bc05f6ed0c2da537b986160d00b2e5fd684019a0b7b7692c`. Delivery audit script `296b3d3a4e770a1ae8565dbf99841d783f85c1943ef005afbc4d4a412e9deb74` rejects synthetic sources as original Native evidence. All these sources and tests are assignment-local.
+
+The reviewed near-side crosswalk topics are mapped as measured absence for condition A on this selected marked-line branch. No crosswalk-present or no-line evidence reuse or legal verdict is claimed. The first local job is in `result.json`; original stop sign and stop-line rendering, full body behavior, four-camera pixels, and independent physical acceptance remain local checks.
+
+---
+
+# Historical checkpoints (superseded)
+
 # training__C295180__NRS-484A-450-2__motor_vehicle_driver
 
 Status: partial CPU construction checkpoint. The exact two inline cases remain unselected drafts; original Native, physical and legal outcomes are unclaimed.

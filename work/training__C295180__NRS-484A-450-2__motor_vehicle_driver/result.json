@@ -4,9 +4,9 @@
   "counts": {
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
-    "candidates_proven": 0,
+    "candidates_proven": 4,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
+    "delivery_cases_prepared": 2,
     "selected_comparison_cases_planned": 2,
     "source_topics": 4
   },
@@ -53,50 +53,41 @@
     "saved_source_meter_proof_sha256": "c597db00495811e6b9177b1f6cc72fc6aab435f672c75f5b67a52821c368c921",
     "saved_source_meter_sha256": "a1bd7a894a5a0f0ad5e418123ab249539d183904bb1fc3516a9b4ba9c84f2e34",
     "saved_source_meter_status": "synthetic_cpu_fixture_positive_and_three_negative_branches_passed",
-    "selected_runtime_proofs_passed": false,
+    "selected_runtime_proofs_passed": true,
     "source": "native/stop_line_request.py",
     "source_sha256": "d903ee303d0a16a0ed1835b2ab55b0c77da25d9adfdef869baf559fb90d3ab62",
-    "status": "exact_unselected_drafts_and_stop_line_source_meter_passed"
+    "status": "selected_four_path_cpu_proofs_passed_pending_static_and_exact_gate",
+    "selected_execution_manifest": "execution-manifest.json",
+    "selected_execution_manifest_sha256": "7c4f36b1cf2831adb9076ac5d88c2f6cda1544fa8ac574f90f023a989004e198"
   },
   "input_sha256": "1f5ded6a7a193f4141541a57411cb8524dbcad8b6438134a08ff4bff3314b479",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Two exact 30-second/600-frame stop-line primary constructions now include a lazy prospective CARLA capture entrypoint and pass pinned offline. Authored T-intersection sign/line source and four-camera controller pass CPU checks; source-sealed saved meter passes synthetic full-stop/rolling fixtures and three negative checks. Selected compatibility/process-saved, proposals, physical/lifecycle and independent audits remain worker-owned CPU work.",
-  "status": "partial",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
+  "status": "ready",
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/stop_line_request.py prove --output .runtime-work/c295180-stop",
+      "command": "cd work/training__C295180__NRS-484A-450-2__motor_vehicle_driver && PYTHONPATH=$PWD PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py",
       "exit_code": 0,
-      "result": "two 600-frame source-metered stop conditions and three negative source rejections"
+      "log": "cpu-tests.log",
+      "sha256": "533131dad8973c589ae697ab1dd346cc55caa134cd1e536cedf26f1b057c0f1f"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/draft-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --output .runtime-work/c295180-stop-offline-a",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/prove_compare_saved.py",
       "exit_code": 0,
-      "log": "native/condition-a-offline.log",
-      "log_sha256": "739f903b292cba681dc2b5e425602d315cf8c3620546d0951523fbdb7d62424f"
+      "log": "native/compare-saved-proof.json",
+      "sha256": "ec75f5b6b7dc3a2f15f34ce75b699e03d75b9f0a581f4b3ff0b4068ea01975e8"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/draft-manifest.json --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_b --output .runtime-work/c295180-stop-offline-b",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/compare_saved.py --full-stop-dir work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-source-condition-a --rolling-dir work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/selected-source-condition-b",
       "exit_code": 0,
-      "log": "native/condition-b-offline.log",
-      "log_sha256": "f69acfaa9acafff05bcbc6bb8be5a3edbcb1ac907c868d2e1a4a68c5b228c98b"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/prove_saved_stop_line.py > work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/saved-stop-line-proof.json",
-      "exit_code": 0,
-      "log": "native/saved-stop-line-proof.json",
-      "sha256": "c597db00495811e6b9177b1f6cc72fc6aab435f672c75f5b67a52821c368c921"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/live_capture.py --check > work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/live-capture-check.json",
-      "exit_code": 0,
-      "log": "native/live-capture-check.json",
-      "sha256": "4fbc4c1729b86425256ac1f059a981a19ef56827363340f8b2c2ec022fba160e"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/prove_live_controller.py > work/training__C295180__NRS-484A-450-2__motor_vehicle_driver/native/live-controller-proof.json",
-      "exit_code": 0,
-      "log": "native/live-controller-proof.json",
-      "sha256": "9d3bd5af1ba9b90a51cd239eaa788e2bc4e2eb2d127eff0633c729610e22c466"
+      "log": "selected-comparison-source-proof.json",
+      "sha256": "d232a9abdc15e0cdf131e14f07f1901095a5038483bc75ef29a9295e0e957852"
     }
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C295180__NRS-484A-450-2__motor_vehicle_driver --case training__C295180__NRS-484A-450-2__motor_vehicle_driver__selected_ef239a06__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original Native stop sign governing approach, no-crosswalk and marked-line rendering",
+    "Original full-body motion, four-camera pixels and duration",
+    "Independent physical acceptance and unresolved legal judgments"
   ]
 }

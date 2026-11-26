@@ -26,7 +26,7 @@ def measure(path: Path, case_id: str, *, allow_fixture: bool = False) -> dict:
     path = Path(path)
     if not path.is_file():
         raise ValueError('Missing required source: native_samples.jsonl')
-    if case_id not in (CASE_PREFIX + 'a', CASE_PREFIX + 'b'):
+    if case_id not in (CASE_PREFIX + 'a', CASE_PREFIX + 'b', CASE_PREFIX + 'c'):
         raise ValueError('Exact selected case differs')
     lines = path.read_text().splitlines()
     if len(lines) != FRAMES:
