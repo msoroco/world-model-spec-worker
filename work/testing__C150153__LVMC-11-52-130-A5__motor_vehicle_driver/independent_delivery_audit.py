@@ -89,6 +89,42 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
     for name in required:
         if name not in hashes:
             raise ValueError('sealed original source missing: ' + name)
+    if not diagnostic_fixture:
+        copied_packet = attempt / 'reviewed-site/packet.json'
+        if (hashes.get('reviewed-site/packet.json') != site_sha or
+                not copied_packet.is_file() or _sha(copied_packet) != site_sha):
+            raise ValueError('original reviewed site packet copy missing or changed')
+        copied_sources = attempt / 'reviewed-site/sources'
+        verify(copied_packet, copied_sources)
+        for item in packet['sources'].values():
+            relative = 'reviewed-site/sources/' + item['path']
+            if hashes.get(relative) != item['sha256']:
+                raise ValueError('original reviewed site source copy missing or changed: ' + relative)
+        acquisition_path = attempt / 'capture-seal.json'
+        native_exit_path = attempt / 'native-exit.json'
+        if not all(path.is_file() for path in (acquisition_path, native_exit_path,
+                                               attempt / 'construction.json', attempt / 'runner.py')):
+            raise ValueError('original Native acquisition and exit receipts missing')
+        acquisition = json.loads(acquisition_path.read_text())
+        native_exit = json.loads(native_exit_path.read_text())
+        revision = acquisition.get('native_revision', {})
+        if (acquisition.get('format') != 'sidewalk-elevator-native-acquisition-seal' or
+                acquisition.get('provenance_kind') != 'native' or
+                acquisition.get('diagnostic_fixture') is not False or
+                acquisition.get('case_id') != case_id or
+                acquisition.get('site_packet_sha256') != site_sha or
+                acquisition.get('sources') != hashes or
+                acquisition.get('events') != ['capture_finished', 'encoders_closed', 'restoration_verified'] or
+                revision.get('construction_sha256') != _sha(attempt / 'construction.json') or
+                revision.get('runner_sha256') != _sha(attempt / 'runner.py') or
+                native_exit.get('event') != 'native_exit' or
+                native_exit.get('capture_seal_sha256') != _sha(acquisition_path) or
+                native_exit.get('native_revision') != revision or
+                native_exit.get('native_process_exit_code', 0) != 0 or
+                native_exit.get('capture_command_failed') is True or
+                not isinstance(seal.get('owner_receipt_sha256'), str) or
+                len(seal['owner_receipt_sha256']) != 64):
+            raise ValueError('original Native acquisition/exit binding differs')
     history = audit_original_history(attempt / "history.jsonl", hashes["history.jsonl"],
                                      case_id[len(prefix):], site_sha)
     mapping = [json.loads(line) for line in (attempt / "camera-frame-map.jsonl").read_text().splitlines()]

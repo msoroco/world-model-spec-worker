@@ -5,11 +5,13 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+import native_capture
 from native_capture import VIEWS, capture
 from comparison_audit import audit_pair
 from reviewed_site import SITE_ROLES
@@ -138,6 +140,31 @@ class CaptureTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+
+    def test_packet_changed_after_final_review_cannot_be_sealed(self):
+        case = CASES[0]
+        source = self.root / "changed-packet-source"
+        source.mkdir()
+        packet = fixture(source, case)
+        adapter = FakeAdapter(case)
+        original_read = native_capture.read_reviewed_site
+        calls = 0
+
+        def change_after_review(path, source_root, selected_case):
+            nonlocal calls
+            site, digest = original_read(path, source_root, selected_case)
+            calls += 1
+            if calls == 2:
+                packet.write_bytes(packet.read_bytes() + b" ")
+            return site, digest
+
+        out = self.root / "changed-packet-attempt"
+        with patch.object(native_capture, "read_reviewed_site", change_after_review):
+            with self.assertRaisesRegex(ValueError, "changed during packet copy"):
+                capture(adapter, packet, source, out, case, diagnostic=True)
+        self.assertEqual(calls, 2)
+        self.assertFalse((out / "seal.json").exists())
+        self.assertEqual(adapter.events[-1], "restore")
 
     def test_restore_failure_cannot_leave_sealed_attempt(self):
         case = CASES[0]

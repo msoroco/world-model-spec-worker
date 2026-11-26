@@ -76,6 +76,16 @@ class DeliveryAuditTests(unittest.TestCase):
         (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
         return attempt, packet_path, sources, seal
 
+    def test_original_mode_requires_copied_reviewed_sources(self):
+        scratch = Path('.runtime-work/c150153-delivery-audit-tests')
+        scratch.mkdir(parents=True, exist_ok=True)
+        with TemporaryDirectory(dir=scratch) as temp:
+            attempt, packet, sources, seal = self.fixture(temp)
+            forged = dict(seal, provenance_kind='original_native')
+            (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
+            with self.assertRaisesRegex(ValueError, 'reviewed site packet copy missing'):
+                audit(attempt, packet, sources)
+
     def test_sealed_frame_join_and_changed_original_rejection(self):
         scratch = Path('.runtime-work/c150153-delivery-audit-tests')
         scratch.mkdir(parents=True, exist_ok=True)

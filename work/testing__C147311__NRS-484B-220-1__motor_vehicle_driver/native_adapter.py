@@ -79,14 +79,39 @@ class NativeAdapter:
         scene = reviewed['scene']
         case = next(c for c in CASES if c.name == config['case']['variant'])
         construct(self, scene, case)
-        for name in config['cameras']:
+        route_start = scene['ego_route_xy'][0]
+        route_end = scene['ego_route_xy'][-1]
+        middle = [(route_start[i] + route_end[i]) / 2 for i in (0, 1)]
+        sign_xy = scene['sign_xy']
+        camera_sites = {
+            'overview': ([middle[0], middle[1] + 24, 32], middle),
+            'approach': ([route_start[0], route_start[1] + 9, 6], sign_xy),
+            'reference_corner': ([sign_xy[0], sign_xy[1] + 7, 4], sign_xy),
+        }
+        for camera in config['cameras']:
+            name = camera['name']
             bp = self.world.get_blueprint_library().find('sensor.camera.rgb')
-            bp.set_attribute('image_size_x', '1920' if name == 'overview' else '1280')
-            bp.set_attribute('image_size_y', '1080' if name == 'overview' else '720')
+            bp.set_attribute('image_size_x', str(camera['width']))
+            bp.set_attribute('image_size_y', str(camera['height']))
+            bp.set_attribute('fov', str(camera['fov_deg']))
             bp.set_attribute('sensor_tick', '0.05')
-            pose = self.carla.Transform(self.carla.Location(x=-7.0, y=0.0, z=3.0),
-                                        self.carla.Rotation(pitch=-12.0))
-            sensor = self.world.spawn_actor(bp, pose, attach_to=self.ego)
+            if name == 'driver_reference':
+                pose = self.carla.Transform(self.carla.Location(x=0.5, y=0, z=2.0),
+                                            self.carla.Rotation(pitch=-4.0))
+                parent = self.ego
+            else:
+                position, target = camera_sites[name]
+                yaw = math.degrees(math.atan2(target[1] - position[1],
+                                              target[0] - position[0]))
+                pitch = math.degrees(math.atan2(1.0 - position[2],
+                                                math.hypot(target[0] - position[0],
+                                                           target[1] - position[1])))
+                pose = self.carla.Transform(self.carla.Location(x=position[0], y=position[1], z=position[2]),
+                                            self.carla.Rotation(pitch=pitch, yaw=yaw))
+                parent = None
+            sensor = self.world.spawn_actor(bp, pose, attach_to=parent)
+            if sensor.type_id != 'sensor.camera.rgb':
+                raise ValueError('original camera actor type differs from selected profile')
             self.owned.append(sensor)
             q = queue.Queue(maxsize=4)
             sensor.listen(q.put)

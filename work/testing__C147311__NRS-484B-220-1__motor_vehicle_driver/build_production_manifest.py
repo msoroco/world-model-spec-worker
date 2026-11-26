@@ -28,17 +28,15 @@ def main() -> None:
         if suffix not in {c.name for c in CASES}:
             raise ValueError('nonselected case')
         folder = HERE / 'cases' / suffix
-        attempt = SCRATCH / ('pinned-' + suffix + '-v12')
+        attempt = REPO / '.runtime-work' / ('c147311-compat-' + suffix + '-v13')
         origin = {
             'compatibility.json': attempt / 'compatibility.json',
             'cpu-compat-analysis.log': attempt / 'compatibility-analysis.log',
             'negative-analysis.log': attempt / 'negative-analysis.log',
-            'offline.log': SCRATCH / ('offline-' + suffix + '-v12') / 'offline.log',
         }
         for name, path in origin.items():
             shutil.copyfile(path, folder / name)
         saved = HERE / ('cpu-pinned-saved-' + suffix + '.json')
-        shutil.copyfile(SCRATCH / ('saved-' + suffix + '-v12-receipt.json'), saved)
         construction_sha = source['construction_sha256']
         physics = folder / 'physical-preparation.json'
         positive = folder / 'delivery-positive.log'
@@ -47,7 +45,7 @@ def main() -> None:
         command = f'.venv-cpu/bin/python work/{ASSIGNMENT}/prove_delivery_contract.py --case {case_id}'
         entry = dict(source)
         entry.update(kind='delivery', status='source_gated_cpu_preparation',
-                     offline={'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --output .runtime-work/c147311-nov25e/offline-{suffix}-v12',
+                     offline={'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case_id} --output .runtime-work/c147311-offline-{suffix}-v13',
                               'exit_code': 0, 'log': f'cases/{suffix}/offline.log',
                               'log_sha256': sha(folder / 'offline.log'),
                               'construction_sha256': construction_sha},
@@ -72,11 +70,11 @@ def main() -> None:
                          'negative_expected_error': 'successful released original Native attempt required',
                          'negative_log': f'cases/{suffix}/delivery-negative.log',
                          'negative_log_sha256': sha(negative),
-                         'script': 'prove_delivery_contract.py',
-                         'script_sha256': sha(script)},
+                         'script': 'delivery_audit.py',
+                         'script_sha256': sha(HERE / 'delivery_audit.py')},
                      post_capture={
                          'recorded_only': True,
-                         'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $VALIDATOR',
+                         'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT',
                          'feedback_command': f'.venv-cpu/bin/python work/{ASSIGNMENT}/delivery_audit.py --authority-root $SOURCE_ROOT --receipt $RECEIPT --output $AUDIT',
                          'test_log': saved.name, 'test_log_sha256': sha(saved),
                          'test_exit_code': 0},

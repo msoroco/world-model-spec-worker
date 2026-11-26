@@ -55,7 +55,8 @@ def run(case_id: str, mode: str) -> dict:
                    'site_ref': site, 'frame_map_ref': frame_map, 'trace_ref': trace,
                    'video_refs': video_refs, 'capture_seal_ref': seal}
         probe = lambda path: {'nb_read_frames': '900', 'r_frame_rate': '20/1',
-                              'width': 1280, 'height': 720}
+                              'width': 1920 if path.name == 'overview.mkv' else 1280,
+                              'height': 1080 if path.name == 'overview.mkv' else 720}
         reviewed = {'scene': {'direction': case.direction}}
         measured = {'actual_direction': case.direction}
         with patch('delivery_audit.verify', return_value=reviewed), patch(

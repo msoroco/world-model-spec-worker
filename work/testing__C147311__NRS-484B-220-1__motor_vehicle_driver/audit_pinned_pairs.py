@@ -16,7 +16,7 @@ from runner import check_config
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / '.runtime-work/c147311-nov25e'
+SCRATCH = REPO / '.runtime-work'
 
 
 def sha(path: Path) -> str:
@@ -31,8 +31,8 @@ def run() -> dict:
     for case in CASES:
         case_id = HERE.name + '__' + case.name
         entry = entries[case_id]
-        attempt = SCRATCH / ('pinned-' + case.name + '-v12')
-        saved = SCRATCH / ('saved-' + case.name + '-v12') / 'v0001'
+        attempt = SCRATCH / ('c147311-compat-' + case.name + '-v13')
+        saved = SCRATCH / ('c147311-saved-' + case.name + '-v13') / 'v0001'
         config = json.loads((attempt / 'config.json').read_text())
         check_config(config)
         if sha(attempt / 'construction.json') != entry['construction_sha256']:

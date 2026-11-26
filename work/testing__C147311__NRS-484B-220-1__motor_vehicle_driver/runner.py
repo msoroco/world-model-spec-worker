@@ -23,9 +23,13 @@ def check_config(config: dict) -> bool:
             config.get('cell_id') != 'C147311' or
             config.get('actor') != 'motor_vehicle_driver'):
         raise ValueError('exact one-way assignment/case mismatch')
+    cameras = config.get('cameras', [])
     if (config.get('rate_hz') != 20 or config.get('duration_s') != 45 or
-            tuple(config.get('cameras', [])) != CAMERAS or
-            config.get('diagnostic_only') is not True):
+            [(c.get('name'), c.get('width'), c.get('height')) for c in cameras]
+            != [('overview', 1920, 1080), ('approach', 1280, 720),
+                ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)] or
+            not all(c.get('pose_strategy') and c.get('fov_deg') for c in cameras) or
+            config.get('diagnostic_only') is not False):
         raise ValueError('one-way capture contract mismatch')
     case = next(c for c in CASES if config['selected_case_id'].endswith('__' + c.name))
     if config.get('case', {}).get('variant') != case.name or config['case'].get('lane') != case.lane or config['case'].get('direction') != case.direction:

@@ -1,4 +1,4 @@
-"""Materialize four exact diagnostic constructions without original-source claims."""
+"""Materialize four exact source-gated constructions and CPU diagnostics."""
 from __future__ import annotations
 
 import hashlib
@@ -50,10 +50,18 @@ def build() -> dict:
         config = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
                   'actor': plan['actor'], 'selected_case_id': case_id,
                   'supported_case_ids': sorted(expected), 'rate_hz': 20,
-                  'duration_s': 45, 'diagnostic_only': True,
+                  'duration_s': 45, 'diagnostic_only': False,
                   'reverse_motion': case.direction == 'opposed',
                   'requested_speed_mps': 5.0,
-                  'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
+                  'cameras': [
+                      {'name': 'overview', 'width': 1920, 'height': 1080,
+                       'pose_strategy': 'fixed elevated view of signed road and entire route', 'fov_deg': 90},
+                      {'name': 'approach', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'fixed view of vehicle approach to governing sign', 'fov_deg': 90},
+                      {'name': 'reference_corner', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'fixed view of sign face and lane directions', 'fov_deg': 90},
+                      {'name': 'driver_reference', 'width': 1280, 'height': 720,
+                       'pose_strategy': 'vehicle mounted forward view', 'fov_deg': 90}],
                   'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case_id, 'variant': case.name,
                            'lane': case.lane, 'direction': case.direction}}
@@ -63,7 +71,7 @@ def build() -> dict:
                       {'path': 'tests/test_bundle.py', 'content': TEST}])
         construction = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
                         'actor': plan['actor'], 'case_id': case_id,
-                        'entrypoint': 'runner.py', 'diagnostic_only': True,
+                        'entrypoint': 'runner.py',
                         'files': files,
                         'recording_description': {
                             'channels': [

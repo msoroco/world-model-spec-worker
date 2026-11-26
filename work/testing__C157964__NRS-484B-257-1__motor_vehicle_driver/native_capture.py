@@ -143,6 +143,8 @@ def capture(adapter, packet_path, source_root, output_dir, case, *, diagnostic=F
         require(final_packet_sha == packet_sha and final_site == site,
                 "reviewed site changed during capture")
         source_bytes = Path(packet_path).read_bytes()
+        require(_sha(source_bytes) == packet_sha,
+                "reviewed site changed during packet copy")
         (out / "reviewed-site-packet.json").write_bytes(source_bytes)
         references = json.loads(source_bytes)["sources"]
         source_index = {}
