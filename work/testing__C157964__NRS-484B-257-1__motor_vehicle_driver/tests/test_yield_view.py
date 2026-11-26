@@ -34,7 +34,8 @@ def rows(x, case):
              'through_min_vertex_station_m': 9 - i * .01,
              'ego_leading_station_m': -2 if i < 120 else 3,
              'through_phase': case.through_state,
-             'ego_across_or_within': i >= 120}
+             'ego_across_or_within': i >= 120,
+             'all_at_reference_observed': i == 100}
             for i in range(900)]
 
 
@@ -72,6 +73,8 @@ class YieldViewTest(unittest.TestCase):
                 out = measure_original(rows(x, case), x, case)
                 self.assertEqual(out['frame_count'], 900)
                 self.assertEqual(out['first_physical_reference_crossing_frame'], 420)
+                self.assertEqual(out['all_at_reference_original_frame'], 400)
+                self.assertAlmostEqual(out['through_center_station_at_all_reference_m'], 11)
                 self.assertIsNone(out['immediate_hazard_judgment'])
 
     def test_hierarchy_and_control_rejection(self):
@@ -100,6 +103,10 @@ class YieldViewTest(unittest.TestCase):
         for row in a:
             row['ego_leading_station_m'] = -2
         with self.assertRaisesRegex(ValueError, 'never crossed'):
+            measure_original(a, x, case)
+        a = rows(x, case)
+        a[100]['all_at_reference_observed'] = False
+        with self.assertRaisesRegex(ValueError, 'all-at-reference event'):
             measure_original(a, x, case)
 
     def test_owned_cleanup(self):

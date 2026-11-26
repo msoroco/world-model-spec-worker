@@ -1,304 +1,315 @@
 {
-  "cell_id": "C230223",
   "actor": "motor_vehicle_driver",
-  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection",
-      "target_law_id": "NRS-484B-270-4",
-      "target_type": "controlled_probe",
-      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
-      "variable_assignments": {
-        "site_geometry": {
-          "kind": "world_setup",
-          "value": "pending_reviewed_public_intersection_and_designation",
-          "note": "No original source packet retained in assignment"
-        },
-        "route_candidate": {
-          "kind": "controller",
-          "value": "cycle_lane_through_intersection",
-          "note": "Exact route is selected only from reviewed site packet"
-        },
-        "subsection_3_status": {
-          "kind": "world_setup",
-          "value": "does_not_apply",
-          "note": "Must match independent authoritative source review"
-        }
-      },
+      "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__baseline",
+      "rationale": "Shared cycle-lane/intersection observation definition; no separate recording.",
       "recording_description": {
         "channels": [
           {
+            "method": "Original Native bbox hull",
             "name": "ego_body_polygon",
-            "unit": "Native world XY",
-            "sampling_rate_hz": 20,
-            "method": "Original vehicle bounding-box vertices joined to frame/time",
-            "time_window": "45-second full capture",
             "reference_frame": "original Native world",
-            "uncertainty": "source geometry and physical capture need review"
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "physical capture requires review",
+            "unit": "Native world XY"
           },
           {
-            "name": "intersection_and_cycle_lane_overlap",
-            "unit": "boolean",
-            "sampling_rate_hz": 20,
-            "method": "Original body polygon intersection with source-reviewed polygons",
-            "time_window": "45-second full capture",
+            "method": "Original body polygon and reviewed site polygons",
+            "name": "intersection_cycle_lane_overlap",
             "reference_frame": "original Native world",
-            "uncertainty": "legal effect and subsection 3 context remain separate"
-          },
-          {
-            "name": "four_camera_frame_map",
-            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "method": "Original synchronized overview, approach, reference_corner and driver_reference views",
             "time_window": "45-second full capture",
-            "reference_frame": "original Native frames",
-            "uncertainty": "pixels and physical completion require review"
+            "uncertainty": "subsection 3 is independent",
+            "unit": "boolean"
           }
         ],
         "context_inputs": [
           {
-            "name": "reviewed_site_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 and designation/public-intersection review"
-          },
-          {
-            "name": "reviewed_subsection_3_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 authoritative clause and status review"
+            "method": "Independent SHA-256 review",
+            "name": "reviewed_site_and_subsection_3",
+            "unit": "source packet"
           }
         ],
         "limitations": [
-          "No numerical legal threshold is introduced.",
-          "Synthetic CPU tests establish software joins only.",
-          "Physical and legal acceptance require original reviewed evidence."
+          "Diagnostic CPU fixture is not original evidence.",
+          "Native physical capture and source review pending."
         ]
       },
-      "unresolved_judgment_calls": []
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "route_candidate": {
+          "kind": "controller",
+          "note": "Exact route is selected only from reviewed site packet",
+          "value": "cycle_lane_through_intersection"
+        },
+        "subsection_3_status": {
+          "kind": "world_setup",
+          "note": "Must match independent authoritative source review",
+          "value": "does_not_apply"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection",
+      "deliberate_differences": [
+        "route_candidate",
+        "subsection_3_status"
+      ],
+      "paired_probe_id": "cycle_lane_comparison",
+      "probe": {
+        "comparison_or_standard": "source-reviewed designated cycle-lane/intersection occupancy with separate subsection 3 review",
+        "primary_variable": "route_candidate",
+        "target_value_or_branch": "cycle_lane_through_intersection"
+      },
+      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native bbox hull",
+            "name": "ego_body_polygon",
+            "reference_frame": "original Native world",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "physical capture requires review",
+            "unit": "Native world XY"
+          },
+          {
+            "method": "Original body polygon and reviewed site polygons",
+            "name": "intersection_cycle_lane_overlap",
+            "reference_frame": "original Native world",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "subsection 3 is independent",
+            "unit": "boolean"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independent SHA-256 review",
+            "name": "reviewed_site_and_subsection_3",
+            "unit": "source packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic CPU fixture is not original evidence.",
+          "Native physical capture and source review pending."
+        ]
+      },
+      "target_law_id": "NRS-484B-270-4",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "route_candidate": {
+          "kind": "controller",
+          "note": "Exact route is selected only from reviewed site packet",
+          "value": "cycle_lane_through_intersection"
+        },
+        "subsection_3_status": {
+          "kind": "world_setup",
+          "note": "Must match independent authoritative source review",
+          "value": "does_not_apply"
+        }
+      }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_before_intersection_only",
-      "target_law_id": "NRS-484B-270-4",
-      "target_type": "controlled_probe",
-      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
-      "variable_assignments": {
-        "site_geometry": {
-          "kind": "world_setup",
-          "value": "pending_reviewed_public_intersection_and_designation",
-          "note": "No original source packet retained in assignment"
-        },
-        "route_candidate": {
-          "kind": "controller",
-          "value": "cycle_lane_before_intersection_only",
-          "note": "Exact route is selected only from reviewed site packet"
-        },
-        "subsection_3_status": {
-          "kind": "world_setup",
-          "value": "does_not_apply",
-          "note": "Must match independent authoritative source review"
-        }
+      "deliberate_differences": [
+        "route_candidate",
+        "subsection_3_status"
+      ],
+      "paired_probe_id": "cycle_lane_comparison",
+      "probe": {
+        "comparison_or_standard": "source-reviewed designated cycle-lane/intersection occupancy with separate subsection 3 review",
+        "primary_variable": "route_candidate",
+        "target_value_or_branch": "cycle_lane_before_intersection_only"
       },
+      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
       "recording_description": {
         "channels": [
           {
+            "method": "Original Native bbox hull",
             "name": "ego_body_polygon",
-            "unit": "Native world XY",
-            "sampling_rate_hz": 20,
-            "method": "Original vehicle bounding-box vertices joined to frame/time",
-            "time_window": "45-second full capture",
             "reference_frame": "original Native world",
-            "uncertainty": "source geometry and physical capture need review"
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "physical capture requires review",
+            "unit": "Native world XY"
           },
           {
-            "name": "intersection_and_cycle_lane_overlap",
-            "unit": "boolean",
-            "sampling_rate_hz": 20,
-            "method": "Original body polygon intersection with source-reviewed polygons",
-            "time_window": "45-second full capture",
+            "method": "Original body polygon and reviewed site polygons",
+            "name": "intersection_cycle_lane_overlap",
             "reference_frame": "original Native world",
-            "uncertainty": "legal effect and subsection 3 context remain separate"
-          },
-          {
-            "name": "four_camera_frame_map",
-            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "method": "Original synchronized overview, approach, reference_corner and driver_reference views",
             "time_window": "45-second full capture",
-            "reference_frame": "original Native frames",
-            "uncertainty": "pixels and physical completion require review"
+            "uncertainty": "subsection 3 is independent",
+            "unit": "boolean"
           }
         ],
         "context_inputs": [
           {
-            "name": "reviewed_site_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 and designation/public-intersection review"
-          },
-          {
-            "name": "reviewed_subsection_3_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 authoritative clause and status review"
+            "method": "Independent SHA-256 review",
+            "name": "reviewed_site_and_subsection_3",
+            "unit": "source packet"
           }
         ],
         "limitations": [
-          "No numerical legal threshold is introduced.",
-          "Synthetic CPU tests establish software joins only.",
-          "Physical and legal acceptance require original reviewed evidence."
+          "Diagnostic CPU fixture is not original evidence.",
+          "Native physical capture and source review pending."
         ]
       },
-      "unresolved_judgment_calls": []
+      "target_law_id": "NRS-484B-270-4",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "route_candidate": {
+          "kind": "controller",
+          "note": "Exact route is selected only from reviewed site packet",
+          "value": "cycle_lane_before_intersection_only"
+        },
+        "subsection_3_status": {
+          "kind": "world_setup",
+          "note": "Must match independent authoritative source review",
+          "value": "does_not_apply"
+        }
+      }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__ordinary_lane_through_intersection",
-      "target_law_id": "NRS-484B-270-4",
-      "target_type": "controlled_probe",
-      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
-      "variable_assignments": {
-        "site_geometry": {
-          "kind": "world_setup",
-          "value": "pending_reviewed_public_intersection_and_designation",
-          "note": "No original source packet retained in assignment"
-        },
-        "route_candidate": {
-          "kind": "controller",
-          "value": "ordinary_lane_through_intersection",
-          "note": "Exact route is selected only from reviewed site packet"
-        },
-        "subsection_3_status": {
-          "kind": "world_setup",
-          "value": "does_not_apply",
-          "note": "Must match independent authoritative source review"
-        }
+      "deliberate_differences": [
+        "route_candidate",
+        "subsection_3_status"
+      ],
+      "paired_probe_id": "cycle_lane_comparison",
+      "probe": {
+        "comparison_or_standard": "source-reviewed designated cycle-lane/intersection occupancy with separate subsection 3 review",
+        "primary_variable": "route_candidate",
+        "target_value_or_branch": "ordinary_lane_through_intersection"
       },
+      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
       "recording_description": {
         "channels": [
           {
+            "method": "Original Native bbox hull",
             "name": "ego_body_polygon",
-            "unit": "Native world XY",
-            "sampling_rate_hz": 20,
-            "method": "Original vehicle bounding-box vertices joined to frame/time",
-            "time_window": "45-second full capture",
             "reference_frame": "original Native world",
-            "uncertainty": "source geometry and physical capture need review"
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "physical capture requires review",
+            "unit": "Native world XY"
           },
           {
-            "name": "intersection_and_cycle_lane_overlap",
-            "unit": "boolean",
-            "sampling_rate_hz": 20,
-            "method": "Original body polygon intersection with source-reviewed polygons",
-            "time_window": "45-second full capture",
+            "method": "Original body polygon and reviewed site polygons",
+            "name": "intersection_cycle_lane_overlap",
             "reference_frame": "original Native world",
-            "uncertainty": "legal effect and subsection 3 context remain separate"
-          },
-          {
-            "name": "four_camera_frame_map",
-            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "method": "Original synchronized overview, approach, reference_corner and driver_reference views",
             "time_window": "45-second full capture",
-            "reference_frame": "original Native frames",
-            "uncertainty": "pixels and physical completion require review"
+            "uncertainty": "subsection 3 is independent",
+            "unit": "boolean"
           }
         ],
         "context_inputs": [
           {
-            "name": "reviewed_site_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 and designation/public-intersection review"
-          },
-          {
-            "name": "reviewed_subsection_3_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 authoritative clause and status review"
+            "method": "Independent SHA-256 review",
+            "name": "reviewed_site_and_subsection_3",
+            "unit": "source packet"
           }
         ],
         "limitations": [
-          "No numerical legal threshold is introduced.",
-          "Synthetic CPU tests establish software joins only.",
-          "Physical and legal acceptance require original reviewed evidence."
+          "Diagnostic CPU fixture is not original evidence.",
+          "Native physical capture and source review pending."
         ]
       },
-      "unresolved_judgment_calls": []
+      "target_law_id": "NRS-484B-270-4",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "route_candidate": {
+          "kind": "controller",
+          "note": "Exact route is selected only from reviewed site packet",
+          "value": "ordinary_lane_through_intersection"
+        },
+        "subsection_3_status": {
+          "kind": "world_setup",
+          "note": "Must match independent authoritative source review",
+          "value": "does_not_apply"
+        }
+      }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_exception_unresolved",
-      "target_law_id": "NRS-484B-270-4",
-      "target_type": "controlled_probe",
-      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route.",
-      "variable_assignments": {
-        "site_geometry": {
-          "kind": "world_setup",
-          "value": "pending_reviewed_public_intersection_and_designation",
-          "note": "No original source packet retained in assignment"
-        },
-        "route_candidate": {
-          "kind": "controller",
-          "value": "cycle_lane_exception_unresolved",
-          "note": "Exact route is selected only from reviewed site packet"
-        },
-        "subsection_3_status": {
-          "kind": "world_setup",
-          "value": "unresolved",
-          "note": "Must match independent authoritative source review"
-        }
+      "deliberate_differences": [
+        "route_candidate",
+        "subsection_3_status"
+      ],
+      "paired_probe_id": "cycle_lane_comparison",
+      "probe": {
+        "comparison_or_standard": "source-reviewed designated cycle-lane/intersection occupancy with separate subsection 3 review",
+        "primary_variable": "route_candidate",
+        "target_value_or_branch": "cycle_lane_exception_unresolved"
       },
+      "rationale": "Source-bound intersection/cycle-lane overlap and subsection 3 status are independently measured, not inferred from requested route. Intentional in-lane attempt only; exception applicability and legal outcome remain unresolved.",
       "recording_description": {
         "channels": [
           {
+            "method": "Original Native bbox hull",
             "name": "ego_body_polygon",
-            "unit": "Native world XY",
-            "sampling_rate_hz": 20,
-            "method": "Original vehicle bounding-box vertices joined to frame/time",
-            "time_window": "45-second full capture",
             "reference_frame": "original Native world",
-            "uncertainty": "source geometry and physical capture need review"
+            "sampling_rate_hz": 20,
+            "time_window": "45-second full capture",
+            "uncertainty": "physical capture requires review",
+            "unit": "Native world XY"
           },
           {
-            "name": "intersection_and_cycle_lane_overlap",
-            "unit": "boolean",
-            "sampling_rate_hz": 20,
-            "method": "Original body polygon intersection with source-reviewed polygons",
-            "time_window": "45-second full capture",
+            "method": "Original body polygon and reviewed site polygons",
+            "name": "intersection_cycle_lane_overlap",
             "reference_frame": "original Native world",
-            "uncertainty": "legal effect and subsection 3 context remain separate"
-          },
-          {
-            "name": "four_camera_frame_map",
-            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "method": "Original synchronized overview, approach, reference_corner and driver_reference views",
             "time_window": "45-second full capture",
-            "reference_frame": "original Native frames",
-            "uncertainty": "pixels and physical completion require review"
+            "uncertainty": "subsection 3 is independent",
+            "unit": "boolean"
           }
         ],
         "context_inputs": [
           {
-            "name": "reviewed_site_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 and designation/public-intersection review"
-          },
-          {
-            "name": "reviewed_subsection_3_packet",
-            "unit": "source context",
-            "method": "Independent SHA-256 authoritative clause and status review"
+            "method": "Independent SHA-256 review",
+            "name": "reviewed_site_and_subsection_3",
+            "unit": "source packet"
           }
         ],
         "limitations": [
-          "No numerical legal threshold is introduced.",
-          "Synthetic CPU tests establish software joins only.",
-          "Physical and legal acceptance require original reviewed evidence."
+          "Diagnostic CPU fixture is not original evidence.",
+          "Native physical capture and source review pending."
         ]
       },
-      "unresolved_judgment_calls": []
+      "target_law_id": "NRS-484B-270-4",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "route_candidate": {
+          "kind": "controller",
+          "note": "Exact route is selected only from reviewed site packet",
+          "value": "cycle_lane_exception_unresolved"
+        },
+        "subsection_3_status": {
+          "kind": "world_setup",
+          "note": "Must match independent authoritative source review",
+          "value": "unresolved"
+        }
+      }
     }
   ],
+  "cell_id": "C230223",
   "comparisons": [
     {
-      "comparison_id": "intersection_overlap",
       "case_ids": [
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection",
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_before_intersection_only"
       ],
+      "comparison_id": "intersection_overlap",
       "deliberate_differences": [
         "cycle-lane occupation continues into intersection versus ends before it"
       ],
@@ -309,11 +320,11 @@
       "status": "planned_unbuilt"
     },
     {
-      "comparison_id": "lane_designation",
       "case_ids": [
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection",
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__ordinary_lane_through_intersection"
       ],
+      "comparison_id": "lane_designation",
       "deliberate_differences": [
         "vehicle passes through designated cycle lane versus ordinary road lane"
       ],
@@ -324,11 +335,11 @@
       "status": "planned_unbuilt"
     },
     {
-      "comparison_id": "subsection_3_exception",
       "case_ids": [
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection",
         "testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_exception_unresolved"
       ],
+      "comparison_id": "subsection_3_exception",
       "deliberate_differences": [
         "subsection 3 exception does not apply versus unresolved"
       ],
@@ -338,5 +349,6 @@
       ],
       "status": "planned_unbuilt"
     }
-  ]
+  ],
+  "status": "draft"
 }

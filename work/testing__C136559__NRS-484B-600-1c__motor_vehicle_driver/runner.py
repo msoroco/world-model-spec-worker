@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
+import importlib
 import json
 import os
 from pathlib import Path
@@ -40,6 +40,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--host")
     parser.add_argument("--port")
+    parser.add_argument("--adapter-module")
     args = parser.parse_args()
     config = check(Path(__file__).resolve().parent)
     if args.check:
@@ -47,15 +48,16 @@ def main() -> None:
         return
     site = args.site or (Path(os.environ["C136559_POSTED_SITE"]) if os.environ.get("C136559_POSTED_SITE") else None)
     site_sha = args.site_sha256 or os.environ.get("C136559_POSTED_SITE_SHA256")
-    if site is None or not site_sha or args.output_dir is None:
-        raise ValueError("reviewed posted-speed site, hash and output directory required")
+    module = args.adapter_module or os.environ.get("C136559_NATIVE_ADAPTER_MODULE")
+    if site is None or not site_sha or args.output_dir is None or not module:
+        raise ValueError("reviewed posted-speed site, hash, Native adapter and output directory required")
     packet = load(site, site_sha, config["selected_case_id"])
     variables = config["case"]["draft_variables"]
     if variables["travel_direction"] not in packet["travel_lanes"]:
         raise ValueError("selected direction lacks reviewed lane")
-    if args.output_dir.exists():
-        raise ValueError("refusing to overwrite a Native attempt")
-    raise ValueError("Native capture adapter not yet installed; reviewed site was not sufficient to start a capture")
+    from native_capture import capture
+    adapter = importlib.import_module(module).create_adapter(config, args.host, args.port)
+    print(json.dumps(capture(adapter, config, site, site_sha, args.output_dir), sort_keys=True))
 
 
 if __name__ == "__main__":

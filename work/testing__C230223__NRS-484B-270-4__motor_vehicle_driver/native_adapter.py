@@ -91,6 +91,7 @@ class NativeAdapter:
         if actor is None:
             raise ValueError("reviewed source route vehicle spawn failed")
         self.owned.append(actor)
+        self.spawned_actor_id = actor.id
         return actor
 
     def _cameras(self, ego):
@@ -123,6 +124,12 @@ class NativeAdapter:
         history = []
         trace = (self.output / "trace.jsonl").open("x", encoding="utf-8")
         frame_map = (self.output / "video_frames.jsonl").open("x", encoding="utf-8")
+        evidence_path = self.output / "capture/evidence.jsonl"
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence = evidence_path.open("x", encoding="utf-8")
+        native_path = self.output / "capture/native/frames.jsonl"
+        native_path.parent.mkdir(parents=True, exist_ok=True)
+        native_index = native_path.open("x", encoding="utf-8")
         try:
             for index in range(900):
                 transform = ego.get_transform()
@@ -160,10 +167,37 @@ class NativeAdapter:
                                         "control": command}) + "\n")
                 frame_map.write(json.dumps({"video_frame": index, "carla_frame": frame,
                                             "native_frame": frame, "time_s": time_s}) + "\n")
+                observed = {"frame": frame, "time_s": time_s, "participants": [],
+                            "map_context": {"declared_public_way_road_ids": []}}
+                evidence.write(json.dumps({"original_frame": frame, "replay_frame": frame,
+                    "actor_id": ego.id, "recording_time_s": time_s,
+                    "replay_simulation_time_s": time_s, "world": {"weather": {}},
+                    "ego": {"position_m": [position.x, position.y, position.z],
+                            "heading_deg": transform.rotation.yaw, "speed_mps": speed,
+                            "speed_provenance": "original_native_readback",
+                            "body_vertices_m": [[v.x, v.y, v.z] for v in vertices]},
+                    "original_observations": observed}) + "\n")
+                graph_rel = f"graphs/base/{index:08d}.adapter.json"
+                graph = self.output / "capture/native" / graph_rel
+                graph.parent.mkdir(parents=True, exist_ok=True)
+                graph.write_text(json.dumps({"path": "capture/native/" + graph_rel,
+                    "attributes": {"frame": frame, "time_s": time_s,
+                                   "observed_evidence": observed},
+                    "nodes": [], "edges": []}) + "\n", encoding="utf-8")
+                native_index.write(json.dumps({"frame": frame, "simulation_time": time_s,
+                                               "adapter_graph": graph_rel}) + "\n")
         finally:
             trace.close()
             frame_map.close()
+            evidence.close()
+            native_index.close()
         (self.output / "history.json").write_text(json.dumps(history) + "\n")
+        (self.output / "capture/manifest.json").write_text(json.dumps({
+            "status": "draft", "acquisition": "original_native",
+            "case_id": config["selected_case_id"], "frames": 900,
+            "extraction_confirmed": True, "complete_driving_lanes": False,
+            "sources": {"road.xodr": _sha(self.road),
+                        "trace.jsonl": _sha(self.output / "trace.jsonl")}}) + "\n")
         cameras = {}
         for view in VIEWS:
             folder = self.output / "capture" / view
@@ -183,6 +217,8 @@ class NativeAdapter:
         shutil.copy2(self.road, self.output / "road.xodr")
         seal = {"format": "cycle-lane-native-attempt-v1", "source_kind": "original_native",
                 "diagnostic_fixture": False, "case_id": config["selected_case_id"],
+                "spawned_actor_id": self.spawned_actor_id,
+                "vehicle_blueprint_id": self.plan["vehicle_blueprint_id"],
                 "site": refs["site"], "subsection_3": refs["subsection_3"],
                 "vehicle": refs["vehicle"], "route_candidate_id": config["route_candidate_id"],
                 "history": {"path": "history.json", "sha256": _sha(self.output / "history.json")},
@@ -203,6 +239,9 @@ class NativeAdapter:
         if self.recorder_started:
             try:
                 self.client.stop_recorder()
+                details = self.client.show_recorder_file_info(
+                    str(self.output / "carla_recorder.log"), False)
+                (self.output / "capture/recorder_info.txt").write_text(details)
             except Exception as error:
                 errors.append(repr(error))
         try:

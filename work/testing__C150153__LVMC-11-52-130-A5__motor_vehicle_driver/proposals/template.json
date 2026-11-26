@@ -1,0 +1,83 @@
+{
+  "status": "draft",
+  "template_id": "LVMC-11-52-130-A5@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A5",
+  "actor": "motor_vehicle_driver",
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: In front of any sidewalk elevator or chute or within a space of five feet on each side of such sidewalk elevator or chute.",
+  "structure": {
+    "activation": {
+      "condition": "A person stops, stands or parks a vehicle beside a source-reviewed sidewalk elevator on the assigned municipal one-way road.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "prohibition",
+      "description": "No stopping, standing or parking in front of the fixture or in the five-foot side spaces absent a stated necessity exception.",
+      "numeric_conditions": [
+        {
+          "variable": "side_gap_m",
+          "operator": "<=",
+          "value": 1.524,
+          "unit": "m"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
+        "trigger": "source-reviewed traffic conflict or applicable direction",
+        "effect": "the stated necessity exception may apply",
+        "description": "Original source and lawful applicability remain unresolved."
+      }
+    ],
+    "timing": {
+      "description": "Original stop, stand or park interval and the complete 900-frame approach and release.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "sidewalk elevator or chute",
+        "note": "Original fixture identity, frontage and side extent require review."
+      },
+      {
+        "phrase": "when necessary to avoid conflict with other traffic in compliance with law",
+        "note": "Original traffic and lawful necessity require review."
+      },
+      {
+        "phrase": "directions of a police officer",
+        "note": "Original officer direction and its applicability require review."
+      },
+      {
+        "phrase": "directions of a traffic control device",
+        "note": "Original governing device and direction require review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "side_gap_m",
+      "kind": "world_setup",
+      "unit": "m",
+      "range_or_domain": "commanded body-to-fixture side gap; actual body gap measured from original frames"
+    },
+    {
+      "name": "side_region",
+      "kind": "world_setup",
+      "range_or_domain": "approach, front, west or east"
+    },
+    {
+      "name": "activity",
+      "kind": "controller",
+      "range_or_domain": "stop, stand or park"
+    },
+    {
+      "name": "exception_source",
+      "kind": "world_setup",
+      "range_or_domain": "none, lawful traffic conflict, police direction or traffic device direction"
+    },
+    {
+      "name": "reviewed_site",
+      "kind": "world_setup",
+      "range_or_domain": "one original reviewed C150153 sidewalk elevator and municipal road"
+    }
+  ]
+}

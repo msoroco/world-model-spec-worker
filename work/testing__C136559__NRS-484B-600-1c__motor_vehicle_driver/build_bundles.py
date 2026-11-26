@@ -31,9 +31,10 @@ def main() -> None:
                                            ("approach", 1280, 720),
                                            ("reference_corner", 1280, 720),
                                            ("driver_reference", 1280, 720))]
-    common = ["runner.py", "posted_site.py", "analysis.py",
+    common = ["runner.py", "posted_site.py", "posted_control.py", "native_capture.py", "analysis.py",
               "speed_source_review.py", "original_source_audit.py",
-              "tests/test_posted_site.py"]
+              "tests/test_posted_site.py", "tests/test_posted_control.py",
+              "tests/test_native_capture.py"]
     entries = []
     for suffix in CASES:
         exact = ID + "__" + suffix
@@ -53,6 +54,7 @@ def main() -> None:
                   "source_packets": [], "case": {"case_id": exact,
                   "draft_variables": variables},
                   "control": {"requested_rate_relation": variables["rate_relation"],
+                              "tracking_gain": 0.3,
                               "source": "engineering request, never a measured speed or legal threshold"}}
         files = [{"path": "config.json", "content": content(config)}]
         files += [{"path": name, "content": (ROOT / name).read_text()} for name in common]
@@ -84,6 +86,14 @@ def main() -> None:
         path = ROOT / "cases" / suffix / "primary" / "construction.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content(construction))
+        fallback_config = json.loads(content(config))
+        fallback_config["control"]["tracking_gain"] = 0.45
+        fallback = json.loads(content(construction))
+        fallback["candidate_id"] = "fallback1"
+        fallback["files"][0]["content"] = content(fallback_config)
+        fallback_path = ROOT / "cases" / suffix / "fallback1" / "construction.json"
+        fallback_path.parent.mkdir(parents=True, exist_ok=True)
+        fallback_path.write_text(content(fallback))
         contract = {"format": "worker-measurement-contract", "case_id": exact,
                     "requirements": [{"disposition_index": 0,
                                       "requirement": plan["requirement_dispositions"][0]["requirement"],
@@ -109,11 +119,18 @@ def main() -> None:
                                           "evidence": "original-attempt/inventory.json"}},
                         "candidate_risk": {"status": "physical",
                                            "reason": "requested speed or sign visibility may not be realized on reviewed narrow-road geometry"},
-                        "candidates": []})
+                        "candidates": [{"id": "fallback1",
+                                        "construction": str(fallback_path.relative_to(ROOT)),
+                                        "construction_sha256": sha(fallback_path),
+                                        "trigger": {"source": "original Native vehicle motion",
+                                                    "metric": "measured speed versus requested engineering target within governed portion",
+                                                    "failure_condition": "source-measured speed fails to sustain the requested target"},
+                                        "changed_knobs": ["tracking_gain: 0.3 to 0.45"]}]})
         if suffix == "above":
             (ROOT / "config.json").write_text(content(config))
             (ROOT / "construction.json").write_text(content(construction))
     manifest = {"format": "worker-execution-manifest", "assignment_id": ID,
+                "runtime_manifest_sha256": sha(ROOT.parents[1] / "runtime/SOURCE-MANIFEST.json"),
                 "diagnostic_only": True, "status": "partial_source_gated",
                 "cases": entries}
     (ROOT / "execution-manifest.json").write_text(content(manifest))

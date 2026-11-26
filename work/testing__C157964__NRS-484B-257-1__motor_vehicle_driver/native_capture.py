@@ -40,6 +40,7 @@ def _row(snapshot, observation, site, case, packet_sha):
         "through_phase", "ego_across_or_within", "officer_controls",
         "signal_controls", "stop_line_present", "near_crosswalk_present",
         "sight_observation", "body_vertices", "control_readback",
+        "all_at_reference_observed",
     )
     require(all(key in observation for key in fields),
             "original participant, sight or control readback missing")
@@ -54,7 +55,7 @@ def _row(snapshot, observation, site, case, packet_sha):
         "body_geometry": ("body_vertices", "ego_leading_station_m",
                           "through_min_vertex_station_m"),
         "reference": ("reference_source_sha256", "stop_line_present",
-                      "near_crosswalk_present"),
+                      "near_crosswalk_present", "all_at_reference_observed"),
         "sight": ("sight_observation",),
         "control": ("officer_controls", "signal_controls", "control_readback"),
     }

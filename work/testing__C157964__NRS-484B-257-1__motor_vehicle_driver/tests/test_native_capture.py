@@ -97,6 +97,7 @@ class FakeAdapter:
             "ego_leading_station_m": -2 if i < 120 else 3,
             "through_phase": self.case.through_state,
             "ego_across_or_within": i >= 120,
+            "all_at_reference_observed": i == 100,
             "officer_controls": self.case.officer_controls,
             "signal_controls": False, "stop_line_present": False,
             "near_crosswalk_present": False,

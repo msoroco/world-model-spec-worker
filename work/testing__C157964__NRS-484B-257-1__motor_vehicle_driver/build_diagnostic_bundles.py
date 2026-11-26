@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("yield_view.py", "reviewed_site.py", "native_capture.py",
-           "saved_audit.py", "saved_finalizer.py", "comparison_audit.py")
+           "saved_audit.py", "saved_finalizer.py", "comparison_audit.py",
+           "delivery_audit.py", "judgment_sweep.py")
 
 RUNNER = '''"""Exact yield-sign Native entrypoint; a reviewed site and adapter are required."""
 import argparse

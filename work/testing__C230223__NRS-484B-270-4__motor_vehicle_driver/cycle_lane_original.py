@@ -68,9 +68,14 @@ def audit(attempt_root: str | Path, reviewed_site_sha256: str,
             exception.get("status") not in ("applies", "does_not_apply", "unresolved") or
             not exception.get("authoritative_clause") or not exception.get("reviewer")):
         raise ValueError("reviewed subsection 3 clause and status required")
+    spawned_actor_id = seal.get("spawned_actor_id")
     if (vehicle.get("source_kind") != "original_reviewed" or
-            vehicle.get("vehicle_type") != "motor_vehicle" or not vehicle.get("actor_id") or
-            not vehicle.get("driver_identity_source")):
+            vehicle.get("vehicle_type") != "motor_vehicle" or
+            not vehicle.get("blueprint_id") or
+            not vehicle.get("driver_identity_source") or
+            seal.get("vehicle_blueprint_id") != vehicle["blueprint_id"] or
+            not isinstance(spawned_actor_id, int) or isinstance(spawned_actor_id, bool) or
+            spawned_actor_id <= 0):
         raise ValueError("reviewed motor vehicle and driver required")
     plan = json.loads((Path(__file__).resolve().parent / "case-plan.json").read_text())
     case = next((item for item in plan["cases"] if item["case_id"] == case_id), None)
@@ -96,7 +101,7 @@ def audit(attempt_root: str | Path, reviewed_site_sha256: str,
                 (previous_frame is not None and frame != previous_frame + 1) or
                 (previous_time is not None and abs(time - previous_time - 0.05) > 0.001)):
             raise ValueError("original 20 Hz frame join broken")
-        if row.get("ego_actor_id") != vehicle["actor_id"] or any(
+        if row.get("ego_actor_id") != spawned_actor_id or any(
                 not isinstance(row.get(key), bool) for key in
                 ("ego_body_in_intersection", "ego_body_in_designated_cycle_lane")):
             raise ValueError("original actor or body occupation missing")

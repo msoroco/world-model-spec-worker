@@ -90,6 +90,7 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
     speeds = []
     crossings = []
     through_stations = []
+    reference_events = []
     for i, row in enumerate(rows):
         require(row.get('original_frame') == start + i and number(row.get('time_s')) and
                 abs(row['time_s'] - rows[0]['time_s'] - i / 20) <= .005,
@@ -115,12 +116,19 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
                 'through vehicle phase differs from case')
         require(type(row.get('ego_across_or_within')) is bool,
                 'intersection crossing history missing')
+        require(type(row.get('all_at_reference_observed')) is bool,
+                'original all-at-reference event missing')
+        if row['all_at_reference_observed']:
+            reference_events.append(i)
         speeds.append(row['ego_speed_mps'])
         through_stations.append(row['through_center_station_m'])
         if row['ego_leading_station_m'] >= site['physical_reference_station_m']:
             crossings.append(i)
     require(crossings, 'physical reference never crossed')
     first_cross = crossings[0]
+    require(len(reference_events) == 1 and reference_events[0] <= first_cross,
+            'one observed all-at-reference event before crossing required')
+    reference_index = reference_events[0]
     require(first_cross > 0 and rows[first_cross - 1]['ego_leading_station_m'] <
             site['physical_reference_station_m'], 'first physical crossing invalid')
     approach_min = min(speeds[:first_cross + 1])
@@ -134,6 +142,9 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
             'first_physical_reference_crossing_frame': start + first_cross,
             'minimum_original_approach_speed_mps': approach_min,
             'through_center_station_at_crossing_m': through_stations[first_cross],
+            'through_center_station_at_all_reference_m': through_stations[reference_index],
+            'through_min_vertex_station_at_all_reference_m': rows[reference_index]['through_min_vertex_station_m'],
+            'all_at_reference_original_frame': start + reference_index,
             'through_min_vertex_station_at_crossing_m': rows[first_cross]['through_min_vertex_station_m'],
             'officer_controls_observed': case.officer_controls,
             'immediate_hazard_judgment': None, 'right_of_way_judgment': None,

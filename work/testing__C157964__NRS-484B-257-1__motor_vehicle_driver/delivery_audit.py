@@ -73,8 +73,10 @@ def audit_original(attempt, review_packet, case, *, expected_site_packet_sha256,
                 item.get("camera") in VIEWS,
                 "original physical observation missing: " + name)
         frame = item["frame"]
-        require(any(entry["frame"] == frame for entry in camera_index[item["camera"]]),
-                "review camera/frame join missing: " + name)
+        selected = [entry for entry in camera_index[item["camera"]]
+                    if entry["frame"] == frame]
+        require(len(selected) == 1 and item.get("pixel_sha256") == selected[0]["sha256"],
+                "review camera/frame/pixel join missing: " + name)
         evidence = _inside(evidence_root, item.get("evidence_path"))
         require(_sha(evidence.read_bytes()) == item["source_sha256"],
                 "review evidence bytes changed: " + name)
