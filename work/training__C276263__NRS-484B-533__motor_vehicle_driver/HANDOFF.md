@@ -1,6 +1,6 @@
 # training__C276263__NRS-484B-533__motor_vehicle_driver
 
-Status: partial. No delivery recording is selected or claimed.
+Status: ready for prospective delivery preparation. Five exact cases are selected; no original recording is accepted or claimed.
 
 ## Source review
 
@@ -91,3 +91,13 @@ Current status remains partial and zero selected. Next CPU actions: complete cur
 ## 2026-11-26 selected construction checkpoint
 
 Five exact selected primary constructions and five distinct camera-position fallback constructions pass the pinned CPU offline check. The risk trigger is absence of simultaneous curb and both-front-wheel visibility in original decoded reference-corner frames; fallback moves that camera mount and keeps case and observation contracts fixed. Five diagnostic primary compatibility receipts passed 11 checks each. Three isolated cases pass recorded-only positive and missing-instrument-source classification. The nine-stage semantic chain validates. Selected compatibility and physical/lifecycle acceptance proofs are still in progress; status remains partial.
+
+## 2026-11-26 selected five-case CPU preparation
+
+Five selected primary and five distinct curb-camera fallback constructions pass pinned offline checks, and all ten pass pinned compatibility. Each selected case has a recorded-only positive and missing-instrument-source fixture, a synthetic three-outcome physical preparation fixture, and independent delivery audit CPU positive/missing-engine-actuator paths. Four fixed-condition comparison CPU fixtures pass, including separate engine, brake and wheel contrasts. The selected manifest binds exact hashes of those receipts. The original Native engine-operation, wheel and unattended-state sensor service remains to be connected and physically reviewed; no original recording or legal acceptance is claimed.
+
+The refreshed Native tests and materialized top-level selected tests pass. An initial exact scoped strict run found `static_checks` missing; that field was added. A second run found the top-level materialized `capture.py` and other inline files absent; all construction files have now been materialized and matched. Status remains partial while the next exact strict run checks the repaired package.
+
+## 2026-11-26 scoped strict gate
+
+The exact assignment-scoped strict delivery-ready check passed after materializing the top-level construction files and reconciling the captured-channel mapping. Five selected cases, ten candidate plans, ten compatibility checks, five positive and five missing-source saved paths, five physical CPU fixture sets, five positive and five missing-actuator independent delivery audit paths, and four isolated comparison fixture paths are bound. The CPU proofs are synthetic interface and processing fixtures. Native source acquisition and legal/physical acceptance remain prospective.

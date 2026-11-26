@@ -31,6 +31,12 @@ def measure_approach_setup(measured):
             "officer_exception_independently_reviewed": False}
 
 
+def measure_reviewed_scope(measured):
+    return {"first_pass_frame": measured["first_pass_frame"],
+            "original_camera_review_pending": True,
+            "original_physical_acceptance_claimed": False}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists():
@@ -78,7 +84,10 @@ def finalize(attempt, output):
                                                     "value": measure_approach_setup(measured),
                                                     "sources": source_hashes},
                                "speed_response": {"method": "measure_speed_response",
-                                                  "value": response, "sources": source_hashes}},
+                                                  "value": response, "sources": source_hashes},
+                               "reviewed_scope": {"method": "measure_reviewed_scope",
+                                                  "value": measure_reviewed_scope(measured),
+                                                  "sources": source_hashes}},
               "fixture_only": synthetic, "physical_acceptance_claimed": False,
               "legal_verdict_claimed": False}
     requested = config["ego_target_speed_mps"]

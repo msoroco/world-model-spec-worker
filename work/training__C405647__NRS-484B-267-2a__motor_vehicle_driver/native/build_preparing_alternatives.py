@@ -53,6 +53,10 @@ def build():
                              if branch == "visible_driver_hand_signal" else None,
                              "hand_signal_rig_script_sha256": sha(FOLDER / "native/preparing_hand_signal_rig.py")
                              if branch == "visible_driver_hand_signal" else None,
+                             "hand_signal_capture_script": "native/preparing_hand_capture.py"
+                             if branch == "visible_driver_hand_signal" else None,
+                             "hand_signal_capture_script_sha256": sha(FOLDER / "native/preparing_hand_capture.py")
+                             if branch == "visible_driver_hand_signal" else None,
                              "selected_for_current_pair": False})
     output = FOLDER / "native/preparing-alternative-plan.json"
     output.write_text(json.dumps({"format": "c405647-preparing-alternatives-v1",

@@ -41,7 +41,7 @@
     {
       "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__reference",
       "target_law_id": "NRS-484B-533",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_prepared_original_observation_pending",
       "target_type": "attempt",
       "comparison_variable": "engine_brake_wheel_triplet",
       "comparison_unit": "states",
@@ -64,7 +64,7 @@
     {
       "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-533",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_prepared_original_observation_pending",
       "target_type": "attempt",
       "comparison_variable": "engine_brake_wheel_triplet",
       "comparison_unit": "states",
@@ -87,7 +87,7 @@
     {
       "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__engine_on",
       "target_law_id": "NRS-484B-533",
-      "planning_status": "source_bound_construction_pending",
+      "planning_status": "selected_cpu_prepared_original_observation_pending",
       "target_type": "attempt",
       "comparison_variable": "engine_operation",
       "comparison_unit": "states",
@@ -110,7 +110,7 @@
     {
       "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__brake_unset",
       "target_law_id": "NRS-484B-533",
-      "planning_status": "source_bound_construction_pending",
+      "planning_status": "selected_cpu_prepared_original_observation_pending",
       "target_type": "attempt",
       "comparison_variable": "parking_brake_state",
       "comparison_unit": "states",
@@ -133,7 +133,7 @@
     {
       "case_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__wheel_straight",
       "target_law_id": "NRS-484B-533",
-      "planning_status": "source_bound_construction_pending",
+      "planning_status": "selected_cpu_prepared_original_observation_pending",
       "target_type": "attempt",
       "comparison_variable": "front_wheel_orientation",
       "comparison_unit": "states",
@@ -177,7 +177,7 @@
         "unattended interval",
         "authored grade and right curb"
       ],
-      "status": "planned_unverified"
+      "status": "selected_cpu_fixture_proven_original_observation_pending"
     },
     {
       "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_engine_on",
@@ -197,7 +197,7 @@
         "same brake observation",
         "same wheel observation"
       ],
-      "status": "planned_unverified"
+      "status": "selected_cpu_fixture_proven_original_observation_pending"
     },
     {
       "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_brake_unset",
@@ -217,7 +217,7 @@
         "same engine and wheel observations",
         "same wheel observation"
       ],
-      "status": "planned_unverified"
+      "status": "selected_cpu_fixture_proven_original_observation_pending"
     },
     {
       "comparison_id": "training__C276263__NRS-484B-533__motor_vehicle_driver__comparison_wheel_straight",
@@ -237,109 +237,123 @@
         "same brake observation",
         "same engine and brake observations"
       ],
-      "status": "planned_unverified"
+      "status": "selected_cpu_fixture_proven_original_observation_pending"
     }
   ],
   "observations": [
     {
+      "name": "engine_running",
+      "unit": "categorical",
+      "mandatory": true,
+      "purpose": "Independent original engine-operation state after actuator receipt"
+    },
+    {
+      "name": "parking_brake_set",
+      "unit": "categorical",
+      "mandatory": true,
+      "purpose": "Original Native brake readback during unattended interval"
+    },
+    {
+      "name": "front_wheel_heading_to_curb_deg",
+      "unit": "deg",
+      "mandatory": true,
+      "purpose": "Actual calibrated front-wheel headings relative to surveyed right curb"
+    },
+    {
+      "name": "unattended_interval",
+      "unit": "categorical",
+      "mandatory": true,
+      "purpose": "Original cabin and responsible-person attendance sources"
+    },
+    {
       "name": "ego_pose",
       "unit": "m,deg",
-      "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "mandatory": false,
+      "purpose": "Required raw vehicle-frames.jsonl pose, validated by source measurement, not a separate derived channel"
     },
     {
       "name": "ego_speed",
       "unit": "m/s",
-      "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
-    },
-    {
-      "name": "engine_brake_wheel_triplet",
-      "unit": "states",
-      "mandatory": true,
-      "purpose": "unattended graded stand with engine off, brake set, wheels turned versus omission"
+      "mandatory": false,
+      "purpose": "Required raw vehicle-frames.jsonl speed, validated by source measurement, not a separate derived channel"
     }
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "engine_brake_wheel_triplet"
-      ],
+      "evidence": "Original vehicle standstill over the full 600-frame interval, joined to the surveyed grade and curb.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "vehicle-frames.jsonl",
+        "trace.jsonl"
       ]
     },
     "ru.occupant_count": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original cabin occupancy and responsible-person departure, with actor/frame joins.",
       "channels": [
-        "engine_brake_wheel_triplet"
+        "unattended_interval"
       ],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "occupancy-frames.jsonl",
+        "instrument-frames.jsonl"
       ]
     },
     "st.grade": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "engine_brake_wheel_triplet"
-      ],
+      "evidence": "Original Native map grade readback and curb survey require physical review of perceptibility.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "grade-readback.json"
       ]
     },
     "kin.engine_running": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original engine-operation sensor after source-service actuator receipt; request alone is insufficient.",
       "channels": [
-        "engine_brake_wheel_triplet"
+        "engine_running"
       ],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "instrument-frames.jsonl",
+        "engine-preparation.json"
       ]
     },
     "kin.parking_brake": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native parking-brake control and readback during the unattended interval.",
       "channels": [
-        "engine_brake_wheel_triplet"
+        "parking_brake_set"
       ],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "vehicle-frames.jsonl",
+        "trace.jsonl"
       ]
     },
     "kin.steer_angle": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Calibrated independent actual front-wheel headings relative to the surveyed right curb.",
       "channels": [
-        "engine_brake_wheel_triplet"
+        "front_wheel_heading_to_curb_deg"
       ],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "instrument-frames.jsonl",
+        "vehicle-frames.jsonl"
       ]
     },
     "st.road_edge": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "engine_brake_wheel_triplet"
-      ],
+      "evidence": "Original right-curb survey and synchronized curb pixels; road-edge interpretation requires review.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "grade-readback.json",
+        "video_frames.jsonl"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "engine_brake_wheel_triplet"
-      ],
+      "evidence": "Original frame-synchronous vehicle velocity confirms stationary interval.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "vehicle-frames.jsonl"
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "engine_brake_wheel_triplet"
-      ],
+      "evidence": "Original frame-synchronous vehicle pose locates it on the surveyed grade.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C276263__NRS-484B-533__motor_vehicle_driver/assignment.json"
+        "vehicle-frames.jsonl"
       ]
     }
   },

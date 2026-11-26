@@ -58,7 +58,7 @@ class SavedFinalizerTest(unittest.TestCase):
         plan = json.loads((ROOT.parent / "case-plan.json").read_text())
         validate(contract, plan["requirement_dispositions"], (ROOT / "finalize.py").read_text(),
                  result["case_id"])
-        self.assertEqual(len(verify_report(contract, report, self.attempt)), 2)
+        self.assertEqual(len(verify_report(contract, report, self.attempt)), 3)
 
     def test_missing_case_source_rejected(self):
         (self.attempt / "emergency_observations.jsonl").unlink()

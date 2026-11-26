@@ -76,18 +76,26 @@ def build(suffix):
         trace.append({"frame": frame, "time_s": time_s,
             "position": {"x": x, "y": y, "z": 0},
             "position_m": [x, y, 0], "heading_deg": 0 if index < release else 90,
-            "speed_mps": actor["ego"]["speed_mps"], "velocity_mps": [0, 0, 0],
+            "speed_mps": actor["ego"]["speed_mps"],
+            "speed_mph": actor["ego"]["speed_mps"] / .44704,
+            "velocity_mps": [0, 0, 0],
             "control": {"throttle": 0, "steer": 0, "brake": 0,
                 "hand_brake": False, "reverse": False,
                 "manual_gear_shift": False, "gear": 1},
             "nrs253_original_actor_source": actor})
+        observed = {"frame": frame, "time_s": time_s, "participants": []}
         evidence.append({"original_frame": frame, "replay_frame": frame,
-            "recording_time_s": time_s, "synthetic_diagnostic": True,
+            "recording_time_s": time_s, "replay_simulation_time_s": time_s,
+            "actor_id": 17, "synthetic_diagnostic": True,
             "ego": {"position_m": [x, y, 0], "heading_deg": 0,
                 "speed_mps": actor["ego"]["speed_mps"],
+                "speed_provenance": "synthetic_native_sample",
                 "body_vertices_m": body},
-            "original_observations": {"frame": frame, "time_s": time_s,
-                "participants": []}})
+            "world": {"weather": {"cloudiness": 0, "precipitation": 0,
+                "wetness": 0, "fog_density": 0},
+                "road_projection": {"road_id": 1, "section_id": 0,
+                    "lane_id": -1, "s_m": x + 50}},
+            "original_observations": observed})
         bodies.append({"frame": frame, "time_s": time_s,
             "subject_body_vertices_m": body, "source_kind": "synthetic_cpu"})
         graph_path = f"graphs/base/{frame:08d}.adapter.json"
@@ -95,7 +103,8 @@ def build(suffix):
             "time_s": time_s, "base": graph_path,
             "adapter_graph": graph_path, "synthetic_diagnostic": True})
         graphs.append({"path": "capture/native/" + graph_path,
-            "attributes": {"frame": frame}, "nodes": [], "edges": []})
+            "attributes": {"frame": frame, "observed_evidence": observed},
+            "nodes": [], "edges": []})
     capture_manifest = {"extraction_confirmed": True, "frames": 600,
         "synthetic_diagnostic": True,
         "sources": {"road.xodr": hashlib.sha256(road.encode()).hexdigest(),

@@ -43,6 +43,8 @@ class PreparingSourceAuditTest(unittest.TestCase):
                                                         and index >= 120 else 0},
                                  "hand_signal_driver_actor_id": 43
                                  if branch == BRANCHES[1] and index >= 120 else None,
+                                 "hand_signal_pose_requested": branch == BRANCHES[1]
+                                 and index >= 120,
                                  branch: index >= 120})
         (self.attempt / "video_frames.jsonl").write_text(
             "\n".join(json.dumps(row) for row in mapping) + "\n")
@@ -148,7 +150,8 @@ class PreparingSourceAuditTest(unittest.TestCase):
                 mapping = [json.loads(line) for line in
                            (self.attempt / "video_frames.jsonl").read_text().splitlines()]
                 value = measure(states, mapping, review["case_id"])
-                self.assertEqual(value["first_visible_frame"], 120)
+                self.assertEqual(value["first_branch_source_frame"], 120)
+                self.assertFalse(value["visible_to_subject_confirmed"])
                 self.assertLess(value["last_approach_speed_mps"],
                                 value["initial_approach_speed_mps"])
                 self.assertFalse(value["reasonable_and_proper_legally_determined"])

@@ -77,7 +77,9 @@ def audit_structure(attempt, review):
         require(ego.get("actor_id") and vehicle.get("actor_id")
                 and ego["actor_id"] != vehicle["actor_id"],
                 "Original preparing participants missing")
-        if state.get(branch):
+        branch_request = (state.get(branch) if branch == "visible_vehicle_movement"
+                          else state.get("hand_signal_pose_requested"))
+        if branch_request:
             require(vehicle["actor_id"] == review.get("pixel_review", {}).get("vehicle_actor_id"),
                     "Visible indication belongs to another vehicle")
             if branch == "visible_driver_hand_signal":
@@ -94,7 +96,7 @@ def audit_structure(attempt, review):
             reach = index
         speeds.append(ego["speed_mps"])
         vehicle_speeds.append(vehicle["speed_mps"])
-        if state.get(branch):
+        if branch_request:
             seen.add(index)
     require(seen and 0 < min(seen) < FRAMES - 1,
             "Visible preparing indication absent or lacks a stationary prelude")
@@ -111,7 +113,8 @@ def audit_structure(attempt, review):
             and indication.get("branch") == branch
             and indication.get("visible") is True
             and indication.get("vehicle_actor_id")
-            and indication.get("first_visible_frame") in seen,
+            and indication.get("first_visible_frame") in seen
+            and indication.get("first_visible_frame") < reach,
             "Original visible preparation pixel review missing")
     if branch == "visible_driver_hand_signal":
         require(indication.get("driver_actor_id")
@@ -132,6 +135,7 @@ def audit_structure(attempt, review):
     require(classification["observed_activation_branches"] == [branch],
             "Original source activates another branch")
     return {"case_id": case, "activation_branch": branch, "frames": FRAMES,
+            "first_branch_request_frame": min(seen),
             "first_visible_frame": indication["first_visible_frame"],
             "first_reach_frame": reach,
             "initial_approach_speed_mps": sum(speeds[:40]) / 40,

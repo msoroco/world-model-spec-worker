@@ -20,7 +20,7 @@ def sha(path):
 
 def read_rows(path):
     if not path.is_file():
-        raise ValueError("Missing saved original source: " + path.name)
+        raise ValueError("Missing required source: " + path.name)
     records = [json.loads(line) for line in path.read_text().splitlines()]
     if len(records) != FRAMES:
         raise ValueError("Incomplete saved frame source: " + path.name)
@@ -31,7 +31,7 @@ def analyze(attempt, output=None):
     attempt = Path(attempt)
     config_path = attempt / "config.json"
     if not config_path.is_file():
-        raise ValueError("Missing saved original source: config.json")
+        raise ValueError("Missing required source: config.json")
     config = json.loads(config_path.read_text())
     actor_path = attempt / "left-turn-actors.jsonl"
     actor_rows = read_rows(actor_path)
@@ -41,10 +41,10 @@ def analyze(attempt, output=None):
     maps = read_rows(attempt / "video_frames.jsonl")
     camera_rows = read_rows(attempt / "camera-frames.jsonl")
     if not (attempt / "road.xodr").is_file():
-        raise ValueError("Missing saved original source: road.xodr")
+        raise ValueError("Missing required source: road.xodr")
     for name in ("road_geometry.json", "map-survey.json"):
         if not (attempt / name).is_file():
-            raise ValueError("Missing saved original source: " + name)
+            raise ValueError("Missing required source: " + name)
     road = json.loads((attempt / "road_geometry.json").read_text())
     survey = json.loads((attempt / "map-survey.json").read_text())
     survey_kind = survey.get("source_kind")

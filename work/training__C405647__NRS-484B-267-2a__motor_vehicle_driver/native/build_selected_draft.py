@@ -83,10 +83,11 @@ def build():
         contract = {"format": "worker-measurement-contract", "requirements": [
             {"disposition_index": index, "requirement": dispositions[index]["requirement"],
              "source": dispositions[index]["source"],
-             "output_key": "approach_setup" if index == 0 else "speed_response",
-             "method": "measure_approach_setup" if index == 0 else "measure_speed_response",
+             "output_key": {0: "approach_setup", 1: "speed_response", 5: "reviewed_scope"}[index],
+             "method": {0: "measure_approach_setup", 1: "measure_speed_response",
+                        5: "measure_reviewed_scope"}[index],
              "value_type": "object", "kind": "measured", "inputs": source_inputs}
-            for index in (0, 1)],
+            for index in (0, 1, 5)],
             "negative": {"remove": ["emergency_observations.jsonl"],
                          "error_contains": "Missing required source: emergency_observations.jsonl"}}
         contract_path = HERE / "selected" / suffix / "measurement-contract.json"

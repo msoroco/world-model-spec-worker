@@ -117,6 +117,8 @@ def build():
     for condition, (policy, release) in CASES.items():
         case = ASSIGNMENT + "__selected_d457f261__" + condition
         config = {"case_id": case, "selected_case_id": case,
+                  "case": {"case_id": case,
+                           "recording_description": RECORDING_DESCRIPTION},
                   "law_id": "NRS-484B-253", "cell_id": "C329654",
                   "actor": "motor_vehicle_driver", "rate_hz": 20,
                   "duration_s": 30, "duration_frames": 600,
@@ -131,6 +133,7 @@ def build():
                                              ("driver_reference",1280,720))],
                   "yield_policy": policy, "turn_release_s": release,
                   "oncoming_conflict_s": 12.5, "left_signal_requested": True,
+                  "physical_completion": {"exit_axis": 1, "exit_sign": 1},
                   "physical_verified": False, "legal_verdict": None,
                   "recording_description": RECORDING_DESCRIPTION}
         construction = {"format": "worker-inline-construction", "case_id": case,
