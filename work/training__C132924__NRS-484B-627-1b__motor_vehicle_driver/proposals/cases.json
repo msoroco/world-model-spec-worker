@@ -1,0 +1,582 @@
+{
+  "cell_id": "C132924",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c132924-roundabout-judgment-grid",
+      "target_law_id": "NRS-484B-627-1b",
+      "judgment_refs": [
+        {
+          "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind",
+          "note": "Original relative motion and independent impeding judgment; no numeric legal speed threshold."
+        },
+        {
+          "phrase": "necessary to pass other slowly moving vehicles",
+          "note": "Original slower vehicle, causal necessity and pass duration need independent review."
+        }
+      ],
+      "rationale": "Four finite roundabout source configurations cover right/left duty and pass/return intervals without a legal numeric cutoff.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "landmarks": [],
+      "axes": [
+        {
+          "variable": "probe_variant_code",
+          "observable": "probe_variant_code",
+          "unit": "configuration_index",
+          "min": 0,
+          "max": 3,
+          "spacing": 1,
+          "range_rationale": "Four selected exact configurations; index encodes configuration identity only.",
+          "spacing_rationale": "Unit index selects each of four authored configurations; no legal spacing implied.",
+          "feasibility_evidence": "Four selected inline Native constructions and offline checks.",
+          "measurement": {
+            "method": "original configuration identifier and source review",
+            "time_window": "600 frames",
+            "statistic": "last"
+          }
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      },
+      "spec_version": "7e798d28abaae76c72817bb8b4701dc9d9a8bee0c4673c0875f90d10df607486",
+      "planned_case_count": 4,
+      "selection_order": [
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "cell_id": "C132924",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral definition with no original capture.",
+      "variable_assignments": {
+        "impeding_vehicle_lane_position": {
+          "kind": "controller",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "post_clearance_target_lane": {
+          "kind": "controller",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "observed_impeding": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "impeding_context": {
+          "kind": "world_setup",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "pass_context": {
+          "kind": "world_setup",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": null,
+          "unit": "configuration_index"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      }
+    },
+    {
+      "cell_id": "C132924",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "use extreme right lane while impeding following traffic; original impeding and passing judgments remain unverified.",
+      "paired_probe_id": "roundabout_source_probe_a",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source roundabout pair; no invented legal cutoff",
+        "target_value_or_branch": "extreme_right"
+      },
+      "variable_assignments": {
+        "impeding_vehicle_lane_position": {
+          "kind": "controller",
+          "value": "extreme_right",
+          "unit": "categorical"
+        },
+        "post_clearance_target_lane": {
+          "kind": "controller",
+          "value": "not_applicable",
+          "unit": "categorical"
+        },
+        "observed_impeding": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "impeding_context": {
+          "kind": "world_setup",
+          "value": "stipulated_impeding_target",
+          "unit": "categorical"
+        },
+        "pass_context": {
+          "kind": "world_setup",
+          "value": "no_pass",
+          "unit": "categorical"
+        },
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "configuration_index"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "so slow as to impede the forward movement of traffic proceeding immediately behind",
+        "necessary to pass other slowly moving vehicles"
+      ],
+      "deterministic_branch": {
+        "source_clause": "drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles",
+        "judgment_context": [
+          {
+            "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind",
+            "note": "Original relative motion and independent impeding judgment; no numeric legal speed threshold.",
+            "status": "fixed_assumption",
+            "reason": "The scenario targets immediately trailing traffic and slow ego motion; actual impeding remains for independent review.",
+            "world_setup_refs": [
+              "impeding_context"
+            ]
+          },
+          {
+            "phrase": "necessary to pass other slowly moving vehicles",
+            "note": "Original slower vehicle, causal necessity and pass duration need independent review.",
+            "status": "not_exercised",
+            "reason": "No slower vehicle is constructed in the lane-position pair.",
+            "world_setup_refs": []
+          }
+        ]
+      },
+      "sweep_id": "c132924-roundabout-judgment-grid",
+      "sweep_point": {
+        "probe_variant_code": 0.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      },
+      "sweep_spec_version": "7e798d28abaae76c72817bb8b4701dc9d9a8bee0c4673c0875f90d10df607486"
+    },
+    {
+      "cell_id": "C132924",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "remain in left lane while impeding following traffic; original impeding and passing judgments remain unverified.",
+      "paired_probe_id": "roundabout_source_probe_b",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source roundabout pair; no invented legal cutoff",
+        "target_value_or_branch": "inner_left"
+      },
+      "variable_assignments": {
+        "impeding_vehicle_lane_position": {
+          "kind": "controller",
+          "value": "inner_left",
+          "unit": "categorical"
+        },
+        "post_clearance_target_lane": {
+          "kind": "controller",
+          "value": "not_applicable",
+          "unit": "categorical"
+        },
+        "observed_impeding": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "impeding_context": {
+          "kind": "world_setup",
+          "value": "stipulated_impeding_target",
+          "unit": "categorical"
+        },
+        "pass_context": {
+          "kind": "world_setup",
+          "value": "no_pass",
+          "unit": "categorical"
+        },
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "configuration_index"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "so slow as to impede the forward movement of traffic proceeding immediately behind",
+        "necessary to pass other slowly moving vehicles"
+      ],
+      "deterministic_branch": {
+        "source_clause": "drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles",
+        "judgment_context": [
+          {
+            "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind",
+            "note": "Original relative motion and independent impeding judgment; no numeric legal speed threshold.",
+            "status": "fixed_assumption",
+            "reason": "The scenario targets immediately trailing traffic and slow ego motion; actual impeding remains for independent review.",
+            "world_setup_refs": [
+              "impeding_context"
+            ]
+          },
+          {
+            "phrase": "necessary to pass other slowly moving vehicles",
+            "note": "Original slower vehicle, causal necessity and pass duration need independent review.",
+            "status": "not_exercised",
+            "reason": "No slower vehicle is constructed in the lane-position pair.",
+            "world_setup_refs": []
+          }
+        ]
+      },
+      "sweep_id": "c132924-roundabout-judgment-grid",
+      "sweep_point": {
+        "probe_variant_code": 3.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      },
+      "sweep_spec_version": "7e798d28abaae76c72817bb8b4701dc9d9a8bee0c4673c0875f90d10df607486"
+    },
+    {
+      "cell_id": "C132924",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "occupy left lane only while passing an observed slower vehicle and return right after clearance; original impeding and passing judgments remain unverified.",
+      "paired_probe_id": "roundabout_source_necessary_pass",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source roundabout pair; no invented legal cutoff",
+        "target_value_or_branch": "extreme_right"
+      },
+      "variable_assignments": {
+        "impeding_vehicle_lane_position": {
+          "kind": "controller",
+          "value": "inner_left",
+          "unit": "categorical"
+        },
+        "post_clearance_target_lane": {
+          "kind": "controller",
+          "value": "extreme_right",
+          "unit": "categorical"
+        },
+        "observed_impeding": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "impeding_context": {
+          "kind": "world_setup",
+          "value": "stipulated_impeding_target",
+          "unit": "categorical"
+        },
+        "pass_context": {
+          "kind": "world_setup",
+          "value": "stipulated_necessary_pass_target",
+          "unit": "categorical"
+        },
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 1.0,
+          "unit": "configuration_index"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "so slow as to impede the forward movement of traffic proceeding immediately behind",
+        "necessary to pass other slowly moving vehicles"
+      ],
+      "deterministic_branch": {
+        "source_clause": "drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles",
+        "judgment_context": [
+          {
+            "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind",
+            "note": "Original relative motion and independent impeding judgment; no numeric legal speed threshold.",
+            "status": "fixed_assumption",
+            "reason": "The scenario targets immediately trailing traffic and slow ego motion; actual impeding remains for independent review.",
+            "world_setup_refs": [
+              "impeding_context"
+            ]
+          },
+          {
+            "phrase": "necessary to pass other slowly moving vehicles",
+            "note": "Original slower vehicle, causal necessity and pass duration need independent review.",
+            "status": "fixed_assumption",
+            "reason": "The pass pair stipulates a slower vehicle and tests interval duration; actual necessity remains for independent review.",
+            "world_setup_refs": [
+              "pass_context"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c132924-roundabout-judgment-grid",
+      "sweep_point": {
+        "probe_variant_code": 1.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      },
+      "sweep_spec_version": "7e798d28abaae76c72817bb8b4701dc9d9a8bee0c4673c0875f90d10df607486"
+    },
+    {
+      "cell_id": "C132924",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+      "target_law_id": "NRS-484B-627-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "occupy left lane after the observed slower vehicle is cleared; original impeding and passing judgments remain unverified.",
+      "paired_probe_id": "roundabout_source_post_pass_linger",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source roundabout pair; no invented legal cutoff",
+        "target_value_or_branch": "inner_left"
+      },
+      "variable_assignments": {
+        "impeding_vehicle_lane_position": {
+          "kind": "controller",
+          "value": "inner_left",
+          "unit": "categorical"
+        },
+        "post_clearance_target_lane": {
+          "kind": "controller",
+          "value": "inner_left",
+          "unit": "categorical"
+        },
+        "observed_impeding": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "impeding_context": {
+          "kind": "world_setup",
+          "value": "stipulated_impeding_target",
+          "unit": "categorical"
+        },
+        "pass_context": {
+          "kind": "world_setup",
+          "value": "stipulated_necessary_pass_target",
+          "unit": "categorical"
+        },
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "configuration_index"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "so slow as to impede the forward movement of traffic proceeding immediately behind",
+        "necessary to pass other slowly moving vehicles"
+      ],
+      "deterministic_branch": {
+        "source_clause": "drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles",
+        "judgment_context": [
+          {
+            "phrase": "so slow as to impede the forward movement of traffic proceeding immediately behind",
+            "note": "Original relative motion and independent impeding judgment; no numeric legal speed threshold.",
+            "status": "fixed_assumption",
+            "reason": "The scenario targets immediately trailing traffic and slow ego motion; actual impeding remains for independent review.",
+            "world_setup_refs": [
+              "impeding_context"
+            ]
+          },
+          {
+            "phrase": "necessary to pass other slowly moving vehicles",
+            "note": "Original slower vehicle, causal necessity and pass duration need independent review.",
+            "status": "fixed_assumption",
+            "reason": "The pass pair stipulates a slower vehicle and tests interval duration; actual necessity remains for independent review.",
+            "world_setup_refs": [
+              "pass_context"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c132924-roundabout-judgment-grid",
+      "sweep_point": {
+        "probe_variant_code": 2.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_body_follower_and_pass",
+            "method": "Original Native 20-Hz map lane, ego body, immediate follower, slower vehicle and pass clearance",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "impeding and passing necessity are independent legal judgments"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "Four synchronized original RGB views",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera frame map",
+            "uncertainty": "software fixture cannot prove original pixel visibility"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original marked roundabout lane topology requires Native operator survey",
+          "Requested slow speed, lane and pass phase do not establish impeding or necessity"
+        ]
+      },
+      "sweep_spec_version": "7e798d28abaae76c72817bb8b4701dc9d9a8bee0c4673c0875f90d10df607486"
+    }
+  ]
+}

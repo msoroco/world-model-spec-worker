@@ -1,0 +1,154 @@
+{
+  "assignment_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver",
+  "law_id": "NRS-484A-450-3",
+  "cell_id": "C111343",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+  "case": {
+    "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose",
+          "unit": "m,deg",
+          "sampling_rate_hz": 20,
+          "method": "original Native ego transform and full body extent joined to each frame",
+          "time_window": "all 600 frames, including first rest and crossing",
+          "reference_frame": "original CARLA XY and Native frame",
+          "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+        },
+        {
+          "name": "conditional_stop_position",
+          "unit": "m,m/s",
+          "sampling_rate_hz": 20,
+          "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+          "time_window": "all 600 frames through intersection entry",
+          "reference_frame": "source-hashed original map crosswalk and vehicle body",
+          "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "governing_yield_sign",
+          "unit": "structured",
+          "method": "original Native source hash and per-frame identity join"
+        },
+        {
+          "name": "near_side_crosswalk",
+          "unit": "structured",
+          "method": "original Native source hash and per-frame identity join"
+        },
+        {
+          "name": "intersecting_traffic",
+          "unit": "structured",
+          "method": "original Native source hash and per-frame identity join"
+        },
+        {
+          "name": "safety_context",
+          "unit": "structured",
+          "method": "original Native source hash and per-frame identity join"
+        }
+      ],
+      "limitations": [
+        "Whether safety required a stop is an unresolved independent judgment.",
+        "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+      ]
+    }
+  },
+  "supported_case_ids": [
+    "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+    "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "requested_stop_before_crosswalk": true,
+  "requested_stop_front_x_m": -9.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 80,
+      "pose_strategy": "fixed surveyed intersection overview"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 80,
+      "pose_strategy": "attached subject approach and intersecting-highway view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 80,
+      "pose_strategy": "fixed near-side crosswalk and front-bumper view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 80,
+      "pose_strategy": "fixed intersecting-traffic and yield-approach view"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "m,deg",
+        "sampling_rate_hz": 20,
+        "method": "original Native ego transform and full body extent joined to each frame",
+        "time_window": "all 600 frames, including first rest and crossing",
+        "reference_frame": "original CARLA XY and Native frame",
+        "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+      },
+      {
+        "name": "conditional_stop_position",
+        "unit": "m,m/s",
+        "sampling_rate_hz": 20,
+        "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+        "time_window": "all 600 frames through intersection entry",
+        "reference_frame": "source-hashed original map crosswalk and vehicle body",
+        "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "governing_yield_sign",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "near_side_crosswalk",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "intersecting_traffic",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "safety_context",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      }
+    ],
+    "limitations": [
+      "Whether safety required a stop is an unresolved independent judgment.",
+      "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+    ]
+  },
+  "physical_acceptance_claimed": false,
+  "legal_verdict": null,
+  "safety_stop_required": "unassessed"
+}

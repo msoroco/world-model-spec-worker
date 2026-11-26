@@ -3,7 +3,7 @@
 import xml.etree.ElementTree as ET
 
 CASES = {"before_crosswalk": -9.0, "past_crosswalk": -4.0}
-CAMERAS = {"overview", "ego_front", "crosswalk_side", "intersecting_road"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def road_xml():
@@ -50,11 +50,17 @@ def request(case):
                                      "heading_deg": 90, "requested_speed_mps": 5},
             "controller": {"policy": "stop_at_requested_front_position_then_resume",
                            "requested_stop_front_x_m": CASES[case], "safety_stop_assumed_for_fixture": True},
-            "cameras": [{"name": "overview", "xyz": [-14, -14, 20], "pitch": -45, "size": [1920, 1080]},
-                        {"name": "ego_front", "xyz": [1, 0, 2], "pitch": -8,
-                         "attach_to_ego": True, "size": [1280, 720]},
-                        {"name": "crosswalk_side", "xyz": [-8, -11, 7], "pitch": -25, "size": [1280, 720]},
-                        {"name": "intersecting_road", "xyz": [11, -10, 9], "pitch": -30, "size": [1280, 720]}],
+            "cameras": [{"name": "overview", "xyz": [-14, -14, 20], "pitch": -45,
+                         "yaw": 35, "size": [1920, 1080], "pose_strategy": "fixed surveyed intersection overview"},
+                        {"name": "driver_reference", "xyz": [1, 0, 2], "pitch": -8,
+                         "yaw": 0, "attach_to_ego": True, "size": [1280, 720],
+                         "pose_strategy": "attached subject approach and intersecting-highway view"},
+                        {"name": "reference_corner", "xyz": [-8, -11, 7], "pitch": -25,
+                         "yaw": 30, "size": [1280, 720],
+                         "pose_strategy": "fixed near-side crosswalk and front-bumper view"},
+                        {"name": "approach", "xyz": [11, -10, 9], "pitch": -30,
+                         "yaw": 160, "size": [1280, 720],
+                         "pose_strategy": "fixed intersecting-traffic and yield-approach view"}],
             "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
             "native_geometry_verified": False, "physical_success_claimed": False}
 
@@ -70,6 +76,10 @@ def validate(value):
         raise ValueError("Yield sign missing")
     if set(c["name"] for c in value["cameras"]) != CAMERAS:
         raise ValueError("Four camera requests missing")
+    if any(not c.get("pose_strategy") or not isinstance(c.get("yaw"), (int, float))
+           or tuple(c.get("size", [])) != ((1920, 1080) if c["name"] == "overview" else (1280, 720))
+           for c in value["cameras"]):
+        raise ValueError("Exact camera pose and size plan missing")
     if value["planned_frames"] != 600 or value["rate_hz"] != 20 or value["native_geometry_verified"]:
         raise ValueError("Capture duration or source assertion invalid")
     return {"case": value["case"], "road_count": 2, "camera_count": 4,

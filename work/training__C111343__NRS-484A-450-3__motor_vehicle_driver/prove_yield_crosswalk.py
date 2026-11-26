@@ -9,9 +9,9 @@ from yield_crosswalk_scene import CASES, request, validate
 
 
 def context():
-    result = {"source_kind": "original_native_yield_crosswalk_readback",
+    result = {"source_kind": "synthetic_yield_fixture",
               "governing_yield_sign": True, "near_side_crosswalk": True,
-              "safety_stop_requirement_sourced": True,
+              "safety_context_present": True, "safety_stop_required": "unassessed",
               "crosswalk_near_x_m": -6, "crosswalk_far_x_m": -4,
               "intersection_near_x_m": -3.5}
     for name in HASHES:
@@ -31,7 +31,7 @@ def trace(case):
         else:
             x, speed = stop_center + (i - 200) * 0.25, 5
         rows.append({"video_frame": i, "native_frame": 800000 + i, "time_s": i / 20,
-                     "source_cameras": {name: i for name in CAMERAS}, "ego_x_m": x,
+                     "source_cameras": {name: 800000 + i for name in CAMERAS}, "ego_x_m": x,
                      "ego_length_m": 4.5, "ego_speed_mps": speed,
                      "intersecting_vehicle_y_m": -40 + i * 0.25})
     return rows
@@ -62,11 +62,11 @@ if __name__ == "__main__":
     source["near_side_crosswalk"] = False
     negative.append(reject("absent_crosswalk_branch", source, trace("before_crosswalk"), "crosswalk required"))
     source = context()
-    source["safety_stop_requirement_sourced"] = False
-    negative.append(reject("unsourced_safety_condition", source, trace("before_crosswalk"), "unsourced"))
+    source["safety_context_present"] = False
+    negative.append(reject("unsourced_safety_condition", source, trace("before_crosswalk"), "context missing"))
     negative.append(reject("short_capture", context(), trace("before_crosswalk")[:-1], "Incomplete"))
     rows = trace("before_crosswalk")
-    rows[200]["source_cameras"].pop("crosswalk_side")
+    rows[200]["source_cameras"].pop("reference_corner")
     negative.append(reject("missing_camera", context(), rows, "camera"))
     rows = trace("before_crosswalk")
     rows[200]["native_frame"] = rows[199]["native_frame"]

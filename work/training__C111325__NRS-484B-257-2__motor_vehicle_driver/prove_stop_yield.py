@@ -19,6 +19,8 @@ def fixture(inside_at_entry=True, officer=False, counterpart_control="none"):
         "subject_entrance_sign_governs": True,
         "counterpart_control": counterpart_control,
         "stop_reference": "stop_line",
+        "entrance_controls": {"west_subject": "stop_sign", "east_opposing": "none",
+                              "south_crossing": "none", "north_counterpart": counterpart_control},
     }
     frames = []
     for i in range(600):
@@ -26,6 +28,8 @@ def fixture(inside_at_entry=True, officer=False, counterpart_control="none"):
             "frame": i, "t_s": i / 20,
             "subject_id": "ego", "counterpart_id": "other",
             "subject_speed_mps": 0.0 if 160 <= i < 180 else 3.0,
+            "counterpart_distance_to_conflict_m": max(0.0, 60.0 - i * .15),
+            "counterpart_speed_mps": 3.0,
             "subject_front_before_reference": i < 190,
             "subject_inside": 200 <= i < 260,
             "counterpart_inside": (180 <= i < 240) if inside_at_entry else (270 <= i < 320),
@@ -55,6 +59,8 @@ def main():
     assert p["counterpart_inside_at_entry"] is True
     assert p["counterpart_inside_during_crossing_frames"] == list(range(200, 240))
     assert p["legal_result"] is None
+    assert p["counterpart_approach_ttc_min_s"] is not None
+    assert p["all_entrance_controls"]["north_counterpart"] == "none"
     outside, c = fixture(inside_at_entry=False)
     q = measure(canonical(outside), canonical(c))
     assert q["counterpart_inside_at_entry"] is False and q["counterpart_inside_during_crossing_frames"] == []
@@ -75,6 +81,13 @@ def main():
         raise AssertionError("missing frame accepted")
     except ValueError as e:
         assert str(e) == "noncontiguous 20 Hz frames"
+    bad, c = fixture()
+    c["entrance_controls"].pop("south_crossing")
+    try:
+        measure(canonical(bad), canonical(c))
+        raise AssertionError("incomplete entrance inventory accepted")
+    except ValueError as e:
+        assert "whole-intersection entrance control inventory missing" in str(e)
     bad, c = fixture()
     c["subject_entrance_sign_governs"] = False
     try:

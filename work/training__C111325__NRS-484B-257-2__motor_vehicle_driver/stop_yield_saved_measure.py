@@ -40,13 +40,26 @@ def measure(source: bytes, controls: bytes) -> dict:
     require(site["subject_control"] in {"stop_sign", "yield_sign"}, "subject control missing")
     require(site["subject_entrance_sign_governs"] is True, "subject sign does not govern entrance")
     require(site["counterpart_control"] in {"none", "stop_sign", "yield_sign"}, "counterpart control missing")
-    require(site["stop_reference"] in {"stop_line", "crosswalk", "intersecting_roadway"}, "stop reference missing")
+    inventory = site.get('entrance_controls')
+    require(isinstance(inventory, dict) and set(inventory) == {'west_subject', 'east_opposing', 'south_crossing', 'north_counterpart'},
+            'whole-intersection entrance control inventory missing')
+    require(inventory['west_subject'] == site['subject_control'] and
+            inventory['north_counterpart'] == site['counterpart_control'],
+            'entrance control inventory contradicts participant obligations')
+    require(all(control in {'none', 'stop_sign', 'yield_sign'} for control in inventory.values()),
+            'entrance control inventory contains unknown sign')
+    require(site["stop_reference"] in {"stop_line", "crosswalk", "nearest_viewpoint"}, "stop reference missing")
     frames = raw["frames"]
     require(len(frames) >= 600, "recording shorter than 30 seconds")
     require(all(f["frame"] == i and abs(f["t_s"] - i / 20) < 1e-8 for i, f in enumerate(frames)), "noncontiguous 20 Hz frames")
     require(all(f["subject_id"] == raw["subject_id"] and f["counterpart_id"] == raw["counterpart_id"] for f in frames), "participant identity changed")
     require(all(isinstance(f["subject_inside"], bool) and isinstance(f["counterpart_inside"], bool) for f in frames), "intersection occupancy missing")
     require(all(f["subject_speed_mps"] >= 0 for f in frames), "invalid subject speed")
+    require(all(isinstance(f.get('counterpart_distance_to_conflict_m'), (int, float)) and
+                f['counterpart_distance_to_conflict_m'] >= 0 and
+                isinstance(f.get('counterpart_speed_mps'), (int, float)) and
+                f['counterpart_speed_mps'] >= 0 for f in frames),
+            'counterpart approach distance or speed missing')
     require(all(isinstance(f["officer_controlling"], bool) and isinstance(f["signal_controlling"], bool) for f in frames), "exception control observations missing")
     entry = next((i for i, f in enumerate(frames) if f["subject_inside"]), None)
     require(entry is not None, "subject never entered")
@@ -57,6 +70,10 @@ def measure(source: bytes, controls: bytes) -> dict:
     cessation = [f["frame"] for f in pre if f["subject_speed_mps"] <= 0.1 and f["subject_front_before_reference"]]
     exception_frames = [f["frame"] for f in frames[:exit_frame] if f["officer_controlling"] or f["signal_controlling"]]
     other_inside_at_entry = frames[entry]["counterpart_inside"]
+    approach_ttc = {f['frame']: f['counterpart_distance_to_conflict_m'] / f['counterpart_speed_mps']
+                    for f in frames[:exit_frame] if not f['counterpart_inside'] and
+                    f['counterpart_speed_mps'] > .01}
+    # This is a kinematic diagnostic, not an 'immediate hazard' threshold.
     other_inside_during_crossing = [f["frame"] for f in frames[entry:exit_frame] if f["counterpart_inside"]]
     return {
         "format": "c111325-saved-stop-yield-diagnostic-v1",
@@ -74,6 +91,9 @@ def measure(source: bytes, controls: bytes) -> dict:
         "officer_or_signal_control_frames": exception_frames,
         "counterpart_not_obligated_to_stop_or_yield": site["counterpart_control"] == "none",
         "counterpart_inside_at_entry": other_inside_at_entry,
+        'counterpart_approach_ttc_s_by_frame': approach_ttc,
+        'counterpart_approach_ttc_min_s': min(approach_ttc.values()) if approach_ttc else None,
+        'all_entrance_controls': inventory,
         "counterpart_inside_during_crossing_frames": other_inside_during_crossing,
         "legal_result": None,
         "unresolved": ["incorporated subsection 1 location interpretation", "caution", "approaching immediate hazard", "right-of-way conclusion", "physical source validity"],

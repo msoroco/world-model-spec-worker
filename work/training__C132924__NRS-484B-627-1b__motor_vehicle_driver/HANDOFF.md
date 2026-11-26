@@ -1,5 +1,11 @@
 # NRS-484B-627-1b at C132924
 
+## 2026-11-26 selected CPU proof checkpoint
+
+Four exact judgment-sweep constructions cover extreme-right versus inner-left impeding traffic and a source-observed slower-vehicle pass versus lingering left after clearance. Seven-stage canonical semantic validation passes; impeding and passing necessity remain independent judgments. Current-runtime offline, public compatibility including missing-geometry negative, and recorded-only positive/negative processing pass for all four selected cases. Four physical/lifecycle CPU fixtures, four independent delivery audit selftests and two fixed-source comparison audit selftests pass. The selected manifest is stable at SHA-256 71d386cbcd5d965d9cc94fd4ac133094cab4b4aa279bbda9b01f75c1668f2ffa; execution manifest SHA-256 11f8fa79f5b34e602ca534ef0f8816c6a791caf6664145898dbd6b5bc5a2b74d. All returned files remain diagnostic CPU preparation; original CARLA capture, actual pixels and local source review are pending. Result remains partial until exact scoped strict exit 0.
+
+Each exact case has a `native_handoff.survey_path` at `.runtime-work/original-surveys/<assignment>/<case>/context-survey.json` and capture/execute prefixes require `SCENARIO_CONTEXT_SURVEY`. No synthetic context survey is returned as original. First dispatch command is in `result.json`.
+
 ## 2026-11-26 current-runtime continuation
 
 Status remains **partial**. Independent reading of the frozen law found an exception to the extreme-right-lane duty when necessary to pass another slowly moving vehicle. `case-plan.json` now retains the right/left impeding pair and adds `necessary_pass` versus `post_pass_linger` to test pass duration and return right after observed clearance. Four selected-required dispositions separate impeding, marked lane topology, pass necessity and post-pass lane occupancy. These are physical targets; they do not decide whether traffic is legally impeded or passing is necessary.

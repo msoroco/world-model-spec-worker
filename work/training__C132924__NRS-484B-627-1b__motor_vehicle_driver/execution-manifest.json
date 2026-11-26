@@ -1,0 +1,431 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "cases/probe_a/construction.json",
+      "construction_sha256": "d4a338f21774ee5259fa6f18474b98cd7c420cf994bb445bd322e0618fb3f661",
+      "fixture_recipe": "work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-recipe-probe_a.json",
+      "measurement_contract": "measurement-probe_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c132924-roundabout-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A different radius or camera cannot substitute for missing original marked-lane or pass-necessity evidence; retain the surveyed exact two-lane scope."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+        "construction_sha256": "d4a338f21774ee5259fa6f18474b98cd7c420cf994bb445bd322e0618fb3f661",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-preflight-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a --output /lustre/fsw/portfolios/av/users/wcong/scenario-worker-full-train/.runtime-work/c132924-owner/offline-batch/probe_a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/probe_a.log",
+        "log_sha256": "d3804d65a07e55d8174e31a552a2e1b0273f8fd29ce2f73b8243f042dd96d53b"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_a-compatibility.json",
+        "sha256": "edbc8962d50bbf01c53210c413ff7ec5d12706caf756bdabde8ee28089cdd85f",
+        "log": "compatibility/probe_a-analysis.log",
+        "negative_log": "compatibility/probe_a-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_a-negative.log",
+        "log_sha256": "bb9310981b556032e1ec905aa1d686fbd8b072fe260040b677407fac3efe7e9d"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_a/receipt.json",
+        "sha256": "ec3f43e74dd82808eed86e1c2c6ef5661b967b6e8bbb18af6627b3912eb8c05a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a/context-survey.json"
+      },
+      "acquisition": {
+        "native_lane_body_follower_and_pass": {
+          "entrypoint": "capture.py",
+          "method": "original Native marked lane, body, follower and slower-vehicle pass sources joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/execution-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/probe_a-test.log",
+        "test_log_sha256": "3f5fcbaac0df944bb14f2bf2c3dfa12e28c477dafa3ce8cf27415305726da6c4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b1842a0c9856393a4824604c05a9aef1803c6dad6e948263db015893cba4d629",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_a-positive.log",
+        "test_log_sha256": "55b6b928f8e72c8236cf70c532e9f5732ae91c51d1a90a779534bf81c478157d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original marked-lane and immediately-following traffic source unverified",
+        "negative_log": "delivery-audit/probe_a-negative.log",
+        "negative_log_sha256": "93e010bef562f606b2bba0f4e26b09810f41f61b76f08a208f0afc7c7c2a36b9"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "cases/probe_b/construction.json",
+      "construction_sha256": "33b8e0bf8b7566a098ddb94e462f4eb3fb442023ad4cb1f822d4aa8a30cfa971",
+      "fixture_recipe": "work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-recipe-probe_b.json",
+      "measurement_contract": "measurement-probe_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c132924-roundabout-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A different radius or camera cannot substitute for missing original marked-lane or pass-necessity evidence; retain the surveyed exact two-lane scope."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+        "construction_sha256": "33b8e0bf8b7566a098ddb94e462f4eb3fb442023ad4cb1f822d4aa8a30cfa971",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-preflight-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b --output /lustre/fsw/portfolios/av/users/wcong/scenario-worker-full-train/.runtime-work/c132924-owner/offline-batch/probe_b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/probe_b.log",
+        "log_sha256": "177d5080eefabb1938d5e02a6ecfbd55c7c99713c7945d8d109d925c3625ad4e"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_b-compatibility.json",
+        "sha256": "e9cf01dd677ba4a5f53efb33cefc7d8ad4b8e78a503bcb0c8435a2863c31b022",
+        "log": "compatibility/probe_b-analysis.log",
+        "negative_log": "compatibility/probe_b-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_b-negative.log",
+        "log_sha256": "9ddf2ccf75aa4d1eef126e18780803279ee2dd0c036d49c6f0eeb8a507dee7c0"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_b/receipt.json",
+        "sha256": "5364c604e673b0e573592b8641044bd0f3716df8ad7349f537d33577006bfde4"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b/context-survey.json"
+      },
+      "acquisition": {
+        "native_lane_body_follower_and_pass": {
+          "entrypoint": "capture.py",
+          "method": "original Native marked lane, body, follower and slower-vehicle pass sources joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/execution-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/probe_b-test.log",
+        "test_log_sha256": "bb33efea7ca9fae33000a032351abd76403093fad3bdbd9410297c9b3378b0ed"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b1842a0c9856393a4824604c05a9aef1803c6dad6e948263db015893cba4d629",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_b-positive.log",
+        "test_log_sha256": "31d61bc10b32baefe83efbf2fdffc410d2bb501916625278c3839302ec30172d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original marked-lane and immediately-following traffic source unverified",
+        "negative_log": "delivery-audit/probe_b-negative.log",
+        "negative_log_sha256": "93e010bef562f606b2bba0f4e26b09810f41f61b76f08a208f0afc7c7c2a36b9"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+      "kind": "delivery",
+      "construction": "cases/necessary_pass/construction.json",
+      "construction_sha256": "9a71b6febfd3e0bbb3d116b01eac8c6ce6f3865b2ad079b2037f347d3e1050fd",
+      "fixture_recipe": "work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-recipe-necessary_pass.json",
+      "measurement_contract": "measurement-necessary_pass.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c132924-roundabout-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A different radius or camera cannot substitute for missing original marked-lane or pass-necessity evidence; retain the surveyed exact two-lane scope."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "construction_sha256": "9a71b6febfd3e0bbb3d116b01eac8c6ce6f3865b2ad079b2037f347d3e1050fd",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-preflight-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass --output /lustre/fsw/portfolios/av/users/wcong/scenario-worker-full-train/.runtime-work/c132924-owner/offline-batch/necessary_pass --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/necessary_pass.log",
+        "log_sha256": "60e1a4b3e440414f2bff0657afd6b4df8507795f4d41fb6c5dba1ab8b8fcaf51"
+      },
+      "compatibility": {
+        "receipt": "compatibility/necessary_pass-compatibility.json",
+        "sha256": "1e1eb381fbf1c24d929a3ee125d3f107162ad301ca44b29685f63a99d69384bb",
+        "log": "compatibility/necessary_pass-analysis.log",
+        "negative_log": "compatibility/necessary_pass-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/necessary_pass-negative.log",
+        "log_sha256": "6d12b0b31783958b72af2b4b642255683c1c77f33edd6100c8760a563d4eb158"
+      },
+      "physical_preparation": {
+        "receipt": "physical/necessary_pass/receipt.json",
+        "sha256": "0a7ba013fdfedb0283eaf9dc11e6a3d081ccbc94f70be7acd17b16e4b10be9d1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass/context-survey.json"
+      },
+      "acquisition": {
+        "native_lane_body_follower_and_pass": {
+          "entrypoint": "capture.py",
+          "method": "original Native marked lane, body, follower and slower-vehicle pass sources joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/execution-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/necessary_pass-test.log",
+        "test_log_sha256": "e4af710195c281948b929bb5af52e46162c9bbad0493f93c11602cc92a0a62b6"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b1842a0c9856393a4824604c05a9aef1803c6dad6e948263db015893cba4d629",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/necessary_pass-positive.log",
+        "test_log_sha256": "7b448198548322a0a85ea42c99cc3ddb1b89ab7ced4dcecc97b5428f39179b66",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original marked-lane and immediately-following traffic source unverified",
+        "negative_log": "delivery-audit/necessary_pass-negative.log",
+        "negative_log_sha256": "93e010bef562f606b2bba0f4e26b09810f41f61b76f08a208f0afc7c7c2a36b9"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+      "kind": "delivery",
+      "construction": "cases/post_pass_linger/construction.json",
+      "construction_sha256": "0c2cfc860bf9e6403e1c89ebadf9bbc599f288418edd197a068ec23fa5b3e69d",
+      "fixture_recipe": "work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-recipe-post_pass_linger.json",
+      "measurement_contract": "measurement-post_pass_linger.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c132924-roundabout-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "A different radius or camera cannot substitute for missing original marked-lane or pass-necessity evidence; retain the surveyed exact two-lane scope."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+        "construction_sha256": "0c2cfc860bf9e6403e1c89ebadf9bbc599f288418edd197a068ec23fa5b3e69d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/selected-preflight-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger --output /lustre/fsw/portfolios/av/users/wcong/scenario-worker-full-train/.runtime-work/c132924-owner/offline-batch/post_pass_linger --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/post_pass_linger.log",
+        "log_sha256": "0db1e7a982599d138cd4d82174757aa7f7886d110f7d2873ac399e9081a38351"
+      },
+      "compatibility": {
+        "receipt": "compatibility/post_pass_linger-compatibility.json",
+        "sha256": "511d39dd07dec888303aca0a70be2995dbea41c8686516989c81a47b2d098fb3",
+        "log": "compatibility/post_pass_linger-analysis.log",
+        "negative_log": "compatibility/post_pass_linger-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/post_pass_linger-negative.log",
+        "log_sha256": "4228803ca4f1a7667bffeacc68e005ba9ee0d96fd0184df5c89b7d3d3885e204"
+      },
+      "physical_preparation": {
+        "receipt": "physical/post_pass_linger/receipt.json",
+        "sha256": "2b67597ce3ff97f249a570cc48a5b501fb6c12798031ff33e285f4694bfac0ff"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger/context-survey.json"
+      },
+      "acquisition": {
+        "native_lane_body_follower_and_pass": {
+          "entrypoint": "capture.py",
+          "method": "original Native marked lane, body, follower and slower-vehicle pass sources joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/execution-manifest.json --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/post_pass_linger-test.log",
+        "test_log_sha256": "58612a88234e0152d55b7617dadc1c7917b748f5b7d091203d05109384730047"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b1842a0c9856393a4824604c05a9aef1803c6dad6e948263db015893cba4d629",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/post_pass_linger-positive.log",
+        "test_log_sha256": "d00ae5fced8439756f5e26526d87a7eaf36efca1f59857fda72cdf2d0f1f475a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C132924__NRS-484B-627-1b__motor_vehicle_driver/delivery_audit.py --case training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original marked-lane and immediately-following traffic source unverified",
+        "negative_log": "delivery-audit/post_pass_linger-negative.log",
+        "negative_log_sha256": "93e010bef562f606b2bba0f4e26b09810f41f61b76f08a208f0afc7c7c2a36b9"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    }
+  ]
+}

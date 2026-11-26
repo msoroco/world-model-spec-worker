@@ -1,0 +1,44 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+  "status": "selected_cpu_draft",
+  "negative": {
+    "remove": [
+      "near_crosswalk.json"
+    ],
+    "error_contains": "Missing required source: near_crosswalk.json"
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "kind": "measured",
+      "method": "measure_crosswalk_position",
+      "output_key": "crosswalk_stop_position",
+      "value_type": "object",
+      "inputs": [
+        "near_crosswalk.json",
+        "ego_body.jsonl",
+        "yield_motion.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "kind": "measured",
+      "method": "measure_yield_governance",
+      "output_key": "conditional_yield_context",
+      "value_type": "object",
+      "inputs": [
+        "yield_sign.json",
+        "intersecting_traffic.json",
+        "safety_context.json",
+        "yield_motion.jsonl"
+      ]
+    }
+  ],
+  "legal_compliance": "unassessed"
+}

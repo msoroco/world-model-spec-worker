@@ -1,0 +1,147 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver",
+  "status": "draft_incomplete_proofs",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+      "kind": "delivery",
+      "construction": "selected/before_crosswalk/construction.json",
+      "construction_sha256": "0dff4fcb6aafb063a5b3d28962ffa7d98393584c058eb372902522dc2696ce67",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-before_crosswalk.json",
+      "fixture_recipe": "work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/selected-recipe-before_crosswalk.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego transform and full body extent joined to each frame",
+            "time_window": "all 600 frames, including first rest and crossing",
+            "reference_frame": "original CARLA XY and Native frame",
+            "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+          },
+          {
+            "name": "conditional_stop_position",
+            "unit": "m,m/s",
+            "sampling_rate_hz": 20,
+            "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+            "time_window": "all 600 frames through intersection entry",
+            "reference_frame": "source-hashed original map crosswalk and vehicle body",
+            "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "governing_yield_sign",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "near_side_crosswalk",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "intersecting_traffic",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "safety_context",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          }
+        ],
+        "limitations": [
+          "Whether safety required a stop is an unresolved independent judgment.",
+          "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"
+      },
+      "candidates": []
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+      "kind": "delivery",
+      "construction": "selected/past_crosswalk/construction.json",
+      "construction_sha256": "7a1d47476717355629a6e33b8a1defaf8bcf5ae0dad490d643d91902d646ee44",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-past_crosswalk.json",
+      "fixture_recipe": "work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/selected-recipe-past_crosswalk.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego transform and full body extent joined to each frame",
+            "time_window": "all 600 frames, including first rest and crossing",
+            "reference_frame": "original CARLA XY and Native frame",
+            "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+          },
+          {
+            "name": "conditional_stop_position",
+            "unit": "m,m/s",
+            "sampling_rate_hz": 20,
+            "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+            "time_window": "all 600 frames through intersection entry",
+            "reference_frame": "source-hashed original map crosswalk and vehicle body",
+            "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "governing_yield_sign",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "near_side_crosswalk",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "intersecting_traffic",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "safety_context",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          }
+        ],
+        "limitations": [
+          "Whether safety required a stop is an unresolved independent judgment.",
+          "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"
+      },
+      "candidates": []
+    }
+  ]
+}

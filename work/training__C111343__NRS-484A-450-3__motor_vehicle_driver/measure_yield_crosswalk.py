@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "crosswalk_side", "intersecting_road"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 HASHES = ("native_map", "yield_sign", "near_crosswalk", "ego_body", "ego_motion",
           "intersecting_traffic", "safety_context", "camera_manifest")
 
@@ -16,16 +16,17 @@ def number(value, name):
 
 
 def measure(context, rows):
-    if context.get("source_kind") != "original_native_yield_crosswalk_readback":
-        raise ValueError("Original Native yield source missing")
+    source_kind = context.get("source_kind")
+    if source_kind not in {"original_native_yield_crosswalk_readback", "synthetic_yield_fixture"}:
+        raise ValueError("Yield source kind missing")
     for name in HASHES:
         value = context.get(name + "_sha256")
         if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
             raise ValueError("Missing source hash: " + name)
     if context.get("governing_yield_sign") is not True or context.get("near_side_crosswalk") is not True:
         raise ValueError("Governing yield sign and near-side crosswalk required")
-    if context.get("safety_stop_requirement_sourced") is not True:
-        raise ValueError("Conditional safety-stop context unsourced")
+    if context.get("safety_context_present") is not True or context.get("safety_stop_required") != "unassessed":
+        raise ValueError("Conditional safety context missing or legal judgment invented")
     near = number(context.get("crosswalk_near_x_m"), "crosswalk near edge")
     far = number(context.get("crosswalk_far_x_m"), "crosswalk far edge")
     intersection = number(context.get("intersection_near_x_m"), "intersection near edge")
@@ -48,7 +49,8 @@ def measure(context, rows):
         if abs(number(row.get("time_s"), "time") - i / RATE_HZ) > 1e-6:
             raise ValueError("Native time join failed")
         cameras = row.get("source_cameras")
-        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != i for name in CAMERAS):
+        if (not isinstance(cameras, dict) or set(cameras) != CAMERAS
+                or any(cameras[name] != native for name in CAMERAS)):
             raise ValueError("Four source camera join failed")
         x = number(row.get("ego_x_m"), "ego x")
         length = number(row.get("ego_length_m"), "ego length")
@@ -78,7 +80,7 @@ def measure(context, rows):
             "stopped_frame_count": len(stopped), "first_crosswalk_entry_frame": first_crosswalk,
             "first_intersection_entry_frame": first_intersection,
             "intersecting_vehicle_y_at_stop_m": first_stop["intersecting_vehicle_y_m"],
-            "safety_stop_requirement": "sourced_context_only", "legal_compliance": "unassessed",
+            "safety_stop_requirement": "unassessed", "legal_compliance": "unassessed",
             "limitations": ["0.1 m/s is a recorded-rest diagnostic, not a statutory threshold.",
                             "Whether safety requires a stop remains a sourced independent judgment.",
                             "Original crosswalk, sign, traffic and body pixels require later review."]}

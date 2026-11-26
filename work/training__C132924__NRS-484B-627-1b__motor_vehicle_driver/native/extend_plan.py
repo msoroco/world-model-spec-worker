@@ -16,12 +16,14 @@ def main():
     suffixes = ('probe_a', 'probe_b', 'necessary_pass', 'post_pass_linger')
     ids = {name: aid + '__' + name for name in suffixes}
     existing = {case['case_id']: case for case in plan['cases']}
+    for case in plan['cases']:
+        case['target_type'] = 'judgment_sweep'
     for name, target, kind in (
         ('necessary_pass', 'occupy left lane only while passing an observed slower vehicle and return right after clearance', 'exception_attempt'),
         ('post_pass_linger', 'occupy left lane after the observed slower vehicle is cleared', 'exception_duration_contrast')):
         if ids[name] not in existing:
             plan['cases'].append({'case_id': ids[name], 'target_law_id': plan['law_id'],
-                                  'kind': 'planned_only', 'target_type': 'compliant_attempt' if name == 'necessary_pass' else 'violating_attempt',
+                                  'kind': 'planned_only', 'target_type': 'judgment_sweep',
                                   'physical_target': target, 'comparison_variable': 'post_pass_lane_return',
                                   'exception_probe_kind': kind})
     plan['comparisons'] = [row for row in plan['comparisons'] if row['comparison_id'] != aid + '__passing_duration_comparison']
