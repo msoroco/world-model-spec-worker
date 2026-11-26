@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-307-4b",
+      "source": "NRS 484B.307(4)(b)",
+      "output_key": "pedestrian_entry_measurement",
+      "method": "source_join_measurement",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "c111334-native-samples.jsonl",
+        "video_frames.jsonl",
+        "device-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device-review.json"
+    ],
+    "error_contains": "Missing required source: device-review.json"
+  },
+  "frame_count": 600,
+  "sampling_rate_hz": 20,
+  "duration_s": 30,
+  "physical_acceptance_claimed": false,
+  "source_required": [
+    "Native pedestrian identity, footprint, pose and frame clock",
+    "Native map highway boundary and route geometry",
+    "Original green-turn-arrow-alone head pixels and facing audit",
+    "Original other-device pixels, governing authority and permission timing",
+    "Four decoded source-camera streams and frame identity hashes"
+  ],
+  "source_finalizer": "native/selected_finalize.py",
+  "original_native_observed": false,
+  "legal_verdict": null
+}

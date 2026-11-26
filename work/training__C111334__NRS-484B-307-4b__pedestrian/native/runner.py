@@ -101,8 +101,8 @@ def execute(config, output, host, port):
         camera_poses = {
             'overview': (-10, 10, 9, -45, -35),
             'approach': (0, 8, 4, -90, -18),
-            'signal_close': (-4, 4, 3, -45, -22),
-            'pedestrian_reference': (1, 5, 2, -90, -8),
+            'reference_corner': (-4, 4, 3, -45, -22),
+            'driver_reference': (1, 5, 2, -90, -8),
         }
         for name, width, height in VIEWS:
             x, y, z, yaw, pitch = camera_poses[name]

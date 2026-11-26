@@ -26,7 +26,7 @@ def build(repo=Path('.')):
                         ('check_requests.py', NATIVE / 'check_requests.py'),
                         (str(SOURCE), repo / SOURCE)]:
         common_files.append({'path': local, 'content': path.read_text()})
-    for suffix in ('probe_a', 'probe_b'):
+    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
         for name in ('config.json', 'road.xodr', 'requested-tracks.jsonl'):
             local = suffix + '/' + name
             common_files.append({'path': local,
@@ -38,9 +38,12 @@ def build(repo=Path('.')):
         '  self.assertEqual(check_pair()["crossing_frames"],[1350,1200])\n'
         ' def test_each_case(self):\n'
         '  self.assertEqual(len(read_case("probe_a")[1]),600)\n'
-        '  self.assertEqual(len(read_case("probe_b")[1]),600)\n'})
+        '  self.assertEqual(len(read_case("probe_b")[1]),600)\n'
+        '  self.assertEqual(check_pair(pair=("probe_c","probe_d"))["crossing_frames"],[1350,1200])\n'
+        '  self.assertEqual(len(read_case("probe_c")[1]),600)\n'
+        '  self.assertEqual(len(read_case("probe_d")[1]),600)\n'})
     cases = []
-    for suffix in ('probe_a', 'probe_b'):
+    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
         case_id = ASSIGNMENT + '__' + suffix
         files = common_files + [{'path': 'selected-case.json',
                                  'content': json.dumps({'suffix': suffix,

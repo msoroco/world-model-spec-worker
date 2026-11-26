@@ -1,4 +1,4 @@
-"""Build the two exact, source-bound flagger response construction requests.
+"""Build source-bound flagger response requests for both statutory locations.
 
 These requests describe controller targets. They do not assert a flagger's
 authorization, a visible signal, Native motion, or a legal result.
@@ -73,7 +73,8 @@ def build(repo=Path('.')):
             assignment['actor'] != 'motorcycle_or_moped_operator'):
         raise ValueError('Frozen flagger assignment differs')
     outputs = []
-    for suffix, crossing in (('probe_a', False), ('probe_b', True)):
+    for suffix, crossing in (('probe_a', False), ('probe_b', True),
+                             ('probe_c', False), ('probe_d', True)):
         folder = ROOT / 'native' / suffix
         folder.mkdir(parents=True, exist_ok=True)
         road = folder / 'road.xodr'
@@ -104,6 +105,12 @@ def build(repo=Path('.')):
                 'native_paved_shoulder_geometry'],
             'physical_or_legal_outcome_claimed': False,
         }
+        if suffix in ('probe_c', 'probe_d'):
+            config['zone_basis'] = 'clearly_marked_construction_or_maintenance_area'
+            config['source_review_required'] = [
+                'flagger_authorization', 'marked_highway_work_area',
+                'signal_governance_and_visibility', 'motorcycle_operator_control',
+                'native_paved_shoulder_geometry']
         (folder / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
         outputs.append({'case_id': config['case_id'], 'config': str(folder / 'config.json'),
                         'config_sha256': digest(folder / 'config.json')})

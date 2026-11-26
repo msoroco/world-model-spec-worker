@@ -29,6 +29,7 @@ REVIEW_COPIES = {
 def check():
     root = Path(__file__).resolve().parent
     proof = check_pair(base=root)
+    check_pair(base=root, pair=('probe_c', 'probe_d'))
     selected = root / 'selected-case.json'
     if selected.is_file():
         suffix = json.loads(selected.read_text()).get('suffix')
@@ -37,7 +38,7 @@ def check():
     return proof
 
 
-def _read_review(path, library):
+def _read_review(path, library, zone_basis='designated_temporary_zone'):
     """Require locally reviewed assets; a walker label is not a flagger signal."""
     if not path.is_file():
         raise ValueError('Original flagger authority and visible signal asset review missing')
@@ -50,11 +51,20 @@ def _read_review(path, library):
         expected = review.get(key.replace('_path', '_sha256'))
         if not isinstance(expected, str) or hashlib.sha256(source.read_bytes()).hexdigest() != expected:
             raise ValueError('Original flagger review source hash differs: ' + key)
-    for key in ('stop_signal_blueprint', 'release_signal_blueprint'):
+    for key in ('stop_signal_blueprint', 'release_signal_blueprint',
+                'zone_entry_marker_blueprint', 'zone_exit_marker_blueprint'):
         blueprint_id = review.get(key)
         if not isinstance(blueprint_id, str) or not blueprint_id:
-            raise ValueError('Source-reviewed flagger signal blueprint missing')
+            raise ValueError('Source-reviewed flagger or zone marker blueprint missing')
         library.find(blueprint_id)
+    if zone_basis == 'clearly_marked_construction_or_maintenance_area':
+        for key in ('work_area_barrier_blueprint', 'work_activity_blueprint'):
+            blueprint_id = review.get(key)
+            if not isinstance(blueprint_id, str) or not blueprint_id:
+                raise ValueError('Source-reviewed work-area asset missing: ' + key)
+            library.find(blueprint_id)
+    elif zone_basis != 'designated_temporary_zone':
+        raise ValueError('Unknown statutory location basis')
     if review.get('governs_approach') is not True:
         raise ValueError('Flagger signal governance source missing')
     for key, name in REVIEW_COPIES.items():
@@ -64,6 +74,32 @@ def _read_review(path, library):
         if hashlib.sha256(copied.read_bytes()).hexdigest() != review[key.replace('_path', '_sha256')]:
             raise ValueError('Copied flagger review source hash differs: ' + key)
     return review
+
+
+def _spawn_zone_markers(world, library, carla, review, owned):
+    """Place both reviewed boundary markers beside the authored shoulder."""
+    markers = []
+    for name, x in (('entry', -25.0), ('exit', 25.0)):
+        blueprint = library.find(review['zone_' + name + '_marker_blueprint'])
+        marker = world.spawn_actor(blueprint, carla.Transform(
+            carla.Location(x=x, y=-6.5, z=1.0), carla.Rotation(yaw=90)))
+        owned.append(marker)
+        markers.append(marker)
+    return markers
+
+
+def _spawn_work_area(world, library, carla, review, owned):
+    """Construct reviewed work-area barriers and work-activity prop off-lane."""
+    assets = []
+    for key, x, y in (('work_area_barrier_blueprint', 5.0, -7.0),
+                      ('work_area_barrier_blueprint', 15.0, -7.0),
+                      ('work_activity_blueprint', 10.0, -8.0)):
+        blueprint = library.find(review[key])
+        actor = world.spawn_actor(blueprint, carla.Transform(
+            carla.Location(x=x, y=y, z=1.0), carla.Rotation(yaw=90)))
+        owned.append(actor)
+        assets.append(actor)
+    return assets
 
 
 def _cleanup_capture(pipeline, encoders, owned, client, prior, changed,
@@ -145,7 +181,12 @@ def capture(output_dir, suffix, host, port):
                 shoulder.lane_id != -2 or driving.road_id != shoulder.road_id):
             raise RuntimeError('Native paved shoulder and supported driving lane absent')
         library = world.get_blueprint_library()
-        review = _read_review(output / 'original-flagger-review.json', library)
+        review = _read_review(output / 'original-flagger-review.json', library,
+                              config.get('zone_basis', 'designated_temporary_zone'))
+        zone_markers = _spawn_zone_markers(world, library, carla, review, owned)
+        work_area = (_spawn_work_area(world, library, carla, review, owned)
+                     if config.get('zone_basis') ==
+                     'clearly_marked_construction_or_maintenance_area' else [])
         motorcycle_bp = library.find('vehicle.kawasaki.ninja')
         motorcycle_bp.set_attribute('role_name', 'c183370_motorcycle_subject')
         motorcycle = world.spawn_actor(motorcycle_bp, carla.Transform(
@@ -243,6 +284,9 @@ def capture(output_dir, suffix, host, port):
                     'motorcycle_speed_mps': math.sqrt(
                         speed.x**2 + speed.y**2 + speed.z**2),
                     'flagger_actor_id': flagger.id,
+                    'zone_entry_marker_actor_id': zone_markers[0].id,
+                    'zone_exit_marker_actor_id': zone_markers[1].id,
+                    'work_area_actor_ids': [actor.id for actor in work_area],
                     'flagger_xyz_m': [flagger.get_location().x,
                                       flagger.get_location().y,
                                       flagger.get_location().z],

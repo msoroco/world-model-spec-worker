@@ -61,7 +61,9 @@ if __name__ == '__main__':
     config = json.loads(Path(args.config).read_text())
     if config.get('case_id') not in {
             config.get('assignment_id', '') + '__probe_a',
-            config.get('assignment_id', '') + '__probe_b'}:
+            config.get('assignment_id', '') + '__probe_b',
+            config.get('assignment_id', '') + '__probe_c',
+            config.get('assignment_id', '') + '__probe_d'}:
         raise ValueError('Exact media case identity differs')
     measurement = measure(args.attempt, config['case_id'])
     result = audit_media(args.attempt, config['cameras'], config['frame_count'])

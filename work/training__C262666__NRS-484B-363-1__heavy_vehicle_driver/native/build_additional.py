@@ -36,15 +36,18 @@ def generate():
         runner = runner_template.replace(marker, "CASE = AID + '__"+suffix+"'")
         config = dict(config_template)
         config.update(case_id=case_id, selected_case_id=case_id,
-                      target_mph=mph, planned_context=context,
-                      recording_description='Thirty-second heavy vehicle school-zone traversal: '+context+
-                      '; four source cameras and original velocity, road, school calendar, beacon/sign and civil time')
+                      target_mph=mph, planned_context=context)
+        config['case'] = {'case_id': case_id,
+                          'recording_description': config['recording_description']}
         (bundle/'tests').mkdir(parents=True, exist_ok=True)
         (bundle/'runner.py').write_text(runner)
         write(bundle/'config.json', config)
         (bundle/'tests/test_bundle.py').write_text(tests)
         files = [{'path': name, 'content': (bundle/name).read_text()}
                  for name in ('runner.py', 'config.json', 'tests/test_bundle.py')]
+        files.append({'path': 'finalize.py', 'content': (primary/'finalize.py').read_text()})
+        files.append({'path': 'measure_school_zone.py',
+                      'content': (HERE/'measure_school_zone.py').read_text()})
         construction = {'format': 'worker-construction', 'assignment_id': AID,
                         'case_id': case_id, 'cell_id': 'C262666',
                         'law_id': 'NRS-484B-363-1', 'actor': 'heavy_vehicle_driver',

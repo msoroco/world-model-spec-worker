@@ -32,7 +32,7 @@ def prove():
     positives = 0
     negatives = 0
     with tempfile.TemporaryDirectory(dir=scratch) as directory:
-        for suffix in ('probe_a', 'probe_b'):
+        for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
             attempt = Path(directory) / suffix
             attempt.mkdir()
             case_id = fixture(attempt, suffix)
@@ -79,6 +79,10 @@ def prove():
             if (not result['source_join_passed'] or
                     len(result['camera_decode']) != 4 or
                     result['measurement']['case_id'] != case_id or
+                    result['statutory_location_basis'] !=
+                        ('clearly_marked_construction_or_maintenance_area'
+                         if suffix in ('probe_c', 'probe_d') else
+                         'designated_temporary_zone') or
                     result['original_pixels_independently_verified'] or
                     result['physical_completion'] is not None or
                     result['legal_verdict'] is not None):

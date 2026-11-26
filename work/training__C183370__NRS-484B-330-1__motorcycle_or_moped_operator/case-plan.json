@@ -22,7 +22,7 @@
       "branch": "Clearly marked highway construction or maintenance area",
       "status": "alternative_pending",
       "case_ids": [],
-      "evidence_or_gap": "Current exact pair uses the designated temporary traffic control zone branch. No separate source-reviewed clearly marked highway construction or maintenance location or controlled pair has been constructed; retain this alternative pending."
+      "evidence_or_gap": "Two distinct clearly marked work-area request constructions now pass pinned offline checks, but original marking authority/asset review, public compatibility, saved processing and independent delivery remain pending; keep this branch alternative_pending."
     }
   ],
   "cases": [
@@ -91,6 +91,74 @@
         "paved shoulder and lane readback"
       ],
       "measurement_contract_draft": "native/probe_b-measurement-contract.json"
+    },
+    {
+      "case_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_c",
+      "target_law_id": "NRS-484B-330-1",
+      "kind": "planned_only",
+      "target_type": "compliant_attempt",
+      "physical_target": "comply with authorized flagger signal",
+      "comparison_variable": "flagger_instruction_response",
+      "construction_status": "unselected_cpu_offline_draft",
+      "draft_construction": "native/probe_c-construction.json",
+      "duration_s": 30,
+      "rate_hz": 20,
+      "frame_count": 600,
+      "camera_plan": {
+        "overview": "1920x1080 FFV1",
+        "approach": "1280x720 FFV1",
+        "flagger": "1280x720 FFV1",
+        "rear": "1280x720 FFV1"
+      },
+      "controller_policy": "hold_until_release",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original flagger signal visibility, Native motorcycle motion and shoulder geometry must be reviewed; prospective camera or spawn adjustment may be required."
+      },
+      "source_review_required": [
+        "original flagger authorization",
+        "clearly marked highway construction or maintenance area",
+        "actual signal and direction",
+        "original camera pixels",
+        "motorcycle/operator identity",
+        "paved shoulder and lane readback"
+      ],
+      "measurement_contract_draft": "native/probe_c-measurement-contract.json",
+      "statutory_location_branch": "clearly_marked_highway_construction_or_maintenance_area"
+    },
+    {
+      "case_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_d",
+      "target_law_id": "NRS-484B-330-1",
+      "kind": "planned_only",
+      "target_type": "violating_attempt",
+      "physical_target": "disobey the same authorized signal",
+      "comparison_variable": "flagger_instruction_response",
+      "construction_status": "unselected_cpu_offline_draft",
+      "draft_construction": "native/probe_d-construction.json",
+      "duration_s": 30,
+      "rate_hz": 20,
+      "frame_count": 600,
+      "camera_plan": {
+        "overview": "1920x1080 FFV1",
+        "approach": "1280x720 FFV1",
+        "flagger": "1280x720 FFV1",
+        "rear": "1280x720 FFV1"
+      },
+      "controller_policy": "cross_during_stop",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Original flagger signal visibility, Native motorcycle motion and shoulder geometry must be reviewed; prospective camera or spawn adjustment may be required."
+      },
+      "source_review_required": [
+        "original flagger authorization",
+        "clearly marked highway construction or maintenance area",
+        "actual signal and direction",
+        "original camera pixels",
+        "motorcycle/operator identity",
+        "paved shoulder and lane readback"
+      ],
+      "measurement_contract_draft": "native/probe_d-measurement-contract.json",
+      "statutory_location_branch": "clearly_marked_highway_construction_or_maintenance_area"
     }
   ],
   "comparisons": [
@@ -105,6 +173,19 @@
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+      ]
+    },
+    {
+      "comparison_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__comparison_work_area",
+      "case_ids": [
+        "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_c",
+        "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_d"
+      ],
+      "deliberate_differences": [
+        "flagger_instruction_response"
+      ],
+      "fixed_conditions": [
+        "frozen paved-shoulder cell, actor, law, clearly marked work-area request, route topology, participant roles, camera policy and flagger signal schedule"
       ]
     }
   ],

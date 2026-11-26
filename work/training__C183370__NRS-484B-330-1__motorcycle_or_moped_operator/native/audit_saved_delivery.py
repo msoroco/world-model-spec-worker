@@ -20,7 +20,8 @@ def audit(attempt, config_path, receipt_path):
     config = json.loads(Path(config_path).read_text())
     case_id = config.get('case_id')
     if (config.get('assignment_id') != ASSIGNMENT or
-            case_id not in (ASSIGNMENT + '__probe_a', ASSIGNMENT + '__probe_b') or
+            case_id not in {ASSIGNMENT + '__' + suffix for suffix in
+                            ('probe_a', 'probe_b', 'probe_c', 'probe_d')} or
             config.get('law_id') != 'NRS-484B-330-1' or
             config.get('cell_id') != 'C183370' or
             config.get('actor') != 'motorcycle_or_moped_operator' or
@@ -41,6 +42,8 @@ def audit(attempt, config_path, receipt_path):
     return {
         'format': 'c183370-saved-delivery-audit-v1',
         'case_id': case_id,
+        'statutory_location_basis': config.get('zone_basis',
+                                             'designated_temporary_zone'),
         'source_seal_sha256': measured['source_seal_sha256'],
         'measurement': measured,
         'camera_decode': media['cameras'],

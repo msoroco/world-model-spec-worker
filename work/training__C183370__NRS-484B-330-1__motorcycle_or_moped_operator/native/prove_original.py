@@ -29,7 +29,7 @@ def fixture(folder, suffix):
         (folder / (camera + '.mkv')).write_text('synthetic marker, not video\n')
     rows = []
     mapping = []
-    crossing = 350 if suffix == 'probe_a' else 200
+    crossing = 350 if suffix in ('probe_a', 'probe_c') else 200
     for index in range(600):
         frame = 2000 + index
         x = -40 + 40 * min(index / crossing, 1)
@@ -46,7 +46,7 @@ def fixture(folder, suffix):
                          for dx in (-1.2, 1.2) for dy in (-.3, .3)
                          for z in (.2, 1.8)],
                      'motorcycle_speed_mps': 0 if 110 <= index < 300 and
-                         suffix == 'probe_a' else 3,
+                         suffix in ('probe_a', 'probe_c') else 3,
                      'requested_signal': 'stop' if 100 <= index < 300 else 'release',
                      'source_cameras': cameras})
         mapping.append({'video_frame': index, 'native_frame': frame,

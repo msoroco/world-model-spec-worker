@@ -15,11 +15,12 @@ def sha(path):
 
 
 def read_case(suffix, repo=Path('.'), base=HERE):
-    if suffix not in ('probe_a', 'probe_b'):
+    if suffix not in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
         raise ValueError('Unknown exact flagger case')
     folder = Path(base) / suffix
     config = json.loads((folder / 'config.json').read_text())
-    expected_policy = 'hold_until_release' if suffix == 'probe_a' else 'cross_during_stop'
+    expected_policy = ('hold_until_release' if suffix in ('probe_a', 'probe_c')
+                       else 'cross_during_stop')
     if (config['assignment_id'] != ASSIGNMENT or
             config['case_id'] != ASSIGNMENT + '__' + suffix or
             config['candidate_id'] != 'primary' or
@@ -33,6 +34,13 @@ def read_case(suffix, repo=Path('.'), base=HERE):
             config['requested_route'] != 'driving_lane_beside_paved_shoulder' or
             config['physical_or_legal_outcome_claimed'] is not False):
         raise ValueError('Exact flagger config differs')
+    if suffix in ('probe_c', 'probe_d'):
+        if (config.get('zone_basis') !=
+                'clearly_marked_construction_or_maintenance_area' or
+                'marked_highway_work_area' not in config['source_review_required']):
+            raise ValueError('Clearly marked work-area request differs')
+    elif config.get('zone_basis') is not None:
+        raise ValueError('Designated-zone request differs')
     if (set(config['cameras']) != {'overview', 'approach', 'flagger', 'rear'} or
             config['cameras']['overview']['width'] != 1920 or
             any(v['width'] != 1280 for k, v in config['cameras'].items()
@@ -71,16 +79,18 @@ def read_case(suffix, repo=Path('.'), base=HERE):
                 row['signal'] != ('stop' if 100 <= index < 300 else 'release')):
             raise ValueError('Frame, actor, geometry or signal request differs')
     crossing = next((r['frame'] for r in rows if r['requested_center_x_m'] >= 0), None)
-    if crossing != (1350 if suffix == 'probe_a' else 1200):
+    if crossing != (1350 if suffix in ('probe_a', 'probe_c') else 1200):
         raise ValueError('Controlled stop-line crossing differs')
     if not all(r['requested_center_x_m'] <= 0 for r in rows[:100]):
         raise ValueError('Subject begins past stop line')
     return config, rows
 
 
-def check_pair(repo=Path('.'), base=HERE):
-    first, a = read_case('probe_a', repo, base)
-    second, b = read_case('probe_b', repo, base)
+def check_pair(repo=Path('.'), base=HERE, pair=('probe_a', 'probe_b')):
+    if pair not in (('probe_a', 'probe_b'), ('probe_c', 'probe_d')):
+        raise ValueError('Unknown flagger comparison pair')
+    first, a = read_case(pair[0], repo, base)
+    second, b = read_case(pair[1], repo, base)
     fixed = ('assignment_id', 'law_id', 'cell_id', 'actor', 'rate_hz',
              'duration_s', 'frame_count', 'stop_line_x_m', 'requested_route',
              'signal_policy', 'cameras', 'assignment_source', 'assignment_sha256',
@@ -91,6 +101,8 @@ def check_pair(repo=Path('.'), base=HERE):
            a[i]['requested_center_y_m'] != b[i]['requested_center_y_m']
            for i in range(600)):
         raise ValueError('Comparison signal or route differs')
+    if first.get('zone_basis') != second.get('zone_basis'):
+        raise ValueError('Comparison statutory location differs')
     return {'passed': True, 'cases': [first['case_id'], second['case_id']],
             'frames_per_case': 600, 'camera_count': 4,
             'crossing_frames': [1350, 1200], 'original_native_observed': False,

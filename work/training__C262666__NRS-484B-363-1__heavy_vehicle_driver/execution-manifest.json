@@ -8,7 +8,7 @@
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
       "kind": "delivery",
       "construction": "native/selected-primary-construction.json",
-      "construction_sha256": "e9676af9c2c573c476bd126d7d5c7aba517f69c2029cb95a77fd6a3603f58b62",
+      "construction_sha256": "80268e55a9a218b9d0edff330a05a98e13aef544f45814314c199120c8812daa",
       "candidate_risk": {
         "status": "none",
         "reason": "No measured original Native route, camera or target failure yet; retain primary until feedback identifies a failure"
@@ -34,11 +34,293 @@
         }
       },
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03 --output .runtime-work/c262666-test/offline-r12",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03 --output .runtime-work/c262666-test/offline-r13",
         "exit_code": 0,
-        "construction_sha256": "e9676af9c2c573c476bd126d7d5c7aba517f69c2029cb95a77fd6a3603f58b62",
+        "construction_sha256": "80268e55a9a218b9d0edff330a05a98e13aef544f45814314c199120c8812daa",
         "log": "native/selected-primary-offline.log",
-        "log_sha256": "f9bdcdcc38276b8ed2e7c262c8782b5ab65775ad36f4d38c4cb083ad25e121d8"
+        "log_sha256": "990acc36523fe2826d9d47640599f05e471cabd7302ab284780d80d6c0ec9626"
+      },
+      "compatibility": {
+        "receipt": "native/compatibility/compatibility.json",
+        "sha256": "be79351d201cf44219cefc89c3fe2f3e045a7b30eff26af5fbd3256a600acc17",
+        "log": "native/compatibility/compatibility-analysis.log",
+        "negative_log": "native/compatibility/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/compatibility/negative-analysis.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/execution-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/execution-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "native/saved/probe_03-positive-processing.json",
+        "test_log_sha256": "b5e9001928561d3fa3e37db9a39fa23bb248262fc4c9e87c9f692e200f703b17",
+        "processing_receipt": "native/saved/probe_03-positive-processing.json",
+        "processing_receipt_sha256": "b5e9001928561d3fa3e37db9a39fa23bb248262fc4c9e87c9f692e200f703b17",
+        "negative_processing_receipt": "native/saved/probe_03-negative-processing.json",
+        "negative_processing_receipt_sha256": "04c5334b6807411bba7d726f4f410d0f2eb72e6ca7e5bbd43b41b958c81bf512",
+        "negative_feedback": "native/saved/probe_03-negative-feedback.json",
+        "negative_feedback_sha256": "374c830aa0de243e5d15f2c8e48cae22f20d560a628b15ce951c24b48625c215"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01",
+      "kind": "delivery",
+      "construction": "native/cases/probe_01/construction.json",
+      "construction_sha256": "52c5236bda53fcdf54f1fc8debc33d80d1722179f62b7e9c0132f408162c7610",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_01.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_01.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01 --output .runtime-work/c262666-test/offline-r14-probe_01",
+        "exit_code": 0,
+        "construction_sha256": "52c5236bda53fcdf54f1fc8debc33d80d1722179f62b7e9c0132f408162c7610",
+        "log": "native/cases/probe_01/offline.log",
+        "log_sha256": "6320a734560a2ece1b7162509925c7fd19811d5976c236bac5a35dbc1a98cc54"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+      "kind": "delivery",
+      "construction": "native/cases/probe_02/construction.json",
+      "construction_sha256": "3069f9cec73f9433cfe017efffee42d037992fb18e48cbb512c454c3c9e83569",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_02.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_02.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02 --output .runtime-work/c262666-test/offline-r14-probe_02",
+        "exit_code": 0,
+        "construction_sha256": "3069f9cec73f9433cfe017efffee42d037992fb18e48cbb512c454c3c9e83569",
+        "log": "native/cases/probe_02/offline.log",
+        "log_sha256": "4635513126466212108864dde2fe9f2ec8c7ef667393040dab7088c00f95b6ba"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04",
+      "kind": "delivery",
+      "construction": "native/cases/probe_04/construction.json",
+      "construction_sha256": "7e8b06f1ba15958f5cc490e84c6779a82d43660e6bc9059a9c14472a244795aa",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_04.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_04.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04 --output .runtime-work/c262666-test/offline-r14-probe_04",
+        "exit_code": 0,
+        "construction_sha256": "7e8b06f1ba15958f5cc490e84c6779a82d43660e6bc9059a9c14472a244795aa",
+        "log": "native/cases/probe_04/offline.log",
+        "log_sha256": "2aba14c28678ff4defc10b4ccfb523ff6af765e9b3c3aee7f696636f17ae723d"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_05",
+      "kind": "delivery",
+      "construction": "native/cases/probe_05/construction.json",
+      "construction_sha256": "dfeed4e733f5d5b817ef519a70498add522ae5f60c420c03835fd3950699cbf6",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_05.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_05.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_05 --output .runtime-work/c262666-test/offline-r14-probe_05",
+        "exit_code": 0,
+        "construction_sha256": "dfeed4e733f5d5b817ef519a70498add522ae5f60c420c03835fd3950699cbf6",
+        "log": "native/cases/probe_05/offline.log",
+        "log_sha256": "45c686f3cdb8cb13d7714341f18dcddf03582e90c9b8732d20976cb81c86318b"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_06",
+      "kind": "delivery",
+      "construction": "native/cases/probe_06/construction.json",
+      "construction_sha256": "4b726e71f2969d32d9386fe541dcd04af3dc2de2edb92e4bcfa6f4ac09d73d20",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_06.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_06.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_06 --output .runtime-work/c262666-test/offline-r14-probe_06",
+        "exit_code": 0,
+        "construction_sha256": "4b726e71f2969d32d9386fe541dcd04af3dc2de2edb92e4bcfa6f4ac09d73d20",
+        "log": "native/cases/probe_06/offline.log",
+        "log_sha256": "59d9b0ca1bb1ca208ba8150c1db4c48b34652a292152767fd9d8d693433caa74"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_07",
+      "kind": "delivery",
+      "construction": "native/cases/probe_07/construction.json",
+      "construction_sha256": "d3938a674ccaabd55679523ab01645f2782fe753ec451e17dd291bd60ff07895",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_07.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_07.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_07 --output .runtime-work/c262666-test/offline-r14-probe_07",
+        "exit_code": 0,
+        "construction_sha256": "d3938a674ccaabd55679523ab01645f2782fe753ec451e17dd291bd60ff07895",
+        "log": "native/cases/probe_07/offline.log",
+        "log_sha256": "daaebf9a43b9bce56f8c28b062e83d24507f5fc41a3d5b47d49fe5139b253e83"
+      }
+    },
+    {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_08",
+      "kind": "delivery",
+      "construction": "native/cases/probe_08/construction.json",
+      "construction_sha256": "ebb9b947f67baf51d8882a495c7510dc9b2be32cc6b26486e4d7be0d545f99e7",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No measured original Native failure yet; physical route and source visibility remain to be checked on first capture"
+      },
+      "candidates": [],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/measurement-probe_08.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c262666-school-zone-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-recipe-probe_08.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "school_zone_observation": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native velocity and reviewed zone-source join",
+          "evidence": "native_motion.jsonl, school_zone_context.json, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/additional-offline-manifest.json --case training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_08 --output .runtime-work/c262666-test/offline-r14-probe_08",
+        "exit_code": 0,
+        "construction_sha256": "ebb9b947f67baf51d8882a495c7510dc9b2be32cc6b26486e4d7be0d545f99e7",
+        "log": "native/cases/probe_08/offline.log",
+        "log_sha256": "1a0d0ceff114c7c084dd06e3578978a1111697286bdd2939ecc86ace903a2da5"
       }
     }
   ]

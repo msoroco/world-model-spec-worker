@@ -13,7 +13,7 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = 'training__C111334__NRS-484B-307-4b__pedestrian'
 CASES = ('probe_1', 'probe_2', 'permission_before_entry')
 VIEWS = (('overview', 1920, 1080), ('approach', 1280, 720),
-         ('signal_close', 1280, 720), ('pedestrian_reference', 1280, 720))
+         ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 ARROW_ID = 'C111334-facing-green-turn-arrow'
 PERMISSION_ID = 'C111334-other-permitting-device'
 CROSSWALK_ID = 'C111334-highway-crossing'
